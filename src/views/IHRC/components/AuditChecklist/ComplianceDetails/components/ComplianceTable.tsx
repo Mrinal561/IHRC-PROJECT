@@ -183,7 +183,7 @@ const ViewDetailsButton = ({ compliance }: { compliance: DataRow }) => {
 
     return (
         <Button size="sm" variant="plain" onClick={handleViewDetails}>
-            <IoEye className='text-[#7c828e]/50' size={24} />
+            <IoEye className='text-[#7c828e]/50 hover:text-indigo-500' size={24} />
         </Button>
     )
 }
