@@ -1,8 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { ColumnDef, OnSortParam } from '@/components/shared/DataTable';
 import DataTable from '@/components/shared/DataTable';
-import { Button, Calendar, Dialog, Tooltip, Select } from '@/components/ui';
+import { Button, Calendar, Dialog, Tooltip, Select, Checkbox } from '@/components/ui';
 import { RiEditLine } from 'react-icons/ri';
+
 interface ChecklistDataRow {
   Compliance_Instance_ID: number;
   Compliance_ID: number;
@@ -60,18 +61,31 @@ const AssignChecklistTable: React.FC = () => {
   const [activeRowId, setActiveRowId] = useState<number | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editData, setEditData] = useState<Partial<ChecklistDataRow>>({});
+  const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
 
-  const handleEditClick = (row: ChecklistDataRow) => {
-    setActiveRowId(row.Compliance_Instance_ID);
-    setEditData({
-      Compliance_Instance_ID: row.Compliance_Instance_ID,
-      Compliance_ID: row.Compliance_ID,
-      Compliance_Header: row.Compliance_Header,
-      Due_Date: row.Due_Date,
-      Owner_Name: row.Owner_Name,
-      Approver_Name: row.Approver_Name,
+  const isAllSelected = useMemo(
+    () => selectedItems.size === data.length,
+    [selectedItems, data]
+  );
+
+  const handleCheckboxChange = (id: number) => {
+    setSelectedItems((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
     });
-    setIsEditDialogOpen(true);
+  };
+
+  const handleSelectAllChange = () => {
+    if (isAllSelected) {
+      setSelectedItems(new Set());
+    } else {
+      setSelectedItems(new Set(data.map((item) => item.Compliance_Instance_ID)));
+    }
   };
 
   const handleEditSave = () => {
@@ -112,17 +126,36 @@ const AssignChecklistTable: React.FC = () => {
   const columns: ColumnDef<ChecklistDataRow>[] = useMemo(
     () => [
       {
+        header: ({ table }) => (
+          <div className="w-2">
+            <Checkbox
+              checked={isAllSelected}
+              onChange={handleSelectAllChange}
+            />
+          </div>
+        ),
+        id: 'select',
+        cell: ({ row }) => (
+          <div className="w-2">
+            <Checkbox
+              checked={selectedItems.has(row.original.Compliance_Instance_ID)}
+              onChange={() => handleCheckboxChange(row.original.Compliance_Instance_ID)}
+            />
+          </div>
+        ),
+      },
+      {
         header: 'Instance ID',
         accessorKey: 'Compliance_Instance_ID',
         cell: (props) => (
-          <div className="w-24 text-start">{props.getValue()}</div>
+          <div className="w-16 text-start">{props.getValue()}</div>
         ),
       },
       {
         header: 'Compliance ID',
         accessorKey: 'Compliance_ID',
         cell: (props) => (
-          <div className="w-24 text-start">{props.getValue()}</div>
+          <div className="w-20 text-start">{props.getValue()}</div>
         ),
       },
       {
@@ -132,7 +165,7 @@ const AssignChecklistTable: React.FC = () => {
           const value = props.getValue() as string;
           return (
             <Tooltip title={value} placement="top">
-              <div className="w-46 truncate">{value}</div>
+              <div className="w-32 truncate">{value}</div>
             </Tooltip>
           );
         },
@@ -149,14 +182,14 @@ const AssignChecklistTable: React.FC = () => {
         header: "Owner's Name",
         accessorKey: 'Owner_Name',
         cell: ({ getValue }) => {
-          return <div className="w-44">{getValue<string>()}</div>;
+          return <div className="w-36">{getValue<string>()}</div>;
         },
       },
       {
         header: "Approver's Name",
         accessorKey: 'Approver_Name',
         cell: ({ getValue }) => {
-          return <div className="w-38">{getValue<string>()}</div>;
+          return <div className="w-36">{getValue<string>()}</div>;
         },
       },
       {
@@ -173,7 +206,7 @@ const AssignChecklistTable: React.FC = () => {
         ),
       },
     ],
-    []
+    [selectedItems, isAllSelected]
   );
 
   const [tableData, setTableData] = useState({

@@ -12,13 +12,7 @@ export const protectedRoutes = [
         component: lazy(() => import('@/views/IHRC/components/Home/Home')),
         authority: [],
     },
-    /** Example purpose only, please remove */
-    // {
-    //     key: 'singleMenuItem',
-    //     path: '/single-menu-view',
-    //     component: lazy(() => import('@/views/IHRC/components/demo/SingleMenuView')),
-    //     authority: [],
-    // },
+
     {
         key: 'recommendedList.item1',
         path: '/recommended-checklist',
@@ -27,17 +21,17 @@ export const protectedRoutes = [
     },
     
     {
+        key: 'complianceDetail.statusItem',
+        path:  `${APP_PREFIX_PATH}/IHRC/compliance-reupload/:complianceID`,
+        component: lazy(() => import('@/views/IHRC/components/AuditChecklist/ReuploadDocument/ReuploadDocument')),
+        authority: [],
+    },
+    {
         key: 'complianceDetail.complianceItem',
         path:  `${APP_PREFIX_PATH}/IHRC/compliance-list-detail/:complianceID`,
         component: lazy(() => import('@/views/IHRC/components/AuditChecklist/ComplianceRowDetails/ComplianceRowDetails')),
         authority: [],
     },
-    // {
-    //     key: 'complianceDetail.item2',
-    //     path: '/compliance-detail',
-    //     component: lazy(() => import('@/views/IHRC/components/AuditChecklist/ComplianceDetails/ComplianceDetails')),
-    //     authority: [],
-    // },
     {
         key: 'assignChecklist.item3',
         path: '/assigned-checklist',
