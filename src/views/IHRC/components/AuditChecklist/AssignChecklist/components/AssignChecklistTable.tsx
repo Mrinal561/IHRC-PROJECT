@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { ColumnDef, OnSortParam } from '@/components/shared/DataTable';
 import DataTable from '@/components/shared/DataTable';
-import { Button, Calendar, Dialog, Tooltip, Select } from '@/components/ui';
+import { Button, Calendar, Dialog, Tooltip, Select, Checkbox } from '@/components/ui';
 import { RiEditLine } from 'react-icons/ri';
 interface ChecklistDataRow {
   Compliance_Instance_ID: number;
@@ -60,7 +60,32 @@ const AssignChecklistTable: React.FC = () => {
   const [activeRowId, setActiveRowId] = useState<number | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editData, setEditData] = useState<Partial<ChecklistDataRow>>({});
+  const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
 
+
+    const isAllSelected = useMemo(
+    () => selectedItems.size === data.length,
+    [selectedItems, data]
+  );
+
+    const handleCheckboxChange = (id: number) => {
+    setSelectedItems((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id); // Deselect if already selected
+      } else {
+        newSet.add(id); // Select if not already selected
+      }
+      return newSet;
+    });
+  };
+    const handleSelectAllChange = () => {
+    if (isAllSelected) {
+      setSelectedItems(new Set());
+    } else {
+      setSelectedItems(new Set(data.map((item) => item.Compliance_Instance_ID)));
+    }
+  };
   const handleEditClick = (row: ChecklistDataRow) => {
     setActiveRowId(row.Compliance_Instance_ID);
     setEditData({
@@ -122,7 +147,7 @@ const AssignChecklistTable: React.FC = () => {
         header: 'Compliance ID',
         accessorKey: 'Compliance_ID',
         cell: (props) => (
-          <div className="w-24 text-start">{props.getValue()}</div>
+          <div className="w-32 text-start">{props.getValue()}</div>
         ),
       },
       {
@@ -132,7 +157,7 @@ const AssignChecklistTable: React.FC = () => {
           const value = props.getValue() as string;
           return (
             <Tooltip title={value} placement="top">
-              <div className="w-46 truncate">{value}</div>
+              <div className="w-40 truncate">{value}</div>
             </Tooltip>
           );
         },
@@ -142,7 +167,7 @@ const AssignChecklistTable: React.FC = () => {
         accessorKey: 'Due_Date',
         cell: ({ getValue }) => {
           const date = getValue<Date>();
-          return <div className="w-32">{date.toLocaleDateString()}</div>;
+          return <div className="w-28">{date.toLocaleDateString()}</div>;
         },
       },
       {
