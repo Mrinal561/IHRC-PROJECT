@@ -22,7 +22,6 @@ interface DataRow {
   Penalty_Type: string;
   Default_Due_Date: string;
   First_Due_Date: string;
-  Due_Date: string;
   Scheduled_Frequency: string;
   Proof_Of_Compliance_Mandatory: string;
 }
@@ -118,7 +117,6 @@ const ComplianceRowDetails = () => {
             <p className="text-sm mb-2"><strong>Penalty Type:</strong> {compliance.Penalty_Type}</p>
             <p className="text-sm mb-2"><strong>Default Due Date:</strong> {compliance.Default_Due_Date}</p>
             <p className="text-sm mb-2"><strong>First Due Date:</strong> {compliance.First_Due_Date}</p>
-            <p className="text-sm mb-2"><strong>Due Date:</strong> {compliance.Due_Date}</p>
             <p className="text-sm mb-2"><strong>Scheduled Frequency:</strong> {compliance.Scheduled_Frequency}</p>
             <p className="text-sm mb-2"><strong>Proof Of Compliance Mandatory:</strong> {compliance.Proof_Of_Compliance_Mandatory}</p>
           </div>
