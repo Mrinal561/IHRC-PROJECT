@@ -218,7 +218,7 @@ const AssignChecklistTable: React.FC = () => {
         isOpen={isEditDialogOpen}
         onClose={() => setIsEditDialogOpen(false)}
         onRequestClose={() => setIsEditDialogOpen(false)}
-        className="w-full max-w-md p-6"
+        className="max-w-md p-6"
       >
         <h5 className="mb-4 text-lg font-semibold">  Compliance Instance ID: <span className="text-indigo-600">{editData.Compliance_Instance_ID}</span>
         </h5>
