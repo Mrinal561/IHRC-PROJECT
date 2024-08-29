@@ -6,7 +6,12 @@
             "collapseMenu": "Audit Checklist",
             "item1": "Recommended Checklist",
             "item2": "Compliance Details",
-            "item3": "Assign Checklist"
+            "item3": "Assigned Checklist",
+            "item4": "Custom Checklist",
+            "item5": "Due Compliance",
+            "item6": "Status",
+            "item7": "Compliance Certificate"
+
         },
         "groupMenu": {
             "groupMenu": "Group menu",

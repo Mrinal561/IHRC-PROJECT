@@ -186,8 +186,8 @@ const RecommendedTableContent = () => {
     const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
 
     const isAllSelected = useMemo(
-        () => selectedItems.size > 0 && selectedItems.size === complianceData.length,
-        [selectedItems]
+        () => selectedItems.size === complianceData.length,
+        [selectedItems, complianceData]
     );
 
     const handleCheckboxChange = (id: number) => {
@@ -204,9 +204,9 @@ const RecommendedTableContent = () => {
 
     const handleSelectAllChange = () => {
         if (isAllSelected) {
-            setSelectedItems(new Set()); // Deselect all
+            setSelectedItems(new Set());
         } else {
-            setSelectedItems(new Set(complianceData.map((item) => item.ComplianceId))); // Select all
+            setSelectedItems(new Set(complianceData.map((item) => item.Compliance_Id)));
         }
     };
 
@@ -222,14 +222,14 @@ const RecommendedTableContent = () => {
                     </div>
                 ),
                 id: 'select',
-                cell: ({ row }) => (
-                    <div className="w-8 pr-2">  {/* Reduced width */}
-                    <Checkbox
-                        checked={isAllSelected}
-                        onChange={handleSelectAllChange}
-                    />
-                </div>
-                ),
+    cell: ({ row }) => (
+        <div className="w-8 pr-2">
+            <Checkbox
+                checked={selectedItems.has(row.original.Compliance_Id)}
+                onChange={() => handleCheckboxChange(row.original.Compliance_Id)}
+            />
+        </div>
+    ),
             },
             {
                 header: 'Compliance ID',
