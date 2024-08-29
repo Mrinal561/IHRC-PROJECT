@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { ColumnDef, OnSortParam } from '@/components/shared/DataTable';
 import DataTable from '@/components/shared/DataTable';
 import { Button, Calendar, Dialog, Tooltip, Select, Checkbox } from '@/components/ui';
+import { Button, Calendar, Dialog, Tooltip, Select, Checkbox } from '@/components/ui';
 import { RiEditLine } from 'react-icons/ri';
 
 interface ChecklistDataRow {
@@ -175,7 +176,7 @@ const AssignChecklistTable: React.FC = () => {
         accessorKey: 'Due_Date',
         cell: ({ getValue }) => {
           const date = getValue<Date>();
-          return <div className="w-32">{date.toLocaleDateString()}</div>;
+          return <div className="w-28">{date.toLocaleDateString()}</div>;
         },
       },
       {

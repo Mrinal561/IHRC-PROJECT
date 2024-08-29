@@ -62,6 +62,12 @@ export const protectedRoutes = [
         component: lazy(() => import('@/views/IHRC/components/AuditChecklist/ComplianceCertificate/ComplianceCertificate')),
         authority: [],
     },
+    {
+        key: 'customChecklist.item8',
+        path: '/assign-custom-form',
+        component: lazy(() => import('@/views/IHRC/components/AuditChecklist/CustomChecklist/components/AssignCustomFormPage')),
+        authority: [],
+    },
     // {
     //     key: 'groupMenu.single',
     //     path: '/group-single-menu-item-view',

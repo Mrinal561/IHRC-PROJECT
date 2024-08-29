@@ -1,10 +1,16 @@
 import React from 'react'
-
+import AdaptableCard from '@/components/shared/AdaptableCard'
+import CustomChecklistTool from './components/CustomChecklistTool'
+import CustomChecklistTable from './components/CustomChecklistTable';
 const CustomChecklist = () => {
   return (
-    <div className="lg:flex items-center justify-between mb-8">
-                <h3 className="mb-4 lg:mb-0">Custom Checklist</h3>
+     <AdaptableCard className="h-full" bodyClass="h-full">
+     <div className="lg:flex items-center justify-between mb-8">
+                <h3 className="x">Custom Checklist</h3>
+                <CustomChecklistTool/>
     </div>
+    <CustomChecklistTable/>
+ </AdaptableCard>
   )
 }
 
