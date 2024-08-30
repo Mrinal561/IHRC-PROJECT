@@ -21,7 +21,7 @@ function App() {
     return (
         <Provider store={store}>
             <PersistGate loading={null} persistor={persistor}>
-                <BrowserRouter>
+                <BrowserRouter basename="ihrc">
                     <Theme>
                         <Layout />
                     </Theme>

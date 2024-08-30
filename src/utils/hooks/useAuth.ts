@@ -50,7 +50,7 @@ function useAuth() {
                     )
                 }
                 const redirectUrl = query.get(REDIRECT_URL_KEY)
-                console.log(redirectUrl, query)
+                console.log('redirect', redirectUrl, query)
                 navigate(
                     redirectUrl
                         ? redirectUrl
