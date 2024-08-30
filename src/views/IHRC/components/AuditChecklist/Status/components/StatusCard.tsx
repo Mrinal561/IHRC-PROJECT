@@ -1,5 +1,5 @@
 import React from 'react';
-import Card from '@/components/ui/card';
+import Card from '../../../../../../components/ui/Card';
 import { NumericFormat } from 'react-number-format';
 import { CiViewList } from "react-icons/ci";
 import { FaHourglassHalf } from "react-icons/fa";
