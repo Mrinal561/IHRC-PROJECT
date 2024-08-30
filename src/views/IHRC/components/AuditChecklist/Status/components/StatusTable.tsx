@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { ColumnDef, OnSortParam } from '@/components/shared/DataTable';
 import DataTable from '@/components/shared/DataTable';
-import { Button, Tooltip, Badge } from '@/components/ui';
+import { Button, Tooltip, Badge, Dialog, toast, Notification } from '@/components/ui';
 import { RiCheckLine, RiCloseLine, RiUploadLine } from 'react-icons/ri';
 import StatusTableFilter from './StatusTableFilter';
 import StatusTableSearch from './StatusTableSearch';
@@ -40,25 +40,78 @@ const statusColor: Record<string, string> = {
   Rejected: 'bg-red-500',
 };
 
-const ViewReuploadButton = ({ compliance }: { compliance: StatusDataRow }) => {
-  const navigate = useNavigate();
+const ReuploadDialog = ({ isOpen, onClose, onConfirm }) => {
+  return (
+    <Dialog
+      isOpen={isOpen}
+      onClose={onClose}
+      width={400}
+    >
+      <h5 className="mb-4">Confirm Reupload</h5>
+      <p>Are you sure you want to reupload the file?</p>
+      <div className="mt-6 text-right">
+        <Button
+          size="sm"
+          className="mr-2"
+          onClick={onClose}
+        >
+          Cancel
+        </Button>
+        <Button
+          variant="solid"
+          size="sm"
+          onClick={onConfirm}
+        >
+          Confirm
+        </Button>
+      </div>
+    </Dialog>
+  );
+};
 
-  const handleReuploadDetails = () => {
-    navigate(`/app/IHRC/compliance-reupload/${compliance.Compliance_Id}`, {
-      state: compliance,
-    });
+const ViewReuploadButton = ({ compliance }: { compliance: StatusDataRow }) => {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const handleReuploadClick = () => {
+    setIsDialogOpen(true);
+  };
+
+  const handleConfirmReupload = () => {
+    setIsDialogOpen(false);
+    // Implement the reupload logic here
+    console.log('Reuploading file for compliance:', compliance.Compliance_Id);
+    
+    // Show toast notification
+    toast.push(
+      <Notification
+        title="Success"
+        type="success"
+      >
+        File reuploaded successfully!
+      </Notification>,
+      {
+        placement: 'top-end',
+      }
+    );
   };
 
   return (
-    <Button
-      size="sm"
-      variant="solid"
-      color="blue"
-      onClick={handleReuploadDetails}
-      icon={<RiUploadLine />}
-    >
-      Reupload
-    </Button>
+    <>
+      <Button
+        size="sm"
+        variant="solid"
+        color="blue"
+        onClick={handleReuploadClick}
+        icon={<RiUploadLine />}
+      >
+        Reupload
+      </Button>
+      <ReuploadDialog
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        onConfirm={handleConfirmReupload}
+      />
+    </>
   );
 };
 
@@ -85,6 +138,18 @@ const StatusTable: React.FC<StatusTableProps> = ({
         : item
     );
     setData(updatedData);
+
+    toast.push(
+      <Notification
+        title="Status Updated"
+        type="success"
+      >
+        Compliance status updated to {newStatus}
+      </Notification>,
+      {
+        placement: 'top-end',
+      }
+    );
   };
 
   const columns: ColumnDef<StatusDataRow>[] = useMemo(

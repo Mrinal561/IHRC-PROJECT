@@ -240,6 +240,7 @@ const RecommendedTableContent = () => {
                     </Tooltip>
                 ),
             },
+            
             {
                 header: 'Header',
                 accessorKey: 'Compliance_Header',

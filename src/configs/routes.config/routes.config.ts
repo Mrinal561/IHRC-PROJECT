@@ -63,7 +63,13 @@ export const protectedRoutes = [
         authority: [],
     },
     {
-        key: 'customChecklist.item8',
+        key: 'history.item8',
+        path: '/history',
+        component: lazy(() => import('@/views/IHRC/components/AuditChecklist/HistoryPage/HistoryPage')),
+        authority: [],
+    },
+    {
+        key: 'customChecklist.customChecklistForm',
         path: '/assign-custom-form',
         component: lazy(() => import('@/views/IHRC/components/AuditChecklist/CustomChecklist/components/AssignCustomFormPage')),
         authority: [],

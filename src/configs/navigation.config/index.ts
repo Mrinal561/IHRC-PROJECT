@@ -95,6 +95,16 @@ const navigationConfig: NavigationTree[] = [
                 authority: [],
                 subMenu: [],
             },
+            {
+                key: 'history.item8',
+                path: '/history',
+                title: 'History',
+                translateKey: 'nav.collapseMenu.item8',
+                icon: '',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [],
+                subMenu: [],
+            },
         ],
     },
     // {

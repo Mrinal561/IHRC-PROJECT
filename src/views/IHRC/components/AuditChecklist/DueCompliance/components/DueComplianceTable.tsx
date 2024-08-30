@@ -185,14 +185,19 @@ const DueComplianceTable: React.FC = () => {
       {
         header: 'Actions',
         id: 'actions',
-        cell: () => (
-          <Button
+        cell: () => {
+          const value= "Upload";
+          return(
+            <Tooltip title={value} placement="top">
+            <Button
             size="sm"
             onClick={openDialog}
-          >
+            >
             <BsCloudUpload />
           </Button>
-        ),
+          </Tooltip>
+          )
+        },
       },
     ],
     []

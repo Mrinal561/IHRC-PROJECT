@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Badge, Button, Dialog, Notification, toast } from '@/components/ui';
+import { Badge, Button, Dialog, Notification, toast, Tooltip } from '@/components/ui';
 import DataTable from '@/components/shared/DataTable';
 import { ColumnDef } from '@/components/shared/DataTable';
 import { RiDownloadLine } from 'react-icons/ri';
@@ -53,14 +53,17 @@ const DownloadCertificateButton = () => {
   const handleCancel = () => {
       setIsDialogOpen(false);
   };
-
+const value="Download";
   return (
       <>
+      <Tooltip title={value} placement="top">
+
           <Button className='border-none h-8'
               onClick={handleAssignClick}
-          >
+              >
             <FaDownload />
           </Button>
+        </Tooltip>
 
           <Dialog
               isOpen={isDialogOpen}
