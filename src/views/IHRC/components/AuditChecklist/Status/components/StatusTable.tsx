@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { ColumnDef, OnSortParam } from '@/components/shared/DataTable';
 import DataTable from '@/components/shared/DataTable';
-import { Button, Tooltip, Badge, Dialog, toast, Notification } from '@/components/ui';
+import { Button, Tooltip, Badge, Dialog, toast, Notification, Input } from '@/components/ui';
 import { RiCheckLine, RiCloseLine, RiUploadLine } from 'react-icons/ri';
 import StatusTableFilter from './StatusTableFilter';
 import StatusTableSearch from './StatusTableSearch';
@@ -33,6 +33,13 @@ const initialData: StatusDataRow[] = [
   { Compliance_Id: 5678, Compliance_Header: 'Renewal of Professional License', Compliance_Status: 'Rejected' },
   { Compliance_Id: 9010, Compliance_Header: 'Renewal of Business Permit', Compliance_Status: 'Rejected' },
 ];
+const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  if (e.target.files && e.target.files.length > 0) {
+    setSelectedFile(e.target.files[0]);
+  }
+};
 
 const statusColor: Record<string, string> = {
   Active: 'bg-emerald-500',
@@ -45,10 +52,17 @@ const ReuploadDialog = ({ isOpen, onClose, onConfirm }) => {
     <Dialog
       isOpen={isOpen}
       onClose={onClose}
-      width={400}
     >
-      <h5 className="mb-4">Confirm Reupload</h5>
-      <p>Are you sure you want to reupload the file?</p>
+       <h5 className="mb-4">Upload Confirmation File</h5>
+        <p className="mb-6">
+          Please upload the file for confirmation.
+        </p>
+        <Input placeholder="" textArea />
+        <Input
+          type="file"
+          onChange={onFileChange}
+          className="mb-4"
+        />
       <div className="mt-6 text-right">
         <Button
           size="sm"
@@ -66,6 +80,8 @@ const ReuploadDialog = ({ isOpen, onClose, onConfirm }) => {
         </Button>
       </div>
     </Dialog>
+
+    
   );
 };
 

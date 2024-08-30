@@ -16,7 +16,7 @@ interface DueComplianceDataRow {
   Owner_Name: string;
   Approver_Name: string;
   Category: string;
-  Status: 'due' | 'upcoming' | 'last day';
+  Status: 'due' | 'upcoming' | 'active';
 }
 
 // Sample data for the table
@@ -49,7 +49,7 @@ const initialData: DueComplianceDataRow[] = [
     Owner_Name: 'Finance',
     Approver_Name: 'Shivesh Verma',
     Category: 'Finance',
-    Status: 'last day'
+    Status: 'active'
   },
   {
     Compliance_Instance_ID: 1004,
@@ -144,6 +144,15 @@ const DueComplianceTable: React.FC = () => {
         },
       },
       {
+        header: 'Due Date',
+        accessorKey: 'Due_Date',
+        cell: (props) => (
+          <div className="w-32">
+            {new Date(props.getValue() as Date).toLocaleDateString()}
+          </div>
+        ),
+      },
+      {
         header: 'Category',
         accessorKey: 'Category',
         cell: ({ getValue }) => {
@@ -154,16 +163,16 @@ const DueComplianceTable: React.FC = () => {
         header: 'Status',
         accessorKey: 'Status',
         cell: ({ getValue }) => {
-          const status = getValue<'due' | 'upcoming' | 'last day'>();
-          let statusColor = 'bg-green-500';
-          let textColor = 'text-green-500';
+          const status = getValue<'due' | 'upcoming' | 'active'>();
+          let statusColor = 'bg-yellow-500';
+          let textColor = 'text-yellow-500';
           if (status === 'due') {
-            statusColor = 'bg-yellow-500';
-            textColor = 'text-yellow-500';
-          }
-          if (status === 'last day') {
             statusColor = 'bg-red-500';
             textColor = 'text-red-500';
+          }
+          if (status === 'active') {
+            statusColor = 'bg-green-500';
+            textColor = 'text-green-500';
           }
           return (
             <div className="flex items-center">
@@ -231,12 +240,13 @@ const DueComplianceTable: React.FC = () => {
         onSelectChange={onSelectChange}
       />
 
-      {/* Render the Dialog component for file upload */}
+     
       <Dialog isOpen={dialogIsOpen} onClose={onDialogClose}>
         <h5 className="mb-4">Upload Confirmation File</h5>
         <p className="mb-6">
           Please upload the file for confirmation.
         </p>
+        <Input placeholder="" textArea />
         <Input
           type="file"
           onChange={onFileChange}
