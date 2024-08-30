@@ -76,7 +76,7 @@ const ReuploadDialog = ({ isOpen, onClose, onConfirm }) => {
         <p className="mb-6">
           Please upload the file for confirmation.
         </p>
-        <Input placeholder="" textArea />
+        <Input placeholder="Remark" textArea />
         <Input
           type="file"
           onChange={onFileChange}

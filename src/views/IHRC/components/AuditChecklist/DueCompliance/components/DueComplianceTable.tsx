@@ -246,7 +246,7 @@ const DueComplianceTable: React.FC = () => {
         <p className="mb-6">
           Please upload the file for confirmation.
         </p>
-        <Input placeholder="" textArea />
+        <Input placeholder="Remarks" textArea />
         <Input
           type="file"
           onChange={onFileChange}
