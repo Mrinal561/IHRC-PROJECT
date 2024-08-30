@@ -1,8 +1,8 @@
 
 import React, { useMemo, useState } from 'react';
-import { ColumnDef } from '@/components/shared/DataTable';
+import { ColumnDef } from '../../../../../../components/shared/DataTable';
 import DataTable from '@/components/shared/DataTable';
-import { Button, Tooltip, Dialog, Input, toast, Notification, Badge } from '@/components/ui';
+import { Button, Tooltip, Dialog, Input, toast, Notification, Badge } from '../../../../../../components/ui';
 import { BsCloudUpload } from "react-icons/bs";
 
 
