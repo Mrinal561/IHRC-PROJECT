@@ -21,7 +21,7 @@ const UploadComplianceButton = () => {
             icon={<HiPlusCircle />}
             onClick={handleUploadClick}
         >
-            Upload Compliance
+            Copy from Previous Month Data
         </Button>
     );
 };

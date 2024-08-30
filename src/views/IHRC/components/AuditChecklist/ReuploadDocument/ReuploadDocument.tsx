@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import ReuploadDocumentCards from './components/ReuploadDocumentCards'
 import { toast } from '@/components/ui'
 import { HiPlusCircle } from 'react-icons/hi'
+import ReuploadDocumentTable from './components/ReuploadDocumentTable'
 
 const ReuploadDocument: React.FC = () => {
   const navigate = useNavigate()
@@ -24,7 +25,7 @@ const ReuploadDocument: React.FC = () => {
   }
 
   return (
-    <div className='flex flex-col gap-10'>
+    <div className='flex flex-col gap-6'>
       <div className='flex items-center justify-between'>
         <div className='flex items-center'>
           <Button
@@ -33,12 +34,12 @@ const ReuploadDocument: React.FC = () => {
             onClick={() => navigate(-1)}
           >
           </Button>
-          <h3 className="mb-4 lg:mb-0">Compliance ReUpload</h3>
+          <h3 className="mb-4 lg:mb-0">Copy from Previous Month Data</h3>
         </div>
-        <Button icon={<HiPlusCircle />} variant="solid" onClick={handleBulkUpload}>Bulk Upload</Button>
+        <Button size='sm' variant="solid" onClick={handleBulkUpload}>Submit</Button>
       </div>
       <div>
-        <ReuploadDocumentCards />
+        <ReuploadDocumentTable />
       </div>
 
       <Dialog
@@ -65,3 +66,5 @@ const ReuploadDocument: React.FC = () => {
 }
 
 export default ReuploadDocument
+
+
