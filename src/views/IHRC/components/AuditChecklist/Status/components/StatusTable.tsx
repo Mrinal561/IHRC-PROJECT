@@ -33,13 +33,6 @@ const initialData: StatusDataRow[] = [
   { Compliance_Id: 5678, Compliance_Header: 'Renewal of Professional License', Compliance_Status: 'Rejected' },
   { Compliance_Id: 9010, Compliance_Header: 'Renewal of Business Permit', Compliance_Status: 'Rejected' },
 ];
-const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
-const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  if (e.target.files && e.target.files.length > 0) {
-    setSelectedFile(e.target.files[0]);
-  }
-};
 
 const statusColor: Record<string, string> = {
   Active: 'bg-emerald-500',
@@ -48,21 +41,21 @@ const statusColor: Record<string, string> = {
 };
 
 const ReuploadDialog = ({ isOpen, onClose, onConfirm }) => {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setSelectedFile(e.target.files[0]);
+    }
+  };
   return (
     <Dialog
       isOpen={isOpen}
       onClose={onClose}
+      width={400}
     >
-       <h5 className="mb-4">Upload Confirmation File</h5>
-        <p className="mb-6">
-          Please upload the file for confirmation.
-        </p>
-        <Input placeholder="" textArea />
-        <Input
-          type="file"
-          onChange={onFileChange}
-          className="mb-4"
-        />
+      {/* <h5 className="mb-4">Confirm Reupload</h5>
+      <p>Are you sure you want to reupload the file?</p>
       <div className="mt-6 text-right">
         <Button
           size="sm"
@@ -78,10 +71,30 @@ const ReuploadDialog = ({ isOpen, onClose, onConfirm }) => {
         >
           Confirm
         </Button>
-      </div>
+      </div> */}
+      <h5 className="mb-4">Upload Confirmation File</h5>
+        <p className="mb-6">
+          Please upload the file for confirmation.
+        </p>
+        <Input placeholder="" textArea />
+        <Input
+          type="file"
+          onChange={onFileChange}
+          className="mb-4"
+        />
+        <div className="text-right mt-6">
+          <Button
+            className="ltr:mr-2 rtl:ml-2"
+            variant="plain"
+            onClick={onClose}
+          >
+            Cancel
+          </Button>
+          <Button variant="solid" onClick={onConfirm}>
+            Submit
+          </Button>
+        </div>
     </Dialog>
-
-    
   );
 };
 
