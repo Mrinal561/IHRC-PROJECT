@@ -183,24 +183,33 @@ const CustomChecklistTable = () => {
             {
                 header: 'Actions',
                 id: 'actions',
-                cell: ({ row }) => (
+                cell: ({ row }) => {
+                    const value1= "Edit"
+                    const value2= "Delete"
+                    return(
+
                     <div className='flex space-x-2'>
+                    <Tooltip title={value1} placement="top">
                     <Button
                         size="sm"
                         variant="plain"
                         onClick={() => handleEditClick(row.original)}
                         icon={<EditIcon />}
                         className='hover:bg-transparent'
-                    />
+                        />
+                    </Tooltip>
+                    <Tooltip title={value2} placement="top">
                     <Button
                         size="sm"
                         variant="plain"
                         onClick={() => handleDeleteClick(row.original)}
                         icon={<FiTrash />}
                         className='hover:bg-transparent text-red-500'
-                    />
+                        />
+                    </Tooltip>
                 </div>
-                ),
+                )
+                },
             },
         ],
         [selectedItems, isAllSelected]

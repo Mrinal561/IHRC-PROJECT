@@ -1,8 +1,8 @@
 import React, { useMemo, useState } from 'react';
 import { ColumnDef, OnSortParam } from '@/components/shared/DataTable';
 import DataTable from '@/components/shared/DataTable';
-import { Button, Calendar, Dialog, Tooltip, Select, Checkbox } from '@/components/ui';
-import { RiEditLine } from 'react-icons/ri';
+import { Button, Calendar, Dialog, Tooltip, Select, Checkbox, Input, toast, Notification } from '@/components/ui';
+import { HiBellAlert } from "react-icons/hi2";
 
 interface ChecklistDataRow {
   Compliance_Instance_ID: number;
@@ -60,8 +60,11 @@ const AssignChecklistTable: React.FC = () => {
   const [data, setData] = useState<ChecklistDataRow[]>(initialData);
   const [activeRowId, setActiveRowId] = useState<number | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isReminderDialogOpen, setIsReminderDialogOpen] = useState(false);
   const [editData, setEditData] = useState<Partial<ChecklistDataRow>>({});
   const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
+  const [reminderDate, setReminderDate] = useState<Date | null>(null);
+  const [reminderEmail, setReminderEmail] = useState('');
 
   const isAllSelected = useMemo(
     () => selectedItems.size === data.length,
@@ -88,6 +91,16 @@ const AssignChecklistTable: React.FC = () => {
     }
   };
 
+  const handleEditClick = (row: ChecklistDataRow) => {
+    setActiveRowId(row.Compliance_Instance_ID);
+    setEditData({
+      Compliance_Instance_ID: row.Compliance_Instance_ID,
+      Owner_Name: row.Owner_Name,
+      Approver_Name: row.Approver_Name
+    });
+    setIsEditDialogOpen(true);
+  };
+
   const handleEditSave = () => {
     if (activeRowId) {
       setData((prevData) =>
@@ -100,6 +113,55 @@ const AssignChecklistTable: React.FC = () => {
       setIsEditDialogOpen(false);
       setActiveRowId(null);
       setEditData({});
+    }
+  };
+
+  const handleBellClick = (row: ChecklistDataRow) => {
+    setActiveRowId(row.Compliance_Instance_ID);
+    setReminderDate(null);
+    setReminderEmail('');
+    setIsReminderDialogOpen(true);
+  };
+
+  const handleReminderSave = () => {
+    if (activeRowId && reminderDate && reminderEmail) {
+      // Here you would typically send this data to your backend
+      console.log(`Reminder set for compliance ID ${activeRowId} on ${reminderDate.toDateString()} to ${reminderEmail}`);
+      
+      // Show the toast notification with the new style
+      toast.push(
+        <Notification
+          title="Success"
+          type="success"
+        >
+          Reminder set successfully
+          <br />
+          Date: {reminderDate.toDateString()}
+          <br />
+          Email: {reminderEmail}
+        </Notification>,
+        {
+          placement: 'top-end',
+        }
+      );
+
+      setIsReminderDialogOpen(false);
+      setActiveRowId(null);
+      setReminderDate(null);
+      setReminderEmail('');
+    } else {
+      // Show an error toast if any required field is missing
+      toast.push(
+        <Notification
+          title="Error"
+          type="danger"
+        >
+          Please fill in all fields
+        </Notification>,
+        {
+          placement: 'top-end',
+        }
+      );
     }
   };
 
@@ -195,16 +257,34 @@ const AssignChecklistTable: React.FC = () => {
       {
         header: 'Actions',
         id: 'actions',
-        cell: ({ row }) => (
-          <Button
-            size="sm"
-            variant="plain"
-            onClick={() => handleEditClick(row.original)}
-            icon={<EditIcon />}
-            className='hover:bg-transparent'
-          />
-        ),
-      },
+        cell: ({ row }) => {
+            const value1= "Edit"
+            const value2= "Reminder"
+            return(
+
+            <div className='flex space-x-2'>
+            <Tooltip title={value1} placement="top">
+            <Button
+                size="sm"
+                variant="plain"
+                onClick={() => handleEditClick(row.original)}
+                icon={<EditIcon />}
+                className='hover:bg-transparent'
+                />
+            </Tooltip>
+            <Tooltip title={value2} placement="top">
+            <Button
+                size="sm"
+                variant="plain"
+                onClick={() => handleBellClick(row.original)}
+                icon={<HiBellAlert />}
+                className='hover:bg-transparent text-red-500'
+                />
+            </Tooltip>
+        </div>
+        )
+        },
+      }
     ],
     [selectedItems, isAllSelected]
   );
@@ -253,53 +333,75 @@ const AssignChecklistTable: React.FC = () => {
         onRequestClose={() => setIsEditDialogOpen(false)}
         className="max-w-md p-6"
       >
-        <h5 className="mb-4 text-lg font-semibold">  Compliance Instance ID: <span className="text-indigo-600">{editData.Compliance_Instance_ID}</span>
+        <h5 className="mb-4 text-lg font-semibold">
+          Compliance Instance ID: <span className="text-indigo-600">{editData.Compliance_Instance_ID}</span>
         </h5>
         <div className="space-y-4">
           <div>
-            <label className="block mb-2">Due Date</label>
-            <Calendar
-  value={editData.Due_Date}
-  onChange={(date) => setEditData({ ...editData, Due_Date: date })}
-/>
+            <label className="block mb-2">Set Owner</label>
+            <Select
+              options={[
+                { value: 'Admin', label: 'Admin' },
+                { value: 'User', label: 'User' },
+                { value: 'HR', label: 'HR' },
+                { value: 'Finance User', label: 'Finance User' },
+                { value: 'Ravi Shankar Singh', label: 'Ravi Shankar Singh' }
+              ]}
+              value={editData.Owner_Name ? { value: editData.Owner_Name, label: editData.Owner_Name } : null}
+              onChange={(selectedOption) => setEditData({ ...editData, Owner_Name: selectedOption ? selectedOption.value : '' })}
+              isClearable
+            />
           </div>
-          <div className='flex flex-col gap-4'>
-            <div>
-
-          <label className="block mb-2">Owner's Name</label>
-          <Select
-            options={[
-              { value: 'Admin', label: 'Admin' },
-              { value: 'User', label: 'User' },
-              { value: 'HR', label: 'HR' },
-              { value: 'Finance User', label: 'Finance User' },
-              { value: 'Ravi Shankar Singh', label: 'Ravi Shankar Singh' }
-            ]}
-            value={editData.Owner_Name ? { value: editData.Owner_Name, label: editData.Owner_Name } : null}
-            onChange={(selectedOption) => setEditData({ ...editData, Owner_Name: selectedOption ? selectedOption.value : '' })}
-            isClearable
+          <div>
+            <label className="block mb-2">Approver Name</label>
+            <Select
+              options={[
+                { value: 'Shivesh Varma', label: 'Shivesh Varma' },
+                { value: 'Amit Sharma', label: 'Amit Sharma' },
+                { value: 'Priya Singh', label: 'Priya Singh' },
+                { value: 'Ravi Kumar', label: 'Ravi Kumar' }
+              ]}
+              value={editData.Approver_Name ? { value: editData.Approver_Name, label: editData.Approver_Name } : null}
+              onChange={(selectedOption) => setEditData({ ...editData, Approver_Name: selectedOption ? selectedOption.value : '' })}
+              isClearable
             />
-            </div>
-            <div>
-
-          <label className="block mb-2">Approver's Name</label>
-          <Select
-            options={[
-              { value: 'Shivesh Varma', label: 'Shivesh Varma' },
-              { value: 'Amit Sharma', label: 'Amit Sharma' },
-              { value: 'Priya Singh', label: 'Priya Singh' },
-              { value: 'Ravi Kumar', label: 'Ravi Kumar' }
-            ]}
-            value={editData.Approver_Name ? { value: editData.Approver_Name, label: editData.Approver_Name } : null}
-            onChange={(selectedOption) => setEditData({ ...editData, Approver_Name: selectedOption ? selectedOption.value : '' })}
-            isClearable
-            />
-            </div>
           </div>
         </div>
         <div className="mt-6 text-right">
           <Button variant="solid" onClick={handleEditSave}>
             Save Changes
+          </Button>
+        </div>
+      </Dialog>
+
+      <Dialog
+        isOpen={isReminderDialogOpen}
+        onClose={() => setIsReminderDialogOpen(false)}
+        onRequestClose={() => setIsReminderDialogOpen(false)}
+        className="max-w-md p-6"
+      >
+        <h5 className="mb-4 text-lg font-semibold">Set Reminder</h5>
+        <div className="space-y-4">
+          <div>
+            <label className="block mb-2">Set Reminder Date</label>
+            <Calendar
+              value={reminderDate}
+              onChange={(date) => setReminderDate(date)}
+            />
+          </div>
+          <div>
+            <label className="block mb-2">Email</label>
+            <Input
+              type="email"
+              value={reminderEmail}
+              onChange={(e) => setReminderEmail(e.target.value)}
+              placeholder="Enter email address"
+            />
+          </div>
+        </div>
+        <div className="mt-6 text-right">
+          <Button variant="solid" onClick={handleReminderSave}>
+            Confirm
           </Button>
         </div>
       </Dialog>
