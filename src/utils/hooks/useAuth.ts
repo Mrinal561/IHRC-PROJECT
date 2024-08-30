@@ -22,7 +22,6 @@ function useAuth() {
     const query = useQuery()
 
     const { token, signedIn } = useAppSelector((state) => state.auth.session)
-
     const signIn = async (
         values: SignInCredential,
     ): Promise<
@@ -33,6 +32,7 @@ function useAuth() {
         | undefined
     > => {
         try {
+            console.log('.....', values)
             const resp = await apiSignIn(values)
             if (resp.data) {
                 const { token } = resp.data
