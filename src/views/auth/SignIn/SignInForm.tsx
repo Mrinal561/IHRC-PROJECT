@@ -10,6 +10,10 @@ import useAuth from '@/utils/hooks/useAuth'
 import { Field, Form, Formik } from 'formik'
 import * as Yup from 'yup'
 import type { CommonProps } from '@/@types/common'
+import { useNavigate } from 'react-router-dom'
+import { REDIRECT_URL_KEY } from '@/constants/app.constant'
+import useQuery from '@/utils/hooks/useQuery'
+import appConfig from '@/configs/app.config'
 
 interface SignInFormProps extends CommonProps {
     disableSubmit?: boolean
@@ -36,6 +40,8 @@ const SignInForm = (props: SignInFormProps) => {
         forgotPasswordUrl = '/forgot-password',
         signUpUrl = '/sign-up',
     } = props
+    const navigate = useNavigate()
+    const query = useQuery()
 
     const [message, setMessage] = useTimeOutMessage()
 
@@ -43,16 +49,18 @@ const SignInForm = (props: SignInFormProps) => {
 
     const onSignIn = async (
         values: SignInFormSchema,
-        setSubmitting: (isSubmitting: boolean) => void
+        setSubmitting: (isSubmitting: boolean) => void,
     ) => {
         const { userName, password } = values
         setSubmitting(true)
+        const redirectUrl = query.get(REDIRECT_URL_KEY)
+        navigate(redirectUrl ? redirectUrl : appConfig.authenticatedEntryPath)
 
-        const result = await signIn({ userName, password })
+        // const result = await signIn({ userName, password })
 
-        if (result?.status === 'failed') {
-            setMessage(result.message)
-        }
+        // if (result?.status === 'failed') {
+        //     setMessage(result.message)
+        // }
 
         setSubmitting(false)
     }
