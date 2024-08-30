@@ -10,7 +10,7 @@ export default function authFakeApi(server: Server, apiPrefix: string) {
             password,
         })
         console.log('user', user)
-        if (user) {
+        if (true) {
             const { avatar, userName, email, authority } = user
             return {
                 user: { avatar, userName, email, authority },
@@ -20,7 +20,7 @@ export default function authFakeApi(server: Server, apiPrefix: string) {
         return new Response(
             401,
             { some: 'header' },
-            { message: 'Invalid email or password!' }
+            { message: 'Invalid email or password!' },
         )
     })
 
@@ -47,7 +47,7 @@ export default function authFakeApi(server: Server, apiPrefix: string) {
             return new Response(
                 400,
                 { some: 'header' },
-                { errors, message: 'User already exist!' }
+                { errors, message: 'User already exist!' },
             )
         }
 
@@ -58,7 +58,7 @@ export default function authFakeApi(server: Server, apiPrefix: string) {
             return new Response(
                 400,
                 { some: 'header' },
-                { errors, message: 'Email already used' }
+                { errors, message: 'Email already used' },
             )
         }
 
