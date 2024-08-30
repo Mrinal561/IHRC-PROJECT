@@ -11,7 +11,6 @@ import { REDIRECT_URL_KEY } from '@/constants/app.constant'
 import { useNavigate } from 'react-router-dom'
 import useQuery from './useQuery'
 import type { SignInCredential, SignUpCredential } from '@/@types/auth'
-import { error } from 'console'
 
 type Status = 'success' | 'failed'
 
@@ -64,7 +63,7 @@ function useAuth() {
             }
             // eslint-disable-next-line  @typescript-eslint/no-explicit-any
         } catch (errors: any) {
-            console.log(error)
+            console.log(errors)
             return {
                 status: 'failed',
                 message: errors?.response?.data?.message || errors.toString(),
