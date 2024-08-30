@@ -12,7 +12,7 @@ interface HistoryComplianceDataRow {
   Compliance_Instance_ID: number;
   Compliance_ID: number;
   Compliance_Header: string;
-  Due_Date: Date;
+  Due_Date: string;
   Owner_Name: string;
   Approver_Name: string;
   Category: string;
@@ -25,7 +25,7 @@ const initialData: HistoryComplianceDataRow[] = [
     Compliance_Instance_ID: 1001,
     Compliance_ID: 3236,
     Compliance_Header: 'Renewal of Registration',
-    Due_Date: new Date('2024-09-15'),
+    Due_Date: '09-10-2024',
     Owner_Name: 'Admin',
     Approver_Name: 'Shivesh Verma',
     Category: 'Legal',
@@ -35,7 +35,7 @@ const initialData: HistoryComplianceDataRow[] = [
     Compliance_Instance_ID: 1002,
     Compliance_ID: 4501,
     Compliance_Header: 'Annual Renewal of License',
-    Due_Date: new Date('2024-10-01'),
+    Due_Date: '01-10-2024',
     Owner_Name: 'HR',
     Approver_Name: 'Shivesh Verma',
     Category: 'HR',
@@ -45,7 +45,7 @@ const initialData: HistoryComplianceDataRow[] = [
     Compliance_Instance_ID: 1003,
     Compliance_ID: 5602,
     Compliance_Header: 'Monthly Compliance Report',
-    Due_Date: new Date('2024-09-05'),
+    Due_Date:'09-05-2024',
     Owner_Name: 'Finance',
     Approver_Name: 'Shivesh Verma',
     Category: 'Finance',
@@ -55,7 +55,7 @@ const initialData: HistoryComplianceDataRow[] = [
     Compliance_Instance_ID: 1004,
     Compliance_ID: 6789,
     Compliance_Header: 'Quarterly Wage Report',
-    Due_Date: new Date('2024-10-15'),
+    Due_Date:'10-05-2024',
     Owner_Name: 'Ravi Shankar Singh',
     Approver_Name: 'Shivesh Verma',
     Category: 'HR',
@@ -65,7 +65,7 @@ const initialData: HistoryComplianceDataRow[] = [
     Compliance_Instance_ID: 1005,
     Compliance_ID: 7890,
     Compliance_Header: 'Renewal of Trade License',
-    Due_Date: new Date('2024-11-01'),
+    Due_Date:'08-01-2024',
     Owner_Name: 'HR',
     Approver_Name: 'Shivesh Verma',
     Category: 'Legal',
@@ -169,6 +169,13 @@ const HistoryPageTable: React.FC = () => {
         accessorKey: 'Category',
         cell: ({ getValue }) => {
           return <div className="w-28">{getValue<string>()}</div>;
+        },
+      },
+      {
+        header: 'Completion Date',
+        accessorKey: 'Due_Date',
+        cell: ({ getValue }) => {
+          return <div className="w-24 flex items-center justify-center">{getValue<string>()}</div>;
         },
       },
       {

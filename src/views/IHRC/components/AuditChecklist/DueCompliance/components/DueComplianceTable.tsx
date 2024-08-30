@@ -240,12 +240,13 @@ const DueComplianceTable: React.FC = () => {
         onSelectChange={onSelectChange}
       />
 
-      {/* Render the Dialog component for file upload */}
+     
       <Dialog isOpen={dialogIsOpen} onClose={onDialogClose}>
         <h5 className="mb-4">Upload Confirmation File</h5>
         <p className="mb-6">
           Please upload the file for confirmation.
         </p>
+        <Input placeholder="" textArea />
         <Input
           type="file"
           onChange={onFileChange}
