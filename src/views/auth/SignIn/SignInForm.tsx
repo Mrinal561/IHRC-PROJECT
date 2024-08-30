@@ -54,7 +54,7 @@ const SignInForm = (props: SignInFormProps) => {
         const { userName, password } = values
         setSubmitting(true)
         const redirectUrl = query.get(REDIRECT_URL_KEY)
-        navigate(redirectUrl ? redirectUrl : appConfig.authenticatedEntryPath)
+        navigate('/home')
 
         // const result = await signIn({ userName, password })
 
