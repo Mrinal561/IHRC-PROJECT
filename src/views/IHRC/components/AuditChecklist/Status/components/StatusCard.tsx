@@ -1,9 +1,11 @@
-import React from 'react'
-import Card from '@/components/ui/card'
-import { NumericFormat } from 'react-number-format'
-import { CiViewList } from 'react-icons/ci'
-import { FaHourglassHalf } from 'react-icons/fa'
-import { FaRegCircleXmark } from 'react-icons/fa6'
+import React from 'react';
+import Card from '../../../../../../components/ui/Card';
+import { NumericFormat } from 'react-number-format';
+import { CiViewList } from "react-icons/ci";
+import { FaHourglassHalf } from "react-icons/fa";
+import { FaRegCircleXmark } from "react-icons/fa6";
+
+
 
 const StatisticCard = ({ icon, avatarClass, label, value, loading }: any) => {
     return (
