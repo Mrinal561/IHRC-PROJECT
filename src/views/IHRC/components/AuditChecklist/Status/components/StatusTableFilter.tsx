@@ -16,7 +16,7 @@ type Option = {
 
 const options: Option[] = [
   { value: 'Pending', label: 'Pending', color: 'bg-yellow-500' },
-  { value: 'Active', label: 'Active', color: 'bg-emerald-500' },
+  { value: 'Complied', label: 'Complied', color: 'bg-emerald-500' },
   { value: 'Rejected', label: 'Rejected', color: 'bg-red-500' },
 ];
 

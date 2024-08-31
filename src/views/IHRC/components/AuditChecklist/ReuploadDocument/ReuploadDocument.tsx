@@ -2,27 +2,34 @@ import React, { useState } from 'react'
 import { Button, Dialog, Notification } from '@/components/ui'
 import { IoArrowBack } from 'react-icons/io5'
 import { useNavigate } from 'react-router-dom'
-import ReuploadDocumentCards from './components/ReuploadDocumentCards'
 import { toast } from '@/components/ui'
-import { HiPlusCircle } from 'react-icons/hi'
 import ReuploadDocumentTable from './components/ReuploadDocumentTable'
+import { HiDownload } from 'react-icons/hi'
 
 const ReuploadDocument: React.FC = () => {
-  const navigate = useNavigate()
-  const [bulkUploadDialog, setBulkUploadDialog] = useState(false)
+  const navigate = useNavigate();
+  const [bulkUploadDialog, setBulkUploadDialog] = useState(false);
 
   const handleBulkUpload = () => {
-    setBulkUploadDialog(true)
-  }
+    setBulkUploadDialog(true);
+  };
 
   const handleConfirmBulkUpload = () => {
-    setBulkUploadDialog(false)
+    setBulkUploadDialog(false);
     toast.push(
       <Notification title="Success" type="success">
-        All documents uploaded successfully
+        All documents submitted successfully
       </Notification>
-    )
-  }
+    );
+  };
+  const handleConfirmBulkDownload = () => {
+    setBulkUploadDialog(false);
+    toast.push(
+      <Notification title="Success" type="success">
+        All Documents downloaded successfully
+      </Notification>
+    );
+  };
 
   return (
     <div className='flex flex-col gap-6'>
@@ -36,7 +43,10 @@ const ReuploadDocument: React.FC = () => {
           </Button>
           <h3 className="mb-4 lg:mb-0">Copy from Previous Month Data</h3>
         </div>
+        <div className='flex gap-2'>
+        <Button size='sm' variant='solid' icon={<HiDownload />} onClick={handleConfirmBulkDownload}>Download</Button>
         <Button size='sm' variant="solid" onClick={handleBulkUpload}>Submit</Button>
+        </div>
       </div>
       <div>
         <ReuploadDocumentTable />
@@ -46,8 +56,8 @@ const ReuploadDocument: React.FC = () => {
         isOpen={bulkUploadDialog}
         onClose={() => setBulkUploadDialog(false)}
       >
-        <h5 className="mb-4">Bulk Upload Documents</h5>
-        <p>Are you sure you want to upload these documents?</p>
+        <h5 className="mb-4">Submit Documents</h5>
+        <p>Are you sure you want to submit these documents?</p>
         <div className="text-right mt-6">
           <Button
             className="mr-2"
@@ -62,9 +72,8 @@ const ReuploadDocument: React.FC = () => {
         </div>
       </Dialog>
     </div>
-  )
-}
+  );
+};
 
-export default ReuploadDocument
-
+export default ReuploadDocument;
 
