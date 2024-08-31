@@ -3,6 +3,7 @@ import { ColumnDef, OnSortParam } from '@/components/shared/DataTable';
 import DataTable from '@/components/shared/DataTable';
 import { Button, Calendar, Dialog, Tooltip, Select, Checkbox, Input, toast, Notification } from '@/components/ui';
 import { HiBellAlert } from "react-icons/hi2";
+import { MdEdit } from 'react-icons/md';
 
 interface ChecklistDataRow {
   Compliance_Instance_ID: number;
@@ -244,14 +245,14 @@ const AssignChecklistTable: React.FC = () => {
         header: "Owner's Name",
         accessorKey: 'Owner_Name',
         cell: ({ getValue }) => {
-          return <div className="w-36">{getValue<string>()}</div>;
+          return <div className="w-24">{getValue<string>()}</div>;
         },
       },
       {
         header: "Approver's Name",
         accessorKey: 'Approver_Name',
         cell: ({ getValue }) => {
-          return <div className="w-36">{getValue<string>()}</div>;
+          return <div className="w-28">{getValue<string>()}</div>;
         },
       },
       {
@@ -266,16 +267,14 @@ const AssignChecklistTable: React.FC = () => {
             <Tooltip title={value1} placement="top">
             <Button
                 size="sm"
-                variant="plain"
                 onClick={() => handleEditClick(row.original)}
-                icon={<EditIcon />}
+                icon={<MdEdit />}
                 className='hover:bg-transparent'
                 />
             </Tooltip>
             <Tooltip title={value2} placement="top">
             <Button
                 size="sm"
-                variant="plain"
                 onClick={() => handleBellClick(row.original)}
                 icon={<HiBellAlert />}
                 className='hover:bg-transparent text-red-500'
@@ -309,6 +308,7 @@ const AssignChecklistTable: React.FC = () => {
     setTableData(prev => ({ ...prev, sort }));
   };
 
+  
   return (
     <div className="relative">
       <DataTable
