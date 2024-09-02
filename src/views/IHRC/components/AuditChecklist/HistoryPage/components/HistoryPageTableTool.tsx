@@ -90,24 +90,28 @@ const HistoryPageTableTool = () => {
         )
     }
 
+    const BulkDownload = () => {
+        toast.push(
+            <Notification
+        title="Downloaded Successfully"
+        type="success"
+      >
+        <p>All Compliances history Downloaded Successfully</p>
+      </Notification>,
+      {
+        placement: 'top-end',
+      }
+        )
+    }
     return (
         <>
         <div className="flex flex-col lg:flex-row lg:items-center gap-1">
-            <HistoryPageTableSearch />
-            <HistoryPageFilter />
-            <Link
-                download
-                className="block lg:inline-block md:mx-2 md:mb-0 mb-4"
-                to="/data/product-list.csv"
-                target="_blank"
-            >
-                <Button block size="sm" icon={<HiDownload />}>
-                    Export
+            <HistoryPageTableSearch onSearch={undefined} onDateRangeChange={undefined} />
+           
+                <Button  size="sm" variant='solid' icon={<HiDownload />} onClick={BulkDownload}>
+                    Download
                 </Button>
-            </Link>
-            <div className="block lg:inline-block md:mb-0 mb-4">
-                <AssignChecklistButton />
-            </div>
+          
         </div>
         </>
     )
