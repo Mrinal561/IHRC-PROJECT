@@ -118,15 +118,15 @@ const BulkUploadButton = () => {
         onClose={handleCancel}
         width={450}
       >
-        <h5 className="mb-4">Download/Upload Pending Compliances</h5>
+        <h5 className="mb-4">Change Compliance Status</h5>
         <div className="my-4 flex gap-2 items-center">
-          <p>Download Pending Compliance List</p>
+          <p>Download Pending Compliance</p>
           <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline ">
             <Button size='xs' icon={<HiDownload />} variant='solid'>Download</Button>
           </a>
         </div>
         <div className='flex flex-col gap-2'>
-        <p>Upload Updated Pending Compliance List</p>
+        <p>Upload Pending Compliance</p>
         <input
           type="file"
           onChange={handleFileChange}

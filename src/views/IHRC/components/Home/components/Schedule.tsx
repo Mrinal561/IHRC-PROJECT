@@ -92,7 +92,7 @@ const Schedule = ({ data = [] }: ScheduleProps) => {
             </div>
             <hr className="my-6" />
             <h6 className="mb-4">Compliance Deadlines for {new Date().toLocaleString('default', { month: 'long', year: 'numeric' })}</h6>
-            <div className='h-72 overflow-y-auto mb-1'>
+            <div className='h-72 overflow-y-auto'>
                 {currentMonthData.length > 0 ? (
                     currentMonthData.map((event, index) => (
                         <div
