@@ -15,7 +15,7 @@ const MonthlyCard = () => {
                 series: [
                     {
                         name: 'Complied',
-                        data: [80, 40, 60, 20, 33, 82, 65],
+                        data: [80, 70, 55, 60, 33, 82, 65],
                     },
                     {
                         name: 'Not Complied',
@@ -25,11 +25,18 @@ const MonthlyCard = () => {
                         name: 'NA',
                         data: [2, 6, 8, 12, 5, 10, 13],
                     },
+                    {
+                        name: 'Complied with delay',
+                        data: [15, 20, 13, 28, 25, 22, 34],
+                    },
                 ],
                 range: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'July'],
             },
         },
     }
+
+    // Define custom colors for the series
+    const customColors = ['#2F855A', '#F56565', '#F6E05E', '#676bc5']; // Customize as needed
 
     return (
         <Card>
@@ -53,9 +60,17 @@ const MonthlyCard = () => {
                                 show: false,
                             },
                         },
-                        colors: [COLORS[2], COLORS[4], COLORS[7]], // Ensure you have three colors for three series
+                        colors: customColors, // Use custom colors here
                         xaxis: {
                             categories: data.chart[timeRange[0]].range,
+                        },
+                        yaxis: {
+                            min: 0, // Set the minimum value for y-axis
+                            max: 100, // Set the maximum value for y-axis to 100
+                            tickAmount: 4, // Number of ticks (0, 50, 100)
+                            labels: {
+                                formatter: (value) => value.toFixed(0), // Optional: format the labels
+                            },
                         },
                         legend: {
                             show: false, // Ensure the legend is visible
@@ -74,21 +89,27 @@ const MonthlyCard = () => {
             </div>
             <div className="flex gap-x-6 justify-center">
                 <div className="flex gap-2 items-center">
-                    <div className="bg-emerald-600 h-2.5 w-2.5 rounded-full" />
+                    <div className="bg-[#2F855A] h-2.5 w-2.5 rounded-full" />
                     <div className="flex items-center">
-                        <p>{data.chart[timeRange[0]].series[0].name}</p>
+                        <p className='font-semibold'>{data.chart[timeRange[0]].series[0].name}</p>
                     </div>
                 </div>
                 <div className="flex gap-2 items-center">
-                    <div className="bg-red-500 h-2.5 w-2.5 rounded-full" />
+                    <div className="bg-[#F56565] h-2.5 w-2.5 rounded-full" />
                     <div>
-                        <p>{data.chart[timeRange[0]].series[1].name}</p>
+                        <p className='font-semibold'>{data.chart[timeRange[0]].series[1].name}</p>
                     </div>
                 </div>
                 <div className="flex gap-2 items-center">
-                    <div className="bg-yellow-500 h-2.5 w-2.5 rounded-full" />
+                    <div className="bg-[#F6E05E] h-2.5 w-2.5 rounded-full" />
                     <div>
-                        <p>{data.chart[timeRange[0]].series[2].name}</p>
+                        <p className='font-semibold'>{data.chart[timeRange[0]].series[2].name}</p>
+                    </div>
+                </div>
+                <div className="flex gap-2 items-center">
+                    <div className="bg-[#676bc5] h-2.5 w-2.5 rounded-full" />
+                    <div>
+                        <p className='font-semibold'>{data.chart[timeRange[0]].series[3].name}</p>
                     </div>
                 </div>
             </div>

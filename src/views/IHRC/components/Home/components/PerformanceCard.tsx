@@ -26,7 +26,7 @@ const PerformanceCard = () => {
                             customOptions={{ labels: data.labels , colors: customColors,}}
                             type="donut"
                         />
-                        <div className="mt-6 w-full flex gap-10 justify-center items-center ">
+                        <div className="mt-6 pb-1 w-full flex gap-10 justify-center items-center ">
                             {data.labels.map((value, index) => (
                                 <div
                                     key={value}

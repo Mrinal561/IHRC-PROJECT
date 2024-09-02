@@ -84,13 +84,13 @@ const BulkSetOwnerApproverButton = () => {
       >
         <h5 className="mb-4">Set Owner/Approver</h5>
         <div className="my-4 flex items-center gap-2">
-        <p>Download Assigned Compliance List</p>
+        <p>Download Assigned Compliance</p>
           <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
             <Button size='xs' icon={<HiDownload />} variant='solid'>Download</Button>
           </a>
         </div>
         <div className='flex flex-col gap-2'>
-        <p>Upload Updated Assigned Compliance List</p>
+        <p>Upload Assigned Compliance</p>
         <input
           type="file"
           onChange={handleFileChange}
