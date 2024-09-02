@@ -1,9 +1,10 @@
+
 import React, { useState } from 'react';
 import { Badge, Button, Dialog, Notification, toast, Tooltip } from '@/components/ui';
 import DataTable from '@/components/shared/DataTable';
 import { ColumnDef } from '@/components/shared/DataTable';
-import { RiDownloadLine } from 'react-icons/ri';
 import { FaDownload } from 'react-icons/fa6';
+import { HiDownload } from 'react-icons/hi';
 
 interface CertificateData {
   complianceId: number;
@@ -11,6 +12,9 @@ interface CertificateData {
   issueDate: string;
   expiryDate: string;
   status: string;
+  Compliance_Instance_ID: number;
+  Legislation: string;
+  Location: string;
 }
 
 const statusColor: Record<string, string> = {
@@ -20,135 +24,176 @@ const statusColor: Record<string, string> = {
 };
 
 const initialData: CertificateData[] = [
-  { complianceId: 3236, complianceHeader: 'Renewal of Registration', issueDate: '2024-01-15', expiryDate: '2025-01-14', status: 'Active' },
-  { complianceId: 4501, complianceHeader: 'Annual Renewal of License', issueDate: '2024-03-01', expiryDate: '2024-03-31', status: 'Active' },
-  { complianceId: 5602, complianceHeader: 'Monthly Compliance Report',  issueDate: '2024-04-01', expiryDate: '2024-06-30', status: 'Active' },
-  { complianceId: 6789, complianceHeader: 'Quarterly Wage Report',   issueDate: '2024-04-01', expiryDate: '2024-06-30', status: 'Active' },
-  { complianceId: 7890, complianceHeader: 'Renewal of Trade License',   issueDate: '2024-04-01', expiryDate: '2024-06-30', status: 'Active' },
+  {
+    complianceId: 3236,
+    complianceHeader: 'Renewal of Registration',
+    issueDate: '2024-01-15',
+    expiryDate: '2025-01-14',
+    status: 'Active',
+    Compliance_Instance_ID: 1003,
+    Legislation: 'Maharashtra Shops and Establishments Act 1948',
+    Location: 'Maharashtra',
+  },
+  {
+    complianceId: 4501,
+    complianceHeader: 'Annual Renewal of License',
+    issueDate: '2024-03-01',
+    expiryDate: '2024-03-31',
+    status: 'Active',
+    Compliance_Instance_ID: 1001,
+    Legislation: 'License Act 1963',
+    Location: 'Delhi',
+  },
+  {
+    complianceId: 5602,
+    complianceHeader: 'Monthly Compliance Report',
+    issueDate: '2024-04-01',
+    expiryDate: '2024-06-30',
+    status: 'Active',
+    Compliance_Instance_ID: 1002,
+    Legislation: 'Monthly Reporting Regulation 2020',
+    Location: 'Mumbai',
+  },
+  {
+    complianceId: 6789,
+    complianceHeader: 'Quarterly Wage Report',
+    issueDate: '2024-04-01',
+    expiryDate: '2024-06-30',
+    status: 'Active',
+    Compliance_Instance_ID: 1003,
+    Legislation: 'Wage Reporting Act 2021',
+    Location: 'Pune',
+  },
+  {
+    complianceId: 7890,
+    complianceHeader: 'Renewal of Trade License',
+    issueDate: '2024-04-01',
+    expiryDate: '2024-06-30',
+    status: 'Active',
+    Compliance_Instance_ID: 1004,
+    Legislation: 'Trade License Renewal Act 2018',
+    Location: 'Bengaluru',
+  },
+  
 ];
 
 const DownloadCertificateButton = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  
 
   const handleAssignClick = () => {
-      setIsDialogOpen(true);
+    setIsDialogOpen(true);
   };
 
   const handleConfirm = () => {
-      setIsDialogOpen(false);
-      toast.push(
-        <Notification
-          title="Success"
-          type="success"
-        >
-          Certificate downloaded successfully!
-        </Notification>,
-        {
-          placement: 'top-end',
-        }
-      );
-    };
+    setIsDialogOpen(false);
+    toast.push(
+      <Notification title="Success" type="success">
+        Certificate downloaded successfully!
+      </Notification>,
+      {
+        placement: 'top-end',
+      }
+    );
+  };
 
   const handleCancel = () => {
-      setIsDialogOpen(false);
+    setIsDialogOpen(false);
   };
-const value="Download";
+
   return (
-      <>
-      <Tooltip title={value} placement="top">
-
-          <Button className='border-none h-8'
-              onClick={handleAssignClick}
-              >
-            <FaDownload />
+    <>
+      <Tooltip title="Download" placement="top">
+        <Button size='sm' icon={<HiDownload />} onClick={handleAssignClick}>
+        </Button>
+      </Tooltip>
+      <Dialog isOpen={isDialogOpen} onClose={handleCancel} width={400}>
+        <h5 className="mb-4">Confirm Download</h5>
+        <p>Are you sure you want to download certificate?</p>
+        <div className="mt-6 text-right">
+          <Button size="sm" className="mr-2" onClick={handleCancel}>
+            Cancel
           </Button>
-        </Tooltip>
-
-          <Dialog
-              isOpen={isDialogOpen}
-              onClose={handleCancel}
-              width={400}
-          >
-              <h5 className="mb-4">Confirm Download</h5>
-              <p>Are you sure you want to download certificate?</p>
-              <div className="mt-6 text-right">
-                  <Button
-                      size="sm"
-                      className="mr-2"
-                      onClick={handleCancel}
-                  >
-                      Cancel
-                  </Button>
-                  <Button
-                      variant="solid"
-                      size="sm"
-                      onClick={handleConfirm}
-                  >
-                      Confirm
-                  </Button>
-              </div>
-          </Dialog>
-      </>
+          <Button variant="solid" size="sm" onClick={handleConfirm}>
+            Confirm
+          </Button>
+        </div>
+      </Dialog>
+    </>
   );
 };
+
 const ComplianceCertificateDetails = () => {
   const [data] = useState(initialData);
 
   const handleDownload = (id: number) => {
-    // Implement the download logic here
     console.log(`Downloading certificate for compliance ID: ${id}`);
-    // You would typically make an API call here to fetch the certificate
-    // and then use the browser's download capabilities to save the file
   };
 
   const columns: ColumnDef<CertificateData>[] = [
+    {
+      header: 'Compliance Instance ID',
+      accessorKey: 'Compliance_Instance_ID',
+      cell: (props) => {
+        const value = props.getValue() as string;
+        return (
+            <div className="w-16">
+              {value}
+            </div>
+        );
+      },
+    },
     {
       header: 'Compliance ID',
       accessorKey: 'complianceId',
     },
     {
-      header: 'Compliance Header',
-      accessorKey: 'complianceHeader',
-    },
-    {
-      header: 'Issue Date',
-      accessorKey: 'issueDate',
-    },
-    {
-      header: 'Expiry Date',
-      accessorKey: 'expiryDate',
-    },
-    {
-      header: 'Status',
-      accessorKey: 'status',
-      cell: ({ getValue }) => {
-        const status = getValue<string>();
+      header: 'Legislation',
+      accessorKey: 'Legislation',
+      cell: (props) => {
+        const value = props.getValue() as string;
         return (
-          <div className="flex items-center">
-            <Badge className={statusColor[status]} />
-            <span className="ml-2 rtl:mr-2 capitalize">{status}</span>
-          </div>
+          <Tooltip title={value} placement="top">
+            <div className="w-32 truncate">
+              {value}
+            </div>
+          </Tooltip>
         );
       },
     },
     {
+      header: 'Location',
+      accessorKey: 'Location',
+      cell: (props) => {
+        const value = props.getValue() as string;
+        return (
+          <Tooltip title={value} placement="top">
+            <div className="w-32 truncate">
+              {value}
+            </div>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      header: 'Compliance Header',
+      accessorKey: 'complianceHeader',
+    },
+    
+    {
       header: 'Action',
       id: 'action',
-      cell: ({ row }) => (
-        <DownloadCertificateButton />
-      ),
+      cell: ({ row }) => <DownloadCertificateButton />,
     },
   ];
 
   return (
-      <DataTable
-        columns={columns}
-        data={data}
-        skeletonAvatarColumns={[0]}
-        skeletonAvatarProps={{ className: 'rounded-md' }}
-        loading={false}
-      />
+    <DataTable
+      columns={columns}
+      data={data}
+      skeletonAvatarColumns={[0]}
+      skeletonAvatarProps={{ className: 'rounded-md' }}
+      loading={false}
+    />
   );
 };
 
