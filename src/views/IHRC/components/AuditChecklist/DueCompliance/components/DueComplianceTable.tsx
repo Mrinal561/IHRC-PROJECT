@@ -269,7 +269,7 @@ const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadS
         isOpen={dialogIsOpen}
         onClose={onDialogClose}
       >
-        <h5 className="mb-4">Upload Confirmation</h5>
+        <h5 className="mb-4">Change Compliance Status</h5>
         
         <Input 
           placeholder="Please Enter the Remarks" 
@@ -281,7 +281,7 @@ const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadS
 
         {selectedCompliance && (
           <p className="mb-4 text-red-500">
-            Proof is {selectedCompliance.Proof_Of_Compliance_Mandatory === 'Yes' ? 'mandatory' : 'not mandatory'}
+            {selectedCompliance.Proof_Of_Compliance_Mandatory === 'Yes' ? '*Proof is mandatory' : ''}
           </p>
         )}
 
