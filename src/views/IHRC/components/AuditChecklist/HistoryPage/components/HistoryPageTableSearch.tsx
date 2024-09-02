@@ -66,6 +66,20 @@ const HistoryPageTableSearch = ({ onSearch, onDateRangeChange }) => {
         value={searchTerm}
         onChange={handleSearch}
       />
+      <div className='border rounded-md'>
+
+      <Dropdown title="Select Date Range">
+        {dateRangeOptions.map((item) => (
+          <Dropdown.Item
+          onSelect={onDropdownItemClick}
+          eventKey={item.key}
+          key={item.key}
+          >
+            {item.name}
+          </Dropdown.Item>
+        ))}
+      </Dropdown>
+      </div>
       <DatePicker
         selectsRange={true}
         startDate={startDate}
@@ -74,17 +88,7 @@ const HistoryPageTableSearch = ({ onSearch, onDateRangeChange }) => {
         className="border p-2 rounded"
         placeholderText="Select date range"
       />
-      <Dropdown title="Select Date Range">
-        {dateRangeOptions.map((item) => (
-          <Dropdown.Item
-            onSelect={onDropdownItemClick}
-            eventKey={item.key}
-            key={item.key}
-          >
-            {item.name}
-          </Dropdown.Item>
-        ))}
-      </Dropdown>
+      
     </div>
   )
 }

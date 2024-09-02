@@ -116,19 +116,23 @@ const BulkUploadButton = () => {
       <Dialog
         isOpen={isDialogOpen}
         onClose={handleCancel}
-        width={400}
+        width={450}
       >
-        <h5 className="mb-4">Download Pending Compliances</h5>
-        <div className="my-4">
-          <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
-            <Button size='sm'>Download</Button>
+        <h5 className="mb-4">Download/Upload Pending Compliances</h5>
+        <div className="my-4 flex gap-2 items-center">
+          <p>Download Pending Compliance List</p>
+          <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline ">
+            <Button size='xs' icon={<HiDownload />} variant='solid'>Download</Button>
           </a>
         </div>
+        <div className='flex flex-col gap-2'>
+        <p>Upload Updated Pending Compliance List</p>
         <input
           type="file"
           onChange={handleFileChange}
           className="mb-4"
-        />
+          />
+        </div>
         <textarea
           className="w-full p-2 border rounded mb-2"
           rows={3}

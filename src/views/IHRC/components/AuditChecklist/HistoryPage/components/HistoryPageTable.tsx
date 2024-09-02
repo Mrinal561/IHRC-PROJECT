@@ -4,6 +4,7 @@ import { ColumnDef } from '@/components/shared/DataTable';
 import DataTable from '@/components/shared/DataTable';
 import { Button, Tooltip, Dialog, Input, toast, Notification, Badge } from '@/components/ui';
 import { FaDownload } from 'react-icons/fa6';
+import { HiDownload } from 'react-icons/hi';
 
 
 
@@ -17,6 +18,8 @@ interface HistoryComplianceDataRow {
   Approver_Name: string;
   Category: string;
   Status: 'Completed';
+  Legislation:string;
+  Location:string;
 }
 
 // Sample data for the table
@@ -28,6 +31,8 @@ const initialData: HistoryComplianceDataRow[] = [
     Due_Date: '09-10-2024',
     Owner_Name: 'Admin',
     Approver_Name: 'Shivesh Verma',
+    Legislation: "Maharashtra Shops and Establishments Act 1948",
+    Location: "Maharashtra",
     Category: 'Legal',
     Status: 'Completed'
   },
@@ -39,37 +44,45 @@ const initialData: HistoryComplianceDataRow[] = [
     Owner_Name: 'HR',
     Approver_Name: 'Shivesh Verma',
     Category: 'HR',
-    Status: 'Completed'
+    Status: 'Completed',
+    Legislation: 'Maharashtra Shops and Establishments Act 1948',
+    Location: 'Maharashtra'
   },
   {
     Compliance_Instance_ID: 1003,
     Compliance_ID: 5602,
     Compliance_Header: 'Monthly Compliance Report',
-    Due_Date:'09-05-2024',
+    Due_Date: '09-05-2024',
     Owner_Name: 'Finance',
     Approver_Name: 'Shivesh Verma',
     Category: 'Finance',
-    Status: 'Completed'
+    Status: 'Completed',
+    Legislation: 'Maharashtra Shops and Establishments Act 1948',
+    Location: 'Maharashtra'
   },
   {
     Compliance_Instance_ID: 1004,
     Compliance_ID: 6789,
     Compliance_Header: 'Quarterly Wage Report',
-    Due_Date:'10-05-2024',
+    Due_Date: '10-05-2024',
     Owner_Name: 'Ravi Shankar Singh',
     Approver_Name: 'Shivesh Verma',
     Category: 'HR',
-    Status: 'Completed'
+    Status: 'Completed',
+    Legislation: 'Maharashtra Shops and Establishments Act 1948',
+    Location: 'Maharashtra'
   },
   {
     Compliance_Instance_ID: 1005,
     Compliance_ID: 7890,
     Compliance_Header: 'Renewal of Trade License',
-    Due_Date:'08-01-2024',
+    Due_Date: '08-01-2024',
     Owner_Name: 'HR',
     Approver_Name: 'Shivesh Verma',
     Category: 'Legal',
-    Status: 'Completed'
+    Status: 'Completed',
+    Legislation: 'Maharashtra Shops and Establishments Act 1948',
+    Location: 'Maharashtra'
   }
 ];
 
@@ -103,13 +116,11 @@ const DownloadHistoryButton = () => {
   
     return (
         <>
-        <Tooltip title={value} placement="top">
-           <Button className='border-none h-8'
-              onClick={handleAssignClick}
-              >
-            <FaDownload />
-            </Button>
-            </Tooltip>
+         <Tooltip title="Download" placement="top">
+                <Button size="sm" onClick={handleAssignClick}>
+                  <HiDownload />
+                </Button>
+              </Tooltip>
   
             <Dialog
                 isOpen={isDialogOpen}
@@ -149,7 +160,33 @@ const HistoryPageTable: React.FC = () => {
         header: 'Compliance ID',
         accessorKey: 'Compliance_ID',
         cell: (props) => (
-          <div className="w-32 text-start">{props.getValue()}</div>
+          <div className="w-24 text-start">{props.getValue()}</div>
+        ),
+      },
+      {
+        header: 'Instance ID',
+        accessorKey: 'Compliance_Instance_ID',
+        cell: (props) => (
+          <div className="w-16 text-start">{props.getValue()}</div>
+        ),
+      },
+      {
+        header: 'Legislation',
+        accessorKey: 'Legislation',
+        cell: (props) => {
+          const value = props.getValue() as string;
+          return (
+            <Tooltip title={value} placement="top">
+              <div className="w-28 truncate">{value}</div>
+            </Tooltip>
+          );
+        },
+      },
+      {
+        header: 'Location',
+        accessorKey: 'Location',
+        cell: (props) => (
+          <div className="w-24 text-start">{props.getValue()}</div>
         ),
       },
       {
@@ -159,23 +196,16 @@ const HistoryPageTable: React.FC = () => {
           const value = props.getValue() as string;
           return (
             <Tooltip title={value} placement="top">
-              <div className="w-48 truncate">{value}</div>
+              <div className="w-40 truncate">{value}</div>
             </Tooltip>
           );
-        },
-      },
-      {
-        header: 'Category',
-        accessorKey: 'Category',
-        cell: ({ getValue }) => {
-          return <div className="w-28">{getValue<string>()}</div>;
         },
       },
       {
         header: 'Completion Date',
         accessorKey: 'Due_Date',
         cell: ({ getValue }) => {
-          return <div className="w-24 flex items-center justify-center">{getValue<string>()}</div>;
+          return <div className="w-26 flex items-center justify-center">{getValue<string>()}</div>;
         },
       },
       {
@@ -186,7 +216,7 @@ const HistoryPageTable: React.FC = () => {
           let statusColor = 'bg-green-500';
           let textColor = 'text-green-500';
           return (
-            <div className="flex items-center">
+            <div className="w-16 flex items-center">
               <Badge className={`mr-2 ${statusColor}`} />
               <div className={`font-semibold ${textColor}`}>{status}</div>
             </div>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Dialog, Tooltip, toast, Notification } from '@/components/ui';
-import { HiPlusCircle } from 'react-icons/hi';
+import { HiDownload, HiPlusCircle } from 'react-icons/hi';
 import { FaDownload } from 'react-icons/fa';
 import AssignChecklistTableFilter from './AssignChecklistTableFilter';
 import AssignChecklistTableSearch from './AssignChecklistTableSearch';
@@ -80,19 +80,23 @@ const BulkSetOwnerApproverButton = () => {
       <Dialog
         isOpen={isDialogOpen}
         onClose={handleCancel}
-        width={400}
+        width={450}
       >
         <h5 className="mb-4">Set Owner/Approver</h5>
-        <div className="my-4">
+        <div className="my-4 flex items-center gap-2">
+        <p>Download Assigned Compliance List</p>
           <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
-            <Button size='sm'>Download</Button>
+            <Button size='xs' icon={<HiDownload />} variant='solid'>Download</Button>
           </a>
         </div>
+        <div className='flex flex-col gap-2'>
+        <p>Upload Updated Assigned Compliance List</p>
         <input
           type="file"
           onChange={handleFileChange}
           className="mb-4"
-        />
+          />
+        </div>
         <textarea
           className="w-full p-2 border rounded mb-2"
           rows={3}

@@ -1,20 +1,37 @@
 
+
 import React, { useEffect, useMemo, useState } from 'react';
 import { ColumnDef, OnSortParam } from '@/components/shared/DataTable';
 import DataTable from '@/components/shared/DataTable';
-import { Button, Tooltip, Badge, Dialog, toast, Notification, Checkbox, Input, DatePicker } from '@/components/ui';
+import { Button, Tooltip, Badge, Dialog, toast, Notification, Checkbox, Input } from '@/components/ui';
 import { RiCheckLine, RiCloseLine, RiUploadLine, RiDownloadLine, RiEyeLine } from 'react-icons/ri';
 import StatusTableFilter from './StatusTableFilter';
 import StatusTableSearch from './StatusTableSearch';
 import { useNavigate } from 'react-router-dom';
-
-interface StatusDataRow {
+import DatePicker from 'react-datepicker';
+import { startOfMonth, endOfMonth, subMonths, subYears } from 'date-fns';
+import "react-datepicker/dist/react-datepicker.css";
+import { HiDownload } from 'react-icons/hi';
+export interface StatusDataRow {
   Compliance_Id: number;
   Compliance_Header: string;
   Compliance_Status: string;
-  Bare_Act_Text: string;
+  Location: string;
   Compliance_Instance_ID: number;
   Legislation: string;
+  Compliance_Categorization: string;
+  Compliance_Description: string;
+  Compliance_Applicability: string;
+  Compliance_Clause: string;
+  Compliance_Type: string;
+  Compliance_Frequency: string;
+  Criticality: string;
+  Owner:string;
+  Approver:string;
+  Uploaded_Date:string;
+  Proof:string;
+  Remark:string;
+  Compliance_Month_Date:string;
 }
 
 interface StatusTableProps {
@@ -25,103 +42,329 @@ interface StatusTableProps {
 }
 
 const initialData: StatusDataRow[] = [
-  { 
-      Compliance_Id: 3237, 
-      Compliance_Header: "Annual License Renewal", 
-      Compliance_Status: "Complied",
-      Bare_Act_Text: "Apply for the renewal of the annual license before the expiry date, along with the prescribed fee of fifty rupees.",
-      Compliance_Instance_ID: 1002,
-      Legislation: "Maharashtra Shops and Establishments Act 1948",
+  {
+    Compliance_Id: 3237,
+    Compliance_Header: "Annual License Renewal",
+    Compliance_Status: "Pending",
+    Location: "HMVL - Office - Aurangabad - Priyavrat Path - HR/ Aurangabad/ Bihar/ Office",    Compliance_Instance_ID: 1002,
+    Legislation: "Maharashtra Shops and Establishments Act 1948",
+    Compliance_Categorization: "Licensing",
+    Compliance_Description: "This compliance involves renewing the annual license required for operating a shop or establishment under the Maharashtra Shops and Establishments Act.",
+    Compliance_Applicability: "All registered shops and establishments operating in Maharashtra.",
+    Compliance_Clause: "Section 15 of the Maharashtra Shops and Establishments Act, 1948",
+    Compliance_Type: "Renewal",
+    Compliance_Frequency: "Annual",
+    Criticality: "High",
+    Owner: "Amit Kumar",
+    Approver: "Sonia Mehta",
+    Uploaded_Date: "2024-08-01",
+    Proof: "Renewal receipt number 456789",
+    Remark: "Renewal completed on time without any issues.",
+    Compliance_Month_Date: "2024-08-30"
   },
-  { 
-      Compliance_Id: 3238, 
-      Compliance_Header: "Health and Safety Inspection", 
-      Compliance_Status: "Pending",
-      Bare_Act_Text: "Schedule an inspection with the local health authority within thirty days to ensure compliance with safety standards.",
-      Compliance_Instance_ID: 1003,
-      Legislation: "Tamil Nadu Factories Act 1948",
+  {
+    Compliance_Id: 3238,
+    Compliance_Header: "Health and Safety Inspection",
+    Compliance_Status: "Pending",
+    Location: "HMVL - Office - Muzaffarpur - sadtpur - HR/ Muzaffarpur/ Bihar/ Office",
+    Compliance_Instance_ID: 1003,
+    Legislation: "Tamil Nadu Factories Act 1948",
+    Compliance_Categorization: "Inspection",
+    Compliance_Description: "Arrange for a health and safety inspection to be conducted within the stipulated time frame.",
+    Compliance_Applicability: "Factories and industrial units in Tamil Nadu.",
+    Compliance_Clause: "Section 25 of the Tamil Nadu Factories Act, 1948",
+    Compliance_Type: "Inspection",
+    Compliance_Frequency: "Annual",
+    Criticality: "Medium",
+    Owner: "Amit Kumar",
+    Approver: "Nisha Sharma",
+    Uploaded_Date: "2024-07-15",
+    Proof: "Inspection appointment letter",
+    Remark: "Inspection schedule is pending.",
+    Compliance_Month_Date: "2024-07-30"
   },
-  { 
-      Compliance_Id: 3239, 
-      Compliance_Header: "Employee Welfare Fund Contribution", 
-      Compliance_Status: "In Progress",
-      Bare_Act_Text: "Deposit the employee welfare fund contribution of two percent of monthly wages to the designated fund within seven days of the end of the month.",
-      Compliance_Instance_ID: 1004,
-      Legislation: "Karnataka Shops and Establishments Act 1961",
+  {
+    Compliance_Id: 3239,
+    Compliance_Header: "Employee Welfare Fund Contribution",
+    Compliance_Status: "Pending",
+    Location: "HMVL - Office - Arrah - Ramana Pakri Road - HR/ Arrah/ Bihar/ Office",
+    Compliance_Instance_ID: 1004,
+    Legislation: "Karnataka Shops and Establishments Act 1961",
+    Compliance_Categorization: "Fund Contribution",
+    Compliance_Description: "Monthly contribution to the employee welfare fund.",
+    Compliance_Applicability: "Shops and establishments in Karnataka.",
+    Compliance_Clause: "Section 12 of the Karnataka Shops and Establishments Act, 1961",
+    Compliance_Type: "Contribution",
+    Compliance_Frequency: "Monthly",
+    Criticality: "High",
+    Owner: "Ravi Patel",
+    Approver: "Sonia Mehta",
+    Uploaded_Date: "2024-08-05",
+    Proof: "Bank deposit slip",
+    Remark: "Contribution for the current month is in progress.",
+    Compliance_Month_Date: "2024-08-07"
   },
-  { 
-      Compliance_Id: 3240, 
-      Compliance_Header: "Payment of Professional Tax", 
-      Compliance_Status: "Complied",
-      Bare_Act_Text: "Ensure payment of professional tax of one hundred rupees per employee by the 15th of each month.",
-      Compliance_Instance_ID: 1005,
-      Legislation: "West Bengal Professional Tax Act 1976",
+  {
+    Compliance_Id: 3240,
+    Compliance_Header: "Payment of Professional Tax",
+    Compliance_Status: "Pending",
+    Location: "HMVL - Office - Begusarai - Kachhari Road - HR/ Begusarai/ Bihar/ Office",
+    Compliance_Instance_ID: 1005,
+    Legislation: "West Bengal Professional Tax Act 1976",
+    Compliance_Categorization: "Tax Payment",
+    Compliance_Description: "Monthly payment of professional tax for employees.",
+    Compliance_Applicability: "Employers in West Bengal.",
+    Compliance_Clause: "Section 5 of the West Bengal Professional Tax Act, 1976",
+    Compliance_Type: "Tax Payment",
+    Compliance_Frequency: "Monthly",
+    Criticality: "Medium",
+    Owner: "Anita Roy",
+    Approver: "Rajesh Kumar",
+    Uploaded_Date: "2024-08-10",
+    Proof: "Tax payment receipt",
+    Remark: "Payment for the current month has been completed.",
+    Compliance_Month_Date: "2024-08-15"
   },
-  { 
-      Compliance_Id: 3241, 
-      Compliance_Header: "Annual Return Filing", 
-      Compliance_Status: "Pending",
-      Bare_Act_Text: "File the annual return of business operations with the local municipal authority within sixty days of the end of the financial year.",
-      Compliance_Instance_ID: 1006,
-      Legislation: "Delhi Shops and Establishments Act 1954",
+  {
+    Compliance_Id: 3241,
+    Compliance_Header: "Annual Return Filing",
+    Compliance_Status: "Approved",
+    Location: "HMVL - Office - Samastipur - ShivSagar Plazza -HR / Samastipur/ Bihar/ Office",
+    Compliance_Instance_ID: 1006,
+    Legislation: "Delhi Shops and Establishments Act 1954",
+    Compliance_Categorization: "Annual Filing",
+    Compliance_Description: "Submission of annual business return.",
+    Compliance_Applicability: "Shops and establishments in Delhi.",
+    Compliance_Clause: "Section 24 of the Delhi Shops and Establishments Act, 1954",
+    Compliance_Type: "Filing",
+    Compliance_Frequency: "Annual",
+    Criticality: "High",
+    Owner: "Deepak Singh",
+    Approver: "Rita Sharma",
+    Uploaded_Date: "2024-08-12",
+    Proof: "Submission acknowledgment",
+    Remark: "Filing is pending and due soon.",
+    Compliance_Month_Date: "2024-09-30"
   },
-  { 
-      Compliance_Id: 3242, 
-      Compliance_Header: "Labour Welfare Contributions", 
-      Compliance_Status: "In Progress",
-      Bare_Act_Text: "Contribute to the labour welfare fund at a rate of 1.5% of the total wages paid to employees by the end of each quarter.",
-      Compliance_Instance_ID: 1007,
-      Legislation: "Gujarat Labour Welfare Fund Act 1961",
+  {
+    Compliance_Id: 3242,
+    Compliance_Header: "Labour Welfare Contributions",
+    Compliance_Status: "Approved",
+    Location: "HMVL - Office - Darbhanga - Laximnagar - HR/ Darbhanga/ Bihar/ Office",
+    Compliance_Instance_ID: 1007,
+    Legislation: "Gujarat Labour Welfare Fund Act 1961",
+    Compliance_Categorization: "Fund Contribution",
+    Compliance_Description: "Quarterly contribution to the labour welfare fund.",
+    Compliance_Applicability: "Establishments in Gujarat.",
+    Compliance_Clause: "Section 8 of the Gujarat Labour Welfare Fund Act, 1961",
+    Compliance_Type: "Contribution",
+    Compliance_Frequency: "Quarterly",
+    Criticality: "Medium",
+    Owner: "Pooja Patel",
+    Approver: "Amit Desai",
+    Uploaded_Date: "2024-08-20",
+    Proof: "Contribution statement",
+    Remark: "Contribution for the current quarter is in progress.",
+    Compliance_Month_Date: "2024-09-30"
   },
-  { 
-      Compliance_Id: 3243, 
-      Compliance_Header: "Occupational Health Report", 
-      Compliance_Status: "Rejected",
-      Bare_Act_Text: "Submit an occupational health report to the health department every six months detailing employee health and safety measures.",
-      Compliance_Instance_ID: 1008,
-      Legislation: "Uttar Pradesh Factories Act 1948",
+  {
+    Compliance_Id: 3243,
+    Compliance_Header: "Occupational Health Report",
+    Compliance_Status: "Rejected",
+    Location: "HMVL - Office - Bhagalpur - Barari Road - HR/ Bhagalpur/ Bihar/ Office",
+    Compliance_Instance_ID: 1008,
+    Legislation: "Uttar Pradesh Factories Act 1948",
+    Compliance_Categorization: "Health Report",
+    Compliance_Description: "Bi-annual submission of occupational health report.",
+    Compliance_Applicability: "Factories in Uttar Pradesh.",
+    Compliance_Clause: "Section 22 of the Uttar Pradesh Factories Act, 1948",
+    Compliance_Type: "Report",
+    Compliance_Frequency: "Bi-annual",
+    Criticality: "High",
+    Owner: "Suresh Yadav",
+    Approver: "Meena Gupta",
+    Uploaded_Date: "2024-08-25",
+    Proof: "Report submission receipt",
+    Remark: "Report submission was rejected; needs resubmission.",
+    Compliance_Month_Date: "2024-09-30"
   },
-  { 
-      Compliance_Id: 3244, 
-      Compliance_Header: "Wage Payment Records", 
-      Compliance_Status: "Complied",
-      Bare_Act_Text: "Maintain detailed records of wage payments and make them available for inspection upon request by labor inspectors.",
-      Compliance_Instance_ID: 1009,
-      Legislation: "Andhra Pradesh Shops and Establishments Act 1988",
+  {
+    Compliance_Id: 3244,
+    Compliance_Header: "Wage Payment Records",
+    Compliance_Status: "Approved",
+    Location: "HMVL - Office - Patna - Boring Road - HR/ Patna/ Bihar/ Office",
+    Compliance_Instance_ID: 1009,
+    Legislation: "Andhra Pradesh Shops and Establishments Act 1988",
+    Compliance_Categorization: "Record Keeping",
+    Compliance_Description: "Maintenance and availability of wage payment records.",
+    Compliance_Applicability: "Shops and establishments in Andhra Pradesh.",
+    Compliance_Clause: "Section 15 of the Andhra Pradesh Shops and Establishments Act, 1988",
+    Compliance_Type: "Record Keeping",
+    Compliance_Frequency: "Ongoing",
+    Criticality: "Medium",
+    Owner: "Vijay Rao",
+    Approver: "Lakshmi Reddy",
+    Uploaded_Date: "2024-08-30",
+    Proof: "Inspection report",
+    Remark: "Records are up-to-date and available for inspection.",
+    Compliance_Month_Date: "2024-08-31"
   },
-  { 
-      Compliance_Id: 3245, 
-      Compliance_Header: "Registration of New Establishment", 
-      Compliance_Status: "In Progress",
-      Bare_Act_Text: "Register a new establishment with the local labor department within thirty days of starting operations, including payment of a registration fee.",
-      Compliance_Instance_ID: 1010,
-      Legislation: "Kerala Shops and Establishments Act 1960",
+  {
+    Compliance_Id: 3245,
+    Compliance_Header: "Registration of New Establishment",
+    Compliance_Status: "Approved",
+    Location: "HMVL - Office - Gaya - Raj Nagar - HR/ Gaya/ Bihar/ Office",
+    Compliance_Instance_ID: 1010,
+    Legislation: "Kerala Shops and Establishments Act 1960",
+    Compliance_Categorization: "Registration",
+    Compliance_Description: "Registration of a new business establishment.",
+    Compliance_Applicability: "New establishments in Kerala.",
+    Compliance_Clause: "Section 5 of the Kerala Shops and Establishments Act, 1960",
+    Compliance_Type: "Registration",
+    Compliance_Frequency: "One-time",
+    Criticality: "High",
+    Owner: "Ranjith Nair",
+    Approver: "Sreeja Menon",
+    Uploaded_Date: "2024-08-12",
+    Proof: "Registration application receipt",
+    Remark: "Registration process is ongoing.",
+    Compliance_Month_Date: "2024-08-15"
   },
-  { 
-      Compliance_Id: 3246, 
-      Compliance_Header: "Quarterly Tax Returns", 
-      Compliance_Status: "Pending",
-      Bare_Act_Text: "File quarterly tax returns detailing business income and expenditures by the end of the month following the end of each quarter.",
-      Compliance_Instance_ID: 1011,
-      Legislation: "Rajasthan Sales Tax Act 1994",
+  {
+    Compliance_Id: 3246,
+    Compliance_Header: "Quarterly Tax Returns",
+    Compliance_Status: "Approved",
+    Location: "HMVL - Office - Muzaffarpur - sadtpur - HR/ Muzaffarpur/ Bihar/ Office",
+    Compliance_Instance_ID: 1011,
+    Legislation: "Rajasthan Sales Tax Act 1994",
+    Compliance_Categorization: "Tax Filing",
+    Compliance_Description: "Quarterly tax return filing for sales tax.",
+    Compliance_Applicability: "Businesses in Rajasthan.",
+    Compliance_Clause: "Section 10 of the Rajasthan Sales Tax Act, 1994",
+    Compliance_Type: "Filing",
+    Compliance_Frequency: "Quarterly",
+    Criticality: "High",
+    Owner: "Karan Singh",
+    Approver: "Neha Sharma",
+    Uploaded_Date: "2024-08-15",
+    Proof: "Quarterly return draft",
+    Remark: "Tax returns are pending submission.",
+    Compliance_Month_Date: "2024-09-30"
   },
-  { 
-      Compliance_Id: 3247, 
-      Compliance_Header: "Fire Safety Certification", 
-      Compliance_Status: "Complied",
-      Bare_Act_Text: "Obtain a fire safety certification from the local fire department every year and ensure compliance with fire safety norms.",
-      Compliance_Instance_ID: 1012,
-      Legislation: "Haryana Fire Services Act 2009",
+  {
+    Compliance_Id: 3247,
+    Compliance_Header: "Fire Safety Certification",
+    Compliance_Status: "Approved",
+    Location: "HMVL - Office - Patna - Boring Road - HR/ Patna/ Bihar/ Office",
+    Compliance_Instance_ID: 1012,
+    Legislation: "Haryana Fire Services Act 2009",
+    Compliance_Categorization: "Certification",
+    Compliance_Description: "Annual fire safety certification.",
+    Compliance_Applicability: "All establishments in Haryana.",
+    Compliance_Clause: "Section 7 of the Haryana Fire Services Act, 2009",
+    Compliance_Type: "Certification",
+    Compliance_Frequency: "Annual",
+    Criticality: "High",
+    Owner: "Rajeev Kumar",
+    Approver: "Sunita Rani",
+    Uploaded_Date: "2024-08-20",
+    Proof: "Certification document",
+    Remark: "Certification obtained and compliance achieved.",
+    Compliance_Month_Date: "2024-08-30"
+  },
+  {
+    Compliance_Id: 3248,
+    Compliance_Header: "Environmental Audit",
+    Compliance_Status: "Approved",
+    Location: "HMVL - Office - Arrah - Ramana Pakri Road - HR/ Arrah/ Bihar/ Office",
+    Compliance_Instance_ID: 1013,
+    Legislation: "Environment Protection Act 1986",
+    Compliance_Categorization: "Audit",
+    Compliance_Description: "Annual environmental audit to ensure compliance with environmental standards.",
+    Compliance_Applicability: "All industrial units in India.",
+    Compliance_Clause: "Section 9 of the Environment Protection Act, 1986",
+    Compliance_Type: "Audit",
+    Compliance_Frequency: "Annual",
+    Criticality: "High",
+    Owner: "Prakash Mehra",
+    Approver: "Sanjay Patel",
+    Uploaded_Date: "2024-08-18",
+    Proof: "Audit report submission receipt",
+    Remark: "Audit completed and report submitted.",
+    Compliance_Month_Date: "2024-09-15"
+  },
+  {
+    Compliance_Id: 3249,
+    Compliance_Header: "Employee Provident Fund Contribution",
+    Compliance_Status: "Rejected",
+    Location: "HMVL - Office - Bhagalpur - Barari Road - HR/ Bhagalpur/ Bihar/ Office",
+    Compliance_Instance_ID: 1014,
+    Legislation: "Employee Provident Fund and Miscellaneous Provisions Act 1952",
+    Compliance_Categorization: "Fund Contribution",
+    Compliance_Description: "Monthly contribution to the employee provident fund.",
+    Compliance_Applicability: "Employers with more than 20 employees.",
+    Compliance_Clause: "Section 6 of the Employee Provident Fund and Miscellaneous Provisions Act, 1952",
+    Compliance_Type: "Contribution",
+    Compliance_Frequency: "Monthly",
+    Criticality: "High",
+    Owner: "Anil Verma",
+    Approver: "Seema Rao",
+    Uploaded_Date: "2024-08-22",
+    Proof: "Bank deposit slip",
+    Remark: "Contribution was rejected due to incorrect details.",
+    Compliance_Month_Date: "2024-09-10"
+  },
+  {
+    Compliance_Id: 3250,
+    Compliance_Header: "Water Usage Reporting",
+    Compliance_Status: "Approved",
+    Location: "HMVL - Office - Darbhanga - Laximnagar - HR/ Darbhanga/ Bihar/ Office",
+    Compliance_Instance_ID: 1015,
+    Legislation: "Water (Prevention and Control of Pollution) Act 1974",
+    Compliance_Categorization: "Report",
+    Compliance_Description: "Monthly reporting of water usage for industrial purposes.",
+    Compliance_Applicability: "Industries consuming more than 50,000 liters of water daily.",
+    Compliance_Clause: "Section 5 of the Water (Prevention and Control of Pollution) Act, 1974",
+    Compliance_Type: "Report",
+    Compliance_Frequency: "Monthly",
+    Criticality: "Medium",
+    Owner: "Pankaj Deshmukh",
+    Approver: "Rekha Gupta",
+    Uploaded_Date: "2024-08-27",
+    Proof: "Report submission acknowledgment",
+    Remark: "Water usage report submitted and approved.",
+    Compliance_Month_Date: "2024-09-05"
+  },
+  {
+    Compliance_Id: 3251,
+    Compliance_Header: "Solid Waste Management Plan",
+    Compliance_Status: "Rejected",
+    Location: "HMVL - Office - Gaya - Raj Nagar - HR/ Gaya/ Bihar/ Office",
+    Compliance_Instance_ID: 1016,
+    Legislation: "Solid Waste Management Rules 2016",
+    Compliance_Categorization: "Plan Submission",
+    Compliance_Description: "Annual submission of a solid waste management plan.",
+    Compliance_Applicability: "Municipalities and large housing societies.",
+    Compliance_Clause: "Rule 12 of the Solid Waste Management Rules, 2016",
+    Compliance_Type: "Plan",
+    Compliance_Frequency: "Annual",
+    Criticality: "High",
+    Owner: "Sunil Kapoor",
+    Approver: "Aruna Sharma",
+    Uploaded_Date: "2024-08-29",
+    Proof: "Plan submission receipt",
+    Remark: "Plan was rejected; requires revision.",
+    Compliance_Month_Date: "2024-09-25"
   }
 ];
 
 const statusColor: Record<string, string> = {
-  Complied: 'bg-emerald-500',
+  Approved: 'bg-emerald-500',
   Pending: 'bg-yellow-500',
   Rejected: 'bg-red-500',
 };
 
-const { DatePickerRange } = DatePicker;
+// const { DatePickerRange } = DatePicker;
 
 const ConfirmDialog = ({ isOpen, onClose, onConfirm, title, message }) => {
   return (
@@ -203,7 +446,10 @@ const StatusTable: React.FC<StatusTableProps> = ({
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
   const [isRejectDialogOpen, setIsRejectDialogOpen] = useState(false);
   const [currentRejectId, setCurrentRejectId] = useState<number | null>(null);
-
+  const [dateRange, setDateRange] = useState([
+    startOfMonth(subMonths(new Date(), 5)),
+    endOfMonth(new Date()),
+  ]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -237,7 +483,7 @@ const StatusTable: React.FC<StatusTableProps> = ({
   const handleBulkApprove = () => {
     const updatedData = data.map((item) =>
       selectedItems.has(item.Compliance_Id)
-        ? { ...item, Compliance_Status: 'Complied' }
+        ? { ...item, Compliance_Status: 'Approved' }
         : item
     );
     setData(updatedData);
@@ -294,6 +540,20 @@ const StatusTable: React.FC<StatusTableProps> = ({
     }
     setIsRejectDialogOpen(false);
   };
+
+  const BulkDownload = () => {
+    toast.push(
+      <Notification
+        title="Downloaded Successfully"
+        type="success"
+      >
+        <p>All Compliances Downloaded Successfully</p>
+      </Notification>,
+      {
+        placement: 'top-end',
+      }
+    );
+  }
 
   const handleReject = (id: number) => {
     setCurrentRejectId(id);
@@ -368,20 +628,8 @@ const StatusTable: React.FC<StatusTableProps> = ({
         ),
       },
       {
-        header: 'Compliance Header',
-        accessorKey: 'Compliance_Header',
-        cell: (props) => {
-          const value = props.getValue() as string;
-          return (
-            <Tooltip title={value} placement="top">
-              <div className="w-24 truncate">{value}</div>
-            </Tooltip>
-          );
-        },
-      },
-      {
-        header: 'Bare Act Text',
-        accessorKey: 'Bare_Act_Text',
+        header: 'Location',
+        accessorKey: 'Location',
         cell: (props) => {
           const value = props.getValue() as string;
           return (
@@ -394,6 +642,18 @@ const StatusTable: React.FC<StatusTableProps> = ({
       {
         header: 'Legislation',
         accessorKey: 'Legislation',
+        cell: (props) => {
+          const value = props.getValue() as string;
+          return (
+            <Tooltip title={value} placement="top">
+              <div className="w-24 truncate">{value}</div>
+            </Tooltip>
+          );
+        },
+      },
+      {
+        header: 'Compliance Header',
+        accessorKey: 'Compliance_Header',
         cell: (props) => {
           const value = props.getValue() as string;
           return (
@@ -428,7 +688,7 @@ const StatusTable: React.FC<StatusTableProps> = ({
                   <Tooltip title="Approve">
                     <Button
                       size="sm"
-                      onClick={() => handleStatusChange(row.original.Compliance_Id, 'Complied')}
+                      onClick={() => handleStatusChange(row.original.Compliance_Id, 'Approved')}
                       icon={<RiCheckLine />}
                     />
                   </Tooltip>
@@ -445,7 +705,7 @@ const StatusTable: React.FC<StatusTableProps> = ({
                 <Tooltip title="View Details">
                   <Button
                     size="sm"
-                    onClick={() => navigate(`/app/IHRC/compliance-list-detail/${row.original.Compliance_Id}`, { state: row.original })}
+                    onClick={() => navigate(`/app/IHRC/compliance-status-list-detail/${row.original.Compliance_Id}`, { state: row.original })}
                     icon={<RiEyeLine />}
                   />
                 </Tooltip>
@@ -499,7 +759,17 @@ const StatusTable: React.FC<StatusTableProps> = ({
           <StatusTableFilter onFilterChange={onFilterChange} currentFilter={currentFilter} />
         </div>
         <div className="flex gap-2">
-          <DatePickerRange size='sm' placeholder="Select dates range" />
+        <DatePicker
+            selectsRange
+            startDate={dateRange[0]}
+            endDate={dateRange[1]}
+            onChange={(update) => setDateRange(update)}
+            className="px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            dateFormat="MMM d, yyyy"
+            placeholderText="Select date range"
+            portalId="datepicker-portal"
+            shouldCloseOnSelect={false}
+          />
           <Button
             size="sm"
             onClick={() => setIsConfirmDialogOpen(true)}
@@ -520,6 +790,7 @@ const StatusTable: React.FC<StatusTableProps> = ({
           >
             Bulk Reject
           </Button>
+          <Button size='sm' icon={<HiDownload />} variant='solid' onClick={BulkDownload}>Download</Button>
           <Button size="sm" onClick={onClearAll}>
             Clear All
           </Button>
