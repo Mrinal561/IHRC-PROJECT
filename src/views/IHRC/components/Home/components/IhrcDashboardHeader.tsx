@@ -56,9 +56,36 @@ const IhrcDashboardHeader = () => {
 
     return (
         <div className="">
+            <div className='flex flex-col lg:flex-row lg:items-center gap-3 justify-between'>
              <div className="mb-4 lg:mb-0">
                 <h3 className="text-2xl font-bold">DASHBOARD</h3>
                 <p className="text-gray-600">View your company's compliance statistics</p>
+            </div>
+            <div className='flex flex-col lg:flex-row lg:items-center gap-3 justify-center'>
+            <Select<OptionType>
+                    value={periodOption}
+                    onChange={handlePeriodChange}
+                    options={periodOptions}
+                    placeholder="Period"
+                    className="w-[180px]"
+                />
+
+                <DatePicker
+                    value={startDate}
+                    onChange={setStartDate}
+                    inputFormat={dateFormat}
+                    placeholder="From"
+                    className="w-[180px]"
+                />
+
+                <DatePicker
+                    value={endDate}
+                    onChange={setEndDate}
+                    inputFormat={dateFormat}
+                    placeholder="To"
+                    className="w-[180px]"
+                />
+            </div>
             </div>
             <div className='flex flex-col lg:flex-row lg:items-center gap-3 justify-center mt-6'>
                 <Select<OptionType>
@@ -93,29 +120,7 @@ const IhrcDashboardHeader = () => {
                     className="w-[180px]"
                 />
 
-                <Select<OptionType>
-                    value={periodOption}
-                    onChange={handlePeriodChange}
-                    options={periodOptions}
-                    placeholder="Period"
-                    className="w-[180px]"
-                />
-
-                <DatePicker
-                    value={startDate}
-                    onChange={setStartDate}
-                    inputFormat={dateFormat}
-                    placeholder="From"
-                    className="w-[180px]"
-                />
-
-                <DatePicker
-                    value={endDate}
-                    onChange={setEndDate}
-                    inputFormat={dateFormat}
-                    placeholder="To"
-                    className="w-[180px]"
-                />
+               
             </div>
         </div>
     )
