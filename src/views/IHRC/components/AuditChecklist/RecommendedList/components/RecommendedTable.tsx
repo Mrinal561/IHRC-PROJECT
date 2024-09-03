@@ -7,25 +7,25 @@ import { useNavigate } from 'react-router-dom'
 // Updated interface to include new fields
 interface ComplianceRow {
     Compliance_Id: number;
-    Legislation: string;
-    Compliance_Categorization: string;
     Compliance_Header: string;
-    Compliance_Description: string;
-    Penalty_Description: string;
-    Compliance_Applicability: string;
+    Legislation: string;
     Bare_Act_Text: string;
-    Compliance_Clause: string;
-    Compliance_Type: string;
-    Compliance_Frequency: string;
-    Compliance_Statutory_Authority: string;
-    Approval_Required: string;
-    Criticality: string;
+    Penalty_Description: string;
     Penalty_Type: string;
     Default_Due_Date: string;
     First_Due_Date: string;
     Due_Date: string;
     Scheduled_Frequency: string;
     Proof_Of_Compliance_Mandatory: string;
+    Compliance_Categorization: string;
+    Compliance_Description: string;
+    Compliance_Applicability: string;
+    Compliance_Clause: string;
+    Compliance_Type: string;
+    Compliance_Frequency: string;
+    Criticality: string;
+    Compliance_Statutory_Authority: string;
+    Approval_Required: string;
 }
 
 const complianceData: ComplianceRow[] = [
@@ -348,3 +348,4 @@ const RecommendedTableContent = () => {
 }
 
 export default RecommendedTableContent
+
