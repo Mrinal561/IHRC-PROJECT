@@ -128,12 +128,12 @@ const BulkSetOwnerApproverButton = () => {
 
 const AssignChecklistTableTool = () => {
   return (
-    <div className="flex flex-col lg:flex-row lg:items-center gap-2">
+    <div className="flex flex-col lg:flex-row lg:items-center gap-3">
         <div>
       <AssignChecklistTableSearch />
         </div>
         <div>
-      <AssignChecklistTableFilter /> 
+      {/* <AssignChecklistTableFilter />  */}
         </div>
       <div>
         <BulkSetOwnerApproverButton />

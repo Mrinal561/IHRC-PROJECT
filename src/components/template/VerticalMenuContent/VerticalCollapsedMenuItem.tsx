@@ -107,6 +107,7 @@ const CollapsedItem = ({
                 placement={
                     direction === 'rtl' ? 'middle-end-top' : 'middle-start-top'
                 }
+                className='side-nav-dropdown'
             >
                 {nav.subMenu.map((subNav) => (
                     <AuthorityCheck

@@ -29,7 +29,7 @@ const complianceDeadlines = [
 
 const DashboardBody = () => {
   return (
-    <div className='flex flex-col gap-6'>
+    <div className='flex flex-col gap-6 mt-6'>
     <Statistic />
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
     {/* MonthlyCard spans across 2 columns */}
