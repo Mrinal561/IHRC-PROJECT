@@ -1,87 +1,53 @@
-import React from "react";
-import ReactApexChart from 'react-apexcharts'
-import ApexCharts from 'apexcharts'
+import React from 'react'
+import Card from '@/components/ui/Card'
+import Badge from '@/components/ui/Badge'
+import Chart from '@/components/shared/Chart'
+import { COLORS } from '@/constants/chart.constant'
 
-
-const PerformancePieChart = () => {
-  const options: ApexCharts.ApexOptions = {
-    chart: {
-      type: 'donut',
-      height: 350,
-      toolbar: {
-        show: true,
-      },
-    },
-    title: {
-      text: 'Click on graph to view details',
-      align: 'center',
-      style: {
-        fontSize: '14px',
-        fontWeight: '200',
-      },
-    },
-    labels: ['Completed', 'Not Completed', 'Not Applicable'],
-    legend: {
-      show: true,
-      position: 'bottom',
-      labels: {
-        colors: '#000',
-      },
-      markers: {
-        fillColors: ['#0000FF', '#f57600', '#e5c354'],
-      },
-      itemMargin: {
-        horizontal: 10,
-        vertical: 5,
-      },
-    },
-    plotOptions: {
-      pie: {
-        expandOnClick: true,
-        dataLabels: {
-          offset: 0,
-          minAngleToShowLabel: 0,
-        },
-      },
-      donut: {
-        size: '65%', // Adjust this value to change the size of the donut hole
-      },
-    },
-    dataLabels: {
-      enabled: true,
-      style: {
-        fontSize: '14px',
-        fontWeight: 'bold',
-      },
-    },
-    series: [219, 627, 0], // Added 0 for 'Not Applicable' to match the number of labels
-    colors: ['#0000FF', '#f57600', '#e5c354'],
-  }
-
-  return (
-    <div className='w-full h-[350px] px-8 py-6'>
-      <ReactApexChart 
-        options={options} 
-        series={options.series} 
-        type="donut" 
-        height={350} 
-      />
-    </div>
-  )
-}
 const PerformanceCard = () => {
+    // Dummy data for Complied, Not Complied, and Not Applicable
+    const data = {
+        labels: ['Complied', 'Not Complied', 'NA', 'Complied with Delay'],
+        data: [80, 30, 15, 40], // Example numbers for the categories
+    }
+    const customColors = ['#2F855A', '#F56565', '#F6E05E', '#676bc5'];
 
-  return (
-    <div className='border rounded-xl'>
-      <div className='p-4'>
-        <h1 className='font-semibold text-lg'>Performance Summary</h1>
-      </div>
-      <div className='flex-grow flex items-center justify-center'>
-      {/* <PieChart containerID="performance-chart" /> */}
-      <PerformancePieChart />
-      </div>
-    </div>
-  );
-};
+    return (
+        <Card>
+            <h5 className='font-semibold'>Performance Summary</h5>
+            <div className="mt-6">
+                {data.data.length > 0 && (
+                    <>
+                        <Chart
+                            donutTitle={300}
+                            donutText="Compliances"
+                            series={data.data}
+                            height={282}
+                            customOptions={{ labels: data.labels , colors: customColors,}}
+                            type="donut"
+                        />
+                        <div className="mt-6 pb-1 w-full flex gap-10 justify-center items-center ">
+                            {data.labels.map((value, index) => (
+                                <div
+                                    key={value}
+                                    className="flex items-center gap-2"
+                                >
+                                    <Badge
+                                        badgeStyle={{
+                                            backgroundColor: customColors[index],
+                                        }}
+                                    />
+                                    <span className="font-semibold">
+                                        {value}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    </>
+                )}
+            </div>
+        </Card>
+    )
+}
 
-export default PerformanceCard;
+export default PerformanceCard

@@ -1,135 +1,141 @@
-
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { ColumnDef } from '@/components/shared/DataTable';
 import DataTable from '@/components/shared/DataTable';
 import { Button, Tooltip, Dialog, Input, toast, Notification, Badge } from '@/components/ui';
-import { BsCloudUpload } from "react-icons/bs";
+import { HiDownload, HiUpload } from 'react-icons/hi';
+import { MdEdit } from 'react-icons/md';
 
-
-
-// Define the structure of our data
 interface DueComplianceDataRow {
   Compliance_Instance_ID: number;
   Compliance_ID: number;
+  Legislation: string;
+  Location: string;
+  Compliance_Categorization: string;
   Compliance_Header: string;
+  Compliance_Description: string;
+  Penalty_Description: string;
+  Compliance_Applicability: string;
+  Bare_Act_Text: string;
+  Compliance_Clause: string;
+  Compliance_Type: string;
+  Compliance_Frequency: string;
+  Compliance_Statutory_Authority: string;
+  Approval_Required: string;
+  Criticality: string;
+  Penalty_Type: string;
+  Default_Due_Date: string;
+  First_Due_Date: string;
   Due_Date: Date;
+  Scheduled_Frequency: string;
+  Proof_Of_Compliance_Mandatory: string;
   Owner_Name: string;
   Approver_Name: string;
   Category: string;
-  Status: 'due' | 'upcoming' | 'active';
+  Status2: 'Due' | 'Upcoming';
+  Status: 'Complied' | 'Not Complied' | 'NA' | 'Complied without Proof';
 }
 
-// Sample data for the table
-const initialData: DueComplianceDataRow[] = [
-  {
-    Compliance_Instance_ID: 1001,
-    Compliance_ID: 3236,
-    Compliance_Header: 'Renewal of Registration',
-    Due_Date: new Date('2024-09-15'),
-    Owner_Name: 'Admin',
-    Approver_Name: 'Shivesh Verma',
-    Category: 'Legal',
-    Status: 'upcoming'
-  },
-  {
-    Compliance_Instance_ID: 1002,
-    Compliance_ID: 4501,
-    Compliance_Header: 'Annual Renewal of License',
-    Due_Date: new Date('2024-10-01'),
-    Owner_Name: 'HR',
-    Approver_Name: 'Shivesh Verma',
-    Category: 'HR',
-    Status: 'due'
-  },
-  {
-    Compliance_Instance_ID: 1003,
-    Compliance_ID: 5602,
-    Compliance_Header: 'Monthly Compliance Report',
-    Due_Date: new Date('2024-09-05'),
-    Owner_Name: 'Finance',
-    Approver_Name: 'Shivesh Verma',
-    Category: 'Finance',
-    Status: 'active'
-  },
-  {
-    Compliance_Instance_ID: 1004,
-    Compliance_ID: 6789,
-    Compliance_Header: 'Quarterly Wage Report',
-    Due_Date: new Date('2024-10-15'),
-    Owner_Name: 'Ravi Shankar Singh',
-    Approver_Name: 'Shivesh Verma',
-    Category: 'HR',
-    Status: 'upcoming'
-  },
-  {
-    Compliance_Instance_ID: 1005,
-    Compliance_ID: 7890,
-    Compliance_Header: 'Renewal of Trade License',
-    Due_Date: new Date('2024-11-01'),
-    Owner_Name: 'HR',
-    Approver_Name: 'Shivesh Verma',
-    Category: 'Legal',
-    Status: 'due'
-  }
-];
+interface DueComplianceTableProps {
+  data: DueComplianceDataRow[];
+  onUploadSingle: (complianceId: number, file: File | undefined, remark: string) => void;
+  onUpdateStatus: (complianceId: number, newStatus: DueComplianceDataRow['Status']) => void;
+}
 
-const DueComplianceTable: React.FC = () => {
-  // State for the table data
-  const [data] = useState<DueComplianceDataRow[]>(initialData);
-  // State for controlling the dialog
+const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadSingle, onUpdateStatus }) => {
   const [dialogIsOpen, setDialogIsOpen] = useState(false);
-  // State for the selected file
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [remark, setRemark] = useState('');
+  const [selectedCompliance, setSelectedCompliance] = useState<DueComplianceDataRow | null>(null);
 
-  // Function to open the dialog
-  const openDialog = () => {
+  const [tableData, setTableData] = useState({
+    total: data.length,
+    pageIndex: 1,
+    pageSize: 10,
+    query: '',
+    sort: { order: '', key: '' },
+  });
+
+  const openDialog = useCallback((compliance: DueComplianceDataRow) => {
+    setSelectedCompliance(compliance);
     setDialogIsOpen(true);
-  };
+  }, []);
 
-  // Function to close the dialog
-  const onDialogClose = () => {
+  const onDialogClose = useCallback(() => {
+    console.log('onDialogClose called');
     setDialogIsOpen(false);
-    setSelectedFile(null);  // Clear the selected file when closing the dialog
-  };
+    setSelectedFile(null);
+    setRemark('');
+    setSelectedCompliance(null);
+  }, []);
 
-  // Function to handle file selection
-  const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onSubmit = useCallback(() => {
+    console.log('onSubmit called');
+    if (selectedCompliance) {
+      console.log('Selected compliance:', selectedCompliance);
+      onUploadSingle(selectedCompliance.Compliance_Instance_ID, selectedFile || undefined, remark);
+      
+      const newStatus = selectedCompliance.Proof_Of_Compliance_Mandatory === 'Yes' ? 'Complied' : 'Complied without Proof';
+      onUpdateStatus(selectedCompliance.Compliance_Instance_ID, newStatus);
+
+      toast.push(
+        <Notification title="Success" type="success">
+          Compliance status updated successfully
+        </Notification>
+      );
+    } else {
+      console.log('No compliance selected');
+    }
+    console.log('Calling onDialogClose from onSubmit');
+    onDialogClose();
+  }, [selectedCompliance, selectedFile, remark, onUploadSingle, onUpdateStatus, onDialogClose]);
+
+
+  const onFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setSelectedFile(e.target.files[0]);
     }
+  }, []);
+
+  const handleDownload = () => {
+    toast.push(
+      <Notification title="Success" type="success">
+        All Documents downloaded successfully
+      </Notification>
+    );
   };
 
-  // Function to handle form submission
-  const onSubmit = () => {
-    if (selectedFile) {
-      // Here you would typically handle the file upload
-      console.log('File selected:', selectedFile.name);
-      // Show success toast
-      toast.push(
-        <Notification title="Success" type="success">
-          File uploaded successfully
-        </Notification>
-      );
-      onDialogClose();
-    } else {
-      // Show error toast if no file is selected
-      toast.push(
-        <Notification title="Error" type="danger">
-          Please select a file first
-        </Notification>
-      );
-    }
-  };
-
-  // Define the columns for the table
   const columns: ColumnDef<DueComplianceDataRow>[] = useMemo(
     () => [
       {
         header: 'Compliance ID',
         accessorKey: 'Compliance_ID',
         cell: (props) => (
-          <div className="w-32 text-start">{props.getValue()}</div>
+          <div className="w-10 text-start">{props.getValue()}</div>
         ),
+      },
+      {
+        header: 'Legislation',
+        accessorKey: 'Legislation',
+        cell: (props) => {
+          const value = props.getValue() as string;
+          return (
+            <Tooltip title={value} placement="top">
+              <div className="w-28 truncate">{value.length > 11 ? value.substring(0, 11) + '...' : value}</div>
+            </Tooltip>
+          );
+        },
+      },
+      {
+        header: 'Location',
+        accessorKey: 'Location',
+        cell: (props) => {
+          const value = props.getValue() as string;
+          return (
+            <Tooltip title={value} placement="top">
+              <div className="w-20 truncate">{value.length > 20 ? value.substring(0, 20) + '...' : value}</div>
+            </Tooltip>
+          );
+        },
       },
       {
         header: 'Compliance Header',
@@ -138,7 +144,7 @@ const DueComplianceTable: React.FC = () => {
           const value = props.getValue() as string;
           return (
             <Tooltip title={value} placement="top">
-              <div className="w-40 truncate">{value}</div>
+              <div className="w-20 truncate">{value}</div>
             </Tooltip>
           );
         },
@@ -147,7 +153,7 @@ const DueComplianceTable: React.FC = () => {
         header: 'Due Date',
         accessorKey: 'Due_Date',
         cell: (props) => (
-          <div className="w-32">
+          <div className="w-14">
             {new Date(props.getValue() as Date).toLocaleDateString()}
           </div>
         ),
@@ -156,26 +162,51 @@ const DueComplianceTable: React.FC = () => {
         header: 'Category',
         accessorKey: 'Category',
         cell: ({ getValue }) => {
-          return <div className="w-28">{getValue<string>()}</div>;
+          return <div className="w-24">{getValue<string>()}</div>;
         },
       },
       {
         header: 'Status',
+        accessorKey: 'Status2',
+        cell: ({ getValue }) => {
+          const status = getValue<DueComplianceDataRow['Status2']>();
+          const badgeColor = status === 'Due' ? 'bg-red-500' : 'bg-yellow-500';
+          const textColor = status === 'Due' ? 'text-red-500' : 'text-yellow-500';
+          
+          return (
+            <div className="flex items-center w-28">
+              <Badge className={`mr-2 ${badgeColor}`} />
+              <div className={`font-semibold ${textColor}`}>{status}</div>
+            </div>
+          );
+        },
+      },
+      {
+        header: 'Compliance Status',
         accessorKey: 'Status',
         cell: ({ getValue }) => {
-          const status = getValue<'due' | 'upcoming' | 'active'>();
+          const status = getValue<DueComplianceDataRow['Status']>();
           let statusColor = 'bg-yellow-500';
           let textColor = 'text-yellow-500';
-          if (status === 'due') {
+          if (status === 'Not Complied') {
             statusColor = 'bg-red-500';
             textColor = 'text-red-500';
           }
-          if (status === 'active') {
+          if (status === 'Complied') {
             statusColor = 'bg-green-500';
             textColor = 'text-green-500';
           }
+          if (status === 'Complied without Proof') {
+            return (
+              <div className="flex items-center w-40">
+                <Badge style={{backgroundColor: '#676bc5'}} className="mr-2" />
+                <div style={{color: '#676bc5'}} className="font-semibold">{status}</div>
+              </div>
+            );
+          }
+          
           return (
-            <div className="flex items-center">
+            <div className="flex items-center w-40">
               <Badge className={`mr-2 ${statusColor}`} />
               <div className={`font-semibold ${textColor}`}>{status}</div>
             </div>
@@ -185,47 +216,42 @@ const DueComplianceTable: React.FC = () => {
       {
         header: 'Actions',
         id: 'actions',
-        cell: () => {
-          const value= "Upload";
-          return(
-            <Tooltip title={value} placement="top">
-            <Button
-            size="sm"
-            onClick={openDialog}
-            >
-            <BsCloudUpload />
-          </Button>
-          </Tooltip>
-          )
+        cell: ({ row }) => {
+          const compliance = row.original;
+          return (
+            <div className='flex gap-2'>
+              <Tooltip title="Change Compliance Status" placement="top">
+                <Button
+                  size="sm"
+                  onClick={() => openDialog(compliance)}
+                >
+                  <MdEdit />
+                </Button>
+              </Tooltip>
+              <Tooltip title="Download" placement="top">
+                <Button size="sm" onClick={handleDownload}>
+                  <HiDownload />
+                </Button>
+              </Tooltip>
+            </div>
+          );
         },
       },
     ],
     []
   );
 
-  // State for table pagination and sorting
-  const [tableData, setTableData] = useState({
-    total: initialData.length,
-    pageIndex: 1,
-    pageSize: 10,
-    query: '',
-    sort: { order: '', key: '' },
-  });
-
-  // Function to handle pagination changes
   const onPaginationChange = (page: number) => {
     setTableData(prev => ({ ...prev, pageIndex: page }));
   };
 
-  // Function to handle page size changes
   const onSelectChange = (value: number) => {
     setTableData(prev => ({ ...prev, pageSize: Number(value), pageIndex: 1 }));
   };
 
   return (
     <div className="relative">
-      {/* Render the DataTable component */}
-      <DataTable
+    <DataTable
         columns={columns}
         data={data}
         skeletonAvatarColumns={[0]}
@@ -239,19 +265,35 @@ const DueComplianceTable: React.FC = () => {
         onPaginationChange={onPaginationChange}
         onSelectChange={onSelectChange}
       />
-
-     
-      <Dialog isOpen={dialogIsOpen} onClose={onDialogClose}>
-        <h5 className="mb-4">Upload Confirmation File</h5>
-        <p className="mb-6">
-          Please upload the file for confirmation.
-        </p>
-        <Input placeholder="" textArea />
-        <Input
-          type="file"
-          onChange={onFileChange}
+<Dialog
+        isOpen={dialogIsOpen}
+        onClose={onDialogClose}
+      >
+        <h5 className="mb-4">Change Compliance Status</h5>
+        
+        <Input 
+          placeholder="Please Enter the Remarks" 
+          textArea 
+          value={remark}
+          onChange={(e) => setRemark(e.target.value)}
           className="mb-4"
         />
+
+        
+
+        {selectedCompliance?.Proof_Of_Compliance_Mandatory === 'Yes' && (
+          <Input
+            type="file"
+            onChange={onFileChange}
+            className="mb-4"
+          />
+        )}
+        {selectedCompliance && (
+          <p className="mb-4 text-red-500">
+            {selectedCompliance.Proof_Of_Compliance_Mandatory === 'Yes' ? '*Proof is mandatory' : ''}
+          </p>
+        )}
+
         <div className="text-right mt-6">
           <Button
             className="ltr:mr-2 rtl:ml-2"
@@ -261,11 +303,11 @@ const DueComplianceTable: React.FC = () => {
             Cancel
           </Button>
           <Button variant="solid" onClick={onSubmit}>
-            Submit
+            Confirm
           </Button>
         </div>
       </Dialog>
-    </div>
+  </div>
   );
 };
 

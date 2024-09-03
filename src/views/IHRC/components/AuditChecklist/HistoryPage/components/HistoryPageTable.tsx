@@ -4,6 +4,7 @@ import { ColumnDef } from '@/components/shared/DataTable';
 import DataTable from '@/components/shared/DataTable';
 import { Button, Tooltip, Dialog, Input, toast, Notification, Badge } from '@/components/ui';
 import { FaDownload } from 'react-icons/fa6';
+import { HiDownload } from 'react-icons/hi';
 
 
 
@@ -30,8 +31,8 @@ const initialData: HistoryComplianceDataRow[] = [
     Due_Date: '09-10-2024',
     Owner_Name: 'Admin',
     Approver_Name: 'Shivesh Verma',
-    Legislation: "Maharashtra Shops and Establishments Act 1948",
-    Location: "Maharashtra",
+    Legislation: "Bihar Shops and Establishments Act 1953 and Bihar Shops Establishments Rules 1955/ Bihar/ IR",
+    Location: "HMVL - Office - Muzaffarpur - sadtpur - HR/ Muzaffarpur/ Bihar/ Office",
     Category: 'Legal',
     Status: 'Completed'
   },
@@ -44,10 +45,11 @@ const initialData: HistoryComplianceDataRow[] = [
     Approver_Name: 'Shivesh Verma',
     Category: 'HR',
     Status: 'Completed',
-    Legislation: 'Maharashtra Shops and Establishments Act 1948',
-    Location: 'Maharashtra'
+    Legislation: "Delhi Factories Act 1948 and Delhi Factories Rules 1950/ Delhi/ IR",
+    Location: "HMVL - Office - Arrah - Ramana Pakri Road - HR/ Arrah/ Bihar/ Office",
   },
   {
+    Compliance_Instance_ID: 1003,
     Compliance_ID: 5602,
     Compliance_Header: 'Monthly Compliance Report',
     Due_Date: '09-05-2024',
@@ -55,9 +57,8 @@ const initialData: HistoryComplianceDataRow[] = [
     Approver_Name: 'Shivesh Verma',
     Category: 'Finance',
     Status: 'Completed',
-    Compliance_Instance_ID: 1003,
-    Legislation: 'Maharashtra Shops and Establishments Act 1948',
-    Location: 'Maharashtra'
+    Legislation: "Karnataka Shops and Commercial Establishments Act 1961 and Karnataka Shops Rules 1963/ Karnataka/ IR",
+        Location: "HMVL - Office - Aurangabad - Priyavrat Path - HR/ Aurangabad/ Bihar/ Office",
   },
   {
     Compliance_Instance_ID: 1004,
@@ -68,8 +69,8 @@ const initialData: HistoryComplianceDataRow[] = [
     Approver_Name: 'Shivesh Verma',
     Category: 'HR',
     Status: 'Completed',
-    Legislation: 'Maharashtra Shops and Establishments Act 1948',
-    Location: 'Maharashtra'
+    Legislation: "Maharashtra Shops and Establishments Act 1948 and Maharashtra Shops Rules 1954/ Maharashtra/ IR",
+        Location: "HMVL - Office - Begusarai - Kachhari Road - HR/ Begusarai/ Bihar/ Office",
   },
   {
     Compliance_Instance_ID: 1005,
@@ -80,8 +81,8 @@ const initialData: HistoryComplianceDataRow[] = [
     Approver_Name: 'Shivesh Verma',
     Category: 'Legal',
     Status: 'Completed',
-    Legislation: 'Maharashtra Shops and Establishments Act 1948',
-    Location: 'Maharashtra'
+    Legislation: "Tamil Nadu Shops and Establishments Act 1947 and Tamil Nadu Shops Rules 1959/ Tamil Nadu/ IR",
+    Location: "HMVL - Office - Samastipur - ShivSagar Plazza -HR / Samastipur/ Bihar/ Office",
   }
 ];
 
@@ -115,13 +116,10 @@ const DownloadHistoryButton = () => {
   
     return (
         <>
-        <Tooltip title={value} placement="top">
-           <Button className='border-none h-8'
-              onClick={handleAssignClick}
-              >
-            <FaDownload />
-            </Button>
-            </Tooltip>
+         <Tooltip title="Download" placement="top">
+                <Button size="sm" icon={<HiDownload />} onClick={handleAssignClick}>
+                </Button>
+              </Tooltip>
   
             <Dialog
                 isOpen={isDialogOpen}
@@ -158,19 +156,20 @@ const HistoryPageTable: React.FC = () => {
   const columns: ColumnDef<HistoryComplianceDataRow>[] = useMemo(
     () => [
       {
-        header: 'Compliance ID',
-        accessorKey: 'Compliance_ID',
-        cell: (props) => (
-          <div className="w-24 text-start">{props.getValue()}</div>
-        ),
-      },
-      {
         header: 'Instance ID',
         accessorKey: 'Compliance_Instance_ID',
         cell: (props) => (
           <div className="w-16 text-start">{props.getValue()}</div>
         ),
       },
+      {
+        header: 'Compliance ID',
+        accessorKey: 'Compliance_ID',
+        cell: (props) => (
+          <div className="w-24 text-start">{props.getValue()}</div>
+        ),
+      },
+     
       {
         header: 'Legislation',
         accessorKey: 'Legislation',
@@ -187,7 +186,7 @@ const HistoryPageTable: React.FC = () => {
         header: 'Location',
         accessorKey: 'Location',
         cell: (props) => (
-          <div className="w-24 text-start">{props.getValue()}</div>
+          <div className="w-24 text-start truncate">{props.getValue()}</div>
         ),
       },
       {
@@ -213,12 +212,12 @@ const HistoryPageTable: React.FC = () => {
         header: 'Status',
         accessorKey: 'Status',
         cell: ({ getValue }) => {
-          const status = getValue<'due' | 'upcoming' | 'last day'>();
+          const status = getValue<'Completed'>();
           let statusColor = 'bg-green-500';
           let textColor = 'text-green-500';
           return (
-            <div className="w-16 flex items-center">
-              <Badge className={`mr-2 ${statusColor}`} />
+            <div className="w-24 flex items-center">
+              <Badge className= 'mr-2 bg-green-500'/>
               <div className={`font-semibold ${textColor}`}>{status}</div>
             </div>
           );

@@ -24,7 +24,7 @@ const StatutesCard = () => {
     return (
       <div className='border rounded-lg'>
         <div className='p-4'>
-          <h1 className='font-semibold text-lg'>Applicable Statutes ({paragraphs.length})</h1>
+          <h5 className='font-semibold text-lg'>Applicable Statutes ({paragraphs.length})</h5>
         </div>
         <div className='h-[350px] py-4'>
           <ScrollBar autoHide>

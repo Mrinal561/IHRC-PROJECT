@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import { HiDownload } from 'react-icons/hi'
 import CustomChecklistButton from './CustomChecklistButton'
 import { Button } from '@/components/ui'
+import BulkUpload from './BulkUpload';
 const CustomChecklistTool = () => {
     return (
         <div className="flex flex-col lg:flex-row lg:items-center gap-1">
@@ -20,7 +21,8 @@ const CustomChecklistTool = () => {
                     Export
                 </Button>
             </Link>
-            <div className="block lg:inline-block md:mb-0 mb-4">
+            <BulkUpload />
+            <div className="block lg:inline-block md:mb-0 mb-4 ml-2">
                 <CustomChecklistButton />
             </div>
         </div>

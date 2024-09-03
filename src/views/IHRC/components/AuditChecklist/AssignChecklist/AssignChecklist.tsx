@@ -5,6 +5,7 @@ import AssignChecklistTableTool from './components/AssignChecklistTableTool'
 // injectReducer('salesProductList', reducer)
 import AssignChecklistTable from './components/AssignChecklistTable';
 const AssignChecklist = () => {
+    
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
             <div className="lg:flex items-center justify-between mb-8">
