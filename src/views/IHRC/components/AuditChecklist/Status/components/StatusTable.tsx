@@ -791,9 +791,9 @@ const StatusTable: React.FC<StatusTableProps> = ({
             Bulk Reject
           </Button>
           <Button size='sm' icon={<HiDownload />} variant='solid' onClick={BulkDownload}>Download</Button>
-          <Button size="sm" onClick={onClearAll}>
+          {/* <Button size="sm" onClick={onClearAll}>
             Clear All
-          </Button>
+          </Button> */}
         </div>
       </div>
       <DataTable

@@ -19,7 +19,7 @@ const StatisticCard = ({ icon, bgColor, title, value }) => {
 const Statistic = () => {
     const statistics = [
       {
-        title: 'Total Dues',
+        title: 'Total Pending Compliances',
         value: '300',
         icon: (
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="rgba(8,145,178,1)" width="28" height="28">
