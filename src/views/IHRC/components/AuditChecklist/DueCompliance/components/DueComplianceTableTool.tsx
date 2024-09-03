@@ -193,9 +193,9 @@ const DueComplianceTableTool: React.FC<DueComplianceTableToolProps> = ({ data, o
   };
 
   return (
-    <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+    <div className="flex flex-col lg:flex-row lg:items-center gap-3">
       <DueComplianceTableSearch />
-      <DueComplianceFilter />
+      {/* <DueComplianceFilter /> */}
       <BulkUploadButton />
       
       <div className="block lg:inline-block md:mb-0 mb-4">

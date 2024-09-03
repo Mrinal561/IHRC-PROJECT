@@ -12,6 +12,8 @@ interface ChecklistDataRow {
   Due_Date: Date;
   Owner_Name: string;
   Approver_Name: string;
+  Legislation:string;
+  Bare_Act_Text:string;
 }
 
 const initialData: ChecklistDataRow[] = [
@@ -21,7 +23,9 @@ const initialData: ChecklistDataRow[] = [
     Compliance_Header: 'Renewal of Registration',
     Due_Date: new Date('2024-09-15'),
     Owner_Name: 'Admin',
-    Approver_Name: 'Shivesh Verma'
+    Approver_Name: 'Shivesh Verma',
+    Legislation: "Tamil Nadu Shops and Establishments Act 1947 and Tamil Nadu Shops Rules 1959/ Tamil Nadu/ IR",
+    Bare_Act_Text: "In case of loss of the trade license, report to the Municipal Authority within seven days and apply for a duplicate license with a fee of fifteen rupees.",
   },
   {
     Compliance_Instance_ID: 1002,
@@ -29,7 +33,9 @@ const initialData: ChecklistDataRow[] = [
     Compliance_Header: 'Annual Renewal of License',
     Due_Date: new Date('2024-10-01'),
     Owner_Name: 'HR',
-    Approver_Name: 'Shivesh Verma'
+    Approver_Name: 'Shivesh Verma',
+    Legislation: "Tamil Nadu Shops and Establishments Act 1947 and Tamil Nadu Shops Rules 1959/ Tamil Nadu/ IR",
+    Bare_Act_Text: "In case of loss of the trade license, report to the Municipal Authority within seven days and apply for a duplicate license with a fee of fifteen rupees.",
   },
   {
     Compliance_Instance_ID: 1003,
@@ -37,7 +43,9 @@ const initialData: ChecklistDataRow[] = [
     Compliance_Header: 'Monthly Compliance Report',
     Due_Date: new Date('2024-09-05'),
     Owner_Name: 'Finance',
-    Approver_Name: 'Shivesh Verma'
+    Approver_Name: 'Shivesh Verma',
+    Legislation: "Tamil Nadu Shops and Establishments Act 1947 and Tamil Nadu Shops Rules 1959/ Tamil Nadu/ IR",
+    Bare_Act_Text: "In case of loss of the trade license, report to the Municipal Authority within seven days and apply for a duplicate license with a fee of fifteen rupees.",
   },
   {
     Compliance_Instance_ID: 1004,
@@ -45,7 +53,9 @@ const initialData: ChecklistDataRow[] = [
     Compliance_Header: 'Quarterly Wage Report',
     Due_Date: new Date('2024-10-15'),
     Owner_Name: 'Ravi Shankar Singh',
-    Approver_Name: 'Shivesh Verma'
+    Approver_Name: 'Shivesh Verma',
+    Legislation: "Tamil Nadu Shops and Establishments Act 1947 and Tamil Nadu Shops Rules 1959/ Tamil Nadu/ IR",
+    Bare_Act_Text: "In case of loss of the trade license, report to the Municipal Authority within seven days and apply for a duplicate license with a fee of fifteen rupees.",
   },
   {
     Compliance_Instance_ID: 1005,
@@ -53,7 +63,9 @@ const initialData: ChecklistDataRow[] = [
     Compliance_Header: 'Renewal of Trade License',
     Due_Date: new Date('2024-11-01'),
     Owner_Name: 'HR',
-    Approver_Name: 'Shivesh Verma'
+    Approver_Name: 'Shivesh Verma',
+    Legislation: "Tamil Nadu Shops and Establishments Act 1947 and Tamil Nadu Shops Rules 1959/ Tamil Nadu/ IR",
+    Bare_Act_Text: "In case of loss of the trade license, report to the Municipal Authority within seven days and apply for a duplicate license with a fee of fifteen rupees.",
   }
 ];
 
@@ -211,14 +223,14 @@ const AssignChecklistTable: React.FC = () => {
         header: 'Instance ID',
         accessorKey: 'Compliance_Instance_ID',
         cell: (props) => (
-          <div className="w-16 text-start">{props.getValue()}</div>
+          <div className="w-10 text-start">{props.getValue()}</div>
         ),
       },
       {
         header: 'Compliance ID',
         accessorKey: 'Compliance_ID',
         cell: (props) => (
-          <div className="w-20 text-start">{props.getValue()}</div>
+          <div className="w-10 text-start">{props.getValue()}</div>
         ),
       },
       {
@@ -234,33 +246,58 @@ const AssignChecklistTable: React.FC = () => {
         },
       },
       {
+        header: 'Legislation',
+        accessorKey: 'Legislation',
+        cell: (props) => {
+            const value = props.getValue() as string;
+            return (
+                <Tooltip title={value} placement="top">
+                    <div className="w-32 truncate">{value.length > 22 ? value.substring(0, 22) + '...' : value}</div>
+                </Tooltip>
+            );
+        },
+    },
+  //   {
+  //     header: 'Act',
+  //     accessorKey: 'Bare_Act_Text',
+  //     cell: (props) => {
+  //         const value = props.getValue() as string;
+  //         return (
+  //             <Tooltip title={value} placement="top">
+  //                 <div className="w-12 truncate">{value.length > 22 ? value.substring(0, 22) + '...' : value}</div>
+  //             </Tooltip>
+  //         );
+  //     },
+  // },
+      
+      {
         header: 'Due Date',
         accessorKey: 'Due_Date',
         cell: ({ getValue }) => {
           const date = getValue<Date>();
-          return <div className="w-28">{date.toLocaleDateString()}</div>;
+          return <div className="w-20">{date.toLocaleDateString()}</div>;
         },
       },
       {
         header: "Owner's Name",
         accessorKey: 'Owner_Name',
         cell: ({ getValue }) => {
-          return <div className="w-24">{getValue<string>()}</div>;
+          return <div className="w-14">{getValue<string>()}</div>;
         },
       },
       {
         header: "Approver's Name",
         accessorKey: 'Approver_Name',
         cell: ({ getValue }) => {
-          return <div className="w-28">{getValue<string>()}</div>;
+          return <div className="w-14">{getValue<string>()}</div>;
         },
       },
       {
         header: 'Actions',
-        id: 'actions',
+        id: 'actions',  
         cell: ({ row }) => {
             const value1= "Edit"
-            const value2= "Reminder"
+            const value2= "Single Reminder"
             return(
 
             <div className='flex space-x-2'>

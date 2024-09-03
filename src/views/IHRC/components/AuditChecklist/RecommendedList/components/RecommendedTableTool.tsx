@@ -106,9 +106,9 @@ const RecommendedTableTool = () => {
 
     return (
         <>
-        <div className="flex flex-col lg:flex-row lg:items-center gap-1">
+        <div className="flex flex-col lg:flex-row lg:items-center gap-3">
             <RecommendedTableSearch />
-            <RecommendedFilter />
+            {/* <RecommendedFilter />
             <Link
                 download
                 className="block lg:inline-block md:mx-2 md:mb-0 mb-4"
@@ -118,7 +118,7 @@ const RecommendedTableTool = () => {
                 <Button block size="sm" icon={<HiDownload />}>
                     Export
                 </Button>
-            </Link>
+            </Link> */}
             <div className="block lg:inline-block md:mb-0 mb-4">
                 <AssignChecklistButton />
             </div>

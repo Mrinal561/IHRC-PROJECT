@@ -5,7 +5,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import type { OnSortParam, ColumnDef } from '@/components/shared/DataTable'
 import { useNavigate } from 'react-router-dom'
 import { HiOutlineEye } from 'react-icons/hi'
-import { RiDownloadLine } from 'react-icons/ri'
+import { RiCheckLine, RiDownloadLine } from 'react-icons/ri'
 // Updated interface to include new fields
 interface ComplianceRow {
     Compliance_Id: number;
@@ -126,6 +126,7 @@ const complianceData: ComplianceRow[] = [
       },
       {
         Compliance_Id: 7890,
+        Bare_Act_Text: "File any discrepancies in wages with the Labour Commissioner within fifteen days of detection, accompanied by a fee of ten rupees.",
         Legislation: "Tamil Nadu Shops and Establishments Act 1947 and Tamil Nadu Shops Rules 1959/ Tamil Nadu/ IR",
         Location: "HMVL - Office - Samastipur - ShivSagar Plazza -HR / Samastipur/ Bihar/ Office",
         Compliance_Categorization: "LICENSE / REGISTRATION",
@@ -133,7 +134,6 @@ const complianceData: ComplianceRow[] = [
         Compliance_Description: "Apply for the renewal of the trade license in Form VII at least 30 days before the license expiry date to the Municipal Authority along with the necessary fee.",
         Penalty_Description: "Late fee up to Rs. 300",
         Compliance_Applicability: "TRADE LICENSE HOLDERS",
-        Bare_Act_Text: "In case of loss of the trade license, report to the Municipal Authority within seven days and apply for a duplicate license with a fee of fifteen rupees.",
         Compliance_Clause: "Section 5 and Rule 8",
         Compliance_Type: "On Going",
         Compliance_Frequency: "Annually",
@@ -174,11 +174,11 @@ const ViewDetailsButton = ({ compliance }: { compliance: ComplianceRow }) => {
             onClick={handleViewDetails}
             />
         </Tooltip>
-        <Tooltip title="Download">
+        <Tooltip title="Assign">
         <Button
           size="sm"
           onClick={() => console.log('Download')}
-          icon={<RiDownloadLine />}
+          icon={<RiCheckLine />}
           />
       </Tooltip>
     </div>
@@ -252,7 +252,7 @@ const RecommendedTableContent = () => {
                     const value = props.getValue() as string;
                     return (
                         <Tooltip title={value} placement="top">
-                            <div className="w-32 truncate">{value.length > 18 ? value.substring(0, 18) + '...' : value}</div>
+                            <div className="w-42 truncate">{value.length > 22 ? value.substring(0, 22) + '...' : value}</div>
                         </Tooltip>
                     );
                 },
@@ -264,7 +264,7 @@ const RecommendedTableContent = () => {
                   const value = props.getValue() as string;
                   return (
                     <Tooltip title={value} placement="top">
-                      <div className="w-20 truncate">{value.length > 20 ? value.substring(0, 20) + '...' : value}</div>
+                      <div className="w-36 truncate">{value.length > 20 ? value.substring(0, 20) + '...' : value}</div>
                     </Tooltip>
                   );
                 },
@@ -276,7 +276,7 @@ const RecommendedTableContent = () => {
                     const value = props.getValue() as string;
                     return (
                         <Tooltip title={value} placement="top">
-                            <div className="w-28 truncate">{value.length > 18 ? value.substring(0, 18) + '...' : value}</div>
+                            <div className="w-36 truncate">{value.length > 18 ? value.substring(0, 18) + '...' : value}</div>
                         </Tooltip>
                     );
                 },
@@ -297,7 +297,7 @@ const RecommendedTableContent = () => {
                     const value = props.getValue() as string;
                     return (
                         <Tooltip title={value} placement="left">
-                            <div className="w-40 truncate">{value.length > 30 ? value.substring(0, 30) + '...' : value}</div>
+                            <div className="w-48 truncate">{value.length > 30 ? value.substring(0, 30) + '...' : value}</div>
                         </Tooltip>
                     );
                 },
