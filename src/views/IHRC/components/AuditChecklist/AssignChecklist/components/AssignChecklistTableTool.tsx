@@ -4,7 +4,7 @@ import { HiDownload, HiPlusCircle } from 'react-icons/hi';
 import { FaDownload } from 'react-icons/fa';
 import AssignChecklistTableFilter from './AssignChecklistTableFilter';
 import AssignChecklistTableSearch from './AssignChecklistTableSearch';
-
+import BulkAlertButton from './BulkAlertButton';
 // Instead of importing the file directly, we'll use a string path
 const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
@@ -66,7 +66,8 @@ const BulkSetOwnerApproverButton = () => {
   };
 
   return (
-    <>
+    <div className='flex items-center justify-center gap-3'>
+    <BulkAlertButton/>
       <Button 
         block 
         variant="solid" 
@@ -121,7 +122,7 @@ const BulkSetOwnerApproverButton = () => {
           </Button>
         </div>
       </Dialog>
-    </>
+    </div>
   );
 };
 
