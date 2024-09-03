@@ -33,11 +33,11 @@ export const protectedRoutes = [
         authority: [],
     },
     {
-  key: 'complianceStatusDetail.complianceItem',
-  path:  `${APP_PREFIX_PATH}/IHRC/compliance-status-list-detail/:complianceID`,
-  component: lazy(() => import('@/views/IHRC/components/AuditChecklist/Status/components/ViewDetails')),
-  authority: [],
-},
+        key: 'complianceStatusDetail.complianceItem',
+        path:  `${APP_PREFIX_PATH}/IHRC/compliance-status-list-detail/:complianceID`,
+        component: lazy(() => import('@/views/IHRC/components/AuditChecklist/Status/components/ViewDetails')),
+        authority: [],
+    },
     {
         key: 'assignChecklist.item3',
         path: '/assigned-checklist',
