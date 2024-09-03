@@ -311,4 +311,6 @@ const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadS
   );
 };
 
+
+
 export default DueComplianceTable;
