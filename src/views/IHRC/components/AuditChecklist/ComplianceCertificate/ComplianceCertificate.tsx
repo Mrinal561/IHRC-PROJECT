@@ -239,7 +239,7 @@ const DownloadCertificateButton = () => {
 
   return (
       <div className='flex gap-2 justify-center items-center'>
-        <div className='border rounded-md'>
+        {/* <div className='border rounded-md'>
           <Dropdown title={selectedCompany} onSelect={(key) => handleSelect(key, companyOptions, setSelectedCompany)}>
             {companyOptions.map((item) => (
               <Dropdown.Item
@@ -250,8 +250,8 @@ const DownloadCertificateButton = () => {
               </Dropdown.Item>
             ))}
           </Dropdown>
-        </div>
-        <div className='border rounded-md'>
+        </div> */}
+        {/* <div className='border rounded-md'>
           <Dropdown title={selectedLocation} onSelect={(key) => handleSelect(key, locationOptions, setSelectedLocation)}>
             {locationOptions.map((item) => (
               <Dropdown.Item
@@ -262,7 +262,7 @@ const DownloadCertificateButton = () => {
               </Dropdown.Item>
             ))}
           </Dropdown>
-        </div>
+        </div> */}
         <div className='border rounded-md'>
           <Dropdown title={selectedYear} onSelect={(key) => handleSelect(key, yearOptions, setSelectedYear)}>
             {yearOptions.map((item) => (
