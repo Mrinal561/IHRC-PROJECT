@@ -19,7 +19,7 @@ const PerformanceCard = () => {
                 {data.data.length > 0 && (
                     <>
                         <Chart
-                            donutTitle={300}
+                            donutTitle={165}
                             donutText="Compliances"
                             series={data.data}
                             height={282}

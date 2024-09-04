@@ -4,6 +4,7 @@ import { useState, type ReactNode } from 'react'
 import type { CommonProps } from '@/@types/common'
 import Select, { ActionMeta, SingleValue, components } from 'react-select'
 import { FaChevronDown } from 'react-icons/fa'
+import { useLocation } from 'react-router-dom'
 
 interface OptionType {
     value: string;
@@ -40,7 +41,6 @@ const customStyles = {
         color: '#718096',
     }),
 }
-
 const DropdownIndicator = (props: any) => {
     return (
         <components.DropdownIndicator {...props}>
@@ -56,6 +56,8 @@ const Header = (props: HeaderProps) => {
     const [state, setState] = useState<OptionType | null>(null)
     const [branch, setBranch] = useState<OptionType | null>(null)
 
+    const location = useLocation();
+
     const handleSelectChange = (
         setValue: React.Dispatch<React.SetStateAction<OptionType | null>>
     ) => (
@@ -65,19 +67,9 @@ const Header = (props: HeaderProps) => {
         setValue(newValue)
     }
 
-    return (
-        <header className={classNames('header', className)}>
-            <div
-                className={classNames(
-                    'header-wrapper',
-                    HEADER_HEIGHT_CLASS,
-                    container && 'container mx-auto',
-                    'flex items-center justify-between'
-                )}
-            >
-                <div className="header-action header-action-start flex items-center">
-                    {headerStart}
-                </div>
+    const renderMiddleSection = () => {
+        if (location.pathname === '/home') {
+            return (
                 <div className='flex items-center space-x-10'>
                     <Select<OptionType>
                         value={companyGroup}
@@ -116,6 +108,25 @@ const Header = (props: HeaderProps) => {
                         components={{ DropdownIndicator }}
                     />
                 </div>
+            )
+        }
+        return null;
+    }
+
+    return (
+        <header className={classNames('header', className)}>
+            <div
+                className={classNames(
+                    'header-wrapper',
+                    HEADER_HEIGHT_CLASS,
+                    container && 'container mx-auto',
+                    'flex items-center justify-between'
+                )}
+            >
+                <div className="header-action header-action-start flex items-center">
+                    {headerStart}
+                </div>
+                {renderMiddleSection()}
                 <div className="header-action header-action-end flex items-center">
                     {headerEnd}
                 </div>

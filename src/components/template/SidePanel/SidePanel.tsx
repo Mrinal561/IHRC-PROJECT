@@ -5,7 +5,7 @@ import SidePanelContent, { SidePanelContentProps } from './SidePanelContent'
 import withHeaderItem from '@/utils/hoc/withHeaderItem'
 import { setPanelExpand, useAppSelector, useAppDispatch } from '@/store'
 import type { CommonProps } from '@/@types/common'
-
+import Notification from '../Notification'
 type SidePanelProps = SidePanelContentProps & CommonProps
 
 const _SidePanel = (props: SidePanelProps) => {
@@ -30,14 +30,10 @@ const _SidePanel = (props: SidePanelProps) => {
     }
 
     return (
-        <>
-            {/* <div
-                className={classNames('text-2xl', className)}
-                onClick={openPanel}
-                {...rest}
-            >
-                <HiOutlineCog />
-            </div> */}
+        <div className='flex items-center'>
+            <div className='flex items-center'>
+                <Notification />
+            </div>
             <Drawer
                 title="Side Panel"
                 isOpen={panelExpand}
@@ -48,7 +44,7 @@ const _SidePanel = (props: SidePanelProps) => {
             >
                 <SidePanelContent callBackClose={closePanel} />
             </Drawer>
-        </>
+        </div>
     )
 }
 
