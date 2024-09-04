@@ -44,14 +44,14 @@ const AssignCustomFormPage: React.FC = () => {
     const navigate = useNavigate();
     return (
         <div className="p-0">
-            <div className='flex gap-3 items-center'>
+            <div className='flex gap-2 items-center mb-6'>
             <Button
             size="sm"
             variant="plain"
             icon={<IoArrowBack className="text-[#72828e] hover:text-[#5d6169]" />}
             onClick={() => navigate(-1)}
           />
-            <h3 className="text-2xl font-semibold mb-7">Assign Compliance</h3>
+            <h3 className="text-2xl font-semibold">Assign Compliance</h3>
             </div>
             <Formik
                 initialValues={initialValues}
