@@ -6,11 +6,14 @@ import { HiOutlineSearch, HiOutlineCalendar } from 'react-icons/hi'
 import DatePicker from 'react-datepicker'
 import "react-datepicker/dist/react-datepicker.css"
 import { startOfMonth, endOfMonth, subMonths, subYears } from 'date-fns'
+import CustomDateRangePicker from './CustomDateRangePicker'
 
 const HistoryPageTableSearch = ({ onSearch, onDateRangeChange }) => {
   const [searchTerm, setSearchTerm] = useState('')
   const [dateRange, setDateRange] = useState([null, null])
-  const [startDate, endDate] = dateRange
+  // const [startDate, endDate] = dateRange
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value)
@@ -55,40 +58,24 @@ const HistoryPageTableSearch = ({ onSearch, onDateRangeChange }) => {
       selectedOption.action()
     }
   }
+  const handleDateRangeApply = (start: Date, end: Date) => {
+    setStartDate(start);
+    setEndDate(end);
+};
 
   return (
-    <div className="flex items-center space-x-4 flex-wrap">
+    <div className="flex items-center space-x-3 flex-wrap">
       <Input
-        className="max-w-md md:w-52 md:mb-0 mb-4"
+        className="max-w-md md:w-52 md:mb-0"
         size="sm"
         placeholder="Search compliance"
         prefix={<HiOutlineSearch className="text-lg" />}
         value={searchTerm}
         onChange={handleSearch}
       />
-      <div className='border rounded-md'>
 
-      <Dropdown title="Select Date Range">
-        {dateRangeOptions.map((item) => (
-          <Dropdown.Item
-          onSelect={onDropdownItemClick}
-          eventKey={item.key}
-          key={item.key}
-          >
-            {item.name}
-          </Dropdown.Item>
-        ))}
-      </Dropdown>
-      </div>
-      <DatePicker
-        selectsRange={true}
-        startDate={startDate}
-        endDate={endDate}
-        onChange={handleDateRangeChange}
-        className="border p-2 rounded"
-        placeholderText="Select date range"
-      />
-      
+      <CustomDateRangePicker onApply={handleDateRangeApply} />
+   
     </div>
   )
 }
