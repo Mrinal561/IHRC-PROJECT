@@ -287,14 +287,14 @@ const DownloadCertificateButton = () => {
             ))}
           </Dropdown>
         </div>
-        <Button
+        {/* <Button
             variant="solid"
             size="sm"
             icon={<HiDownload />}
             onClick={handleAssignClick}
         >
             Download Certificates
-        </Button>
+        </Button> */}
 
         <Dialog
             isOpen={isDialogOpen}
