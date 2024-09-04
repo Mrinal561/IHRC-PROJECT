@@ -271,6 +271,21 @@ const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadS
       >
         <h5 className="mb-4">Change Compliance Status</h5>
         
+
+        
+
+        {selectedCompliance?.Proof_Of_Compliance_Mandatory === 'Yes' && (
+          <Input
+          type="file"
+          onChange={onFileChange}
+          className="mb-4"
+          />
+        )}
+        {selectedCompliance && (
+          <p className="mb-4 text-red-500 text-sm">
+            {selectedCompliance.Proof_Of_Compliance_Mandatory === 'Yes' ? '*Proof is mandatory' : ''}
+          </p>
+        )}
         <Input 
           placeholder="Please Enter the Remarks" 
           textArea 
@@ -278,21 +293,6 @@ const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadS
           onChange={(e) => setRemark(e.target.value)}
           className="mb-4"
         />
-
-        
-
-        {selectedCompliance?.Proof_Of_Compliance_Mandatory === 'Yes' && (
-          <Input
-            type="file"
-            onChange={onFileChange}
-            className="mb-4"
-          />
-        )}
-        {selectedCompliance && (
-          <p className="mb-4 text-red-500">
-            {selectedCompliance.Proof_Of_Compliance_Mandatory === 'Yes' ? '*Proof is mandatory' : ''}
-          </p>
-        )}
 
         <div className="text-right mt-6">
           <Button
