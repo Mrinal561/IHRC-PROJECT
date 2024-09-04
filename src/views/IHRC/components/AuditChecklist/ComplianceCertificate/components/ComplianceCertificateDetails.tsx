@@ -214,6 +214,8 @@ interface CertificateData {
   expiryDate: string;
   status: string;
   Location: string;
+  CompanyGroup:string;
+  Branch:string;
 }
 
 const statusColor: Record<string, string> = {
@@ -223,7 +225,8 @@ const statusColor: Record<string, string> = {
 };
 
 const initialData: CertificateData[] = [
-  {
+  { 
+    CompanyGroup: "Tech Giants",
     companyName: 'Apple',
     year: 2024,
     month: 'January',
@@ -231,8 +234,10 @@ const initialData: CertificateData[] = [
     expiryDate: '2025-01-14',
     status: 'Active',
     Location: 'Maharashtra',
+    Branch: 'Headquarters',
   },
-  {
+  { 
+    CompanyGroup: "Tech Giants",
     companyName: 'Google',
     year: 2024,
     month: 'March',
@@ -240,8 +245,10 @@ const initialData: CertificateData[] = [
     expiryDate: '2024-03-31',
     status: 'Active',
     Location: 'Delhi',
+    Branch: 'Main Office',
   },
-  {
+  { 
+    CompanyGroup: "Retail Leaders",
     companyName: 'TCS',
     year: 2024,
     month: 'April',
@@ -249,8 +256,10 @@ const initialData: CertificateData[] = [
     expiryDate: '2024-06-30',
     status: 'Active',
     Location: 'Mumbai',
+    Branch: 'Regional Office',
   },
-  {
+  { 
+    CompanyGroup: "Financial Services",
     companyName: 'Paypal',
     year: 2024,
     month: 'April',
@@ -258,8 +267,10 @@ const initialData: CertificateData[] = [
     expiryDate: '2024-06-30',
     status: 'Active',
     Location: 'Pune',
+    Branch: 'Support Center',
   },
-  {
+  { 
+    CompanyGroup: "Tech Giants",
     companyName: 'Amazon',
     year: 2024,
     month: 'April',
@@ -267,6 +278,7 @@ const initialData: CertificateData[] = [
     expiryDate: '2024-06-30',
     status: 'Active',
     Location: 'Bengaluru',
+    Branch: 'Warehouse',
   },
 ];
 
@@ -320,6 +332,20 @@ const ComplianceCertificateDetails = () => {
 
   const columns: ColumnDef<CertificateData>[] = [
     {
+      header: 'Company Group',
+      accessorKey: 'CompanyGroup',
+      cell: (props) => {
+        const value = props.getValue() as string;
+        return (
+          <Tooltip title={value} placement="top">
+            <div className="w-32 truncate">
+              {value}
+            </div>
+          </Tooltip>
+        );
+      },
+    },
+    {
       header: 'Company Name',
       accessorKey: 'companyName',
       cell: (props) => {
@@ -342,7 +368,21 @@ const ComplianceCertificateDetails = () => {
       accessorKey: 'month',
     },
     {
-      header: 'Location',
+      header: 'Branch',
+      accessorKey: 'Branch',
+      cell: (props) => {
+        const value = props.getValue() as string;
+        return (
+          <Tooltip title={value} placement="top">
+            <div className="w-28 truncate">
+              {value}
+            </div>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      header: 'State',
       accessorKey: 'Location',
       cell: (props) => {
         const value = props.getValue() as string;
