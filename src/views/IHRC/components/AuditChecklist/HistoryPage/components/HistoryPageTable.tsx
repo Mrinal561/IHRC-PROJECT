@@ -4,12 +4,12 @@ import { ColumnDef } from '@/components/shared/DataTable';
 import DataTable from '@/components/shared/DataTable';
 import { Button, Tooltip, Dialog, Input, toast, Notification, Badge } from '@/components/ui';
 import { FaDownload } from 'react-icons/fa6';
-import { HiDownload } from 'react-icons/hi';
-
-
+import { HiDownload, HiOutlineEye } from 'react-icons/hi';
+import { RiEyeLine } from 'react-icons/ri';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 // Define the structure of our data
-interface HistoryComplianceDataRow {
+export interface HistoryComplianceDataRow {
   Compliance_Instance_ID: number;
   Compliance_ID: number;
   Compliance_Header: string;
@@ -20,6 +20,16 @@ interface HistoryComplianceDataRow {
   Status: 'Completed';
   Legislation:string;
   Location:string;
+  Compliance_Categorization: string;
+  Compliance_Description: string;
+  Compliance_Applicability: string;
+  Compliance_Clause: string;
+  Compliance_Type: string;
+  Compliance_Frequency: string;
+  Criticality: string;
+  Proof:string;
+  Remark:string;
+  Bare_Act_Text:string;
 }
 
 // Sample data for the table
@@ -34,7 +44,17 @@ const initialData: HistoryComplianceDataRow[] = [
     Legislation: "Bihar Shops and Establishments Act 1953 and Bihar Shops Establishments Rules 1955/ Bihar/ IR",
     Location: "HMVL - Office - Muzaffarpur - sadtpur - HR/ Muzaffarpur/ Bihar/ Office",
     Category: 'Legal',
-    Status: 'Completed'
+    Status: 'Completed',
+    Compliance_Description: "This compliance involves renewing the annual license required for operating a shop or establishment under the Maharashtra Shops and Establishments Act.",
+    Compliance_Applicability: "All registered shops and establishments operating in Maharashtra.",
+    Compliance_Clause: "Section 15 of the Maharashtra Shops and Establishments Act, 1948",
+    Compliance_Type: "Renewal",
+    Compliance_Frequency: "Annual",
+    Compliance_Categorization: "Licensing",
+    Proof: "Renewal receipt number 456789",
+    Remark: "Renewal completed on time without any issues.",
+    Bare_Act_Text: "Report any changes in employment status or wages to the Labour Department within seven days of occurrence, along with a fee of five rupees for each report.",
+    Criticality:"High"
   },
   {
     Compliance_Instance_ID: 1002,
@@ -47,6 +67,16 @@ const initialData: HistoryComplianceDataRow[] = [
     Status: 'Completed',
     Legislation: "Delhi Factories Act 1948 and Delhi Factories Rules 1950/ Delhi/ IR",
     Location: "HMVL - Office - Arrah - Ramana Pakri Road - HR/ Arrah/ Bihar/ Office",
+    Compliance_Description: "This compliance involves renewing the annual license required for operating a shop or establishment under the Maharashtra Shops and Establishments Act.",
+    Compliance_Applicability: "All registered shops and establishments operating in Maharashtra.",
+    Compliance_Clause: "Section 15 of the Maharashtra Shops and Establishments Act, 1948",
+    Compliance_Type: "Renewal",
+    Compliance_Frequency: "Annual",
+    Compliance_Categorization: "Licensing",
+    Proof: "Renewal receipt number 456789",
+    Remark: "Renewal completed on time without any issues.",
+    Bare_Act_Text: "Report any changes in employment status or wages to the Labour Department within seven days of occurrence, along with a fee of five rupees for each report.",
+    Criticality:"High"
   },
   {
     Compliance_Instance_ID: 1003,
@@ -59,6 +89,17 @@ const initialData: HistoryComplianceDataRow[] = [
     Status: 'Completed',
     Legislation: "Karnataka Shops and Commercial Establishments Act 1961 and Karnataka Shops Rules 1963/ Karnataka/ IR",
         Location: "HMVL - Office - Aurangabad - Priyavrat Path - HR/ Aurangabad/ Bihar/ Office",
+
+    Compliance_Description: "This compliance involves renewing the annual license required for operating a shop or establishment under the Maharashtra Shops and Establishments Act.",
+    Compliance_Applicability: "All registered shops and establishments operating in Maharashtra.",
+    Compliance_Clause: "Section 15 of the Maharashtra Shops and Establishments Act, 1948",
+    Compliance_Type: "Renewal",
+    Compliance_Frequency: "Annual",
+    Compliance_Categorization: "Licensing",
+    Proof: "Renewal receipt number 456789",
+    Remark: "Renewal completed on time without any issues.",
+    Bare_Act_Text: "Report any changes in employment status or wages to the Labour Department within seven days of occurrence, along with a fee of five rupees for each report.",
+    Criticality:"High"
   },
   {
     Compliance_Instance_ID: 1004,
@@ -71,6 +112,16 @@ const initialData: HistoryComplianceDataRow[] = [
     Status: 'Completed',
     Legislation: "Maharashtra Shops and Establishments Act 1948 and Maharashtra Shops Rules 1954/ Maharashtra/ IR",
         Location: "HMVL - Office - Begusarai - Kachhari Road - HR/ Begusarai/ Bihar/ Office",
+    Compliance_Description: "This compliance involves renewing the annual license required for operating a shop or establishment under the Maharashtra Shops and Establishments Act.",
+    Compliance_Applicability: "All registered shops and establishments operating in Maharashtra.",
+    Compliance_Clause: "Section 15 of the Maharashtra Shops and Establishments Act, 1948",
+    Compliance_Type: "Renewal",
+    Compliance_Frequency: "Annual",
+    Compliance_Categorization: "Licensing",
+    Proof: "Renewal receipt number 456789",
+    Remark: "Renewal completed on time without any issues.",
+    Bare_Act_Text: "Report any changes in employment status or wages to the Labour Department within seven days of occurrence, along with a fee of five rupees for each report.",
+    Criticality:"High"
   },
   {
     Compliance_Instance_ID: 1005,
@@ -83,12 +134,22 @@ const initialData: HistoryComplianceDataRow[] = [
     Status: 'Completed',
     Legislation: "Tamil Nadu Shops and Establishments Act 1947 and Tamil Nadu Shops Rules 1959/ Tamil Nadu/ IR",
     Location: "HMVL - Office - Samastipur - ShivSagar Plazza -HR / Samastipur/ Bihar/ Office",
+    Compliance_Description: "This compliance involves renewing the annual license required for operating a shop or establishment under the Maharashtra Shops and Establishments Act.",
+    Compliance_Applicability: "All registered shops and establishments operating in Maharashtra.",
+    Compliance_Clause: "Section 15 of the Maharashtra Shops and Establishments Act, 1948",
+    Compliance_Type: "Renewal",
+    Compliance_Frequency: "Annual",
+    Compliance_Categorization: "Licensing",
+    Proof: "Renewal receipt number 456789",
+    Remark: "Renewal completed on time without any issues.",
+    Bare_Act_Text: "Report any changes in employment status or wages to the Labour Department within seven days of occurrence, along with a fee of five rupees for each report.",
+    Criticality:"High"
   }
 ];
 
 const DownloadHistoryButton = () => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    
+  const navigate = useNavigate();
   
     const handleAssignClick = () => {
         setIsDialogOpen(true);
@@ -116,40 +177,19 @@ const DownloadHistoryButton = () => {
   
     return (
         <>
-         <Tooltip title="Download" placement="top">
-                <Button size="sm" icon={<HiDownload />} onClick={handleAssignClick}>
-                </Button>
-              </Tooltip>
-  
-            <Dialog
-                isOpen={isDialogOpen}
-                onClose={handleCancel}
-                width={400}
-            >
-                <h5 className="mb-4">Confirm Download</h5>
-                <p>Are you sure you want to download compliance report?</p>
-                <div className="mt-6 text-right">
-                    <Button
-                        size="sm"
-                        className="mr-2"
-                        onClick={handleCancel}
-                    >
-                        Cancel
-                    </Button>
-                    <Button
-                        variant="solid"
-                        size="sm"
-                        onClick={handleConfirm}
-                    >
-                        Confirm
-                    </Button>
-                </div>
-            </Dialog>
+         <Tooltip title="View Details">
+                  <Button
+                    size="sm"
+                    onClick={() => navigate(`/app/IHRC/compliance-status-list-detail/${row.original.Compliance_Id}`, { state: row.original })}
+                    icon={<RiEyeLine />}
+                  />
+                </Tooltip>
         </>
     );
   };
 
 const HistoryPageTable: React.FC = () => {
+  const navigate = useNavigate();
   // State for the table data
   const [data] = useState<HistoryComplianceDataRow[]>(initialData);
  
@@ -227,7 +267,13 @@ const HistoryPageTable: React.FC = () => {
         header: 'Actions',
         id: 'actions',
         cell: ({row}) => (
-          <DownloadHistoryButton />
+          <Tooltip title="View Details">
+                  <Button
+                    size="sm"
+                    onClick={() => navigate(`/app/IHRC/history-list-detail/$  {row.original.Compliance_ID}`, { state: row.original })}
+                    icon={<RiEyeLine />}
+                  />
+                </Tooltip>
         ),
       },
     ],

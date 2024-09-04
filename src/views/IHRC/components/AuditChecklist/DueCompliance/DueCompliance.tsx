@@ -30,8 +30,8 @@ interface DueComplianceDataRow {
   Owner_Name: string;
   Approver_Name: string;
   Category: string;
-  Status2: 'Due' | 'Upcoming';
-  Status: 'Complied' | 'Not Complied' | 'NA' | 'Complied without Proof';
+  Status2: 'Overdue' | 'Upcoming'|'Completed'|'Partially';
+  Status:'';
 }
 
 const DueCompliance: React.FC = () => {
@@ -67,8 +67,8 @@ const DueCompliance: React.FC = () => {
             Owner_Name: 'Admin',
             Approver_Name: 'Shivesh Verma',
             Category: 'Legal',
-            Status: 'Complied',
-            Status2: 'Due'
+            Status: '',
+            Status2: 'Overdue'
           },
           {
             Compliance_Instance_ID: 1002,
@@ -96,7 +96,7 @@ const DueCompliance: React.FC = () => {
             Owner_Name: 'HR',
             Approver_Name: 'Shivesh Verma',
             Category: 'HR',
-            Status: 'Not Complied',
+            Status: '',
             Status2: 'Upcoming'
           },
           {
@@ -125,8 +125,8 @@ const DueCompliance: React.FC = () => {
             Owner_Name: 'Finance',
             Approver_Name: 'Shivesh Verma',
             Category: 'Finance',
-            Status: 'NA',
-            Status2: 'Due'
+            Status: '',
+            Status2: 'Completed'
           },
           {
             Compliance_Instance_ID: 1004,
@@ -153,9 +153,9 @@ const DueCompliance: React.FC = () => {
             Proof_Of_Compliance_Mandatory: "No",
             Owner_Name: 'Ravi Shankar Singh',
             Approver_Name: 'Shivesh Verma',
-            Category: 'HR',
-            Status: 'Complied without Proof',
-            Status2: 'Upcoming'          
+            Category: '',
+            Status: '',
+            Status2: 'Partially'          
           },
           {
             Compliance_Instance_ID: 1005,
@@ -183,8 +183,8 @@ const DueCompliance: React.FC = () => {
             Owner_Name: 'HR',
             Approver_Name: 'Shivesh Verma',
             Category: 'Legal',
-            Status: 'Not Complied',
-            Status2: 'Due'
+            Status: '',
+            Status2: 'Overdue'
           }
             // Add more mock data items here...
         ];

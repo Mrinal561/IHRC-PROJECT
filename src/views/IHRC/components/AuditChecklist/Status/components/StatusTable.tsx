@@ -15,9 +15,9 @@ import { HiDownload } from 'react-icons/hi';
 export interface StatusDataRow {
   Compliance_Id: number;
   Compliance_Header: string;
+  Compliance_Instance_ID: number;
   Compliance_Status: string;
   Location: string;
-  Compliance_Instance_ID: number;
   Legislation: string;
   Compliance_Categorization: string;
   Compliance_Description: string;
@@ -28,10 +28,11 @@ export interface StatusDataRow {
   Criticality: string;
   Owner:string;
   Approver:string;
+  Compliance_Month_Date:string;
   Uploaded_Date:string;
   Proof:string;
   Remark:string;
-  Compliance_Month_Date:string;
+  Bare_Act_Text:string;
 }
 
 interface StatusTableProps {
@@ -58,9 +59,10 @@ const initialData: StatusDataRow[] = [
     Owner: "Amit Kumar",
     Approver: "Sonia Mehta",
     Uploaded_Date: "2024-08-01",
+    Compliance_Month_Date: "2024-08-30",
     Proof: "Renewal receipt number 456789",
     Remark: "Renewal completed on time without any issues.",
-    Compliance_Month_Date: "2024-08-30"
+    Bare_Act_Text: "Report any changes in employment status or wages to the Labour Department within seven days of occurrence, along with a fee of five rupees for each report.",
   },
   {
     Compliance_Id: 3238,
@@ -81,7 +83,8 @@ const initialData: StatusDataRow[] = [
     Uploaded_Date: "2024-07-15",
     Proof: "Inspection appointment letter",
     Remark: "Inspection schedule is pending.",
-    Compliance_Month_Date: "2024-07-30"
+    Compliance_Month_Date: "2024-07-30",
+    Bare_Act_Text: "Report any changes in employment status or wages to the Labour Department within seven days of occurrence, along with a fee of five rupees for each report.",
   },
   {
     Compliance_Id: 3239,
@@ -102,7 +105,9 @@ const initialData: StatusDataRow[] = [
     Uploaded_Date: "2024-08-05",
     Proof: "Bank deposit slip",
     Remark: "Contribution for the current month is in progress.",
-    Compliance_Month_Date: "2024-08-07"
+    Compliance_Month_Date: "2024-08-07",
+    
+    Bare_Act_Text: "Report any changes in employment status or wages to the Labour Department within seven days of occurrence, along with a fee of five rupees for each report.",
   },
   {
     Compliance_Id: 3240,
@@ -123,7 +128,8 @@ const initialData: StatusDataRow[] = [
     Uploaded_Date: "2024-08-10",
     Proof: "Tax payment receipt",
     Remark: "Payment for the current month has been completed.",
-    Compliance_Month_Date: "2024-08-15"
+    Compliance_Month_Date: "2024-08-15",
+    Bare_Act_Text: "Report any changes in employment status or wages to the Labour Department within seven days of occurrence, along with a fee of five rupees for each report.",
   },
   {
     Compliance_Id: 3241,
@@ -144,7 +150,8 @@ const initialData: StatusDataRow[] = [
     Uploaded_Date: "2024-08-12",
     Proof: "Submission acknowledgment",
     Remark: "Filing is pending and due soon.",
-    Compliance_Month_Date: "2024-09-30"
+    Compliance_Month_Date: "2024-09-30",
+    Bare_Act_Text: "Report any changes in employment status or wages to the Labour Department within seven days of occurrence, along with a fee of five rupees for each report.",
   },
   {
     Compliance_Id: 3242,
@@ -165,7 +172,8 @@ const initialData: StatusDataRow[] = [
     Uploaded_Date: "2024-08-20",
     Proof: "Contribution statement",
     Remark: "Contribution for the current quarter is in progress.",
-    Compliance_Month_Date: "2024-09-30"
+    Compliance_Month_Date: "2024-09-30",
+    Bare_Act_Text: "Report any changes in employment status or wages to the Labour Department within seven days of occurrence, along with a fee of five rupees for each report.",
   },
   {
     Compliance_Id: 3243,
@@ -186,7 +194,8 @@ const initialData: StatusDataRow[] = [
     Uploaded_Date: "2024-08-25",
     Proof: "Report submission receipt",
     Remark: "Report submission was rejected; needs resubmission.",
-    Compliance_Month_Date: "2024-09-30"
+    Compliance_Month_Date: "2024-09-30",
+    Bare_Act_Text: "Report any changes in employment status or wages to the Labour Department within seven days of occurrence, along with a fee of five rupees for each report.",
   },
   {
     Compliance_Id: 3244,
@@ -207,7 +216,8 @@ const initialData: StatusDataRow[] = [
     Uploaded_Date: "2024-08-30",
     Proof: "Inspection report",
     Remark: "Records are up-to-date and available for inspection.",
-    Compliance_Month_Date: "2024-08-31"
+    Compliance_Month_Date: "2024-08-31",
+    Bare_Act_Text: "Report any changes in employment status or wages to the Labour Department within seven days of occurrence, along with a fee of five rupees for each report.",
   },
   {
     Compliance_Id: 3245,
@@ -228,7 +238,8 @@ const initialData: StatusDataRow[] = [
     Uploaded_Date: "2024-08-12",
     Proof: "Registration application receipt",
     Remark: "Registration process is ongoing.",
-    Compliance_Month_Date: "2024-08-15"
+    Compliance_Month_Date: "2024-08-15",
+    Bare_Act_Text: "Report any changes in employment status or wages to the Labour Department within seven days of occurrence, along with a fee of five rupees for each report.",
   },
   {
     Compliance_Id: 3246,
@@ -249,7 +260,8 @@ const initialData: StatusDataRow[] = [
     Uploaded_Date: "2024-08-15",
     Proof: "Quarterly return draft",
     Remark: "Tax returns are pending submission.",
-    Compliance_Month_Date: "2024-09-30"
+    Compliance_Month_Date: "2024-09-30",
+    Bare_Act_Text: "Report any changes in employment status or wages to the Labour Department within seven days of occurrence, along with a fee of five rupees for each report.",
   },
   {
     Compliance_Id: 3247,
@@ -270,7 +282,8 @@ const initialData: StatusDataRow[] = [
     Uploaded_Date: "2024-08-20",
     Proof: "Certification document",
     Remark: "Certification obtained and compliance achieved.",
-    Compliance_Month_Date: "2024-08-30"
+    Compliance_Month_Date: "2024-08-30",
+    Bare_Act_Text: "Report any changes in employment status or wages to the Labour Department within seven days of occurrence, along with a fee of five rupees for each report.",
   },
   {
     Compliance_Id: 3248,
@@ -291,7 +304,8 @@ const initialData: StatusDataRow[] = [
     Uploaded_Date: "2024-08-18",
     Proof: "Audit report submission receipt",
     Remark: "Audit completed and report submitted.",
-    Compliance_Month_Date: "2024-09-15"
+    Compliance_Month_Date: "2024-09-15",
+    Bare_Act_Text: "Report any changes in employment status or wages to the Labour Department within seven days of occurrence, along with a fee of five rupees for each report.",
   },
   {
     Compliance_Id: 3249,
@@ -312,7 +326,8 @@ const initialData: StatusDataRow[] = [
     Uploaded_Date: "2024-08-22",
     Proof: "Bank deposit slip",
     Remark: "Contribution was rejected due to incorrect details.",
-    Compliance_Month_Date: "2024-09-10"
+    Compliance_Month_Date: "2024-09-10",
+    Bare_Act_Text: "Report any changes in employment status or wages to the Labour Department within seven days of occurrence, along with a fee of five rupees for each report.",
   },
   {
     Compliance_Id: 3250,
@@ -333,7 +348,8 @@ const initialData: StatusDataRow[] = [
     Uploaded_Date: "2024-08-27",
     Proof: "Report submission acknowledgment",
     Remark: "Water usage report submitted and approved.",
-    Compliance_Month_Date: "2024-09-05"
+    Compliance_Month_Date: "2024-09-05",
+    Bare_Act_Text: "Report any changes in employment status or wages to the Labour Department within seven days of occurrence, along with a fee of five rupees for each report.",
   },
   {
     Compliance_Id: 3251,
@@ -354,7 +370,8 @@ const initialData: StatusDataRow[] = [
     Uploaded_Date: "2024-08-29",
     Proof: "Plan submission receipt",
     Remark: "Plan was rejected; requires revision.",
-    Compliance_Month_Date: "2024-09-25"
+    Compliance_Month_Date: "2024-09-25",
+    Bare_Act_Text: "Report any changes in employment status or wages to the Labour Department within seven days of occurrence, along with a fee of five rupees for each report.",
   }
 ];
 
