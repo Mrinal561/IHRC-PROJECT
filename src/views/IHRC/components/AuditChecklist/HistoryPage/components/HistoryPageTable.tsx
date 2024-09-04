@@ -249,7 +249,7 @@ const HistoryPageTable: React.FC = () => {
         },
       },
       {
-        header: 'Status',
+        header: 'Compliance Status',
         accessorKey: 'Status',
         cell: ({ getValue }) => {
           const status = getValue<'Completed'>();

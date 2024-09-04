@@ -67,51 +67,51 @@ const Header = (props: HeaderProps) => {
         setValue(newValue)
     }
 
-    const renderMiddleSection = () => {
-        if (location.pathname === '/home') {
-            return (
-                <div className='flex items-center space-x-10'>
-                    <Select<OptionType>
-                        value={companyGroup}
-                        onChange={handleSelectChange(setCompanyGroup)}
-                        options={[{ value: 'Company Group', label: 'Company Group' }]}
-                        placeholder="Company Group"
-                        className="w-[220px]"
-                        styles={customStyles}
-                        components={{ DropdownIndicator }}
-                    />
-                    <Select<OptionType>
-                        value={company}
-                        onChange={handleSelectChange(setCompany)}
-                        options={[{ value: 'Company', label: 'Company' }]}
-                        placeholder="Company"
-                        className="w-[180px]"
-                        styles={customStyles}
-                        components={{ DropdownIndicator }}
-                    />
-                    <Select<OptionType>
-                        value={state}
-                        onChange={handleSelectChange(setState)}
-                        options={[{ value: 'State', label: 'State' }]}
-                        placeholder="State"
-                        className="w-[180px]"
-                        styles={customStyles}
-                        components={{ DropdownIndicator }}
-                    />
-                    <Select<OptionType>
-                        value={branch}
-                        onChange={handleSelectChange(setBranch)}
-                        options={[{ value: 'Branch', label: 'Branch' }]}
-                        placeholder="Branch"
-                        className="w-[180px]"
-                        styles={customStyles}
-                        components={{ DropdownIndicator }}
-                    />
-                </div>
-            )
-        }
-        return null;
-    }
+    // const renderMiddleSection = () => {
+    //     if (location.pathname === '/home') {
+    //         return (
+    //             <div className='flex items-center space-x-10'>
+    //                 <Select<OptionType>
+    //                     value={companyGroup}
+    //                     onChange={handleSelectChange(setCompanyGroup)}
+    //                     options={[{ value: 'Company Group', label: 'Company Group' }]}
+    //                     placeholder="Company Group"
+    //                     className="w-[220px]"
+    //                     styles={customStyles}
+    //                     components={{ DropdownIndicator }}
+    //                 />
+    //                 <Select<OptionType>
+    //                     value={company}
+    //                     onChange={handleSelectChange(setCompany)}
+    //                     options={[{ value: 'Company', label: 'Company' }]}
+    //                     placeholder="Company"
+    //                     className="w-[180px]"
+    //                     styles={customStyles}
+    //                     components={{ DropdownIndicator }}
+    //                 />
+    //                 <Select<OptionType>
+    //                     value={state}
+    //                     onChange={handleSelectChange(setState)}
+    //                     options={[{ value: 'State', label: 'State' }]}
+    //                     placeholder="State"
+    //                     className="w-[180px]"
+    //                     styles={customStyles}
+    //                     components={{ DropdownIndicator }}
+    //                 />
+    //                 <Select<OptionType>
+    //                     value={branch}
+    //                     onChange={handleSelectChange(setBranch)}
+    //                     options={[{ value: 'Branch', label: 'Branch' }]}
+    //                     placeholder="Branch"
+    //                     className="w-[180px]"
+    //                     styles={customStyles}
+    //                     components={{ DropdownIndicator }}
+    //                 />
+    //             </div>
+    //         )
+    //     }
+    //     return null;
+    // }
 
     return (
         <header className={classNames('header', className)}>
@@ -126,7 +126,7 @@ const Header = (props: HeaderProps) => {
                 <div className="header-action header-action-start flex items-center">
                     {headerStart}
                 </div>
-                {renderMiddleSection()}
+                {/* {renderMiddleSection()} */}
                 <div className="header-action header-action-end flex items-center">
                     {headerEnd}
                 </div>
