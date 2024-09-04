@@ -141,7 +141,7 @@ const CustomDateRangePicker = ({ onApply }) => {
                 readOnly
                 className="border p-2 w-40 cursor-pointer"
               />
-              {!startDate && <span className="absolute inset-y-0 left-0 pl-2 flex items-center text-gray-500">From:</span>}
+              {/* {!startDate && <span className="absolute inset-y-0 left-0 pl-2 flex items-center text-gray-500">From:</span>} */}
             </div>
             <div className="relative">
               <Input
@@ -151,7 +151,7 @@ const CustomDateRangePicker = ({ onApply }) => {
                 readOnly
                 className="border p-2 w-40 cursor-pointer"
               />
-              {!endDate && <span className="absolute inset-y-0 left-0 pl-2 flex items-center text-gray-500">To:</span>}
+              {/* {!endDate && <span className="absolute inset-y-0 left-0 pl-2 flex items-center text-gray-500">To:</span>} */}
             </div>
           </div>
           {isOpen && (
