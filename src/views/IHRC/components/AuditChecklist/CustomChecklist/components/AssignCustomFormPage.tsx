@@ -4,6 +4,8 @@ import React from 'react';
 import { Formik, Field, Form } from 'formik';
 import * as Yup from 'yup';
 import { Input, Button, FormItem, FormContainer } from '@/components/ui';
+import { useNavigate } from 'react-router-dom';
+import { IoArrowBack } from 'react-icons/io5';
 
 // Define the validation schema
 const validationSchema = Yup.object({
@@ -39,10 +41,18 @@ const AssignCustomFormPage: React.FC = () => {
     };
 
     const size = 'sm'; // Set the size to 'md' for medium
-
+    const navigate = useNavigate();
     return (
         <div className="p-0">
+            <div className='flex gap-3 items-center'>
+            <Button
+            size="sm"
+            variant="plain"
+            icon={<IoArrowBack className="text-[#72828e] hover:text-[#5d6169]" />}
+            onClick={() => navigate(-1)}
+          />
             <h3 className="text-2xl font-semibold mb-7">Assign Compliance</h3>
+            </div>
             <Formik
                 initialValues={initialValues}
                 validationSchema={validationSchema}
