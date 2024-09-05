@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Dropdown } from '@/components/ui/dropdown';
+import Company from '../../AssignChecklist/components/Company';
 
 const CompanyLocationDropdowns = () => {
   const [selectedCompany, setSelectedCompany] = useState('Company');
@@ -30,7 +31,7 @@ const CompanyLocationDropdowns = () => {
   };
 
   return (
-    <div className="flex space-x-4">
+    <div className="flex space-x-3">
       <div className="flex-1">
         <Dropdown title={selectedCompany} onSelect={onCompanySelect} className="w-full">
           {companies.map((company) => (

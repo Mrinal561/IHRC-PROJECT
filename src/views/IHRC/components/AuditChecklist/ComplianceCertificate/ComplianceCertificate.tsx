@@ -160,6 +160,7 @@ import ComplianceCertificateDetails from './components/ComplianceCertificateDeta
 import { Button, Dialog, toast, Notification, Dropdown } from '@/components/ui'
 import { FaDownload } from 'react-icons/fa6';
 import { HiDownload } from 'react-icons/hi';
+import Company from '../AssignChecklist/components/Company';
 
 const DownloadCertificateButton = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -331,8 +332,8 @@ const ComplianceCertificate = () => {
       <div>
                 <h3 className="mb-4 lg:mb-0">Compliance Certificate</h3>
       </div>
-      <div>
-
+      <div className='flex gap-3'>
+        <Company />
       <DownloadCertificateButton />
       </div>
     </div>
