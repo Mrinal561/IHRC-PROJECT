@@ -272,7 +272,7 @@ import Select from '@/components/ui/Select';
 import { ActionMeta, components, SingleValue } from 'react-select';
 import CustomDateRangePicker from './CustomDateRangePicker';
 import { FaChevronDown } from 'react-icons/fa';
-import { FaFilter } from 'react-icons/fa';
+import DashboardFilter from './DashboardFilter';
 
 interface OptionType {
     value: string;
@@ -280,53 +280,122 @@ interface OptionType {
 }
 
 const customStyles = {
-        control: (provided: any) => ({
-            ...provided,
-            borderRadius: 0,
-            // border: '1px solid #e2e8f0',
-            // borderBottom: '1px solid #e2e8f0',
-            boxShadow: 'none',
-            '&:hover': {
-                // borderBottom: '1px solid #718096',
-            },
-        }),
-        indicatorSeparator: () => ({
-            display: 'none',
-        }),
-        dropdownIndicator: (provided: any) => ({
-            ...provided,
-            color: '#718096',
-        }),
-        placeholder: (provided: any) => ({
-            ...provided,
-            color: '#718096',
-        }),
-    }
-    const DropdownIndicator = (props: any) => {
-        return (
-            <components.DropdownIndicator {...props}>
-                <FaChevronDown size={12} />
-            </components.DropdownIndicator>
-        );
-    };
+    control: (provided: any) => ({
+        ...provided,
+        minHeight: '36px',
+        height: '36px',
+        borderRadius: '0.375rem',
+        border: '1px solid #e2e8f0',
+        boxShadow: 'none',
+        '&:hover': {
+            border: '1px solid #718096',
+        },
+    }),
+    valueContainer: (provided: any) => ({
+        ...provided,
+        height: '36px',
+        padding: '0 6px',
+    }),
+    input: (provided: any) => ({
+        ...provided,
+        margin: '0px',
+    }),
+    indicatorSeparator: () => ({
+        display: 'none',
+    }),
+    indicatorsContainer: (provided: any) => ({
+        ...provided,
+        height: '36px',
+    }),
+    singleValue: (provided: any) => ({
+        ...provided,
+        maxWidth: 'calc(100% - 8px)',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+    }),
+    menu: (provided: any) => ({
+        ...provided,
+        width: 'auto',
+        minWidth: '100%',
+    }),
+    menuList: (provided: any) => ({
+        ...provided,
+        width: '100%',
+        minWidth: '100%',
+    }),
+    option: (provided: any) => ({
+        ...provided,
+        whiteSpace: 'nowrap',
+    }),
+}
+
+const DropdownIndicator = (props: any) => {
+    return (
+        <components.DropdownIndicator {...props}>
+            <FaChevronDown size={12} />
+        </components.DropdownIndicator>
+    );
+};
 
 const IhrcDashboardHeader = () => {
-    const [selectedOption, setSelectedOption] = useState<OptionType | null>(null);
-    const [companyGroup, setCompanyGroup] = useState<OptionType | null>(null);
-    const [company, setCompany] = useState<OptionType | null>(null);
-    const [state, setState] = useState<OptionType | null>(null);
-    const [branch, setBranch] = useState<OptionType | null>(null);
+    const companyGroupOptions: OptionType[] = [
+        { value: 'group1', label: 'Company Group 1' },
+        { value: 'group2', label: 'Company Group 2' },
+        { value: 'group3', label: 'Company Group 3' },
+    ];
+
+    const companyOptions: OptionType[] = [
+        { value: 'company1', label: 'CEAT' },
+        // { value: 'company2', label: 'MRF' },
+        // { value: 'company3', label: 'Globalsoft PVT. LTD.' },
+    ];
+
+    const stateOptions: OptionType[] = [
+        { value: 'state1', label: 'Bihar' },
+        { value: 'state2', label: 'Jharkhand' },
+        { value: 'state3', label: 'West Bengal' },
+    ];
+
+    const branchOptions: OptionType[] = [
+        { value: 'branch1', label: 'Muzaffarpur' },
+        { value: 'branch2', label: 'Ranchi' },
+        { value: 'branch3', label: 'Howrah' },
+    ];
+
+    const [companyGroup, setCompanyGroup] = useState<OptionType>(companyGroupOptions[0]);
+    const [company, setCompany] = useState<OptionType>(companyOptions[0]);
+    const [state, setState] = useState<OptionType>(stateOptions[0]);
+    const [branch, setBranch] = useState<OptionType>(branchOptions[0]);
     const [startDate, setStartDate] = useState<Date | null>(null);
     const [endDate, setEndDate] = useState<Date | null>(null);
-    const [isAccordionOpen, setIsAccordionOpen] = useState(false);   
-    
 
-
-    const handleSelectChange = (
+    const handleCompanyGroupChange = (
         newValue: SingleValue<OptionType>,
         actionMeta: ActionMeta<OptionType>
     ) => {
-        setSelectedOption(newValue);
+        if (newValue) setCompanyGroup(newValue);
+    };
+
+    const handleCompanyChange = (
+        newValue: SingleValue<OptionType>,
+        actionMeta: ActionMeta<OptionType>
+    ) => {
+        if (newValue) setCompany(newValue);
+    };
+
+    const handleStateChange = (
+        newValue: SingleValue<OptionType>,
+        actionMeta: ActionMeta<OptionType>
+    ) => {
+        if (newValue) setState(newValue);
+    };
+
+    const handleBranchChange = (
+        newValue: SingleValue<OptionType>,
+        actionMeta: ActionMeta<OptionType>
+    ) => {
+        if (newValue) setBranch(newValue);
     };
 
     const handleDateRangeApply = (start: Date, end: Date) => {
@@ -334,53 +403,48 @@ const IhrcDashboardHeader = () => {
         setEndDate(end);
     };
 
-    const toggleAccordion = () => {
-        setIsAccordionOpen(!isAccordionOpen);
-    };
-
-
     return (
-        <div className="">
-            <div className="flex flex-col lg:flex-row lg:items-center gap-3 justify-between">
+        <div className="w-full">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between">
                 <div className="mb-4 lg:mb-0">
                     <h3 className="text-2xl font-bold">DASHBOARD</h3>
                     <p className="text-gray-600">View your company's compliance statistics</p>
                 </div>
-                <div className="flex flex-col lg:flex-row lg:items-center gap-3 justify-end">
+                <div className="flex items-center gap-3">
                     <Select<OptionType>
                         value={companyGroup}
-                        onChange={handleSelectChange}
-                        options={[{ value: 'Company Group', label: 'Company Group' }]}
-                        placeholder={'Company Group'}
-                        className="w-[120px] truncate"
+                        onChange={handleCompanyGroupChange}
+                        options={companyGroupOptions}
+                        className="w-[160px]"
+                        styles={customStyles}
                         components={{ DropdownIndicator }}
-                        />
+                    />
                     <Select<OptionType>
                         value={company}
-                        onChange={handleSelectChange}
-                        options={[{ value: 'Company', label: 'Company' }]}
-                        placeholder={'Company'}
+                        onChange={handleCompanyChange}
+                        options={companyOptions}
                         className="w-[120px]"
+                        styles={customStyles}
                         components={{ DropdownIndicator }}
                     />
                     <Select<OptionType>
                         value={state}
-                        onChange={handleSelectChange}
-                        options={[{ value: 'State', label: 'State' }]}
-                        placeholder={'State'}
+                        onChange={handleStateChange}
+                        options={stateOptions}
                         className="w-[100px]"
+                        styles={customStyles}
                         components={{ DropdownIndicator }}
                     />
                     <Select<OptionType>
                         value={branch}
-                        onChange={handleSelectChange}
-                        options={[{ value: 'Branch', label: 'Branch' }]}
-                        placeholder={'Branch'}
+                        onChange={handleBranchChange}
+                        options={branchOptions}
                         className="w-[100px]"
+                        styles={customStyles}
                         components={{ DropdownIndicator }}
                     />
-                    
                     <CustomDateRangePicker onApply={handleDateRangeApply} />
+                    <DashboardFilter />
                 </div>
             </div>
         </div>

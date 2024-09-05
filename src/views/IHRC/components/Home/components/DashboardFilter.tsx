@@ -168,7 +168,6 @@ const DashboardFilter = () => {
                 size="sm"
                 className="block md:inline-block ltr:md:ml-2 rtl:md:mr-2 md:mb-0 mb-4"
                 icon={<HiOutlineFilter />}
-                onClick={() => openDrawer()}
             >
                 Filter
             </Button>

@@ -132,14 +132,14 @@ const CustomDateRangePicker = ({ onApply }) => {
 
       return (
         <div className="relative">
-          <div className="flex space-x-2">
+          <div className="flex space-x-3">
             <div className="relative">
               <Input
                 type="text"
                 value={`From: ${formatDateDisplay(startDate)}`}
                 onClick={() => setIsOpen(true)}
                 readOnly
-                className="border p-2 w-32 cursor-pointer"
+                className="border h-[36px] w-32 cursor-pointer"
               />
               {/* {!startDate && <span className="absolute inset-y-0 left-0 pl-2 flex items-center text-gray-500">From:</span>} */}
             </div>
@@ -149,7 +149,7 @@ const CustomDateRangePicker = ({ onApply }) => {
                 value={`To: ${formatDateDisplay(endDate)}`}
                 onClick={() => setIsOpen(true)}
                 readOnly
-                className="border p-2 w-32 cursor-pointer"
+                className="border h-[36px] w-28 cursor-pointer"
               />
               {/* {!endDate && <span className="absolute inset-y-0 left-0 pl-2 flex items-center text-gray-500">To:</span>} */}
             </div>
