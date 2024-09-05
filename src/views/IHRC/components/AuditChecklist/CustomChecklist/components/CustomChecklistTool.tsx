@@ -6,10 +6,12 @@ import { HiDownload } from 'react-icons/hi'
 import CustomChecklistButton from './CustomChecklistButton'
 import { Button } from '@/components/ui'
 import BulkUpload from './BulkUpload';
+import Company from '../../AssignChecklist/components/Company'
 const CustomChecklistTool = () => {
     return (
         <div className="flex flex-col lg:flex-row lg:items-center gap-3">
-            <CustomTableSearch />
+            {/* <CustomTableSearch /> */}
+            <Company />
             {/* <CustomTableFilter />
             <Link
                 download
