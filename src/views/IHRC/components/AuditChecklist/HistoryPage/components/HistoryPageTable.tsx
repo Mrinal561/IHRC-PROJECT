@@ -17,7 +17,7 @@ export interface HistoryComplianceDataRow {
   Owner_Name: string;
   Approver_Name: string;
   Category: string;
-  Status: 'Completed';
+  Status: string;
   Legislation:string;
   Location:string;
   Compliance_Categorization: string;
@@ -44,7 +44,7 @@ const initialData: HistoryComplianceDataRow[] = [
     Legislation: "Bihar Shops and Establishments Act 1953 and Bihar Shops Establishments Rules 1955/ Bihar/ IR",
     Location: "HMVL - Office - Muzaffarpur - sadtpur - HR/ Muzaffarpur/ Bihar/ Office",
     Category: 'Legal',
-    Status: 'Completed',
+    Status: 'Complied',
     Compliance_Description: "This compliance involves renewing the annual license required for operating a shop or establishment under the Maharashtra Shops and Establishments Act.",
     Compliance_Applicability: "All registered shops and establishments operating in Maharashtra.",
     Compliance_Clause: "Section 15 of the Maharashtra Shops and Establishments Act, 1948",
@@ -64,7 +64,7 @@ const initialData: HistoryComplianceDataRow[] = [
     Owner_Name: 'HR',
     Approver_Name: 'Shivesh Verma',
     Category: 'HR',
-    Status: 'Completed',
+    Status: 'Not Complied',
     Legislation: "Delhi Factories Act 1948 and Delhi Factories Rules 1950/ Delhi/ IR",
     Location: "HMVL - Office - Arrah - Ramana Pakri Road - HR/ Arrah/ Bihar/ Office",
     Compliance_Description: "This compliance involves renewing the annual license required for operating a shop or establishment under the Maharashtra Shops and Establishments Act.",
@@ -86,7 +86,7 @@ const initialData: HistoryComplianceDataRow[] = [
     Owner_Name: 'Finance',
     Approver_Name: 'Shivesh Verma',
     Category: 'Finance',
-    Status: 'Completed',
+    Status: 'NA',
     Legislation: "Karnataka Shops and Commercial Establishments Act 1961 and Karnataka Shops Rules 1963/ Karnataka/ IR",
         Location: "HMVL - Office - Aurangabad - Priyavrat Path - HR/ Aurangabad/ Bihar/ Office",
 
@@ -109,7 +109,7 @@ const initialData: HistoryComplianceDataRow[] = [
     Owner_Name: 'Ravi Shankar Singh',
     Approver_Name: 'Shivesh Verma',
     Category: 'HR',
-    Status: 'Completed',
+    Status: 'Not Complied',
     Legislation: "Maharashtra Shops and Establishments Act 1948 and Maharashtra Shops Rules 1954/ Maharashtra/ IR",
         Location: "HMVL - Office - Begusarai - Kachhari Road - HR/ Begusarai/ Bihar/ Office",
     Compliance_Description: "This compliance involves renewing the annual license required for operating a shop or establishment under the Maharashtra Shops and Establishments Act.",
@@ -131,7 +131,7 @@ const initialData: HistoryComplianceDataRow[] = [
     Owner_Name: 'HR',
     Approver_Name: 'Shivesh Verma',
     Category: 'Legal',
-    Status: 'Completed',
+    Status: 'Complied',
     Legislation: "Tamil Nadu Shops and Establishments Act 1947 and Tamil Nadu Shops Rules 1959/ Tamil Nadu/ IR",
     Location: "HMVL - Office - Samastipur - ShivSagar Plazza -HR / Samastipur/ Bihar/ Office",
     Compliance_Description: "This compliance involves renewing the annual license required for operating a shop or establishment under the Maharashtra Shops and Establishments Act.",
@@ -251,16 +251,30 @@ const HistoryPageTable: React.FC = () => {
       {
         header: 'Compliance Status',
         accessorKey: 'Status',
-        cell: ({ getValue }) => {
-          const status = getValue<'Completed'>();
-          let statusColor = 'bg-green-500';
-          let textColor = 'text-green-500';
-          return (
-            <div className="w-24 flex items-center">
-              <Badge className= 'mr-2 bg-green-500'/>
-              <div className={`font-semibold ${textColor}`}>{status}</div>
-            </div>
-          );
+        cell: (props) => {
+          // const status = getValue<'Completed'>();
+          // let statusColor = 'bg-green-500';
+          // let textColor = 'text-green-500';
+          // return (
+          //   <div className="w-30 flex items-center">
+          //     <Badge className= 'mr-2 bg-green-500'/>
+          //     <div className={`font-semibold ${textColor}`}>{status}</div>
+          //   </div>
+          const criticality = props.getValue(); // Get the value once
+            
+                    return (
+                        <div className="w-24 font-semibold truncate">
+                            {criticality === 'Complied' ? (
+                                <span className="text-green-500">{criticality}</span>
+                            ) : criticality === 'NA' ? (
+                                <span className="text-yellow-500">{criticality}</span>
+                            ) : criticality === 'Not Complied' ? ( 
+                                <span className="text-red-500">{criticality}</span>
+                            ): (
+                                <span></span>
+                            )}
+                        </div>
+                    );
         },
       },
       {

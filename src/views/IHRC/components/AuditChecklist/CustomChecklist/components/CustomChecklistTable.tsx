@@ -30,6 +30,7 @@ interface ComplianceRow {
     Due_Date: string;
     Scheduled_Frequency: string;
     Proof_Of_Compliance_Mandatory: string;
+    Compliance_Status:string;
 }
 
 const complianceData: ComplianceRow[] = [
@@ -55,6 +56,7 @@ const complianceData: ComplianceRow[] = [
         Due_Date: '14-Apr-17',
         Scheduled_Frequency: "Yearly",
         Proof_Of_Compliance_Mandatory: "Yes",
+        Compliance_Status:"Approved"
       },
       {
         Compliance_Id: 4501,
@@ -78,6 +80,7 @@ const complianceData: ComplianceRow[] = [
         Due_Date: '31-Dec-17',
         Scheduled_Frequency: "Yearly",
         Proof_Of_Compliance_Mandatory: "Yes",
+        Compliance_Status:"Pending"
       },
       {
         Compliance_Id: 5602,
@@ -101,6 +104,7 @@ const complianceData: ComplianceRow[] = [
         Due_Date: '05-Feb-18',
         Scheduled_Frequency: "Monthly",
         Proof_Of_Compliance_Mandatory: "No",
+        Compliance_Status:"Rejected"
       },
       {
         Compliance_Id: 6789,
@@ -124,6 +128,7 @@ const complianceData: ComplianceRow[] = [
         Due_Date: '15-Jan-18',
         Scheduled_Frequency: "Quarterly",
         Proof_Of_Compliance_Mandatory: "No",
+        Compliance_Status:"Approved"
       },
       {
         Compliance_Id: 7890,
@@ -147,6 +152,7 @@ const complianceData: ComplianceRow[] = [
         Due_Date: '01-June-17',
         Scheduled_Frequency: "Yearly",
         Proof_Of_Compliance_Mandatory: "No",
+        Compliance_Status:"Pending"
       }
 
 
@@ -253,6 +259,26 @@ const CustomChecklistTable = () => {
                 },
               },
               {
+                header: 'Criticality',
+                accessorKey: 'Criticality',
+                cell: (props) => {
+                    const criticality = props.getValue(); // Get the value once
+            
+                    return (
+                        <div className="w-24 font-semibold truncate">
+                            {criticality === 'High' ? (
+                                <span className="text-red-500">{criticality}</span>
+                            ) : criticality === 'Medium' ? (
+                                <span className="text-yellow-500">{criticality}</span>
+                            ) : (
+                                <span className="text-green-500">{criticality}</span>
+                            )}
+                        </div>
+                    );
+                }
+            },
+            
+              {
                 header: 'Location',
                 accessorKey: 'Location',
                 cell: (props) => {
@@ -288,7 +314,27 @@ const CustomChecklistTable = () => {
                     );
                 },
             },
+            {
+                header: 'Status',
+                accessorKey: 'Compliance_Status',
+                cell: (props) => {
+                    const criticality = props.getValue(); // Get the value once
             
+                    return (
+                        <div className="w-24 font-semibold truncate">
+                            {criticality === 'Approved' ? (
+                                <span className="text-green-500">{criticality}</span>
+                            ) : criticality === 'Pending' ? (
+                                <span className="text-yellow-500">{criticality}</span>
+                            ) : criticality === 'Rejected' ? ( 
+                                <span className="text-red-500">{criticality}</span>
+                            ): (
+                                <span></span>
+                            )}
+                        </div>
+                    );
+                }
+            },
             {
                 header: 'Actions',
                 id: 'actions',

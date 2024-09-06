@@ -159,7 +159,7 @@ const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadS
         header: 'Due Date',
         accessorKey: 'Due_Date',
         cell: (props) => (
-          <div className="w-14">
+          <div className="w-20">
             {new Date(props.getValue() as Date).toLocaleDateString()}
           </div>
         ),
@@ -246,11 +246,11 @@ const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadS
                   <MdEdit />
                 </Button>
               </Tooltip>
-              <Tooltip title="Download" placement="top">
+              {/* <Tooltip title="Download" placement="top">
                 <Button size="sm" onClick={handleDownload}>
                   <HiDownload />
                 </Button>
-              </Tooltip>
+              </Tooltip> */}
             </div>
           );
         },
@@ -291,7 +291,7 @@ const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadS
         <div className='flex items-center gap-3'>
         <p className='font-semibold'>Select the Compliance status</p>
 
-        <div className='border px-2'>
+        <div className='border px-2 mb-2'>
         <Dropdown
           title={selectedStatus === '' ? 'Set Status' : selectedStatus}
           onClick={() => {}}
@@ -310,17 +310,21 @@ const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadS
         </div>
 
         {selectedCompliance?.Proof_Of_Compliance_Mandatory === 'Yes' && (
+          <>
+          <label>Please Upload The Proof Of Compliance</label>
           <Input
             type="file"
             onChange={onFileChange}
             className="mb-4 mt-4"
           />
+          </>
         )}
         {selectedCompliance && (
           <p className="mb-4 text-red-500 text-sm">
             {selectedCompliance.Proof_Of_Compliance_Mandatory === 'Yes' ? '*Proof is mandatory' : ''}
           </p>
         )}
+        <label className='mb-2'>Remark:</label>
         <Input 
           placeholder="Please Enter the Remarks" 
           textArea 

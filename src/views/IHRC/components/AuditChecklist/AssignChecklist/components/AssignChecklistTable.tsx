@@ -75,7 +75,7 @@ const initialData: ChecklistDataRow[] = [
     Compliance_Type: "Renewal",
     Compliance_Frequency: "Annual",
     Compliance_Categorization: "Licensing",
-    Criticality:"High",
+    Criticality:"Medium",
   },
   {
     Compliance_Instance_ID: 1004,
@@ -109,7 +109,7 @@ const initialData: ChecklistDataRow[] = [
     Compliance_Type: "Renewal",
     Compliance_Frequency: "Annual",
     Compliance_Categorization: "Licensing",
-    Criticality:"High",
+    Criticality:"Medium",
   }
 ];
 
@@ -286,18 +286,6 @@ const AssignChecklistTable: React.FC = () => {
         ),
       },
       {
-        header: 'Compliance Header',
-        accessorKey: 'Compliance_Header',
-        cell: (props) => {
-          const value = props.getValue() as string;
-          return (
-            <Tooltip title={value} placement="top">
-              <div className="w-32 truncate">{value}</div>
-            </Tooltip>
-          );
-        },
-      },
-      {
         header: 'Legislation',
         accessorKey: 'Legislation',
         cell: (props) => {
@@ -309,6 +297,37 @@ const AssignChecklistTable: React.FC = () => {
             );
         },
     },
+    {
+      header: 'Criticality',
+      accessorKey: 'Criticality',
+      cell: (props) => {
+          const criticality = props.getValue(); // Get the value once
+  
+          return (
+              <div className="w-24 font-semibold truncate">
+                  {criticality === 'High' ? (
+                      <span className="text-red-500">{criticality}</span>
+                  ) : criticality === 'Medium' ? (
+                      <span className="text-yellow-500">{criticality}</span>
+                  ) : (
+                      <span className="text-green-500">{criticality}</span>
+                  )}
+              </div>
+          );
+      }
+  },
+  {
+    header: 'Compliance Header',
+    accessorKey: 'Compliance_Header',
+    cell: (props) => {
+      const value = props.getValue() as string;
+      return (
+        <Tooltip title={value} placement="top">
+          <div className="w-32 truncate">{value}</div>
+        </Tooltip>
+      );
+    },
+  },
   //   {
   //     header: 'Act',
   //     accessorKey: 'Bare_Act_Text',
@@ -328,7 +347,7 @@ const AssignChecklistTable: React.FC = () => {
         cell: ({ getValue }) => {
           const date = getValue<Date | string>();
           return <div className="w-20">
-            {date instanceof Date ? date.toLocaleDateString() : date || 'Not set'}
+            {date instanceof Date ? date.toLocaleDateString() : date || ''}
           </div>;
         },
       },
@@ -350,7 +369,7 @@ const AssignChecklistTable: React.FC = () => {
         header: 'Actions',
         id: 'actions',  
         cell: ({ row }) => {
-            const value1= "Edit"
+            const value1= "Set Owner & Approver"
             const value2= "Single Reminder"
             const value3= "View Details"
             return(
@@ -447,7 +466,7 @@ const AssignChecklistTable: React.FC = () => {
               </h5>
               <div className="space-y-3">
                   <div>
-                      <label className="block mb-2">Set Owner</label>
+                      <label className="block mb-2">Set Owner Name</label>
                       <Select
                           options={[
                               { value: 'Admin', label: 'Admin' },
@@ -479,7 +498,7 @@ const AssignChecklistTable: React.FC = () => {
                       />
                   </div>
                   <div>
-                      <label className="block mb-2">Approver Name</label>
+                      <label className="block mb-2">Set Approver Name</label>
                       <Select
                           options={[
                               {
@@ -511,13 +530,13 @@ const AssignChecklistTable: React.FC = () => {
                   </div>
                   {(!editData.Due_Date || editData.Due_Date === '') && (
                       <div>
-                      <label className="block mb-2">Due Date</label>
+                      <label className="block mb-2">Set Due Date</label>
                       {editData.Due_Date instanceof Date ? (
                         <div>{editData.Due_Date.toLocaleDateString()}</div>
                       ) : editData.Due_Date ? (
                         <div>{editData.Due_Date}</div>
                       ) : (
-                        <div>Not set</div>
+                        <div></div>
                       )}
                       <Calendar 
                         value={tempDueDate || undefined} 
