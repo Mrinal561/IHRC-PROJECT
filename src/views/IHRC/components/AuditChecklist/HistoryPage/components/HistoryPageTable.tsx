@@ -51,10 +51,10 @@ const initialData: HistoryComplianceDataRow[] = [
     Compliance_Type: "Renewal",
     Compliance_Frequency: "Annual",
     Compliance_Categorization: "Licensing",
+    Criticality:"High",
     Proof: "Renewal receipt number 456789",
     Remark: "Renewal completed on time without any issues.",
     Bare_Act_Text: "Report any changes in employment status or wages to the Labour Department within seven days of occurrence, along with a fee of five rupees for each report.",
-    Criticality:"High"
   },
   {
     Compliance_Instance_ID: 1002,
