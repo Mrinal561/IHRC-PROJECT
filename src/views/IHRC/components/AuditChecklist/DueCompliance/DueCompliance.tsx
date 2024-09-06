@@ -153,7 +153,7 @@ const DueCompliance: React.FC = () => {
             Proof_Of_Compliance_Mandatory: "No",
             Owner_Name: 'Ravi Shankar Singh',
             Approver_Name: 'Shivesh Verma',
-            Category: '',
+            Category: 'Legal',
             Status: '',
             Status2: 'Partially'          
           },
