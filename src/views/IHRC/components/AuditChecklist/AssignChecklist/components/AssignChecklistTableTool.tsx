@@ -12,7 +12,7 @@ import Company from './Company';
 // Instead of importing the file directly, we'll use a string path
 const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
-const BulkSetOwnerApproverButton = () => {
+export const BulkSetOwnerApproverButton = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [remark, setRemark] = useState('');
   const [file, setFile] = useState<File | null>(null);
@@ -73,7 +73,6 @@ const BulkSetOwnerApproverButton = () => {
     <div className='flex items-center justify-center gap-3'>
     <BulkAlertButton/>
       <Button 
-        block 
         variant="solid" 
         size="sm" 
         icon={<HiPlusCircle />} 

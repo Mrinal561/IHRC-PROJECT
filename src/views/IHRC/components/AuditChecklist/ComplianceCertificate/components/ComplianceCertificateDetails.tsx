@@ -331,34 +331,34 @@ const ComplianceCertificateDetails = () => {
   const [data] = useState(initialData);
 
   const columns: ColumnDef<CertificateData>[] = [
-    {
-      header: 'Company Group',
-      accessorKey: 'CompanyGroup',
-      cell: (props) => {
-        const value = props.getValue() as string;
-        return (
-          <Tooltip title={value} placement="top">
-            <div className="w-32 truncate">
-              {value}
-            </div>
-          </Tooltip>
-        );
-      },
-    },
-    {
-      header: 'Company Name',
-      accessorKey: 'companyName',
-      cell: (props) => {
-        const value = props.getValue() as string;
-        return (
-          <Tooltip title={value} placement="top">
-            <div className="w-32 truncate">
-              {value}
-            </div>
-          </Tooltip>
-        );
-      },
-    },
+    // {
+    //   header: 'Company Group',
+    //   accessorKey: 'CompanyGroup',
+    //   cell: (props) => {
+    //     const value = props.getValue() as string;
+    //     return (
+    //       <Tooltip title={value} placement="top">
+    //         <div className="w-32 truncate">
+    //           {value}
+    //         </div>
+    //       </Tooltip>
+    //     );
+    //   },
+    // },
+    // {
+    //   header: 'Company Name',
+    //   accessorKey: 'companyName',
+    //   cell: (props) => {
+    //     const value = props.getValue() as string;
+    //     return (
+    //       <Tooltip title={value} placement="top">
+    //         <div className="w-32 truncate">
+    //           {value}
+    //         </div>
+    //       </Tooltip>
+    //     );
+    //   },
+    // },
     {
       header: 'Year',
       accessorKey: 'year',
