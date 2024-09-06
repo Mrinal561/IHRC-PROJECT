@@ -29,6 +29,7 @@ interface ComplianceRow {
     Due_Date: string;
     Scheduled_Frequency: string;
     Proof_Of_Compliance_Mandatory: string;
+    
 }
 
 const complianceData: ComplianceRow[] = [
@@ -257,6 +258,26 @@ const RecommendedTableContent = () => {
                     );
                 },
             },
+            {
+                header: 'Criticality',
+                accessorKey: 'Criticality',
+                cell: (props) => {
+                    const criticality = props.getValue(); // Get the value once
+            
+                    return (
+                        <div className="w-24 font-semibold truncate">
+                            {criticality === 'High' ? (
+                                <span className="text-red-500">{criticality}</span>
+                            ) : criticality === 'Medium' ? (
+                                <span className="text-yellow-500">{criticality}</span>
+                            ) : (
+                                <span className="text-green-500">{criticality}</span>
+                            )}
+                        </div>
+                    );
+                }
+            },
+            
             {
                 header: 'Location',
                 accessorKey: 'Location',

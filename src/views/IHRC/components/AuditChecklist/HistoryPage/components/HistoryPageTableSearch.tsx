@@ -7,9 +7,7 @@ import DatePicker from 'react-datepicker'
 import "react-datepicker/dist/react-datepicker.css"
 import { startOfMonth, endOfMonth, subMonths, subYears } from 'date-fns'
 import CustomDateRangePicker from './CustomDateRangePicker'
-import Company from '../../AssignChecklist/components/Company'
-import HistoryCompany from './HistoryCompany'
-
+import Company from '../../../Home/components/Company'
 const HistoryPageTableSearch = ({ onSearch, onDateRangeChange }) => {
   const [searchTerm, setSearchTerm] = useState('')
   const [dateRange, setDateRange] = useState([null, null])
@@ -75,7 +73,7 @@ const HistoryPageTableSearch = ({ onSearch, onDateRangeChange }) => {
         value={searchTerm}
         onChange={handleSearch}
       /> */}
-      <HistoryCompany />
+      <Company />
 
       {/* <CustomDateRangePicker onApply={handleDateRangeApply} /> */}
    
