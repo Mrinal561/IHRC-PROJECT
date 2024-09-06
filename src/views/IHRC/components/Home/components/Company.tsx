@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { Select } from '@/components/ui';
-import DashboardFilter from '../../../Home/components/DashboardFilter';
+import DashboardFilter from './DashboardFilter';
+import CustomDateRangePicker from './CustomDateRangePicker';
 
 
 
@@ -134,6 +135,9 @@ const Company = () => {
   const [selectedCity, setSelectedCity] = useState(null);
   const [selectedBranch, setSelectedBranch] = useState('');
   const [openCityDropdown, setOpenCityDropdown] = useState(null);
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
+
 
   useEffect(() => {
     setCompanyGroups(dummyData.companyGroups);
@@ -217,6 +221,11 @@ const Company = () => {
     }),
   };
 
+  
+  const handleDateRangeApply = (start: Date, end: Date) => {
+    setStartDate(start);
+    setEndDate(end);
+};
   return (
     <div className="flex gap-3">
       <Select
@@ -261,6 +270,7 @@ const Company = () => {
         onBranchSelect={handleBranchSelect}
         isSearchable={false}
       />
+      <CustomDateRangePicker onApply={handleDateRangeApply} />
       <DashboardFilter />
     </div>
   );
