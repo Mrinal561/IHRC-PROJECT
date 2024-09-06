@@ -1,11 +1,6 @@
-
 import React, { useState, useEffect } from 'react';
 import { Select } from '@/components/ui';
 import DashboardFilter from '../../../Home/components/DashboardFilter';
-
-
-
-
 
 const dummyData = {
   companyGroups: [
@@ -53,15 +48,6 @@ const CustomOption = ({ innerProps, label, data, selectProps }) => {
     }
   };
 
-
-  const CustomControl = ({ children, ...props }) => {
-    return (
-      <div {...props} className="flex items-center truncate">
-        {children}
-      </div>
-    );
-  };
-
   return (
     <div
       {...innerProps}
@@ -72,56 +58,57 @@ const CustomOption = ({ innerProps, label, data, selectProps }) => {
     </div>
   );
 };
+
 const customStyles = {
-    control: (provided: any) => ({
-        ...provided,
-        minHeight: '36px',
-        height: '36px',
-        borderRadius: '0.375rem',
-        border: '1px solid #e2e8f0',
-        boxShadow: 'none',
-        '&:hover': {
-            border: '1px solid #718096',
-        },
-    }),
-    valueContainer: (provided: any) => ({
-        ...provided,
-        height: '36px',
-        padding: '0 6px',
-    }),
-    input: (provided: any) => ({
-        ...provided,
-        margin: '0px',
-    }),
-    indicatorSeparator: () => ({
-        display: 'none',
-    }),
-    indicatorsContainer: (provided: any) => ({
-        ...provided,
-        height: '36px',
-    }),
-    singleValue: (provided: any) => ({
-        ...provided,
-        maxWidth: 'calc(100% - 8px)',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-        whiteSpace: 'nowrap',
-    }),
-    menu: (provided: any) => ({
-        ...provided,
-        width: 'auto',
-        minWidth: '100%',
-    }),
-    menuList: (provided: any) => ({
-        ...provided,
-        width: '100%',
-        minWidth: '100%',
-    }),
-    option: (provided: any) => ({
-        ...provided,
-        whiteSpace: 'nowrap',
-    }),
-}
+  control: (provided) => ({
+    ...provided,
+    minHeight: '36px',
+    height: '36px',
+    borderRadius: '0.375rem',
+    border: '1px solid #e2e8f0',
+    boxShadow: 'none',
+    '&:hover': {
+      border: '1px solid #718096',
+    },
+  }),
+  valueContainer: (provided) => ({
+    ...provided,
+    height: '36px',
+    padding: '0 6px',
+  }),
+  input: (provided) => ({
+    ...provided,
+    margin: '0px',
+  }),
+  indicatorSeparator: () => ({
+    display: 'none',
+  }),
+  indicatorsContainer: (provided) => ({
+    ...provided,
+    height: '36px',
+  }),
+  singleValue: (provided) => ({
+    ...provided,
+    maxWidth: 'calc(100% - 8px)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  }),
+  menu: (provided) => ({
+    ...provided,
+    width: 'auto',
+    minWidth: '100%',
+  }),
+  menuList: (provided) => ({
+    ...provided,
+    width: '100%',
+    minWidth: '100%',
+  }),
+  option: (provided) => ({
+    ...provided,
+    whiteSpace: 'nowrap',
+  }),
+};
 
 const Company = () => {
   const [companyGroups, setCompanyGroups] = useState([]);
@@ -137,23 +124,42 @@ const Company = () => {
 
   useEffect(() => {
     setCompanyGroups(dummyData.companyGroups);
+    // Set the first company group by default
+    if (dummyData.companyGroups.length > 0) {
+      setSelectedCompanyGroup(dummyData.companyGroups[0]);
+    }
   }, []);
 
   useEffect(() => {
     if (selectedCompanyGroup) {
-      setCompanies(dummyData.companies[selectedCompanyGroup.value] || []);
+      const companies = dummyData.companies[selectedCompanyGroup.value] || [];
+      setCompanies(companies);
+      // Set the first company by default
+      if (companies.length > 0) {
+        setSelectedCompany(companies[0]);
+      }
     }
   }, [selectedCompanyGroup]);
 
   useEffect(() => {
     if (selectedCompany) {
-      setStates(dummyData.states[selectedCompany.value] || []);
+      const states = dummyData.states[selectedCompany.value] || [];
+      setStates(states);
+      // Set the first state by default
+      if (states.length > 0) {
+        setSelectedState(states[0]);
+      }
     }
   }, [selectedCompany]);
 
   useEffect(() => {
     if (selectedState) {
-      setCities(dummyData.cities[selectedState.value] || []);
+      const cities = dummyData.cities[selectedState.value] || [];
+      setCities(cities);
+      // Automatically set the first city if present
+      if (cities.length > 0) {
+        setSelectedCity(cities[0]);
+      }
     }
   }, [selectedState]);
 
@@ -203,19 +209,6 @@ const Company = () => {
         }))
       : [])
   ]);
-
-  const selectStyles = {
-    control: (provided) => ({
-      ...provided,
-      minHeight: '2.5rem', // Adjust this value to match your desired height
-    }),
-    valueContainer: (provided) => ({
-      ...provided,
-      whiteSpace: 'nowrap',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-    }),
-  };
 
   return (
     <div className="flex gap-3">
