@@ -6,19 +6,18 @@ const OutlinedSelect = ({ label, options, value, onChange }) => {
   const [selectedValue, setSelectedValue] = useState(value);
 
   useEffect(() => {
-    setSelectedValue(value);
+    setSelectedValue(value || '');
   }, [value]);
 
   const handleFocus = () => setIsFocused(true);
   const handleBlur = () => setIsFocused(false);
 
   const handleChange = (newValue) => {
-    setSelectedValue(newValue);
+    setSelectedValue(newValue || '');
     onChange(newValue);
   };
 
-  const isFloating = isFocused || selectedValue;
-
+  const isFloating = isFocused || (selectedValue !== null && selectedValue !== undefined && selectedValue !== '');
   return (
     <div className="relative">
       <div className="absolute top-0 left-0 w-full h-full border rounded-md pointer-events-none border-gray-300">
@@ -57,8 +56,14 @@ const OutlinedSelect = ({ label, options, value, onChange }) => {
           singleValue: (provided) => ({
             ...provided,
             color: '#000',
+            marginTop: isFloating ? '8px' : '0',
+          }),
+          input: (provided) => ({
+            ...provided,
+            marginTop: isFloating ? '8px' : '0',
           }),
         }}
+        placeholder=""
       />
     </div>
   );

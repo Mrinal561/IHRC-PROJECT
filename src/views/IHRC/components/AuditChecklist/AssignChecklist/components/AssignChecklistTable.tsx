@@ -233,7 +233,7 @@ const AssignChecklistTable: React.FC = () => {
                 className='hover:bg-transparent'
               />
             </Tooltip>
-            <Tooltip title="Single Reminder" placement="top">
+            <Tooltip title="Set Compliance Reminder" placement="top">
               <Button
                 size="sm"
                 onClick={() => handleBellClick(row.original)}
@@ -241,7 +241,7 @@ const AssignChecklistTable: React.FC = () => {
                 className='hover:bg-transparent text-red-500'
               />
             </Tooltip>
-            <Tooltip title="View Details" placement="top">
+            <Tooltip title="View Compliance Detail" placement="top">
               <Button
                 size="sm"
                 onClick={() => navigate(`/app/IHRC/assign-list-detail/${row.original.Compliance_ID}`, { state: row.original })}

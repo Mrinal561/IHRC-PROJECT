@@ -307,7 +307,7 @@ const DownloadCertificateButton = () => {
 
   return (
     <>
-      <Tooltip title="Download" placement="top">
+      <Tooltip title="Download Compliance Certificate" placement="top">
         <Button size='sm' icon={<HiDownload />} onClick={handleAssignClick}>
         </Button>
       </Tooltip>
@@ -367,34 +367,34 @@ const ComplianceCertificateDetails = () => {
       header: 'Month',
       accessorKey: 'month',
     },
-    {
-      header: 'Branch',
-      accessorKey: 'Branch',
-      cell: (props) => {
-        const value = props.getValue() as string;
-        return (
-          <Tooltip title={value} placement="top">
-            <div className="w-28 truncate">
-              {value}
-            </div>
-          </Tooltip>
-        );
-      },
-    },
-    {
-      header: 'State',
-      accessorKey: 'Location',
-      cell: (props) => {
-        const value = props.getValue() as string;
-        return (
-          <Tooltip title={value} placement="top">
-            <div className="w-32 truncate">
-              {value}
-            </div>
-          </Tooltip>
-        );
-      },
-    },
+    // {
+    //   header: 'Branch',
+    //   accessorKey: 'Branch',
+    //   cell: (props) => {
+    //     const value = props.getValue() as string;
+    //     return (
+    //       <Tooltip title={value} placement="top">
+    //         <div className="w-28 truncate">
+    //           {value}
+    //         </div>
+    //       </Tooltip>
+    //     );
+    //   },
+    // },
+    // {
+    //   header: 'State',
+    //   accessorKey: 'Location',
+    //   cell: (props) => {
+    //     const value = props.getValue() as string;
+    //     return (
+    //       <Tooltip title={value} placement="top">
+    //         <div className="w-32 truncate">
+    //           {value}
+    //         </div>
+    //       </Tooltip>
+    //     );
+    //   },
+    // },
     {
       header: 'Action',
       id: 'action',

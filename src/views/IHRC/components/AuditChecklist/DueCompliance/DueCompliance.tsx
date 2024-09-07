@@ -3,6 +3,7 @@ import AdaptableCard from '@/components/shared/AdaptableCard';
 import DueComplianceTableTool from './components/DueComplianceTableTool';
 import DueComplianceTable from './components/DueComplianceTable';
 import Company from '../../Home/components/Company';
+import DueComplianceFilter from './components/DueComplianceFilter';
 
 // Define the structure of our data
 interface DueComplianceDataRow {
@@ -31,12 +32,14 @@ interface DueComplianceDataRow {
   Owner_Name: string;
   Approver_Name: string;
   Category: string;
-  Status2: 'Overdue' | 'Upcoming'|'Completed'|'Partially';
+  Status2: 'due' | 'Upcoming';
   Status:'';
 }
 
 const DueCompliance: React.FC = () => {
     const [data, setData] = useState<DueComplianceDataRow[]>([]);
+    const [filteredData, setFilteredData] = useState<DueComplianceDataRow[]>([]);
+    const [currentFilter, setCurrentFilter] = useState('Due');
 
     useEffect(() => {
         // In a real application, you would fetch this data from an API
@@ -69,7 +72,7 @@ const DueCompliance: React.FC = () => {
             Approver_Name: 'Shivesh Verma',
             Category: 'Legal',
             Status: '',
-            Status2: 'Overdue'
+            Status2: 'due'
           },
           {
             Compliance_Instance_ID: 1002,
@@ -127,7 +130,7 @@ const DueCompliance: React.FC = () => {
             Approver_Name: 'Shivesh Verma',
             Category: 'Finance',
             Status: '',
-            Status2: 'Completed'
+            Status2: 'due'
           },
           {
             Compliance_Instance_ID: 1004,
@@ -156,7 +159,7 @@ const DueCompliance: React.FC = () => {
             Approver_Name: 'Shivesh Verma',
             Category: 'Legal',
             Status: '',
-            Status2: 'Partially'          
+            Status2: 'Upcoming'          
           },
           {
             Compliance_Instance_ID: 1005,
@@ -185,13 +188,25 @@ const DueCompliance: React.FC = () => {
             Approver_Name: 'Shivesh Verma',
             Category: 'Legal',
             Status: '',
-            Status2: 'Overdue'
+            Status2: 'Upcoming'
           }
             // Add more mock data items here...
         ];
 
         setData(mockData);
     }, []);
+
+    useEffect(() => {
+      // Filter the data based on the current filter
+      const filtered = data.filter(item => 
+          currentFilter === 'Due' ? item.Status2 === 'due' : item.Status2 === 'Upcoming'
+      );
+      setFilteredData(filtered);
+  }, [data, currentFilter]);
+
+  const handleFilterChange = (filter: string) => {
+      setCurrentFilter(filter);
+  };
 
     const handleUploadAll = (selectedComplianceIds: number[], remark: string) => {
         // Here you would typically send this data to your backend
@@ -226,19 +241,22 @@ const DueCompliance: React.FC = () => {
   };
 
     return (
-        <AdaptableCard className="h-full" bodyClass="h-full">
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-10">
-                <div className="mb-4 lg:mb-0">
-                    <h3 className="text-2xl font-bold">Due Compliance</h3>
-                    <p className="text-gray-600">View your company's Due compliance</p>
-                </div>
-                <DueComplianceTableTool data={data} onUploadAll={handleUploadAll} />
+      <AdaptableCard className="h-full" bodyClass="h-full">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-10">
+          <div className="mb-4 lg:mb-0">
+              <h3 className="text-2xl font-bold">Due Compliance</h3>
+              <p className="text-gray-600">View your company's Due compliance</p>
+          </div>
+          <div className="flex items-center gap-4">
+              <DueComplianceFilter onFilterChange={handleFilterChange} currentFilter={currentFilter} />
+              <DueComplianceTableTool data={filteredData} onUploadAll={handleUploadAll} />
+          </div>
       </div>
-            <div className='mb-8'>
-            <Company />
-            </div>
-            <DueComplianceTable data={data} onUploadSingle={handleUploadSingle} onUpdateStatus={handleUpdateStatus} />
-        </AdaptableCard>
+      <div className='mb-8'>
+          <Company />
+      </div>
+      <DueComplianceTable data={filteredData} onUploadSingle={handleUploadSingle} onUpdateStatus={handleUpdateStatus} />
+  </AdaptableCard>
     );
 };
 
