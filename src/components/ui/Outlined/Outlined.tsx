@@ -1,13 +1,23 @@
-import React, { useState } from 'react';
-import { Select } from '@/components/ui/select';
+import React, { useState, useEffect } from 'react';
+import { Select } from '../Select';
 
 const OutlinedSelect = ({ label, options, value, onChange }) => {
   const [isFocused, setIsFocused] = useState(false);
+  const [selectedValue, setSelectedValue] = useState(value);
+
+  useEffect(() => {
+    setSelectedValue(value);
+  }, [value]);
 
   const handleFocus = () => setIsFocused(true);
   const handleBlur = () => setIsFocused(false);
 
-  const isFloating = isFocused || value;
+  const handleChange = (newValue) => {
+    setSelectedValue(newValue);
+    onChange(newValue);
+  };
+
+  const isFloating = isFocused || selectedValue;
 
   return (
     <div className="relative">
@@ -23,8 +33,8 @@ const OutlinedSelect = ({ label, options, value, onChange }) => {
         </span>
       </div>
       <Select
-        value={value}
-        onChange={onChange}
+        value={selectedValue}
+        onChange={handleChange}
         options={options}
         onFocus={handleFocus}
         onBlur={handleBlur}
