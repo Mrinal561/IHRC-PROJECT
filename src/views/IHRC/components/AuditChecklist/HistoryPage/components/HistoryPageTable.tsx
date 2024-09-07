@@ -64,7 +64,7 @@ const initialData: HistoryComplianceDataRow[] = [
     Owner_Name: 'HR',
     Approver_Name: 'Shivesh Verma',
     Category: 'HR',
-    Status: 'Not Complied',
+    Status: 'Complied',
     Legislation: "Delhi Factories Act 1948 and Delhi Factories Rules 1950/ Delhi/ IR",
     Location: "HMVL - Office - Arrah - Ramana Pakri Road - HR/ Arrah/ Bihar/ Office",
     Compliance_Description: "This compliance involves renewing the annual license required for operating a shop or establishment under the Maharashtra Shops and Establishments Act.",
@@ -86,7 +86,7 @@ const initialData: HistoryComplianceDataRow[] = [
     Owner_Name: 'Finance',
     Approver_Name: 'Shivesh Verma',
     Category: 'Finance',
-    Status: 'NA',
+    Status: 'Complied',
     Legislation: "Karnataka Shops and Commercial Establishments Act 1961 and Karnataka Shops Rules 1963/ Karnataka/ IR",
         Location: "HMVL - Office - Aurangabad - Priyavrat Path - HR/ Aurangabad/ Bihar/ Office",
 
@@ -109,7 +109,7 @@ const initialData: HistoryComplianceDataRow[] = [
     Owner_Name: 'Ravi Shankar Singh',
     Approver_Name: 'Shivesh Verma',
     Category: 'HR',
-    Status: 'Not Complied',
+    Status: 'Complied',
     Legislation: "Maharashtra Shops and Establishments Act 1948 and Maharashtra Shops Rules 1954/ Maharashtra/ IR",
         Location: "HMVL - Office - Begusarai - Kachhari Road - HR/ Begusarai/ Bihar/ Office",
     Compliance_Description: "This compliance involves renewing the annual license required for operating a shop or establishment under the Maharashtra Shops and Establishments Act.",
@@ -230,7 +230,7 @@ const HistoryPageTable: React.FC = () => {
         ),
       },
       {
-        header: 'Compliance Header',
+        header: 'Header',
         accessorKey: 'Compliance_Header',
         cell: (props) => {
           const value = props.getValue() as string;
@@ -281,7 +281,7 @@ const HistoryPageTable: React.FC = () => {
         header: 'Actions',
         id: 'actions',
         cell: ({row}) => (
-          <Tooltip title="View Details">
+          <Tooltip title="View Compliance Detail">
                   <Button
                     size="sm"
                     onClick={() => navigate(`/app/IHRC/history-list-detail/$  {row.original.Compliance_ID}`, { state: row.original })}

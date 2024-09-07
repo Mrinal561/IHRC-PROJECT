@@ -34,7 +34,7 @@ interface DueComplianceDataRow {
   Owner_Name: string;
   Approver_Name: string;
   Category: string;
-  Status2: 'Overdue' | 'Upcoming'|'Completed'|'Partially';
+  Status2: 'due' | 'Upcoming';
   Status: string;
 }
 
@@ -47,10 +47,15 @@ interface DueComplianceTableProps {
 
 const StatusOption = {
     statusOption: [
-      { key: 'complied', name: 'Complied' },
-      { key: 'notcomplied', name: 'Not Complied' },
-      { key: 'Not_Applicable', name: 'Not Applicable' },
+      { key: 'Complied', name: 'Complied' },
+      { key: 'Not Complied', name: 'Not Complied' },
+      { key: 'Not Applicable', name: 'Not Applicable' },
   ],
+}
+
+interface StatusOption {
+  value: string;
+  label: string;
 }
 
 const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadSingle, onUpdateStatus }) => {
@@ -58,8 +63,8 @@ const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadS
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [remark, setRemark] = useState('');
   const [selectedCompliance, setSelectedCompliance] = useState<DueComplianceDataRow | null>(null);
-  // const [selectedStatus, setSelectedStatus] = useState<DueComplianceDataRow['Status']>('');
-  const [complianceStatuses, setComplianceStatuses] = useState<Record<number, string>>({});
+  const [selectedStatus, setSelectedStatus] = useState<StatusOption | null>(null);
+      // const [complianceStatuses, setComplianceStatuses] = useState<Record<number, string>>({});
 
 
   const [tableData, setTableData] = useState({
@@ -72,6 +77,7 @@ const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadS
 
   const openDialog = useCallback((compliance: DueComplianceDataRow) => {
     setSelectedCompliance(compliance);
+    setSelectedStatus(compliance.Status ? { value: compliance.Status, label: compliance.Status } : null);
     setDialogIsOpen(true);
   }, []);
 
@@ -80,22 +86,50 @@ const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadS
     setSelectedFile(null);
     setRemark('');
     setSelectedCompliance(null);
+    setSelectedStatus(null);
   }, []);
 
   const onSubmit = useCallback(() => {
-    if (selectedCompliance) {
-      const newStatus = complianceStatuses[selectedCompliance.Compliance_Instance_ID] || selectedCompliance.Status;
-      onUploadSingle(selectedCompliance.Compliance_Instance_ID, selectedFile || undefined, remark);
-      onUpdateStatus(selectedCompliance.Compliance_Instance_ID, newStatus);
+    if (selectedCompliance && selectedStatus) {
+      console.log('Submitting:', { selectedCompliance, selectedStatus, remark });
+      try {
+        onUploadSingle(selectedCompliance.Compliance_Instance_ID, selectedFile || undefined, remark);
+        console.log('Upload successful');
+      } catch (error) {
+        console.error('Error in onUploadSingle:', error);
+        toast.push(
+          <Notification title="Error" type="danger">
+            Failed to upload file. Please try again.
+          </Notification>
+        );
+        return;
+      }
 
-      toast.push(
-        <Notification title="Success" type="success">
-          Compliance status updated successfully
-        </Notification>
-      );
+      try {
+        onUpdateStatus(selectedCompliance.Compliance_Instance_ID, selectedStatus.value);
+        console.log('Status update successful');
+        toast.push(
+          <Notification title="Success" type="success">
+            Compliance status updated successfully
+          </Notification>
+        );
+      } catch (error) {
+        console.error('Error in onUpdateStatus:', error);
+        toast.push(
+          <Notification title="Error" type="danger">
+            Failed to update status. Please try again.
+          </Notification>
+        );
+        return;
+      }
+    } else {
+      console.warn('Submit clicked without selectedCompliance or selectedStatus');
     }
     onDialogClose();
-  }, [selectedCompliance, selectedFile, remark, complianceStatuses, onUploadSingle, onUpdateStatus, onDialogClose]);
+  }, [selectedCompliance, selectedFile, remark, selectedStatus, onUploadSingle, onUpdateStatus, onDialogClose]);
+
+
+
 
 
   const onFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -114,14 +148,12 @@ const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadS
 
 
 
-  const onStatusChange = (value: string) => {
-    if (selectedCompliance) {
-      setComplianceStatuses(prev => ({
-        ...prev,
-        [selectedCompliance.Compliance_Instance_ID]: value
-      }));
-    }
-  };
+  const onStatusChange = useCallback((value: StatusOption) => {
+    console.log('Status changed to:', value);
+    setSelectedStatus(value);
+  }, []);
+
+
   
   const columns: ColumnDef<DueComplianceDataRow>[] = useMemo(
     () => [
@@ -157,7 +189,7 @@ const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadS
         },
       },
       {
-        header: 'Compliance Header',
+        header: 'Header',
         accessorKey: 'Compliance_Header',
         cell: (props) => {
           const value = props.getValue() as string;
@@ -190,20 +222,15 @@ const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadS
         accessorKey: 'Status',
         cell: ({ getValue }) => {
           const status = getValue<DueComplianceDataRow['Status']>();
-          let statusColor = 'bg-gray-500';
           let textColor = 'text-gray-500';
           
           if (status === 'Not Complied') {
-            statusColor = 'bg-red-500';
             textColor = 'text-red-500';
           } else if (status === 'Not Applicable') {
-            statusColor = 'bg-yellow-500';
             textColor = 'text-yellow-500';
           } else if (status === 'Complied') {
-            statusColor = 'bg-green-500';
             textColor = 'text-green-500';
           } else if (status === 'Complied With Delay') {
-            statusColor = 'bg-blue-500';
             textColor = 'text-blue-500';
           }
           
@@ -229,17 +256,12 @@ const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadS
                   <MdEdit />
                 </Button>
               </Tooltip>
-              {/* <Tooltip title="Download" placement="top">
-                <Button size="sm" onClick={handleDownload}>
-                  <HiDownload />
-                </Button>
-              </Tooltip> */}
             </div>
           );
         },
       },
     ],
-    []
+    [openDialog]
   );
 
   const onPaginationChange = (page: number) => {
@@ -259,19 +281,19 @@ const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadS
         skeletonAvatarProps={{ className: 'rounded-md' }}
         loading={false}
         pagingData={{
-          total: tableData.total,
-          pageIndex: tableData.pageIndex,
-          pageSize: tableData.pageSize,
+          total: data.length,
+          pageIndex: 1,
+          pageSize: 10,
         }}
         onPaginationChange={onPaginationChange}
-        onSelectChange={onSelectChange}
+        onSelectChange={(value: number) => {}}
       />
       <Dialog
         isOpen={dialogIsOpen}
         onClose={onDialogClose}
       >
         <h5 className="mb-4">Change Compliance Status</h5>
-        <div className='flex items-center gap-3'>
+        <div className='flex items-center gap-3 mb-4'>
         <p className='font-semibold'>Select the Compliance status</p>
 
         <div className='w-40'>
@@ -282,7 +304,7 @@ const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadS
     value: option.key,
     label: option.name
   }))}
-  value={selectedCompliance ? (complianceStatuses[selectedCompliance.Compliance_Instance_ID] || '') : ''}
+  value={selectedStatus}
   onChange={onStatusChange}
 />
           </div>
@@ -290,29 +312,42 @@ const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadS
 
         {selectedCompliance?.Proof_Of_Compliance_Mandatory === 'Yes' && (
           <>
-          <label>Please Upload The Proof Of Compliance</label>
-          <Input
-            type="file"
-            onChange={onFileChange}
-            className="mb-4 mt-4"
-          />
+            <label className='text-red-500'>*Please Upload The Proof Of Compliance:</label>
+            <Input
+              type="file"
+              onChange={(e) => {
+                const file = e.target.files?.[0] || null;
+                console.log('File selected:', file?.name);
+                setSelectedFile(file);
+              }}
+              className="mb-4 mt-4"
+            />
           </>
         )}
-        {selectedCompliance && (
-          <p className="mb-4 text-red-500 text-sm">
-            {selectedCompliance.Proof_Of_Compliance_Mandatory === 'Yes' ? '*Proof is mandatory' : ''}
-          </p>
+        {selectedCompliance?.Proof_Of_Compliance_Mandatory === 'No' && (
+          <>
+            <label>Please Upload The Proof Of Compliance:</label>
+            <Input
+              type="file"
+              onChange={(e) => {
+                const file = e.target.files?.[0] || null;
+                console.log('File selected:', file?.name);
+                setSelectedFile(file);
+              }}
+              className="mb-4 mt-4"
+            />
+          </>
         )}
-        <label className='mb-2'>Remark:</label>
+        <label className='mb-2'>Please Enter the Remark:</label>
         <Input 
-          placeholder="Please Enter the Remarks" 
+          placeholder="Remarks" 
           textArea 
           value={remark}
           onChange={(e) => setRemark(e.target.value)}
           className="mb-4"
         />
 
-        <div className="text-right mt-6">
+<div className="text-right mt-6">
           <Button
             className="ltr:mr-2 rtl:ml-2"
             variant="plain"
@@ -320,7 +355,7 @@ const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadS
           >
             Cancel
           </Button>
-          <Button variant="solid">
+          <Button variant="solid" onClick={onSubmit}>
             Confirm
           </Button>
         </div>

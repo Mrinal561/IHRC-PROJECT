@@ -293,7 +293,7 @@ const CustomChecklistTable = () => {
                 },
               },
               {
-                header: 'Compliance Header',
+                header: 'Header',
                 accessorKey: 'Compliance_Header',
                 cell: (props) => {
                   const value = props.getValue() as string;
@@ -341,8 +341,8 @@ const CustomChecklistTable = () => {
                 header: 'Actions',
                 id: 'actions',
                 cell: ({ row }) => {
-                    const value1= "Edit"
-                    const value2= "Delete"
+                    const value1= "Edit Compliance"
+                    const value2= "Delete Compliance"
                     return(
 
                     <div className='flex space-x-2'>

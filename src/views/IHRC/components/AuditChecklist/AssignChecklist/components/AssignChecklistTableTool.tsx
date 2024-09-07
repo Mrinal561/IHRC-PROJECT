@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Dialog, Tooltip, toast, Notification, Select } from '@/components/ui';
+import { Button, Dialog, Tooltip, toast, Notification, Select, Input } from '@/components/ui';
 import { HiDownload, HiPlusCircle } from 'react-icons/hi';
 import { FaDownload } from 'react-icons/fa';
 import AssignChecklistTableFilter from './AssignChecklistTableFilter';
@@ -91,17 +91,19 @@ export const BulkSetOwnerApproverButton = () => {
         <div className="my-4 flex items-center gap-2">
         <p>Download Assigned Compliance</p>
           <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
-            <Button size='xs' icon={<HiDownload />} variant='solid'>Download</Button>
+            <Button size='xs' icon={<HiDownload />}>Download</Button>
           </a>
         </div>
         <div className='flex flex-col gap-2'>
-        <p>Upload Assigned Compliance</p>
-        <input
+        <p>Upload Assigned Compliance:</p>
+        
+        <Input
           type="file"
           onChange={handleFileChange}
           className="mb-4"
           />
         </div>
+        <p>Please Enter the remark:</p>
         <textarea
           className="w-full p-2 border rounded mb-2"
           rows={3}

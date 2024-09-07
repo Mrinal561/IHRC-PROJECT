@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
-import { Button, Dialog, Notification } from '@/components/ui'
+import { Button, Dialog, Input, Notification } from '@/components/ui'
 import { IoArrowBack } from 'react-icons/io5'
 import { useNavigate } from 'react-router-dom'
 import { toast } from '@/components/ui'
 import ReuploadDocumentTable from './components/ReuploadDocumentTable'
 import { HiDownload, HiUpload } from 'react-icons/hi'
+import { CgSoftwareUpload } from 'react-icons/cg'
 
 const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
@@ -86,17 +87,18 @@ const BulkUploadButton = () => {
         <div className="my-4 flex gap-2 items-center">
           <p>Download Compliances</p>
           <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline ">
-            <Button size='xs' icon={<HiDownload />} variant='solid'>Download</Button>
+            <Button size='xs' icon={<HiDownload />}>Download</Button>
           </a>
         </div>
         <div className='flex flex-col gap-2'>
-        <p>Upload updated Compliances</p>
-        <input
+        <p>Upload updated Compliances:</p>
+        <Input
           type="file"
           onChange={handleFileChange}
           className="mb-4"
           />
         </div>
+        <p>Please Enter the Remark:</p>
         <textarea
           className="w-full p-2 border rounded mb-2"
           rows={3}
@@ -165,8 +167,8 @@ const ReuploadDocument: React.FC = () => {
         </div>
         <div className='flex gap-2'>
           <BulkUploadButton />
-        <Button size='sm' variant='solid' icon={<HiDownload />} onClick={handleConfirmBulkDownload}>Download</Button>
-        <Button size='sm' variant="solid" onClick={handleBulkUpload}>Proceed with Last Month Data</Button>
+        {/* <Button size='sm' variant='solid' icon={<HiDownload />} onClick={handleConfirmBulkDownload}>Download</Button> */}
+        <Button size='sm' variant="solid" icon={<CgSoftwareUpload />} onClick={handleBulkUpload}>Proceed with Last Month Data</Button>
         </div>
       </div>
       <div>

@@ -19,7 +19,7 @@ const ViewDetailsButton = ({ compliance }: { compliance: ComplianceData }) => {
 
     return (
         <div className='flex gap-2 items-center'>
-            <Tooltip title="View Details" placement="top">
+            <Tooltip title="View Compliance Detail" placement="top">
                 <Button
                     size="sm"
                     className='text-[#737171]'
@@ -27,7 +27,7 @@ const ViewDetailsButton = ({ compliance }: { compliance: ComplianceData }) => {
                     onClick={handleViewDetails}
                 />
             </Tooltip>
-            <Tooltip title="Assign">
+            <Tooltip title="Assign Compliance">
                 <Button
                     size="sm"
                     onClick={() => console.log('Assign')}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Dialog, Notification, toast } from '@/components/ui';
+import { Button, Dialog, Input, Notification, toast } from '@/components/ui';
 import { HiDownload, HiUpload } from 'react-icons/hi';
 
 const documentPath = "../store/AllMappedCompliancesDetails.xls";
@@ -81,17 +81,18 @@ const BulkUpload = () => {
         <div className="my-4 flex gap-2 items-center">
           <p>Download Custom Compliances</p>
           <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
-            <Button size="xs" icon={<HiDownload />} variant="solid">Download</Button>
+            <Button size="xs" icon={<HiDownload />} >Download</Button>
           </a>
         </div>
         <div className="flex flex-col gap-2">
-          <p>Upload Custom Compliances</p>
-          <input
+          <p>Upload Custom Compliances:</p>
+          <Input
             type="file"
             onChange={handleFileChange}
             className="mb-4"
           />
         </div>
+        <p>Please Enter the Remark:</p>
         <textarea
           className="w-full p-2 border rounded mb-2"
           rows={3}
