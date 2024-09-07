@@ -7,6 +7,8 @@ import type { OnSortParam, ColumnDef } from '@/components/shared/DataTable';
 import { useNavigate } from 'react-router-dom';
 import { MdEdit } from 'react-icons/md';
 import { FiTrash } from 'react-icons/fi';
+import { dummyData, ComplianceData } from '@/views/IHRC/store/dummyData'
+
 
 interface ComplianceRow {
     Compliance_Id: number;
@@ -159,11 +161,11 @@ const complianceData: ComplianceRow[] = [
 ];
 
 
-const ViewDetailsButton = ({ compliance }: { compliance: ComplianceRow }) => {
+const ViewDetailsButton = ({ compliance }: { compliance: ComplianceData }) => {
     const navigate = useNavigate();
 
     const handleViewDetails = () => {
-        navigate(`/app/IHRC/compliance-list-detail/${compliance.Compliance_Id}`, {
+        navigate(`/app/IHRC/compliance-list-detail/${compliance.Compliance_ID}`, {
             state: compliance,
         });
     };
@@ -237,11 +239,11 @@ const CustomChecklistTable = () => {
         </span>
     );
 
-    const columns: ColumnDef<ComplianceRow>[] = useMemo(
+    const columns: ColumnDef<ComplianceData>[] = useMemo(
         () => [
             {
                 header: 'Compliance ID',
-                accessorKey: 'Compliance_Id',
+                accessorKey: 'Compliance_ID',
                 cell: (props) => (
                   <div className="w-10 text-start">{props.getValue()}</div>
                 ),
@@ -316,7 +318,7 @@ const CustomChecklistTable = () => {
             },
             {
                 header: 'Status',
-                accessorKey: 'Compliance_Status',
+                accessorKey: 'Status',
                 cell: (props) => {
                     const criticality = props.getValue(); // Get the value once
             
@@ -372,7 +374,7 @@ const CustomChecklistTable = () => {
         <div className="w-full overflow-x-auto">
             <DataTable
                 columns={columns}
-                data={complianceData}
+                data={dummyData}
                 skeletonAvatarColumns={[0]}
                 skeletonAvatarProps={{ className: 'rounded-md' }}
                 loading={false}

@@ -6,124 +6,22 @@ import { HiBellAlert } from "react-icons/hi2";
 import { MdEdit } from 'react-icons/md';
 import { RiEyeLine } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
-export interface ChecklistDataRow {
-  Compliance_Instance_ID: number;
-  Compliance_ID: number;
-  Compliance_Header: string;
-  Due_Date: Date| string;
-  Owner_Name: string;
-  Approver_Name: string;
-  Legislation:string;
-  Bare_Act_Text:string;
-  Compliance_Description:string;
-  Compliance_Clause:string;
-  Compliance_Applicability:string;
-  Compliance_Type:string;
-  Compliance_Frequency:string;
-  Compliance_Categorization:string;
-  Criticality:string;
-}
 
-const initialData: ChecklistDataRow[] = [
-  {
-    Compliance_Instance_ID: 1001,
-    Compliance_ID: 3236,
-    Compliance_Header: 'Renewal of Registration',
-    Due_Date: new Date('2024-09-15'),
-    Owner_Name: 'Admin',
-    Approver_Name: 'Shivesh Verma',
-    Legislation: "Tamil Nadu Shops and Establishments Act 1947 and Tamil Nadu Shops Rules 1959/ Tamil Nadu/ IR",
-    Bare_Act_Text: "In case of loss of the trade license, report to the Municipal Authority within seven days and apply for a duplicate license with a fee of fifteen rupees.",
-        Compliance_Description: "This compliance involves renewing the annual license required for operating a shop or establishment under the Maharashtra Shops and Establishments Act.",
-            Compliance_Applicability: "All registered shops and establishments operating in Maharashtra.",
-    Compliance_Clause: "Section 15 of the Maharashtra Shops and Establishments Act, 1948",
-    Compliance_Type: "Renewal",
-    Compliance_Frequency: "Annual",
-    Compliance_Categorization: "Licensing",
-    Criticality:"High",
-
-  },
-  {
-    Compliance_Instance_ID: 1002,
-    Compliance_ID: 4501,
-    Compliance_Header: 'Annual Renewal of License',
-    Due_Date: '',
-    Owner_Name: 'HR',
-    Approver_Name: 'Shivesh Verma',
-    Legislation: "Tamil Nadu Shops and Establishments Act 1947 and Tamil Nadu Shops Rules 1959/ Tamil Nadu/ IR",
-    Bare_Act_Text: "In case of loss of the trade license, report to the Municipal Authority within seven days and apply for a duplicate license with a fee of fifteen rupees.",
-        Compliance_Description: "This compliance involves renewing the annual license required for operating a shop or establishment under the Maharashtra Shops and Establishments Act.",
-            Compliance_Applicability: "All registered shops and establishments operating in Maharashtra.",
-    Compliance_Clause: "Section 15 of the Maharashtra Shops and Establishments Act, 1948",
-    Compliance_Type: "Renewal",
-    Compliance_Frequency: "Annual",
-    Compliance_Categorization: "Licensing",
-    Criticality:"High",
-  },
-  {
-    Compliance_Instance_ID: 1003,
-    Compliance_ID: 5602,
-    Compliance_Header: 'Monthly Compliance Report',
-    Due_Date: new Date('2024-09-05'),
-    Owner_Name: 'Finance',
-    Approver_Name: 'Shivesh Verma',
-    Legislation: "Tamil Nadu Shops and Establishments Act 1947 and Tamil Nadu Shops Rules 1959/ Tamil Nadu/ IR",
-    Bare_Act_Text: "In case of loss of the trade license, report to the Municipal Authority within seven days and apply for a duplicate license with a fee of fifteen rupees.",
-        Compliance_Description: "This compliance involves renewing the annual license required for operating a shop or establishment under the Maharashtra Shops and Establishments Act.",
-            Compliance_Applicability: "All registered shops and establishments operating in Maharashtra.",
-    Compliance_Clause: "Section 15 of the Maharashtra Shops and Establishments Act, 1948",
-    Compliance_Type: "Renewal",
-    Compliance_Frequency: "Annual",
-    Compliance_Categorization: "Licensing",
-    Criticality:"Medium",
-  },
-  {
-    Compliance_Instance_ID: 1004,
-    Compliance_ID: 6789,
-    Compliance_Header: 'Quarterly Wage Report',
-    Due_Date: new Date('2024-10-15'),
-    Owner_Name: 'Ravi Shankar Singh',
-    Approver_Name: 'Shivesh Verma',
-    Legislation: "Tamil Nadu Shops and Establishments Act 1947 and Tamil Nadu Shops Rules 1959/ Tamil Nadu/ IR",
-    Bare_Act_Text: "In case of loss of the trade license, report to the Municipal Authority within seven days and apply for a duplicate license with a fee of fifteen rupees.",
-        Compliance_Description: "This compliance involves renewing the annual license required for operating a shop or establishment under the Maharashtra Shops and Establishments Act.",
-            Compliance_Applicability: "All registered shops and establishments operating in Maharashtra.",
-    Compliance_Clause: "Section 15 of the Maharashtra Shops and Establishments Act, 1948",
-    Compliance_Type: "Renewal",
-    Compliance_Frequency: "Annual",
-    Compliance_Categorization: "Licensing",
-    Criticality:"High",
-  },
-  {
-    Compliance_Instance_ID: 1005,
-    Compliance_ID: 7890,
-    Compliance_Header: 'Renewal of Trade License',
-    Due_Date: new Date('2024-11-01'),
-    Owner_Name: 'HR',
-    Approver_Name: 'Shivesh Verma',
-    Legislation: "Tamil Nadu Shops and Establishments Act 1947 and Tamil Nadu Shops Rules 1959/ Tamil Nadu/ IR",
-    Bare_Act_Text: "In case of loss of the trade license, report to the Municipal Authority within seven days and apply for a duplicate license with a fee of fifteen rupees.",
-        Compliance_Description: "This compliance involves renewing the annual license required for operating a shop or establishment under the Maharashtra Shops and Establishments Act.",
-            Compliance_Applicability: "All registered shops and establishments operating in Maharashtra.",
-    Compliance_Clause: "Section 15 of the Maharashtra Shops and Establishments Act, 1948",
-    Compliance_Type: "Renewal",
-    Compliance_Frequency: "Annual",
-    Compliance_Categorization: "Licensing",
-    Criticality:"Medium",
-  }
-];
+import { dummyData, ComplianceData } from '@/views/IHRC/store/dummyData';
+import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 
 const AssignChecklistTable: React.FC = () => {
   const navigate = useNavigate();
-  const [data, setData] = useState<ChecklistDataRow[]>(initialData);
+  const [data, setData] = useState<ComplianceData[]>(dummyData);
   const [activeRowId, setActiveRowId] = useState<number | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isReminderDialogOpen, setIsReminderDialogOpen] = useState(false);
-  const [editData, setEditData] = useState<Partial<ChecklistDataRow>>({});
+  const [editData, setEditData] = useState<Partial<ComplianceData>>({});
   const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
   const [reminderDate, setReminderDate] = useState<Date | null>(null);
   const [reminderEmail, setReminderEmail] = useState('');
-  const [tempDueDate, setTempDueDate] = useState<Date | null>(null);
+  const [tempDueDate, setTempDueDate] = useState<Date | string | null>(null);
+
   const isAllSelected = useMemo(
     () => selectedItems.size === data.length,
     [selectedItems, data]
@@ -149,7 +47,7 @@ const AssignChecklistTable: React.FC = () => {
     }
   };
 
-  const handleEditClick = (row: ChecklistDataRow) => {
+  const handleEditClick = (row: ComplianceData) => {
     setActiveRowId(row.Compliance_Instance_ID);
     setEditData({
       Compliance_Instance_ID: row.Compliance_Instance_ID,
@@ -157,7 +55,7 @@ const AssignChecklistTable: React.FC = () => {
       Approver_Name: row.Approver_Name,
       Due_Date: row.Due_Date
     });
-    setTempDueDate(row.Due_Date instanceof Date ? row.Due_Date : null);
+    setTempDueDate(row.Due_Date);
     setIsEditDialogOpen(true);
   };
 
@@ -181,7 +79,7 @@ const AssignChecklistTable: React.FC = () => {
     }
   };
 
-  const handleBellClick = (row: ChecklistDataRow) => {
+  const handleBellClick = (row: ComplianceData) => {
     setActiveRowId(row.Compliance_Instance_ID);
     setReminderDate(null);
     setReminderEmail('');
@@ -190,24 +88,17 @@ const AssignChecklistTable: React.FC = () => {
 
   const handleReminderSave = () => {
     if (activeRowId && reminderDate && reminderEmail) {
-      // Here you would typically send this data to your backend
       console.log(`Reminder set for compliance ID ${activeRowId} on ${reminderDate.toDateString()} to ${reminderEmail}`);
       
-      // Show the toast notification with the new style
       toast.push(
-        <Notification
-          title="Success"
-          type="success"
-        >
+        <Notification title="Success" type="success">
           Reminder set successfully
           <br />
           Date: {reminderDate.toDateString()}
           <br />
           Email: {reminderEmail}
         </Notification>,
-        {
-          placement: 'top-end',
-        }
+        { placement: 'top-end' }
       );
 
       setIsReminderDialogOpen(false);
@@ -215,42 +106,16 @@ const AssignChecklistTable: React.FC = () => {
       setReminderDate(null);
       setReminderEmail('');
     } else {
-      // Show an error toast if any required field is missing
       toast.push(
-        <Notification
-          title="Error"
-          type="danger"
-        >
+        <Notification title="Error" type="danger">
           Please fill in all fields
         </Notification>,
-        {
-          placement: 'top-end',
-        }
+        { placement: 'top-end' }
       );
     }
   };
 
-  const EditIcon = () => (
-    <span className="text-[#7c828e] hover:text-indigo-600">
-      <svg
-        fill="none"
-        strokeWidth="2"
-        viewBox="0 0 24 24"
-        aria-hidden="true"
-        height="1em"
-        width="1em"
-        xmlns="http://www.w3.org/2000/svg"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-        ></path>
-      </svg>
-    </span>
-  );
-  const columns: ColumnDef<ChecklistDataRow>[] = useMemo(
+  const columns: ColumnDef<ComplianceData>[] = useMemo(
     () => [
       {
         header: ({ table }) => (
@@ -274,73 +139,67 @@ const AssignChecklistTable: React.FC = () => {
       {
         header: 'Instance ID',
         accessorKey: 'Compliance_Instance_ID',
-        cell: (props) => (
-          <div className="w-10 text-start">{props.getValue()}</div>
-        ),
+        cell: (props) => <div className="w-24 text-start">{props.getValue()}</div>,
       },
       {
         header: 'Compliance ID',
         accessorKey: 'Compliance_ID',
-        cell: (props) => (
-          <div className="w-10 text-start">{props.getValue()}</div>
-        ),
+        cell: (props) => <div className="w-32 text-start">{props.getValue()}</div>,
       },
       {
         header: 'Legislation',
         accessorKey: 'Legislation',
         cell: (props) => {
-            const value = props.getValue() as string;
-            return (
-                <Tooltip title={value} placement="top">
-                    <div className="w-32 truncate">{value.length > 22 ? value.substring(0, 22) + '...' : value}</div>
-                </Tooltip>
-            );
-        },
-    },
-    {
-      header: 'Criticality',
-      accessorKey: 'Criticality',
-      cell: (props) => {
-          const criticality = props.getValue(); // Get the value once
-  
+          const value = props.getValue() as string;
           return (
-              <div className="w-24 font-semibold truncate">
-                  {criticality === 'High' ? (
-                      <span className="text-red-500">{criticality}</span>
-                  ) : criticality === 'Medium' ? (
-                      <span className="text-yellow-500">{criticality}</span>
-                  ) : (
-                      <span className="text-green-500">{criticality}</span>
-                  )}
-              </div>
+            <Tooltip title={value} placement="top">
+              <div className="w-32 truncate">{value.length > 20 ? value.substring(0, 20) + '...' : value}</div>
+            </Tooltip>
           );
-      }
-  },
-  {
-    header: 'Compliance Header',
-    accessorKey: 'Compliance_Header',
-    cell: (props) => {
-      const value = props.getValue() as string;
-      return (
-        <Tooltip title={value} placement="top">
-          <div className="w-32 truncate">{value}</div>
-        </Tooltip>
-      );
-    },
-  },
-  //   {
-  //     header: 'Act',
-  //     accessorKey: 'Bare_Act_Text',
-  //     cell: (props) => {
-  //         const value = props.getValue() as string;
-  //         return (
-  //             <Tooltip title={value} placement="top">
-  //                 <div className="w-12 truncate">{value.length > 22 ? value.substring(0, 22) + '...' : value}</div>
-  //             </Tooltip>
-  //         );
-  //     },
-  // },
-      
+        },
+      },
+      {
+        header: 'Criticality',
+        accessorKey: 'Criticality',
+        cell: (props) => {
+          const criticality = props.getValue() as string;
+          return (
+            <div className="w-24 font-semibold truncate">
+              {criticality === 'High' ? (
+                <span className="text-red-500">{criticality}</span>
+              ) : criticality === 'Medium' ? (
+                <span className="text-yellow-500">{criticality}</span>
+              ) : (
+                <span className="text-green-500">{criticality}</span>
+              )}
+            </div>
+          );
+        }
+      },
+      {
+        header: 'Location',
+        accessorKey: 'Location',
+        cell: (props) => {
+          const value = props.getValue() as string;
+          return (
+            <Tooltip title={value} placement="top">
+              <div className="w-36 truncate">{value.length > 20 ? value.substring(0, 20) + '...' : value}</div>
+            </Tooltip>
+          );
+        },
+      },
+      {
+        header: 'Header',
+        accessorKey: 'Compliance_Header',
+        cell: (props) => {
+          const value = props.getValue() as string;
+          return (
+            <Tooltip title={value} placement="top">
+              <div className="w-40 truncate">{value}</div>
+            </Tooltip>
+          );
+        },
+      },
       {
         header: 'Due Date',
         accessorKey: 'Due_Date',
@@ -354,61 +213,51 @@ const AssignChecklistTable: React.FC = () => {
       {
         header: "Owner's Name",
         accessorKey: 'Owner_Name',
-        cell: ({ getValue }) => {
-          return <div className="w-14">{getValue<string>()}</div>;
-        },
+        cell: ({ getValue }) => <div className="w-32">{getValue<string>()}</div>,
       },
       {
         header: "Approver's Name",
         accessorKey: 'Approver_Name',
-        cell: ({ getValue }) => {
-          return <div className="w-14">{getValue<string>()}</div>;
-        },
+        cell: ({ getValue }) => <div className="w-36">{getValue<string>()}</div>,
       },
       {
         header: 'Actions',
         id: 'actions',  
-        cell: ({ row }) => {
-            const value1= "Set Owner & Approver"
-            const value2= "Single Reminder"
-            const value3= "View Details"
-            return(
-
-            <div className='flex space-x-2'>
-            <Tooltip title={value1} placement="top">
-            <Button
+        cell: ({ row }) => (
+          <div className='flex space-x-2'>
+            <Tooltip title="Set Owner & Approver" placement="top">
+              <Button
                 size="sm"
                 onClick={() => handleEditClick(row.original)}
                 icon={<MdEdit />}
                 className='hover:bg-transparent'
-                />
+              />
             </Tooltip>
-            <Tooltip title={value2} placement="top">
-            <Button
+            <Tooltip title="Single Reminder" placement="top">
+              <Button
                 size="sm"
                 onClick={() => handleBellClick(row.original)}
                 icon={<HiBellAlert />}
                 className='hover:bg-transparent text-red-500'
-                />
+              />
             </Tooltip>
-            <Tooltip title={value3} placement="top">
-            <Button
+            <Tooltip title="View Details" placement="top">
+              <Button
                 size="sm"
-                onClick={() => navigate(`/app/IHRC/assign-list-detail/$  {row.original.Compliance_ID}`, { state: row.original })}
+                onClick={() => navigate(`/app/IHRC/assign-list-detail/${row.original.Compliance_ID}`, { state: row.original })}
                 icon={<RiEyeLine />}
                 className='hover:bg-transparent'
-                />
+              />
             </Tooltip>
-        </div>
-        )
-        },
+          </div>
+        ),
       }
     ],
     [selectedItems, isAllSelected]
   );
 
   const [tableData, setTableData] = useState({
-    total: initialData.length,
+    total: dummyData.length,
     pageIndex: 1,
     pageSize: 10,
     query: '',
@@ -426,165 +275,131 @@ const AssignChecklistTable: React.FC = () => {
   const onSort = (sort: OnSortParam) => {
     setTableData(prev => ({ ...prev, sort }));
   };
+  const ownerOptions = useMemo(() => {
+    return Array.from(new Set(dummyData.map(item => item.Owner_Name)))
+      .filter(name => name) // Remove any undefined or empty names
+      .map(name => ({ value: name, label: name }));
+  }, []);
+  const approverOptions = useMemo(() => {
+    return Array.from(new Set(dummyData.map(item => item.Approver_Name)))
+      .filter(name => name) // Remove any undefined or empty names
+      .map(name => ({ value: name, label: name }));
+  }, []);
 
-  
   return (
-      <div className="relative">
-          <DataTable
-              columns={columns}
-              data={data}
-              skeletonAvatarColumns={[0]}
-              skeletonAvatarProps={{ className: 'rounded-md' }}
-              loading={false}
-              pagingData={{
-                  total: tableData.total,
-                  pageIndex: tableData.pageIndex,
-                  pageSize: tableData.pageSize,
-              }}
-              onPaginationChange={onPaginationChange}
-              onSelectChange={onSelectChange}
-              onSort={onSort}
-          />
+    <div className="relative">
+      <DataTable
+        columns={columns}
+        data={data}
+        skeletonAvatarColumns={[0]}
+        skeletonAvatarProps={{ className: 'rounded-md' }}
+        loading={false}
+        pagingData={{
+          total: tableData.total,
+          pageIndex: tableData.pageIndex,
+          pageSize: tableData.pageSize,
+        }}
+        onPaginationChange={onPaginationChange}
+        onSelectChange={onSelectChange}
+        onSort={onSort}
+      />
 
-          <Dialog
-              isOpen={isEditDialogOpen}
-              onClose={() => {
-                setIsEditDialogOpen(false);
-                setTempDueDate(null);
-              }}
-              onRequestClose={() => {
-                setIsEditDialogOpen(false);
-                setTempDueDate(null);
-              }}
-              className="max-w-md p-4"
-          >
-              <h5 className="mb-2 text-lg font-semibold">
-                  Compliance Instance ID:{' '}
-                  <span className="text-indigo-600">
-                      {editData.Compliance_Instance_ID}
-                  </span>
-              </h5>
-              <div className="space-y-3">
-                  <div>
-                      <label className="block mb-2">Set Owner Name</label>
-                      <Select
-                          options={[
-                              { value: 'Admin', label: 'Admin' },
-                              { value: 'User', label: 'User' },
-                              { value: 'HR', label: 'HR' },
-                              { value: 'Finance User', label: 'Finance User' },
-                              {
-                                  value: 'Ravi Shankar Singh',
-                                  label: 'Ravi Shankar Singh',
-                              },
-                          ]}
-                          value={
-                              editData.Owner_Name
-                                  ? {
-                                        value: editData.Owner_Name,
-                                        label: editData.Owner_Name,
-                                    }
-                                  : null
-                          }
-                          onChange={(selectedOption) =>
-                              setEditData({
-                                  ...editData,
-                                  Owner_Name: selectedOption
-                                      ? selectedOption.value
-                                      : '',
-                              })
-                          }
-                          isClearable
-                      />
-                  </div>
-                  <div>
-                      <label className="block mb-2">Set Approver Name</label>
-                      <Select
-                          options={[
-                              {
-                                  value: 'Shivesh Varma',
-                                  label: 'Shivesh Varma',
-                              },
-                              { value: 'Amit Sharma', label: 'Amit Sharma' },
-                              { value: 'Priya Singh', label: 'Priya Singh' },
-                              { value: 'Ravi Kumar', label: 'Ravi Kumar' },
-                          ]}
-                          value={
-                              editData.Approver_Name
-                                  ? {
-                                        value: editData.Approver_Name,
-                                        label: editData.Approver_Name,
-                                    }
-                                  : null
-                          }
-                          onChange={(selectedOption) =>
-                              setEditData({
-                                  ...editData,
-                                  Approver_Name: selectedOption
-                                      ? selectedOption.value
-                                      : '',
-                              })
-                          }
-                          isClearable
-                      />
-                  </div>
-                  {(!editData.Due_Date || editData.Due_Date === '') && (
-                      <div>
-                      <label className="block mb-2">Set Due Date</label>
-                      {editData.Due_Date instanceof Date ? (
-                        <div>{editData.Due_Date.toLocaleDateString()}</div>
-                      ) : editData.Due_Date ? (
-                        <div>{editData.Due_Date}</div>
-                      ) : (
-                        <div></div>
-                      )}
-                      <Calendar 
-                        value={tempDueDate || undefined} 
-                        onChange={(date) => setTempDueDate(date)}
-                      />
-                    </div>
-                  )}
-              </div>
-              <div className="mt-6 text-right">
-                  <Button variant="solid" onClick={handleEditSave}>
-                      Save Changes
-                  </Button>
-              </div>
-          </Dialog>
+      <Dialog
+        isOpen={isEditDialogOpen}
+        onClose={() => {
+          setIsEditDialogOpen(false);
+          setTempDueDate(null);
+        }}
+        onRequestClose={() => {
+          setIsEditDialogOpen(false);
+          setTempDueDate(null);
+        }}
+        className="max-w-md p-4"
+      >
+        <h5 className="mb-2 text-lg font-semibold">
+          Compliance Instance ID:{' '}
+          <span className="text-indigo-600">
+            {editData.Compliance_Instance_ID}
+          </span>
+        </h5>
+        <div className="space-y-6">
+          <div>
+            <label className="block mb-6">Set Owner Name</label>
+            <OutlinedSelect
+            label='Set Owner Name'
+              options={ownerOptions}
+              value={editData.Owner_Name ? { value: editData.Owner_Name, label: editData.Owner_Name } : null}
+              onChange={(selectedOption) => setEditData({ ...editData, Owner_Name: selectedOption ? selectedOption.value : '' })}
+              isClearable
+            />
+          </div>
+          <div>
+            <label className="block mb-6">Set Approver Name</label>
+            <OutlinedSelect
+            label="Set Approver Name"
+              options={approverOptions}
+              value={editData.Approver_Name ? { value: editData.Approver_Name, label: editData.Approver_Name } : null}
+              onChange={(selectedOption) => setEditData({ ...editData, Approver_Name: selectedOption ? selectedOption.value : '' })}
+              isClearable
+            />
+          </div>
+          {(!editData.Due_Date || editData.Due_Date === '') && (
+            <div>
+              <label className="block mb-2">Set Due Date</label>
+              {editData.Due_Date instanceof Date ? (
+                <div>{editData.Due_Date.toLocaleDateString()}</div>
+              ) : editData.Due_Date ? (
+                <div>{editData.Due_Date}</div>
+              ) : (
+                <div></div>
+              )}
+              <Calendar 
+                value={tempDueDate instanceof Date ? tempDueDate : undefined} 
+                onChange={(date) => setTempDueDate(date)}
+              />
+            </div>
+          )}
+        </div>
+        <div className="mt-6 text-right">
+          <Button variant="solid" onClick={handleEditSave}>
+            Save Changes
+          </Button>
+        </div>
+      </Dialog>
 
-          <Dialog
-              isOpen={isReminderDialogOpen}
-              onClose={() => setIsReminderDialogOpen(false)}
-              onRequestClose={() => setIsReminderDialogOpen(false)}
-              className="max-w-md p-6"
-          >
-              <h5 className="mb-4 text-lg font-semibold">Set Reminder</h5>
-              <div className="space-y-4">
-                  <div>
-                      <label className="block mb-2">Set Reminder Date</label>
-                      <Calendar
-                          value={reminderDate}
-                          onChange={(date) => setReminderDate(date)}
-                      />
-                  </div>
-                  <div>
-                      <label className="block mb-2">Email</label>
-                      <Input
-                          type="email"
-                          value={reminderEmail}
-                          onChange={(e) => setReminderEmail(e.target.value)}
-                          placeholder="Enter email address"
-                      />
-                  </div>
-              </div>
-              <div className="mt-6 text-right">
-                  <Button variant="solid" onClick={handleReminderSave}>
-                      Confirm
-                  </Button>
-              </div>
-          </Dialog>
-      </div>
-  )
+      <Dialog
+        isOpen={isReminderDialogOpen}
+        onClose={() => setIsReminderDialogOpen(false)}
+        onRequestClose={() => setIsReminderDialogOpen(false)}
+        className="max-w-md p-6"
+      >
+        <h5 className="mb-4 text-lg font-semibold">Set Reminder</h5>
+        <div className="space-y-4">
+          <div>
+            <label className="block mb-2">Set Reminder Date</label>
+            <Calendar
+              value={reminderDate}
+              onChange={(date) => setReminderDate(date)}
+            />
+          </div>
+          <div>
+            <label className="block mb-2">Email</label>
+            <Input
+              type="email"
+              value={reminderEmail}
+              onChange={(e) => setReminderEmail(e.target.value)}
+              placeholder="Enter email address"
+            />
+          </div>
+        </div>
+        <div className="mt-6 text-right">
+          <Button variant="solid" onClick={handleReminderSave}>
+            Confirm
+          </Button>
+        </div>
+      </Dialog>
+    </div>
+  );
 };
 
 export default AssignChecklistTable;

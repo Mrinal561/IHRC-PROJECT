@@ -12,6 +12,7 @@ import DatePicker from 'react-datepicker';
 import { startOfMonth, endOfMonth, subMonths, subYears } from 'date-fns';
 import "react-datepicker/dist/react-datepicker.css";
 import { HiDownload } from 'react-icons/hi';
+import CustomDateRangePicker from '../../../Home/components/CustomDateRangePicker';
 export interface StatusDataRow {
   Compliance_Id: number;
   Compliance_Header: string;
@@ -467,6 +468,13 @@ const StatusTable: React.FC<StatusTableProps> = ({
     startOfMonth(subMonths(new Date(), 5)),
     endOfMonth(new Date()),
   ]);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+
+  const handleDateRangeApply = (start: Date, end: Date) => {
+    setStartDate(start);
+    setEndDate(end);
+  }
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -776,17 +784,7 @@ const StatusTable: React.FC<StatusTableProps> = ({
           <StatusTableFilter onFilterChange={onFilterChange} currentFilter={currentFilter} />
         </div>
         <div className="flex gap-2">
-        <DatePicker
-            selectsRange
-            startDate={dateRange[0]}
-            endDate={dateRange[1]}
-            onChange={(update) => setDateRange(update)}
-            className="px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            dateFormat="MMM d, yyyy"
-            placeholderText="Select date range"
-            portalId="datepicker-portal"
-            shouldCloseOnSelect={false}
-          />
+        <CustomDateRangePicker onApply={handleDateRangeApply} />
           <Button
             size="sm"
             onClick={() => setIsConfirmDialogOpen(true)}

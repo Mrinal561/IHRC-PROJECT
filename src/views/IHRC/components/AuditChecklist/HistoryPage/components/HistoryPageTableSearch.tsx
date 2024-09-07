@@ -77,7 +77,7 @@ const HistoryPageTableSearch = ({ onSearch, onDateRangeChange }) => {
         value={searchTerm}
         onChange={handleSearch}
       /> */}
-      <Company />
+      {/* <Company /> */}
 
       {/* <CustomDateRangePicker onApply={handleDateRangeApply} /> */}
    

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import AdaptableCard from '@/components/shared/AdaptableCard';
 import DueComplianceTableTool from './components/DueComplianceTableTool';
 import DueComplianceTable from './components/DueComplianceTable';
+import Company from '../../Home/components/Company';
 
 // Define the structure of our data
 interface DueComplianceDataRow {
@@ -226,9 +227,15 @@ const DueCompliance: React.FC = () => {
 
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
-            <div className="lg:flex items-center justify-between mb-8">
-                <h3 className="mb-4 lg:mb-0">Due Compliance</h3>
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-10">
+                <div className="mb-4 lg:mb-0">
+                    <h3 className="text-2xl font-bold">Due Compliance</h3>
+                    <p className="text-gray-600">View your company's Due compliance</p>
+                </div>
                 <DueComplianceTableTool data={data} onUploadAll={handleUploadAll} />
+      </div>
+            <div className='mb-8'>
+            <Company />
             </div>
             <DueComplianceTable data={data} onUploadSingle={handleUploadSingle} onUpdateStatus={handleUpdateStatus} />
         </AdaptableCard>

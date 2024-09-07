@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { format, addMonths, subMonths, startOfMonth, endOfMonth, isAfter, isBefore, isEqual, addDays, startOfWeek, endOfWeek, startOfQuarter, endOfQuarter, differenceInDays } from 'date-fns';
-import { Input } from '@/components/ui';
+import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 
 const CustomDateRangePicker = ({ onApply }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -11,6 +11,8 @@ const CustomDateRangePicker = ({ onApply }) => {
   const [activeTab, setActiveTab] = useState('Current');
   const [activePeriod, setActivePeriod] = useState('Month');
   const [dayCount, setDayCount] = useState(0);
+  const [activeInput, setActiveInput] = useState(null);
+
 
   useEffect(() => {
     if (startDate && endDate) {
@@ -126,36 +128,58 @@ const CustomDateRangePicker = ({ onApply }) => {
 
 
       const formatDateDisplay = (date) => {
-        return date? format(date, 'dd/MM/yyyy') : '';
+        return date ? format(date, 'dd/MM/yyyy') : '';
       }
+    
+
+      const handleInputClick = (inputType) => {
+        setIsOpen(true);
+        setActiveInput(inputType);
+      }
+   
+
     
 
       return (
         <div className="relative">
-          <div className="flex space-x-3">
-            <div className="relative">
-              <Input
-                type="text"
-                value={`From: ${formatDateDisplay(startDate)}`}
-                onClick={() => setIsOpen(true)}
-                readOnly
-                className="border h-[36px] w-32 cursor-pointer"
-              />
-              {/* {!startDate && <span className="absolute inset-y-0 left-0 pl-2 flex items-center text-gray-500">From:</span>} */}
+        <div className="flex space-x-3">
+          <div className="relative">
+            <div className={`absolute top-0 left-0 w-full h-full border rounded-md pointer-events-none ${activeInput === 'from' ? 'border-gray-300' : 'border-gray-300'}`}>
+              <span className={`absolute px-1 transition-all duration-200 ${
+                startDate || activeInput === 'from' ? '-top-3 left-3 text-xs font-semibold bg-white text-indigo-600' : 'top-2 left-2 text-sm text-gray-500'
+              }`}>
+                From
+              </span>
             </div>
-            <div className="relative">
-              <Input
-                type="text"
-                value={`To: ${formatDateDisplay(endDate)}`}
-                onClick={() => setIsOpen(true)}
-                readOnly
-                className="border h-[36px] w-28 cursor-pointer"
-              />
-              {/* {!endDate && <span className="absolute inset-y-0 left-0 pl-2 flex items-center text-gray-500">To:</span>} */}
-            </div>
+            <input
+              type="text"
+              value={formatDateDisplay(startDate)}
+              onClick={() => handleInputClick('from')}
+              readOnly
+              className="w-28 h-[36px] px-2 bg-transparent border-none cursor-pointer focus:outline-none"
+            />
           </div>
-          {isOpen && (
-            <div className="absolute w-[120vh] top-full right-8 mt-2 bg-white border shadow-lg rounded-lg overflow-hidden z-10">
+          <div className="relative">
+            <div className={`absolute top-0 left-0 w-full h-full border rounded-md pointer-events-none ${activeInput === 'to' ? 'border-gray-300' : 'border-gray-300'}`}>
+              <span className={`absolute px-1 transition-all duration-200 ${
+                endDate || activeInput === 'to' ? '-top-3 left-3 text-xs font-semibold bg-white text-indigo-600' : 'top-2 left-2 text-sm text-gray-500'
+              }`}>
+                To
+              </span>
+            </div>
+            <input
+              type="text"
+              value={formatDateDisplay(endDate)}
+              onClick={() => handleInputClick('to')}
+              readOnly
+              className="w-28 h-[36px] px-2 bg-transparent border-none cursor-pointer focus:outline-none"
+            />
+          </div>
+        </div>
+        {isOpen && (
+          <div className="absolute w-[120vh] top-full right-8 mt-2 bg-white border shadow-lg rounded-lg overflow-hidden z-10">
+          
+          
               <div className="flex p-4 space-x-8">
                 <div className="flex items-center">
                   <div>

@@ -44,7 +44,6 @@ const AssignChecklistButton = () => {
     return (
         <>
             <Button
-                block
                 variant="solid"
                 size="sm"
                 icon={<HiPlusCircle />}
@@ -93,7 +92,7 @@ const RecommendedTableTool = () => {
         <>
         <div className="flex flex-col lg:flex-row lg:items-center gap-3">
             <RecommendedTableSearch />
-            <Company />   
+            {/* <Company />    */}
             <div className="block lg:inline-block md:mb-0 mb-4">
                 <AssignChecklistButton />
             </div>
