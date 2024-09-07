@@ -6,6 +6,7 @@ import DataTable from '@/components/shared/DataTable';
 import { Button, Tooltip, Dialog, Input, toast, Notification, Badge, Dropdown } from '@/components/ui';
 import { HiDownload, HiUpload } from 'react-icons/hi';
 import { MdEdit } from 'react-icons/md';
+import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 
 interface DueComplianceDataRow {
   Compliance_Instance_ID: number;
@@ -34,8 +35,9 @@ interface DueComplianceDataRow {
   Approver_Name: string;
   Category: string;
   Status2: 'Overdue' | 'Upcoming'|'Completed'|'Partially';
-  Status:'';
+  Status: string;
 }
+
 
 interface DueComplianceTableProps {
   data: DueComplianceDataRow[];
@@ -43,12 +45,22 @@ interface DueComplianceTableProps {
   onUpdateStatus: (complianceId: number, newStatus: DueComplianceDataRow['Status']) => void;
 }
 
+const StatusOption = {
+    statusOption: [
+      { key: 'complied', name: 'Complied' },
+      { key: 'notcomplied', name: 'Not Complied' },
+      { key: 'Not_Applicable', name: 'Not Applicable' },
+  ],
+}
+
 const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadSingle, onUpdateStatus }) => {
   const [dialogIsOpen, setDialogIsOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [remark, setRemark] = useState('');
   const [selectedCompliance, setSelectedCompliance] = useState<DueComplianceDataRow | null>(null);
-  const [selectedStatus, setSelectedStatus] = useState<DueComplianceDataRow['Status']>('');
+  // const [selectedStatus, setSelectedStatus] = useState<DueComplianceDataRow['Status']>('');
+  const [complianceStatuses, setComplianceStatuses] = useState<Record<number, string>>({});
+
 
   const [tableData, setTableData] = useState({
     total: data.length,
@@ -60,7 +72,6 @@ const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadS
 
   const openDialog = useCallback((compliance: DueComplianceDataRow) => {
     setSelectedCompliance(compliance);
-    setSelectedStatus(compliance.Status);
     setDialogIsOpen(true);
   }, []);
 
@@ -69,13 +80,13 @@ const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadS
     setSelectedFile(null);
     setRemark('');
     setSelectedCompliance(null);
-    setSelectedStatus('');
   }, []);
 
   const onSubmit = useCallback(() => {
     if (selectedCompliance) {
+      const newStatus = complianceStatuses[selectedCompliance.Compliance_Instance_ID] || selectedCompliance.Status;
       onUploadSingle(selectedCompliance.Compliance_Instance_ID, selectedFile || undefined, remark);
-      onUpdateStatus(selectedCompliance.Compliance_Instance_ID, selectedStatus);
+      onUpdateStatus(selectedCompliance.Compliance_Instance_ID, newStatus);
 
       toast.push(
         <Notification title="Success" type="success">
@@ -84,7 +95,8 @@ const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadS
       );
     }
     onDialogClose();
-  }, [selectedCompliance, selectedFile, remark, selectedStatus, onUploadSingle, onUpdateStatus, onDialogClose]);
+  }, [selectedCompliance, selectedFile, remark, complianceStatuses, onUploadSingle, onUpdateStatus, onDialogClose]);
+
 
   const onFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -100,16 +112,17 @@ const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadS
     );
   };
 
-  const statusOptions = [
-    { key: 'complied', name: 'Complied' },
-    { key: 'notcomplied', name: 'Not Complied' },
-    { key: 'Not_Applicable', name: 'Not Applicable' },
-  ];
 
-  const onStatusChange = (eventKey: string) => {
-    setSelectedStatus(eventKey as DueComplianceDataRow['Status']);
+
+  const onStatusChange = (value: string) => {
+    if (selectedCompliance) {
+      setComplianceStatuses(prev => ({
+        ...prev,
+        [selectedCompliance.Compliance_Instance_ID]: value
+      }));
+    }
   };
-
+  
   const columns: ColumnDef<DueComplianceDataRow>[] = useMemo(
     () => [
       {
@@ -171,37 +184,7 @@ const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadS
           return <div className="w-24">{getValue<string>()}</div>;
         },
       },
-      // {
-      //   header: 'Status',
-      //   accessorKey: 'Status2',
-      //   cell: ({ getValue }) => {
-      //     const status = getValue<DueComplianceDataRow['Status2']>();
-      //     let statusColor = 'bg-gray-500';
-      //     let textColor = 'text-gray-500';
-          
-      //     if (status === 'Overdue') {
-      //       statusColor = 'bg-red-500';
-      //       textColor = 'text-red-500';
-      //     } else if (status === 'Upcoming') {
-      //       statusColor = 'bg-yellow-500';
-      //       textColor = 'text-yellow-500';
-      //     } else if (status === 'Completed') {
-      //       statusColor = 'bg-green-500';
-      //       textColor = 'text-green-500';
-      //     } else if (status === 'Partially') {
-      //       statusColor = 'bg-blue-500';
-      //       textColor = 'text-blue-500';
-      //     }
-          
-          
-      //     return (
-      //       <div className="flex items-center w-28">
-      //         <Badge className={`mr-2 ${statusColor}`} />
-      //         <div className={`font-semibold ${textColor}`}>{status}</div>
-      //       </div>
-      //     );
-      //   },
-      // },
+
       {
         header: 'Compliance Status',
         accessorKey: 'Status',
@@ -291,22 +274,18 @@ const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadS
         <div className='flex items-center gap-3'>
         <p className='font-semibold'>Select the Compliance status</p>
 
-        <div className='border px-2 mb-2'>
-        <Dropdown
-          title={selectedStatus === '' ? 'Set Status' : selectedStatus}
-          onClick={() => {}}
-        >
-          {statusOptions.map((item) => (
-            <Dropdown.Item
-              onSelect={onStatusChange}
-              eventKey={item.name}
-              key={item.key}
-            >
-              {item.name}
-            </Dropdown.Item>
-          ))}
-        </Dropdown>
-        </div>
+        <div className='w-40'>
+
+        <OutlinedSelect
+  label="Set Status"
+  options={StatusOption.statusOption.map(option => ({
+    value: option.key,
+    label: option.name
+  }))}
+  value={selectedCompliance ? (complianceStatuses[selectedCompliance.Compliance_Instance_ID] || '') : ''}
+  onChange={onStatusChange}
+/>
+          </div>
         </div>
 
         {selectedCompliance?.Proof_Of_Compliance_Mandatory === 'Yes' && (
@@ -341,7 +320,7 @@ const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadS
           >
             Cancel
           </Button>
-          <Button variant="solid" onClick={onSubmit}>
+          <Button variant="solid">
             Confirm
           </Button>
         </div>

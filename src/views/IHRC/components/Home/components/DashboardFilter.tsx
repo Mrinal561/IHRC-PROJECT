@@ -166,7 +166,7 @@ const DashboardFilter = () => {
         <>
             <Button
                 size="sm"
-                className="block md:inline-block ltr:md:ml-2 rtl:md:mr-2 md:mb-0 mb-4"
+                className="h-[36px]"
                 icon={<HiOutlineFilter />}
             >
                 Filter

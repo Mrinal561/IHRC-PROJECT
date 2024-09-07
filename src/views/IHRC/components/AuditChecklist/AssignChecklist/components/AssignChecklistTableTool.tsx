@@ -8,8 +8,9 @@ import BulkAlertButton from './BulkAlertButton';
 import { ActionMeta, components, SingleValue } from 'react-select'
 import { FaChevronDown } from 'react-icons/fa'
 import DashboardFilter from '../../../Home/components/DashboardFilter'
-import Company from './Company';
-// Instead of importing the file directly, we'll use a string path
+import Company from '../../../Home/components/Company';
+
+
 const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
 export const BulkSetOwnerApproverButton = () => {
@@ -133,9 +134,8 @@ const AssignChecklistTableTool = () => {
   return (
     <div className="flex flex-col lg:flex-row lg:items-center gap-3">
         <div>
-      {/* <AssignChecklistTableSearch /> */}
+      <AssignChecklistTableSearch />
         </div>
-        <Company />
       <div>
         <BulkSetOwnerApproverButton />
       </div>

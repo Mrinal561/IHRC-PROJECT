@@ -6,7 +6,9 @@ import DueComplianceFilter from './DueComplianceFilter'
 import DueComplianceTableSearch from './DueComplianceTableSearch'
 import { Link } from 'react-router-dom'
 import { Dialog, Input, Notification, toast } from '@/components/ui'
-import Company from '../../AssignChecklist/components/Company'
+import Company from '../../../Home/components/Company'
+import { dummyData, ComplianceData } from '@/views/IHRC/store/dummyData'
+
 
 // Import or define the DueComplianceDataRow type
 interface DueComplianceDataRow {
@@ -195,8 +197,7 @@ const DueComplianceTableTool: React.FC<DueComplianceTableToolProps> = ({ data, o
 
   return (
     <div className="flex flex-col lg:flex-row lg:items-center gap-3">
-      {/* <DueComplianceTableSearch /> */}
-      <Company />
+      <DueComplianceTableSearch />
       {/* <DueComplianceFilter /> */}
       <BulkUploadButton />
       
