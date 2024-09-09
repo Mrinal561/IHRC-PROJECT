@@ -14,11 +14,14 @@
             "item8": "History"
 
         },
-        "groupMenu": {
-            "groupMenu": "Global Settings",
-            "certificate": "Certificate Template",
-            "notification": "Notification Setting",
-            "status": "Status Setting"
+        "globalMenu": {
+           "globalMenu": "Global Settings",
+           "collapse": {
+                "collapse": "Global Settings",
+                "item1": "Certificate Template",
+                "item2": "Notification Settings",
+                "item3": "Status Settings"
+            }
         }
     }
 }
