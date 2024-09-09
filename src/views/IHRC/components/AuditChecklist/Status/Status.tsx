@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import StatusTable from './components/StatusTable';
 import StatusCard from './components/StatusCard';
+import Company from '../../Home/components/Company';
 
 const Status: React.FC = () => {
   const [currentFilter, setCurrentFilter] = useState('Pending');
@@ -26,6 +27,9 @@ const Status: React.FC = () => {
                     <h3 className="text-2xl font-bold">Status</h3>
                     <p className="text-gray-600">View your company's compliance status</p>
                 </div>
+      </div>
+      <div className='mb-4'>
+      <Company />
       </div>
       <div>
         <StatusCard />

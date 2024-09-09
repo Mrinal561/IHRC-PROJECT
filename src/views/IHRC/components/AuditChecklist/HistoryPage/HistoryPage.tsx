@@ -17,9 +17,9 @@ const DueCompliance = () => {
                 </div>
                 <HistoryPageTableTool />
       </div>
-      <div className='mb-8'>
+      {/* <div className='mb-8'>
         <Company />
-      </div>
+      </div> */}
                 <HistoryPageTable />
         </AdaptableCard>
   )

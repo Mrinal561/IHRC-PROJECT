@@ -7,6 +7,7 @@ import { Button, Tooltip, Dialog, Input, toast, Notification, Badge, Dropdown } 
 import { HiDownload, HiUpload } from 'react-icons/hi';
 import { MdEdit } from 'react-icons/md';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
+import { RiEyeLine } from 'react-icons/ri';
 
 interface DueComplianceDataRow {
   Compliance_Instance_ID: number;
@@ -275,6 +276,14 @@ const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadS
           const compliance = row.original;
           return (
             <div className='flex gap-2'>
+              <Tooltip title="View Compliance Detail" placement="top">
+                        <Button
+                          size="sm"
+                        //   onClick={() => navigate(`/app/IHRC/assign-list-detail/${row.original.Compliance_ID}`, { state: row.original })}
+                          icon={<RiEyeLine />}
+                          className='hover:bg-transparent'
+                        />
+            </Tooltip>
               <Tooltip title="Change Compliance Status" placement="top">
                 <Button
                   size="sm"
