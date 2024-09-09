@@ -177,6 +177,24 @@ const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadS
         },
       },
       {
+        header: 'Criticality',
+        accessorKey: 'Criticality',
+        cell: (props) => {
+            const criticality = props.getValue();
+            return (
+                <div className="w-24 font-semibold truncate">
+                    {criticality === 'High' ? (
+                        <span className="text-red-500">{criticality}</span>
+                    ) : criticality === 'Medium' ? (
+                        <span className="text-yellow-500">{criticality}</span>
+                    ) : (
+                        <span className="text-green-500">{criticality}</span>
+                    )}
+                </div>
+            );
+        }
+    },
+      {
         header: 'Location',
         accessorKey: 'Location',
         cell: (props) => {
@@ -199,6 +217,15 @@ const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadS
             </Tooltip>
           );
         },
+      },
+      {
+        header: 'Description',
+        accessorKey: 'Compliance_Description',
+        cell: (props) => (
+          <Tooltip title={props.getValue() as string} placement="left">
+            <div className="w-40 truncate">{(props.getValue() as string).substring(0, 30)}...</div>
+          </Tooltip>
+        ),
       },
       {
         header: 'Due Date',

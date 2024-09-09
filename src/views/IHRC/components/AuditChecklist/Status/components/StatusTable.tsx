@@ -332,13 +332,20 @@ const StatusTable: React.FC<StatusTableProps> = ({
           const rejectionRemark = row.original.Remark; // Assuming we add this field to our data structure
           return (
             <div className="flex items-center">
-              <Badge className={statusColor[status]} />
+              {/* <Badge className={statusColor[status]} /> */}
               {status === 'Rejected' && rejectionRemark ? (
                 <Tooltip title={`Rejection Reason: ${rejectionRemark}`} placement="top">
-                  <span className="ml-2 rtl:mr-2 capitalize cursor-help">{status}</span>
+                  <span className="text-red-500 font-semibold truncate">{status}</span>
                 </Tooltip>
               ) : (
-                <span className="ml-2 rtl:mr-2 capitalize">{status}</span>
+                // <span className="ml-2 rtl:mr-2 capitalize">{status}</span>
+                <div className="w-24 font-semibold truncate">
+                {status === 'Pending' ? (
+                    <span className="text-yellow-500">{status}</span>
+                ) : (
+                    <span className="text-green-500">{status}</span>
+                )}
+            </div>
               )}
             </div>
           );

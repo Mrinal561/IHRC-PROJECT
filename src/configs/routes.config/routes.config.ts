@@ -95,25 +95,25 @@ export const protectedRoutes = [
     {
         key: 'groupMenu.certificate',
         path: '/group-single-menu-item-view-certificate',
-        // component: lazy(() =>
-        //     import('@/views/IHRC/components/demo/GroupSingleMenuItemView')
-        // ),
+        component: lazy(() =>
+            import('@/views/IHRC/components/GlobalSettings/CertificateTemplate/CertificateTemplate')
+        ),
         authority: [],
     },
     {
         key: 'groupMenu.notification',
         path: '/group-single-menu-item-view-notification',
-        // component: lazy(() =>
-        //     import('@/views/IHRC/components/demo/GroupSingleMenuItemView')
-        // ),
+        component: lazy(() =>
+            import('@/views/IHRC/components/GlobalSettings/NotificationSettings/NotificationSettings')
+        ),
         authority: [],
     },
     {
         key: 'groupMenu.status',
         path: '/group-single-menu-item-view-status',
-        // component: lazy(() =>
-        //     import('@/views/IHRC/components/demo/GroupSingleMenuItemView')
-        // ),
+        component: lazy(() =>
+            import('@/views/IHRC/components/GlobalSettings/StatusSettings/StatusSettings')
+        ),
         authority: [],
     },
     // {

@@ -173,7 +173,7 @@ const CustomDateRangePicker = ({ onApply }) => {
   }
 
   return (
-    <div className="relative">
+    <div className="relative z-20">
       <div className="flex space-x-3">
         <div className="relative" ref={fromInputRef}>
           <div className={`absolute top-0 left-0 w-full h-full border rounded-md pointer-events-none ${fromInputFocused || startDate ? 'border-gray-300' : 'border-gray-300'}`}>
