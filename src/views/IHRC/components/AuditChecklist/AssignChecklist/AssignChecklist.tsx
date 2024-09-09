@@ -13,7 +13,7 @@ const AssignChecklist = () => {
 
 <div className="">
         <h3 className="text-2xl font-bold">Assigned Checklist</h3>
-        <p className="text-gray-600">View your company's Assigned compliance </p>
+        <p className="text-gray-600">View your company's assigned compliance </p>
 </div>
 <AssignChecklistTableTool />
 </div>
