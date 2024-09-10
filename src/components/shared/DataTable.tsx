@@ -155,6 +155,7 @@ function _DataTable<T>(
         },
     })
 
+    
     const resetSorting = () => {
         table.resetSorting()
     }

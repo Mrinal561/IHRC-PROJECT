@@ -283,6 +283,7 @@ const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadS
                           icon={<RiEyeLine />}
                           className='hover:bg-transparent'
                         />
+                        
             </Tooltip>
               <Tooltip title="Change Compliance Status" placement="top">
                 <Button
