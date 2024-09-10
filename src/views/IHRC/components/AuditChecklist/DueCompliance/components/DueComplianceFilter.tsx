@@ -41,7 +41,7 @@ const DueComplianceFilter: React.FC<DueComplianceFilterProps> = ({
   return (
     <div className="w-44">
       <OutlinedSelect
-        label="Status"
+        label="Filter"
         options={optionsWithBadges}
         value={optionsWithBadges.find((option) => option.value === currentFilter) || optionsWithBadges[0]}
         onChange={handleFilterChange}
