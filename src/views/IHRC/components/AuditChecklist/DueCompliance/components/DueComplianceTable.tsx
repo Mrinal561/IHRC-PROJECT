@@ -105,140 +105,152 @@ const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ onUploadSingle,
         setSelectedStatus(value);
     }, []);
 
-    const columns: ColumnDef<ComplianceData>[] = useMemo(
-        () => [
-            {
-              header: 'Compliance ID',
-              accessorKey: 'Compliance_ID',
-              cell: (props) => (
-                  <div className="w-10 text-start">{props.getValue()}</div>
-              ),
-          },
-          {
-              header: 'Legislation',
-              accessorKey: 'Legislation',
-              cell: (props) => {
-                  const value = props.getValue() as string;
-                  return (
-                      <Tooltip title={value} placement="top">
-                          <div className="w-28 truncate">{value.length > 11 ? value.substring(0, 11) + '...' : value}</div>
-                      </Tooltip>
-                  );
-              },
-          },
-          {
-              header: 'Criticality',
-              accessorKey: 'Criticality',
-              cell: (props) => {
-                  const criticality = props.getValue();
-                  return (
-                      <div className="w-24 font-semibold truncate">
-                          {criticality === 'High' ? (
-                              <span className="text-red-500">{criticality}</span>
-                          ) : criticality === 'Medium' ? (
-                              <span className="text-yellow-500">{criticality}</span>
-                          ) : (
-                              <span className="text-green-500">{criticality}</span>
-                          )}
-                      </div>
-                  );
-              }
-          },
-          {
-              header: 'Location',
-              accessorKey: 'Location',
-              cell: (props) => {
-                  const value = props.getValue() as string;
-                  return (
-                      <Tooltip title={value} placement="top">
-                          <div className="w-20 truncate">{value.length > 20 ? value.substring(0, 20) + '...' : value}</div>
-                      </Tooltip>
-                  );
-              },
-          },
-          {
-              header: 'Header',
-              accessorKey: 'Compliance_Header',
-              cell: (props) => {
-                  const value = props.getValue() as string;
-                  return (
-                      <Tooltip title={value} placement="top">
-                          <div className="w-20 truncate">{value}</div>
-                      </Tooltip>
-                  );
-              },
-          },
-          {
-              header: 'Description',
-              accessorKey: 'Compliance_Description',
-              cell: (props) => (
-                  <Tooltip title={props.getValue() as string} placement="left">
-                      <div className="w-40 truncate">{(props.getValue() as string).substring(0, 30)}...</div>
-                  </Tooltip>
-              ),
-          },
-          {
-              header: 'Due Date',
-              accessorKey: 'Default_Due_Date',
-              cell: (props) => (
-                  <div className="w-20">
-                      {new Date(props.getValue() as string).toLocaleDateString()}
-                  </div>
-              ),
-          },
-          {
-              header: 'Category',
-              accessorKey: 'Compliance_Categorization',
-              cell: ({ getValue }) => {
-                  return <div className="w-28">{getValue<string>()}</div>;
-              },
-          },
-            {
-                header: 'Compliance Status',
-                accessorKey: 'Compliance_Status_2',
-                cell: ({ getValue }) => {
-                    const status = getValue<string>();
-                    let textColor = 'text-gray-500';
-                    
-                    if (status === 'Not Complied') {
-                        textColor = 'text-red-500';
-                    } else if (status === 'Not Applicable') {
-                        textColor = 'text-yellow-500';
-                    } else if (status === 'Complied') {
-                        textColor = 'text-green-500';
-                    } else if (status === 'Complied With Delay') {
-                        textColor = 'text-blue-500';
-                    }
-                    
-                    return (
-                        <div className="flex items-center w-40">
-                            <div className={`font-semibold ${textColor}`}>{status}</div>
-                        </div>
-                    );
-                },
-            },
-            {
-              header: 'Actions',
-              id: 'actions',
-              cell: ({ row }) => {
-                  const compliance = row.original;
-                  return (
-                      <div className='flex gap-2'>
-                          <Tooltip title="Change Compliance Status" placement="top">
-                              <Button
-                                  size="sm"
-                                  onClick={() => openDialog(compliance)}
-                              >
-                                  <MdEdit />
-                              </Button>
-                          </Tooltip>
-                      </div>
-                  );
-              },
-          },
-        ],
-        [openDialog]
-    );
+
+  
+  const columns: ColumnDef<DueComplianceDataRow>[] = useMemo(
+    () => [
+      {
+        header: 'Compliance ID',
+        accessorKey: 'Compliance_ID',
+        cell: (props) => (
+          <div className="w-10 text-start">{props.getValue()}</div>
+        ),
+      },
+      {
+        header: 'Legislation',
+        accessorKey: 'Legislation',
+        cell: (props) => {
+          const value = props.getValue() as string;
+          return (
+            <Tooltip title={value} placement="top">
+              <div className="w-28 truncate">{value.length > 11 ? value.substring(0, 11) + '...' : value}</div>
+            </Tooltip>
+          );
+        },
+      },
+      {
+        header: 'Criticality',
+        accessorKey: 'Criticality',
+        cell: (props) => {
+            const criticality = props.getValue();
+            return (
+                <div className="w-24 font-semibold truncate">
+                    {criticality === 'High' ? (
+                        <span className="text-red-500">{criticality}</span>
+                    ) : criticality === 'Medium' ? (
+                        <span className="text-yellow-500">{criticality}</span>
+                    ) : (
+                        <span className="text-green-500">{criticality}</span>
+                    )}
+                </div>
+            );
+        }
+    },
+      {
+        header: 'Location',
+        accessorKey: 'Location',
+        cell: (props) => {
+          const value = props.getValue() as string;
+          return (
+            <Tooltip title={value} placement="top">
+              <div className="w-20 truncate">{value.length > 20 ? value.substring(0, 20) + '...' : value}</div>
+            </Tooltip>
+          );
+        },
+      },
+      {
+        header: 'Header',
+        accessorKey: 'Compliance_Header',
+        cell: (props) => {
+          const value = props.getValue() as string;
+          return (
+            <Tooltip title={value} placement="top">
+              <div className="w-20 truncate">{value}</div>
+            </Tooltip>
+          );
+        },
+      },
+      {
+        header: 'Description',
+        accessorKey: 'Compliance_Description',
+        cell: (props) => (
+          <Tooltip title={props.getValue() as string} placement="left">
+            <div className="w-40 truncate">{(props.getValue() as string).substring(0, 30)}...</div>
+          </Tooltip>
+        ),
+      },
+      {
+        header: 'Due Date',
+        accessorKey: 'Due_Date',
+        cell: (props) => (
+          <div className="w-20">
+            {new Date(props.getValue() as Date).toLocaleDateString()}
+          </div>
+        ),
+      },
+      {
+        header: 'Category',
+        accessorKey: 'Category',
+        cell: ({ getValue }) => {
+          return <div className="w-24">{getValue<string>()}</div>;
+        },
+      },
+
+      {
+        header: 'Compliance Status',
+        accessorKey: 'Status',
+        cell: ({ getValue }) => {
+          const status = getValue<DueComplianceDataRow['Status']>();
+          let textColor = 'text-gray-500';
+          
+          if (status === 'Not Complied') {
+            textColor = 'text-red-500';
+          } else if (status === 'Not Applicable') {
+            textColor = 'text-yellow-500';
+          } else if (status === 'Complied') {
+            textColor = 'text-green-500';
+          } else if (status === 'Complied With Delay') {
+            textColor = 'text-blue-500';
+          }
+          
+          return (
+            <div className="flex items-center w-40">
+              <div className={`font-semibold ${textColor}`}>{status}</div>
+            </div>
+          );
+        },
+      },
+      {
+        header: 'Actions',
+        id: 'actions',
+        cell: ({ row }) => {
+          const compliance = row.original;
+          return (
+            <div className='flex gap-2'>
+              <Tooltip title="View Compliance Detail" placement="top">
+                        <Button
+                          size="sm"
+                        //   onClick={() => navigate(`/app/IHRC/assign-list-detail/${row.original.Compliance_ID}`, { state: row.original })}
+                          icon={<RiEyeLine />}
+                          className='hover:bg-transparent'
+                        />
+                        
+            </Tooltip>
+              <Tooltip title="Change Compliance Status" placement="top">
+                <Button
+                  size="sm"
+                  onClick={() => openDialog(compliance)}
+                >
+                  <MdEdit />
+                </Button>
+              </Tooltip>
+            </div>
+          );
+        },
+      },
+    ],
+    [openDialog]
+  );
 
     const onPaginationChange = (page: number) => {
         setPaginationData(prev => ({ ...prev, pageIndex: page }));
