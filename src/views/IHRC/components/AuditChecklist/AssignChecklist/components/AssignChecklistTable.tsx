@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { dummyData, ComplianceData } from '@/views/IHRC/store/dummyData';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
+import classNames from 'classnames';
 
 const AssignChecklistTable: React.FC = () => {
   const navigate = useNavigate();
@@ -21,6 +22,8 @@ const AssignChecklistTable: React.FC = () => {
   const [reminderDate, setReminderDate] = useState<Date | null>(null);
   const [reminderEmail, setReminderEmail] = useState('');
   const [tempDueDate, setTempDueDate] = useState<Date | string | null>(null);
+
+
 
   const isAllSelected = useMemo(
     () => selectedItems.size === data.length,
@@ -285,6 +288,7 @@ const AssignChecklistTable: React.FC = () => {
       .filter(name => name) // Remove any undefined or empty names
       .map(name => ({ value: name, label: name }));
   }, []);
+  
 
   return (
     <div className="relative">

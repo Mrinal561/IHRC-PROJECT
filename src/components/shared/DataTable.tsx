@@ -250,7 +250,7 @@ function _DataTable<T>(
 
     return (
         <Loading loading={loading && data.length !== 0} type="cover">
-            <Table>
+            <Table >
                 <THead>
                     {table.getHeaderGroups().map((headerGroup) => (
                         <Tr key={headerGroup.id}>
