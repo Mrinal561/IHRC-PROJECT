@@ -225,6 +225,14 @@ const AssignChecklistTable: React.FC = () => {
         id: 'actions',  
         cell: ({ row }) => (
           <div className='flex space-x-2'>
+             <Tooltip title="View Compliance Detail" placement="top">
+              <Button
+                size="sm"
+                onClick={() => navigate(`/app/IHRC/assign-list-detail/${row.original.Compliance_ID}`, { state: row.original })}
+                icon={<RiEyeLine />}
+                className='hover:bg-transparent'
+              />
+            </Tooltip>
             <Tooltip title="Set Owner & Approver" placement="top">
               <Button
                 size="sm"
@@ -241,14 +249,7 @@ const AssignChecklistTable: React.FC = () => {
                 className='hover:bg-transparent text-red-500'
               />
             </Tooltip>
-            <Tooltip title="View Compliance Detail" placement="top">
-              <Button
-                size="sm"
-                onClick={() => navigate(`/app/IHRC/assign-list-detail/${row.original.Compliance_ID}`, { state: row.original })}
-                icon={<RiEyeLine />}
-                className='hover:bg-transparent'
-              />
-            </Tooltip>
+           
           </div>
         ),
       }
@@ -302,6 +303,10 @@ const AssignChecklistTable: React.FC = () => {
         onPaginationChange={onPaginationChange}
         onSelectChange={onSelectChange}
         onSort={onSort}
+        stickyHeader={true}
+        stickyFirstColumn={true}
+        stickyLastColumn={true}
+        selectable={true}
       />
 
       <Dialog

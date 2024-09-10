@@ -389,6 +389,7 @@ const CustomChecklistTable = () => {
                 skeletonAvatarColumns={[0]}
                 skeletonAvatarProps={{ className: 'rounded-md' }}
                 loading={false}
+                
             />
             <Dialog
                 isOpen={dialogIsOpen}

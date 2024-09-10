@@ -90,4 +90,23 @@
     margin-top: 2px;
   }
 
-  
+
+
+
+  /* For the first sticky column on the left */
+.sticky-column-left {
+  position: sticky;
+  left: 0;
+  background-color: white; /* Ensure background is set, or the shadow might not show properly */
+  z-index: 2; /* Make sure it's above other content */
+  box-shadow: 5px 0 5px -2px rgba(0, 0, 0, 0.2); /* Right shadow */
+}
+
+/* For the last sticky column on the right */
+.sticky-column-right {
+  position: sticky;
+  right: 0;
+  background-color: white; /* Ensure background is set */
+  z-index: 2; /* Keep this above other content */
+  box-shadow: -5px 0 5px -2px rgba(0, 0, 0, 0.2); /* Left shadow */
+}
