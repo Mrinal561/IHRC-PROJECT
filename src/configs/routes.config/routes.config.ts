@@ -93,24 +93,24 @@ export const protectedRoutes = [
         authority: [],
     },
     {
-        key: 'groupMenu.certificate',
-        path: '/group-single-menu-item-view-certificate',
+        key: 'groupMenu.collapse.item1',
+        path: '/global-certificate',
         component: lazy(() =>
             import('@/views/IHRC/components/GlobalSettings/CertificateTemplate/CertificateTemplate')
         ),
         authority: [],
     },
     {
-        key: 'groupMenu.notification',
-        path: '/group-single-menu-item-view-notification',
+        key: 'groupMenu.collapse.item2',
+        path: '/global-notification',
         component: lazy(() =>
             import('@/views/IHRC/components/GlobalSettings/NotificationSettings/NotificationSettings')
         ),
         authority: [],
     },
     {
-        key: 'groupMenu.status',
-        path: '/group-single-menu-item-view-status',
+        key: 'groupMenu.collapse.item3',
+        path: '/global-status',
         component: lazy(() =>
             import('@/views/IHRC/components/GlobalSettings/StatusSettings/StatusSettings')
         ),

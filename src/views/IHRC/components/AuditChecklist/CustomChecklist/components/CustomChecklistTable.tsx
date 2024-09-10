@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { MdEdit } from 'react-icons/md';
 import { FiTrash } from 'react-icons/fi';
 import { dummyData, ComplianceData } from '@/views/IHRC/store/dummyData'
+import { RiEyeLine } from 'react-icons/ri';
 
 
 interface ComplianceRow {
@@ -182,6 +183,8 @@ const CustomChecklistTable = () => {
     const [dialogIsOpen, setDialogIsOpen] = useState(false);
     const [itemToDelete, setItemToDelete] = useState<ComplianceRow | null>(null);
 
+    const navigate = useNavigate();
+
     const isAllSelected = useMemo(
         () => selectedItems.size === complianceData.length,
         [selectedItems]
@@ -346,6 +349,14 @@ const CustomChecklistTable = () => {
                     return(
 
                     <div className='flex space-x-2'>
+                        <Tooltip title="View Compliance Detail" placement="top">
+                        <Button
+                          size="sm"
+                        //   onClick={() => navigate(`/app/IHRC/assign-list-detail/${row.original.Compliance_ID}`, { state: row.original })}
+                          icon={<RiEyeLine />}
+                          className='hover:bg-transparent'
+                        />
+            </Tooltip>
                     <Tooltip title={value1} placement="top">
                     <Button
                         size="sm"

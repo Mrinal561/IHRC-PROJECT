@@ -245,7 +245,7 @@ const DueCompliance: React.FC = () => {
       <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-10">
           <div className="mb-4 lg:mb-0">
               <h3 className="text-2xl font-bold">Due Compliance</h3>
-              <p className="text-gray-600">View your company's Due compliance</p>
+              <p className="text-gray-600">View your company's due compliance</p>
           </div>
           <div className="flex items-center gap-4">
               <DueComplianceFilter onFilterChange={handleFilterChange} currentFilter={currentFilter} />

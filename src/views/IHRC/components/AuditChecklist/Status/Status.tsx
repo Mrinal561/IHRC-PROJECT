@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import StatusTable from './components/StatusTable';
 import StatusCard from './components/StatusCard';
+import Company from '../../Home/components/Company';
 
 const Status: React.FC = () => {
   const [currentFilter, setCurrentFilter] = useState('Pending');
@@ -24,8 +25,11 @@ const Status: React.FC = () => {
       <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-8">
                 <div className="mb-4 lg:mb-0">
                     <h3 className="text-2xl font-bold">Status</h3>
-                    <p className="text-gray-600">View your company's Compliance Status</p>
+                    <p className="text-gray-600">View your company's compliance status</p>
                 </div>
+      </div>
+      <div className='mb-4'>
+      <Company />
       </div>
       <div>
         <StatusCard />

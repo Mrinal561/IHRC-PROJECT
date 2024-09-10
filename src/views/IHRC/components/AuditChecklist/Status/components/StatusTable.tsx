@@ -358,6 +358,15 @@ const StatusTable: React.FC<StatusTableProps> = ({
           const status = row.original.Status.toLowerCase();
           return (
             <div className="flex gap-2">
+               {(status === 'pending' || status === 'rejected' || status === 'approved') && (
+                <Tooltip title="View Compliance Detail">
+                  <Button
+                    size="sm"
+                    onClick={() => navigate(`/app/IHRC/compliance-status-list-detail/${row.original.Compliance_Instance_ID}`, { state: row.original })}
+                    icon={<RiEyeLine />}
+                  />
+                </Tooltip>
+              )}
               {status === 'pending' && (
                 <>
                   <Tooltip title="Approve Compliance">
@@ -376,16 +385,8 @@ const StatusTable: React.FC<StatusTableProps> = ({
                   </Tooltip>
                 </>
               )}
-              {(status === 'pending' || status === 'rejected') && (
-                <Tooltip title="View Compliance Detail">
-                  <Button
-                    size="sm"
-                    onClick={() => navigate(`/app/IHRC/compliance-status-list-detail/${row.original.Compliance_Instance_ID}`, { state: row.original })}
-                    icon={<RiEyeLine />}
-                  />
-                </Tooltip>
-              )}
-              {(status === 'rejected') && (
+             
+              {/* {(status === 'rejected') && (
                 <Tooltip title="Download Compliance Report">
                   <Button
                     size="sm"
@@ -393,7 +394,7 @@ const StatusTable: React.FC<StatusTableProps> = ({
                     icon={<RiDownloadLine />}
                   />
                 </Tooltip>
-              )}
+              )} */}
             </div>
           );
         },
