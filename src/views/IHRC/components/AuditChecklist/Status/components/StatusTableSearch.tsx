@@ -1,5 +1,6 @@
 import React from 'react';
 import { Input } from '@/components/ui';
+import { HiOutlineSearch } from 'react-icons/hi';
 
 interface StatusTableSearchProps {
   onSearch: (searchTerm: string) => void;
@@ -12,12 +13,11 @@ const StatusTableSearch: React.FC<StatusTableSearchProps> = ({ onSearch }) => {
 
   return (
     <Input
-      type="text"
-      placeholder="Search..."
-      size="sm"
-      className="min-w-[130px]"
-      onChange={handleSearch}
-    />
+            className="w-44"
+            size="sm"
+            placeholder="Search compliance"
+            prefix={<HiOutlineSearch className="text-lg" />}
+        />
   );
 };
 
