@@ -79,17 +79,17 @@ const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ onUploadSingle,
             // Update both tableData state and dummyData
             const updatedTableData = tableData.map(item => 
                 item.Compliance_ID === selectedCompliance.Compliance_ID 
-                    ? { ...item, Status: selectedStatus.value }
+                    ? { ...item, Compliance_Status_2: selectedStatus.value }
                     : item
             );
             setTableData(updatedTableData);
 
             const dummyDataIndex = dummyData.findIndex(item => item.Compliance_ID === selectedCompliance.Compliance_ID);
             if (dummyDataIndex !== -1) {
-                dummyData[dummyDataIndex].Status = selectedStatus.value;
+                dummyData[dummyDataIndex].Compliance_Status_2 = selectedStatus.value;
             }
 
-            onUpdateStatus(selectedCompliance.Compliance_ID, selectedStatus.value as ComplianceData['Status']);
+            onUpdateStatus(selectedCompliance.Compliance_ID, selectedStatus.value as ComplianceData['Compliance_Status_2']);
             toast.push(
                 <Notification title="Success" type="success">
                     Compliance status updated successfully
@@ -195,7 +195,7 @@ const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ onUploadSingle,
           },
             {
                 header: 'Compliance Status',
-                accessorKey: 'Status',
+                accessorKey: 'Compliance_Status_2',
                 cell: ({ getValue }) => {
                     const status = getValue<string>();
                     let textColor = 'text-gray-500';
