@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Dialog, Input, toast, Notification } from '@/components/ui';
+import { Button, Dialog, Input, toast, Notification, Card } from '@/components/ui';
 import {RiUploadLine, RiDownloadLine} from 'react-icons/ri';
 
 const UploadDownload: React.FC = () => {
@@ -40,37 +40,56 @@ const UploadDownload: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-[calc(100vh-270px)] mt-8">
-      <div className="flex space-x-4">
-        <Button variant="solid" onClick={handleUploadClick} icon={<RiUploadLine/>}
-        >
-          Upload
-        </Button>
-        <Button variant="solid" onClick={handleDownload} icon={<RiDownloadLine/>}>
-          Download
-        </Button>
-      </div>
+      <div className="grid grid-cols-3 gap-8">
+          <Card bordered className='shadow-lg'>   
+              <div className='flex flex-col gap-4 py-6 px-2'>
+                  <h4>Global Compliance Certificate Template</h4>
 
-      <Dialog
-        isOpen={isUploadDialogOpen}
-        onClose={() => setIsUploadDialogOpen(false)}
-      >
-        <h5 className="mb-4">Upload Certificate Template</h5>
-        <div>
-          <Input
-            type="file"
-            onChange={handleFileChange}
-            className="mb-4"
-          />
-        </div>
-        <div className="text-right">
-          <Button variant="solid" onClick={handleUpload} disabled={!selectedFile}>
-            Upload
-          </Button>
-        </div>
-      </Dialog>
-    </div>
-  );
+                  <div className="flex space-x-4 justify-center">
+                      <Button
+                          size="sm"
+                          variant="solid"
+                          onClick={handleUploadClick}
+                          icon={<RiUploadLine />}
+                      >
+                          Upload
+                      </Button>
+                      <Button
+                          size="sm"
+                          variant="solid"
+                          onClick={handleDownload}
+                          icon={<RiDownloadLine />}
+                      >
+                          Download
+                      </Button>
+                  </div>
+              </div>
+          </Card>
+          <Dialog
+              isOpen={isUploadDialogOpen}
+              onClose={() => setIsUploadDialogOpen(false)}
+          >
+              <h5 className="mb-4">Upload Certificate Template</h5>
+              <p className="mb-2">Please upload the certificate template</p>
+              <div>
+                  <Input
+                      type="file"
+                      onChange={handleFileChange}
+                      className="mb-4"
+                  />
+              </div>
+              <div className="text-right">
+                  <Button
+                      variant="solid"
+                      onClick={handleUpload}
+                      disabled={!selectedFile}
+                  >
+                      Upload
+                  </Button>
+              </div>
+          </Dialog>
+      </div>
+  )
 };
 
 export default UploadDownload;

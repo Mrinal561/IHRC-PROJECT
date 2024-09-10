@@ -32,6 +32,7 @@ export interface ComplianceData {
     Edited_On: string;
     Edited_By: string;
     Compliance_Status: string;
+    Compliance_Status_2: string;
     Status: string;
     Remark: string;
   }
@@ -71,6 +72,7 @@ export interface ComplianceData {
         Edited_On: "2023-06-15",
         Edited_By: "Admin User",
         Compliance_Status: 'NA',
+        Compliance_Status_2: '',
         Status: 'Pending',
         Remark: 'Missing Information in uploaded Document'
       },
@@ -108,6 +110,7 @@ export interface ComplianceData {
         Edited_On: "2023-03-20",
         Edited_By: "HR Manager",
         Compliance_Status: 'NA',
+        Compliance_Status_2: '',
         Status: 'Pending',
         Remark: 'Missing Information in uploaded Document'
       },
@@ -145,6 +148,7 @@ export interface ComplianceData {
         Edited_On: "2023-01-10",
         Edited_By: "Environmental Officer",
         Compliance_Status: 'NA',
+        Compliance_Status_2: '',
         Status: 'Pending',
         Remark: 'Missing Information in uploaded Document'
       },
@@ -182,6 +186,7 @@ export interface ComplianceData {
         Edited_On: "2023-04-05",
         Edited_By: "Store Manager",
         Compliance_Status: 'NA',
+        Compliance_Status_2: '',
         Status: 'Pending',
         Remark: 'Missing Information in uploaded Document'
       },
@@ -219,6 +224,7 @@ export interface ComplianceData {
         Edited_On: "2023-04-10",
         Edited_By: "Quality Assurance Head",
         Compliance_Status: 'Complied',
+        Compliance_Status_2: '',
         Status: 'Approved',
         Remark: 'Missing Information in uploaded Document'
       },
@@ -256,6 +262,7 @@ export interface ComplianceData {
         Edited_On: "2023-06-05",
         Edited_By: "Safety Officer",
         Compliance_Status: 'Complied',
+        Compliance_Status_2: '',
         Status: 'Approved',
         Remark: 'Missing Information in uploaded Document'
       },
@@ -293,6 +300,7 @@ export interface ComplianceData {
         Edited_On: "2023-08-05",
         Edited_By: "Data Protection Officer",
         Compliance_Status: 'Complied',
+        Compliance_Status_2: '',
         Status: 'Approved',
         Remark: 'Missing Information in uploaded Document'
       },
@@ -330,6 +338,7 @@ export interface ComplianceData {
         Edited_On: "2023-05-20",
         Edited_By: "Quality Manager",
         Compliance_Status: 'Complied',
+        Compliance_Status_2: '',
         Status: 'Approved',
         Remark: 'Missing Information in uploaded Document'
       },
@@ -367,6 +376,7 @@ export interface ComplianceData {
         Edited_On: "2023-05-20",
         Edited_By: "Quality Manager",
         Compliance_Status: 'Complied',
+        Compliance_Status_2: '',
         Status: 'Approved',
         Remark: 'Missing Information in uploaded Document'
 
@@ -405,6 +415,7 @@ export interface ComplianceData {
         Edited_On: "2023-04-05",
         Edited_By: "Compliance Officer",
         Compliance_Status: 'Complied',
+        Compliance_Status_2: '',
         Status: 'Approved',
         Remark: 'Missing Information in uploaded Document'
       },
@@ -442,6 +453,7 @@ export interface ComplianceData {
         Edited_On: "2023-02-26",
         Edited_By: "Legal Head",
         Compliance_Status: 'Complied',
+        Compliance_Status_2: '',
         Status: 'Approved',
         Remark: 'Missing Information in uploaded Document'
       },
@@ -479,6 +491,7 @@ export interface ComplianceData {
         Edited_On: "2023-03-20",
         Edited_By: "Fleet Manager",
         Compliance_Status: 'Complied',
+        Compliance_Status_2: '',
         Status: 'Approved',
         Remark: 'Missing Information in uploaded Document'
       },
@@ -516,6 +529,7 @@ export interface ComplianceData {
         Edited_On: "2023-07-05",
         Edited_By: "Environmental Engineer",
         Compliance_Status: 'Not Complied',
+        Compliance_Status_2: '',
         Status: 'Rejected',
         Remark: 'Missing Information in uploaded Document'
       },
@@ -553,6 +567,7 @@ export interface ComplianceData {
         Edited_On: "2023-01-05",
         Edited_By: "Chief of Maintenance",
         Compliance_Status: 'Not Complied',
+        Compliance_Status_2: '',
         Status: 'Rejected',
         Remark: 'Missing Information in uploaded Document'
       },
@@ -590,6 +605,7 @@ export interface ComplianceData {
         Edited_On: "2023-01-10",
         Edited_By: "Compliance Head",
         Compliance_Status: 'Not Complied',
+        Compliance_Status_2: '',
         Status: 'Rejected',
         Remark: 'Missing Information in uploaded Document'
       }
