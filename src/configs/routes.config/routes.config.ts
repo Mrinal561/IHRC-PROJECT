@@ -116,20 +116,45 @@ export const protectedRoutes = [
         ),
         authority: [],
     },
-    // {
-    //     key: 'groupMenu.collapse.item1',
-    //     path: '/group-collapse-menu-item-view-1',
-    //     // component: lazy(() =>
-    //     //     import('@/views/IHRC/components/demo/GroupCollapseMenuItemView1')
-    //     // ),
-    //     authority: [],
-    // },
-    // {
-    //     key: 'groupMenu.collapse.item2',
-    //     path: '/group-collapse-menu-item-view-2',
-    //     // component: lazy(() =>
-    //     //     import('@/views/IHRC/components/demo/GroupCollapseMenuItemView2')
-    //     // ),
-    //     authority: [],
-    // },
+    {
+        key: 'entityMenu.collapse.item1',
+        path: '/company-group',
+        component: lazy(() =>
+            import('@/views/IHRC/components/Entity/CompanyGroup/CompanyGroup')
+        ),
+        authority: [],
+    },
+    {
+        key: 'entityMenu.collapse.item2',
+        path: '/company-name',
+        component: lazy(() =>
+            import('@/views/IHRC/components/Entity/CompanyName/CompanyName')
+        ),
+        authority: [],
+    },
+    {
+        key: 'entityMenu.collapse.item3',
+        path: '/state',
+        component: lazy(() =>
+            import('@/views/IHRC/components/Entity/State/State')
+        ),
+        authority: [],
+    },
+    {
+        key: 'entityMenu.collapse.item4',
+        path: '/location',
+        component: lazy(() =>
+            import('@/views/IHRC/components/Entity/Location/Location')
+        ),
+        authority: [],
+    },
+    {
+        key: 'entityMenu.collapse.item5',
+        path: '/branch',
+        component: lazy(() =>
+            import('@/views/IHRC/components/Entity/Branch/Branch')
+        ),
+        authority: [],
+    },
+    
 ]

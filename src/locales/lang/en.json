@@ -22,6 +22,18 @@
                 "item2": "Notification Settings",
                 "item3": "Status Settings"
             }
+        },
+        "entityMenu": {
+            "entityMenu": "Entity",
+            "collapse": {
+                "collapse": "Entity",
+                "item1": "Company Group",
+                "item2": "Company Name",
+                "item3": "State",
+                "item4": "Location",
+                "item5": "Branch"
+
+            }
         }
     }
 }
