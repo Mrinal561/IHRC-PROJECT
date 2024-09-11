@@ -139,7 +139,7 @@ const CompanyGroupTool: React.FC<CompanyGroupToolProps> = ({ addCompanyGroup }) 
     const toastNotification = (
       <Notification title="Success" type="success">
         <div className="flex items-center">
-          <HiCheckCircle className="text-emerald-500 text-xl mr-2" />
+          {/* <HiCheckCircle className="text-emerald-500 text-xl mr-2" /> */}
           <span>{message}</span>
         </div>
       </Notification>
@@ -151,7 +151,7 @@ const CompanyGroupTool: React.FC<CompanyGroupToolProps> = ({ addCompanyGroup }) 
     const toastNotification = (
       <Notification title="Error" type="danger">
         <div className="flex items-center">
-          <HiXCircle className="text-red-500 text-xl mr-2" />
+          {/* <HiXCircle className="text-red-500 text-xl mr-2" /> */}
           <span>{message}</span>
         </div>
       </Notification>
