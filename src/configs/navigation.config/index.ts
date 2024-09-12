@@ -207,6 +207,16 @@ const navigationConfig: NavigationTree[] = [
                 authority: [],
                 subMenu: [],
             },
+            {
+                key: 'entityMenu.collapse.item6',
+                path: '/pf-setup',
+                title: 'PF Setup',
+                translateKey: 'nav.entityMenu.collapse.item6',
+                icon: '',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [],
+                subMenu: [],
+            },
         ],
     },
 ]

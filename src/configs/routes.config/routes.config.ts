@@ -156,5 +156,13 @@ export const protectedRoutes = [
         ),
         authority: [],
     },
+    {
+        key: 'entityMenu.collapse.item6',
+        path: '/pf-setup',
+        component: lazy(() =>
+            import('@/views/IHRC/components/Entity/PFSetup/PFSetup')
+        ),
+        authority: [],
+    },
     
 ]

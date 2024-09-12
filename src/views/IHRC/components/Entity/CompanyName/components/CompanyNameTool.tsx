@@ -4,6 +4,7 @@ import { HiPlusCircle } from 'react-icons/hi';
 import { EntityData } from '@/views/IHRC/store/dummyEntityData';
 import OutlinedInput from '@/components/ui/OutlinedInput';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
+import { log } from 'console';
 
 interface CompanyNameToolProps {
   addCompany: (newEntityData: EntityData) => void;
@@ -67,6 +68,8 @@ const CompanyNameTool: React.FC<CompanyNameToolProps> = ({ addCompany, companyGr
       showFailToast('Please enter a valid Company Name and select a Company Group.');
     }
   };
+  console.log(companyName);
+  
 
   return (
     <div>
