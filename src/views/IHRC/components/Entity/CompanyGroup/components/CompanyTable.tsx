@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { Table, Button, Dialog, Tooltip } from '@/components/ui';
-import { FiTrash, FiEdit } from 'react-icons/fi';
+import React, { useMemo, useState } from 'react';
+import { Button, Dialog, Tooltip } from '@/components/ui';
+import { FiTrash } from 'react-icons/fi';
 import OutlinedInput from '@/components/ui/OutlinedInput';
 import { MdEdit } from 'react-icons/md';
+import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 
-const { Tr, Th, Td, THead, TBody } = Table;
 
 interface CompanyTableProps {
     data: Array<{
@@ -20,6 +20,44 @@ const CompanyTable: React.FC<CompanyTableProps> = ({ data, onDelete, onEdit }) =
     const [itemToDelete, setItemToDelete] = useState<number | null>(null);
     const [itemToEdit, setItemToEdit] = useState<number | null>(null);
     const [editedName, setEditedName] = useState('');
+
+    const columns: ColumnDef<CompanyTableProps>[] = useMemo(
+        () => [
+            {
+                header: 'Company Group Name',
+                accessorKey: 'Company_Group_Name',
+                cell: (props) => (
+                    <div className="w-96 truncate">{props.getValue() as string}</div>
+                ),
+            },
+            {
+                header: 'Actions',
+                id: 'actions',
+                cell: ({ row }) => (
+                    <div className="flex items-center gap-2">
+                        <Tooltip title="Edit">
+                            <Button
+                                size="sm"
+                                onClick={() => openEditDialog(row.index)}
+                                icon={<MdEdit />}
+                                className="text-blue-500"
+                            />
+                        </Tooltip>
+                        <Tooltip title="Delete">
+                            <Button
+                                size="sm"
+                                onClick={() => openDeleteDialog(row.index)}
+                                icon={<FiTrash />}
+                                className="text-red-500"
+                            />
+                        </Tooltip>
+                    </div>
+                ),
+            },
+        ],
+        []
+    );
+
 
     const openDeleteDialog = (index: number) => {
         setItemToDelete(index);
@@ -54,42 +92,45 @@ const CompanyTable: React.FC<CompanyTableProps> = ({ data, onDelete, onEdit }) =
         }
     };
 
-    return (
-        <>
-            <Table>
-                <THead>
-                    <Tr>
-                        <Th>Company Group Name</Th>
-                        <Th className="w-28">Action</Th>
-                    </Tr>
-                </THead>
-                <TBody>
-                    {data.map((item, index) => (
-                        <Tr key={index}>
-                            <Td>{item.Company_Group_Name || '-'}</Td>
-                            <Td className="w-28 flex gap-1">
-                                <Tooltip title="Edit Company Group">
-                                    <Button 
-                                        size="sm"
-                                        onClick={() => openEditDialog(index)}
-                                        icon={<MdEdit />}
-                                        className="text-blue-500"
-                                    />
-                                </Tooltip>
-                                <Tooltip title="Delete Company Group">
-                                    <Button  
-                                        size="sm" 
-                                        onClick={() => openDeleteDialog(index)}
-                                        icon={<FiTrash />}
-                                        className="text-red-500"
-                                    /> 
-                                </Tooltip>
-                            </Td>
-                        </Tr>
-                    ))}
-                </TBody>
-            </Table>
+       // State for table pagination and sorting
+   const [tableData, setTableData] = useState({
+    total: data.length,
+    pageIndex: 1,
+    pageSize: 10,
+    query: '',
+    sort: { order: '', key: '' },
+});
 
+// Function to handle pagination changes
+const onPaginationChange = (page: number) => {
+    setTableData(prev => ({ ...prev, pageIndex: page }));
+};
+
+// Function to handle page size changes
+const onSelectChange = (value: number) => {
+    setTableData(prev => ({ ...prev, pageSize: Number(value), pageIndex: 1 }));
+};
+
+    return (
+        <div className="relative">
+        {data.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+                No data available
+            </div>
+        ) : (
+            <DataTable
+                columns={columns}
+                data={data}
+                skeletonAvatarColumns={[0]}
+                skeletonAvatarProps={{ className: 'rounded-md' }}
+                loading={false}
+                pagingData={{
+                    total: data.length,
+                    pageIndex: 1,
+                    pageSize: 10,
+                }}
+            />
+        )}
             {/* Delete Confirmation Dialog */}
             <Dialog
                 isOpen={dialogIsOpen}
@@ -141,7 +182,7 @@ const CompanyTable: React.FC<CompanyTableProps> = ({ data, onDelete, onEdit }) =
                     </Button>
                 </div>
             </Dialog>
-        </>
+        </div>
     );
 };
 

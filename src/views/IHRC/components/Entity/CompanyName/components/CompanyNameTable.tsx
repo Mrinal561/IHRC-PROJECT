@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { Table, Button, Dialog, Tooltip } from '@/components/ui';
+import React, { useMemo, useState } from 'react';
+import { Button, Dialog, Tooltip } from '@/components/ui';
 import { FiTrash } from 'react-icons/fi';
 import { MdEdit } from 'react-icons/md';
 import OutlinedInput from '@/components/ui/OutlinedInput/OutlinedInput';
+import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 
-const { Tr, Th, Td, THead, TBody } = Table;
 
-interface CompanyTableProps {
+interface CompanyNameTableProps {
     data: Array<{
         Company_Group_Name?: string | { value: string; label: string };
         Company_Name?: string;
@@ -15,12 +15,62 @@ interface CompanyTableProps {
     onEdit: (index: number, newName: string) => void;
 }
 
-const CompanyNameTable: React.FC<CompanyTableProps> = ({ data, onDelete, onEdit }) => {
+const CompanyNameTable: React.FC<CompanyNameTableProps> = ({ data, onDelete, onEdit }) => {
     const [dialogIsOpen, setDialogIsOpen] = useState(false);
     const [itemToDelete, setItemToDelete] = useState<number | null>(null);
     const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
     const [itemToEdit, setItemToEdit] = useState<number | null>(null);
     const [editedName, setEditedName] = useState('');
+
+    const columns: ColumnDef<CompanyNameTableProps>[] = useMemo(
+        () => [
+            {
+                header: 'Company Group Name',
+                accessorKey: 'Company_Group_Name',
+                cell: (props) => (
+                    <div className="w-52 truncate">{props.getValue() as string}</div>
+                ),
+            },
+            {
+                header: 'Company Name',
+                accessorKey: 'Company_Name',
+                cell: (props) => (
+                    <div className="w-52 truncate">{props.getValue() as string}</div>
+                ),
+            },
+            {
+                header: 'Actions',
+                id: 'actions',
+                cell: ({ row }) => (
+                    <div className="flex items-center gap-2">
+                        <Tooltip title="Edit">
+                            <Button
+                                size="sm"
+                                onClick={() => openEditDialog(row.index)}
+                                icon={<MdEdit />}
+                                className="text-blue-500"
+                            />
+                        </Tooltip>
+                        <Tooltip title="Delete">
+                            <Button
+                                size="sm"
+                                onClick={() => openDeleteDialog(row.index)}
+                                icon={<FiTrash />}
+                                className="text-red-500"
+                            />
+                        </Tooltip>
+                    </div>
+                ),
+            },
+        ],
+        []
+    );
+
+    const openDeleteDialog = (index: number) => {
+        setItemToDelete(index);
+        setDialogIsOpen(true);
+    };
+
 
     const openEditDialog = (index: number) => {
         setItemToEdit(index);
@@ -39,6 +89,13 @@ const CompanyNameTable: React.FC<CompanyTableProps> = ({ data, onDelete, onEdit 
         setItemToDelete(null);
         setItemToEdit(null);
         setEditedName('');
+    };
+
+    const handleDeleteConfirm = () => {
+        if (itemToDelete !== null) {
+            onDelete(itemToDelete);
+            handleDialogClose();
+        }
     };
 
     const handleDialogOk = () => {
@@ -65,60 +122,46 @@ const CompanyNameTable: React.FC<CompanyTableProps> = ({ data, onDelete, onEdit 
         return companyGroupName || '-';
     };
 
-    if (data.length === 0) {
-        return (
-            <div className="text-center py-4 min-h-[100px]">
-                <Table className='min-h-[100px]'>
-                    <THead>
-                        <Tr>
-                            <Th>No Data Available</Th>
-                        </Tr>
-                    </THead>
-                    <TBody>
-                        {/* No data available */}
-                    </TBody>
-                </Table>
-            </div>
-        );
-    }
+        // State for table pagination and sorting
+        const [tableData, setTableData] = useState({
+            total: data.length,
+            pageIndex: 1,
+            pageSize: 10,
+            query: '',
+            sort: { order: '', key: '' },
+        });
+        
+        // Function to handle pagination changes
+        const onPaginationChange = (page: number) => {
+            setTableData(prev => ({ ...prev, pageIndex: page }));
+        };
+        
+        // Function to handle page size changes
+        const onSelectChange = (value: number) => {
+            setTableData(prev => ({ ...prev, pageSize: Number(value), pageIndex: 1 }));
+        };
+        
 
     return (
-        <>
-            <Table>
-                <THead>
-                    <Tr>
-                        <Th>Company Group Name</Th>
-                        <Th>Company Name</Th>
-                        <Th className="w-28">Action</Th>
-                    </Tr>
-                </THead>
-                <TBody>
-                    {data.map((item, index) => (
-                        <Tr key={index}>
-                            <Td>{renderCompanyGroupName(item.Company_Group_Name)}</Td>
-                            <Td>{item.Company_Name || '-'}</Td>
-                            <Td className="w-28 flex gap-1">
-                                <Tooltip title="Edit Company Name">
-                                    <Button 
-                                        size="sm"
-                                        onClick={() => openEditDialog(index)}
-                                        icon={<MdEdit />}
-                                        className="text-blue-500"
-                                    />
-                                </Tooltip>
-                                <Tooltip title="Delete Company Name">
-                                    <Button  
-                                        size="sm" 
-                                        onClick={() => openDialog(index)}
-                                        icon={<FiTrash />}
-                                        className="text-red-500"
-                                    /> 
-                                </Tooltip>
-                            </Td>
-                        </Tr>
-                    ))}
-                </TBody>
-            </Table>
+        <div className='relative'>
+            {data.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+                No data available
+            </div>
+        ) : (
+            <DataTable
+                columns={columns}
+                data={data}
+                skeletonAvatarColumns={[0]}
+                skeletonAvatarProps={{ className: 'rounded-md' }}
+                loading={false}
+                pagingData={{
+                    total: data.length,
+                    pageIndex: 1,
+                    pageSize: 10,
+                }}
+            />
+        )}
 
             <Dialog
                 isOpen={dialogIsOpen}
@@ -169,7 +212,7 @@ const CompanyNameTable: React.FC<CompanyTableProps> = ({ data, onDelete, onEdit 
                     </Button>
                 </div>
             </Dialog>
-        </>
+        </div>
     );
 };
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import AdaptableCard from '@/components/shared/AdaptableCard';
 import PFSetupTool from './components/PFSetupTool';
 import PFSetupTable from './components/PFSetupTable';
-// import { ErrorBoundary } from 'react-error-boundary';
+import { ErrorBoundary } from 'react-error-boundary';
 
 export interface PFSetupData {
   Company_Group_Name: string;
@@ -28,7 +28,7 @@ export interface EntityData {
 
 const ErrorFallback = ({ error }: { error: Error }) => {
   return (
-    <div role="alert">
+    <div role="alert" className="text-red-500 p-4">
       <p>Something went wrong:</p>
       <pre>{error.message}</pre>
     </div>
@@ -131,6 +131,7 @@ const PFSetup: React.FC = () => {
   }
 
   return (
+    <ErrorBoundary FallbackComponent={ErrorFallback}>
       <AdaptableCard className="h-full" bodyClass="h-full">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-10">
           <div className="mb-4 lg:mb-0">
@@ -149,6 +150,8 @@ const PFSetup: React.FC = () => {
           onEdit={handleEdit} 
         />
       </AdaptableCard>
+      </ErrorBoundary>
+
   );
 };
 

@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
-import { Table, Button, Dialog, Tooltip } from '@/components/ui';
+import React, { useMemo, useState } from 'react';
+import { ColumnDef } from '@/components/shared/DataTable';
+import DataTable from '@/components/shared/DataTable';
+import { Button, Tooltip, Dialog } from '@/components/ui';
 import { FiTrash } from 'react-icons/fi';
 import { MdEdit } from 'react-icons/md';
-import OutlinedInput from '@/components/ui/OutlinedInput/OutlinedInput';
 import { PFSetupData } from '../PFSetup';
-
-const { Tr, Th, Td, THead, TBody } = Table;
 
 interface PFSetupTableProps {
     data: PFSetupData[];
@@ -19,6 +18,139 @@ const PFSetupTable: React.FC<PFSetupTableProps> = ({ data, onDelete, onEdit }) =
     const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
     const [itemToEdit, setItemToEdit] = useState<number | null>(null);
     const [editedData, setEditedData] = useState<Partial<PFSetupData>>({});
+
+    const columns: ColumnDef<PFSetupData>[] = useMemo(
+        () => [
+            {
+                header: 'Company Group Name',
+                accessorKey: 'Company_Group_Name',
+                cell: (props) => (
+                    <div className="w-44 truncate">{props.getValue() as string}</div>
+                ),
+            },
+            {
+                header: 'Company Name',
+                accessorKey: 'Company_Name',
+                cell: (props) => (
+                    <div className="w-44 truncate">{props.getValue() as string}</div>
+                ),
+            },
+            {
+                header: 'PF Code',
+                accessorKey: 'pfCode',
+                cell: (props) => (
+                    <div className="w-36 text-start">{props.getValue() as string}</div>
+                ),
+            },
+            {
+                header: 'PF Code Location',
+                accessorKey: 'pfCodeLocation',
+                cell: (props) => (
+                    <div className="w-36 truncate">{props.getValue() as string}</div>
+                ),
+            },
+            {
+                header: 'Registration Date',
+                accessorKey: 'registrationDate',
+                cell: (props) => (
+                    <div className="w-40 flex items-center justify-center">{props.getValue() as string}</div>
+                ),
+            },
+            {
+                header: 'PF User ID',
+                accessorKey: 'pfUserId',
+                cell: (props) => (
+                    <div className="w-32 flex items-center justify-center">{props.getValue() as string}</div>
+                ),
+            },
+            {
+                header: 'PF Password',
+                accessorKey: 'pfPassword',
+                cell: (props) => (
+                    <div className="w-32 flex items-center justify-center">{props.getValue() as string}</div>
+                ),
+            },
+            {
+                header: 'Authorized Signatory',
+                accessorKey: 'authorizedSignatory',
+                cell: (props) => (
+                    <div className="w-48 truncate">{props.getValue() as string}</div>
+                ),
+            },
+            {
+                header: 'Designation',
+                accessorKey: 'signatoryDesignation',
+                cell: (props) => (
+                    <div className="w-40 truncate">{props.getValue() as string}</div>
+                ),
+            },
+            {
+                header: 'Mobile',
+                accessorKey: 'signatoryMobile',
+                cell: (props) => (
+                    <div className="w-40 truncate">{props.getValue() as string}</div>
+                ),
+            },
+            {
+                header: 'Email',
+                accessorKey: 'signatoryEmail',
+                cell: (props) => (
+                    <div className="w-40 truncate">{props.getValue() as string}</div>
+                ),
+            },
+            {
+                header: 'DSC Validity',
+                accessorKey: 'dscValidDate',
+                cell: (props) => (
+                    <div className="w-40 truncate">{props.getValue() as string}</div>
+                ),
+            },
+            {
+                header: 'E Sign',
+                accessorKey: 'signatoryEmail',
+                cell: (props) => (
+                    <div className="w-40 truncate">{props.getValue() as string}</div>
+                ),
+            },
+            {
+                header: 'PF Certificate',
+                accessorKey: 'pfRegistrationCertificate',
+                cell: (props) => {
+                    const file = props.getValue() as File | undefined;
+                    return (
+                        <div className="w-40 truncate">
+                            {file ? file.name : 'No file uploaded'}
+                        </div>
+                    );
+                },
+            },
+            {
+                header: 'Actions',
+                id: 'actions',
+                cell: ({ row }) => (
+                    <div className="flex items-center gap-2">
+                        <Tooltip title="Edit">
+                            <Button
+                                size="sm"
+                                onClick={() => openEditDialog(row.index)}
+                                icon={<MdEdit />}
+                                className="text-blue-500"
+                            />
+                        </Tooltip>
+                        <Tooltip title="Delete">
+                            <Button
+                                size="sm"
+                                onClick={() => openDialog(row.index)}
+                                icon={<FiTrash />}
+                                className="text-red-500"
+                            />
+                        </Tooltip>
+                    </div>
+                ),
+            },
+        ],
+        []
+    );
 
     const openEditDialog = (index: number) => {
         setItemToEdit(index);
@@ -56,84 +188,45 @@ const PFSetupTable: React.FC<PFSetupTableProps> = ({ data, onDelete, onEdit }) =
         }
     };
 
-    if (data.length === 0) {
-        return (
-            <div className="text-center py-4 min-h-[100px]">
-                <Table className='min-h-[100px]'>
-                    <THead>
-                        <Tr>
-                            <Th>No Data Available</Th>
-                        </Tr>
-                    </THead>
-                    <TBody>
-                        {/* No data available */}
-                    </TBody>
-                </Table>
-            </div>
-        );
-    }
+    // State for table pagination and sorting
+    const [tableData, setTableData] = useState({
+        total: data.length,
+        pageIndex: 1,
+        pageSize: 10,
+        query: '',
+        sort: { order: '', key: '' },
+    });
+
+    // Function to handle pagination changes
+    const onPaginationChange = (page: number) => {
+        setTableData(prev => ({ ...prev, pageIndex: page }));
+    };
+
+    // Function to handle page size changes
+    const onSelectChange = (value: number) => {
+        setTableData(prev => ({ ...prev, pageSize: Number(value), pageIndex: 1 }));
+    };
 
     return (
-        <>
-            <Table>
-                <THead>
-                    <Tr>
-                        <Th>Company Group Name</Th>
-                        <Th>Company Name</Th>
-                        <Th>PF Code</Th>
-                        <Th>PF Code Location</Th>
-                        <Th>Date of Registration</Th>
-                        <Th>PF User ID</Th>
-                        <Th>PF User Password</Th>
-                        <Th>Authorized Signatory</Th>
-                        <Th>Designation</Th>
-                        <Th>Mobile</Th>
-                        <Th>Email</Th>
-                        <Th>DSC Valid upto</Th>
-                        <Th>E-Sign</Th>
-                        {/* <Th>Upload PF Reg. Certificate</Th> */}
-                        <Th>Action</Th>
-                    </Tr>
-                </THead>
-                <TBody>
-                    {data.map((item, index) => (
-                        <Tr key={index}>
-                            <Td>{item.Company_Group_Name}</Td>
-                            <Td>{item.Company_Name}</Td>
-                            <Td>{item.pfCode}</Td>
-                            <Td>{item.pfCodeLocation}</Td>
-                            <Td>{item.registrationDate}</Td>
-                            <Td>{item.pfUserId}</Td>
-                            <Td>{item.pfPassword}</Td>
-                            <Td>{item.authorizedSignatory}</Td>
-                            <Td>{item.signatoryDesignation}</Td>
-                            <Td>{item.signatoryMobile}</Td>
-                            <Td>{item.signatoryEmail}</Td>
-                            <Td>{item.dscValidDate}</Td>
-                            <Td>{item.esign}</Td>
-                            {/* <Td>{item.pfRegistrationCertificate}</Td> */}
-                            <Td className="flex items-center gap-1">
-                                <Tooltip title="Edit">
-                                    <Button 
-                                        size="sm"
-                                        onClick={() => openEditDialog(index)}
-                                        icon={<MdEdit />}
-                                        className="text-blue-500"
-                                    />
-                                </Tooltip>
-                                <Tooltip title="Delete">
-                                    <Button  
-                                        size="sm" 
-                                        onClick={() => openDialog(index)}
-                                        icon={<FiTrash />}
-                                        className="text-red-500"
-                                    /> 
-                                </Tooltip>
-                            </Td>
-                        </Tr>
-                    ))}
-                </TBody>
-            </Table>
+        <div className="relative">
+        {data.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+                No data available
+            </div>
+        ) : (
+            <DataTable
+                columns={columns}
+                data={data}
+                skeletonAvatarColumns={[0]}
+                skeletonAvatarProps={{ className: 'rounded-md' }}
+                loading={false}
+                pagingData={{
+                    total: data.length,
+                    pageIndex: 1,
+                    pageSize: 10,
+                }}
+            />
+        )}
 
             <Dialog
                 isOpen={dialogIsOpen}
@@ -163,25 +256,8 @@ const PFSetupTable: React.FC<PFSetupTableProps> = ({ data, onDelete, onEdit }) =
                 onClose={handleDialogClose}
                 onRequestClose={handleDialogClose}
             >
-                <h5 className="mb-4">Edit PF Setup</h5>
-                <div className="flex flex-col gap-4">
-                    <OutlinedInput 
-                        label="PF Code"
-                        value={editedData.pfCode || ''}
-                        onChange={(value: string) => setEditedData(prev => ({ ...prev, pfCode: value }))}
-                    />
-                    <OutlinedInput 
-                        label="PF Code Location"
-                        value={editedData.pfCodeLocation || ''}
-                        onChange={(value: string) => setEditedData(prev => ({ ...prev, pfCodeLocation: value }))}
-                    />
-                    <OutlinedInput 
-                        label="Authorized Signatory"
-                        value={editedData.authorizedSignatory || ''}
-                        onChange={(value: string) => setEditedData(prev => ({ ...prev, authorizedSignatory: value }))}
-                    />
-                    {/* Add more fields as needed */}
-                </div>
+                <h5 className="mb-4">Edit PF Setup Details</h5>
+                {/* Add your edit form fields here */}
                 <div className="text-right mt-6">
                     <Button
                         className="ltr:mr-2 rtl:ml-2"
@@ -195,8 +271,8 @@ const PFSetupTable: React.FC<PFSetupTableProps> = ({ data, onDelete, onEdit }) =
                     </Button>
                 </div>
             </Dialog>
-        </>
+        </div>
     );
 };
 
-export default PFSetupTable
+export default PFSetupTable;

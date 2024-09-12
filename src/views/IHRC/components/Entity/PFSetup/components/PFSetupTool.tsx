@@ -4,6 +4,7 @@ import { HiPlusCircle, HiUpload } from 'react-icons/hi';
 import OutlinedInput from '@/components/ui/OutlinedInput';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 import { EntityData } from '@/views/IHRC/store/dummyEntityData';
+import { PFSetupData } from '../PFSetup';
 
 interface PFSetupToolProps {
   addPFSetup: (newPFSetup: PFSetupData) => void;
@@ -17,22 +18,22 @@ interface SelectOption {
   label: string;
 }
 
-interface PFSetupData {
-  Company_Group_Name: string;
-  Company_Name: string;
-  pfCode: string;
-  pfCodeLocation: string;
-  registrationDate?: string;
-  pfUserId?: string;
-  pfPassword?: string;
-  authorizedSignatory: string;
-  signatoryDesignation?: string;
-  signatoryMobile?: string;
-  signatoryEmail?: string;
-  dscValidDate?: string;
-  esign?: string;
-  pfRegistrationCertificate?: File | null;
-}
+// interface PFSetupData {
+//   Company_Group_Name: string;
+//   Company_Name: string;
+//   pfCode: string;
+//   pfCodeLocation: string;
+//   registrationDate?: string;
+//   pfUserId?: string;
+//   pfPassword?: string;
+//   authorizedSignatory: string;
+//   signatoryDesignation?: string;
+//   signatoryMobile?: string;
+//   signatoryEmail?: string;
+//   dscValidDate?: string;
+//   esign?: string;
+//   pfRegistrationCertificate?: File | null;
+// }
 
 const PFSetupTool: React.FC<PFSetupToolProps> = ({ addPFSetup, entityData, pfCodeLocations, existingSignatories }) => {
   const [dialogIsOpen, setIsOpen] = useState(false);
@@ -103,7 +104,7 @@ const PFSetupTool: React.FC<PFSetupToolProps> = ({ addPFSetup, entityData, pfCod
         Company_Group_Name: selectedCompanyGroup.value,
         Company_Name: selectedCompanyName.value,
       };
-
+      console.log('Submitting new PF Setup:', newPFSetupData);
       addPFSetup(newPFSetupData);
       showSuccessToast(`PF Setup for "${selectedCompanyName.value}" has been successfully added.`);
       onDialogClose();
@@ -111,6 +112,11 @@ const PFSetupTool: React.FC<PFSetupToolProps> = ({ addPFSetup, entityData, pfCod
       showFailToast('Please fill in all required fields.');
     }
   };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    handleInputChange('pfRegistrationCertificate', file);
+};
 
   return (
     <div>
@@ -229,9 +235,9 @@ const PFSetupTool: React.FC<PFSetupToolProps> = ({ addPFSetup, entityData, pfCod
             </div>
             <div className='w-[360px]'>
             <Input
-              id="file-upload"
-              type="file"
-              onChange={(e) => handleInputChange('pfRegistrationCertificate', e.target.files ? e.target.files[0] : null)}
+            id="file-upload"
+            type="file"
+            onChange={handleFileChange}
             />
             </div>
           </div>
