@@ -115,7 +115,7 @@ const EsicSetupTool: React.FC<ESICSetupData> = ({ addESICSetup, entityData, esic
   return (
     <div>
       <Button variant="solid" onClick={() => setIsOpen(true)} icon={<HiPlusCircle />} size="sm">
-        Add ESIC Setup
+        Add ESI Setup
       </Button>
       <Dialog 
         isOpen={dialogIsOpen} 
@@ -123,7 +123,7 @@ const EsicSetupTool: React.FC<ESICSetupData> = ({ addESICSetup, entityData, esic
         onRequestClose={() => setIsOpen(false)}
         width={800}
       >
-        <h4 className="mb-4 text-xl font-semibold">Add ESIC Details</h4>
+        <h4 className="mb-4 text-xl font-semibold">Add ESI Details</h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="space-y-4">
           <div className='w-[360px]'>
@@ -147,21 +147,21 @@ const EsicSetupTool: React.FC<ESICSetupData> = ({ addESICSetup, entityData, esic
               </div>
               <div className='w-[360px]'>
             <OutlinedInput
-              label="ESIC Code Type"
+              label="ESI Code Type"
               value={esicSetupData.esicCodeType}
               onChange={(value: string) => handleInputChange('esicCodeType', value)}
               />
               </div>
               <div className='w-[360px]'>
             <OutlinedInput
-              label="ESIC Code"
+              label="ESI Code"
               value={esicSetupData.esicCode}
               onChange={(value: string) => handleInputChange('esicCode', value)}
               />
               </div>
               <div className='w-[360px]'>
             <OutlinedSelect
-              label="ESIC Code Location"
+              label="ESI Code Location"
               options={esicCodeLocations.map(location => ({ value: location, label: location }))}
               value={esicSetupData.esicCodeLocation ? { value: esicSetupData.esicCodeLocation, label: esicSetupData.esicCodeLocation } : null}
               onChange={(option: SelectOption | null) => handleInputChange('esicCodeLocation', option?.value || '')}
@@ -170,7 +170,7 @@ const EsicSetupTool: React.FC<ESICSetupData> = ({ addESICSetup, entityData, esic
              
               <div className='w-[360px]'>
               <OutlinedInput
-            label="PF User ID (Optional)"
+            label="ESI User ID (Optional)"
             value={esicSetupData.esicUserId || ''}
             onChange={(value: string) => handleInputChange('esicUserId', value)}
           />
@@ -210,7 +210,7 @@ const EsicSetupTool: React.FC<ESICSetupData> = ({ addESICSetup, entityData, esic
               
             <div className='w-[360px]'>
                    <OutlinedInput
-            label="ESIC Password (Optional)"
+            label="ESI Password (Optional)"
             value={esicSetupData.esicPassword || ''}
             onChange={(value: string) => handleInputChange('esicPassword', value)}
             />

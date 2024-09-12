@@ -219,8 +219,8 @@ const navigationConfig: NavigationTree[] = [
             },
             {
                 key: 'entityMenu.collapse.item7',
-                path: '/esic-setup',
-                title: 'ESIC Setup',
+                path: '/esi-setup',
+                title: 'ESI Setup',
                 translateKey: 'nav.entityMenu.collapse.item7',
                 icon: '',
                 type: NAV_ITEM_TYPE_ITEM,
