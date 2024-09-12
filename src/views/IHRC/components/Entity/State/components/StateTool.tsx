@@ -1,121 +1,144 @@
-// import React, { useState } from 'react';
-// import { Button, Dialog, Notification, toast } from '@/components/ui';
-// import { HiPlusCircle } from 'react-icons/hi';
-// import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 
+import React, { useState, useMemo } from 'react';
+import { Button, Dialog, Notification, toast } from '@/components/ui';
+import { HiPlusCircle } from 'react-icons/hi';
+import { EntityData } from '@/views/IHRC/store/dummyEntityData';
+import OutlinedInput from '@/components/ui/OutlinedInput';
+import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 
-// interface CompanyNameToolProps {
-//   updateCompanyName: (companyGroupName: string, newCompanyName: string) => void;
-//   companyGroupNames: string[];
-// }
-
-// const StateTool: React.FC<CompanyNameToolProps> = ({ updateCompanyName, companyGroupNames }) => {
-//   const [dialogIsOpen, setIsOpen] = useState(false);
-//   const [selectedCompanyGroup, setSelectedCompanyGroup] = useState('');
-//   const [companyName, setCompanyName] = useState('');
-
-//   const openDialog = () => {
-//     setIsOpen(true);
-//   };
-
-//   const onDialogClose = () => {
-//     setIsOpen(false);
-//     setSelectedCompanyGroup('');
-//     setCompanyName('');
-//   };
-
-//   const showSuccessToast = (message: string) => {
-//     toast.push(
-//       <Notification title="Success" type="success">
-//         <div className="flex items-center">
-//           <span>{message}</span>
-//         </div>
-//       </Notification>
-//     );
-//   };
-
-//   const showFailToast = (message: string) => {
-//     toast.push(
-//       <Notification title="Error" type="danger">
-//         <div className="flex items-center">
-//           <span>{message}</span>
-//         </div>
-//       </Notification>
-//     );
-//   };
-
-//   const onDialogOk = () => {
-//     if (selectedCompanyGroup && companyName.trim()) {
-//       updateCompanyName(selectedCompanyGroup, companyName.trim());
-//       showSuccessToast(`Company Name "${companyName.trim()}" has been successfully added to "${selectedCompanyGroup}".`);
-//       setIsOpen(false);
-//       setSelectedCompanyGroup('');
-//       setCompanyName('');
-//     } else {
-//       showFailToast('Please select a Company Group and enter a valid Company Name.');
-//     }
-//   };
-
-//   const selectOptions = companyGroupNames.map(name => ({ value: name, label: name }));
-
-//   return (
-//     <div>
-//       <Button variant="solid" onClick={openDialog} icon={<HiPlusCircle />} size='sm'>
-//         Add State
-//       </Button>
-//       <Dialog
-//         isOpen={dialogIsOpen}
-//         onClose={onDialogClose}
-//         onRequestClose={onDialogClose}
-//         width={500}
-//         height={300}
-//       >
-//         <div className="flex flex-col h-full justify-between">
-//           <h5 className="mb-4">Add State</h5>
-//           <OutlinedSelect
-//             label="Select Company Group"
-//             options={selectOptions}
-//             value={selectedCompanyGroup}
-//             onChange={(newValue: string) => setSelectedCompanyGroup(newValue)}
-//           />
-//           <div className="relative mt-4">
-//             <input
-//               type="text"
-//               value={companyName}
-//               onChange={(e) => setCompanyName(e.target.value)}
-//               placeholder="Enter company name"
-//               className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-//             />
-//             <span className="absolute left-3 top-0 -translate-y-1/2 bg-white px-1 text-xs font-semibold text-indigo-600">
-//               Company Name
-//             </span>
-//           </div>
-//           <div className="text-right mt-6">
-//             <Button
-//               className="mr-2"
-//               variant="plain"
-//               onClick={onDialogClose}
-//             >
-//               Cancel
-//             </Button>
-//             <Button variant="solid" onClick={onDialogOk}>
-//               Submit
-//             </Button>
-//           </div>
-//         </div>
-//       </Dialog>
-//     </div>
-//   );
-// };
-
-// export default StateTool;
-
-import React from 'react'
-
-const StateTool = () => {
-  return (
-    <div>StateTool</div>
-  )
+interface StateToolProps {
+  addState: (newState: EntityData) => void;
+  entityData: EntityData[];
 }
 
-export default StateTool
+interface SelectOption {
+  value: string;
+  label: string;
+}
+
+const StateTool: React.FC<StateToolProps> = ({ addState, entityData }) => {
+  const [dialogIsOpen, setIsOpen] = useState(false);
+  const [stateName, setStateName] = useState('');
+  const [selectedCompanyGroup, setSelectedCompanyGroup] = useState<SelectOption | null>(null);
+  const [selectedCompanyName, setSelectedCompanyName] = useState<SelectOption | null>(null);
+
+  const companyGroupOptions = useMemo(() => {
+    const groups = [...new Set(entityData.map(item => item.Company_Group_Name))];
+    return groups.map(group => ({ value: group, label: group }));
+  }, [entityData]);
+
+  const filteredCompanyNameOptions = useMemo(() => {
+    if (!selectedCompanyGroup) return [];
+    const names = entityData
+      .filter(item => item.Company_Group_Name === selectedCompanyGroup.value)
+      .map(item => item.Company_Name);
+    return [...new Set(names)].map(name => ({ value: name, label: name }));
+  }, [entityData, selectedCompanyGroup]);
+
+  const openDialog = () => {
+    setIsOpen(true);
+  };
+
+  const onDialogClose = () => {
+    setIsOpen(false);
+    setStateName('');
+    setSelectedCompanyGroup(null);
+    setSelectedCompanyName(null);
+  };
+
+  const showSuccessToast = (message: string) => {
+    toast.push(
+      <Notification title="Success" type="success">
+        {message}
+      </Notification>
+    );
+  };
+
+  const showFailToast = (message: string) => {
+    toast.push(
+      <Notification title="Error" type="danger">
+        {message}
+      </Notification>
+    );
+  };
+
+  const onDialogOk = () => {
+    if (stateName.trim() && selectedCompanyGroup && selectedCompanyName) {
+      const newEntityData: EntityData = {
+        Company_Group_Name: selectedCompanyGroup.value,
+        Company_Name: selectedCompanyName.value,
+        State: stateName.trim()
+      };
+      
+      addState(newEntityData);
+      showSuccessToast(`State "${stateName.trim()}" has been successfully added.`);
+      onDialogClose();
+    } else {
+      showFailToast('Please enter a valid State Name, select a Company Group, and select a Company Name.');
+    }
+  };
+
+  return (
+    <div>
+      <Button variant="solid" onClick={openDialog} icon={<HiPlusCircle />} size="sm">
+        Add State
+      </Button>
+      <Dialog
+        isOpen={dialogIsOpen}
+        onClose={onDialogClose}
+        onRequestClose={onDialogClose}
+      >
+        <h5 className="mb-4">Add State</h5>
+        <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-2">
+            <p>Select The Company Group</p>
+            <OutlinedSelect
+              label="Select Company Group"
+              options={companyGroupOptions}
+              value={selectedCompanyGroup}
+              onChange={(option: SelectOption | null) => {
+                setSelectedCompanyGroup(option);
+                setSelectedCompanyName(null);
+              }}
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <p>Select The Company Name</p>
+            <OutlinedSelect
+              label="Select Company Name"
+              options={filteredCompanyNameOptions}
+              value={selectedCompanyName}
+              onChange={(option: SelectOption | null) => {
+                setSelectedCompanyName(option);
+              }}
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <p>Enter State Name</p>
+            <OutlinedInput 
+              label="State Name"
+              value={stateName}
+              onChange={(value: string) => {
+                setStateName(value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="text-right mt-6">
+          <Button
+            className="mr-2"
+            variant="plain"
+            onClick={onDialogClose}
+          >
+            Cancel
+          </Button>
+          <Button variant="solid" onClick={onDialogOk}>
+            Confirm
+          </Button>
+        </div>
+      </Dialog>
+    </div>
+  );
+};
+
+export default StateTool;
