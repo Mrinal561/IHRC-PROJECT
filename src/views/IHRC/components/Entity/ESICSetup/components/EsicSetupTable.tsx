@@ -3,22 +3,23 @@ import { Table, Button, Dialog, Tooltip } from '@/components/ui';
 import { FiTrash } from 'react-icons/fi';
 import { MdEdit } from 'react-icons/md';
 import OutlinedInput from '@/components/ui/OutlinedInput/OutlinedInput';
-import { PFSetupData } from '../PFSetup';
+import { ESICSetupData } from '../EsicSetup';
+
 
 const { Tr, Th, Td, THead, TBody } = Table;
 
-interface PFSetupTableProps {
-    data: PFSetupData[];
+interface ESICSetupTableProps {
+    data: ESICSetupData[];
     onDelete: (index: number) => void;
-    onEdit: (index: number, newData: Partial<PFSetupData>) => void;
+    onEdit: (index: number, newData: Partial<ESICSetupData>) => void;
 }
 
-const PFSetupTable: React.FC<PFSetupTableProps> = ({ data, onDelete, onEdit }) => {
+const EsicSetupTable: React.FC<ESICSetupTableProps> = ({ data, onDelete, onEdit }) => {
     const [dialogIsOpen, setDialogIsOpen] = useState(false);
     const [itemToDelete, setItemToDelete] = useState<number | null>(null);
     const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
     const [itemToEdit, setItemToEdit] = useState<number | null>(null);
-    const [editedData, setEditedData] = useState<Partial<PFSetupData>>({});
+    const [editedData, setEditedData] = useState<Partial<ESICSetupData>>({});
 
     const openEditDialog = (index: number) => {
         setItemToEdit(index);
@@ -80,17 +81,15 @@ const PFSetupTable: React.FC<PFSetupTableProps> = ({ data, onDelete, onEdit }) =
                     <Tr>
                         <Th>Company Group Name</Th>
                         <Th>Company Name</Th>
-                        <Th>PF Code</Th>
-                        <Th>PF Code Location</Th>
-                        <Th>Date of Registration</Th>
-                        <Th>PF User ID</Th>
-                        <Th>PF User Password</Th>
+                        <Th>ESIC Code Type</Th>
+                        <Th>ESIC Code</Th>
+                        <Th>ESIC Code Location</Th>
+                        <Th>ESIC User ID</Th>
+                        <Th>ESIC User Password</Th>
                         <Th>Authorized Signatory</Th>
                         <Th>Designation</Th>
                         <Th>Mobile</Th>
                         <Th>Email</Th>
-                        <Th>DSC Valid upto</Th>
-                        <Th>E-Sign</Th>
                         {/* <Th>Upload PF Reg. Certificate</Th> */}
                         <Th>Action</Th>
                     </Tr>
@@ -100,17 +99,15 @@ const PFSetupTable: React.FC<PFSetupTableProps> = ({ data, onDelete, onEdit }) =
                         <Tr key={index}>
                             <Td>{item.Company_Group_Name}</Td>
                             <Td>{item.Company_Name}</Td>
-                            <Td>{item.pfCode}</Td>
-                            <Td>{item.pfCodeLocation}</Td>
-                            <Td>{item.registrationDate}</Td>
-                            <Td>{item.pfUserId}</Td>
-                            <Td>{item.pfPassword}</Td>
+                            <Td>{item.esicCodeType}</Td>
+                            <Td>{item.esicCode}</Td>
+                            <Td>{item.esicCodeLocation}</Td>
+                            <Td>{item.esicUserId}</Td>
+                            <Td>{item.esicPassword}</Td>
                             <Td>{item.authorizedSignatory}</Td>
                             <Td>{item.signatoryDesignation}</Td>
                             <Td>{item.signatoryMobile}</Td>
                             <Td>{item.signatoryEmail}</Td>
-                            <Td>{item.dscValidDate}</Td>
-                            <Td>{item.esign}</Td>
                             {/* <Td>{item.pfRegistrationCertificate}</Td> */}
                             <Td className="flex items-center gap-1">
                                 <Tooltip title="Edit">
@@ -167,12 +164,12 @@ const PFSetupTable: React.FC<PFSetupTableProps> = ({ data, onDelete, onEdit }) =
                 <div className="flex flex-col gap-4">
                     <OutlinedInput 
                         label="PF Code"
-                        value={editedData.pfCode || ''}
+                        value={editedData.esicCode || ''}
                         onChange={(value: string) => setEditedData(prev => ({ ...prev, pfCode: value }))}
                     />
                     <OutlinedInput 
                         label="PF Code Location"
-                        value={editedData.pfCodeLocation || ''}
+                        value={editedData.esicCodeLocation || ''}
                         onChange={(value: string) => setEditedData(prev => ({ ...prev, pfCodeLocation: value }))}
                     />
                     <OutlinedInput 
@@ -199,4 +196,4 @@ const PFSetupTable: React.FC<PFSetupTableProps> = ({ data, onDelete, onEdit }) =
     );
 };
 
-export default PFSetupTable
+export default EsicSetupTable

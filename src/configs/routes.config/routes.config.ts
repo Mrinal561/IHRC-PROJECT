@@ -164,5 +164,13 @@ export const protectedRoutes = [
         ),
         authority: [],
     },
+    {
+        key: 'entityMenu.collapse.item7',
+        path: '/esic-setup',
+        component: lazy(() =>
+            import('@/views/IHRC/components/Entity/ESICSetup/EsicSetup')
+        ),
+        authority: [],
+    },
     
 ]
