@@ -21,9 +21,17 @@ const CompanyGroup = () => {
   const addCompanyGroup = (newEntityData: EntityData) => {
     setEntityDataList(prevList => [...prevList, newEntityData]);
   };
+
   const handleDelete = (index: number) => {
-    const updatedList = entityDataList.filter((_, i) => i !== index);
-    setEntityDataList(updatedList);
+    setEntityDataList(prevList => prevList.filter((_, i) => i !== index));
+  };
+
+  const handleEdit = (index: number, newName: string) => {
+    setEntityDataList(prevList => 
+      prevList.map((item, i) => 
+        i === index ? { ...item, Company_Group_Name: newName } : item
+      )
+    );
   };
 
   return (
@@ -34,7 +42,11 @@ const CompanyGroup = () => {
         </div>
         <CompanyGroupTool addCompanyGroup={addCompanyGroup} />
       </div>
-      <CompanyTable data={entityDataList} onDelete={handleDelete} />
+      <CompanyTable 
+        data={entityDataList} 
+        onDelete={handleDelete} 
+        onEdit={handleEdit}
+      />
     </AdaptableCard>
   );
 };

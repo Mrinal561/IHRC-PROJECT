@@ -1,140 +1,56 @@
-// // import React from 'react';
-// // import { Table } from '@/components/ui';
-
-// // const { Tr, Th, Td, THead, TBody } = Table;
-
-// // interface CompanyTableProps {
-// //     data: Array<{
-// //         Company_Group_Name?: string;
-// //         Company_Name?: string;
-// //         State?: string;
-// //         Location?: string;
-// //         Branch?: string;
-// //     }>;
-// // }
-
-// // const CompanyTable: React.FC<CompanyTableProps> = ({ data }) => {
-// //     return (
-// //         <Table>
-// //             <THead>
-// //                 <Tr>
-// //                     <Th>Company Group Name</Th>
-// //                     {/* <Th>Company Name</Th>
-// //                     <Th>State</Th>
-// //                     <Th>Location</Th>
-// //                     <Th>Branch</Th> */}
-// //                 </Tr>
-// //             </THead>
-// //             <TBody>
-// //                 {data.map((item, index) => (
-// //                     <Tr key={index}>
-// //                         <Td>{item.Company_Group_Name || '-'}</Td>
-// //                         {/* <Td>{item.Company_Name || '-'}</Td>
-// //                         <Td>{item.State || '-'}</Td>
-// //                         <Td>{item.Location || '-'}</Td>
-// //                         <Td>{item.Branch || '-'}</Td> */}
-// //                     </Tr>
-// //                 ))}
-// //             </TBody>
-// //         </Table>
-// //     );
-// // };
-
-// // export default CompanyTable;
-
-// import React from 'react';
-// import { Table, Button } from '@/components/ui';
-// import { FiTrash } from 'react-icons/fi';
-
-// const { Tr, Th, Td, THead, TBody } = Table;
-
-// interface CompanyTableProps {
-//     data: Array<{
-//         Company_Group_Name?: string;
-//         Company_Name?: string;
-//         State?: string;
-//         Location?: string;
-//         Branch?: string;
-//     }>;
-//     onDelete: (index: number) => void;
-// }
-
-// const CompanyTable: React.FC<CompanyTableProps> = ({ data, onDelete }) => {
-//     return (
-//         <Table>
-//             <THead>
-//                 <Tr>
-//                     <Th className="w-28">Sl No</Th>
-//                     <Th>Company Group Name</Th>
-//                     {/* <Th>Company Name</Th>
-//                     <Th>State</Th>
-//                     <Th>Location</Th>
-//                     <Th>Branch</Th> */}
-//                     <Th className="w-28">Action</Th>
-//                 </Tr>
-//             </THead>
-//             <TBody>
-//                 {data.map((item, index) => (
-//                     <Tr key={index}>
-//                         <Td className="w-28 text-center">{index + 1}</Td>
-//                         <Td>{item.Company_Group_Name || '-'}</Td>
-//                         {/* <Td>{item.Company_Name || '-'}</Td>
-//                         <Td>{item.State || '-'}</Td>
-//                         <Td>{item.Location || '-'}</Td>
-//                         <Td>{item.Branch || '-'}</Td> */}
-//                         <Td className="w-28">
-//                             <Button  
-//                                 size="sm" 
-//                                 onClick={() => onDelete(index)}
-//                                 icon={<FiTrash />}
-//                         className='hover:bg-transparent text-red-500'
-//                             > 
-//                             </Button>
-//                         </Td>
-//                     </Tr>
-//                 ))}
-//             </TBody>
-//         </Table>
-//     );
-// };
-
-// export default CompanyTable;
 import React, { useState } from 'react';
-import { Table, Button, Dialog } from '@/components/ui'; // Adjust import path as needed
-import { FiTrash } from 'react-icons/fi';
+import { Table, Button, Dialog, Tooltip } from '@/components/ui';
+import { FiTrash, FiEdit } from 'react-icons/fi';
+import OutlinedInput from '@/components/ui/OutlinedInput';
+import { MdEdit } from 'react-icons/md';
 
 const { Tr, Th, Td, THead, TBody } = Table;
 
 interface CompanyTableProps {
     data: Array<{
         Company_Group_Name?: string;
-        Company_Name?: string;
-        State?: string;
-        Location?: string;
-        Branch?: string;
     }>;
     onDelete: (index: number) => void;
+    onEdit: (index: number, newName: string) => void;
 }
 
-const CompanyTable: React.FC<CompanyTableProps> = ({ data, onDelete }) => {
+const CompanyTable: React.FC<CompanyTableProps> = ({ data, onDelete, onEdit }) => {
     const [dialogIsOpen, setDialogIsOpen] = useState(false);
+    const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
     const [itemToDelete, setItemToDelete] = useState<number | null>(null);
+    const [itemToEdit, setItemToEdit] = useState<number | null>(null);
+    const [editedName, setEditedName] = useState('');
 
-    const openDialog = (index: number) => {
+    const openDeleteDialog = (index: number) => {
         setItemToDelete(index);
         setDialogIsOpen(true);
     };
 
-    const handleDialogClose = () => {
-        setDialogIsOpen(false);
-        setItemToDelete(null);
+    const openEditDialog = (index: number) => {
+        setItemToEdit(index);
+        setEditedName(data[index].Company_Group_Name || '');
+        setEditDialogIsOpen(true);
     };
 
-    const handleDialogOk = () => {
+    const handleDialogClose = () => {
+        setDialogIsOpen(false);
+        setEditDialogIsOpen(false);
+        setItemToDelete(null);
+        setItemToEdit(null);
+        setEditedName('');
+    };
+
+    const handleDeleteConfirm = () => {
         if (itemToDelete !== null) {
             onDelete(itemToDelete);
-            setDialogIsOpen(false);
-            setItemToDelete(null);
+            handleDialogClose();
+        }
+    };
+
+    const handleEditConfirm = () => {
+        if (itemToEdit !== null && editedName.trim()) {
+            onEdit(itemToEdit, editedName.trim());
+            handleDialogClose();
         }
     };
 
@@ -144,11 +60,6 @@ const CompanyTable: React.FC<CompanyTableProps> = ({ data, onDelete }) => {
                 <THead>
                     <Tr>
                         <Th>Company Group Name</Th>
-                        {/* Uncomment these lines if needed */}
-                        {/* <Th>Company Name</Th>
-                        <Th>State</Th>
-                        <Th>Location</Th>
-                        <Th>Branch</Th> */}
                         <Th className="w-28">Action</Th>
                     </Tr>
                 </THead>
@@ -156,26 +67,30 @@ const CompanyTable: React.FC<CompanyTableProps> = ({ data, onDelete }) => {
                     {data.map((item, index) => (
                         <Tr key={index}>
                             <Td>{item.Company_Group_Name || '-'}</Td>
-                            {/* Uncomment these lines if needed */}
-                            {/* <Td>{item.Company_Name || '-'}</Td>
-                            <Td>{item.State || '-'}</Td>
-                            <Td>{item.Location || '-'}</Td>
-                            <Td>{item.Branch || '-'}</Td> */}
-                            <Td className="w-28">
-                                <Button  
-                                    size="sm" 
-                                    onClick={() => openDialog(index)}
-                                    icon={<FiTrash />}
-                                    className='hover:bg-transparent text-red-500'
-                                > 
-                                </Button>
+                            <Td className="w-28 flex gap-1">
+                                <Tooltip title="Edit Company Group">
+                                    <Button 
+                                        size="sm"
+                                        onClick={() => openEditDialog(index)}
+                                        icon={<MdEdit />}
+                                        className="text-blue-500"
+                                    />
+                                </Tooltip>
+                                <Tooltip title="Delete Company Group">
+                                    <Button  
+                                        size="sm" 
+                                        onClick={() => openDeleteDialog(index)}
+                                        icon={<FiTrash />}
+                                        className="text-red-500"
+                                    /> 
+                                </Tooltip>
                             </Td>
                         </Tr>
                     ))}
                 </TBody>
             </Table>
 
-            {/* Confirmation Dialog */}
+            {/* Delete Confirmation Dialog */}
             <Dialog
                 isOpen={dialogIsOpen}
                 onClose={handleDialogClose}
@@ -193,8 +108,36 @@ const CompanyTable: React.FC<CompanyTableProps> = ({ data, onDelete }) => {
                     >
                         Cancel
                     </Button>
-                    <Button variant="solid" onClick={handleDialogOk}>
+                    <Button variant="solid" onClick={handleDeleteConfirm}>
                         Delete
+                    </Button>
+                </div>
+            </Dialog>
+
+            {/* Edit Dialog */}
+            <Dialog
+                isOpen={editDialogIsOpen}
+                onClose={handleDialogClose}
+                onRequestClose={handleDialogClose}
+            >
+                <h5 className="mb-4">Edit Company Group Name</h5>
+                <div className="mb-4">
+                    <OutlinedInput 
+                        label="Company Group Name"
+                        value={editedName}
+                        onChange={(value: string) => setEditedName(value)}
+                    />
+                </div>
+                <div className="text-right mt-6">
+                    <Button
+                        className="ltr:mr-2 rtl:ml-2"
+                        variant="plain"
+                        onClick={handleDialogClose}
+                    >
+                        Cancel
+                    </Button>
+                    <Button variant="solid" onClick={handleEditConfirm}>
+                        Confirm
                     </Button>
                 </div>
             </Dialog>

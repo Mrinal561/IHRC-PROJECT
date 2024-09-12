@@ -104,9 +104,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { Button, Dialog, Notification, toast } from '@/components/ui';
-import { HiCheckCircle, HiPlusCircle, HiXCircle } from 'react-icons/hi';
-// Import the interface (adjust the import path as needed)
+import { HiPlusCircle } from 'react-icons/hi';
 import { EntityData } from '@/views/IHRC/store/dummyEntityData';
+import OutlinedInput from '@/components/ui/OutlinedInput';
 
 interface CompanyGroupToolProps {
   addCompanyGroup: (newEntityData: EntityData) => void;
@@ -116,13 +116,11 @@ const CompanyGroupTool: React.FC<CompanyGroupToolProps> = ({ addCompanyGroup }) 
   const [dialogIsOpen, setIsOpen] = useState(false);
   const [companyGroupName, setCompanyGroupName] = useState('');
   const [entityDataList, setEntityDataList] = useState<EntityData[]>(() => {
-    // Initialize state from localStorage if available
     const savedData = localStorage.getItem('entityDataList');
     return savedData ? JSON.parse(savedData) : [];
   });
 
   useEffect(() => {
-    // Update localStorage whenever entityDataList changes
     localStorage.setItem('entityDataList', JSON.stringify(entityDataList));
   }, [entityDataList]);
 
@@ -139,7 +137,6 @@ const CompanyGroupTool: React.FC<CompanyGroupToolProps> = ({ addCompanyGroup }) 
     const toastNotification = (
       <Notification title="Success" type="success">
         <div className="flex items-center">
-          {/* <HiCheckCircle className="text-emerald-500 text-xl mr-2" /> */}
           <span>{message}</span>
         </div>
       </Notification>
@@ -151,20 +148,19 @@ const CompanyGroupTool: React.FC<CompanyGroupToolProps> = ({ addCompanyGroup }) 
     const toastNotification = (
       <Notification title="Error" type="danger">
         <div className="flex items-center">
-          {/* <HiXCircle className="text-red-500 text-xl mr-2" /> */}
           <span>{message}</span>
         </div>
       </Notification>
     );
     toast.push(toastNotification);
   };
+
   const onDialogOk = () => {
     if (companyGroupName.trim()) {
       const newEntityData: EntityData = {
         Company_Group_Name: companyGroupName.trim()
       };
       
-      // Add to entityDataList and update localStorage
       const updatedEntityDataList = [...entityDataList, newEntityData];
       setEntityDataList(updatedEntityDataList);
       
@@ -175,6 +171,10 @@ const CompanyGroupTool: React.FC<CompanyGroupToolProps> = ({ addCompanyGroup }) 
     } else {
       showFailToast('Please enter a valid Company Group Name.');
     }
+  };
+
+  const handleInputChange = (value: string) => {
+    setCompanyGroupName(value);
   };
 
   return (
@@ -190,20 +190,21 @@ const CompanyGroupTool: React.FC<CompanyGroupToolProps> = ({ addCompanyGroup }) 
         height={250}
       >
         <div className="flex flex-col h-full justify-between">
-          <h5 className="mb-4">Add Company Group Name</h5>
-          <input
-            type="text"
-            value={companyGroupName}
-            onChange={(e) => setCompanyGroupName(e.target.value)}
-            placeholder="Enter company group name"
-            className="border p-2 rounded"
+          <h5 className="mb-4">Add Company Name</h5>
+          <div className='flex flex-col gap-2'>
+            <p>Enter Your Company Group Name</p>
+          <OutlinedInput 
+           label="Company Group Name"
+           value={companyGroupName}
+           onChange={handleInputChange}
           />
+            </div>
           <div className="text-right mt-6">
             <Button
               className="mr-2"
               variant="plain"
               onClick={onDialogClose}
-            >
+              >
               Cancel
             </Button>
             <Button variant="solid" onClick={onDialogOk}>
@@ -217,4 +218,3 @@ const CompanyGroupTool: React.FC<CompanyGroupToolProps> = ({ addCompanyGroup }) 
 };
 
 export default CompanyGroupTool;
-
