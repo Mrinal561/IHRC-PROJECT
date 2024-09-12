@@ -81,11 +81,11 @@ const EsicSetupTable: React.FC<ESICSetupTableProps> = ({ data, onDelete, onEdit 
                     <Tr>
                         <Th>Company Group Name</Th>
                         <Th>Company Name</Th>
-                        <Th>ESIC Code Type</Th>
-                        <Th>ESIC Code</Th>
-                        <Th>ESIC Code Location</Th>
-                        <Th>ESIC User ID</Th>
-                        <Th>ESIC User Password</Th>
+                        <Th>ESI Code Type</Th>
+                        <Th>ESI Code</Th>
+                        <Th>ESI Code Location</Th>
+                        <Th>ESI User ID</Th>
+                        <Th>ESI User Password</Th>
                         <Th>Authorized Signatory</Th>
                         <Th>Designation</Th>
                         <Th>Mobile</Th>

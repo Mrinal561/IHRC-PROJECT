@@ -166,7 +166,7 @@ export const protectedRoutes = [
     },
     {
         key: 'entityMenu.collapse.item7',
-        path: '/esic-setup',
+        path: '/esi-setup',
         component: lazy(() =>
             import('@/views/IHRC/components/Entity/ESICSetup/EsicSetup')
         ),
