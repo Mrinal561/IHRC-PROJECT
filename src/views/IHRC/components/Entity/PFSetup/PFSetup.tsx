@@ -39,7 +39,7 @@ const PFSetup = () => {
         }
 
         // Load entity data (company groups and names)
-        const storedEntityData = localStorage.getItem('entityDataList');
+        const storedEntityData = localStorage.getItem('companyData');
         if (storedEntityData) {
           setEntityData(JSON.parse(storedEntityData));
         }
