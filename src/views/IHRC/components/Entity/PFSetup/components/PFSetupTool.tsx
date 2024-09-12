@@ -1,180 +1,185 @@
-import React, { useState } from 'react';
-import { Button, Dialog, Notification, toast } from '@/components/ui';
-import { HiPlusCircle } from 'react-icons/hi';
-import OutlinedInput from '@/components/ui/OutlinedInput';
-import OutlinedSelect from '@/components/ui/Outlined/Outlined';
+// import React, { useState, useEffect } from 'react';
+// import { Button, Dialog, Notification, toast } from '@/components/ui';
+// import { HiPlusCircle } from 'react-icons/hi';
+// import OutlinedInput from '@/components/ui/OutlinedInput';
+// import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 
-interface PFSetupData {
-  companyGroup: string;
-  companyName: string;
-  pfCode: string;
-  pfCodeLocation: string;
-  pfUserId?: string;
-  pfPassword?: string;
-  authorizedSignatory: string;
-  signatoryMobile?: string;
-  signatoryEmail?: string;
-  dscValidDate?: string;
-}
+// interface PFSetupData {
+//   companyGroup: string;
+//   companyName: string;
+//   pfCode: string;
+//   pfCodeLocation: string;
+//   pfUserId?: string;
+//   pfPassword?: string;
+//   authorizedSignatory: string;
+//   signatoryMobile?: string;
+//   signatoryEmail?: string;
+//   dscValidDate?: string;
+// }
 
-interface PFSetupToolProps {
-  addPFSetup: (newPFSetup: PFSetupData) => void;
-  companyGroups: string[];
-  companyNames: string[];
-  pfCodeLocations: string[];
-  existingSignatories: string[];
-}
+// interface PFSetupToolProps {
+//   addPFSetup: (newPFSetup: PFSetupData) => void;
+//   companyGroups: string[];
+//   getCompanyNames: (group: string) => string[];
+//   pfCodeLocations: string[];
+//   existingSignatories: string[];
+// }
 
-const PFSetupTool: React.FC<PFSetupToolProps> = ({
-  addPFSetup,
-  companyGroups,
-  companyNames,
-  pfCodeLocations,
-  existingSignatories,
-}) => {
-  const [dialogIsOpen, setIsOpen] = useState(false);
-  const [pfSetupData, setPFSetupData] = useState<PFSetupData>({
-    companyGroup: '',
-    companyName: '',
-    pfCode: '',
-    pfCodeLocation: '',
-    authorizedSignatory: '',
-  });
-  const [isNewSignatory, setIsNewSignatory] = useState(false);
+// const PFSetupTool: React.FC<PFSetupToolProps> = ({
+//   addPFSetup,
+//   companyGroups,
+//   getCompanyNames,
+//   pfCodeLocations,
+//   existingSignatories,
+// }) => {
+//   const [dialogIsOpen, setIsOpen] = useState(false);
+//   const [pfSetupData, setPFSetupData] = useState<PFSetupData>({
+//     companyGroup: '',
+//     companyName: '',
+//     pfCode: '',
+//     pfCodeLocation: '',
+//     authorizedSignatory: '',
+//   });
+//   const [filteredCompanyNames, setFilteredCompanyNames] = useState<string[]>([]);
 
-  const openDialog = () => setIsOpen(true);
-  const closeDialog = () => {
-    setIsOpen(false);
-    setPFSetupData({
-      companyGroup: '',
-      companyName: '',
-      pfCode: '',
-      pfCodeLocation: '',
-      authorizedSignatory: '',
-    });
-    setIsNewSignatory(false);
-  };
+//   useEffect(() => {
+//     if (pfSetupData.companyGroup) {
+//       setFilteredCompanyNames(getCompanyNames(pfSetupData.companyGroup));
+//     } else {
+//       setFilteredCompanyNames([]);
+//     }
+//   }, [pfSetupData.companyGroup, getCompanyNames]);
 
-  const handleInputChange = (field: keyof PFSetupData, value: string) => {
-    setPFSetupData(prev => ({ ...prev, [field]: value }));
-  };
+//   const openDialog = () => setIsOpen(true);
+//   const closeDialog = () => {
+//     setIsOpen(false);
+//     setPFSetupData({
+//       companyGroup: '',
+//       companyName: '',
+//       pfCode: '',
+//       pfCodeLocation: '',
+//       authorizedSignatory: '',
+//     });
+//   };
 
-  const handleSignatoryChange = (value: string) => {
-    setIsNewSignatory(value === 'new');
-    handleInputChange('authorizedSignatory', value === 'new' ? '' : value);
-  };
+//   const handleInputChange = (field: keyof PFSetupData, value: string) => {
+//     setPFSetupData(prev => ({ ...prev, [field]: value }));
+//     if (field === 'companyGroup') {
+//       setPFSetupData(prev => ({ ...prev, companyName: '' }));
+//     }
+//   };
 
-  const validateForm = () => {
-    const requiredFields = ['companyGroup', 'companyName', 'pfCode', 'pfCodeLocation', 'authorizedSignatory'];
-    const missingFields = requiredFields.filter(field => !pfSetupData[field as keyof PFSetupData]);
-    
-    if (missingFields.length > 0) {
-      toast.push(<Notification title="Error" type="danger">Please fill all required fields.</Notification>);
-      return false;
-    }
+//   const showSuccessToast = (message: string) => {
+//     toast.push(
+//       <Notification title="Success" type="success">
+//         {message}
+//       </Notification>
+//     );
+//   };
 
-    if (isNewSignatory && (!pfSetupData.signatoryMobile || !pfSetupData.signatoryEmail || !pfSetupData.dscValidDate)) {
-      toast.push(<Notification title="Error" type="danger">Please fill all new signatory details.</Notification>);
-      return false;
-    }
+//   const showFailToast = (message: string) => {
+//     toast.push(
+//       <Notification title="Error" type="danger">
+//         {message}
+//       </Notification>
+//     );
+//   };
 
-    return true;
-  };
+//   const onDialogOk = () => {
+//     if (pfSetupData.companyGroup && pfSetupData.companyName && pfSetupData.pfCode && pfSetupData.pfCodeLocation && pfSetupData.authorizedSignatory) {
+//       addPFSetup(pfSetupData);
+//       showSuccessToast(`PF Setup for "${pfSetupData.companyName}" has been successfully added.`);
+//       closeDialog();
+//     } else {
+//       showFailToast('Please fill all required fields.');
+//     }
+//   };
 
-  const handleSubmit = () => {
-    if (validateForm()) {
-      addPFSetup(pfSetupData);
-      toast.push(<Notification title="Success" type="success">PF Setup added successfully.</Notification>);
-      closeDialog();
-    }
-  };
+//   return (
+//     <div>
+//       <Button variant="solid" onClick={openDialog} icon={<HiPlusCircle />} size="sm">
+//         Add PF Setup
+//       </Button>
+//       <Dialog isOpen={dialogIsOpen} onClose={closeDialog} onRequestClose={closeDialog}>
+//         <h5 className="mb-4">Add PF Setup</h5>
+//         <div className="space-y-4">
+//           <OutlinedSelect
+//             label="Company Group"
+//             options={companyGroups.map(group => ({ value: group, label: group }))}
+//             value={pfSetupData.companyGroup}
+//             onChange={(value: string) => handleInputChange('companyGroup', value)}
+//           />
+//           {/* <OutlinedSelect
+//             label="Company Name"
+//             options={filteredCompanyNames.map(name => ({ value: name, label: name }))}
+//             value={pfSetupData.companyName}
+//             onChange={(value: string) => handleInputChange('companyName', value)}
+//             // disabled={!pfSetupData.companyGroup}
+//           /> */}
+//           <OutlinedInput
+//             label="PF Code"
+//             value={pfSetupData.pfCode}
+//             onChange={(value: string) => handleInputChange('pfCode', value)}
+//           />
+//           <OutlinedSelect
+//             label="PF Code Location"
+//             options={pfCodeLocations.map(location => ({ value: location, label: location }))}
+//             value={pfSetupData.pfCodeLocation}
+//             onChange={(value: string) => handleInputChange('pfCodeLocation', value)}
+//           />
+//           <OutlinedInput
+//             label="PF User ID (Optional)"
+//             value={pfSetupData.pfUserId || ''}
+//             onChange={(value: string) => handleInputChange('pfUserId', value)}
+//           />
+//           <OutlinedInput
+//             label="PF Password (Optional)"
+//             value={pfSetupData.pfPassword || ''}
+//             onChange={(value: string) => handleInputChange('pfPassword', value)}
+//           />
+//           <OutlinedSelect
+//             label="Authorized Signatory"
+//             options={existingSignatories.map(name => ({ value: name, label: name }))}
+//             value={pfSetupData.authorizedSignatory}
+//             onChange={(value: string) => handleInputChange('authorizedSignatory', value)}
+//           />
+//           <OutlinedInput
+//             label="Signatory Mobile (Optional)"
+//             value={pfSetupData.signatoryMobile || ''}
+//             onChange={(value: string) => handleInputChange('signatoryMobile', value)}
+//           />
+//           <OutlinedInput
+//             label="Signatory Email (Optional)"
+//             value={pfSetupData.signatoryEmail || ''}
+//             onChange={(value: string) => handleInputChange('signatoryEmail', value)}
+//           />
+//           <OutlinedInput
+//             label="DSC Valid Date (Optional)"
+//             value={pfSetupData.dscValidDate || ''}
+//             onChange={(value: string) => handleInputChange('dscValidDate', value)}
+//           />
+//         </div>
+//         <div className="text-right mt-6">
+//           <Button className="mr-2" variant="plain" onClick={closeDialog}>
+//             Cancel
+//           </Button>
+//           <Button variant="solid" onClick={onDialogOk}>
+//             Confirm
+//           </Button>
+//         </div>
+//       </Dialog>
+//     </div>
+//   );
+// };
 
+// export default PFSetupTool;
+
+import React from 'react'
+
+const PFSetupTool = () => {
   return (
-    <div>
-      <Button variant="solid" onClick={openDialog} icon={<HiPlusCircle />} size="sm">
-        Add PF Setup
-      </Button>
-      <Dialog isOpen={dialogIsOpen} onClose={closeDialog} onRequestClose={closeDialog}>
-        <h5 className="mb-4">Add PF Setup</h5>
-        <div className="space-y-4">
-          <OutlinedSelect
-            label="Company Group"
-            options={companyGroups.map(group => ({ value: group, label: group }))}
-            value={pfSetupData.companyGroup}
-            onChange={(value: string) => handleInputChange('companyGroup', value)}
-          />
-          <OutlinedSelect
-            label="Company Name"
-            options={companyNames.map(name => ({ value: name, label: name }))}
-            value={pfSetupData.companyName}
-            onChange={(value: string) => handleInputChange('companyName', value)}
-          />
-          <OutlinedInput
-            label="PF Code"
-            value={pfSetupData.pfCode}
-            onChange={(value: string) => handleInputChange('pfCode', value)}
-          />
-          <OutlinedSelect
-            label="PF Code Location"
-            options={pfCodeLocations.map(location => ({ value: location, label: location }))}
-            value={pfSetupData.pfCodeLocation}
-            onChange={(value: string) => handleInputChange('pfCodeLocation', value)}
-          />
-          <OutlinedInput
-            label="PF User ID (Optional)"
-            value={pfSetupData.pfUserId || ''}
-            onChange={(value: string) => handleInputChange('pfUserId', value)}
-          />
-          <OutlinedInput
-            label="PF Password (Optional)"
-            value={pfSetupData.pfPassword || ''}
-            onChange={(value: string) => handleInputChange('pfPassword', value)}
-          />
-          <OutlinedSelect
-            label="Authorized Signatory"
-            options={[
-              ...existingSignatories.map(name => ({ value: name, label: name })),
-              { value: 'new', label: 'Add New Signatory' }
-            ]}
-            value={pfSetupData.authorizedSignatory}
-            onChange={(value: string) => handleSignatoryChange(value)}
-          />
-          {isNewSignatory && (
-            <>
-              <OutlinedInput
-                label="Signatory Name"
-                value={pfSetupData.authorizedSignatory}
-                onChange={(value: string) => handleInputChange('authorizedSignatory', value)}
-              />
-              <OutlinedInput
-                label="Signatory Mobile"
-                value={pfSetupData.signatoryMobile || ''}
-                onChange={(value: string) => handleInputChange('signatoryMobile', value)}
-              />
-              <OutlinedInput
-                label="Signatory Email"
-                value={pfSetupData.signatoryEmail || ''}
-                onChange={(value: string) => handleInputChange('signatoryEmail', value)}
-              />
-              <OutlinedInput
-                label="DSC Valid Date"
-                value={pfSetupData.dscValidDate || ''}
-                onChange={(value: string) => handleInputChange('dscValidDate', value)}
-              />
-            </>
-          )}
-        </div>
-        <div className="text-right mt-6">
-          <Button className="mr-2" variant="plain" onClick={closeDialog}>
-            Cancel
-          </Button>
-          <Button variant="solid" onClick={handleSubmit}>
-            Confirm
-          </Button>
-        </div>
-      </Dialog>
-    </div>
-  );
-};
+    <div>PFSetupTool</div>
+  )
+}
 
-export default PFSetupTool;
+export default PFSetupTool
