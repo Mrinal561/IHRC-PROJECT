@@ -11,11 +11,11 @@ interface CompanyTableProps {
         Company_Group_Name?: string | { value: string; label: string };
         Company_Name?: string;
     }>;
-    onDeleteCompanyName: (index: number) => void;
+    onDelete: (index: number) => void;
     onEdit: (index: number, newName: string) => void;
 }
 
-const CompanyNameTable: React.FC<CompanyTableProps> = ({ data, onDeleteCompanyName, onEdit }) => {
+const CompanyNameTable: React.FC<CompanyTableProps> = ({ data, onDelete, onEdit }) => {
     const [dialogIsOpen, setDialogIsOpen] = useState(false);
     const [itemToDelete, setItemToDelete] = useState<number | null>(null);
     const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
@@ -43,7 +43,7 @@ const CompanyNameTable: React.FC<CompanyTableProps> = ({ data, onDeleteCompanyNa
 
     const handleDialogOk = () => {
         if (itemToDelete !== null) {
-            onDeleteCompanyName(itemToDelete);
+            onDelete(itemToDelete);
             setDialogIsOpen(false);
             setItemToDelete(null);
         }
@@ -106,7 +106,7 @@ const CompanyNameTable: React.FC<CompanyTableProps> = ({ data, onDeleteCompanyNa
                                         className="text-blue-500"
                                     />
                                 </Tooltip>
-                                <Tooltip title="Clear Company Name">
+                                <Tooltip title="Delete Company Name">
                                     <Button  
                                         size="sm" 
                                         onClick={() => openDialog(index)}
@@ -125,9 +125,9 @@ const CompanyNameTable: React.FC<CompanyTableProps> = ({ data, onDeleteCompanyNa
                 onClose={handleDialogClose}
                 onRequestClose={handleDialogClose}
             >
-                <h5 className="mb-4">Confirm Clearing Company Name</h5>
+                <h5 className="mb-4">Confirm Deletion</h5>
                 <p>
-                    Are you sure you want to clear this company name? This action will remove only the company name, keeping the rest of the row intact.
+                    Are you sure you want to delete this company name? This action will remove only the company name, not the entire row.
                 </p>
                 <div className="text-right mt-6">
                     <Button
@@ -138,7 +138,7 @@ const CompanyNameTable: React.FC<CompanyTableProps> = ({ data, onDeleteCompanyNa
                         Cancel
                     </Button>
                     <Button variant="solid" onClick={handleDialogOk}>
-                        Clear
+                        Delete
                     </Button>
                 </div>
             </Dialog>
