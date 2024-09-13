@@ -29,8 +29,9 @@
                 "item1": "Company Group",
                 "item2": "Company Name",
                 "item3": "State",
-                "item4": "Location",
-                "item5": "Branch"
+                "item4": "District",
+                "item5": "Location",
+                "item6": "Branch"
             }
         },
         "userEntityMenu": {

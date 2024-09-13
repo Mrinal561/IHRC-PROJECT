@@ -179,7 +179,7 @@ const ESISetupTable: React.FC<ESISetupTableProps> = ({ data, onDelete, onEdit })
     <div className="relative">
       {data.length === 0 ? (
         <div className="text-center py-8 text-gray-500">
-          No PF setup data available
+          No ESI setup data available
         </div>
       ) : (
         <DataTable

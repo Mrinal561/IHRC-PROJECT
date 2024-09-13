@@ -68,6 +68,7 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({ data, onDelete, onE
                 header: 'PF Setup',
                 id: 'pf_setup',
                 cell: ({ row }) => (
+                    <div className="w-20 truncate">
                     <Tooltip title="PF Config">
                         <Button
                             size="sm"
@@ -80,14 +81,17 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({ data, onDelete, onE
                             )}
                             icon={<FiSettings />}
                             className="text-blue-500"
-                        />
+                            />
                     </Tooltip>
+                            </div>
                 ),
             },
             {
                 header: 'PT Setup',
                 id: 'pt_setup',
                 cell: ({ row }) => (
+                    <div className="w-20 truncate">
+
                     <Tooltip title="PT Config">
                         <Button
                             size="sm"
@@ -100,14 +104,17 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({ data, onDelete, onE
                             )}
                             icon={<FiSettings />}
                             className="text-blue-500"
-                        />
+                            />
                     </Tooltip>
+                            </div>
                 ),
             },
             {
                 header: 'ESI Setup',
                 id: 'esi_setup',
                 cell: ({ row }) => (
+                    <div className="w-20 truncate">
+
                     <Tooltip title="ESI Config">
                         <Button
                             size="sm"
@@ -122,12 +129,15 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({ data, onDelete, onE
                             className="text-blue-500"
                         />
                     </Tooltip>
+                    </div>
                 ),
             },
             {
                 header: 'LWF Setup',
                 id: 'lwf_setup',
                 cell: ({ row }) => (
+                    <div className="w-20 truncate">
+
                     <Tooltip title="LWF Config">
                         <Button
                             size="sm"
@@ -142,6 +152,7 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({ data, onDelete, onE
                             className="text-blue-500"
                         />
                     </Tooltip>
+                    </div>
                 ),
             },
             {

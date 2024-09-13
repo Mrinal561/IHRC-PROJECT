@@ -148,6 +148,14 @@ export const protectedRoutes = [
     },
     {
         key: 'entityMenu.collapse.item4',
+        path: '/district',
+        component: lazy(() =>
+            import('@/views/IHRC/components/Entity/District/District')
+        ),
+        authority: [],
+    },
+    {
+        key: 'entityMenu.collapse.item5',
         path: '/location',
         component: lazy(() =>
             import('@/views/IHRC/components/Entity/Location/Location')
@@ -155,7 +163,7 @@ export const protectedRoutes = [
         authority: [],
     },
     {
-        key: 'entityMenu.collapse.item5',
+        key: 'entityMenu.collapse.item6',
         path: '/branch',
         component: lazy(() =>
             import('@/views/IHRC/components/Entity/Branch/Branch')
