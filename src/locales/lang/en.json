@@ -1,7 +1,6 @@
 {
     "nav": {
         "home": "Dashboard",
-        "singleMenuItem": "Single menu item",
         "collapseMenu": {
             "collapseMenu": "Audit Checklist",
             "item1": "Recommended Checklist",
@@ -30,12 +29,13 @@
                 "item1": "Company Group",
                 "item2": "Company Name",
                 "item3": "State",
-                "item4": "Location",
-                "item5": "Branch",
-                "item6": "PF Setup",
-                "item7": "ESI Setup"
-
+                "item4": "District",
+                "item5": "Location",
+                "item6": "Branch"
             }
+        },
+        "userEntityMenu": {
+            "userEntityMenu": "User Entity"
         }
     }
 }

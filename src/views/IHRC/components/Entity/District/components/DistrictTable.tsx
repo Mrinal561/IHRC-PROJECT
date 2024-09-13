@@ -1,33 +1,56 @@
 import React, { useMemo, useState } from 'react';
 import { Button, Dialog, Tooltip } from '@/components/ui';
 import { FiTrash } from 'react-icons/fi';
-import OutlinedInput from '@/components/ui/OutlinedInput';
 import { MdEdit } from 'react-icons/md';
+import OutlinedInput from '@/components/ui/OutlinedInput/OutlinedInput';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 
-
-interface CompanyTableProps {
+interface DistrictTableProps {
     data: Array<{
-        Company_Group_Name?: string;
+        Company_Group_Name?: string | { value: string; label: string };
+        Company_Name?: string;
+        State?: string;
+        District?: string;
     }>;
-    onDelete: (index: number) => void;
+    onDeleteDistrict: (index: number) => void;
     onEdit: (index: number, newName: string) => void;
 }
 
-const CompanyTable: React.FC<CompanyTableProps> = ({ data, onDelete, onEdit }) => {
+const DistrictTable: React.FC<DistrictTableProps> = ({ data, onDeleteDistrict, onEdit }) => {
     const [dialogIsOpen, setDialogIsOpen] = useState(false);
-    const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
     const [itemToDelete, setItemToDelete] = useState<number | null>(null);
+    const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
     const [itemToEdit, setItemToEdit] = useState<number | null>(null);
     const [editedName, setEditedName] = useState('');
 
-    const columns: ColumnDef<CompanyTableProps>[] = useMemo(
+    const columns: ColumnDef<DistrictTableProps>[] = useMemo(
         () => [
             {
                 header: 'Company Group Name',
                 accessorKey: 'Company_Group_Name',
                 cell: (props) => (
-                    <div className="w-96 truncate">{props.getValue() as string}</div>
+                    <div className="w-52 truncate">{props.getValue() as string}</div>
+                ),
+            },
+            {
+                header: 'Company Name',
+                accessorKey: 'Company_Name',
+                cell: (props) => (
+                    <div className="w-52 truncate">{props.getValue() as string}</div>
+                ),
+            },
+            {
+                header: 'State',
+                accessorKey: 'State',
+                cell: (props) => (
+                    <div className="w-52 truncate">{props.getValue() as string}</div>
+                ),
+            },
+            {
+                header: 'District',
+                accessorKey: 'District',
+                cell: (props) => (
+                    <div className="w-52 truncate">{props.getValue() as string}</div>
                 ),
             },
             {
@@ -58,7 +81,6 @@ const CompanyTable: React.FC<CompanyTableProps> = ({ data, onDelete, onEdit }) =
         []
     );
 
-
     const openDeleteDialog = (index: number) => {
         setItemToDelete(index);
         setDialogIsOpen(true);
@@ -66,7 +88,7 @@ const CompanyTable: React.FC<CompanyTableProps> = ({ data, onDelete, onEdit }) =
 
     const openEditDialog = (index: number) => {
         setItemToEdit(index);
-        setEditedName(data[index].Company_Group_Name || '');
+        setEditedName(data[index].District || '');
         setEditDialogIsOpen(true);
     };
 
@@ -78,68 +100,75 @@ const CompanyTable: React.FC<CompanyTableProps> = ({ data, onDelete, onEdit }) =
         setEditedName('');
     };
 
-    const handleDeleteConfirm = () => {
+    const handleDialogOk = () => {
         if (itemToDelete !== null) {
-            onDelete(itemToDelete);
-            handleDialogClose();
+            onDeleteDistrict(itemToDelete);
+            setDialogIsOpen(false);
+            setItemToDelete(null);
         }
     };
 
     const handleEditConfirm = () => {
         if (itemToEdit !== null && editedName.trim()) {
             onEdit(itemToEdit, editedName.trim());
-            handleDialogClose();
+            setEditDialogIsOpen(false);
+            setItemToEdit(null);
+            setEditedName('');
         }
     };
 
-       // State for table pagination and sorting
-   const [tableData, setTableData] = useState({
-    total: data.length,
-    pageIndex: 1,
-    pageSize: 10,
-    query: '',
-    sort: { order: '', key: '' },
-});
+    const renderCompanyGroupName = (companyGroupName: string | { value: string; label: string } | undefined) => {
+        if (typeof companyGroupName === 'object' && companyGroupName !== null) {
+            return companyGroupName.label || '-';
+        }
+        return companyGroupName || '-';
+    };
 
-// Function to handle pagination changes
-const onPaginationChange = (page: number) => {
-    setTableData(prev => ({ ...prev, pageIndex: page }));
-};
+    const [tableData, setTableData] = useState({
+        total: data.length,
+        pageIndex: 1,
+        pageSize: 10,
+        query: '',
+        sort: { order: '', key: '' },
+    });
 
-// Function to handle page size changes
-const onSelectChange = (value: number) => {
-    setTableData(prev => ({ ...prev, pageSize: Number(value), pageIndex: 1 }));
-};
+    const onPaginationChange = (page: number) => {
+        setTableData(prev => ({ ...prev, pageIndex: page }));
+    };
+
+    const onSelectChange = (value: number) => {
+        setTableData(prev => ({ ...prev, pageSize: Number(value), pageIndex: 1 }));
+    };
 
     return (
-        <div className="relative">
-        {data.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
-                No data available
-            </div>
-        ) : (
-            <DataTable
-                columns={columns}
-                data={data}
-                skeletonAvatarColumns={[0]}
-                skeletonAvatarProps={{ className: 'rounded-md' }}
-                loading={false}
-                pagingData={{
-                    total: data.length,
-                    pageIndex: 1,
-                    pageSize: 10,
-                }}
-            />
-        )}
-            {/* Delete Confirmation Dialog */}
+        <div className='relative'>
+            {data.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                    No data available
+                </div>
+            ) : (
+                <DataTable
+                    columns={columns}
+                    data={data}
+                    skeletonAvatarColumns={[0]}
+                    skeletonAvatarProps={{ className: 'rounded-md' }}
+                    loading={false}
+                    pagingData={{
+                        total: data.length,
+                        pageIndex: 1,
+                        pageSize: 10,
+                    }}
+                />
+            )}
+
             <Dialog
                 isOpen={dialogIsOpen}
                 onClose={handleDialogClose}
                 onRequestClose={handleDialogClose}
             >
-                <h5 className="mb-4">Confirm Deletion</h5>
+                <h5 className="mb-4">Confirm Deleting District</h5>
                 <p>
-                    Are you sure you want to delete this company group? This action cannot be undone.
+                    Are you sure you want to delete this district? This action cannot be undone.
                 </p>
                 <div className="text-right mt-6">
                     <Button
@@ -149,22 +178,21 @@ const onSelectChange = (value: number) => {
                     >
                         Cancel
                     </Button>
-                    <Button variant="solid" onClick={handleDeleteConfirm}>
+                    <Button variant="solid" onClick={handleDialogOk}>
                         Delete
                     </Button>
                 </div>
             </Dialog>
 
-            {/* Edit Dialog */}
             <Dialog
                 isOpen={editDialogIsOpen}
                 onClose={handleDialogClose}
                 onRequestClose={handleDialogClose}
             >
-                <h5 className="mb-4">Edit Company Group Name</h5>
+                <h5 className="mb-4">Edit District</h5>
                 <div className="mb-4">
                     <OutlinedInput 
-                        label="Company Group Name"
+                        label="District"
                         value={editedName}
                         onChange={(value: string) => setEditedName(value)}
                     />
@@ -186,4 +214,4 @@ const onSelectChange = (value: number) => {
     );
 };
 
-export default CompanyTable;
+export default DistrictTable;

@@ -4,89 +4,107 @@ import { FiTrash } from 'react-icons/fi';
 import { MdEdit } from 'react-icons/md';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 
-export interface PFSetupData {
-  Company_Group_Name: string;
-  Company_Name: string;
-  pfCode: string;
-  pfCodeLocation: string;
-  registrationDate?: string;
-  pfUserId?: string;
-  pfPassword?: string;
-  authorizedSignatory: string;
-  signatoryDesignation?: string;
-  signatoryMobile?: string;
-  signatoryEmail?: string;
-  dscValidDate?: string;
-  esign?: string;
-  pfRegistrationCertificate?: File | null;
+export interface LWFSetupData {
+    Company_Group_Name: string;
+    Company_Name: string;
+    lwfState: string;
+    lwfLocation: string;
+    lwfRegistrationNumber: string;
+    lwfRegistrationDate: string;
+    lwfRemmitanceMode: string;
+    lwfRemmitanceFrequency: string;
+    lwfUserId?: string;
+    lwfPassword?: string;
+    authorizedSignatory: string;
+    signatoryDesignation?: string;
+    signatoryMobile?: string;
+    signatoryEmail?: string;
+    lwfFrequency: string;
+    lwfPaymentDueDate: string;
+    lwfApplicableState: string;
+    lwfRegistrationCertificate?: File | null;
 }
 
-interface PFSetupTableProps {
-  data: PFSetupData[];
+interface ESISetupTableProps {
+  data: LWFSetupData[];
   onDelete: (index: number) => void;
-  onEdit: (index: number, newData: Partial<PFSetupData>) => void;
+  onEdit: (index: number, newData: Partial<LWFSetupData>) => void;
 }
 
-const PFSetupTable: React.FC<PFSetupTableProps> = ({ data, onDelete, onEdit }) => {
+const LWFSetupTable: React.FC<ESISetupTableProps> = ({ data, onDelete, onEdit }) => {
   const [dialogIsOpen, setDialogIsOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<number | null>(null);
   const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
   const [itemToEdit, setItemToEdit] = useState<number | null>(null);
-  const [editedData, setEditedData] = useState<Partial<PFSetupData>>({});
+  const [editedData, setEditedData] = useState<Partial<LWFSetupData>>({});
 
-  const columns: ColumnDef<PFSetupData>[] = useMemo(
+  const columns: ColumnDef<LWFSetupData>[] = useMemo(
     () => [
+        {
+            header: 'Company Group Name',
+            accessorKey: 'Company_Group_Name',
+            cell: (props) => (
+              <div className="w-36 text-start">{props.getValue() as string}</div>
+            ),
+          },
+          {
+            header: 'Company Name',
+            accessorKey: 'Company_Name',
+            cell: (props) => (
+              <div className="w-36 text-start">{props.getValue() as string}</div>
+            ),
+          },
       {
-        header: 'Company Group Name',
-        accessorKey: 'Company_Group_Name',
+        header: 'LWF State',
+        accessorKey: 'lwfState',
         cell: (props) => (
           <div className="w-36 text-start">{props.getValue() as string}</div>
         ),
       },
       {
-        header: 'Company Name',
-        accessorKey: 'Company_Name',
+        header: 'LWF Location',
+        accessorKey: 'lwfLocation',
         cell: (props) => (
           <div className="w-36 text-start">{props.getValue() as string}</div>
         ),
       },
       {
-        header: 'PF Code',
-        accessorKey: 'pfCode',
-        cell: (props) => (
-          <div className="w-36 text-start">{props.getValue() as string}</div>
-        ),
-      },
-      {
-        header: 'PF Code Location',
-        accessorKey: 'pfCodeLocation',
+        header: 'LWF Registration Number',
+        accessorKey: 'lwfRegistrationNumber',
         cell: (props) => (
           <div className="w-36 truncate">{props.getValue() as string}</div>
         ),
       },
       {
-        header: 'PF Registration Date',
-        accessorKey: 'registrationDate',
-        cell: (props) => (
-          <div className="w-44 flex items-center justify-center">{props.getValue() as string}</div>
-        ),
-      },
-      {
-        header: 'PF User ID',
-        accessorKey: 'pfUserId',
+        header: 'LWF Registration Date',
+        accessorKey: 'lwfRegistrationDate',
         cell: (props) => (
           <div className="w-32 flex items-center justify-center">{props.getValue() as string}</div>
         ),
       },
       {
-        header: 'PF User Password',
-        accessorKey: 'pfPassword',
+        header: 'Remmitance Mode',
+        accessorKey: 'lwfRemmitanceMode',
         cell: (props) => (
           <div className="w-40 flex items-center justify-center">{props.getValue() as string}</div>
         ),
       },
       {
-        header: 'Authorized Signatory',
+        header: 'User ID',
+        accessorKey: 'lwfUserId',
+        cell: (props) => (
+          <div className="w-48 truncate">{props.getValue() as string}</div>
+        ),
+      },
+      {
+        header: 'Password',
+        accessorKey: 'lwfPassword',
+        cell: (props) => (
+          <div className="w-48 truncate">{props.getValue() as string}</div>
+        ),
+      },
+      {
+        header: 'Authorised Signatory',
         accessorKey: 'authorizedSignatory',
         cell: (props) => (
           <div className="w-48 truncate">{props.getValue() as string}</div>
@@ -109,20 +127,6 @@ const PFSetupTable: React.FC<PFSetupTableProps> = ({ data, onDelete, onEdit }) =
       {
         header: 'Email',
         accessorKey: 'signatoryEmail',
-        cell: (props) => (
-          <div className="w-48 truncate">{props.getValue() as string}</div>
-        ),
-      },
-      {
-        header: 'DSC Validity',
-        accessorKey: 'dscValidDate',
-        cell: (props) => (
-          <div className="w-48 truncate">{props.getValue() as string}</div>
-        ),
-      },
-      {
-        header: 'E Sign',
-        accessorKey: 'esign',
         cell: (props) => (
           <div className="w-48 truncate">{props.getValue() as string}</div>
         ),
@@ -195,7 +199,7 @@ const PFSetupTable: React.FC<PFSetupTableProps> = ({ data, onDelete, onEdit }) =
     <div className="relative">
       {data.length === 0 ? (
         <div className="text-center py-8 text-gray-500">
-          No PF setup data available
+          No LWF setup data available
         </div>
       ) : (
         <DataTable
@@ -259,4 +263,4 @@ const PFSetupTable: React.FC<PFSetupTableProps> = ({ data, onDelete, onEdit }) =
   );
 };
 
-export default PFSetupTable;
+export default LWFSetupTable;

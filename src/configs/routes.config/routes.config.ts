@@ -51,6 +51,12 @@ export const protectedRoutes = [
       authority: [],
     },
     {
+        key: 'branchInputDetail.item',
+        path: `/add-branch`,
+        component: lazy(() => import('@/views/IHRC/components/Entity/Branch/components/BranchForm')),
+        authority: [],
+      },
+    {
         key: 'assignChecklist.item3',
         path: '/assigned-checklist',
         component: lazy(() => import('@/views/IHRC/components/AuditChecklist/AssignChecklist/AssignChecklist')),
@@ -142,6 +148,14 @@ export const protectedRoutes = [
     },
     {
         key: 'entityMenu.collapse.item4',
+        path: '/district',
+        component: lazy(() =>
+            import('@/views/IHRC/components/Entity/District/District')
+        ),
+        authority: [],
+    },
+    {
+        key: 'entityMenu.collapse.item5',
         path: '/location',
         component: lazy(() =>
             import('@/views/IHRC/components/Entity/Location/Location')
@@ -149,7 +163,7 @@ export const protectedRoutes = [
         authority: [],
     },
     {
-        key: 'entityMenu.collapse.item5',
+        key: 'entityMenu.collapse.item6',
         path: '/branch',
         component: lazy(() =>
             import('@/views/IHRC/components/Entity/Branch/Branch')
@@ -157,20 +171,41 @@ export const protectedRoutes = [
         authority: [],
     },
     {
-        key: 'entityMenu.collapse.item6',
-        path: '/pf-setup',
-        component: lazy(() =>
-            import('@/views/IHRC/components/Entity/PFSetup/PFSetup')
-        ),
+        key: 'entityMenu.pfSetup',
+        path:  `${APP_PREFIX_PATH}/IHRC/pf-setup/:companyName`,
+        component: lazy(() => import('@/views/IHRC/components/Entity/PFSetup/CompanyPFSetupPage')),
         authority: [],
-    },
+      },
     {
-        key: 'entityMenu.collapse.item7',
-        path: '/esi-setup',
-        component: lazy(() =>
-            import('@/views/IHRC/components/Entity/ESICSetup/EsicSetup')
-        ),
+        key: 'entityMenu.esiSetup',
+        path:  `${APP_PREFIX_PATH}/IHRC/esi-setup/:companyName`,
+        component: lazy(() => import('@/views/IHRC/components/Entity/ESICSetup/EsicSetup')),
+        authority: [],
+      },
+    {
+        key: 'entityMenu.LWFSetup',
+        path:  `${APP_PREFIX_PATH}/IHRC/lwf-setup/:companyName`,
+        component: lazy(() => import('@/views/IHRC/components/Entity/LWFSetup/LWFSetup')),
+        authority: [],
+      },
+    {
+        key: 'entityMenu.ptSetup',
+        path:  `${APP_PREFIX_PATH}/IHRC/pt-setup/:companyName`,
+        component: lazy(() => import('@/views/IHRC/components/Entity/PTSetup/PTSetup')),
+        authority: [],
+      },
+    {
+        key: 'entityMenu.companyDetails',
+        path:  `${APP_PREFIX_PATH}/IHRC/company-details/:companyName`,
+        component: lazy(() => import('@/views/IHRC/components/Entity/CompanyDetails/CompanyDetails')),
+        authority: [],
+      },
+      {
+        key: 'userEntityMenu.userEntityMenu',
+        path: '/user-entity',
+        component: lazy(() => import('@/views/IHRC/components/UserEntity/UserEntity')),
         authority: [],
     },
+
     
 ]

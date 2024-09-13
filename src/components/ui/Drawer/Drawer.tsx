@@ -16,6 +16,7 @@ export interface DrawerProps extends ReactModal.Props {
     onClose?: (e: MouseEvent<HTMLSpanElement>) => void
     placement?: 'top' | 'right' | 'bottom' | 'left'
     showBackdrop?: boolean
+    backdropOpacity?: number  // New prop for backdrop opacity
     title?: string | ReactNode
     width?: string | number
 }
@@ -39,6 +40,7 @@ const Drawer = (props: DrawerProps) => {
         placement = 'right',
         portalClassName,
         showBackdrop = true,
+        backdropOpacity = 0.5,  // Default opacity of 0.5
         title,
         width = 400,
         ...rest
@@ -91,6 +93,11 @@ const Drawer = (props: DrawerProps) => {
 
     const { dimensionClass, contentStyle, motionStyle } = getStyle()
 
+    // Create a custom backdrop style
+    const backdropStyle = {
+        backgroundColor: `rgba(0, 0, 0, ${backdropOpacity})`,
+    }
+
     return (
         <Modal
             className={{
@@ -116,6 +123,7 @@ const Drawer = (props: DrawerProps) => {
             ariaHideApp={false}
             isOpen={isOpen}
             closeTimeoutMS={closeTimeoutMS}
+            style={{ overlay: backdropStyle }}  // Apply custom backdrop style
             {...rest}
         >
             <motion.div

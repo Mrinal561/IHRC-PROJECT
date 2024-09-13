@@ -21,7 +21,7 @@ const Location = () => {
         }
 
         // Load company data
-        const storedEntityDataList = localStorage.getItem('stateData');
+        const storedEntityDataList = localStorage.getItem('districtData');
         if (storedEntityDataList) {
           const parsedData = JSON.parse(storedEntityDataList);
           if (Array.isArray(parsedData)) {

@@ -3,22 +3,29 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { Button, Dialog } from '@/components/ui';
 import { HiArrowLeft, HiPlusCircle } from 'react-icons/hi';
 import { setPanelExpand, useAppDispatch } from '@/store';
-import ESISetupPanel from './components/ESISetupPanel';
-import ESISetupTable from './components/EsicSetupTable';
+import PTSetupPanel from './components/PTSetupPanel';
+import PTSetupTable from './components/PTSetupTable';
 
-export interface ESISetupData {
+
+export interface PTSetupData {
     Company_Group_Name: string;
     Company_Name: string;
-    esiCodeType: string;
-    esiCode: string;
-    esiCodeLocation: string;
-    esiUserId?: string;
-    esiPassword?: string;
+    ptState: string;
+    ptLocation: string;
+    ptEnrollmentNumber: string;
+    ptRegistrationNumber: string;
+    ptRegistrationDate: string;
+    ptRemmitanceMode: string;
+    ptUserId?: string;
+    ptPassword?: string;
     authorizedSignatory: string;
     signatoryDesignation?: string;
     signatoryMobile?: string;
     signatoryEmail?: string;
-    esiRegistrationCertificate?: File | null;
+    ptecPaymentFrequency: string;
+    ptrcPaymentFrequency: string;
+    lwfRegistrationCertificate?: File | null;
+    ptrcUpload?: File | null;
   }
 
   interface LocationState {
@@ -26,13 +33,13 @@ export interface ESISetupData {
     companyGroupName?: string;
   }
 
-const CompanyESISetupPage: React.FC = () => {
+const PTSetup: React.FC = () => {
   const { companyName } = useParams<{ companyName: string }>();
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState(false);
-  const [esiSetupData, setESISetupData] = useState<ESISetupData[]>([]);
+  const [PTSetupData, setPTSetupData] = useState<PTSetupData[]>([]);
   const [companyData, setCompanyData] = useState<{ Company_Group_Name: string, Company_Name: string } | null>(null);
   const locationState = location.state as LocationState;
 
@@ -61,33 +68,33 @@ const CompanyESISetupPage: React.FC = () => {
   useEffect(() => {
     // Fetch PF setup data for this company
     // This is a placeholder. Replace with actual API call or data fetching logic
-    const fetchesiSetupData = async () => {
+    const fetchPTSetupData = async () => {
       // Simulating API call
-      const data: ESISetupData[] = [];
-      setESISetupData(data);
+      const data: PTSetupData[] = [];
+      setPTSetupData(data);
     };
 
-    fetchesiSetupData();
+    fetchPTSetupData();
   }, [actualCompanyName]);
 
   const handleBack = () => {
     navigate(-1);
   };
 
-  const handleAddPFSetup = (newPFSetup: ESISetupData) => {
-    setESISetupData([...esiSetupData, newPFSetup]);
+  const handleAddPFSetup = (newPFSetup: PTSetupData) => {
+    setPTSetupData([...PTSetupData, newPFSetup]);
     setIsOpen(false);
   };
 
   const handleDelete = (index: number) => {
-    const newData = esiSetupData.filter((_, i) => i !== index);
-    setESISetupData(newData);
+    const newData = PTSetupData.filter((_, i) => i !== index);
+    setPTSetupData(newData);
   };
 
-  const handleEdit = (index: number, updatedData: Partial<ESISetupData>) => {
-    const newData = [...esiSetupData];
+  const handleEdit = (index: number, updatedData: Partial<PTSetupData>) => {
+    const newData = [...PTSetupData];
     newData[index] = { ...newData[index], ...updatedData };
-    setESISetupData(newData);
+    setPTSetupData(newData);
   };
 
  
@@ -103,7 +110,7 @@ const CompanyESISetupPage: React.FC = () => {
             className="mr-2"
           >
           </Button>
-          <h1 className="text-2xl font-bold">{actualCompanyName} ESI Setup</h1>
+          <h1 className="text-2xl font-bold">{actualCompanyName} PT Setup</h1>
         </div>
         <Button
           variant="solid"
@@ -113,12 +120,12 @@ const CompanyESISetupPage: React.FC = () => {
             setIsOpen(true);
           }}
         >
-          Add ESI Setup
+          Add PT Setup
         </Button>
       </div>
 
-      <ESISetupTable
-        data={esiSetupData}
+      <PTSetupTable
+        data={PTSetupData}
         onDelete={handleDelete}
         onEdit={handleEdit}
       />
@@ -128,9 +135,9 @@ const CompanyESISetupPage: React.FC = () => {
         onClose={() => setIsOpen(false)}
         onRequestClose={() => setIsOpen(false)}
       >
-        <h4 className="mb-4">Add PF Setup</h4>
+        <h4 className="mb-4">Add PT Setup</h4>
         
-        <ESISetupPanel
+        <PTSetupPanel
           addPFSetup={handleAddPFSetup}
           onClose={() => setIsOpen(false)}
           companyGroupName={companyData?.Company_Group_Name || ''}
@@ -142,4 +149,4 @@ const CompanyESISetupPage: React.FC = () => {
   );
 };
 
-export default CompanyESISetupPage;
+export default PTSetup;
