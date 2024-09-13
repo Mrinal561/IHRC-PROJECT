@@ -16,7 +16,7 @@ const UserForm: React.FC = () => {
         />
         <h3 className="text-2xl font-semibold">User Form</h3>
       </div>
-      <form className="space-y-6">
+      <form className="space-y-5">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           <div>
             <p className="mb-1">First Name</p>
@@ -64,9 +64,15 @@ const UserForm: React.FC = () => {
               onChange={() => {}}
             />
           </div>
-          <div className="flex items-center mt-4">
-          <Checkbox >Authorised Signatory</Checkbox>
+          <div>
+            <p className="mb-1">Date of Joining</p>
+            <OutlinedInput
+              label="Date of Joining"
+              value=""
+              onChange={() => {}}
+            />
           </div>
+         
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -124,17 +130,13 @@ const UserForm: React.FC = () => {
               onChange={() => {}}
             />
           </div>
-          <div>
-            <p className="mb-1">Date of Joining</p>
-            <OutlinedInput
-              label="Date of Joining"
-              value=""
-              onChange={() => {}}
-            />
-          </div>
+          
         </div>
-
-        <div className="flex justify-end gap-2">
+        <div className="grid grid-cols-2 md:grid-cols-2 gap-2">
+        <div className="flex items-center">
+          <Checkbox >User will be assigned as a <b>Authorised Signatory</b></Checkbox>
+          </div>
+          <div className="flex justify-end gap-2">
           <Button type="submit" variant="solid" size="sm">
             Add User
           </Button>
@@ -142,6 +144,9 @@ const UserForm: React.FC = () => {
             Cancel
           </Button>
         </div>
+        </div>
+
+        
       </form>
     </div>
   );
