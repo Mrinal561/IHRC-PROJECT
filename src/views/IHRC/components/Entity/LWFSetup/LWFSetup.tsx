@@ -3,22 +3,31 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { Button, Dialog } from '@/components/ui';
 import { HiArrowLeft, HiPlusCircle } from 'react-icons/hi';
 import { setPanelExpand, useAppDispatch } from '@/store';
-import ESISetupPanel from './components/ESISetupPanel';
-import ESISetupTable from './components/EsicSetupTable';
+import LWFSetupPanel from './components/LWFSetupPanel';
+import LWFSetupTable from './components/LWFSetupTable';
 
-export interface ESISetupData {
+
+
+
+export interface LWFSetupData {
     Company_Group_Name: string;
     Company_Name: string;
-    esiCodeType: string;
-    esiCode: string;
-    esiCodeLocation: string;
-    esiUserId?: string;
-    esiPassword?: string;
+    lwfState: string;
+    lwfLocation: string;
+    lwfRegistrationNumber: string;
+    lwfRegistrationDate: string;
+    lwfRemmitanceMode: string;
+    lwfRemmitanceFrequency: string;
+    lwfUserId?: string;
+    lwfPassword?: string;
     authorizedSignatory: string;
     signatoryDesignation?: string;
     signatoryMobile?: string;
     signatoryEmail?: string;
-    esiRegistrationCertificate?: File | null;
+    lwfFrequency: string;
+    lwfPaymentDueDate: string;
+    lwfApplicableState: string;
+    lwfRegistrationCertificate?: File | null;
   }
 
   interface LocationState {
@@ -26,13 +35,13 @@ export interface ESISetupData {
     companyGroupName?: string;
   }
 
-const CompanyESISetupPage: React.FC = () => {
+const LWFSetupPage: React.FC = () => {
   const { companyName } = useParams<{ companyName: string }>();
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState(false);
-  const [esiSetupData, setESISetupData] = useState<ESISetupData[]>([]);
+  const [LWFSetupData, setLWFSetupData] = useState<LWFSetupData[]>([]);
   const [companyData, setCompanyData] = useState<{ Company_Group_Name: string, Company_Name: string } | null>(null);
   const locationState = location.state as LocationState;
 
@@ -61,33 +70,33 @@ const CompanyESISetupPage: React.FC = () => {
   useEffect(() => {
     // Fetch PF setup data for this company
     // This is a placeholder. Replace with actual API call or data fetching logic
-    const fetchesiSetupData = async () => {
+    const fetchLWFSetupData = async () => {
       // Simulating API call
-      const data: ESISetupData[] = [];
-      setESISetupData(data);
+      const data: LWFSetupData[] = [];
+      setLWFSetupData(data);
     };
 
-    fetchesiSetupData();
+    fetchLWFSetupData();
   }, [actualCompanyName]);
 
   const handleBack = () => {
     navigate(-1);
   };
 
-  const handleAddPFSetup = (newPFSetup: ESISetupData) => {
-    setESISetupData([...esiSetupData, newPFSetup]);
+  const handleAddPFSetup = (newPFSetup: LWFSetupData) => {
+    setLWFSetupData([...LWFSetupData, newPFSetup]);
     setIsOpen(false);
   };
 
   const handleDelete = (index: number) => {
-    const newData = esiSetupData.filter((_, i) => i !== index);
-    setESISetupData(newData);
+    const newData = LWFSetupData.filter((_, i) => i !== index);
+    setLWFSetupData(newData);
   };
 
-  const handleEdit = (index: number, updatedData: Partial<ESISetupData>) => {
-    const newData = [...esiSetupData];
+  const handleEdit = (index: number, updatedData: Partial<LWFSetupData>) => {
+    const newData = [...LWFSetupData];
     newData[index] = { ...newData[index], ...updatedData };
-    setESISetupData(newData);
+    setLWFSetupData(newData);
   };
 
  
@@ -103,7 +112,7 @@ const CompanyESISetupPage: React.FC = () => {
             className="mr-2"
           >
           </Button>
-          <h1 className="text-2xl font-bold">{actualCompanyName} ESI Setup</h1>
+          <h1 className="text-2xl font-bold">{actualCompanyName} LWF Setup</h1>
         </div>
         <Button
           variant="solid"
@@ -113,12 +122,12 @@ const CompanyESISetupPage: React.FC = () => {
             setIsOpen(true);
           }}
         >
-          Add ESI Setup
+          Add LWF Setup
         </Button>
       </div>
 
-      <ESISetupTable
-        data={esiSetupData}
+      <LWFSetupTable
+        data={LWFSetupData}
         onDelete={handleDelete}
         onEdit={handleEdit}
       />
@@ -128,9 +137,9 @@ const CompanyESISetupPage: React.FC = () => {
         onClose={() => setIsOpen(false)}
         onRequestClose={() => setIsOpen(false)}
       >
-        <h4 className="mb-4">Add PF Setup</h4>
+        <h4 className="mb-4">Add LWF Setup</h4>
         
-        <ESISetupPanel
+        <LWFSetupPanel
           addPFSetup={handleAddPFSetup}
           onClose={() => setIsOpen(false)}
           companyGroupName={companyData?.Company_Group_Name || ''}
@@ -142,4 +151,4 @@ const CompanyESISetupPage: React.FC = () => {
   );
 };
 
-export default CompanyESISetupPage;
+export default LWFSetupPage;

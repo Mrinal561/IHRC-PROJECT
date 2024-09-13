@@ -31,10 +31,7 @@
                 "item2": "Company Name",
                 "item3": "State",
                 "item4": "Location",
-                "item5": "Branch",
-                "item6": "PF Setup",
-                "item7": "ESI Setup"
-
+                "item5": "Branch"
             }
         }
     }

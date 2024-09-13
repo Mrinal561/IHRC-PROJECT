@@ -4,73 +4,93 @@ import { FiTrash } from 'react-icons/fi';
 import { MdEdit } from 'react-icons/md';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 
-export interface ESISetupData {
+export interface LWFSetupData {
     Company_Group_Name: string;
     Company_Name: string;
-    esiCode: string;
-    esiCodeType: string;
-    esiCodeLocation: string;
-    esiUserId?: string;
-    esiPassword?: string;
+    lwfState: string;
+    lwfLocation: string;
+    lwfRegistrationNumber: string;
+    lwfRegistrationDate: string;
+    lwfRemmitanceMode: string;
+    lwfRemmitanceFrequency: string;
+    lwfUserId?: string;
+    lwfPassword?: string;
     authorizedSignatory: string;
     signatoryDesignation?: string;
     signatoryMobile?: string;
     signatoryEmail?: string;
-    esiRegistrationCertificate?: File | null;
+    lwfFrequency: string;
+    lwfPaymentDueDate: string;
+    lwfApplicableState: string;
+    lwfRegistrationCertificate?: File | null;
 }
 
 interface ESISetupTableProps {
-  data: ESISetupData[];
+  data: LWFSetupData[];
   onDelete: (index: number) => void;
-  onEdit: (index: number, newData: Partial<ESISetupData>) => void;
+  onEdit: (index: number, newData: Partial<LWFSetupData>) => void;
 }
 
-const ESISetupTable: React.FC<ESISetupTableProps> = ({ data, onDelete, onEdit }) => {
+const LWFSetupTable: React.FC<ESISetupTableProps> = ({ data, onDelete, onEdit }) => {
   const [dialogIsOpen, setDialogIsOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<number | null>(null);
   const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
   const [itemToEdit, setItemToEdit] = useState<number | null>(null);
-  const [editedData, setEditedData] = useState<Partial<ESISetupData>>({});
+  const [editedData, setEditedData] = useState<Partial<LWFSetupData>>({});
 
-  const columns: ColumnDef<ESISetupData>[] = useMemo(
+  const columns: ColumnDef<LWFSetupData>[] = useMemo(
     () => [
       {
-        header: 'ESI Code Type',
-        accessorKey: 'esiCodeType',
+        header: 'LWF State',
+        accessorKey: 'lwfState',
         cell: (props) => (
           <div className="w-36 text-start">{props.getValue() as string}</div>
         ),
       },
       {
-        header: 'ESI Code',
-        accessorKey: 'esiCode',
+        header: 'LWF Location',
+        accessorKey: 'lwfLocation',
         cell: (props) => (
           <div className="w-36 text-start">{props.getValue() as string}</div>
         ),
       },
       {
-        header: 'ESI Code Location',
-        accessorKey: 'esiCodeLocation',
+        header: 'LWF Registration Number',
+        accessorKey: 'lwfRegistrationNumber',
         cell: (props) => (
           <div className="w-36 truncate">{props.getValue() as string}</div>
         ),
       },
       {
-        header: 'ESI User ID',
-        accessorKey: 'esiUserId',
+        header: 'LWF Registration Date',
+        accessorKey: 'lwfRegistrationDate',
         cell: (props) => (
           <div className="w-32 flex items-center justify-center">{props.getValue() as string}</div>
         ),
       },
       {
-        header: 'ESI User Password',
-        accessorKey: 'esiPassword',
+        header: 'Remmitance Mode',
+        accessorKey: 'lwfRemmitanceMode',
         cell: (props) => (
           <div className="w-40 flex items-center justify-center">{props.getValue() as string}</div>
         ),
       },
       {
-        header: 'Authorized Signatory',
+        header: 'User ID',
+        accessorKey: 'lwfUserId',
+        cell: (props) => (
+          <div className="w-48 truncate">{props.getValue() as string}</div>
+        ),
+      },
+      {
+        header: 'Password',
+        accessorKey: 'lwfPassword',
+        cell: (props) => (
+          <div className="w-48 truncate">{props.getValue() as string}</div>
+        ),
+      },
+      {
+        header: 'Authorised Signatory',
         accessorKey: 'authorizedSignatory',
         cell: (props) => (
           <div className="w-48 truncate">{props.getValue() as string}</div>
@@ -229,4 +249,4 @@ const ESISetupTable: React.FC<ESISetupTableProps> = ({ data, onDelete, onEdit })
   );
 };
 
-export default ESISetupTable;
+export default LWFSetupTable;
