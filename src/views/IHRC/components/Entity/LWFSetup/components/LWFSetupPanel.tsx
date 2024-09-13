@@ -235,7 +235,7 @@ const LWFSetupPanel: React.FC<ESISetupSidePanelProps> = ({
 
 
       <div className='flex flex-col gap-4'>
-        <label>Please upload the ESI certificate</label>
+        <label>Please upload the LWF certificate</label>
         <Input
           id="file-upload"
           type="file"

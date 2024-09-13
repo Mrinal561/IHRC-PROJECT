@@ -234,7 +234,7 @@ const PTSetupPanel: React.FC<ESISetupSidePanelProps> = ({
 
 
       <div className='flex flex-col gap-4'>
-        <label>Please upload the ESI certificate</label>
+        <label>Please upload the PT certificate</label>
         <Input
           id="file-upload"
           type="file"
