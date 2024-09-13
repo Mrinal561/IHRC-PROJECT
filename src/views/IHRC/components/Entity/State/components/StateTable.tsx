@@ -43,7 +43,7 @@ const StateTable: React.FC<StateTableProps> = ({ data, onDeleteCompanyName, onEd
                 ),
             },
             {
-                header: 'State',
+                header: 'Location(State)',
                 accessorKey: 'State',
                 cell: (props) => (
                     <div className="w-52 truncate">{props.getValue() as string}</div>

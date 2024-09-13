@@ -5,4 +5,5 @@ export interface EntityData {
     Location?:string,
     Branch?:string,
     PF_Setup?: string,
+    District?:string
 }

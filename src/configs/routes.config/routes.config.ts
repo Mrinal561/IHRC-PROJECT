@@ -51,6 +51,12 @@ export const protectedRoutes = [
       authority: [],
     },
     {
+        key: 'branchInputDetail.item',
+        path: `/add-branch`,
+        component: lazy(() => import('@/views/IHRC/components/Entity/Branch/components/BranchForm')),
+        authority: [],
+      },
+    {
         key: 'assignChecklist.item3',
         path: '/assigned-checklist',
         component: lazy(() => import('@/views/IHRC/components/AuditChecklist/AssignChecklist/AssignChecklist')),
