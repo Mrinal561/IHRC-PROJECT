@@ -28,11 +28,11 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({ data, onDelete, onE
     const [editedName, setEditedName] = useState('');
     const navigate = useNavigate();
 
-    const handleSetupClick = (setupType: string, companyName: string) => {
+    const handleSetupClick = (setupType: string, companyName: string, companyGroupName: string) => {
         // Convert company name to URL-safe string
         const urlSafeCompanyName = encodeURIComponent(companyName.replace(/\s+/g, '-').toLowerCase());
         // Navigate to the appropriate setup page
-        navigate(`${APP_PREFIX_PATH}/IHRC/${setupType.toLowerCase()}-setup/${urlSafeCompanyName}`);
+        navigate(`${APP_PREFIX_PATH}/IHRC/${setupType.toLowerCase()}-setup/${urlSafeCompanyName}`, { state: { companyName, companyGroupName } });
     };
 
 
@@ -63,7 +63,13 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({ data, onDelete, onE
                     <Tooltip title="PF Config">
                         <Button
                             size="sm"
-                            onClick={() => handleSetupClick('PF', row.original.Company_Name || '')}
+                            onClick={() => handleSetupClick(
+                                'PF', 
+                                row.original.Company_Name || '',
+                                typeof row.original.Company_Group_Name === 'object'
+                                    ? row.original.Company_Group_Name.value
+                                    : row.original.Company_Group_Name || ''
+                            )}
                             icon={<FiSettings />}
                             className="text-blue-500"
                         />
@@ -77,7 +83,13 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({ data, onDelete, onE
                     <Tooltip title="PT Config">
                         <Button
                             size="sm"
-                            onClick={() => handleSetupClick('PT', row.original.Company_Name || '')}
+                            onClick={() => handleSetupClick(
+                                'PT', 
+                                row.original.Company_Name || '',
+                                typeof row.original.Company_Group_Name === 'object'
+                                    ? row.original.Company_Group_Name.value
+                                    : row.original.Company_Group_Name || ''
+                            )}
                             icon={<FiSettings />}
                             className="text-blue-500"
                         />
@@ -91,7 +103,13 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({ data, onDelete, onE
                     <Tooltip title="ESI Config">
                         <Button
                             size="sm"
-                            onClick={() => handleSetupClick('ESI', row.original.Company_Name || '')}
+                            onClick={() => handleSetupClick(
+                                'ESI', 
+                                row.original.Company_Name || '',
+                                typeof row.original.Company_Group_Name === 'object'
+                                    ? row.original.Company_Group_Name.value
+                                    : row.original.Company_Group_Name || ''
+                            )}
                             icon={<FiSettings />}
                             className="text-blue-500"
                         />
@@ -105,7 +123,13 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({ data, onDelete, onE
                     <Tooltip title="LWF Config">
                         <Button
                             size="sm"
-                            onClick={() => handleSetupClick('LWF', row.original.Company_Name || '')}
+                            onClick={() => handleSetupClick(
+                                'LWF', 
+                                row.original.Company_Name || '',
+                                typeof row.original.Company_Group_Name === 'object'
+                                    ? row.original.Company_Group_Name.value
+                                    : row.original.Company_Group_Name || ''
+                            )}
                             icon={<FiSettings />}
                             className="text-blue-500"
                         />
