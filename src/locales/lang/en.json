@@ -1,7 +1,6 @@
 {
     "nav": {
         "home": "Dashboard",
-        "singleMenuItem": "Single menu item",
         "collapseMenu": {
             "collapseMenu": "Audit Checklist",
             "item1": "Recommended Checklist",
@@ -33,6 +32,9 @@
                 "item4": "Location",
                 "item5": "Branch"
             }
+        },
+        "userEntityMenu": {
+            "userEntityMenu": "User Entity"
         }
     }
 }

@@ -180,6 +180,12 @@ export const protectedRoutes = [
         component: lazy(() => import('@/views/IHRC/components/Entity/CompanyName/components/CompanyPTSetupPage')),
         authority: [],
       },
+      {
+        key: 'userEntityMenu.userEntityMenu',
+        path: '/user-entity',
+        component: lazy(() => import('@/views/IHRC/components/UserEntity/UserEntity')),
+        authority: [],
+    },
 
     
 ]

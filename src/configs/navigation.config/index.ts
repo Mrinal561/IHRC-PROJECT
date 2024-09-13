@@ -209,6 +209,16 @@ const navigationConfig: NavigationTree[] = [
             },
         ],
     },
+    {
+        key: 'userEntityMenu.userEntityMenu',
+        path: '/user-entity',
+        title: 'User Entity',
+        translateKey: 'nav.userEntityMenu.userEntityMenu',
+        icon: 'groupCollapseMenu',
+        type: NAV_ITEM_TYPE_ITEM,
+        authority: [],
+        subMenu: [],
+    },
 ]
 
 export default navigationConfig
