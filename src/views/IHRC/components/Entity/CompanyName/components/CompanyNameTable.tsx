@@ -6,6 +6,7 @@ import { MdEdit } from 'react-icons/md';
 import OutlinedInput from '@/components/ui/OutlinedInput/OutlinedInput';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 import { APP_PREFIX_PATH } from '@/constants/route.constant';
+import { RiEyeLine } from 'react-icons/ri';
 
 
 
@@ -33,6 +34,13 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({ data, onDelete, onE
         const urlSafeCompanyName = encodeURIComponent(companyName.replace(/\s+/g, '-').toLowerCase());
         // Navigate to the appropriate setup page
         navigate(`${APP_PREFIX_PATH}/IHRC/${setupType.toLowerCase()}-setup/${urlSafeCompanyName}`, { state: { companyName, companyGroupName } });
+    };
+
+    const handleViewDetails = (companyName: string, companyGroupName: string) => {
+        const urlSafeCompanyName = encodeURIComponent(companyName.replace(/\s+/g, '-').toLowerCase());
+        navigate(`${APP_PREFIX_PATH}/IHRC/company-details/${urlSafeCompanyName}`, {
+            state: { companyName, companyGroupName }
+        });
     };
 
 
@@ -141,6 +149,19 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({ data, onDelete, onE
                 id: 'actions',
                 cell: ({ row }) => (
                     <div className="flex items-center gap-2">
+                        <Tooltip title="View Details">
+                            <Button
+                                size="sm"
+                                onClick={() => handleViewDetails(
+                                    row.original.Company_Name || '',
+                                    typeof row.original.Company_Group_Name === 'object'
+                                        ? row.original.Company_Group_Name.value
+                                        : row.original.Company_Group_Name || ''
+                                )}
+                                icon={<RiEyeLine />}
+                                className="text-blue-500"
+                            />
+                        </Tooltip>
                         <Tooltip title="Edit">
                             <Button
                                 size="sm"

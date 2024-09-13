@@ -3,31 +3,29 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { Button, Dialog } from '@/components/ui';
 import { HiArrowLeft, HiPlusCircle } from 'react-icons/hi';
 import { setPanelExpand, useAppDispatch } from '@/store';
-import LWFSetupPanel from './components/LWFSetupPanel';
-import LWFSetupTable from './components/LWFSetupTable';
+import PTSetupPanel from './components/PTSetupPanel';
+import PTSetupTable from './components/PTSetupTable';
 
 
-
-
-export interface LWFSetupData {
+export interface PTSetupData {
     Company_Group_Name: string;
     Company_Name: string;
-    lwfState: string;
-    lwfLocation: string;
-    lwfRegistrationNumber: string;
-    lwfRegistrationDate: string;
-    lwfRemmitanceMode: string;
-    lwfRemmitanceFrequency: string;
-    lwfUserId?: string;
-    lwfPassword?: string;
+    ptState: string;
+    ptLocation: string;
+    ptEnrollmentNumber: string;
+    ptRegistrationNumber: string;
+    ptRegistrationDate: string;
+    ptRemmitanceMode: string;
+    ptUserId?: string;
+    ptPassword?: string;
     authorizedSignatory: string;
     signatoryDesignation?: string;
     signatoryMobile?: string;
     signatoryEmail?: string;
-    lwfFrequency: string;
-    lwfPaymentDueDate: string;
-    lwfApplicableState: string;
+    ptecPaymentFrequency: string;
+    ptrcPaymentFrequency: string;
     lwfRegistrationCertificate?: File | null;
+    ptrcUpload?: File | null;
   }
 
   interface LocationState {
@@ -35,13 +33,13 @@ export interface LWFSetupData {
     companyGroupName?: string;
   }
 
-const LWFSetup: React.FC = () => {
+const PTSetup: React.FC = () => {
   const { companyName } = useParams<{ companyName: string }>();
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState(false);
-  const [LWFSetupData, setLWFSetupData] = useState<LWFSetupData[]>([]);
+  const [PTSetupData, setPTSetupData] = useState<PTSetupData[]>([]);
   const [companyData, setCompanyData] = useState<{ Company_Group_Name: string, Company_Name: string } | null>(null);
   const locationState = location.state as LocationState;
 
@@ -70,33 +68,33 @@ const LWFSetup: React.FC = () => {
   useEffect(() => {
     // Fetch PF setup data for this company
     // This is a placeholder. Replace with actual API call or data fetching logic
-    const fetchLWFSetupData = async () => {
+    const fetchPTSetupData = async () => {
       // Simulating API call
-      const data: LWFSetupData[] = [];
-      setLWFSetupData(data);
+      const data: PTSetupData[] = [];
+      setPTSetupData(data);
     };
 
-    fetchLWFSetupData();
+    fetchPTSetupData();
   }, [actualCompanyName]);
 
   const handleBack = () => {
     navigate(-1);
   };
 
-  const handleAddPFSetup = (newPFSetup: LWFSetupData) => {
-    setLWFSetupData([...LWFSetupData, newPFSetup]);
+  const handleAddPFSetup = (newPFSetup: PTSetupData) => {
+    setPTSetupData([...PTSetupData, newPFSetup]);
     setIsOpen(false);
   };
 
   const handleDelete = (index: number) => {
-    const newData = LWFSetupData.filter((_, i) => i !== index);
-    setLWFSetupData(newData);
+    const newData = PTSetupData.filter((_, i) => i !== index);
+    setPTSetupData(newData);
   };
 
-  const handleEdit = (index: number, updatedData: Partial<LWFSetupData>) => {
-    const newData = [...LWFSetupData];
+  const handleEdit = (index: number, updatedData: Partial<PTSetupData>) => {
+    const newData = [...PTSetupData];
     newData[index] = { ...newData[index], ...updatedData };
-    setLWFSetupData(newData);
+    setPTSetupData(newData);
   };
 
  
@@ -112,7 +110,7 @@ const LWFSetup: React.FC = () => {
             className="mr-2"
           >
           </Button>
-          <h1 className="text-2xl font-bold">{actualCompanyName} LWF Setup</h1>
+          <h1 className="text-2xl font-bold">{actualCompanyName} PT Setup</h1>
         </div>
         <Button
           variant="solid"
@@ -122,12 +120,12 @@ const LWFSetup: React.FC = () => {
             setIsOpen(true);
           }}
         >
-          Add LWF Setup
+          Add PT Setup
         </Button>
       </div>
 
-      <LWFSetupTable
-        data={LWFSetupData}
+      <PTSetupTable
+        data={PTSetupData}
         onDelete={handleDelete}
         onEdit={handleEdit}
       />
@@ -137,9 +135,9 @@ const LWFSetup: React.FC = () => {
         onClose={() => setIsOpen(false)}
         onRequestClose={() => setIsOpen(false)}
       >
-        <h4 className="mb-4">Add LWF Setup</h4>
+        <h4 className="mb-4">Add PT Setup</h4>
         
-        <LWFSetupPanel
+        <PTSetupPanel
           addPFSetup={handleAddPFSetup}
           onClose={() => setIsOpen(false)}
           companyGroupName={companyData?.Company_Group_Name || ''}
@@ -151,4 +149,4 @@ const LWFSetup: React.FC = () => {
   );
 };
 
-export default LWFSetup;
+export default PTSetup;

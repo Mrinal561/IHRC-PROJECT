@@ -177,7 +177,13 @@ export const protectedRoutes = [
     {
         key: 'entityMenu.ptSetup',
         path:  `${APP_PREFIX_PATH}/IHRC/pt-setup/:companyName`,
-        component: lazy(() => import('@/views/IHRC/components/Entity/CompanyName/components/CompanyPTSetupPage')),
+        component: lazy(() => import('@/views/IHRC/components/Entity/PTSetup/PTSetup')),
+        authority: [],
+      },
+    {
+        key: 'entityMenu.companyDetails',
+        path:  `${APP_PREFIX_PATH}/IHRC/company-details/:companyName`,
+        component: lazy(() => import('@/views/IHRC/components/Entity/CompanyDetails/CompanyDetails')),
         authority: [],
       },
       {

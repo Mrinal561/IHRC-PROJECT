@@ -35,6 +35,20 @@ const ESISetupTable: React.FC<ESISetupTableProps> = ({ data, onDelete, onEdit })
   const columns: ColumnDef<ESISetupData>[] = useMemo(
     () => [
       {
+        header: 'Company Group Name',
+        accessorKey: 'Company_Group_Name',
+        cell: (props) => (
+          <div className="w-36 text-start">{props.getValue() as string}</div>
+        ),
+      },
+      {
+        header: 'Company Name',
+        accessorKey: 'Company_Name',
+        cell: (props) => (
+          <div className="w-36 text-start">{props.getValue() as string}</div>
+        ),
+      },
+      {
         header: 'ESI Code Type',
         accessorKey: 'esiCodeType',
         cell: (props) => (

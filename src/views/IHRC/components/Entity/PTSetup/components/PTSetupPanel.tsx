@@ -1,29 +1,31 @@
-
-
 import React, { useState } from 'react';
 import { Button, Input, Dialog } from '@/components/ui';
 import OutlinedInput from '@/components/ui/OutlinedInput';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 
-export interface PFSetupData {
-  Company_Group_Name: string;
-  Company_Name: string;
-  pfCode: string;
-  pfCodeLocation: string;
-  registrationDate?: string;
-  pfUserId?: string;
-  pfPassword?: string;
-  authorizedSignatory: string;
-  signatoryDesignation?: string;
-  signatoryMobile?: string;
-  signatoryEmail?: string;
-  dscValidDate?: string;
-  esign?: string;
-  pfRegistrationCertificate?: File | null;
+export interface PTSetupData {
+    Company_Group_Name: string;
+    Company_Name: string;
+    ptState: string;
+    ptLocation: string;
+    ptEnrollmentNumber: string;
+    ptRegistrationNumber: string;
+    ptRegistrationDate: string;
+    ptRemmitanceMode: string;
+    ptUserId?: string;
+    ptPassword?: string;
+    authorizedSignatory: string;
+    signatoryDesignation?: string;
+    signatoryMobile?: string;
+    signatoryEmail?: string;
+    ptecPaymentFrequency: string;
+    ptrcPaymentFrequency: string;
+    lwfRegistrationCertificate?: File | null;
+    ptrcUpload?: File | null;
 }
 
-interface PFSetupSidePanelProps {
-  addPFSetup: (newPFSetup: PFSetupData) => void;
+interface ESISetupSidePanelProps {
+  addPFSetup: (newPFSetup: PTSetupData) => void;
   onClose: () => void;
   companyGroupName: string;
   companyName: string;
@@ -39,28 +41,32 @@ interface Signatory {
   designation: string;
   mobile: string;
   email: string;
-  dscValidDate: string;
-  esign: string;
 }
 
-const PFSetupSidePanel: React.FC<PFSetupSidePanelProps> = ({
+const PTSetupPanel: React.FC<ESISetupSidePanelProps> = ({
   addPFSetup,
   onClose,
   companyGroupName,
   companyName,
 }) => {
-  const [pfSetupData, setPfSetupData] = useState<PFSetupData>({
+  const [PTSetupData, setPTSetupData] = useState<PTSetupData>({
     Company_Group_Name: companyGroupName,
     Company_Name: companyName,
-    pfCode: '',
-    pfCodeLocation: '',
     authorizedSignatory: '',
+    ptState: '',
+    ptLocation: '',
+    ptRegistrationNumber: '',
+    ptEnrollmentNumber: '',
+    ptRegistrationDate: '',
+    ptRemmitanceMode: '',
+    ptecPaymentFrequency: '',
+    ptrcPaymentFrequency: ''
   });
 
   const [existingSignatories, setExistingSignatories] = useState<Signatory[]>([
-    { name: 'Amit', designation: 'Manager', mobile: '1234567890', email: 'amit@example.com', dscValidDate: '2024-12-31', esign: 'Active' },
-    { name: 'Krishna Kumar Singh', designation: 'Director', mobile: '9876543210', email: 'krishna@example.com', dscValidDate: '2025-06-30', esign: 'Active' },
-    { name: 'Ajay Thakur', designation: 'CFO', mobile: '5555555555', email: 'ajay@example.com', dscValidDate: '2024-09-30', esign: 'Inactive' },
+    { name: 'Amit', designation: 'Manager', mobile: '1234567890', email: 'amit@example.com'},
+    { name: 'Krishna Kumar Singh', designation: 'Director', mobile: '9876543210', email: 'krishna@example.com'},
+    { name: 'Ajay Thakur', designation: 'CFO', mobile: '5555555555', email: 'ajay@example.com'},
   ]);
 
   const [showAddSignatoryDialog, setShowAddSignatoryDialog] = useState(false);
@@ -69,12 +75,10 @@ const PFSetupSidePanel: React.FC<PFSetupSidePanelProps> = ({
     designation: '',
     mobile: '',
     email: '',
-    dscValidDate: '',
-    esign: '',
   });
 
-  const handleInputChange = (field: keyof PFSetupData, value: string | File | null) => {
-    setPfSetupData(prev => ({ ...prev, [field]: value }));
+  const handleInputChange = (field: keyof PTSetupData, value: string | File | null) => {
+    setPTSetupData(prev => ({ ...prev, [field]: value }));
   };
 
   const handleSignatoryChange = (selectedOption: SelectOption | null) => {
@@ -84,14 +88,12 @@ const PFSetupSidePanel: React.FC<PFSetupSidePanelProps> = ({
       } else {
         const selectedSignatory = existingSignatories.find(s => s.name === selectedOption.value);
         if (selectedSignatory) {
-          setPfSetupData(prev => ({
+          setPTSetupData(prev => ({
             ...prev,
             authorizedSignatory: selectedSignatory.name,
             signatoryDesignation: selectedSignatory.designation,
             signatoryMobile: selectedSignatory.mobile,
             signatoryEmail: selectedSignatory.email,
-            dscValidDate: selectedSignatory.dscValidDate,
-            esign: selectedSignatory.esign,
           }));
         }
       }
@@ -99,8 +101,8 @@ const PFSetupSidePanel: React.FC<PFSetupSidePanelProps> = ({
   };
 
   const handleSubmit = () => {
-    if (pfSetupData.pfCode && pfSetupData.pfCodeLocation && pfSetupData.authorizedSignatory) {
-      addPFSetup(pfSetupData);
+    if (PTSetupData.ptState && PTSetupData.ptLocation && PTSetupData.authorizedSignatory) {
+      addPFSetup(PTSetupData);
       onClose();
     } else {
       console.error('Please fill in all required fields.');
@@ -109,14 +111,12 @@ const PFSetupSidePanel: React.FC<PFSetupSidePanelProps> = ({
 
   const handleAddSignatory = () => {
     setExistingSignatories(prev => [...prev, newSignatory]);
-    setPfSetupData(prev => ({
+    setPTSetupData(prev => ({
       ...prev,
       authorizedSignatory: newSignatory.name,
       signatoryDesignation: newSignatory.designation,
       signatoryMobile: newSignatory.mobile,
       signatoryEmail: newSignatory.email,
-      dscValidDate: newSignatory.dscValidDate,
-      esign: newSignatory.esign,
     }));
     setShowAddSignatoryDialog(false);
     setNewSignatory({
@@ -124,8 +124,6 @@ const PFSetupSidePanel: React.FC<PFSetupSidePanelProps> = ({
       designation: '',
       mobile: '',
       email: '',
-      dscValidDate: '',
-      esign: '',
     });
   };
 
@@ -138,61 +136,80 @@ const PFSetupSidePanel: React.FC<PFSetupSidePanelProps> = ({
       <div className='flex gap-4 items-center'>
         <OutlinedInput
           label="Company Group Name"
-          value={pfSetupData.Company_Group_Name}
+          value={PTSetupData.Company_Group_Name}
           onChange={(value: string) => handleInputChange('Company_Group_Name', value)}
         />
         <OutlinedInput
           label="Company Name"
-          value={pfSetupData.Company_Name}
+          value={PTSetupData.Company_Name}
           onChange={(value: string) => handleInputChange('Company_Name', value)}
         />
       </div>
 
       <div className='flex gap-4 items-center'>
         <div className='flex flex-col gap-4'>
-          <label>Enter the PF Code</label>
+          <label>Enter the PT State</label>
           <OutlinedInput
-            label="PF Code"
-            value={pfSetupData.pfCode}
-            onChange={(value: string) => handleInputChange('pfCode', value)}
+            label="State"
+            value={PTSetupData.ptState}
+            onChange={(value: string) => handleInputChange('ptState', value)}
           />
         </div>
         <div className='flex flex-col gap-4'>
-          <label>Enter the PF Code Location</label>
+          <label>Enter the PT Location</label>
           <OutlinedInput
-            label="PF Code Location"
-            value={pfSetupData.pfCodeLocation || ''}
-            onChange={(value: string ) => handleInputChange('pfCodeLocation', value || '')}
+            label="Location"
+            value={PTSetupData.ptLocation}
+            onChange={(value: string) => handleInputChange('ptLocation', value)}
+          />
+        </div>
+      </div>
+
+      <div className='flex gap-4 items-center'>
+      <div className='flex flex-col gap-4'>
+          <label>PT Registration Number</label>
+          <OutlinedInput
+            label="Registration Number"
+            value={PTSetupData.ptRegistrationNumber || ''}
+            onChange={(value: string ) => handleInputChange('ptRegistrationNumber', value || '')}
+          />
+        </div>
+        <div className='flex flex-col gap-4'>
+          <label>PT Registration Date</label>
+          <OutlinedInput
+            label="PT Date"
+            value={PTSetupData.ptRegistrationDate || ''}
+            onChange={(value: string) => handleInputChange('ptRegistrationDate', value)}
+          />
+        </div>
+      </div>
+
+      <div className='flex gap-4 items-center'>
+      <div className='flex flex-col gap-4'>
+          <label>Enter the Remmitance Mode</label>
+          <OutlinedInput
+            label="Mode"
+            value={PTSetupData.ptRemmitanceMode || ''}
+            onChange={(value: string ) => handleInputChange('ptRemmitanceMode', value || '')}
+          />
+        </div>
+        <div className='flex flex-col gap-4'>
+          <label>Enter User ID</label>
+          <OutlinedInput
+            label="User ID (Optional)"
+            value={PTSetupData.ptUserId || ''}
+            onChange={(value: string) => handleInputChange('ptUserId', value)}
           />
         </div>
       </div>
 
       <div className='flex gap-4 items-center'>
         <div className='flex flex-col gap-4'>
-          <label>Enter PF Registration Date</label>
+          <label>Enter User Password</label>
           <OutlinedInput
-            label="PF Registration Date"
-            value={pfSetupData.registrationDate || ''}
-            onChange={(value: string) => handleInputChange('registrationDate', value)}
-          />
-        </div>
-        <div className='flex flex-col gap-4'>
-          <label>Enter PF user ID</label>
-          <OutlinedInput
-            label="PF User ID (Optional)"
-            value={pfSetupData.pfUserId || ''}
-            onChange={(value: string) => handleInputChange('pfUserId', value)}
-          />
-        </div>
-      </div>
-
-      <div className='flex gap-4 items-center'>
-        <div className='flex flex-col gap-4'>
-          <label>Enter PF User Password</label>
-          <OutlinedInput
-            label="PF Password (Optional)"
-            value={pfSetupData.pfPassword || ''}
-            onChange={(value: string) => handleInputChange('pfPassword', value)}
+            label="Password (Optional)"
+            value={PTSetupData.ptPassword || ''}
+            onChange={(value: string) => handleInputChange('ptPassword', value)}
           />
         </div>
 
@@ -204,20 +221,26 @@ const PFSetupSidePanel: React.FC<PFSetupSidePanelProps> = ({
               ...existingSignatories.map(s => ({ value: s.name, label: s.name })),
               { value: 'add_new', label: '+ Add New Signatory' }
             ]}
-            value={pfSetupData.authorizedSignatory ? { value: pfSetupData.authorizedSignatory, label: pfSetupData.authorizedSignatory } : null}
+            value={PTSetupData.authorizedSignatory ? { value: PTSetupData.authorizedSignatory, label: PTSetupData.authorizedSignatory } : null}
             onChange={handleSignatoryChange}
           />
         </div>
       </div>
 
+     
+
+
+
+
+
       <div className='flex flex-col gap-4'>
-        <label>Please upload the PF certificate</label>
+        <label>Please upload the ESI certificate</label>
         <Input
           id="file-upload"
           type="file"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             const file = e.target.files?.[0] || null;
-            handleInputChange('pfRegistrationCertificate', file);
+            handleInputChange('lwfRegistrationCertificate', file);
           }}
         />
       </div>
@@ -253,16 +276,6 @@ const PFSetupSidePanel: React.FC<PFSetupSidePanelProps> = ({
             value={newSignatory.email}
             onChange={(value) => handleNewSignatoryInputChange('email', value)}
           />
-          <OutlinedInput
-            label="DSC Valid Date"
-            value={newSignatory.dscValidDate}
-            onChange={(value) => handleNewSignatoryInputChange('dscValidDate', value)}
-          />
-          <OutlinedInput
-            label="E-Sign"
-            value={newSignatory.esign}
-            onChange={(value) => handleNewSignatoryInputChange('esign', value)}
-          />
         </div>
         <div className="flex justify-end space-x-2 mt-4">
           <Button onClick={() => setShowAddSignatoryDialog(false)}>Cancel</Button>
@@ -273,4 +286,4 @@ const PFSetupSidePanel: React.FC<PFSetupSidePanelProps> = ({
   );
 };
 
-export default PFSetupSidePanel;
+export default PTSetupPanel;
