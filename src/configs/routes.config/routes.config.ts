@@ -172,5 +172,30 @@ export const protectedRoutes = [
         ),
         authority: [],
     },
+    {
+        key: 'entityMenu.pfSetup',
+        path:  `${APP_PREFIX_PATH}/IHRC/pf-setup/:companyName`,
+        component: lazy(() => import('@/views/IHRC/components/Entity/CompanyName/components/CompanyPFSetupPage')),
+        authority: [],
+      },
+    {
+        key: 'entityMenu.esiSetup',
+        path:  `${APP_PREFIX_PATH}/IHRC/esi-setup/:companyName`,
+        component: lazy(() => import('@/views/IHRC/components/Entity/CompanyName/components/CompanyESISetupPage')),
+        authority: [],
+      },
+    {
+        key: 'entityMenu.LWFSetup',
+        path:  `${APP_PREFIX_PATH}/IHRC/lwf-setup/:companyName`,
+        component: lazy(() => import('@/views/IHRC/components/Entity/CompanyName/components/CompanyLWFSetupPage')),
+        authority: [],
+      },
+    {
+        key: 'entityMenu.ptSetup',
+        path:  `${APP_PREFIX_PATH}/IHRC/pt-setup/:companyName`,
+        component: lazy(() => import('@/views/IHRC/components/Entity/CompanyName/components/CompanyPTSetupPage')),
+        authority: [],
+      },
+
     
 ]

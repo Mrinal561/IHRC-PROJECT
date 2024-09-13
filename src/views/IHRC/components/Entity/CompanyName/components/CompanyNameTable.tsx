@@ -1,16 +1,21 @@
 import React, { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button, Dialog, Tooltip } from '@/components/ui';
-import { FiTrash } from 'react-icons/fi';
+import { FiSettings, FiTrash } from 'react-icons/fi';
 import { MdEdit } from 'react-icons/md';
 import OutlinedInput from '@/components/ui/OutlinedInput/OutlinedInput';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
+import { APP_PREFIX_PATH } from '@/constants/route.constant';
 
+
+
+interface CompanyData {
+    Company_Group_Name?: string | { value: string; label: string };
+    Company_Name?: string;
+}
 
 interface CompanyNameTableProps {
-    data: Array<{
-        Company_Group_Name?: string | { value: string; label: string };
-        Company_Name?: string;
-    }>;
+    data: CompanyData[];
     onDelete: (index: number) => void;
     onEdit: (index: number, newName: string) => void;
 }
@@ -21,14 +26,27 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({ data, onDelete, onE
     const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
     const [itemToEdit, setItemToEdit] = useState<number | null>(null);
     const [editedName, setEditedName] = useState('');
+    const navigate = useNavigate();
 
-    const columns: ColumnDef<CompanyNameTableProps>[] = useMemo(
+    const handleSetupClick = (setupType: string, companyName: string) => {
+        // Convert company name to URL-safe string
+        const urlSafeCompanyName = encodeURIComponent(companyName.replace(/\s+/g, '-').toLowerCase());
+        // Navigate to the appropriate setup page
+        navigate(`${APP_PREFIX_PATH}/IHRC/${setupType.toLowerCase()}-setup/${urlSafeCompanyName}`);
+    };
+
+
+    const columns: ColumnDef<CompanyData>[] = useMemo(
         () => [
             {
                 header: 'Company Group Name',
                 accessorKey: 'Company_Group_Name',
                 cell: (props) => (
-                    <div className="w-52 truncate">{props.getValue() as string}</div>
+                    <div className="w-52 truncate">
+                        {typeof props.getValue() === 'object'
+                            ? (props.getValue() as { label: string }).label
+                            : props.getValue() as string}
+                    </div>
                 ),
             },
             {
@@ -36,6 +54,62 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({ data, onDelete, onE
                 accessorKey: 'Company_Name',
                 cell: (props) => (
                     <div className="w-52 truncate">{props.getValue() as string}</div>
+                ),
+            },
+            {
+                header: 'PF Setup',
+                id: 'pf_setup',
+                cell: ({ row }) => (
+                    <Tooltip title="PF Config">
+                        <Button
+                            size="sm"
+                            onClick={() => handleSetupClick('PF', row.original.Company_Name || '')}
+                            icon={<FiSettings />}
+                            className="text-blue-500"
+                        />
+                    </Tooltip>
+                ),
+            },
+            {
+                header: 'PT Setup',
+                id: 'pt_setup',
+                cell: ({ row }) => (
+                    <Tooltip title="PT Config">
+                        <Button
+                            size="sm"
+                            onClick={() => handleSetupClick('PT', row.original.Company_Name || '')}
+                            icon={<FiSettings />}
+                            className="text-blue-500"
+                        />
+                    </Tooltip>
+                ),
+            },
+            {
+                header: 'ESI Setup',
+                id: 'esi_setup',
+                cell: ({ row }) => (
+                    <Tooltip title="ESI Config">
+                        <Button
+                            size="sm"
+                            onClick={() => handleSetupClick('ESI', row.original.Company_Name || '')}
+                            icon={<FiSettings />}
+                            className="text-blue-500"
+                        />
+                    </Tooltip>
+                ),
+            },
+            {
+                header: 'LWF Setup',
+                id: 'lwf_setup',
+                cell: ({ row }) => (
+                    <Tooltip title="LWF Config">
+                        <Button
+                            size="sm"
+                            onClick={() => handleSetupClick('LWF', row.original.Company_Name || '')}
+                            icon={<FiSettings />}
+                            className="text-blue-500"
+                        />
+                    </Tooltip>
                 ),
             },
             {
