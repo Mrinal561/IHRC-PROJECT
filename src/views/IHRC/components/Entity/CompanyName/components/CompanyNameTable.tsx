@@ -62,7 +62,7 @@ const CompanyNameTable: React.FC = () => {
                     <div className="flex items-center gap-2">
                         <Tooltip title="PF Config">
                             <Button
-                                size="xs"
+                                size="sm"
                                 onClick={() => handleSetupClick(
                                     'PF', 
                                     row.original.Company_Name || '',
@@ -74,7 +74,7 @@ const CompanyNameTable: React.FC = () => {
                         </Tooltip>
                          <Tooltip title="PT Config">
                             <Button
-                                size="xs"
+                                size="sm"
                                 onClick={() => handleSetupClick(
                                     'PT', 
                                     row.original.Company_Name || '',
@@ -86,7 +86,7 @@ const CompanyNameTable: React.FC = () => {
                         </Tooltip>
                          <Tooltip title="ESI Config">
                             <Button
-                                size="xs"
+                                size="sm"
                                 onClick={() => handleSetupClick(
                                     'ESI', 
                                     row.original.Company_Name || '',
@@ -98,7 +98,7 @@ const CompanyNameTable: React.FC = () => {
                         </Tooltip>
                         <Tooltip title="LWF Config">
                             <Button
-                                size="xs"
+                                size="sm"
                                 onClick={() => handleSetupClick(
                                     'LWF', 
                                     row.original.Company_Name || '',
@@ -110,7 +110,7 @@ const CompanyNameTable: React.FC = () => {
                         </Tooltip>
                         <Tooltip title="View Details">
                             <Button
-                                size="xs"
+                                size="sm"
                                 onClick={() => handleViewDetails(
                                     row.original.Company_Name || '',
                                     row.original.Company_Group_Name || ''
@@ -121,7 +121,7 @@ const CompanyNameTable: React.FC = () => {
                         </Tooltip>
                         <Tooltip title="Edit">
                             <Button
-                                size="xs"
+                                size="sm"
                                 onClick={() => openEditDialog(row.index)}
                                 icon={<MdEdit />}
                                 className="text-blue-500"
@@ -129,7 +129,7 @@ const CompanyNameTable: React.FC = () => {
                         </Tooltip>
                         <Tooltip title="Delete">
                             <Button
-                                size="xs"
+                                size="sm"
                                 onClick={() => openDeleteDialog(row.index)}
                                 icon={<FiTrash />}
                                 className="text-red-500"
