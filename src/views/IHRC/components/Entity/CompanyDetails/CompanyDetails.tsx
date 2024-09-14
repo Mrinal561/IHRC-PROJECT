@@ -39,6 +39,7 @@ const CompanyDetails: React.FC = () => {
                                 <DetailItem label="PF Registration Date" value="2023-01-01" />
                                 <DetailItem label="PF User ID" value="User01" />
                                 <DetailItem label="PF Password" value="password01" />
+                                <DetailItem label="E Sign" value="Active" />
                             </DetailColumn>
                             <DetailColumn>
                                 <DetailItem label="Authorized Signatory" value="Amit" />
@@ -46,7 +47,6 @@ const CompanyDetails: React.FC = () => {
                                 <DetailItem label="Mobile" value="9145786945" />
                                 <DetailItem label="Email" value="amit@gmail.com" />
                                 <DetailItem label="DSC Validity" value="2026-01-01" />
-                                <DetailItem label="E Sign" value="Active" />
                             </DetailColumn>
                         </div>
                     </DetailBox>
