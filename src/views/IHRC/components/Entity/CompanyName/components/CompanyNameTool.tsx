@@ -1,26 +1,28 @@
-import React, { useState } from 'react';
-import { Button, Dialog, Notification, toast } from '@/components/ui';
+import React, { useState, useMemo } from 'react';
+import { Button, Dialog, toast, Notification } from '@/components/ui';
 import { HiPlusCircle } from 'react-icons/hi';
-import { EntityData } from '@/views/IHRC/store/dummyEntityData';
 import OutlinedInput from '@/components/ui/OutlinedInput';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
-import { log } from 'console';
-
-interface CompanyNameToolProps {
-  addCompany: (newEntityData: EntityData) => void;
-  companyGroups: string[];
-}
+import { entityDataSet, EntityData } from '../../../../store/dummyEntityData';
 
 interface SelectOption {
   value: string;
   label: string;
 }
 
-const CompanyNameTool: React.FC<CompanyNameToolProps> = ({ addCompany, companyGroups }) => {
+const CompanyNameTool: React.FC = () => {
   const [dialogIsOpen, setIsOpen] = useState(false);
   const [companyName, setCompanyName] = useState('');
   const [selectedCompanyGroup, setSelectedCompanyGroup] = useState<SelectOption | null>(null);
-
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const companyGroupOptions = useMemo(() => {
+    const uniqueGroups = Array.from(new Set(entityDataSet.map(entity => entity.Company_Group_Name)));
+    return uniqueGroups.filter(Boolean).map(group => ({
+      value: group as string,
+      label: group as string
+    }));
+  }, []);
 
   const openDialog = () => {
     console.log("Opening dialog");
@@ -32,21 +34,15 @@ const CompanyNameTool: React.FC<CompanyNameToolProps> = ({ addCompany, companyGr
     setIsOpen(false);
     setCompanyName('');
     setSelectedCompanyGroup(null);
+    setIsSubmitting(false);
   };
 
-  const showSuccessToast = (message: string) => {
-    console.log("Showing success toast:", message);
+  const showNotification = (type: 'success' | 'info' | 'danger' | 'warning', message: string) => {
     toast.push(
-      <Notification title="Success" type="success">
-        {message}
-      </Notification>
-    );
-  };
-
-  const showFailToast = (message: string) => {
-    console.log("Showing fail toast:", message);
-    toast.push(
-      <Notification title="Error" type="danger">
+      <Notification
+        title={type.charAt(0).toUpperCase() + type.slice(1)}
+        type={type}
+      >
         {message}
       </Notification>
     );
@@ -55,25 +51,26 @@ const CompanyNameTool: React.FC<CompanyNameToolProps> = ({ addCompany, companyGr
   const onDialogOk = () => {
     console.log("Dialog OK clicked", { companyName, selectedCompanyGroup });
     if (companyName.trim() && selectedCompanyGroup) {
-      const newEntityData: EntityData = {
-        Company_Group_Name: selectedCompanyGroup.value,
-        Company_Name: companyName.trim()
-      };
-      
-      console.log("Adding new company:", newEntityData);
-      addCompany(newEntityData);
-      showSuccessToast(`Company "${companyName.trim()}" has been successfully added.`);
-      onDialogClose();
+      setIsSubmitting(true);
+      // Simulating an API call with setTimeout
+      setTimeout(() => {
+        showNotification('success', `Company "${companyName.trim()}" has been successfully added.`);
+        setIsSubmitting(false);
+        onDialogClose();
+      }, 1500);
     } else {
-      showFailToast('Please enter a valid Company Name and select a Company Group.');
+      showNotification('danger', 'Please enter a valid Company Name and select a Company Group.');
     }
   };
-  console.log(companyName);
-  
 
   return (
-    <div>
-      <Button variant="solid" onClick={openDialog} icon={<HiPlusCircle />} size='sm'>
+    <>
+      <Button
+        size="sm"
+        icon={<HiPlusCircle />}
+        onClick={openDialog}
+        variant="solid"
+      >
         Add Company Name
       </Button>
       <Dialog
@@ -82,45 +79,46 @@ const CompanyNameTool: React.FC<CompanyNameToolProps> = ({ addCompany, companyGr
         onRequestClose={onDialogClose}
       >
         <h5 className="mb-4">Add Company Name</h5>
-        <div className='flex flex-col gap-6'>
-          <div  className='flex flex-col gap-2'>
-            <p>Select The Company Group</p>
-        <OutlinedSelect
-          label="Select Company Group"
-          options={companyGroups.map(group => ({ value: group, label: group }))}
-          value={selectedCompanyGroup}
-          onChange={(option: SelectOption | null) => {
-            console.log("Company Group selected:", option);
-            setSelectedCompanyGroup(option);
-          }}
+        <div className='mb-4'>
+          <OutlinedSelect
+            label="Select The Company Group"
+            options={companyGroupOptions}
+            value={selectedCompanyGroup}
+            onChange={(option: SelectOption | null) => {
+              console.log("Company Group selected:", option);
+              setSelectedCompanyGroup(option);
+            }}
           />
-          </div>
-          <div className='flex flex-col gap-2'>
-          <p>Enter Your Company Name</p>
-        <OutlinedInput 
-          label="Company Name"
-          value={companyName}
-          onChange={(value: string) => {
-            console.log("Company Name changed:", value);
-            setCompanyName(value);
-          }}
+        </div>
+        <div>
+          <OutlinedInput
+            label="Enter Your Company Name"
+            value={companyName}
+            onChange={(value: string) => {
+              console.log("Company Name changed:", value);
+              setCompanyName(value);
+            }}
           />
-          </div>
-          </div>
+        </div>
         <div className="text-right mt-6">
           <Button
-            className="mr-2"
+            className="ltr:mr-2 rtl:ml-2"
             variant="plain"
             onClick={onDialogClose}
+            disabled={isSubmitting}
           >
             Cancel
           </Button>
-          <Button variant="solid" onClick={onDialogOk}>
-            Confirm
+          <Button 
+            variant="solid" 
+            onClick={onDialogOk}
+            loading={isSubmitting}
+          >
+            {isSubmitting ? 'Adding...' : 'Confirm'}
           </Button>
         </div>
       </Dialog>
-    </div>
+    </>
   );
 };
 
