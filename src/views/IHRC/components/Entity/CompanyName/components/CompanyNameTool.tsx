@@ -79,7 +79,7 @@ const CompanyNameTool: React.FC = () => {
         onRequestClose={onDialogClose}
       >
         <h5 className="mb-4">Add Company Name</h5>
-        <div className='mb-4'>
+        <div>
           <OutlinedSelect
             label="Select The Company Group"
             options={companyGroupOptions}
