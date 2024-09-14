@@ -1,27 +1,29 @@
 import React, { useMemo, useState } from 'react';
-import { Button, Dialog, Tooltip } from '@/components/ui';
+import DataTable, { ColumnDef, OnSortParam } from '@/components/shared/DataTable';
+import { Button, Dialog, Tooltip, Notification, toast } from '@/components/ui';
 import { FiTrash } from 'react-icons/fi';
-import OutlinedInput from '@/components/ui/OutlinedInput';
 import { MdEdit } from 'react-icons/md';
-import DataTable, { ColumnDef } from '@/components/shared/DataTable';
+import OutlinedInput from '@/components/ui/OutlinedInput';
+import cloneDeep from 'lodash/cloneDeep';
+import { EntityData, entityDataSet } from '../../../../store/dummyEntityData';
 
-
-interface CompanyTableProps {
-    data: Array<{
-        Company_Group_Name?: string;
-    }>;
-    onDelete: (index: number) => void;
-    onEdit: (index: number, newName: string) => void;
-}
-
-const CompanyTable: React.FC<CompanyTableProps> = ({ data, onDelete, onEdit }) => {
+const CompanyTable: React.FC = () => {
+    const [data, setData] = useState(entityDataSet);
     const [dialogIsOpen, setDialogIsOpen] = useState(false);
     const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
     const [itemToDelete, setItemToDelete] = useState<number | null>(null);
     const [itemToEdit, setItemToEdit] = useState<number | null>(null);
-    const [editedName, setEditedName] = useState('');
+    const [editedCompanyGroupName, setEditedCompanyGroupName] = useState('');
 
-    const columns: ColumnDef<CompanyTableProps>[] = useMemo(
+    const [tableData, setTableData] = useState({
+        total: data.length,
+        pageIndex: 1,
+        pageSize: 5,
+        query: '',
+        sort: { order: '', key: '' },
+    });
+
+    const columns: ColumnDef<EntityData>[] = useMemo(
         () => [
             {
                 header: 'Company Group Name',
@@ -37,7 +39,7 @@ const CompanyTable: React.FC<CompanyTableProps> = ({ data, onDelete, onEdit }) =
                     <div className="flex items-center gap-2">
                         <Tooltip title="Edit">
                             <Button
-                                size="sm"
+                                size="xs"
                                 onClick={() => openEditDialog(row.index)}
                                 icon={<MdEdit />}
                                 className="text-blue-500"
@@ -45,7 +47,7 @@ const CompanyTable: React.FC<CompanyTableProps> = ({ data, onDelete, onEdit }) =
                         </Tooltip>
                         <Tooltip title="Delete">
                             <Button
-                                size="sm"
+                                size="xs"
                                 onClick={() => openDeleteDialog(row.index)}
                                 icon={<FiTrash />}
                                 className="text-red-500"
@@ -58,7 +60,6 @@ const CompanyTable: React.FC<CompanyTableProps> = ({ data, onDelete, onEdit }) =
         []
     );
 
-
     const openDeleteDialog = (index: number) => {
         setItemToDelete(index);
         setDialogIsOpen(true);
@@ -66,7 +67,7 @@ const CompanyTable: React.FC<CompanyTableProps> = ({ data, onDelete, onEdit }) =
 
     const openEditDialog = (index: number) => {
         setItemToEdit(index);
-        setEditedName(data[index].Company_Group_Name || '');
+        setEditedCompanyGroupName(data[index].Company_Group_Name || '');
         setEditDialogIsOpen(true);
     };
 
@@ -75,62 +76,90 @@ const CompanyTable: React.FC<CompanyTableProps> = ({ data, onDelete, onEdit }) =
         setEditDialogIsOpen(false);
         setItemToDelete(null);
         setItemToEdit(null);
-        setEditedName('');
+        setEditedCompanyGroupName('');
     };
 
     const handleDeleteConfirm = () => {
         if (itemToDelete !== null) {
-            onDelete(itemToDelete);
+            setData(prev => prev.filter((_, index) => index !== itemToDelete));
             handleDialogClose();
         }
     };
 
     const handleEditConfirm = () => {
-        if (itemToEdit !== null && editedName.trim()) {
-            onEdit(itemToEdit, editedName.trim());
+        if (itemToEdit !== null) {
+            setData(prev => prev.map((item, index) => 
+                index === itemToEdit ? { ...item, Company_Group_Name: editedCompanyGroupName } : item
+            ));
             handleDialogClose();
+            showSuccessNotification();
         }
     };
 
-       // State for table pagination and sorting
-   const [tableData, setTableData] = useState({
-    total: data.length,
-    pageIndex: 1,
-    pageSize: 10,
-    query: '',
-    sort: { order: '', key: '' },
-});
+    const showSuccessNotification = () => {
+        toast.push(
+            <Notification title="Success" type="success">
+                Company Group Name changed successfully.
+            </Notification>
+        );
+    };
 
-// Function to handle pagination changes
-const onPaginationChange = (page: number) => {
-    setTableData(prev => ({ ...prev, pageIndex: page }));
-};
+    const onPaginationChange = (page: number) => {
+        const newTableData = cloneDeep(tableData);
+        newTableData.pageIndex = page;
+        setTableData(newTableData);
+    };
+    const getSortedData = () => {
+        if (tableData.sort.order && tableData.sort.key) {
+            return [...data].sort((a, b) => {
+                if (a[tableData.sort.key] < b[tableData.sort.key]) return tableData.sort.order === 'asc' ? -1 : 1;
+                if (a[tableData.sort.key] > b[tableData.sort.key]) return tableData.sort.order === 'asc' ? 1 : -1;
+                return 0;
+            });
+        }
+        return data;
+    };
 
-// Function to handle page size changes
-const onSelectChange = (value: number) => {
-    setTableData(prev => ({ ...prev, pageSize: Number(value), pageIndex: 1 }));
-};
+    const onSelectChange = (value: number) => {
+        const newTableData = cloneDeep(tableData);
+        newTableData.pageSize = Number(value);
+        newTableData.pageIndex = 1;
+        setTableData(newTableData);
+    };
+    const getPaginatedData = () => {
+        const sortedData = getSortedData();
+        const startIndex = (tableData.pageIndex - 1) * tableData.pageSize;
+        const endIndex = startIndex + tableData.pageSize;
+        return sortedData.slice(startIndex, endIndex);
+    };
+
+    const onSort = (sort: OnSortParam) => {
+        const newTableData = cloneDeep(tableData);
+        newTableData.sort = sort;
+        setTableData(newTableData);
+    };
 
     return (
         <div className="relative">
-        {data.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
-                No data available
-            </div>
-        ) : (
             <DataTable
                 columns={columns}
-                data={data}
+                data={getPaginatedData()}
                 skeletonAvatarColumns={[0]}
                 skeletonAvatarProps={{ className: 'rounded-md' }}
                 loading={false}
                 pagingData={{
-                    total: data.length,
-                    pageIndex: 1,
-                    pageSize: 10,
+                    total: tableData.total,
+                    pageIndex: tableData.pageIndex,
+                    pageSize: tableData.pageSize,
                 }}
+                onPaginationChange={onPaginationChange}
+                onSelectChange={onSelectChange}
+                onSort={onSort}
+                stickyHeader={true}
+                stickyFirstColumn={true}
+                stickyLastColumn={true}
             />
-        )}
+
             {/* Delete Confirmation Dialog */}
             <Dialog
                 isOpen={dialogIsOpen}
@@ -139,7 +168,7 @@ const onSelectChange = (value: number) => {
             >
                 <h5 className="mb-4">Confirm Deletion</h5>
                 <p>
-                    Are you sure you want to delete this company group? This action cannot be undone.
+                    Are you sure you want to delete this company? This action cannot be undone.
                 </p>
                 <div className="text-right mt-6">
                     <Button
@@ -163,10 +192,10 @@ const onSelectChange = (value: number) => {
             >
                 <h5 className="mb-4">Edit Company Group Name</h5>
                 <div className="mb-4">
-                    <OutlinedInput 
+                    <OutlinedInput
                         label="Company Group Name"
-                        value={editedName}
-                        onChange={(value: string) => setEditedName(value)}
+                        value={editedCompanyGroupName}
+                        onChange={(value: string) => setEditedCompanyGroupName(value)}
                     />
                 </div>
                 <div className="text-right mt-6">
