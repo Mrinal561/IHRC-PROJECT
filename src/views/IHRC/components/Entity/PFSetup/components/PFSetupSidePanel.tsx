@@ -1,19 +1,18 @@
-
-
 import React, { useState } from 'react';
-import { Button, Input, Dialog } from '@/components/ui';
+import { Button, Input, Dialog, toast, Notification, DatePicker, Select } from '@/components/ui';
 import OutlinedInput from '@/components/ui/OutlinedInput';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
+import { MultiValue, ActionMeta } from 'react-select';
 
 export interface PFSetupData {
   Company_Group_Name: string;
   Company_Name: string;
   pfCode: string;
   pfCodeLocation: string;
-  registrationDate?: string;
+  registrationDate?: Date | null;
   pfUserId?: string;
   pfPassword?: string;
-  authorizedSignatory: string;
+  authorizedSignatory: string[];
   signatoryDesignation?: string;
   signatoryMobile?: string;
   signatoryEmail?: string;
@@ -23,7 +22,7 @@ export interface PFSetupData {
 }
 
 interface PFSetupSidePanelProps {
-  addPFSetup: (newPFSetup: PFSetupData) => void;
+  // addPFSetup: (newPFSetup: PFSetupData) => void;
   onClose: () => void;
   companyGroupName: string;
   companyName: string;
@@ -44,7 +43,7 @@ interface Signatory {
 }
 
 const PFSetupSidePanel: React.FC<PFSetupSidePanelProps> = ({
-  addPFSetup,
+  // addPFSetup,
   onClose,
   companyGroupName,
   companyName,
@@ -54,7 +53,8 @@ const PFSetupSidePanel: React.FC<PFSetupSidePanelProps> = ({
     Company_Name: companyName,
     pfCode: '',
     pfCodeLocation: '',
-    authorizedSignatory: '',
+    authorizedSignatory: [],
+    registrationDate: null,
   });
 
   const [existingSignatories, setExistingSignatories] = useState<Signatory[]>([
@@ -73,51 +73,49 @@ const PFSetupSidePanel: React.FC<PFSetupSidePanelProps> = ({
     esign: '',
   });
 
-  const handleInputChange = (field: keyof PFSetupData, value: string | File | null) => {
+  const handleInputChange = (field: keyof PFSetupData, value: string | Date | null | File | string[]) => {
     setPfSetupData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleSignatoryChange = (selectedOption: SelectOption | null) => {
-    if (selectedOption) {
-      if (selectedOption.value === 'add_new') {
-        setShowAddSignatoryDialog(true);
-      } else {
-        const selectedSignatory = existingSignatories.find(s => s.name === selectedOption.value);
-        if (selectedSignatory) {
-          setPfSetupData(prev => ({
-            ...prev,
-            authorizedSignatory: selectedSignatory.name,
-            signatoryDesignation: selectedSignatory.designation,
-            signatoryMobile: selectedSignatory.mobile,
-            signatoryEmail: selectedSignatory.email,
-            dscValidDate: selectedSignatory.dscValidDate,
-            esign: selectedSignatory.esign,
-          }));
-        }
-      }
+  const handleSignatoryChange = (
+    newValue: MultiValue<{ value: string; label: string }>,
+    actionMeta: ActionMeta<{ value: string; label: string }>
+  ) => {
+    const selectedSignatories = newValue.map(option => option.value);
+    handleInputChange('authorizedSignatory', selectedSignatories);
+
+    if (actionMeta.action === 'select-option' && actionMeta.option?.value === 'add_new') {
+      setShowAddSignatoryDialog(true);
+      handleInputChange('authorizedSignatory', selectedSignatories.filter(name => name !== 'add_new'));
     }
   };
 
+
+
   const handleSubmit = () => {
     if (pfSetupData.pfCode && pfSetupData.pfCodeLocation && pfSetupData.authorizedSignatory) {
-      addPFSetup(pfSetupData);
+      // addPFSetup(pfSetupData);
+      toast.push(
+        <Notification title="Success" type="success">
+          <div className="flex items-center">
+            <span>PF Setup successfully created</span>
+          </div>
+        </Notification>
+      );
       onClose();
     } else {
-      console.error('Please fill in all required fields.');
+      toast.push(
+        <Notification title="Error" type="danger">
+          <div className="flex items-center">
+            <span>Please fill in all required fields</span>
+          </div>
+        </Notification>
+      );
     }
   };
 
   const handleAddSignatory = () => {
     setExistingSignatories(prev => [...prev, newSignatory]);
-    setPfSetupData(prev => ({
-      ...prev,
-      authorizedSignatory: newSignatory.name,
-      signatoryDesignation: newSignatory.designation,
-      signatoryMobile: newSignatory.mobile,
-      signatoryEmail: newSignatory.email,
-      dscValidDate: newSignatory.dscValidDate,
-      esign: newSignatory.esign,
-    }));
     setShowAddSignatoryDialog(false);
     setNewSignatory({
       name: '',
@@ -135,82 +133,100 @@ const PFSetupSidePanel: React.FC<PFSetupSidePanelProps> = ({
 
   return (
     <div className="p-4 space-y-4">
-      <div className='flex gap-4 items-center'>
+       <div className='flex gap-4 items-center'>
+        <div className='w-full'>
         <OutlinedInput
           label="Company Group Name"
           value={pfSetupData.Company_Group_Name}
           onChange={(value: string) => handleInputChange('Company_Group_Name', value)}
-        />
+          />
+          </div>
+          <div className='w-full'>
         <OutlinedInput
           label="Company Name"
           value={pfSetupData.Company_Name}
           onChange={(value: string) => handleInputChange('Company_Name', value)}
-        />
+          />
+          </div>
       </div>
 
-      <div className='flex gap-4 items-center'>
-        <div className='flex flex-col gap-4'>
+       <div className='flex gap-4 items-center'>
+        <div className='flex flex-col gap-2'>
           <label>Enter the PF Code</label>
+          <div className='w-[352px]'>
           <OutlinedInput
             label="PF Code"
             value={pfSetupData.pfCode}
             onChange={(value: string) => handleInputChange('pfCode', value)}
-          />
+            />
+            </div>
         </div>
-        <div className='flex flex-col gap-4'>
-          <label>Enter the PF Code Location</label>
+        <div className='flex flex-col gap-2'>
+          <label>Enter the PF Location</label>
+          <div className='w-[352px]'>
           <OutlinedInput
-            label="PF Code Location"
-            value={pfSetupData.pfCodeLocation || ''}
-            onChange={(value: string ) => handleInputChange('pfCodeLocation', value || '')}
-          />
+            label="Location"
+            value={pfSetupData.pfCodeLocation}
+            onChange={(value: string) => handleInputChange('pfCodeLocation', value)}
+            />
+            </div>
         </div>
       </div>
 
+
       <div className='flex gap-4 items-center'>
-        <div className='flex flex-col gap-4'>
-          <label>Enter PF Registration Date</label>
-          <OutlinedInput
-            label="PF Registration Date"
-            value={pfSetupData.registrationDate || ''}
-            onChange={(value: string) => handleInputChange('registrationDate', value)}
-          />
-        </div>
-        <div className='flex flex-col gap-4'>
+      <div className='flex flex-col gap-2'>
           <label>Enter PF user ID</label>
+          <div className='w-[352px]'>
           <OutlinedInput
             label="PF User ID (Optional)"
             value={pfSetupData.pfUserId || ''}
             onChange={(value: string) => handleInputChange('pfUserId', value)}
-          />
+            />
+            </div>
         </div>
-      </div>
-
-      <div className='flex gap-4 items-center'>
-        <div className='flex flex-col gap-4'>
+        <div className='flex flex-col gap-2'>
           <label>Enter PF User Password</label>
+          <div className='w-[352px]'>
           <OutlinedInput
             label="PF Password (Optional)"
             value={pfSetupData.pfPassword || ''}
             onChange={(value: string) => handleInputChange('pfPassword', value)}
-          />
+            />
+            </div>
+        </div>
+      </div>
+
+      <div className='flex gap-4 items-center'>
+        <div className='flex flex-col gap-2'>
+          <label>PF Registration Date</label>
+          <div className='w-56'>
+          <DatePicker
+            placeholder="Select date"
+            value={pfSetupData.registrationDate}
+            onChange={(date: Date | null) => handleInputChange('registrationDate', date)}
+            />
+            </div>
         </div>
 
-        <div className='flex flex-col gap-4 w-52'>
-          <label>Choose the Signatory</label>
-          <OutlinedSelect
-            label="Authorized Signatory"
+        <div className='flex flex-col gap-2 w-full'>
+          <label>Choose the Signatories</label>
+          <div className=''>
+          <Select
+            isMulti
             options={[
               ...existingSignatories.map(s => ({ value: s.name, label: s.name })),
               { value: 'add_new', label: '+ Add New Signatory' }
             ]}
-            value={pfSetupData.authorizedSignatory ? { value: pfSetupData.authorizedSignatory, label: pfSetupData.authorizedSignatory } : null}
+            value={pfSetupData.authorizedSignatory.map(name => ({ value: name, label: name }))}
             onChange={handleSignatoryChange}
-          />
+            />
+            </div>
         </div>
       </div>
 
-      <div className='flex flex-col gap-4'>
+
+      <div className='flex flex-col gap-2'>
         <label>Please upload the PF certificate</label>
         <Input
           id="file-upload"

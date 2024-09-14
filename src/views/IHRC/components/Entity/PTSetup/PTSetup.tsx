@@ -1,37 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { Button, Dialog } from '@/components/ui';
+import { Button, Dialog, Notification, toast } from '@/components/ui';
 import { HiArrowLeft, HiPlusCircle } from 'react-icons/hi';
 import { setPanelExpand, useAppDispatch } from '@/store';
 import PTSetupPanel from './components/PTSetupPanel';
 import PTSetupTable from './components/PTSetupTable';
 
-
 export interface PTSetupData {
-    Company_Group_Name: string;
-    Company_Name: string;
-    ptState: string;
-    ptLocation: string;
-    ptEnrollmentNumber: string;
-    ptRegistrationNumber: string;
-    ptRegistrationDate: string;
-    ptRemmitanceMode: string;
-    ptUserId?: string;
-    ptPassword?: string;
-    authorizedSignatory: string;
-    signatoryDesignation?: string;
-    signatoryMobile?: string;
-    signatoryEmail?: string;
-    ptecPaymentFrequency: string;
-    ptrcPaymentFrequency: string;
-    lwfRegistrationCertificate?: File | null;
-    ptrcUpload?: File | null;
-  }
+  Company_Group_Name: string;
+  Company_Name: string;
+  ptState: string;
+  ptLocation: string;
+  ptEnrollmentNumber: string;
+  ptRegistrationNumber: string;
+  ptRegistrationDate: string;
+  ptRemmitanceMode: string;
+  ptUserId?: string;
+  ptPassword?: string;
+  authorizedSignatory: string;
+  signatoryDesignation?: string;
+  signatoryMobile?: string;
+  signatoryEmail?: string;
+  ptecPaymentFrequency: string;
+  ptrcPaymentFrequency: string;
+  lwfRegistrationCertificate?: File | null;
+  ptrcUpload?: File | null;
+}
 
-  interface LocationState {
-    companyName?: string;
-    companyGroupName?: string;
-  }
+interface LocationState {
+  companyName?: string;
+  companyGroupName?: string;
+}
 
 const PTSetup: React.FC = () => {
   const { companyName } = useParams<{ companyName: string }>();
@@ -43,17 +42,11 @@ const PTSetup: React.FC = () => {
   const [companyData, setCompanyData] = useState<{ Company_Group_Name: string, Company_Name: string } | null>(null);
   const locationState = location.state as LocationState;
 
-
   const actualCompanyName = location.state?.companyName || decodeURIComponent(companyName || '').replace(/-/g, ' ');
   const actualCompanyGroupName = locationState?.companyGroupName || '';
 
-
-
   useEffect(() => {
-    // Fetch company data based on companyName
-    // This is a placeholder. Replace with actual API call or data fetching logic
     const fetchCompanyData = async () => {
-      // Simulating API call
       const data = {
         Company_Group_Name: actualCompanyGroupName,
         Company_Name: actualCompanyName
@@ -63,41 +56,70 @@ const PTSetup: React.FC = () => {
     };
 
     fetchCompanyData();
-  }, [actualCompanyName, actualCompanyGroupName], );
+  }, [actualCompanyName, actualCompanyGroupName]);
 
   useEffect(() => {
-    // Fetch PF setup data for this company
-    // This is a placeholder. Replace with actual API call or data fetching logic
-    const fetchPTSetupData = async () => {
-      // Simulating API call
-      const data: PTSetupData[] = [];
-      setPTSetupData(data);
-    };
-
-    fetchPTSetupData();
-  }, [actualCompanyName]);
+    // Set dummy data for PT Setup
+    const dummyData: PTSetupData[] = [
+      {
+        Company_Group_Name: actualCompanyGroupName,
+        Company_Name: actualCompanyName,
+        ptState: 'Maharashtra',
+        ptLocation: 'Mumbai',
+        ptEnrollmentNumber: 'PT1234587954',
+        ptRegistrationNumber: 'REG98765354879',
+        ptRegistrationDate: '2023-01-01',
+        ptRemmitanceMode: 'Online',
+        ptUserId: 'User01',
+        ptPassword: 'password01',
+        authorizedSignatory: 'Amit',
+        signatoryDesignation: 'Tech Head',
+        signatoryMobile: '9145786945',
+        signatoryEmail: 'amit@gmail.com',
+        ptecPaymentFrequency: 'Monthly',
+        ptrcPaymentFrequency: 'Quarterly'
+      },
+     
+    ];
+    setPTSetupData(dummyData);
+  }, [actualCompanyName, actualCompanyGroupName]);
 
   const handleBack = () => {
     navigate(-1);
   };
 
+  const showNotification = (message: string) => {
+    toast.push(
+      <Notification title="Success" type="success">
+        <div className="flex items-center">
+          <span>{message}</span>
+        </div>
+      </Notification>
+    );
+  };
+
   const handleAddPFSetup = (newPFSetup: PTSetupData) => {
     setPTSetupData([...PTSetupData, newPFSetup]);
     setIsOpen(false);
+    showNotification(`PT Setup created for ${actualCompanyName}`);
   };
 
   const handleDelete = (index: number) => {
     const newData = PTSetupData.filter((_, i) => i !== index);
     setPTSetupData(newData);
+    showNotification("PT Setup deleted successfully");
   };
 
   const handleEdit = (index: number, updatedData: Partial<PTSetupData>) => {
     const newData = [...PTSetupData];
     newData[index] = { ...newData[index], ...updatedData };
     setPTSetupData(newData);
+    showNotification("PT Setup updated successfully");
+  };
+  const handleClose = () => {
+    setIsOpen(false);
   };
 
- 
   return (
     <div className="">
       <div className="flex justify-between items-center mb-6">
@@ -132,8 +154,10 @@ const PTSetup: React.FC = () => {
 
       <Dialog
         isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
+        onClose={handleClose}
         onRequestClose={() => setIsOpen(false)}
+        width={800}
+        height={550}
       >
         <h4 className="mb-4">Add PT Setup</h4>
         
@@ -144,7 +168,6 @@ const PTSetup: React.FC = () => {
           companyName={companyData?.Company_Name || ''}
         />
       </Dialog>
-       
     </div>
   );
 };

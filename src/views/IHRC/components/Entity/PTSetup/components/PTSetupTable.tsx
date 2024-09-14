@@ -44,14 +44,14 @@ const PTSetupTable: React.FC<ESISetupTableProps> = ({ data, onDelete, onEdit }) 
         header: 'Company Group Name',
         accessorKey: 'Company_Group_Name',
         cell: (props) => (
-          <div className="w-36 text-start">{props.getValue() as string}</div>
+          <div className="w-44 text-start">{props.getValue() as string}</div>
         ),
       },
       {
         header: 'Company Name',
         accessorKey: 'Company_Name',
         cell: (props) => (
-          <div className="w-36 text-start">{props.getValue() as string}</div>
+          <div className="w-48 text-start">{props.getValue() as string}</div>
         ),
       },
       {
@@ -72,21 +72,21 @@ const PTSetupTable: React.FC<ESISetupTableProps> = ({ data, onDelete, onEdit }) 
         header: 'PT Enrollment Number',
         accessorKey: 'ptEnrollmentNumber',
         cell: (props) => (
-          <div className="w-36 truncate">{props.getValue() as string}</div>
+          <div className="w-48 truncate">{props.getValue() as string}</div>
         ),
       },
       {
         header: 'PT Registration Number',
         accessorKey: 'ptRegistrationNumber',
         cell: (props) => (
-          <div className="w-36 truncate">{props.getValue() as string}</div>
+          <div className="w-48 truncate">{props.getValue() as string}</div>
         ),
       },
       {
         header: 'PT Registration Date',
         accessorKey: 'ptRegistrationDate',
         cell: (props) => (
-          <div className="w-32 flex items-center justify-center">{props.getValue() as string}</div>
+          <div className="w-48 flex items-center justify-center">{props.getValue() as string}</div>
         ),
       },
       {

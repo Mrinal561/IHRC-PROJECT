@@ -1,184 +1,152 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import PFSetupTable, { PFSetupData } from '../PFSetup/components/PFSetupTable';
-import PTSetupTable, { PTSetupData } from '../PTSetup/components/PTSetupTable';
-import ESISetupTable, { ESISetupData } from '../ESICSetup/components/EsicSetupTable';
-import LWFSetupTable, { LWFSetupData } from '../LWFSetup/components/LWFSetupTable';
-import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 import { Button } from '@/components/ui';
 import { HiArrowLeft } from 'react-icons/hi';
 
-type SetupOption = {
-    value: 'PF' | 'PT' | 'LWF' | 'ESI';
-    label: string;
-};
-
 const CompanyDetails: React.FC = () => {
-    console.log('CompanyDetails component rendering');
     const navigate = useNavigate();
-
     const location = useLocation();
     const { companyName, companyGroupName } = location.state as { companyName: string; companyGroupName: string };
-    const [selectedSetup, setSelectedSetup] = useState<SetupOption>({ value: 'PF', label: 'PF Setup' });
 
-    useEffect(() => {
-        console.log('Selected setup:', selectedSetup);
-    }, [selectedSetup]);
-
-    const setupOptions: SetupOption[] = [
-        { value: 'PF', label: 'PF Setup' },
-        { value: 'PT', label: 'PT Setup' },
-        { value: 'LWF', label: 'LWF Setup' },
-        { value: 'ESI', label: 'ESI Setup' },
-    ];
-
-
-    // Dummy data for each setup type
-    const pfData: PFSetupData[] = [
-        {
-            Company_Group_Name: companyGroupName,
-            Company_Name: companyName,
-            pfCode: 'ASWQ124795863',
-            pfCodeLocation: 'Delhi',
-            registrationDate: '2023-01-01',
-            pfUserId: 'user1',
-            pfPassword: 'password1',
-            authorizedSignatory: 'Amit',
-            signatoryDesignation: 'Manager',
-            signatoryMobile: '1234567890',
-            signatoryEmail: 'amit@example.com',
-            dscValidDate: '2024-01-01',
-            esign: 'ACTIVE',
-        },
-    ];
-
-    const ptData: PTSetupData[] = [
-        {
-            Company_Group_Name: companyGroupName,
-            Company_Name: companyName,
-            ptState: 'West Bengal',
-            ptLocation: 'Kolkata',
-            ptEnrollmentNumber: '1452789',
-            ptRegistrationNumber: 'RA14798563',
-            ptRegistrationDate: '2023-05-15',
-            ptRemmitanceMode: 'Online',
-            ptUserId: 'User1',
-            ptPassword: 'password123',
-            authorizedSignatory: 'Ajay Thakur',
-            signatoryDesignation: 'CFO',
-            signatoryMobile: '123456789',
-            signatoryEmail: 'ajay@gmail.com',
-            ptecPaymentFrequency: 'Yearly',
-            ptrcPaymentFrequency: 'Monthly'
-        },
-    ];
-
-    const lwfData: LWFSetupData[] = [
-        {
-            Company_Group_Name: companyGroupName,
-            Company_Name: companyName,
-            lwfState: 'Bihar',
-            lwfLocation: 'Muzaffarpur',
-            lwfRegistrationNumber: 'RA145789632',
-            lwfRegistrationDate: '2023-05-15',
-            lwfRemmitanceMode: 'Offline',
-            lwfRemmitanceFrequency: 'Yearly',
-            lwfUserId: 'User01',
-            lwfPassword: 'password1234',
-            authorizedSignatory: 'Ajay Thakur',
-            signatoryDesignation: 'CFO',
-            signatoryMobile: '4578135467',
-            signatoryEmail: 'ajay@gmail.com',
-            lwfFrequency: 'Monthly',
-            lwfPaymentDueDate: '2023-10-20',
-            lwfApplicableState: 'West Bengal',
-        },
-    ];
-
-    const esiData: ESISetupData[] = [
-        {
-            Company_Group_Name: companyGroupName,
-            Company_Name: companyName,
-            esiCode: 'ASWQ124795863',
-            esiCodeLocation: 'Delhi',
-            esiCodeType: 'Main Code',
-            esiUserId: 'User01',
-            esiPassword: 'password145',
-            authorizedSignatory: 'Amit',
-            signatoryDesignation: 'Manager',
-            signatoryMobile: '145789632',
-            signatoryEmail: 'amit@gmail.com',
-        },
-    ];
-
-    const handleSetupChange = useCallback((newSetup: SetupOption) => {
-        console.log('Setup changed to:', newSetup);
-        setSelectedSetup(newSetup);
-    }, []);
-
-    const handleDelete = useCallback((index: number) => {
-        console.log(`Delete ${selectedSetup.value} setup at index ${index}`);
-        // Implement delete logic
-    }, [selectedSetup]);
-
-    const handleEdit = useCallback((index: number, newData: any) => {
-        console.log(`Edit ${selectedSetup.value} setup at index ${index}`, newData);
-        // Implement edit logic
-    }, [selectedSetup]);
-
-
-    const handleBack = useCallback(() => {
-        navigate(-1); // This will navigate back to the previous page
-    }, [navigate]);
-
-
-    const renderSetupTable = useCallback(() => {
-        console.log('Rendering setup table for:', selectedSetup);
-        switch (selectedSetup.value) {
-            case 'PF':
-                return <PFSetupTable data={pfData} onDelete={handleDelete} onEdit={handleEdit} />;
-            case 'PT':
-                return <PTSetupTable data={ptData} onDelete={handleDelete} onEdit={handleEdit} />;
-            case 'LWF':
-                return <LWFSetupTable data={lwfData} onDelete={handleDelete} onEdit={handleEdit} />;
-            case 'ESI':
-                return <ESISetupTable data={esiData} onDelete={handleDelete} onEdit={handleEdit} />;
-            default:
-                console.log('No matching setup found');
-                return null;
-        }
-    }, [selectedSetup, pfData, ptData, lwfData, esiData, handleDelete, handleEdit]);
+    const handleBack = () => {
+        navigate(-1);
+    };
 
     return (
-        <div className="p-4">
-            <div className='flex justify-between mb-10'>
+        <div className="p-6 max-w-7xl mx-auto">
+            <div className='flex items-center gap-4 mb-8'>
+                <Button
+                    onClick={handleBack}
+                    variant="plain"
+                    size="sm"
+                    icon={<HiArrowLeft />}
+                />
                 <div>
-                    <div className='flex gap-2'>
-
-                    <Button
-                        onClick={handleBack}
-                        variant="plain"
-                        size="sm"
-                        icon={<HiArrowLeft />}
-                        >
-                    </Button>
-                    <h1 className="text-2xl font-bold mb-4">Company Details: {companyName}</h1>
-                        </div>
-                    <p className="mb-4">Company Group: {companyGroupName}</p>
-                </div>
-                <div className="mb-4 w-64">
-                    <OutlinedSelect
-                        label='Filter'
-                        options={setupOptions}
-                        value={selectedSetup}
-                        onChange={handleSetupChange}
-                    />
+                <h3>Company Details</h3>
                 </div>
             </div>
-            {renderSetupTable()}
+
+            <div className="space-y-6">
+                <DetailBox title={companyGroupName}>
+                <p>{companyName}</p>
+                 </DetailBox>
+                <div className="flex gap-6">
+                    <DetailBox title="PF Setup Details" className="flex-1">
+                        <div className="grid grid-cols-2 gap-4">
+                            <DetailColumn>
+                                <DetailItem label="PF Code" value="DRET12457893" />
+                                <DetailItem label="PF Code Location" value="Mumbai" />
+                                <DetailItem label="PF Registration Date" value="2023-01-01" />
+                                <DetailItem label="PF User ID" value="User01" />
+                                <DetailItem label="PF Password" value="password01" />
+                            </DetailColumn>
+                            <DetailColumn>
+                                <DetailItem label="Authorized Signatory" value="Amit" />
+                                <DetailItem label="Designation" value="Tech Head" />
+                                <DetailItem label="Mobile" value="9145786945" />
+                                <DetailItem label="Email" value="amit@gmail.com" />
+                                <DetailItem label="DSC Validity" value="2026-01-01" />
+                                <DetailItem label="E Sign" value="Active" />
+                            </DetailColumn>
+                        </div>
+                    </DetailBox>
+
+                    <DetailBox title="ESI Setup Details" className="flex-1">
+                        <div className="grid grid-cols-2 gap-4">
+                            <DetailColumn>
+                                <DetailItem label="ESI Code Type" value="Main" />
+                                <DetailItem label="ESI Code" value="DRET12457893" />
+                                <DetailItem label="ESI Code Location" value="Mumbai" />
+                                <DetailItem label="ESI User ID" value="User01" />
+                                <DetailItem label="ESI Password" value="password01" />
+                            </DetailColumn>
+                            <DetailColumn>
+                                <DetailItem label="Authorized Signatory" value="Amit" />
+                                <DetailItem label="Designation" value="Tech Head" />
+                                <DetailItem label="Mobile" value="9145786945" />
+                                <DetailItem label="Email" value="amit@gmail.com" />
+                            </DetailColumn>
+                        </div>
+                    </DetailBox>
+                </div>
+
+                <div className="flex gap-6">
+                    <DetailBox title="LWF Setup Details" className="flex-1">
+                        <div className="grid grid-cols-2 gap-4">
+                            <DetailColumn>
+                                <DetailItem label="LWF State" value="Maharashtra" />
+                                <DetailItem label="LWF Location" value="Mumbai" />
+                                <DetailItem label="LWF Registration Number" value="REG98765354879" />
+                                <DetailItem label="LWF Registration Date" value="2023-01-01" />
+                                <DetailItem label="LWF Remmitance Mode" value="Online" />
+                                <DetailItem label="LWF Remmitance Frequency" value="Yearly" />
+                                <DetailItem label="LWF User ID" value="User01" />
+                                <DetailItem label="LWF Password" value="password01" />
+                            </DetailColumn>
+                            <DetailColumn>
+                                <DetailItem label="LWF Frequency" value="Monthly" />
+                                <DetailItem label="LWF Payment Due Date" value="2023-10-22" />
+                                <DetailItem label="LWF Applicable State" value="Tamil Nadu" />
+                                <DetailItem label="Authorized Signatory" value="Amit" />
+                                <DetailItem label="Designation" value="Tech Head" />
+                                <DetailItem label="Mobile" value="9145786945" />
+                                <DetailItem label="Email" value="amit@gmail.com" />
+                            </DetailColumn>
+                        </div>
+                    </DetailBox>
+
+                    <DetailBox title="PT Setup Details" className="flex-1">
+                        <div className="grid grid-cols-2 gap-4">
+                            <DetailColumn>
+                                <DetailItem label="PT State" value="Maharashtra" />
+                                <DetailItem label="PT Location" value="Mumbai" />
+                                <DetailItem label="PT Enrollment Number" value="PT1234587954" />
+                                <DetailItem label="PT Registration Number" value="REG98765354879" />
+                                <DetailItem label="PT Registration Date" value="2023-01-01" />
+                                <DetailItem label="PT Remmitance Mode" value="Online" />
+                                <DetailItem label="PT User ID" value="User01" />
+                            </DetailColumn>
+                            <DetailColumn>
+                                <DetailItem label="PT Password" value="password01" />
+                                <DetailItem label="PTRC Payment Frequency" value="Quarterly" />
+                                <DetailItem label="PTEC Payment Frequency" value="Monthly" />
+                                <DetailItem label="Authorized Signatory" value="Amit" />
+                                <DetailItem label="Designation" value="Tech Head" />
+                                <DetailItem label="Mobile" value="9145786945" />
+                                <DetailItem label="Email" value="amit@gmail.com" />
+                            </DetailColumn>
+                        </div>
+                    </DetailBox>
+                </div>
+            </div>
         </div>
     );
 };
 
-export default CompanyDetails;
+interface DetailBoxProps {
+    title: string;
+    children: React.ReactNode;
+    className?: string;
+}
 
+const DetailBox: React.FC<DetailBoxProps> = ({ title, children, className }) => (
+    <div className={`border p-6 rounded-lg shadow-sm bg-white ${className}`}>
+        <h3 className="text-xl font-semibold mb-4 text-gray-700">{title}</h3>
+        {children}
+    </div>
+);
+
+const DetailColumn: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+    <div className="space-y-2">
+        {children}
+    </div>
+);
+
+const DetailItem: React.FC<{ label: string; value: string }> = ({ label, value }) => (
+    <p className="text-sm">
+        <strong className="text-gray-600">{label}:</strong>{' '}
+        <span className="text-gray-400">{value}</span>
+    </p>
+);
+
+export default CompanyDetails;

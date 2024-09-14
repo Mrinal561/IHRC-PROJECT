@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { Button, Dialog } from '@/components/ui';
+import { Button, Dialog, Notification, toast } from '@/components/ui';
 import { HiArrowLeft, HiPlusCircle } from 'react-icons/hi';
 import { setPanelExpand, useAppDispatch } from '@/store';
 import LWFSetupPanel from './components/LWFSetupPanel';
@@ -68,20 +68,45 @@ const LWFSetup: React.FC = () => {
   }, [actualCompanyName, actualCompanyGroupName], );
 
   useEffect(() => {
-    // Fetch PF setup data for this company
-    // This is a placeholder. Replace with actual API call or data fetching logic
-    const fetchLWFSetupData = async () => {
-      // Simulating API call
-      const data: LWFSetupData[] = [];
-      setLWFSetupData(data);
-    };
-
-    fetchLWFSetupData();
-  }, [actualCompanyName]);
+    // Set dummy data for PT Setup
+    const dummyData: LWFSetupData[] = [
+      {
+        Company_Group_Name: actualCompanyGroupName,
+        Company_Name: actualCompanyName,
+        lwfState: 'Maharashtra',
+        lwfLocation: 'Mumbai',
+        lwfRegistrationNumber: 'REG98765354879',
+        lwfRegistrationDate: '2023-01-01',
+        lwfRemmitanceMode: 'Online',
+        lwfRemmitanceFrequency: 'Yearly',
+        lwfUserId: 'User01',
+        lwfPassword: 'password01',
+        authorizedSignatory: 'Amit',
+        signatoryDesignation: 'Tech Head',
+        signatoryMobile: '9145786945',
+        signatoryEmail: 'amit@gmail.com',
+        lwfFrequency: 'Monthly',
+        lwfPaymentDueDate: '2023-10-22',
+        lwfApplicableState: 'Tamil Nadu',
+      },
+    ];
+    setLWFSetupData(dummyData);
+  }, [actualCompanyName, actualCompanyGroupName]);
 
   const handleBack = () => {
     navigate(-1);
   };
+
+  const showNotification = (message: string) => {
+    toast.push(
+      <Notification title="Success" type="success">
+        <div className="flex items-center">
+          <span>{message}</span>
+        </div>
+      </Notification>
+    );
+  };
+
 
   const handleAddPFSetup = (newPFSetup: LWFSetupData) => {
     setLWFSetupData([...LWFSetupData, newPFSetup]);
@@ -91,13 +116,22 @@ const LWFSetup: React.FC = () => {
   const handleDelete = (index: number) => {
     const newData = LWFSetupData.filter((_, i) => i !== index);
     setLWFSetupData(newData);
+    showNotification("LWF Setup deleted successfully");
+
   };
 
   const handleEdit = (index: number, updatedData: Partial<LWFSetupData>) => {
     const newData = [...LWFSetupData];
     newData[index] = { ...newData[index], ...updatedData };
     setLWFSetupData(newData);
+    showNotification(`LWF Setup created for ${actualCompanyName}`);
+
   };
+
+  const handleClose = () => {
+    setIsOpen(false);
+  };
+
 
  
   return (
@@ -134,8 +168,10 @@ const LWFSetup: React.FC = () => {
 
       <Dialog
         isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
+        onClose={handleClose}
         onRequestClose={() => setIsOpen(false)}
+        width={800}
+        height={550}
       >
         <h4 className="mb-4">Add LWF Setup</h4>
         

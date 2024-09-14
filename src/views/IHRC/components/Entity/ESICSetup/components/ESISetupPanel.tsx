@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Button, Input, Dialog } from '@/components/ui';
+import { Button, Input, Dialog, toast, Notification, DatePicker, Select } from '@/components/ui';
 import OutlinedInput from '@/components/ui/OutlinedInput';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
+import { MultiValue, ActionMeta } from 'react-select';
 
 export interface ESISetupData {
   Company_Group_Name: string;
@@ -11,7 +12,7 @@ export interface ESISetupData {
   esiCodeLocation: string;
   esiUserId?: string;
   esiPassword?: string;
-  authorizedSignatory: string;
+  authorizedSignatory: string[];
   signatoryDesignation?: string;
   signatoryMobile?: string;
   signatoryEmail?: string;
@@ -19,7 +20,7 @@ export interface ESISetupData {
 }
 
 interface ESISetupSidePanelProps {
-  addPFSetup: (newPFSetup: ESISetupData) => void;
+  // addPFSetup: (newPFSetup: ESISetupData) => void;
   onClose: () => void;
   companyGroupName: string;
   companyName: string;
@@ -38,7 +39,7 @@ interface Signatory {
 }
 
 const ESISetupPanel: React.FC<ESISetupSidePanelProps> = ({
-  addPFSetup,
+  // addPFSetup,
   onClose,
   companyGroupName,
   companyName,
@@ -49,7 +50,7 @@ const ESISetupPanel: React.FC<ESISetupSidePanelProps> = ({
     esiCodeType: '',
     esiCode: '',
     esiCodeLocation: '',
-    authorizedSignatory: '',
+    authorizedSignatory: [],
   });
 
   const [existingSignatories, setExistingSignatories] = useState<Signatory[]>([
@@ -66,47 +67,47 @@ const ESISetupPanel: React.FC<ESISetupSidePanelProps> = ({
     email: '',
   });
 
-  const handleInputChange = (field: keyof ESISetupData, value: string | File | null) => {
+  const handleInputChange = (field: keyof ESISetupData, value: string | Date | null | File | string[]) => {
     setESISetupData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleSignatoryChange = (selectedOption: SelectOption | null) => {
-    if (selectedOption) {
-      if (selectedOption.value === 'add_new') {
-        setShowAddSignatoryDialog(true);
-      } else {
-        const selectedSignatory = existingSignatories.find(s => s.name === selectedOption.value);
-        if (selectedSignatory) {
-          setESISetupData(prev => ({
-            ...prev,
-            authorizedSignatory: selectedSignatory.name,
-            signatoryDesignation: selectedSignatory.designation,
-            signatoryMobile: selectedSignatory.mobile,
-            signatoryEmail: selectedSignatory.email,
-          }));
-        }
-      }
+  const handleSignatoryChange = (
+    newValue: MultiValue<{ value: string; label: string }>,
+    actionMeta: ActionMeta<{ value: string; label: string }>
+  ) => {
+    const selectedSignatories = newValue.map(option => option.value);
+    handleInputChange('authorizedSignatory', selectedSignatories);
+
+    if (actionMeta.action === 'select-option' && actionMeta.option?.value === 'add_new') {
+      setShowAddSignatoryDialog(true);
+      handleInputChange('authorizedSignatory', selectedSignatories.filter(name => name !== 'add_new'));
     }
   };
 
+
   const handleSubmit = () => {
     if (esiSetupData.esiCode && esiSetupData.esiCodeLocation && esiSetupData.authorizedSignatory) {
-      addPFSetup(esiSetupData);
+      toast.push(
+        <Notification title="Success" type="success">
+          <div className="flex items-center">
+            <span>ESI Setup successfully created</span>
+          </div>
+        </Notification>
+      );
       onClose();
     } else {
-      console.error('Please fill in all required fields.');
+      toast.push(
+        <Notification title="Error" type="danger">
+          <div className="flex items-center">
+            <span>Please fill in all required fields</span>
+          </div>
+        </Notification>
+      );
     }
   };
 
   const handleAddSignatory = () => {
     setExistingSignatories(prev => [...prev, newSignatory]);
-    setESISetupData(prev => ({
-      ...prev,
-      authorizedSignatory: newSignatory.name,
-      signatoryDesignation: newSignatory.designation,
-      signatoryMobile: newSignatory.mobile,
-      signatoryEmail: newSignatory.email,
-    }));
     setShowAddSignatoryDialog(false);
     setNewSignatory({
       name: '',
@@ -122,78 +123,94 @@ const ESISetupPanel: React.FC<ESISetupSidePanelProps> = ({
 
   return (
     <div className="p-4 space-y-4">
-      <div className='flex gap-4 items-center'>
+       <div className='flex gap-4 items-center'>
+        <div className='w-full'>
         <OutlinedInput
           label="Company Group Name"
           value={esiSetupData.Company_Group_Name}
           onChange={(value: string) => handleInputChange('Company_Group_Name', value)}
-        />
+          />
+          </div>
+          <div className='w-full'>
         <OutlinedInput
           label="Company Name"
           value={esiSetupData.Company_Name}
           onChange={(value: string) => handleInputChange('Company_Name', value)}
-        />
+          />
+          </div>
       </div>
 
       <div className='flex gap-4 items-center'>
-        <div className='flex flex-col gap-4'>
+        <div className='flex flex-col gap-2'>
           <label>Enter the ESI Code Type</label>
+          <div className='w-[352px]'>
           <OutlinedInput
             label="ESI Code Type"
             value={esiSetupData.esiCodeType}
             onChange={(value: string) => handleInputChange('esiCodeType', value)}
-          />
+            />
+            </div>
         </div>
-        <div className='flex flex-col gap-4'>
+        <div className='flex flex-col gap-2'>
           <label>Enter the ESI Code</label>
+          <div className='w-[352px]'>
           <OutlinedInput
             label="ESI Code"
             value={esiSetupData.esiCode}
             onChange={(value: string) => handleInputChange('esiCode', value)}
-          />
+            />
+            </div>
+        </div>
+      </div>
+
+      <div className='flex gap-4 items-center'>
+      <div className='flex flex-col gap-2'>
+          <label>Enter the ESI Code Location</label>
+          <div className='w-[352px]'>
+          <OutlinedInput
+            label="ESI Code Location"
+            value={esiSetupData.esiCodeLocation || ''}
+            onChange={(value: string) => handleInputChange('esiCodeLocation', value)}
+            />
+            </div>
+        </div>
+        <div className='flex flex-col gap-2'>
+          <label>Enter ESI user ID</label>
+          <div className='w-[352px]'>
+          <OutlinedInput
+            label="ESI User ID (Optional)"
+            value={esiSetupData.esiUserId || ''}
+            onChange={(value: string) => handleInputChange('esiUserId', value)}
+            />
+            </div>
         </div>
       </div>
 
       <div className='flex gap-4 items-center'>
       <div className='flex flex-col gap-4'>
-          <label>Enter the ESI Code Location</label>
-          <OutlinedInput
-            label="ESI Code Location"
-            value={esiSetupData.esiCodeLocation || ''}
-            onChange={(value: string ) => handleInputChange('esiCodeLocation', value || '')}
-          />
-        </div>
-        <div className='flex flex-col gap-4'>
-          <label>Enter ESI user ID</label>
-          <OutlinedInput
-            label="ESI User ID (Optional)"
-            value={esiSetupData.esiUserId || ''}
-            onChange={(value: string) => handleInputChange('esiUserId', value)}
-          />
-        </div>
-      </div>
-
-      <div className='flex gap-4 items-center'>
-        <div className='flex flex-col gap-4'>
           <label>Enter ESI User Password</label>
+          <div className='w-56'>
           <OutlinedInput
             label="ESI Password (Optional)"
             value={esiSetupData.esiPassword || ''}
             onChange={(value: string) => handleInputChange('esiPassword', value)}
-          />
+            />
+            </div>
         </div>
 
-        <div className='flex flex-col gap-4 w-52'>
-          <label>Choose the Signatory</label>
-          <OutlinedSelect
-            label="Authorized Signatory"
+        <div className='flex flex-col gap-2 w-full'>
+          <label>Choose the Signatories</label>
+          <div>
+          <Select
+            isMulti
             options={[
               ...existingSignatories.map(s => ({ value: s.name, label: s.name })),
               { value: 'add_new', label: '+ Add New Signatory' }
             ]}
-            value={esiSetupData.authorizedSignatory ? { value: esiSetupData.authorizedSignatory, label: esiSetupData.authorizedSignatory } : null}
+            value={esiSetupData.authorizedSignatory.map(name => ({ value: name, label: name }))}
             onChange={handleSignatoryChange}
-          />
+            />
+            </div>
         </div>
       </div>
 
