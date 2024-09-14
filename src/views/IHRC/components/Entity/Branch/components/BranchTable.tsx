@@ -60,9 +60,9 @@ const BranchTable: React.FC<BranchTableProps> = ({ data, onDeleteBranch, onEdit 
                 header: 'Branch',
                 accessorKey: 'Branch',
                 cell: (props) => (
-                    <div className="w-52 truncate">{props.getValue() as string}</div>
+                  <div className="w-52 truncate">{props.getValue() as string}</div>
                 ),
-            },
+              },
             {
                 header: 'Actions',
                 id: 'actions',

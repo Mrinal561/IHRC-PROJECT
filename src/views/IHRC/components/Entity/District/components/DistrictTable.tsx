@@ -1,29 +1,46 @@
-import React, { useMemo, useState } from 'react';
-import { Button, Dialog, Tooltip } from '@/components/ui';
+
+import React, { useMemo, useState, useEffect } from 'react';
+import { Button, Dialog, Tooltip, Notification, toast } from '@/components/ui';
 import { FiTrash } from 'react-icons/fi';
 import { MdEdit } from 'react-icons/md';
-import OutlinedInput from '@/components/ui/OutlinedInput/OutlinedInput';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 
-interface DistrictTableProps {
-    data: Array<{
-        Company_Group_Name?: string | { value: string; label: string };
-        Company_Name?: string;
-        State?: string;
-        District?: string;
-    }>;
-    onDeleteDistrict: (index: number) => void;
-    onEdit: (index: number, newName: string) => void;
+// Import the EntityData interface and entityDataSet
+import { EntityData, entityDataSet } from '../../../../store/dummyEntityData';
+import OutlinedSelect from '@/components/ui/Outlined';
+
+interface SelectOption {
+    value: string;
+    label: string;
 }
 
-const DistrictTable: React.FC<DistrictTableProps> = ({ data, onDeleteDistrict, onEdit }) => {
+const DistrictTable: React.FC = () => {
     const [dialogIsOpen, setDialogIsOpen] = useState(false);
     const [itemToDelete, setItemToDelete] = useState<number | null>(null);
     const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
     const [itemToEdit, setItemToEdit] = useState<number | null>(null);
-    const [editedName, setEditedName] = useState('');
+    const [selectedDistrict, setSelectedDistrict] = useState<SelectOption | null>(null);
+    const [data, setData] = useState(entityDataSet);
+    const [districtOptions, setDistrictOptions] = useState<SelectOption[]>([]);
 
-    const columns: ColumnDef<DistrictTableProps>[] = useMemo(
+    useEffect(() => {
+        // Generate unique district options from the data
+        const uniqueDistricts = Array.from(new Set(data.map(item => item.District).filter(Boolean)));
+        setDistrictOptions(uniqueDistricts.map(district => ({ value: district!, label: district! })));
+    }, [data]);
+
+    const showNotification = (type: 'success' | 'info' | 'danger' | 'warning', message: string) => {
+        toast.push(
+            <Notification
+                title={type.charAt(0).toUpperCase() + type.slice(1)}
+                type={type}
+            >
+                {message}
+            </Notification>
+        );
+    };
+
+    const columns: ColumnDef<EntityData>[] = useMemo(
         () => [
             {
                 header: 'Company Group Name',
@@ -88,7 +105,8 @@ const DistrictTable: React.FC<DistrictTableProps> = ({ data, onDeleteDistrict, o
 
     const openEditDialog = (index: number) => {
         setItemToEdit(index);
-        setEditedName(data[index].District || '');
+        const currentDistrict = data[index].District;
+        setSelectedDistrict(currentDistrict ? { value: currentDistrict, label: currentDistrict } : null);
         setEditDialogIsOpen(true);
     };
 
@@ -97,37 +115,38 @@ const DistrictTable: React.FC<DistrictTableProps> = ({ data, onDeleteDistrict, o
         setEditDialogIsOpen(false);
         setItemToDelete(null);
         setItemToEdit(null);
-        setEditedName('');
+        setSelectedDistrict(null);
     };
 
-    const handleDialogOk = () => {
+    const handleDeleteDistrict = () => {
         if (itemToDelete !== null) {
-            onDeleteDistrict(itemToDelete);
+            setData(prevData => prevData.filter((_, index) => index !== itemToDelete));
             setDialogIsOpen(false);
             setItemToDelete(null);
+            showNotification('success', 'District has been successfully deleted.');
         }
     };
 
-    const handleEditConfirm = () => {
-        if (itemToEdit !== null && editedName.trim()) {
-            onEdit(itemToEdit, editedName.trim());
+    const handleEditDistrict = () => {
+        if (itemToEdit !== null && selectedDistrict) {
+            setData(prevData => 
+                prevData.map((item, index) => 
+                    index === itemToEdit ? { ...item, District: selectedDistrict.value } : item
+                )
+            );
             setEditDialogIsOpen(false);
             setItemToEdit(null);
-            setEditedName('');
+            setSelectedDistrict(null);
+            showNotification('success', 'District has been successfully updated.');
+        } else {
+            showNotification('danger', 'Please select a district before confirming.');
         }
-    };
-
-    const renderCompanyGroupName = (companyGroupName: string | { value: string; label: string } | undefined) => {
-        if (typeof companyGroupName === 'object' && companyGroupName !== null) {
-            return companyGroupName.label || '-';
-        }
-        return companyGroupName || '-';
     };
 
     const [tableData, setTableData] = useState({
         total: data.length,
         pageIndex: 1,
-        pageSize: 10,
+        pageSize: 5,
         query: '',
         sort: { order: '', key: '' },
     });
@@ -155,8 +174,8 @@ const DistrictTable: React.FC<DistrictTableProps> = ({ data, onDeleteDistrict, o
                     loading={false}
                     pagingData={{
                         total: data.length,
-                        pageIndex: 1,
-                        pageSize: 10,
+                        pageIndex: tableData.pageIndex,
+                        pageSize: tableData.pageSize,
                     }}
                 />
             )}
@@ -178,7 +197,7 @@ const DistrictTable: React.FC<DistrictTableProps> = ({ data, onDeleteDistrict, o
                     >
                         Cancel
                     </Button>
-                    <Button variant="solid" onClick={handleDialogOk}>
+                    <Button variant="solid" onClick={handleDeleteDistrict}>
                         Delete
                     </Button>
                 </div>
@@ -191,10 +210,13 @@ const DistrictTable: React.FC<DistrictTableProps> = ({ data, onDeleteDistrict, o
             >
                 <h5 className="mb-4">Edit District</h5>
                 <div className="mb-4">
-                    <OutlinedInput 
-                        label="District"
-                        value={editedName}
-                        onChange={(value: string) => setEditedName(value)}
+                    <OutlinedSelect
+                        label="Select District"
+                        options={districtOptions}
+                        value={selectedDistrict}
+                        onChange={(option: SelectOption | null) => {
+                            setSelectedDistrict(option);
+                        }}
                     />
                 </div>
                 <div className="text-right mt-6">
@@ -205,7 +227,7 @@ const DistrictTable: React.FC<DistrictTableProps> = ({ data, onDeleteDistrict, o
                     >
                         Cancel
                     </Button>
-                    <Button variant="solid" onClick={handleEditConfirm}>
+                    <Button variant="solid" onClick={handleEditDistrict}>
                         Confirm
                     </Button>
                 </div>

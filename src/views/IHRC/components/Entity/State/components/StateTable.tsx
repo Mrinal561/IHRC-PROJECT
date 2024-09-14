@@ -1,32 +1,29 @@
+
+
 import React, { useMemo, useState } from 'react';
-import { Button, Dialog, Tooltip } from '@/components/ui';
+import { Button, Dialog, Tooltip, Pagination, Notification, toast } from '@/components/ui';
 import { FiTrash } from 'react-icons/fi';
 import { MdEdit } from 'react-icons/md';
-import OutlinedInput from '@/components/ui/OutlinedInput/OutlinedInput';
+// import OutlinedSelect from '@/components/ui/OutlinedSelect/OutlinedSelect';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
+import { EntityData, entityDataSet } from '../../../../store/dummyEntityData';
+import OutlinedSelect from '@/components/ui/Outlined';
 
-
-interface StateTableProps {
-    data: Array<{
-        Company_Group_Name?: string | { value: string; label: string };
-        Company_Name?: string;
-        State?: string;
-    }>;
-    onDeleteCompanyName: (index: number) => void;
-    onEdit: (index: number, newState: string) => void;
-}
-
-const StateTable: React.FC<StateTableProps> = ({ data, onDeleteCompanyName, onEdit }) => {
+const StateTable: React.FC = () => {
     const [dialogIsOpen, setDialogIsOpen] = useState(false);
     const [itemToDelete, setItemToDelete] = useState<number | null>(null);
     const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
     const [itemToEdit, setItemToEdit] = useState<number | null>(null);
-    // const [editedName, setEditedName] = useState('');
-    const [editedState, setEditedState] = useState('');
-    const [editedName, setEditedName] = useState('');
+    const [selectedCompanyName, setSelectedCompanyName] = useState<SelectOption | null>(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize] = useState(5);
 
+    const states = useMemo(() => {
+        const uniqueStates = new Set(entityDataSet.map(item => item.State));
+        return Array.from(uniqueStates).map(state => ({ label: state, value: state }));
+    }, []);
 
-    const columns: ColumnDef<StateTableProps>[] = useMemo(
+    const columns: ColumnDef<EntityData>[] = useMemo(
         () => [
             {
                 header: 'Company Group Name',
@@ -43,7 +40,7 @@ const StateTable: React.FC<StateTableProps> = ({ data, onDeleteCompanyName, onEd
                 ),
             },
             {
-                header: 'Location(State)',
+                header: 'Location (State)',
                 accessorKey: 'State',
                 cell: (props) => (
                     <div className="w-52 truncate">{props.getValue() as string}</div>
@@ -76,23 +73,16 @@ const StateTable: React.FC<StateTableProps> = ({ data, onDeleteCompanyName, onEd
         ],
         []
     );
-    
+
     const openDeleteDialog = (index: number) => {
         setItemToDelete(index);
         setDialogIsOpen(true);
     };
 
-
     const openEditDialog = (index: number) => {
         setItemToEdit(index);
-        setEditedName(data[index].Company_Name || ''); // Preserve this for potential use or future features
-        setEditedState(data[index].State || '');
+        setSelectedCompanyName({ label: entityDataSet[index].State || '', value: entityDataSet[index].State || '' });
         setEditDialogIsOpen(true);
-    };
-
-    const openDialog = (index: number) => {
-        setItemToDelete(index);
-        setDialogIsOpen(true);
     };
 
     const handleDialogClose = () => {
@@ -100,117 +90,98 @@ const StateTable: React.FC<StateTableProps> = ({ data, onDeleteCompanyName, onEd
         setEditDialogIsOpen(false);
         setItemToDelete(null);
         setItemToEdit(null);
-        // setEditedName('');
-        setEditedState('');
+        setSelectedCompanyName(null);
     };
 
     const handleDialogOk = () => {
         if (itemToDelete !== null) {
-            onDeleteCompanyName(itemToDelete);
+            // Handle delete action
+            entityDataSet.splice(itemToDelete, 1); // Example delete action
+
+            // Show notification
+            toast.push(
+                <Notification
+                    title="Deleted"
+                    type="danger"
+                >
+                    The item has been deleted successfully.
+                </Notification>
+            );
+
             setDialogIsOpen(false);
             setItemToDelete(null);
         }
     };
 
     const handleEditConfirm = () => {
-        if (itemToEdit !== null && editedState.trim()) {
-            onEdit(itemToEdit, editedState.trim());
+        if (itemToEdit !== null && selectedCompanyName) {
+            // Handle edit action
+            // Update the state in the entityDataSet
+            entityDataSet[itemToEdit].State = selectedCompanyName.value;
+
+            // Show notification
+            toast.push(
+                <Notification
+                    title="Success"
+                    type="success"
+                >
+                    The state has been updated successfully.
+                </Notification>
+            );
+
             setEditDialogIsOpen(false);
             setItemToEdit(null);
-            // setEditedName('');
-            setEditedState('');
+            setSelectedCompanyName(null);
         }
     };
 
-    const renderCompanyGroupName = (companyGroupName: string | { value: string; label: string } | undefined) => {
-        if (typeof companyGroupName === 'object' && companyGroupName !== null) {
-            return companyGroupName.label || '-';
-        }
-        return companyGroupName || '-';
+    const onPaginationChange = (page: number) => {
+        setCurrentPage(page);
     };
-
-       // State for table pagination and sorting
-   const [tableData, setTableData] = useState({
-    total: data.length,
-    pageIndex: 1,
-    pageSize: 10,
-    query: '',
-    sort: { order: '', key: '' },
-});
-
-// Function to handle pagination changes
-const onPaginationChange = (page: number) => {
-    setTableData(prev => ({ ...prev, pageIndex: page }));
-};
-
-// Function to handle page size changes
-const onSelectChange = (value: number) => {
-    setTableData(prev => ({ ...prev, pageSize: Number(value), pageIndex: 1 }));
-};
 
     return (
-        <div className='relative'>
-             {data.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
-                No data available
-            </div>
-        ) : (
+        <div className="relative">
             <DataTable
                 columns={columns}
-                data={data}
-                skeletonAvatarColumns={[0]}
-                skeletonAvatarProps={{ className: 'rounded-md' }}
+                data={entityDataSet.slice((currentPage - 1) * pageSize, currentPage * pageSize)}
                 loading={false}
-                pagingData={{
-                    total: data.length,
-                    pageIndex: 1,
-                    pageSize: 10,
-                }}
             />
-        )}
 
-            <Dialog
-                isOpen={dialogIsOpen}
-                onClose={handleDialogClose}
-                onRequestClose={handleDialogClose}
-            >
+            <div className="mt-4">
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={Math.ceil(entityDataSet.length / pageSize)}
+                    onChange={onPaginationChange}
+                />
+            </div>
+
+            <Dialog isOpen={dialogIsOpen} onClose={handleDialogClose}>
                 <h5 className="mb-4">Confirm Clearing Company Name</h5>
                 <p>
                     Are you sure you want to clear this company name? This action will remove only the company name, keeping the rest of the row intact.
                 </p>
                 <div className="text-right mt-6">
-                    <Button
-                        className="ltr:mr-2 rtl:ml-2"
-                        variant="plain"
-                        onClick={handleDialogClose}
-                    >
+                    <Button variant="plain" onClick={handleDialogClose}>
                         Cancel
                     </Button>
-                    <Button variant="solid" onClick={handleDialogOk}>
+                    <Button variant="solid" onClick={handleDialogOk} color="red-600">
                         Clear
                     </Button>
                 </div>
             </Dialog>
 
-            <Dialog
-                isOpen={editDialogIsOpen}
-                onClose={handleDialogClose}
-                onRequestClose={handleDialogClose}
-            >
+            <Dialog isOpen={editDialogIsOpen} onClose={handleDialogClose}>
                 <h5 className="mb-4">Edit State</h5>
-                <div className="mb-4">
-                    <OutlinedInput 
-                        label="State"
-                        value={editedState}
-                        onChange={(value: string) => setEditedState(value)}
-                    />
-                </div>
+                <OutlinedSelect
+                    label="Select State"
+                    options={states}
+                    value={selectedCompanyName}
+                    onChange={(option: SelectOption | null) => {
+                        setSelectedCompanyName(option);
+                    }}
+                />
                 <div className="text-right mt-6">
-                    <Button
-                        className="ltr:mr-2 rtl:ml-2"
-                        variant="plain"
-                        onClick={handleDialogClose}
-                    >
+                    <Button variant="plain" onClick={handleDialogClose}>
                         Cancel
                     </Button>
                     <Button variant="solid" onClick={handleEditConfirm}>

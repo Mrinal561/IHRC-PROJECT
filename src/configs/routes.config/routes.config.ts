@@ -205,7 +205,5 @@ export const protectedRoutes = [
         path: '/user-entity',
         component: lazy(() => import('@/views/IHRC/components/UserEntity/UserEntity')),
         authority: [],
-    },
-
-    
+    },    
 ]

@@ -1,27 +1,17 @@
 import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Dialog, Tooltip } from '@/components/ui';
+import { Button, Dialog, Tooltip, Notification, toast } from '@/components/ui'; // Import Notification and toast
 import { FiSettings, FiTrash } from 'react-icons/fi';
 import { MdEdit } from 'react-icons/md';
 import OutlinedInput from '@/components/ui/OutlinedInput/OutlinedInput';
-import DataTable, { ColumnDef } from '@/components/shared/DataTable';
+import DataTable, { ColumnDef, OnSortParam } from '@/components/shared/DataTable';
 import { APP_PREFIX_PATH } from '@/constants/route.constant';
 import { RiEyeLine } from 'react-icons/ri';
+import cloneDeep from 'lodash/cloneDeep';
 
+import { EntityData, entityDataSet } from '../../../../store/dummyEntityData';
 
-
-interface CompanyData {
-    Company_Group_Name?: string | { value: string; label: string };
-    Company_Name?: string;
-}
-
-interface CompanyNameTableProps {
-    data: CompanyData[];
-    onDelete: (index: number) => void;
-    onEdit: (index: number, newName: string) => void;
-}
-
-const CompanyNameTable: React.FC<CompanyNameTableProps> = ({ data, onDelete, onEdit }) => {
+const CompanyNameTable: React.FC = () => {
     const [dialogIsOpen, setDialogIsOpen] = useState(false);
     const [itemToDelete, setItemToDelete] = useState<number | null>(null);
     const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
@@ -29,10 +19,16 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({ data, onDelete, onE
     const [editedName, setEditedName] = useState('');
     const navigate = useNavigate();
 
+    const [tableData, setTableData] = useState({
+        total: entityDataSet.length,
+        pageIndex: 1,
+        pageSize: 5,
+        query: '',
+        sort: { order: '', key: '' },
+    });
+
     const handleSetupClick = (setupType: string, companyName: string, companyGroupName: string) => {
-        // Convert company name to URL-safe string
         const urlSafeCompanyName = encodeURIComponent(companyName.replace(/\s+/g, '-').toLowerCase());
-        // Navigate to the appropriate setup page
         navigate(`${APP_PREFIX_PATH}/IHRC/${setupType.toLowerCase()}-setup/${urlSafeCompanyName}`, { state: { companyName, companyGroupName } });
     };
 
@@ -43,116 +39,20 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({ data, onDelete, onE
         });
     };
 
-
-    const columns: ColumnDef<CompanyData>[] = useMemo(
+    const columns: ColumnDef<EntityData>[] = useMemo(
         () => [
             {
                 header: 'Company Group Name',
                 accessorKey: 'Company_Group_Name',
                 cell: (props) => (
-                    <div className="w-52 truncate">
-                        {typeof props.getValue() === 'object'
-                            ? (props.getValue() as { label: string }).label
-                            : props.getValue() as string}
-                    </div>
+                    <div className="w-96 truncate">{props.getValue() as string}</div>
                 ),
             },
             {
                 header: 'Company Name',
                 accessorKey: 'Company_Name',
                 cell: (props) => (
-                    <div className="w-52 truncate">{props.getValue() as string}</div>
-                ),
-            },
-            {
-                header: 'PF Setup',
-                id: 'pf_setup',
-                cell: ({ row }) => (
-                    <div className="w-20 truncate">
-                    <Tooltip title="PF Config">
-                        <Button
-                            size="sm"
-                            onClick={() => handleSetupClick(
-                                'PF', 
-                                row.original.Company_Name || '',
-                                typeof row.original.Company_Group_Name === 'object'
-                                    ? row.original.Company_Group_Name.value
-                                    : row.original.Company_Group_Name || ''
-                            )}
-                            icon={<FiSettings />}
-                            className="text-blue-500"
-                            />
-                    </Tooltip>
-                            </div>
-                ),
-            },
-            {
-                header: 'PT Setup',
-                id: 'pt_setup',
-                cell: ({ row }) => (
-                    <div className="w-20 truncate">
-
-                    <Tooltip title="PT Config">
-                        <Button
-                            size="sm"
-                            onClick={() => handleSetupClick(
-                                'PT', 
-                                row.original.Company_Name || '',
-                                typeof row.original.Company_Group_Name === 'object'
-                                    ? row.original.Company_Group_Name.value
-                                    : row.original.Company_Group_Name || ''
-                            )}
-                            icon={<FiSettings />}
-                            className="text-blue-500"
-                            />
-                    </Tooltip>
-                            </div>
-                ),
-            },
-            {
-                header: 'ESI Setup',
-                id: 'esi_setup',
-                cell: ({ row }) => (
-                    <div className="w-20 truncate">
-
-                    <Tooltip title="ESI Config">
-                        <Button
-                            size="sm"
-                            onClick={() => handleSetupClick(
-                                'ESI', 
-                                row.original.Company_Name || '',
-                                typeof row.original.Company_Group_Name === 'object'
-                                    ? row.original.Company_Group_Name.value
-                                    : row.original.Company_Group_Name || ''
-                            )}
-                            icon={<FiSettings />}
-                            className="text-blue-500"
-                        />
-                    </Tooltip>
-                    </div>
-                ),
-            },
-            {
-                header: 'LWF Setup',
-                id: 'lwf_setup',
-                cell: ({ row }) => (
-                    <div className="w-20 truncate">
-
-                    <Tooltip title="LWF Config">
-                        <Button
-                            size="sm"
-                            onClick={() => handleSetupClick(
-                                'LWF', 
-                                row.original.Company_Name || '',
-                                typeof row.original.Company_Group_Name === 'object'
-                                    ? row.original.Company_Group_Name.value
-                                    : row.original.Company_Group_Name || ''
-                            )}
-                            icon={<FiSettings />}
-                            className="text-blue-500"
-                        />
-                    </Tooltip>
-                    </div>
+                    <div className="w-96 truncate">{props.getValue() as string}</div>
                 ),
             },
             {
@@ -160,14 +60,60 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({ data, onDelete, onE
                 id: 'actions',
                 cell: ({ row }) => (
                     <div className="flex items-center gap-2">
+                        <Tooltip title="PF Config">
+                            <Button
+                                size="sm"
+                                onClick={() => handleSetupClick(
+                                    'PF', 
+                                    row.original.Company_Name || '',
+                                    row.original.Company_Group_Name || ''
+                                )}
+                                icon={<FiSettings />}
+                                className="text-blue-500"
+                            />
+                        </Tooltip>
+                         <Tooltip title="PT Config">
+                            <Button
+                                size="sm"
+                                onClick={() => handleSetupClick(
+                                    'PT', 
+                                    row.original.Company_Name || '',
+                                    row.original.Company_Group_Name || ''
+                                )}
+                                icon={<FiSettings />}
+                                className="text-blue-500"
+                            />
+                        </Tooltip>
+                         <Tooltip title="ESI Config">
+                            <Button
+                                size="sm"
+                                onClick={() => handleSetupClick(
+                                    'ESI', 
+                                    row.original.Company_Name || '',
+                                    row.original.Company_Group_Name || ''
+                                )}
+                                icon={<FiSettings />}
+                                className="text-blue-500"
+                            />
+                        </Tooltip>
+                        <Tooltip title="LWF Config">
+                            <Button
+                                size="sm"
+                                onClick={() => handleSetupClick(
+                                    'LWF', 
+                                    row.original.Company_Name || '',
+                                    row.original.Company_Group_Name || ''
+                                )}
+                                icon={<FiSettings />}
+                                className="text-blue-500"
+                            />
+                        </Tooltip>
                         <Tooltip title="View Details">
                             <Button
                                 size="sm"
                                 onClick={() => handleViewDetails(
                                     row.original.Company_Name || '',
-                                    typeof row.original.Company_Group_Name === 'object'
-                                        ? row.original.Company_Group_Name.value
-                                        : row.original.Company_Group_Name || ''
+                                    row.original.Company_Group_Name || ''
                                 )}
                                 icon={<RiEyeLine />}
                                 className="text-blue-500"
@@ -201,16 +147,10 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({ data, onDelete, onE
         setDialogIsOpen(true);
     };
 
-
     const openEditDialog = (index: number) => {
         setItemToEdit(index);
-        setEditedName(data[index].Company_Name || '');
+        setEditedName(entityDataSet[index].Company_Name || '');
         setEditDialogIsOpen(true);
-    };
-
-    const openDialog = (index: number) => {
-        setItemToDelete(index);
-        setDialogIsOpen(true);
     };
 
     const handleDialogClose = () => {
@@ -223,75 +163,99 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({ data, onDelete, onE
 
     const handleDeleteConfirm = () => {
         if (itemToDelete !== null) {
-            onDelete(itemToDelete);
+            // Implement delete functionality here
             handleDialogClose();
-        }
-    };
-
-    const handleDialogOk = () => {
-        if (itemToDelete !== null) {
-            onDelete(itemToDelete);
-            setDialogIsOpen(false);
-            setItemToDelete(null);
         }
     };
 
     const handleEditConfirm = () => {
         if (itemToEdit !== null && editedName.trim()) {
-            onEdit(itemToEdit, editedName.trim());
+            // Implement edit functionality here
+            // Show success notification
+            toast.push(
+                <Notification
+                    title="Success"
+                    type="success"
+                >
+                    The company name has been updated successfully.
+                </Notification>
+            );
             setEditDialogIsOpen(false);
             setItemToEdit(null);
             setEditedName('');
+        } else {
+            // Show error notification if no name provided
+            toast.push(
+                <Notification
+                    title="Error"
+                    type="danger"
+                >
+                    Please enter a valid company name.
+                </Notification>
+            );
         }
     };
 
-    const renderCompanyGroupName = (companyGroupName: string | { value: string; label: string } | undefined) => {
-        if (typeof companyGroupName === 'object' && companyGroupName !== null) {
-            return companyGroupName.label || '-';
-        }
-        return companyGroupName || '-';
+    const onPaginationChange = (page: number) => {
+        const newTableData = cloneDeep(tableData);
+        newTableData.pageIndex = page;
+        setTableData(newTableData);
     };
 
-        // State for table pagination and sorting
-        const [tableData, setTableData] = useState({
-            total: data.length,
-            pageIndex: 1,
-            pageSize: 10,
-            query: '',
-            sort: { order: '', key: '' },
-        });
-        
-        // Function to handle pagination changes
-        const onPaginationChange = (page: number) => {
-            setTableData(prev => ({ ...prev, pageIndex: page }));
-        };
-        
-        // Function to handle page size changes
-        const onSelectChange = (value: number) => {
-            setTableData(prev => ({ ...prev, pageSize: Number(value), pageIndex: 1 }));
-        };
-        
+    const onSelectChange = (value: number) => {
+        const newTableData = cloneDeep(tableData);
+        newTableData.pageSize = Number(value);
+        newTableData.pageIndex = 1;
+        setTableData(newTableData);
+    };
+
+    const getSortedData = () => {
+        if (tableData.sort.order && tableData.sort.key) {
+            return [...entityDataSet].sort((a, b) => {
+                if (a[tableData.sort.key] < b[tableData.sort.key]) return tableData.sort.order === 'asc' ? -1 : 1;
+                if (a[tableData.sort.key] > b[tableData.sort.key]) return tableData.sort.order === 'asc' ? 1 : -1;
+                return 0;
+            });
+        }
+        return entityDataSet;
+    };
+
+    const getPaginatedData = () => {
+        const sortedData = getSortedData();
+        const startIndex = (tableData.pageIndex - 1) * tableData.pageSize;
+        const endIndex = startIndex + tableData.pageSize;
+        return sortedData.slice(startIndex, endIndex);
+    };
+
+    const onSort = (sort: OnSortParam) => {
+        const newTableData = cloneDeep(tableData);
+        newTableData.sort = sort;
+        setTableData(newTableData);
+    };
 
     return (
         <div className='relative'>
-            {data.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
-                No data available
-            </div>
-        ) : (
-            <DataTable
-                columns={columns}
-                data={data}
-                skeletonAvatarColumns={[0]}
-                skeletonAvatarProps={{ className: 'rounded-md' }}
-                loading={false}
-                pagingData={{
-                    total: data.length,
-                    pageIndex: 1,
-                    pageSize: 10,
-                }}
-            />
-        )}
+            {entityDataSet.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                    No data available
+                </div>
+            ) : (
+                <DataTable
+                    columns={columns}
+                    data={getPaginatedData()}
+                    skeletonAvatarColumns={[0]}
+                    skeletonAvatarProps={{ className: 'rounded-md' }}
+                    loading={false}
+                    pagingData={{
+                        total: tableData.total,
+                        pageIndex: tableData.pageIndex,
+                        pageSize: tableData.pageSize,
+                    }}
+                    onPaginationChange={onPaginationChange}
+                    onSelectChange={onSelectChange}
+                    onSort={onSort}
+                />
+            )}
 
             <Dialog
                 isOpen={dialogIsOpen}
@@ -300,7 +264,7 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({ data, onDelete, onE
             >
                 <h5 className="mb-4">Confirm Deletion</h5>
                 <p>
-                    Are you sure you want to delete this company name? This action will remove only the company name, not the entire row.
+                    Are you sure you want to delete this company? This action cannot be undone.
                 </p>
                 <div className="text-right mt-6">
                     <Button
@@ -310,13 +274,13 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({ data, onDelete, onE
                     >
                         Cancel
                     </Button>
-                    <Button variant="solid" onClick={handleDialogOk}>
+                    <Button variant="solid" onClick={handleDeleteConfirm}>
                         Delete
                     </Button>
                 </div>
             </Dialog>
 
-             <Dialog
+            <Dialog
                 isOpen={editDialogIsOpen}
                 onClose={handleDialogClose}
                 onRequestClose={handleDialogClose}

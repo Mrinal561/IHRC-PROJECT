@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Button, Input, Dialog } from '@/components/ui';
+import { Button, Input, Dialog, toast, Notification } from '@/components/ui';
 import OutlinedInput from '@/components/ui/OutlinedInput';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
+import { Select, DatePicker } from '@/components/ui';
+import { MultiValue, ActionMeta } from 'react-select';
 
 export interface PTSetupData {
     Company_Group_Name: string;
@@ -10,11 +12,11 @@ export interface PTSetupData {
     ptLocation: string;
     ptEnrollmentNumber: string;
     ptRegistrationNumber: string;
-    ptRegistrationDate: string;
+    ptRegistrationDate: Date | null;
     ptRemmitanceMode: string;
     ptUserId?: string;
     ptPassword?: string;
-    authorizedSignatory: string;
+    authorizedSignatories: string[];
     signatoryDesignation?: string;
     signatoryMobile?: string;
     signatoryEmail?: string;
@@ -24,16 +26,11 @@ export interface PTSetupData {
     ptrcUpload?: File | null;
 }
 
-interface ESISetupSidePanelProps {
-  addPFSetup: (newPFSetup: PTSetupData) => void;
+interface PTSetupSidePanelProps {
+  // addPFSetup: (newPFSetup: PTSetupData) => void;
   onClose: () => void;
   companyGroupName: string;
   companyName: string;
-}
-
-interface SelectOption {
-  value: string;
-  label: string;
 }
 
 interface Signatory {
@@ -43,8 +40,8 @@ interface Signatory {
   email: string;
 }
 
-const PTSetupPanel: React.FC<ESISetupSidePanelProps> = ({
-  addPFSetup,
+const PTSetupPanel: React.FC<PTSetupSidePanelProps> = ({
+  // addPFSetup,
   onClose,
   companyGroupName,
   companyName,
@@ -52,12 +49,12 @@ const PTSetupPanel: React.FC<ESISetupSidePanelProps> = ({
   const [PTSetupData, setPTSetupData] = useState<PTSetupData>({
     Company_Group_Name: companyGroupName,
     Company_Name: companyName,
-    authorizedSignatory: '',
+    authorizedSignatories: [],
     ptState: '',
     ptLocation: '',
     ptRegistrationNumber: '',
     ptEnrollmentNumber: '',
-    ptRegistrationDate: '',
+    ptRegistrationDate: null,
     ptRemmitanceMode: '',
     ptecPaymentFrequency: '',
     ptrcPaymentFrequency: ''
@@ -77,47 +74,47 @@ const PTSetupPanel: React.FC<ESISetupSidePanelProps> = ({
     email: '',
   });
 
-  const handleInputChange = (field: keyof PTSetupData, value: string | File | null) => {
+  const handleInputChange = (field: keyof PTSetupData, value: string | Date | null | File | string[]) => {
     setPTSetupData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleSignatoryChange = (selectedOption: SelectOption | null) => {
-    if (selectedOption) {
-      if (selectedOption.value === 'add_new') {
-        setShowAddSignatoryDialog(true);
-      } else {
-        const selectedSignatory = existingSignatories.find(s => s.name === selectedOption.value);
-        if (selectedSignatory) {
-          setPTSetupData(prev => ({
-            ...prev,
-            authorizedSignatory: selectedSignatory.name,
-            signatoryDesignation: selectedSignatory.designation,
-            signatoryMobile: selectedSignatory.mobile,
-            signatoryEmail: selectedSignatory.email,
-          }));
-        }
-      }
+  const handleSignatoryChange = (
+    newValue: MultiValue<{ value: string; label: string }>,
+    actionMeta: ActionMeta<{ value: string; label: string }>
+  ) => {
+    const selectedSignatories = newValue.map(option => option.value);
+    handleInputChange('authorizedSignatories', selectedSignatories);
+
+    if (actionMeta.action === 'select-option' && actionMeta.option?.value === 'add_new') {
+      setShowAddSignatoryDialog(true);
+      handleInputChange('authorizedSignatories', selectedSignatories.filter(name => name !== 'add_new'));
     }
   };
 
   const handleSubmit = () => {
-    if (PTSetupData.ptState && PTSetupData.ptLocation && PTSetupData.authorizedSignatory) {
-      addPFSetup(PTSetupData);
+    if (PTSetupData.ptState && PTSetupData.ptLocation && PTSetupData.authorizedSignatories.length > 0) {
+      // addPFSetup(PTSetupData);
+      toast.push(
+        <Notification title="Success" type="success">
+          <div className="flex items-center">
+            <span>PT Setup successfully created</span>
+          </div>
+        </Notification>
+      );
       onClose();
     } else {
-      console.error('Please fill in all required fields.');
+      toast.push(
+        <Notification title="Error" type="danger">
+          <div className="flex items-center">
+            <span>Please fill in all required fields</span>
+          </div>
+        </Notification>
+      );
     }
   };
 
   const handleAddSignatory = () => {
     setExistingSignatories(prev => [...prev, newSignatory]);
-    setPTSetupData(prev => ({
-      ...prev,
-      authorizedSignatory: newSignatory.name,
-      signatoryDesignation: newSignatory.designation,
-      signatoryMobile: newSignatory.mobile,
-      signatoryEmail: newSignatory.email,
-    }));
     setShowAddSignatoryDialog(false);
     setNewSignatory({
       name: '',
@@ -132,108 +129,118 @@ const PTSetupPanel: React.FC<ESISetupSidePanelProps> = ({
   };
 
   return (
-    <div className="p-4 space-y-4">
+    <div className="py-4 px-2 space-y-4">
       <div className='flex gap-4 items-center'>
+        <div className='w-full'>
         <OutlinedInput
           label="Company Group Name"
           value={PTSetupData.Company_Group_Name}
           onChange={(value: string) => handleInputChange('Company_Group_Name', value)}
-        />
+          />
+          </div>
+          <div className='w-full'>
         <OutlinedInput
           label="Company Name"
           value={PTSetupData.Company_Name}
           onChange={(value: string) => handleInputChange('Company_Name', value)}
-        />
+          />
+          </div>
       </div>
 
-      <div className='flex gap-4 items-center'>
-        <div className='flex flex-col gap-4'>
+      <div className='flex gap-8 items-center'>
+        <div className='flex flex-col gap-2'>
           <label>Enter the PT State</label>
+          <div className='w-56'>
           <OutlinedInput
             label="State"
             value={PTSetupData.ptState}
             onChange={(value: string) => handleInputChange('ptState', value)}
-          />
+            />
+            </div>
         </div>
-        <div className='flex flex-col gap-4'>
+        <div className='flex flex-col gap-2'>
           <label>Enter the PT Location</label>
+          <div className='w-56'>
           <OutlinedInput
             label="Location"
             value={PTSetupData.ptLocation}
             onChange={(value: string) => handleInputChange('ptLocation', value)}
-          />
+            />
+            </div>
         </div>
-      </div>
-
-      <div className='flex gap-4 items-center'>
-      <div className='flex flex-col gap-4'>
+        <div className='flex flex-col gap-2'>
           <label>PT Registration Number</label>
+          <div className='w-56'>
           <OutlinedInput
             label="Registration Number"
             value={PTSetupData.ptRegistrationNumber || ''}
             onChange={(value: string ) => handleInputChange('ptRegistrationNumber', value || '')}
-          />
-        </div>
-        <div className='flex flex-col gap-4'>
-          <label>PT Registration Date</label>
-          <OutlinedInput
-            label="PT Date"
-            value={PTSetupData.ptRegistrationDate || ''}
-            onChange={(value: string) => handleInputChange('ptRegistrationDate', value)}
-          />
+            />
+            </div>
         </div>
       </div>
 
-      <div className='flex gap-4 items-center'>
-      <div className='flex flex-col gap-4'>
-          <label>Enter the Remmitance Mode</label>
-          <OutlinedInput
-            label="Mode"
-            value={PTSetupData.ptRemmitanceMode || ''}
-            onChange={(value: string ) => handleInputChange('ptRemmitanceMode', value || '')}
-          />
-        </div>
-        <div className='flex flex-col gap-4'>
+      <div className='flex gap-8 items-center'>
+        <div className='flex flex-col gap-2'>
           <label>Enter User ID</label>
+          <div className='w-56'>
           <OutlinedInput
             label="User ID (Optional)"
             value={PTSetupData.ptUserId || ''}
             onChange={(value: string) => handleInputChange('ptUserId', value)}
-          />
+            />
+            </div>
         </div>
-      </div>
-
-      <div className='flex gap-4 items-center'>
-        <div className='flex flex-col gap-4'>
+         <div className='flex flex-col gap-2'>
           <label>Enter User Password</label>
+          <div className='w-56'>
           <OutlinedInput
             label="Password (Optional)"
             value={PTSetupData.ptPassword || ''}
             onChange={(value: string) => handleInputChange('ptPassword', value)}
-          />
+            />
+            </div>
+        </div>
+        <div className='flex flex-col gap-2'>
+          <label>Enter the Remmitance Mode</label>
+          <div className='w-56'>
+          <OutlinedInput
+            label="Mode"
+            value={PTSetupData.ptRemmitanceMode || ''}
+            onChange={(value: string ) => handleInputChange('ptRemmitanceMode', value || '')}
+            />
+            </div>
+        </div>
+      </div>
+      <div className='flex gap-4 items-center'>
+        <div className='flex flex-col gap-2'>
+          <label>PT Registration Date</label>
+          <div className='w-56'>
+          <DatePicker
+            placeholder="Select date"
+            value={PTSetupData.ptRegistrationDate}
+            onChange={(date: Date | null) => handleInputChange('ptRegistrationDate', date)}
+            />
+            </div>
         </div>
 
-        <div className='flex flex-col gap-4 w-52'>
-          <label>Choose the Signatory</label>
-          <OutlinedSelect
-            label="Authorized Signatory"
+        <div className='flex flex-col gap-2 w-full'>
+          <label>Choose the Signatories</label>
+          <div className=''>
+          <Select
+            isMulti
             options={[
               ...existingSignatories.map(s => ({ value: s.name, label: s.name })),
               { value: 'add_new', label: '+ Add New Signatory' }
             ]}
-            value={PTSetupData.authorizedSignatory ? { value: PTSetupData.authorizedSignatory, label: PTSetupData.authorizedSignatory } : null}
+            value={PTSetupData.authorizedSignatories.map(name => ({ value: name, label: name }))}
             onChange={handleSignatoryChange}
-          />
+            />
+            </div>
         </div>
       </div>
 
-     
-
-
-
-
-
-      <div className='flex flex-col gap-4'>
+      <div className='flex flex-col gap-2'>
         <label>Please upload the PT certificate</label>
         <Input
           id="file-upload"
