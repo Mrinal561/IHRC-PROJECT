@@ -62,7 +62,7 @@ const CompanyNameTable: React.FC = () => {
                     <div className="flex items-center gap-2">
                         <Tooltip title="View Details">
                             <Button
-                                size="sm"
+                                size="xs"
                                 onClick={() => handleViewDetails(
                                     row.original.Company_Name || '',
                                     row.original.Company_Group_Name || ''
@@ -73,7 +73,7 @@ const CompanyNameTable: React.FC = () => {
                         </Tooltip>
                         <Tooltip title="Edit">
                             <Button
-                                size="sm"
+                                size="xs"
                                 onClick={() => openEditDialog(row.index)}
                                 icon={<MdEdit />}
                                 className="text-blue-500"
@@ -81,7 +81,7 @@ const CompanyNameTable: React.FC = () => {
                         </Tooltip>
                         <Tooltip title="Delete">
                             <Button
-                                size="sm"
+                                size="xs"
                                 onClick={() => openDeleteDialog(row.index)}
                                 icon={<FiTrash />}
                                 className="text-red-500"
