@@ -39,9 +39,9 @@ const CompanyDetails: React.FC = () => {
                                 <DetailItem label="PF Registration Date" value="2023-01-01" />
                                 <DetailItem label="PF User ID" value="User01" />
                                 <DetailItem label="PF Password" value="password01" />
+                                <DetailItem label="Authorized Signatory" value="Amit" />
                             </DetailColumn>
                             <DetailColumn>
-                                <DetailItem label="Authorized Signatory" value="Amit" />
                                 <DetailItem label="Designation" value="Tech Head" />
                                 <DetailItem label="Mobile" value="9145786945" />
                                 <DetailItem label="Email" value="amit@gmail.com" />

@@ -4,6 +4,7 @@ import { Button } from '@/components/ui';
 import { HiPlusCircle } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 import { APP_PREFIX_PATH } from '@/constants/route.constant';
+import Bu from './Bu';
 
 const BranchTool: React.FC = () => {
   const navigate = useNavigate();
@@ -13,7 +14,8 @@ const BranchTool: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className='flex gap-3'>
+      <Bu></Bu>
       <Button variant="solid" onClick={handleAddBranch} icon={<HiPlusCircle />} size="sm">
         Assign Branch
       </Button>

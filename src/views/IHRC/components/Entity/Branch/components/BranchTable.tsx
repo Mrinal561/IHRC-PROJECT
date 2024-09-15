@@ -1,32 +1,21 @@
+
 import React, { useMemo, useState } from 'react';
-import { Table, Button, Dialog, Tooltip } from '@/components/ui';
+import { Table, Button, Dialog, Tooltip, Notification, toast } from '@/components/ui';
 import { FiTrash } from 'react-icons/fi';
 import { MdEdit } from 'react-icons/md';
 import OutlinedInput from '@/components/ui/OutlinedInput/OutlinedInput';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
+import { EntityData, entityDataSet } from '../../../../store/dummyEntityData';
 
-
-interface BranchTableProps {
-    data: Array<{
-        Company_Group_Name?: string | { value: string; label: string };
-        Company_Name?: string;
-        State?: string;
-        Location?: string;
-        Branch?: string; // New field for Branch
-    }>;
-    onDeleteBranch: (index: number) => void; // Renamed prop
-    onEdit: (index: number, newName: string) => void;
-}
-
-const BranchTable: React.FC<BranchTableProps> = ({ data, onDeleteBranch, onEdit }) => {
+const BranchTable: React.FC = () => {
+    const [data, setData] = useState<EntityData[]>(entityDataSet);
     const [dialogIsOpen, setDialogIsOpen] = useState(false);
     const [itemToDelete, setItemToDelete] = useState<number | null>(null);
     const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
     const [itemToEdit, setItemToEdit] = useState<number | null>(null);
     const [editedName, setEditedName] = useState('');
 
-
-    const columns: ColumnDef<BranchTableProps>[] = useMemo(
+    const columns: ColumnDef<EntityData>[] = useMemo(
         () => [
             {
                 header: 'Company Group Name',
@@ -53,16 +42,16 @@ const BranchTable: React.FC<BranchTableProps> = ({ data, onDeleteBranch, onEdit 
                 header: 'Location',
                 accessorKey: 'Location',
                 cell: (props) => (
-                    <div className="w-52 truncate">{props.getValue() as string}</div>
+                    <div className="w-40 truncate">{props.getValue() as string}</div>
                 ),
             },
             {
                 header: 'Branch',
                 accessorKey: 'Branch',
                 cell: (props) => (
-                  <div className="w-52 truncate">{props.getValue() as string}</div>
+                  <div className="w-40 truncate">{props.getValue() as string}</div>
                 ),
-              },
+            },
             {
                 header: 'Actions',
                 id: 'actions',
@@ -91,23 +80,26 @@ const BranchTable: React.FC<BranchTableProps> = ({ data, onDeleteBranch, onEdit 
         []
     );
 
+    const openNotification = (type: 'success' | 'info' | 'danger' | 'warning', message: string) => {
+        toast.push(
+            <Notification
+                title={type.charAt(0).toUpperCase() + type.slice(1)}
+                type={type}
+            >
+                {message}
+            </Notification>
+        )
+    }
+
     const openDeleteDialog = (index: number) => {
         setItemToDelete(index);
         setDialogIsOpen(true);
     };
 
-
-
-
     const openEditDialog = (index: number) => {
         setItemToEdit(index);
-        setEditedName(data[index].Branch || ''); // Set initial value for Branch
+        setEditedName(data[index].Branch || '');
         setEditDialogIsOpen(true);
-    };
-
-    const openDialog = (index: number) => {
-        setItemToDelete(index);
-        setDialogIsOpen(true);
     };
 
     const handleDialogClose = () => {
@@ -120,46 +112,42 @@ const BranchTable: React.FC<BranchTableProps> = ({ data, onDeleteBranch, onEdit 
 
     const handleDialogOk = () => {
         if (itemToDelete !== null) {
-            onDeleteBranch(itemToDelete); // Use the onDeleteBranch function
+            const newData = [...data];
+            newData.splice(itemToDelete, 1);
+            setData(newData);
             setDialogIsOpen(false);
             setItemToDelete(null);
+            openNotification('danger', 'Branch deleted successfully');
         }
     };
 
     const handleEditConfirm = () => {
         if (itemToEdit !== null && editedName.trim()) {
-            onEdit(itemToEdit, editedName.trim());
+            const newData = [...data];
+            newData[itemToEdit].Branch = editedName.trim();
+            setData(newData);
             setEditDialogIsOpen(false);
             setItemToEdit(null);
             setEditedName('');
+            openNotification('success', 'Branch updated successfully');
         }
     };
 
-    const renderCompanyGroupName = (companyGroupName: string | { value: string; label: string } | undefined) => {
-        if (typeof companyGroupName === 'object' && companyGroupName !== null) {
-            return companyGroupName.label || '-';
-        }
-        return companyGroupName || '-';
+    const [tableData, setTableData] = useState({
+        total: data.length,
+        pageIndex: 1,
+        pageSize: 5,
+        query: '',
+        sort: { order: '', key: '' },
+    });
+    
+    const onPaginationChange = (page: number) => {
+        setTableData(prev => ({ ...prev, pageIndex: page }));
     };
-
-        // State for table pagination and sorting
-        const [tableData, setTableData] = useState({
-            total: data.length,
-            pageIndex: 1,
-            pageSize: 10,
-            query: '',
-            sort: { order: '', key: '' },
-        });
-        
-        // Function to handle pagination changes
-        const onPaginationChange = (page: number) => {
-            setTableData(prev => ({ ...prev, pageIndex: page }));
-        };
-        
-        // Function to handle page size changes
-        const onSelectChange = (value: number) => {
-            setTableData(prev => ({ ...prev, pageSize: Number(value), pageIndex: 1 }));
-        };
+    
+    const onSelectChange = (value: number) => {
+        setTableData(prev => ({ ...prev, pageSize: Number(value), pageIndex: 1 }));
+    };
 
     return (
         <div className='relative'>
@@ -176,9 +164,11 @@ const BranchTable: React.FC<BranchTableProps> = ({ data, onDeleteBranch, onEdit 
                 loading={false}
                 pagingData={{
                     total: data.length,
-                    pageIndex: 1,
-                    pageSize: 10,
+                    pageIndex: tableData.pageIndex,
+                    pageSize: tableData.pageSize,
                 }}
+                onPaginationChange={onPaginationChange}
+                onSelectChange={onSelectChange}
             />
         )}
 

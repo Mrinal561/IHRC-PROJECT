@@ -164,8 +164,8 @@ const StateTable: React.FC = () => {
                     <Button variant="plain" onClick={handleDialogClose}>
                         Cancel
                     </Button>
-                    <Button variant="solid" onClick={handleDialogOk} color="red-600">
-                        Clear
+                    <Button variant="solid" onClick={handleDialogOk}>
+                        Delete
                     </Button>
                 </div>
             </Dialog>

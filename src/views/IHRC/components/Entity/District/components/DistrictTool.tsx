@@ -6,7 +6,7 @@ import { HiPlusCircle } from 'react-icons/hi';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 import { ActionMeta, MultiValue } from 'react-select';
 import { EntityData, entityDataSet } from '../../../../store/dummyEntityData'; // Update this path
-
+import Bu from './Bu';
 interface SelectOption {
   value: string;
   label: string;
@@ -114,7 +114,8 @@ const DistrictTool: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className='flex gap-3'>
+      <Bu/>
       <Button variant="solid" onClick={openDialog} icon={<HiPlusCircle />} size="sm">
         Assign Districts
       </Button>
