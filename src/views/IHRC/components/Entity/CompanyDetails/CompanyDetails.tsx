@@ -142,9 +142,9 @@ const DetailColumn: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 );
 
 const DetailItem: React.FC<{ label: string; value: string }> = ({ label, value }) => (
-    <p className="text-sm">
-        <strong className="text-gray-500">{label}:</strong>{' '}
-        <span className="text-gray-400">{value}</span>
+    <p className="text-sm mb-2">
+        <strong className="text-gray-500 text-sm mb-2">{label}:</strong>{' '}
+        <span className="text-gray-400 mb-2">{value}</span>
     </p>
 );
 
