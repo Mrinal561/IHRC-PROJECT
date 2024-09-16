@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Button, Checkbox } from '@/components/ui';
+import { useNavigate } from 'react-router-dom';
+import { Button, Checkbox, toast, Notification } from '@/components/ui';
 import { IoArrowBack } from 'react-icons/io5';
 import OutlinedSelect from '@/components/ui/Outlined';
 import OutlinedInput from '@/components/ui/OutlinedInput';
 
 const UserForm: React.FC = () => {
-    
+  const navigate = useNavigate();
   const [firstName, setFirstName] = useState('');
   const [LastName, setLastName] = useState('');
   const [email, setemail] = useState('');
@@ -16,21 +17,39 @@ const UserForm: React.FC = () => {
   const [pan, setPan] = useState('');
   const [aadhar, setAadhar] = useState('');
   const [mobile, setMobile] = useState('')
+
+  const openNotification = (type: 'success' | 'info' | 'danger' | 'warning', message: string) => {
+    toast.push(
+      <Notification
+        title={type.charAt(0).toUpperCase() + type.slice(1)}
+        type={type}
+      >
+        {message}
+      </Notification>
+    )
+  }
+
+  const handleAddBranch = () => {
+    openNotification('success', 'User added successfully');
+    navigate(`/user-entity`);
+  };
+
+
   return (
-    <div className="p-2 bg-white rounded-lg shadow-md">
-      <div className='flex gap-2 items-center mb-3'>
+    <div className="p-2 bg-white rounded-lg">
+      <div className='flex items-center gap-2 items-center mb-3'>
         <Button
           size="sm"
           variant="plain"
           icon={<IoArrowBack className="text-[#72828e] hover:text-[#5d6169]" />}
-          onClick={() => {/* Navigation logic here */}}
-        />
+          onClick={() => navigate('/user-entity')}
+          />
         <h3 className="text-2xl font-semibold">User Form</h3>
       </div>
       <form className="space-y-5">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           <div>
-            <p className="mb-1">First Name</p>
+            <p className="mb-2">First Name</p>
             <OutlinedInput
               label="First Name"
               value={firstName}
@@ -40,7 +59,7 @@ const UserForm: React.FC = () => {
             />
           </div>
           <div>
-            <p className="mb-1">Last Name</p>
+            <p className="mb-2">Last Name</p>
             <OutlinedInput
               label="Last Name"
               value={LastName}
@@ -53,7 +72,7 @@ const UserForm: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           <div>
-            <p className="mb-1">Email</p>
+            <p className="mb-2">Email</p>
             <OutlinedInput
               label="Email"
               value={email}
@@ -63,7 +82,7 @@ const UserForm: React.FC = () => {
             />
           </div>
           <div>
-            <p className="mb-1">Username</p>
+            <p className="mb-2">Username</p>
             <OutlinedInput
               label="Username"
               value={userName}
@@ -76,7 +95,7 @@ const UserForm: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           <div>
-            <p className="mb-1">Job Role</p>
+            <p className="mb-2">Job Role</p>
             <OutlinedInput
               label="Job Role"
               value={jobRole}
@@ -86,7 +105,7 @@ const UserForm: React.FC = () => {
             />
           </div>
           <div>
-            <p className="mb-1">Date of Joining</p>
+            <p className="mb-2">Date of Joining</p>
             <OutlinedInput
               label="Date of Joining"
               value={dateOfJoin}
@@ -100,7 +119,7 @@ const UserForm: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           <div>
-            <p className="mb-1">DSC</p>
+            <p className="mb-2">DSC</p>
             <OutlinedSelect
               label="DSC"
               options={[
@@ -112,7 +131,7 @@ const UserForm: React.FC = () => {
             />
           </div>
           <div>
-            <p className="mb-1">DSC Validity Date</p>
+            <p className="mb-2">DSC Validity Date</p>
             <OutlinedInput
               label="DSC Validity Date"
               value={dscVal}
@@ -125,7 +144,7 @@ const UserForm: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           <div>
-            <p className="mb-1">eSign</p>
+            <p className="mb-2">eSign</p>
             <OutlinedSelect
               label="eSign"
               options={[
@@ -160,7 +179,7 @@ const UserForm: React.FC = () => {
             />
           </div>
           <div>
-            <p className="mb-1">Mobile No</p>
+            <p className="mb-2">Mobile No</p>
             <OutlinedInput
               label="Mobile no"
               value={mobile}
@@ -175,10 +194,10 @@ const UserForm: React.FC = () => {
           <Checkbox >User will be assigned as a <b>Authorised Signatory</b></Checkbox>
           </div>
           <div className="flex justify-end gap-2">
-          <Button type="submit" variant="solid" size="sm">
+          <Button type="submit" variant="solid" size="sm" onClick={handleAddBranch}>
             Add User
           </Button>
-          <Button type="button" variant="plain" size="sm" onClick={() => {/* Navigation logic here */}}>
+          <Button type="button" variant="plain" size="sm" onClick={() => navigate('/user-entity')}>
             Cancel
           </Button>
         </div>

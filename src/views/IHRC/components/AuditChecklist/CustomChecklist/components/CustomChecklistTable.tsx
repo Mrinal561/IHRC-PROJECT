@@ -389,6 +389,9 @@ const CustomChecklistTable = () => {
                 skeletonAvatarColumns={[0]}
                 skeletonAvatarProps={{ className: 'rounded-md' }}
                 loading={false}
+                stickyHeader={true}
+                stickyFirstColumn={true}
+                stickyLastColumn={true}
                 
             />
             <Dialog

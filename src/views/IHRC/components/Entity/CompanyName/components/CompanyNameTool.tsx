@@ -79,7 +79,8 @@ const CompanyNameTool: React.FC = () => {
         onRequestClose={onDialogClose}
       >
         <h5 className="mb-4">Add Company Name</h5>
-        <div>
+        <div className='mb-4 flex flex-col gap-3'>
+          <label>Select the company group name</label>
           <OutlinedSelect
             label="Select The Company Group"
             options={companyGroupOptions}
@@ -90,7 +91,8 @@ const CompanyNameTool: React.FC = () => {
             }}
           />
         </div>
-        <div>
+        <div className='mb-4 flex flex-col gap-3'>
+        <label>Select the company name</label>
           <OutlinedInput
             label="Enter Your Company Name"
             value={companyName}

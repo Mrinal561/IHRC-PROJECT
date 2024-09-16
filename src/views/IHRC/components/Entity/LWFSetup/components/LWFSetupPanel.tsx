@@ -25,7 +25,7 @@ export interface LWFSetupData {
     lwfRegistrationCertificate?: File | null;
 }
 
-interface ESISetupSidePanelProps {
+interface LWFSetupSidePanelProps {
   // addPFSetup: (newPFSetup: LWFSetupData) => void;
   onClose: () => void;
   companyGroupName: string;
@@ -44,7 +44,7 @@ interface Signatory {
   email: string;
 }
 
-const LWFSetupPanel: React.FC<ESISetupSidePanelProps> = ({
+const LWFSetupPanel: React.FC<LWFSetupSidePanelProps> = ({
   // addPFSetup,
   onClose,
   companyGroupName,

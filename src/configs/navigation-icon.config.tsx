@@ -5,6 +5,7 @@ import {
     HiOutlineViewGridAdd,
     HiOutlineHome,
     HiOutlineCog,
+    HiOutlineUser,
 } from 'react-icons/hi'
 
 export type NavigationIcons = Record<string, JSX.Element>
@@ -15,6 +16,7 @@ const navigationIcon: NavigationIcons = {
     collapseMenu: <HiOutlineTemplate />,
     groupSingleMenu: <HiOutlineDesktopComputer />,
     groupCollapseMenu: <HiOutlineCog />,
+    userCollapse: <HiOutlineUser />
 }
 
 export default navigationIcon

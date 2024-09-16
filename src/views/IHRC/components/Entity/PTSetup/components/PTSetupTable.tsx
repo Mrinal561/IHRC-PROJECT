@@ -143,7 +143,7 @@ const PTSetupTable: React.FC<ESISetupTableProps> = ({ data, onDelete, onEdit }) 
         id: 'actions',
         cell: ({ row }) => (
           <div className="flex items-center gap-2">
-            <Tooltip title="Edit">
+            <Tooltip title="Edit PF Setup">
               <Button
                 size="sm"
                 onClick={() => openEditDialog(row.index)}
@@ -151,7 +151,7 @@ const PTSetupTable: React.FC<ESISetupTableProps> = ({ data, onDelete, onEdit }) 
                 className="text-blue-500"
               />
             </Tooltip>
-            <Tooltip title="Delete">
+            <Tooltip title="Delete PF Setup">
               <Button
                 size="sm"
                 onClick={() => openDialog(row.index)}
@@ -220,6 +220,9 @@ const PTSetupTable: React.FC<ESISetupTableProps> = ({ data, onDelete, onEdit }) 
             pageIndex: 1,
             pageSize: 10,
           }}
+          stickyHeader={true}
+          stickyFirstColumn={true}
+          stickyLastColumn={true}
         />
       )}
 

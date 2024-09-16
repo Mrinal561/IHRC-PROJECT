@@ -70,7 +70,7 @@ const CompanyESISetupPage: React.FC = () => {
         esiUserId: 'User01',
         esiPassword: 'password01',
         authorizedSignatory: 'Amit',
-        signatoryDesignation: 'Tech Head',
+        signatoryDesignation: 'Manager',
         signatoryMobile: '9145786945',
         signatoryEmail: 'amit@gmail.com',
       },

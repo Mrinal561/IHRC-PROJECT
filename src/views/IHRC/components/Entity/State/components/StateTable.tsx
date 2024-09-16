@@ -145,6 +145,9 @@ const StateTable: React.FC = () => {
                 columns={columns}
                 data={entityDataSet.slice((currentPage - 1) * pageSize, currentPage * pageSize)}
                 loading={false}
+                stickyHeader={true}
+                stickyFirstColumn={true}
+                stickyLastColumn={true}
             />
 
             <div className="mt-4">
@@ -164,8 +167,8 @@ const StateTable: React.FC = () => {
                     <Button variant="plain" onClick={handleDialogClose}>
                         Cancel
                     </Button>
-                    <Button variant="solid" onClick={handleDialogOk} color="red-600">
-                        Clear
+                    <Button variant="solid" onClick={handleDialogOk}>
+                        Delete
                     </Button>
                 </div>
             </Dialog>
