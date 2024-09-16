@@ -117,3 +117,7 @@
   min-width: 100px !important;
   max-width: 800px !important;
 }
+
+.z-50 {
+  z-index: 9999 !important;
+}
