@@ -39,7 +39,7 @@ const CompanyTable: React.FC = () => {
                     <div className="flex items-center gap-2">
                         <Tooltip title="Edit">
                             <Button
-                                size="xs"
+                                size="sm"
                                 onClick={() => openEditDialog(row.index)}
                                 icon={<MdEdit />}
                                 className="text-blue-500"
@@ -47,7 +47,7 @@ const CompanyTable: React.FC = () => {
                         </Tooltip>
                         <Tooltip title="Delete">
                             <Button
-                                size="xs"
+                                size="sm"
                                 onClick={() => openDeleteDialog(row.index)}
                                 icon={<FiTrash />}
                                 className="text-red-500"
