@@ -7,18 +7,6 @@ type Option = {
   label: string;
 };
 
-const getUniqueLocations = (data: EntityData[]): string[] => {
-  const location = data.map(item => item.Location);
-  return Array.from(new Set(location)).filter((location): location is string => location !== undefined);
-};
-
-const optionsLocations: Option[] = getUniqueLocations(entityDataSet).map(location => ({
-  value: location,
-  label: location,
-}));
-
-
-
 const getUniqueDistricts = (data: EntityData[]): string[] => {
   const districts = data.map(item => item.District);
   return Array.from(new Set(districts)).filter((district): district is string => district !== undefined);
@@ -65,7 +53,6 @@ const Filter: React.FC = () => {
   const [currentGroup, setCurrentGroup] = useState<string>(groupOptions[0]?.value||'');
   const [groupName, setGroupName] = useState<string>(nameOptions[0]?.value||'');
   const [stateName, setStateName] = useState<string>(optionState[0]?.value||'');
-  const [locationName, setLocationName] = useState<string>(optionsLocations[0]?.value||'');
 
   const handleFilterChange = (selectedOption: Option | null) => {
     if (selectedOption) {
@@ -87,16 +74,9 @@ const Filter: React.FC = () => {
       // You can add any additional logic here that needs to happen when the filter changes
     }
   };
-  const handleLocationChange = (selectedOption: Option | null) => {
-    if (selectedOption) {
-      setLocationName(selectedOption.value)
-      
-      // You can add any additional logic here that needs to happen when the filter changes
-    }
-  };
   const handleStateChange = (selectedOption: Option | null) => {
     if (selectedOption) {
-      setStateName(selectedOption.value)
+        setGroupName(selectedOption.value)
       
       // You can add any additional logic here that needs to happen when the filter changes
     }
@@ -123,7 +103,7 @@ const Filter: React.FC = () => {
         <OutlinedSelect
         label="State"
         options={optionState}
-        value={optionState.find((option) => option.value === stateName)}
+        value={optionState.find((option) => option.value === currentFilter)}
         onChange={handleStateChange}
       />
         </div>
@@ -131,16 +111,8 @@ const Filter: React.FC = () => {
         <OutlinedSelect
         label="District"
         options={options}
-        value={options.find((option) => option.value === currentFilter)}
-        onChange={handleFilterChange}
-      />
-        </div>
-        <div>
-        <OutlinedSelect
-        label="Location"
-        options={optionsLocations}
-        value={optionsLocations.find((option) => option.value === locationName)}
-        onChange={handleFilterChange}
+        value={options.find((option) => option.value === stateName)}
+        onChange={handleStateChange}
       />
         </div>
     </div>
