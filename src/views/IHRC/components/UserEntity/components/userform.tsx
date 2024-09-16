@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Checkbox, toast, Notification } from '@/components/ui';
+import { Button, Checkbox, toast, Notification, DatePicker } from '@/components/ui';
 import { IoArrowBack } from 'react-icons/io5';
 import OutlinedSelect from '@/components/ui/Outlined';
 import OutlinedInput from '@/components/ui/OutlinedInput';
@@ -37,7 +37,7 @@ const UserForm: React.FC = () => {
 
   return (
     <div className="p-2 bg-white rounded-lg">
-      <div className='flex items-center gap-2 items-center mb-3'>
+      <div className='flex items-center gap-2  mb-3'>
         <Button
           size="sm"
           variant="plain"
@@ -106,13 +106,7 @@ const UserForm: React.FC = () => {
           </div>
           <div>
             <p className="mb-2">Date of Joining</p>
-            <OutlinedInput
-              label="Date of Joining"
-              value={dateOfJoin}
-              onChange={(value: string) => {
-                setDateOfJoin(value);
-              }}
-            />
+            <DatePicker size='sm' placeholder="Pick a date" />
           </div>
          
         </div>
