@@ -26,6 +26,7 @@ interface PFSetupSidePanelProps {
   onClose: () => void;
   companyGroupName: string;
   companyName: string;
+  pfSetupData?: PFSetupData;
 }
 
 interface SelectOption {

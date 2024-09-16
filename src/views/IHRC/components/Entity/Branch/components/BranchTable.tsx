@@ -1,11 +1,17 @@
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { Table, Button, Dialog, Tooltip, Notification, toast } from '@/components/ui';
 import { FiTrash } from 'react-icons/fi';
 import { MdEdit } from 'react-icons/md';
 import OutlinedInput from '@/components/ui/OutlinedInput/OutlinedInput';
+import OutlinedSelect from '@/components/ui/Outlined';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 import { EntityData, entityDataSet } from '../../../../store/dummyEntityData';
+
+interface SelectOption {
+    value: string;
+    label: string;
+}
 
 const BranchTable: React.FC = () => {
     const [data, setData] = useState<EntityData[]>(entityDataSet);
@@ -13,7 +19,27 @@ const BranchTable: React.FC = () => {
     const [itemToDelete, setItemToDelete] = useState<number | null>(null);
     const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
     const [itemToEdit, setItemToEdit] = useState<number | null>(null);
-    const [editedName, setEditedName] = useState('');
+    const [editedBranch, setEditedBranch] = useState('');
+    const [selectedCompanyGroup, setSelectedCompanyGroup] = useState<SelectOption | null>(null);
+    const [selectedCompany, setSelectedCompany] = useState<SelectOption | null>(null);
+    const [selectedState, setSelectedState] = useState<SelectOption | null>(null);
+    const [selectedDistrict, setSelectedDistrict] = useState<SelectOption | null>(null);
+    const [selectedLocation, setSelectedLocation] = useState<SelectOption | null>(null);
+    const [companyGroupOptions, setCompanyGroupOptions] = useState<SelectOption[]>([]);
+    const [companyOptions, setCompanyOptions] = useState<SelectOption[]>([]);
+    const [stateOptions, setStateOptions] = useState<SelectOption[]>([]);
+    const [districtOptions, setDistrictOptions] = useState<SelectOption[]>([]);
+    const [locationOptions, setLocationOptions] = useState<SelectOption[]>([]);
+    
+
+    useEffect(() => {
+        // Generate unique options for all fields
+        const uniqueCompanyGroups = Array.from(new Set(data.map(item => item.Company_Group_Name).filter(Boolean)));
+        const uniqueStates = Array.from(new Set(data.map(item => item.State).filter(Boolean)));
+
+        setCompanyGroupOptions(uniqueCompanyGroups.map(group => ({ value: group!, label: group! })));
+        setStateOptions(uniqueStates.map(state => ({ value: state!, label: state! })));
+    }, [data]);
 
     const columns: ColumnDef<EntityData>[] = useMemo(
         () => [
@@ -98,7 +124,16 @@ const BranchTable: React.FC = () => {
 
     const openEditDialog = (index: number) => {
         setItemToEdit(index);
-        setEditedName(data[index].Branch || '');
+        const item = data[index];
+        setEditedBranch(item.Branch || '');
+        setSelectedCompanyGroup(item.Company_Group_Name ? { value: item.Company_Group_Name, label: item.Company_Group_Name } : null);
+        setSelectedCompany(item.Company_Name ? { value: item.Company_Name, label: item.Company_Name } : null);
+        setSelectedState(item.State ? { value: item.State, label: item.State } : null);
+        setSelectedDistrict(item.District ? { value: item.District, label: item.District } : null);
+        setSelectedLocation(item.Location ? { value: item.Location, label: item.Location } : null);
+        updateCompanyOptions(item.Company_Group_Name);
+        updateDistrictOptions(item.State);
+        updateLocationOptions(item.District);
         setEditDialogIsOpen(true);
     };
 
@@ -107,7 +142,12 @@ const BranchTable: React.FC = () => {
         setEditDialogIsOpen(false);
         setItemToDelete(null);
         setItemToEdit(null);
-        setEditedName('');
+        setEditedBranch('');
+        setSelectedCompanyGroup(null);
+        setSelectedCompany(null);
+        setSelectedState(null);
+        setSelectedDistrict(null);
+        setSelectedLocation(null);
     };
 
     const handleDialogOk = () => {
@@ -122,15 +162,85 @@ const BranchTable: React.FC = () => {
     };
 
     const handleEditConfirm = () => {
-        if (itemToEdit !== null && editedName.trim()) {
+        if (itemToEdit !== null && editedBranch.trim() && selectedCompanyGroup && selectedCompany && selectedState && selectedDistrict && selectedLocation) {
             const newData = [...data];
-            newData[itemToEdit].Branch = editedName.trim();
+            newData[itemToEdit] = {
+                ...newData[itemToEdit],
+                Company_Group_Name: selectedCompanyGroup.value,
+                Company_Name: selectedCompany.value,
+                State: selectedState.value,
+                District: selectedDistrict.value,
+                Location: selectedLocation.value,
+                Branch: editedBranch.trim()
+            };
             setData(newData);
             setEditDialogIsOpen(false);
             setItemToEdit(null);
-            setEditedName('');
+            setEditedBranch('');
+            setSelectedCompanyGroup(null);
+            setSelectedCompany(null);
+            setSelectedState(null);
+            setSelectedDistrict(null);
+            setSelectedLocation(null);
             openNotification('success', 'Branch updated successfully');
+        } else {
+            openNotification('danger', 'Please fill in all fields before confirming.');
         }
+    };
+
+    const updateCompanyOptions = (companyGroup: string | undefined) => {
+        if (companyGroup) {
+            const companiesForGroup = data
+                .filter(item => item.Company_Group_Name === companyGroup)
+                .map(item => item.Company_Name)
+                .filter((value, index, self) => value && self.indexOf(value) === index);
+            setCompanyOptions(companiesForGroup.map(company => ({ value: company!, label: company! })));
+        } else {
+            setCompanyOptions([]);
+        }
+    };
+
+    const updateDistrictOptions = (state: string | undefined) => {
+        if (state) {
+            const districtsForState = data
+                .filter(item => item.State === state)
+                .map(item => item.District)
+                .filter((value, index, self) => value && self.indexOf(value) === index);
+            setDistrictOptions(districtsForState.map(district => ({ value: district!, label: district! })));
+        } else {
+            setDistrictOptions([]);
+        }
+    };
+
+    const updateLocationOptions = (district: string | undefined) => {
+        if (district) {
+            const locationsForDistrict = data
+                .filter(item => item.District === district)
+                .map(item => item.Location)
+                .filter((value, index, self) => value && self.indexOf(value) === index);
+            setLocationOptions(locationsForDistrict.map(location => ({ value: location!, label: location! })));
+        } else {
+            setLocationOptions([]);
+        }
+    };
+
+    const handleCompanyGroupChange = (option: SelectOption | null) => {
+        setSelectedCompanyGroup(option);
+        setSelectedCompany(null);
+        updateCompanyOptions(option?.value);
+    };
+
+    const handleStateChange = (option: SelectOption | null) => {
+        setSelectedState(option);
+        setSelectedDistrict(null);
+        setSelectedLocation(null);
+        updateDistrictOptions(option?.value);
+    };
+
+    const handleDistrictChange = (option: SelectOption | null) => {
+        setSelectedDistrict(option);
+        setSelectedLocation(null);
+        updateLocationOptions(option?.value);
     };
 
     const [tableData, setTableData] = useState({
@@ -150,30 +260,30 @@ const BranchTable: React.FC = () => {
     };
 
     return (
-        <div className='relative'>
-          {data.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
-                No data available
-            </div>
-        ) : (
-            <DataTable
-                columns={columns}
-                data={data}
-                skeletonAvatarColumns={[0]}
-                skeletonAvatarProps={{ className: 'rounded-md' }}
-                loading={false}
-                pagingData={{
-                    total: data.length,
-                    pageIndex: tableData.pageIndex,
-                    pageSize: tableData.pageSize,
-                }}
-                onPaginationChange={onPaginationChange}
-                onSelectChange={onSelectChange}
-                stickyHeader={true}
-                stickyFirstColumn={true}
-                stickyLastColumn={true}
-            />
-        )}
+        <div className="relative">
+            {data.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                    No data available
+                </div>
+            ) : (
+                <DataTable
+                    columns={columns}
+                    data={data}
+                    skeletonAvatarColumns={[0]}
+                    skeletonAvatarProps={{ className: 'rounded-md' }}
+                    loading={false}
+                    pagingData={{
+                        total: data.length,
+                        pageIndex: tableData.pageIndex,
+                        pageSize: tableData.pageSize,
+                    }}
+                    onPaginationChange={onPaginationChange}
+                    onSelectChange={onSelectChange}
+                    stickyHeader={true}
+                    stickyFirstColumn={true}
+                    stickyLastColumn={true}
+                />
+            )}
 
             <Dialog
                 isOpen={dialogIsOpen}
@@ -182,7 +292,8 @@ const BranchTable: React.FC = () => {
             >
                 <h5 className="mb-4">Confirm Deleting Branch</h5>
                 <p>
-                    Are you sure you want to delete this branch? This action cannot be undone.
+                    Are you sure you want to delete this branch? This action
+                    cannot be undone.
                 </p>
                 <div className="text-right mt-6">
                     <Button
@@ -198,17 +309,60 @@ const BranchTable: React.FC = () => {
                 </div>
             </Dialog>
 
-             <Dialog
+            <Dialog
                 isOpen={editDialogIsOpen}
                 onClose={handleDialogClose}
                 onRequestClose={handleDialogClose}
             >
                 <h5 className="mb-4">Edit Branch</h5>
                 <div className="mb-4">
-                    <OutlinedInput 
+                    <OutlinedSelect
+                        label="Company Group Name"
+                        options={companyGroupOptions}
+                        value={selectedCompanyGroup}
+                        onChange={handleCompanyGroupChange}
+                    />
+                </div>
+                <div className="mb-4">
+                    <OutlinedSelect
+                        label="Company Name"
+                        options={companyOptions}
+                        value={selectedCompany}
+                        onChange={(option: SelectOption | null) =>
+                            setSelectedCompany(option)
+                        }
+                    />
+                </div>
+                <div className="mb-4">
+                    <OutlinedSelect
+                        label="State"
+                        options={stateOptions}
+                        value={selectedState}
+                        onChange={handleStateChange}
+                    />
+                </div>
+                <div className="mb-4">
+                    <OutlinedSelect
+                        label="District"
+                        options={districtOptions}
+                        value={selectedDistrict}
+                        onChange={handleDistrictChange}
+                    />
+                </div>
+                <div className="mb-4">
+                    <OutlinedInput
+                        label="Location"
+                        value={selectedLocation ? selectedLocation.value : ''}
+                        onChange={(value: string) =>
+                            setSelectedLocation({ value, label: value })
+                        }
+                    />
+                </div>
+                <div className="mb-4">
+                    <OutlinedInput
                         label="Branch"
-                        value={editedName}
-                        onChange={(value: string) => setEditedName(value)}
+                        value={editedBranch}
+                        onChange={(value: string) => setEditedBranch(value)}
                     />
                 </div>
                 <div className="text-right mt-6">
@@ -225,7 +379,7 @@ const BranchTable: React.FC = () => {
                 </div>
             </Dialog>
         </div>
-    );
+    )
 };
 
 export default BranchTable;

@@ -4,7 +4,7 @@ import { HiPlusCircle } from 'react-icons/hi';
 import OutlinedInput from '@/components/ui/OutlinedInput';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 import { entityDataSet, EntityData } from '../../../../store/dummyEntityData';
-
+import Filter from './Filter';
 interface SelectOption {
   value: string;
   label: string;
@@ -64,7 +64,8 @@ const CompanyNameTool: React.FC = () => {
   };
 
   return (
-    <>
+    <div className='flex gap-3 items-center'>
+    <Filter></Filter>
       <Button
         size="sm"
         icon={<HiPlusCircle />}
@@ -120,7 +121,7 @@ const CompanyNameTool: React.FC = () => {
           </Button>
         </div>
       </Dialog>
-    </>
+    </div>
   );
 };
 

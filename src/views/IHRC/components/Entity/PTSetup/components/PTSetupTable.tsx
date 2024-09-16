@@ -3,6 +3,7 @@ import { Button, Dialog, toast, Tooltip, Notification } from '@/components/ui';
 import { FiTrash } from 'react-icons/fi';
 import { MdEdit } from 'react-icons/md';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
+import PTEditedData from './PTEditedData';
 
 export interface PTSetupData {
     Company_Group_Name: string;
@@ -266,9 +267,12 @@ const PTSetupTable: React.FC<ESISetupTableProps> = ({ data, onDelete, onEdit }) 
         isOpen={editDialogIsOpen}
         onClose={handleDialogClose}
         onRequestClose={handleDialogClose}
+        width={800}
+        height={570}
       >
-        <h5 className="mb-4">Edit PF Setup</h5>
+        <h5 className="mb-4">Edit PT Setup</h5>
         {/* Add your edit form fields here */}
+        <PTEditedData />
         <div className="text-right mt-6">
           <Button
             className="ltr:mr-2 rtl:ml-2"
