@@ -255,10 +255,12 @@ const PFSetupTable: React.FC<PFSetupTableProps> = ({ data, onDelete, onEdit }) =
         isOpen={editDialogIsOpen}
         onClose={handleDialogClose}
         onRequestClose={handleDialogClose}
+        width={800}
+        height={570}
       >
         <h5 className="mb-4">Edit PF Setup</h5>
         {/* Add your edit form fields here */}
-        {/* <PFEditedData /> */}
+        <PFEditedData />
         <div className="text-right mt-6">
           <Button
             className="ltr:mr-2 rtl:ml-2"
