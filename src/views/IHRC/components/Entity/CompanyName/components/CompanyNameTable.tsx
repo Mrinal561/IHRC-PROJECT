@@ -62,7 +62,7 @@ const CompanyNameTable: React.FC = () => {
                 cell: ({ row }) => (
                     <div className="flex items-center gap-2">
                        
-                        <Tooltip title="View Details">
+                        <Tooltip title="View Company Details">
                             <Button
                                 size="sm"
                                 onClick={() => handleViewDetails(
@@ -73,7 +73,7 @@ const CompanyNameTable: React.FC = () => {
                                 className="text-blue-500"
                             />
                         </Tooltip>
-                        <Tooltip title="Edit">
+                        <Tooltip title="Edit Company">
                             <Button
                                 size="sm"
                                 onClick={() => openEditDialog(row.index)}
@@ -81,7 +81,7 @@ const CompanyNameTable: React.FC = () => {
                                 className="text-blue-500"
                             />
                         </Tooltip>
-                        <Tooltip title="Delete">
+                        <Tooltip title="Delete Company">
                             <Button
                                 size="sm"
                                 onClick={() => openDeleteDialog(row.index)}

@@ -42,7 +42,7 @@ const CompanyDetails: React.FC = () => {
                                 <DetailItem label="Authorized Signatory" value="Amit" />
                             </DetailColumn>
                             <DetailColumn>
-                                <DetailItem label="Designation" value="Tech Head" />
+                                <DetailItem label="Designation" value="Manager" />
                                 <DetailItem label="Mobile" value="9145786945" />
                                 <DetailItem label="Email" value="amit@gmail.com" />
                                 <DetailItem label="DSC Validity" value="2026-01-01" />
@@ -61,7 +61,7 @@ const CompanyDetails: React.FC = () => {
                             </DetailColumn>
                             <DetailColumn>
                                 <DetailItem label="Authorized Signatory" value="Amit" />
-                                <DetailItem label="Designation" value="Tech Head" />
+                                <DetailItem label="Designation" value="Manager" />
                                 <DetailItem label="Mobile" value="9145786945" />
                                 <DetailItem label="Email" value="amit@gmail.com" />
                             </DetailColumn>
@@ -87,7 +87,7 @@ const CompanyDetails: React.FC = () => {
                                 <DetailItem label="LWF Payment Due Date" value="2023-10-22" />
                                 <DetailItem label="LWF Applicable State" value="Tamil Nadu" />
                                 <DetailItem label="Authorized Signatory" value="Amit" />
-                                <DetailItem label="Designation" value="Tech Head" />
+                                <DetailItem label="Designation" value="Manager" />
                                 <DetailItem label="Mobile" value="9145786945" />
                                 <DetailItem label="Email" value="amit@gmail.com" />
                             </DetailColumn>
@@ -110,7 +110,7 @@ const CompanyDetails: React.FC = () => {
                                 <DetailItem label="PTRC Payment Frequency" value="Quarterly" />
                                 <DetailItem label="PTEC Payment Frequency" value="Monthly" />
                                 <DetailItem label="Authorized Signatory" value="Amit" />
-                                <DetailItem label="Designation" value="Tech Head" />
+                                <DetailItem label="Designation" value="Manager" />
                                 <DetailItem label="Mobile" value="9145786945" />
                                 <DetailItem label="Email" value="amit@gmail.com" />
                             </DetailColumn>

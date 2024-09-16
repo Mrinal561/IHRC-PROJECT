@@ -72,7 +72,7 @@ const CompanyPFSetupPage: React.FC = () => {
         pfUserId: 'User01',
         pfPassword: 'password01',
         authorizedSignatory: 'Amit',
-        signatoryDesignation: 'Tech Head',
+        signatoryDesignation: 'Manager',
         signatoryMobile: '9145786945',
         signatoryEmail: 'amit@gmail.com',
         dscValidDate: '2026-01-01',
