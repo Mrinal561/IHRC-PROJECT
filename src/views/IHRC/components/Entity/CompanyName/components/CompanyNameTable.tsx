@@ -11,6 +11,7 @@ import { GrConfigure } from "react-icons/gr";
 import cloneDeep from 'lodash/cloneDeep';
 
 import { EntityData, entityDataSet } from '../../../../store/dummyEntityData';
+import OutlinedSelect from '@/components/ui/Outlined';
 import ConfigDropdown from './ConfigDropdown';
 
 const CompanyNameTable: React.FC = () => {
@@ -20,6 +21,14 @@ const CompanyNameTable: React.FC = () => {
     const [itemToEdit, setItemToEdit] = useState<number | null>(null);
     const [editedName, setEditedName] = useState('');
     const navigate = useNavigate();
+    const [selectedCompanyGroup, setSelectedCompanyGroup] = useState<SelectOption | null>(null);
+
+
+    const companyGroups = useMemo(() => {
+        const uniqueGroups = new Set(entityDataSet.map(item => item.Company_Group_Name));
+        return Array.from(uniqueGroups).map(group => ({ label: group, value: group }));
+    }, []);
+
 
     const [tableData, setTableData] = useState({
         total: entityDataSet.length,
@@ -137,9 +146,11 @@ const CompanyNameTable: React.FC = () => {
     };
     
     const openEditDialog = (index: number) => {
+        const item = entityDataSet[index];
         setItemToEdit(index);
         setEditedName(entityDataSet[index].Company_Name || '');
         setEditDialogIsOpen(true);
+        setSelectedCompanyGroup({ label: item.Company_Group_Name || '', value: item.Company_Group_Name || '' });
     };
 
     const handleDialogClose = () => {
@@ -224,7 +235,7 @@ const CompanyNameTable: React.FC = () => {
     };
 
     return (
-        <div className='relative'>
+        <div className="relative">
          
             {entityDataSet.length === 0 ? (
                 <div className="text-center py-8 text-gray-500">
@@ -258,7 +269,8 @@ const CompanyNameTable: React.FC = () => {
             >
                 <h5 className="mb-4">Confirm Deletion</h5>
                 <p>
-                    Are you sure you want to delete this company? This action cannot be undone.
+                    Are you sure you want to delete this company? This action
+                    cannot be undone.
                 </p>
                 <div className="text-right mt-6">
                     <Button
@@ -280,12 +292,24 @@ const CompanyNameTable: React.FC = () => {
                 onRequestClose={handleDialogClose}
             >
                 <h5 className="mb-4">Edit Company Name</h5>
-                <div className="mb-4">
-                    <OutlinedInput 
-                        label="Company Name"
-                        value={editedName}
-                        onChange={(value: string) => setEditedName(value)}
-                    />
+                <div className="flex flex-col gap-5">
+                    <div>
+                        <OutlinedSelect
+                            label="Select Company Group"
+                            options={companyGroups}
+                            value={selectedCompanyGroup}
+                            onChange={(option: SelectOption | null) => {
+                                setSelectedCompanyGroup(option)
+                            }}
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <OutlinedInput
+                            label="Company Name"
+                            value={editedName}
+                            onChange={(value: string) => setEditedName(value)}
+                        />
+                    </div>
                 </div>
                 <div className="text-right mt-6">
                     <Button
@@ -301,7 +325,7 @@ const CompanyNameTable: React.FC = () => {
                 </div>
             </Dialog>
         </div>
-    );
+    )
 };
 
 export default CompanyNameTable;

@@ -101,7 +101,7 @@ const LocationTool: React.FC = () => {
   };
 
   return (
-    <div className='flex gap-3'>
+    <div className='flex gap-3 items-center'>
       <Filter></Filter>
       <Bu/>
       <Button variant="solid" onClick={openDialog} icon={<HiPlusCircle />} size="sm">
