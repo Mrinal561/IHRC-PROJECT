@@ -6,6 +6,7 @@ import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 import { ActionMeta, MultiValue } from 'react-select';
 import { EntityData, entityDataSet } from '@/views/IHRC/store/dummyEntityData'; // Import the interface and data
 import BU from './BU';
+import Filter from './Filter';
 interface SelectOption {
   value: string;
   label: string;
@@ -124,6 +125,7 @@ const StateTool: React.FC = () => {
 
   return (
     <div className='flex gap-3'>
+      <Filter></Filter>
       <BU/>
       <Button
         variant="solid"

@@ -5,6 +5,7 @@ import { HiPlusCircle } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 import { APP_PREFIX_PATH } from '@/constants/route.constant';
 import Bu from './Bu';
+import Filter from './Filter';
 
 const BranchTool: React.FC = () => {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ const BranchTool: React.FC = () => {
 
   return (
     <div className='flex gap-3'>
+      <Filter></Filter>
       <Bu></Bu>
       <Button variant="solid" onClick={handleAddBranch} icon={<HiPlusCircle />} size="sm">
         Add Branch
