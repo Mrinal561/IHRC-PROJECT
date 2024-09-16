@@ -13,7 +13,7 @@ const CompanyDetails: React.FC = () => {
     };
 
     return (
-        <div className="p-6 max-w-7xl mx-auto">
+        <div className="p-2 max-w-7xl">
             <div className='flex items-center gap-4 mb-8'>
                 <Button
                     onClick={handleBack}
@@ -42,11 +42,10 @@ const CompanyDetails: React.FC = () => {
                                 <DetailItem label="Authorized Signatory" value="Amit" />
                             </DetailColumn>
                             <DetailColumn>
-                                <DetailItem label="Designation" value="Tech Head" />
+                                <DetailItem label="Designation" value="Manager" />
                                 <DetailItem label="Mobile" value="9145786945" />
                                 <DetailItem label="Email" value="amit@gmail.com" />
                                 <DetailItem label="DSC Validity" value="2026-01-01" />
-                                <DetailItem label="E Sign" value="Active" />
                             </DetailColumn>
                         </div>
                     </DetailBox>
@@ -62,7 +61,7 @@ const CompanyDetails: React.FC = () => {
                             </DetailColumn>
                             <DetailColumn>
                                 <DetailItem label="Authorized Signatory" value="Amit" />
-                                <DetailItem label="Designation" value="Tech Head" />
+                                <DetailItem label="Designation" value="Manager" />
                                 <DetailItem label="Mobile" value="9145786945" />
                                 <DetailItem label="Email" value="amit@gmail.com" />
                             </DetailColumn>
@@ -70,7 +69,7 @@ const CompanyDetails: React.FC = () => {
                     </DetailBox>
                 </div>
 
-                <div className="flex gap-6">
+                {/* <div className="flex gap-6"> */}
                     <DetailBox title="LWF Setup Details" className="flex-1">
                         <div className="grid grid-cols-2 gap-4">
                             <DetailColumn>
@@ -88,7 +87,7 @@ const CompanyDetails: React.FC = () => {
                                 <DetailItem label="LWF Payment Due Date" value="2023-10-22" />
                                 <DetailItem label="LWF Applicable State" value="Tamil Nadu" />
                                 <DetailItem label="Authorized Signatory" value="Amit" />
-                                <DetailItem label="Designation" value="Tech Head" />
+                                <DetailItem label="Designation" value="Manager" />
                                 <DetailItem label="Mobile" value="9145786945" />
                                 <DetailItem label="Email" value="amit@gmail.com" />
                             </DetailColumn>
@@ -111,7 +110,7 @@ const CompanyDetails: React.FC = () => {
                                 <DetailItem label="PTRC Payment Frequency" value="Quarterly" />
                                 <DetailItem label="PTEC Payment Frequency" value="Monthly" />
                                 <DetailItem label="Authorized Signatory" value="Amit" />
-                                <DetailItem label="Designation" value="Tech Head" />
+                                <DetailItem label="Designation" value="Manager" />
                                 <DetailItem label="Mobile" value="9145786945" />
                                 <DetailItem label="Email" value="amit@gmail.com" />
                             </DetailColumn>
@@ -119,7 +118,7 @@ const CompanyDetails: React.FC = () => {
                     </DetailBox>
                 </div>
             </div>
-        </div>
+        // </div>
     );
 };
 
@@ -130,7 +129,7 @@ interface DetailBoxProps {
 }
 
 const DetailBox: React.FC<DetailBoxProps> = ({ title, children, className }) => (
-    <div className={`border p-6 rounded-lg shadow-sm bg-white ${className}`}>
+    <div className={`border p-4 rounded-lg shadow-sm bg-white ${className}`}>
         <h3 className="text-xl font-semibold mb-4 text-gray-700">{title}</h3>
         {children}
     </div>
@@ -144,7 +143,7 @@ const DetailColumn: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 
 const DetailItem: React.FC<{ label: string; value: string }> = ({ label, value }) => (
     <p className="text-sm">
-        <strong className="text-gray-600">{label}:</strong>{' '}
+        <strong className="text-gray-500">{label}:</strong>{' '}
         <span className="text-gray-400">{value}</span>
     </p>
 );

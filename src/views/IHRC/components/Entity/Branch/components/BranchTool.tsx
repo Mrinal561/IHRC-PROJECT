@@ -19,7 +19,7 @@ const BranchTool: React.FC = () => {
       <Filter></Filter>
       <Bu></Bu>
       <Button variant="solid" onClick={handleAddBranch} icon={<HiPlusCircle />} size="sm">
-        Assign Branch
+        Add Branch
       </Button>
     </div>
   );

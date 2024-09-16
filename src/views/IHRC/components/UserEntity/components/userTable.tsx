@@ -5,7 +5,10 @@ import { MdEdit } from 'react-icons/md';
 import OutlinedInput from '@/components/ui/OutlinedInput/OutlinedInput';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 import { UserData, userDataSet } from '../../../store/dummyEntityData'; // Adjust the import path as needed
-import { RiEyeLine } from 'react-icons/ri';
+import { RiCloseLine, RiEyeLine } from 'react-icons/ri';
+import { CiSquareRemove } from "react-icons/ci";
+import { IoPersonRemoveOutline } from "react-icons/io5";
+
 
 const UserTable: React.FC = () => {
     const [data, setData] = useState<UserData[]>(userDataSet);
@@ -13,6 +16,8 @@ const UserTable: React.FC = () => {
     const [itemToDelete, setItemToDelete] = useState<number | null>(null);
     const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
     const [itemToEdit, setItemToEdit] = useState<number | null>(null);
+    const [suspendDialogIsOpen, setSuspendDialogIsOpen] = useState(false);
+    const [disableDialogIsOpen, setDisableDialogIsOpen] = useState(false);
     const [editedUser, setEditedUser] = useState<UserData>({});
 
     const columns: ColumnDef<UserData>[] = useMemo(
@@ -92,6 +97,22 @@ const UserTable: React.FC = () => {
                                 className="text-blue-500"
                             />
                         </Tooltip>
+                        <Tooltip title="Suspend User">
+                            <Button
+                                size="sm"
+                                onClick={() => openSuspendDialog(row.index)}
+                                icon={<IoPersonRemoveOutline />}
+                                className="text-blue-500"
+                            />
+                        </Tooltip>
+                        <Tooltip title="Disable Login">
+                            <Button
+                                size="sm"
+                                onClick={() => openDisableDialog(row.index)}
+                                icon={<RiCloseLine />}
+                                className="text-blue-500"
+                            />
+                        </Tooltip>
                         <Tooltip title="Delete User">
                             <Button
                                 size="sm"
@@ -122,6 +143,12 @@ const UserTable: React.FC = () => {
         setItemToDelete(index);
         setDialogIsOpen(true);
     };
+    const openSuspendDialog = (index: number) => {
+        setSuspendDialogIsOpen(true);
+    };
+    const openDisableDialog = (index: number) => {
+        setDisableDialogIsOpen(true);
+    };
 
     const openEditDialog = (index: number) => {
         setItemToEdit(index);
@@ -147,6 +174,14 @@ const UserTable: React.FC = () => {
             openNotification('danger', 'User deleted successfully');
         }
     };
+    const suspendConfirm = () => {
+        setSuspendDialogIsOpen(false)
+        openNotification('success', 'User suspended successfully');
+    }
+    const disableConfirm = () => {
+        setDisableDialogIsOpen(false);
+        openNotification('success', 'User disable successfully');
+    }
 
     const handleEditConfirm = () => {
         if (itemToEdit !== null) {
@@ -221,6 +256,50 @@ const UserTable: React.FC = () => {
                     </Button>
                     <Button variant="solid" onClick={handleDialogOk}>
                         Delete
+                    </Button>
+                </div>
+            </Dialog>
+            <Dialog
+                isOpen={disableDialogIsOpen}
+                onClose={handleDialogClose}
+                onRequestClose={handleDialogClose}
+            >
+                <h5 className="mb-4">Confirm Disable Login</h5>
+                <p>
+                    Are you sure you want to disable this user? This action cannot be undone.
+                </p>
+                <div className="text-right mt-6">
+                    <Button
+                        className="ltr:mr-2 rtl:ml-2"
+                        variant="plain"
+                        onClick={handleDialogClose}
+                    >
+                        Cancel
+                    </Button>
+                    <Button variant="solid" onClick={disableConfirm}>
+                        Confirm
+                    </Button>
+                </div>
+            </Dialog>
+            <Dialog
+                isOpen={suspendDialogIsOpen}
+                onClose={handleDialogClose}
+                onRequestClose={handleDialogClose}
+            >
+                <h5 className="mb-4">Confirm Suspend User</h5>
+                <p>
+                    Are you sure you want to suspend this user? This action cannot be undone.
+                </p>
+                <div className="text-right mt-6">
+                    <Button
+                        className="ltr:mr-2 rtl:ml-2"
+                        variant="plain"
+                        onClick={handleDialogClose}
+                    >
+                        Cancel
+                    </Button>
+                    <Button variant="solid" onClick={suspendConfirm}>
+                        Confirm
                     </Button>
                 </div>
             </Dialog>

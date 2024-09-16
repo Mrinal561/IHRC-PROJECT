@@ -73,7 +73,7 @@ const PTSetup: React.FC = () => {
         ptUserId: 'User01',
         ptPassword: 'password01',
         authorizedSignatory: 'Amit',
-        signatoryDesignation: 'Tech Head',
+        signatoryDesignation: 'Manager',
         signatoryMobile: '9145786945',
         signatoryEmail: 'amit@gmail.com',
         ptecPaymentFrequency: 'Monthly',

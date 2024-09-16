@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Checkbox } from '@/components/ui';
+import { Button, Checkbox, toast, Notification } from '@/components/ui';
 import { IoArrowBack } from 'react-icons/io5';
 import OutlinedSelect from '@/components/ui/Outlined';
 import OutlinedInput from '@/components/ui/OutlinedInput';
@@ -17,16 +17,34 @@ const UserForm: React.FC = () => {
   const [pan, setPan] = useState('');
   const [aadhar, setAadhar] = useState('');
   const [mobile, setMobile] = useState('')
+
+  const openNotification = (type: 'success' | 'info' | 'danger' | 'warning', message: string) => {
+    toast.push(
+      <Notification
+        title={type.charAt(0).toUpperCase() + type.slice(1)}
+        type={type}
+      >
+        {message}
+      </Notification>
+    )
+  }
+
+  const handleAddBranch = () => {
+    openNotification('success', 'User added successfully');
+    navigate(`/user-entity`);
+  };
+
+
   return (
     <div className="p-2 bg-white rounded-lg">
-      <div className='flex gap-2 items-center mb-3'>
+      <div className='flex items-center gap-2 items-center mb-3'>
         <Button
           size="sm"
           variant="plain"
           icon={<IoArrowBack className="text-[#72828e] hover:text-[#5d6169]" />}
-          onClick={() => navigate(-1)}
-        />
-        <h3 className="text-2xl font-semibold mb-2">User Form</h3>
+          onClick={() => navigate('/user-entity')}
+          />
+        <h3 className="text-2xl font-semibold">User Form</h3>
       </div>
       <form className="space-y-5">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -176,10 +194,10 @@ const UserForm: React.FC = () => {
           <Checkbox >User will be assigned as a <b>Authorised Signatory</b></Checkbox>
           </div>
           <div className="flex justify-end gap-2">
-          <Button type="submit" variant="solid" size="sm">
+          <Button type="submit" variant="solid" size="sm" onClick={handleAddBranch}>
             Add User
           </Button>
-          <Button type="button" variant="plain" size="sm" onClick={() => {/* Navigation logic here */}}>
+          <Button type="button" variant="plain" size="sm" onClick={() => navigate('/user-entity')}>
             Cancel
           </Button>
         </div>

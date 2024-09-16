@@ -213,6 +213,9 @@ const LWFSetupTable: React.FC<ESISetupTableProps> = ({ data, onDelete, onEdit })
             pageIndex: 1,
             pageSize: 10,
           }}
+          stickyHeader={true}
+          stickyFirstColumn={true}
+          stickyLastColumn={true}
         />
       )}
 
