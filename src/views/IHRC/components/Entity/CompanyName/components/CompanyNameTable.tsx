@@ -254,6 +254,9 @@ const CompanyNameTable: React.FC = () => {
                     onPaginationChange={onPaginationChange}
                     onSelectChange={onSelectChange}
                     onSort={onSort}
+                    stickyHeader={true}
+                    stickyFirstColumn={true}
+                    stickyLastColumn={true}
                 />
             )}
 

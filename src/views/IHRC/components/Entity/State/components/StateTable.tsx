@@ -145,6 +145,9 @@ const StateTable: React.FC = () => {
                 columns={columns}
                 data={entityDataSet.slice((currentPage - 1) * pageSize, currentPage * pageSize)}
                 loading={false}
+                stickyHeader={true}
+                stickyFirstColumn={true}
+                stickyLastColumn={true}
             />
 
             <div className="mt-4">

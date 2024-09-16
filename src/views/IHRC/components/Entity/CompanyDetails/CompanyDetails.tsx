@@ -13,7 +13,7 @@ const CompanyDetails: React.FC = () => {
     };
 
     return (
-        <div className="p-6 max-w-7xl mx-auto">
+        <div className="p-2 max-w-7xl">
             <div className='flex items-center gap-4 mb-8'>
                 <Button
                     onClick={handleBack}
@@ -69,7 +69,7 @@ const CompanyDetails: React.FC = () => {
                     </DetailBox>
                 </div>
 
-                <div className="flex gap-6">
+                {/* <div className="flex gap-6"> */}
                     <DetailBox title="LWF Setup Details" className="flex-1">
                         <div className="grid grid-cols-2 gap-4">
                             <DetailColumn>
@@ -118,7 +118,7 @@ const CompanyDetails: React.FC = () => {
                     </DetailBox>
                 </div>
             </div>
-        </div>
+        // </div>
     );
 };
 
@@ -129,7 +129,7 @@ interface DetailBoxProps {
 }
 
 const DetailBox: React.FC<DetailBoxProps> = ({ title, children, className }) => (
-    <div className={`border p-6 rounded-lg shadow-sm bg-white ${className}`}>
+    <div className={`border p-4 rounded-lg shadow-sm bg-white ${className}`}>
         <h3 className="text-xl font-semibold mb-4 text-gray-700">{title}</h3>
         {children}
     </div>

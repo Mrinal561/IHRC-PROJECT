@@ -177,6 +177,9 @@ const DistrictTable: React.FC = () => {
                         pageIndex: tableData.pageIndex,
                         pageSize: tableData.pageSize,
                     }}
+                    stickyHeader={true}
+                    stickyFirstColumn={true}
+                    stickyLastColumn={true}
                 />
             )}
 

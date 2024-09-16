@@ -169,6 +169,9 @@ const BranchTable: React.FC = () => {
                 }}
                 onPaginationChange={onPaginationChange}
                 onSelectChange={onSelectChange}
+                stickyHeader={true}
+                stickyFirstColumn={true}
+                stickyLastColumn={true}
             />
         )}
 

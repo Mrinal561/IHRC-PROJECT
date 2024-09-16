@@ -17,7 +17,7 @@ const BranchTool: React.FC = () => {
     <div className='flex gap-3'>
       <Bu></Bu>
       <Button variant="solid" onClick={handleAddBranch} icon={<HiPlusCircle />} size="sm">
-        Assign Branch
+        Add Branch
       </Button>
     </div>
   );
