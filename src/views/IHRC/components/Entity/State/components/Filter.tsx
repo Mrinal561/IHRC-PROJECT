@@ -30,7 +30,7 @@ const Filter: React.FC = () => {
   return (
     <div className="w-44">
       <OutlinedSelect
-        label="Filter by Branch"
+        label="Filter by State"
         options={options}
         value={options.find((option) => option.value === currentFilter) || options[0]}
         onChange={handleFilterChange}

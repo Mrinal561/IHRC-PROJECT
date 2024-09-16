@@ -18,13 +18,13 @@ const UserForm: React.FC = () => {
   const [aadhar, setAadhar] = useState('');
   const [mobile, setMobile] = useState('')
   return (
-    <div className="p-2 bg-white rounded-lg shadow-md">
+    <div className="p-2 bg-white rounded-lg">
       <div className='flex gap-2 items-center mb-3'>
         <Button
           size="sm"
           variant="plain"
           icon={<IoArrowBack className="text-[#72828e] hover:text-[#5d6169]" />}
-          onClick={() => {() => navigate(-1)}}
+          onClick={() => navigate(-1)}
         />
         <h3 className="text-2xl font-semibold mb-2">User Form</h3>
       </div>

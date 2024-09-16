@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Notification, toast } from '@/components/ui';
+import { Button, DatePicker, Notification, toast } from '@/components/ui';
 import { IoArrowBack } from 'react-icons/io5';
 import { EntityData, entityDataSet } from '../../../../store/dummyEntityData';
 import OutlinedSelect from '@/components/ui/Outlined';
@@ -237,13 +237,8 @@ const AddBranchForm: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
           <div>
             <p className="mb-2">Branch Opening Date</p>
-            <OutlinedInput
-              label="Branch Opening Date"
-              value={formData.BranchOpeningDate}
-              onChange={(value: string) => {
-                setFormData(prev => ({ ...prev, BranchOpeningDate: value }));
-              }}
-            />
+            <DatePicker size='sm' placeholder="Pick a date" />
+            
           </div>
           <div>
             <p className="mb-2">Branch Head Count</p>
