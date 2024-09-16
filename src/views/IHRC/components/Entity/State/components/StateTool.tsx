@@ -124,7 +124,7 @@ const StateTool: React.FC = () => {
   };
 
   return (
-    <div className='flex gap-3'>
+    <div className='flex gap-3 items-center'>
       <Filter></Filter>
       <BU/>
       <Button
