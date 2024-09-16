@@ -1,6 +1,6 @@
 import { AdaptableCard } from '@/components/shared'
 import React from 'react'
-import UserForm from './components/Userform'
+import UserForm from './components/userform'
 import UserTable from './components/UserTable'
 import UserTool from './components/UserTool'
 import { Route, Routes } from 'react-router-dom'
