@@ -29,12 +29,12 @@ const CompanyDetails: React.FC = () => {
 
             <div className="space-y-6">
                 <div className="border p-4 rounded-lg shadow-sm bg-white">
-                    <h3 className="text-xl font-semibold mb-4 text-gray-700">{companyGroupName}</h3>
+                    <h3 className="text-xl font-semibold mb-4   ">{companyGroupName}</h3>
                     <p>{companyName}</p>
                 </div>
                 <div className="flex gap-6">
                     <div className="border p-4 rounded-lg shadow-sm bg-white flex-1">
-                        <h3 className="text-xl font-semibold mb-4 text-gray-700">PF Setup Details</h3>
+                        <h3 className="text-xl font-semibold mb-4   ">PF Setup Details</h3>
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <p className="text-sm mb-2"><strong className="  text-sm mb-2">PF Code:</strong> <span className="  mb-2">DRET12457893</span></p>
@@ -54,7 +54,7 @@ const CompanyDetails: React.FC = () => {
                     </div>
 
                     <div className="border p-4 rounded-lg shadow-sm bg-white flex-1">
-                        <h3 className="text-xl font-semibold mb-4 text-gray-700">ESI Setup Details</h3>
+                        <h3 className="text-xl font-semibold mb-4   ">ESI Setup Details</h3>
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <p className="text-sm mb-2"><strong className="  text-sm mb-2">ESI Code Type:</strong> <span className="  mb-2">Main</span></p>
@@ -74,7 +74,7 @@ const CompanyDetails: React.FC = () => {
                 </div>
 
                 <div className="border p-4 rounded-lg shadow-sm bg-white flex-1">
-                    <h3 className="text-xl font-semibold mb-4 text-gray-700">LWF Setup Details</h3>
+                    <h3 className="text-xl font-semibold mb-4   ">LWF Setup Details</h3>
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <p className="text-sm mb-2"><strong className="  text-sm mb-2">LWF State:</strong> <span className="  mb-2">Maharashtra</span></p>
@@ -99,7 +99,7 @@ const CompanyDetails: React.FC = () => {
                 </div>
 
                 <div className="border p-4 rounded-lg shadow-sm bg-white flex-1">
-                    <h3 className="text-xl font-semibold mb-4 text-gray-700">PT Setup Details</h3>
+                    <h3 className="text-xl font-semibold mb-4   ">PT Setup Details</h3>
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <p className="text-sm mb-2"><strong className="  text-sm mb-2">PT State:</strong> <span className="  mb-2">Maharashtra</span></p>
