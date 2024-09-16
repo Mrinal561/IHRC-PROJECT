@@ -144,11 +144,22 @@ const CompanyNameTable: React.FC = () => {
         []
     );
 
+    const openNotification = (type: 'success' | 'info' | 'danger' | 'warning', message: string) => {
+        toast.push(
+            <Notification
+                title={type.charAt(0).toUpperCase() + type.slice(1)}
+                type={type}
+            >
+                {message}
+            </Notification>
+        )
+    }
+
     const openDeleteDialog = (index: number) => {
         setItemToDelete(index);
         setDialogIsOpen(true);
     };
-
+    
     const openEditDialog = (index: number) => {
         setItemToEdit(index);
         setEditedName(entityDataSet[index].Company_Name || '');
@@ -162,10 +173,11 @@ const CompanyNameTable: React.FC = () => {
         setItemToEdit(null);
         setEditedName('');
     };
-
+    
     const handleDeleteConfirm = () => {
         if (itemToDelete !== null) {
             // Implement delete functionality here
+            openNotification('danger', 'Company name deleted successfully');
             handleDialogClose();
         }
     };
