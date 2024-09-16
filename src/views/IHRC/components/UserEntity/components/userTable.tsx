@@ -162,6 +162,8 @@ const UserTable: React.FC = () => {
         setItemToDelete(null);
         setItemToEdit(null);
         setEditedUser({});
+        setSuspendDialogIsOpen(false);
+        setDisableDialogIsOpen(false);
     };
 
     const handleDialogOk = () => {
