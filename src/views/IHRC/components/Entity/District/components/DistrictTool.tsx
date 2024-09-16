@@ -7,6 +7,7 @@ import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 import { ActionMeta, MultiValue } from 'react-select';
 import { EntityData, entityDataSet } from '../../../../store/dummyEntityData'; // Update this path
 import Bu from './Bu';
+import Filter from './Filter';
 interface SelectOption {
   value: string;
   label: string;
@@ -115,6 +116,7 @@ const DistrictTool: React.FC = () => {
 
   return (
     <div className='flex gap-3'>
+      <Filter></Filter>
       <Bu/>
       <Button variant="solid" onClick={openDialog} icon={<HiPlusCircle />} size="sm">
         Assign Districts
