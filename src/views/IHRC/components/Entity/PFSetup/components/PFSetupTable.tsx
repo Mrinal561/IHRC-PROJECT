@@ -3,6 +3,7 @@ import { Button, Dialog, Tooltip, toast, Notification } from '@/components/ui';
 import { FiTrash } from 'react-icons/fi';
 import { MdEdit } from 'react-icons/md';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
+import PFEditedData from './PFEditedData';
 
 export interface PFSetupData {
   Company_Group_Name: string;
@@ -257,6 +258,7 @@ const PFSetupTable: React.FC<PFSetupTableProps> = ({ data, onDelete, onEdit }) =
       >
         <h5 className="mb-4">Edit PF Setup</h5>
         {/* Add your edit form fields here */}
+        {/* <PFEditedData /> */}
         <div className="text-right mt-6">
           <Button
             className="ltr:mr-2 rtl:ml-2"

@@ -9,7 +9,7 @@ export interface PFSetupData {
   Company_Name: string;
   pfCode: string;
   pfCodeLocation: string;
-  registrationDate?: Date | null;
+  registrationDate?: string;
   pfUserId?: string;
   pfPassword?: string;
   authorizedSignatory: string[];
@@ -43,7 +43,7 @@ interface Signatory {
   esign: string;
 }
 
-const PFSetupSidePanel: React.FC<PFSetupSidePanelProps> = ({
+const PFEditedData: React.FC<PFSetupSidePanelProps> = ({
   // addPFSetup,
   onClose,
   companyGroupName,
@@ -55,7 +55,7 @@ const PFSetupSidePanel: React.FC<PFSetupSidePanelProps> = ({
     pfCode: '',
     pfCodeLocation: '',
     authorizedSignatory: [],
-    registrationDate: null,
+    registrationDate: '',
   });
 
   const [existingSignatories, setExistingSignatories] = useState<Signatory[]>([
@@ -138,14 +138,14 @@ const PFSetupSidePanel: React.FC<PFSetupSidePanelProps> = ({
         <div className='w-full'>
         <OutlinedInput
           label="Company Group Name"
-          value={pfSetupData.Company_Group_Name}
+          value={'Tata Group'}
           onChange={(value: string) => handleInputChange('Company_Group_Name', value)}
           />
           </div>
           <div className='w-full'>
         <OutlinedInput
           label="Company Name"
-          value={pfSetupData.Company_Name}
+          value={'Tata Consultancy Services'}
           onChange={(value: string) => handleInputChange('Company_Name', value)}
           />
           </div>
@@ -157,7 +157,7 @@ const PFSetupSidePanel: React.FC<PFSetupSidePanelProps> = ({
           <div className='w-[352px]'>
           <OutlinedInput
             label="PF Code"
-            value={pfSetupData.pfCode}
+            value={'DRET12457893'}
             onChange={(value: string) => handleInputChange('pfCode', value)}
             />
             </div>
@@ -167,7 +167,7 @@ const PFSetupSidePanel: React.FC<PFSetupSidePanelProps> = ({
           <div className='w-[352px]'>
           <OutlinedInput
             label="Location"
-            value={pfSetupData.pfCodeLocation}
+            value={'Mumbai'}
             onChange={(value: string) => handleInputChange('pfCodeLocation', value)}
             />
             </div>
@@ -181,7 +181,7 @@ const PFSetupSidePanel: React.FC<PFSetupSidePanelProps> = ({
           <div className='w-[352px]'>
           <OutlinedInput
             label="PF User ID (Optional)"
-            value={pfSetupData.pfUserId || ''}
+            value={'User01'}
             onChange={(value: string) => handleInputChange('pfUserId', value)}
             />
             </div>
@@ -191,7 +191,7 @@ const PFSetupSidePanel: React.FC<PFSetupSidePanelProps> = ({
           <div className='w-[352px]'>
           <OutlinedInput
             label="PF Password (Optional)"
-            value={pfSetupData.pfPassword || ''}
+            value={'password01'}
             onChange={(value: string) => handleInputChange('pfPassword', value)}
             />
             </div>
@@ -204,7 +204,7 @@ const PFSetupSidePanel: React.FC<PFSetupSidePanelProps> = ({
           <div className='w-56'>
           <DatePicker
             placeholder="Select date"
-            value={pfSetupData.registrationDate}
+            value={newDate('2023-01-01')}
             onChange={(date: Date | null) => handleInputChange('registrationDate', date)}
             />
             </div>
@@ -290,4 +290,4 @@ const PFSetupSidePanel: React.FC<PFSetupSidePanelProps> = ({
   );
 };
 
-export default PFSetupSidePanel;
+export default PFEditedData;
