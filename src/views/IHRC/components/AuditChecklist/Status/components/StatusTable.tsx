@@ -480,6 +480,9 @@ const StatusTable: React.FC<StatusTableProps> = ({
         onPaginationChange={onPaginationChange}
         onSelectChange={onSelectChange}
         onSort={onSort}
+        stickyHeader={true}
+          stickyFirstColumn={true}
+          stickyLastColumn={true}
       />
       <ConfirmDialog
         isOpen={isConfirmDialogOpen}

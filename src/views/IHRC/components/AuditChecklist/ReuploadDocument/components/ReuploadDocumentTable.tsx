@@ -182,6 +182,9 @@ const ReuploadDocumentTable: React.FC = () => {
         }}
         onPaginationChange={onPaginationChange}
         onSelectChange={onSelectChange}
+        stickyHeader={true}
+          stickyFirstColumn={true}
+          stickyLastColumn={true}
       />
 
       <Dialog

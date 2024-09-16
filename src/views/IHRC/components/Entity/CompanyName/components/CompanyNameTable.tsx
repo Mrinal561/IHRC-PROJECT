@@ -7,6 +7,7 @@ import OutlinedInput from '@/components/ui/OutlinedInput/OutlinedInput';
 import DataTable, { ColumnDef, OnSortParam } from '@/components/shared/DataTable';
 import { APP_PREFIX_PATH } from '@/constants/route.constant';
 import { RiEyeLine } from 'react-icons/ri';
+import { GrConfigure } from "react-icons/gr";
 import cloneDeep from 'lodash/cloneDeep';
 
 import { EntityData, entityDataSet } from '../../../../store/dummyEntityData';
@@ -96,7 +97,7 @@ const CompanyNameTable: React.FC = () => {
                                     row.original.Company_Name || '',
                                     row.original.Company_Group_Name || ''
                                 )}
-                                icon={<FiSettings />}
+                                icon={<GrConfigure />}
                                 className="text-blue-500"
                             />
                         </Tooltip>
@@ -108,7 +109,7 @@ const CompanyNameTable: React.FC = () => {
                                     row.original.Company_Name || '',
                                     row.original.Company_Group_Name || ''
                                 )}
-                                icon={<FiSettings />}
+                                icon={<GrConfigure />}
                                 className="text-blue-500"
                             />
                         </Tooltip>
@@ -120,7 +121,7 @@ const CompanyNameTable: React.FC = () => {
                                     row.original.Company_Name || '',
                                     row.original.Company_Group_Name || ''
                                 )}
-                                icon={<FiSettings />}
+                                icon={<GrConfigure />}
                                 className="text-blue-500"
                             />
                         </Tooltip>
@@ -132,7 +133,7 @@ const CompanyNameTable: React.FC = () => {
                                     row.original.Company_Name || '',
                                     row.original.Company_Group_Name || ''
                                 )}
-                                icon={<FiSettings />}
+                                icon={<GrConfigure />}
                                 className="text-blue-500"
                             />
                         </Tooltip>

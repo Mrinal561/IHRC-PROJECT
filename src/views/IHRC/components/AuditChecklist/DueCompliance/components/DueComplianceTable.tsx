@@ -324,6 +324,9 @@ const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadS
         }}
         onPaginationChange={onPaginationChange}
         onSelectChange={(value: number) => {}}
+        stickyHeader={true}
+        stickyFirstColumn={true}
+        stickyLastColumn={true}
       />
       <Dialog
         isOpen={dialogIsOpen}
