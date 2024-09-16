@@ -64,7 +64,7 @@ const ConfigDropdown = ({ companyName, companyGroupName }) => {
 
   return (
     <>
-      <Tooltip title="Click for Configure">
+      <Tooltip title="Click to Configure">
         <Button
           ref={buttonRef}
           size="sm"
@@ -75,7 +75,7 @@ const ConfigDropdown = ({ companyName, companyGroupName }) => {
       {isOpen && ReactDOM.createPortal(
         <div 
           ref={dropdownRef}
-          className="py-2 w-40 h-40 bg-white rounded-md shadow-xl z-50"
+          className="py-2 w-40 h-40 bg-white rounded-md shadow-xl mt-2 border border-gray-200 z-50"
         //   style={{ position: 'relative', }}
         >
           {options.map((option) => (
