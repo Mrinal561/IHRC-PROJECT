@@ -59,7 +59,7 @@ export const protectedRoutes = [
       {
         key: 'userInputDetail.item',
         path: `/add-user`,
-        component: lazy(() => import('@/views/IHRC/components/UserEntity/components/Userform')),
+        component: lazy(() => import('@/views/IHRC/components/UserEntity/components/userform')),
         authority: [],
       },
     {
