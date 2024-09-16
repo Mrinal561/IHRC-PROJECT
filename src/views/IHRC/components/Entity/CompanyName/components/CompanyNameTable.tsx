@@ -60,6 +60,34 @@ const CompanyNameTable: React.FC = () => {
                 id: 'actions',
                 cell: ({ row }) => (
                     <div className="flex items-center gap-2">
+                       
+                        <Tooltip title="View Details">
+                            <Button
+                                size="sm"
+                                onClick={() => handleViewDetails(
+                                    row.original.Company_Name || '',
+                                    row.original.Company_Group_Name || ''
+                                )}
+                                icon={<RiEyeLine />}
+                                className="text-blue-500"
+                            />
+                        </Tooltip>
+                        <Tooltip title="Edit">
+                            <Button
+                                size="sm"
+                                onClick={() => openEditDialog(row.index)}
+                                icon={<MdEdit />}
+                                className="text-blue-500"
+                            />
+                        </Tooltip>
+                        <Tooltip title="Delete">
+                            <Button
+                                size="sm"
+                                onClick={() => openDeleteDialog(row.index)}
+                                icon={<FiTrash />}
+                                className="text-red-500"
+                            />
+                        </Tooltip>
                         <Tooltip title="PF Config">
                             <Button
                                 size="sm"
@@ -106,33 +134,6 @@ const CompanyNameTable: React.FC = () => {
                                 )}
                                 icon={<FiSettings />}
                                 className="text-blue-500"
-                            />
-                        </Tooltip>
-                        <Tooltip title="View Details">
-                            <Button
-                                size="sm"
-                                onClick={() => handleViewDetails(
-                                    row.original.Company_Name || '',
-                                    row.original.Company_Group_Name || ''
-                                )}
-                                icon={<RiEyeLine />}
-                                className="text-blue-500"
-                            />
-                        </Tooltip>
-                        <Tooltip title="Edit">
-                            <Button
-                                size="sm"
-                                onClick={() => openEditDialog(row.index)}
-                                icon={<MdEdit />}
-                                className="text-blue-500"
-                            />
-                        </Tooltip>
-                        <Tooltip title="Delete">
-                            <Button
-                                size="sm"
-                                onClick={() => openDeleteDialog(row.index)}
-                                icon={<FiTrash />}
-                                className="text-red-500"
                             />
                         </Tooltip>
                     </div>
