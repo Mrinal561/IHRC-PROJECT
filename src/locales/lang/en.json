@@ -22,20 +22,34 @@
                 "item3": "Status Settings"
             }
         },
-        "entityMenu": {
-            "entityMenu": "Entity",
+        "companySetup": {
+            "companySetup": "Company Setup",
             "collapse": {
-                "collapse": "Entity",
-                "item1": "Company Group",
-                "item2": "Company Name",
-                "item3": "State",
-                "item4": "District",
-                "item5": "Location",
-                "item6": "Branch"
+                "entitySetup": {
+                    "collapse": {
+                        "collapse": "Entity Setup",
+                        "item1": "Company Group",
+                        "item2": "Company Name",
+                        "item3": "State",
+                        "item4": "District",
+                        "item5": "Location",
+                        "item6": "Branch"
+                    }
+                },
+                "userSetup": "User Setup"
             }
         },
-        "userEntityMenu": {
-            "userEntityMenu": "User Entity"
+        "remittanceTracker": {
+            "remittanceTracker": "Remittance Tracker",
+            "collapse": {
+                "collapse": "Remittance Tracker",
+                "item1": "PF Tracker",
+                "item2": "ESI Tracker",
+                "item3": "LWF Tracker",
+                "item4": "PT Tracker",
+                "item5": "PTRC Tracker",
+                "item6": "PTEC Tracker"
+            }
         }
-    }
+        }
 }

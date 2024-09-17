@@ -207,9 +207,15 @@ export const protectedRoutes = [
         authority: [],
       },
       {
-        key: 'userEntityMenu.userEntityMenu',
+        key: 'companySetup.collapse.userSetup',
         path: '/user-entity',
         component: lazy(() => import('@/views/IHRC/components/UserEntity/UserEntity')),
+        authority: [],
+    },    
+      {
+        key: 'remittanceTracker.collapse.item1',
+        path: '/pf-tracker',
+        component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/PFTracker/PFTracker')),
         authority: [],
     },    
 ]
