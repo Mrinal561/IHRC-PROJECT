@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Dialog, Tooltip, Notification, toast } from '@/components/ui'; // Import Notification and toast
+import { Button, Dialog, Tooltip, Notification, toast, Dropdown } from '@/components/ui'; // Import Notification and toast
 import { FiSettings, FiTrash } from 'react-icons/fi';
 import { MdEdit } from 'react-icons/md';
 import OutlinedInput from '@/components/ui/OutlinedInput/OutlinedInput';
@@ -12,6 +12,7 @@ import cloneDeep from 'lodash/cloneDeep';
 
 import { EntityData, entityDataSet } from '../../../../store/dummyEntityData';
 import OutlinedSelect from '@/components/ui/Outlined';
+import ConfigDropdown from './ConfigDropdown';
 
 const CompanyNameTable: React.FC = () => {
     const [dialogIsOpen, setDialogIsOpen] = useState(false);
@@ -48,6 +49,25 @@ const CompanyNameTable: React.FC = () => {
             state: { companyName, companyGroupName }
         });
     };
+    const ConfigMenu: React.FC<{ companyName: string; companyGroupName: string }> = ({ companyName, companyGroupName }) => (
+        <Dropdown placement="bottom-end" renderTitle={<Button size="sm" icon={<FiSettings />} />}>
+            <Dropdown.Menu className='absolute h-96 right-0 mt-2 z-[9999]'>
+                <Dropdown.Item eventKey="pf" onClick={() => handleSetupClick('PF', companyName, companyGroupName)}>
+                    PF Config
+                </Dropdown.Item>
+                <Dropdown.Item eventKey="pt" onClick={() => handleSetupClick('PT', companyName, companyGroupName)}>
+                    PT Config
+                </Dropdown.Item>
+                <Dropdown.Item eventKey="esi" onClick={() => handleSetupClick('ESI', companyName, companyGroupName)}>
+                    ESI Config
+                </Dropdown.Item>
+                <Dropdown.Item eventKey="lwf" onClick={() => handleSetupClick('LWF', companyName, companyGroupName)}>
+                    LWF Config
+                </Dropdown.Item>
+            </Dropdown.Menu>
+        </Dropdown>
+    );
+
 
     const columns: ColumnDef<EntityData>[] = useMemo(
         () => [
@@ -98,54 +118,10 @@ const CompanyNameTable: React.FC = () => {
                                 className="text-red-500"
                             />
                         </Tooltip>
-                        <Tooltip title="PF Config">
-                            <Button
-                                size="sm"
-                                onClick={() => handleSetupClick(
-                                    'PF', 
-                                    row.original.Company_Name || '',
-                                    row.original.Company_Group_Name || ''
-                                )}
-                                icon={<GrConfigure />}
-                                className="text-blue-500"
-                            />
-                        </Tooltip>
-                         <Tooltip title="PT Config">
-                            <Button
-                                size="sm"
-                                onClick={() => handleSetupClick(
-                                    'PT', 
-                                    row.original.Company_Name || '',
-                                    row.original.Company_Group_Name || ''
-                                )}
-                                icon={<GrConfigure />}
-                                className="text-blue-500"
-                            />
-                        </Tooltip>
-                         <Tooltip title="ESI Config">
-                            <Button
-                                size="sm"
-                                onClick={() => handleSetupClick(
-                                    'ESI', 
-                                    row.original.Company_Name || '',
-                                    row.original.Company_Group_Name || ''
-                                )}
-                                icon={<GrConfigure />}
-                                className="text-blue-500"
-                            />
-                        </Tooltip>
-                        <Tooltip title="LWF Config">
-                            <Button
-                                size="sm"
-                                onClick={() => handleSetupClick(
-                                    'LWF', 
-                                    row.original.Company_Name || '',
-                                    row.original.Company_Group_Name || ''
-                                )}
-                                icon={<GrConfigure />}
-                                className="text-blue-500"
-                            />
-                        </Tooltip>
+                        <ConfigDropdown
+                        companyName={row.original.Company_Name || ''}
+                        companyGroupName={row.original.Company_Group_Name || ''}
+                      />
                     </div>
                 ),
             },
@@ -153,11 +129,22 @@ const CompanyNameTable: React.FC = () => {
         []
     );
 
+    const openNotification = (type: 'success' | 'info' | 'danger' | 'warning', message: string) => {
+        toast.push(
+            <Notification
+                title={type.charAt(0).toUpperCase() + type.slice(1)}
+                type={type}
+            >
+                {message}
+            </Notification>
+        )
+    }
+
     const openDeleteDialog = (index: number) => {
         setItemToDelete(index);
         setDialogIsOpen(true);
     };
-
+    
     const openEditDialog = (index: number) => {
         const item = entityDataSet[index];
         setItemToEdit(index);
@@ -173,10 +160,11 @@ const CompanyNameTable: React.FC = () => {
         setItemToEdit(null);
         setEditedName('');
     };
-
+    
     const handleDeleteConfirm = () => {
         if (itemToDelete !== null) {
             // Implement delete functionality here
+            openNotification('danger', 'Company name deleted successfully');
             handleDialogClose();
         }
     };
@@ -248,6 +236,7 @@ const CompanyNameTable: React.FC = () => {
 
     return (
         <div className="relative">
+         
             {entityDataSet.length === 0 ? (
                 <div className="text-center py-8 text-gray-500">
                     No data available

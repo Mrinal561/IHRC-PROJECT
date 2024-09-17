@@ -217,6 +217,7 @@ const AddBranchForm: React.FC = () => {
               onChange={(value: string) => {
                 setFormData(prev => ({ ...prev, Branch: value }));
               }}
+             
             />
           </div>
         </div>
@@ -230,6 +231,7 @@ const AddBranchForm: React.FC = () => {
               onChange={(value: string) => {
                 setFormData(prev => ({ ...prev, BranchAddress: value }));
               }}
+              textarea={true}
             />
           </div>
         </div>
@@ -270,6 +272,7 @@ const AddBranchForm: React.FC = () => {
               onChange={(value: string) => {
                 setFormData(prev => ({ ...prev, AuthorityAddress: value }));
               }}
+              textarea={true}
             />
           </div>
         </div>

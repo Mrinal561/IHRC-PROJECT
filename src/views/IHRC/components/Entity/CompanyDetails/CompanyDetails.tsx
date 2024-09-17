@@ -2,6 +2,7 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui';
 import { HiArrowLeft } from 'react-icons/hi';
+import { AdaptableCard } from '@/components/shared';
 
 const CompanyDetails: React.FC = () => {
     const navigate = useNavigate();
@@ -13,7 +14,7 @@ const CompanyDetails: React.FC = () => {
     };
 
     return (
-        <div className="p-2 max-w-7xl">
+        <AdaptableCard className="p-2 max-w-7xl">
             <div className='flex items-center gap-4 mb-8'>
                 <Button
                     onClick={handleBack}
@@ -22,130 +23,107 @@ const CompanyDetails: React.FC = () => {
                     icon={<HiArrowLeft />}
                 />
                 <div>
-                <h3>Company Details</h3>
+                    <h3>Company Details</h3>
                 </div>
             </div>
 
             <div className="space-y-6">
-                <DetailBox title={companyGroupName}>
-                <p>{companyName}</p>
-                 </DetailBox>
+                <div className="border p-4 rounded-lg shadow-sm bg-white">
+                    <h3 className="text-xl font-semibold mb-4   ">{companyGroupName}</h3>
+                    <p>{companyName}</p>
+                </div>
                 <div className="flex gap-6">
-                    <DetailBox title="PF Setup Details" className="flex-1">
+                    <div className="border p-4 rounded-lg shadow-sm bg-white flex-1">
+                        <h3 className="text-xl font-semibold mb-4   ">PF Setup Details</h3>
                         <div className="grid grid-cols-2 gap-4">
-                            <DetailColumn>
-                                <DetailItem label="PF Code" value="DRET12457893" />
-                                <DetailItem label="PF Code Location" value="Mumbai" />
-                                <DetailItem label="PF Registration Date" value="2023-01-01" />
-                                <DetailItem label="PF User ID" value="User01" />
-                                <DetailItem label="PF Password" value="password01" />
-                                <DetailItem label="Authorized Signatory" value="Amit" />
-                            </DetailColumn>
-                            <DetailColumn>
-                                <DetailItem label="Designation" value="Manager" />
-                                <DetailItem label="Mobile" value="9145786945" />
-                                <DetailItem label="Email" value="amit@gmail.com" />
-                                <DetailItem label="DSC Validity" value="2026-01-01" />
-                            </DetailColumn>
+                            <div className="space-y-2">
+                                <p className="text-sm mb-2"><strong className="  text-sm mb-2">PF Code:</strong> <span className="  mb-2">DRET12457893</span></p>
+                                <p className="text-sm mb-2"><strong className="  text-sm mb-2">PF Code Location:</strong> <span className="  mb-2">Mumbai</span></p>
+                                <p className="text-sm mb-2"><strong className="  text-sm mb-2">PF Registration Date:</strong> <span className="  mb-2">2023-01-01</span></p>
+                                <p className="text-sm mb-2"><strong className="  text-sm mb-2">PF User ID:</strong> <span className="  mb-2">User01</span></p>
+                                <p className="text-sm mb-2"><strong className="  text-sm mb-2">PF Password:</strong> <span className="  mb-2">password01</span></p>
+                                <p className="text-sm mb-2"><strong className="  text-sm mb-2">Authorized Signatory:</strong> <span className="  mb-2">Amit</span></p>
+                            </div>
+                            <div className="space-y-2">
+                                <p className="text-sm mb-2"><strong className="  text-sm mb-2">Designation:</strong> <span className="  mb-2">Manager</span></p>
+                                <p className="text-sm mb-2"><strong className="  text-sm mb-2">Mobile:</strong> <span className="  mb-2">9145786945</span></p>
+                                <p className="text-sm mb-2"><strong className="  text-sm mb-2">Email:</strong> <span className="  mb-2">amit@gmail.com</span></p>
+                                <p className="text-sm mb-2"><strong className="  text-sm mb-2">DSC Validity:</strong> <span className="  mb-2">2026-01-01</span></p>
+                            </div>
                         </div>
-                    </DetailBox>
+                    </div>
 
-                    <DetailBox title="ESI Setup Details" className="flex-1">
+                    <div className="border p-4 rounded-lg shadow-sm bg-white flex-1">
+                        <h3 className="text-xl font-semibold mb-4   ">ESI Setup Details</h3>
                         <div className="grid grid-cols-2 gap-4">
-                            <DetailColumn>
-                                <DetailItem label="ESI Code Type" value="Main" />
-                                <DetailItem label="ESI Code" value="DRET12457893" />
-                                <DetailItem label="ESI Code Location" value="Mumbai" />
-                                <DetailItem label="ESI User ID" value="User01" />
-                                <DetailItem label="ESI Password" value="password01" />
-                            </DetailColumn>
-                            <DetailColumn>
-                                <DetailItem label="Authorized Signatory" value="Amit" />
-                                <DetailItem label="Designation" value="Manager" />
-                                <DetailItem label="Mobile" value="9145786945" />
-                                <DetailItem label="Email" value="amit@gmail.com" />
-                            </DetailColumn>
+                            <div className="space-y-2">
+                                <p className="text-sm mb-2"><strong className="  text-sm mb-2">ESI Code Type:</strong> <span className="  mb-2">Main</span></p>
+                                <p className="text-sm mb-2"><strong className="  text-sm mb-2">ESI Code:</strong> <span className="  mb-2">DRET12457893</span></p>
+                                <p className="text-sm mb-2"><strong className="  text-sm mb-2">ESI Code Location:</strong> <span className="  mb-2">Mumbai</span></p>
+                                <p className="text-sm mb-2"><strong className="  text-sm mb-2">ESI User ID:</strong> <span className="  mb-2">User01</span></p>
+                                <p className="text-sm mb-2"><strong className="  text-sm mb-2">ESI Password:</strong> <span className="  mb-2">password01</span></p>
+                            </div>
+                            <div className="space-y-2">
+                                <p className="text-sm mb-2"><strong className="  text-sm mb-2">Authorized Signatory:</strong> <span className="  mb-2">Amit</span></p>
+                                <p className="text-sm mb-2"><strong className="  text-sm mb-2">Designation:</strong> <span className="  mb-2">Manager</span></p>
+                                <p className="text-sm mb-2"><strong className="  text-sm mb-2">Mobile:</strong> <span className="  mb-2">9145786945</span></p>
+                                <p className="text-sm mb-2"><strong className="  text-sm mb-2">Email:</strong> <span className="  mb-2">amit@gmail.com</span></p>
+                            </div>
                         </div>
-                    </DetailBox>
+                    </div>
                 </div>
 
-                {/* <div className="flex gap-6"> */}
-                    <DetailBox title="LWF Setup Details" className="flex-1">
-                        <div className="grid grid-cols-2 gap-4">
-                            <DetailColumn>
-                                <DetailItem label="LWF State" value="Maharashtra" />
-                                <DetailItem label="LWF Location" value="Mumbai" />
-                                <DetailItem label="LWF Registration Number" value="REG98765354879" />
-                                <DetailItem label="LWF Registration Date" value="2023-01-01" />
-                                <DetailItem label="LWF Remmitance Mode" value="Online" />
-                                <DetailItem label="LWF Remmitance Frequency" value="Yearly" />
-                                <DetailItem label="LWF User ID" value="User01" />
-                                <DetailItem label="LWF Password" value="password01" />
-                            </DetailColumn>
-                            <DetailColumn>
-                                <DetailItem label="LWF Frequency" value="Monthly" />
-                                <DetailItem label="LWF Payment Due Date" value="2023-10-22" />
-                                <DetailItem label="LWF Applicable State" value="Tamil Nadu" />
-                                <DetailItem label="Authorized Signatory" value="Amit" />
-                                <DetailItem label="Designation" value="Manager" />
-                                <DetailItem label="Mobile" value="9145786945" />
-                                <DetailItem label="Email" value="amit@gmail.com" />
-                            </DetailColumn>
+                <div className="border p-4 rounded-lg shadow-sm bg-white flex-1">
+                    <h3 className="text-xl font-semibold mb-4   ">LWF Setup Details</h3>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <p className="text-sm mb-2"><strong className="  text-sm mb-2">LWF State:</strong> <span className="  mb-2">Maharashtra</span></p>
+                            <p className="text-sm mb-2"><strong className="  text-sm mb-2">LWF Location:</strong> <span className="  mb-2">Mumbai</span></p>
+                            <p className="text-sm mb-2"><strong className="  text-sm mb-2">LWF Registration Number:</strong> <span className="  mb-2">REG98765354879</span></p>
+                            <p className="text-sm mb-2"><strong className="  text-sm mb-2">LWF Registration Date:</strong> <span className="  mb-2">2023-01-01</span></p>
+                            <p className="text-sm mb-2"><strong className="  text-sm mb-2">LWF Remmitance Mode:</strong> <span className="  mb-2">Online</span></p>
+                            <p className="text-sm mb-2"><strong className="  text-sm mb-2">LWF Remmitance Frequency:</strong> <span className="  mb-2">Yearly</span></p>
+                            <p className="text-sm mb-2"><strong className="  text-sm mb-2">LWF User ID:</strong> <span className="  mb-2">User01</span></p>
+                            <p className="text-sm mb-2"><strong className="  text-sm mb-2">LWF Password:</strong> <span className="  mb-2">password01</span></p>
                         </div>
-                    </DetailBox>
+                        <div className="space-y-2">
+                            <p className="text-sm mb-2"><strong className="  text-sm mb-2">LWF Frequency:</strong> <span className="  mb-2">Monthly</span></p>
+                            <p className="text-sm mb-2"><strong className="  text-sm mb-2">LWF Payment Due Date:</strong> <span className="  mb-2">2023-10-22</span></p>
+                            <p className="text-sm mb-2"><strong className="  text-sm mb-2">LWF Applicable State:</strong> <span className="  mb-2">Tamil Nadu</span></p>
+                            <p className="text-sm mb-2"><strong className="  text-sm mb-2">Authorized Signatory:</strong> <span className="  mb-2">Amit</span></p>
+                            <p className="text-sm mb-2"><strong className="  text-sm mb-2">Designation:</strong> <span className="  mb-2">Manager</span></p>
+                            <p className="text-sm mb-2"><strong className="  text-sm mb-2">Mobile:</strong> <span className="  mb-2">9145786945</span></p>
+                            <p className="text-sm mb-2"><strong className="  text-sm mb-2">Email:</strong> <span className="  mb-2">amit@gmail.com</span></p>
+                        </div>
+                    </div>
+                </div>
 
-                    <DetailBox title="PT Setup Details" className="flex-1">
-                        <div className="grid grid-cols-2 gap-4">
-                            <DetailColumn>
-                                <DetailItem label="PT State" value="Maharashtra" />
-                                <DetailItem label="PT Location" value="Mumbai" />
-                                <DetailItem label="PT Enrollment Number" value="PT1234587954" />
-                                <DetailItem label="PT Registration Number" value="REG98765354879" />
-                                <DetailItem label="PT Registration Date" value="2023-01-01" />
-                                <DetailItem label="PT Remmitance Mode" value="Online" />
-                                <DetailItem label="PT User ID" value="User01" />
-                            </DetailColumn>
-                            <DetailColumn>
-                                <DetailItem label="PT Password" value="password01" />
-                                <DetailItem label="PTRC Payment Frequency" value="Quarterly" />
-                                <DetailItem label="PTEC Payment Frequency" value="Monthly" />
-                                <DetailItem label="Authorized Signatory" value="Amit" />
-                                <DetailItem label="Designation" value="Manager" />
-                                <DetailItem label="Mobile" value="9145786945" />
-                                <DetailItem label="Email" value="amit@gmail.com" />
-                            </DetailColumn>
+                <div className="border p-4 rounded-lg shadow-sm bg-white flex-1">
+                    <h3 className="text-xl font-semibold mb-4   ">PT Setup Details</h3>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <p className="text-sm mb-2"><strong className="  text-sm mb-2">PT State:</strong> <span className="  mb-2">Maharashtra</span></p>
+                            <p className="text-sm mb-2"><strong className="  text-sm mb-2">PT Location:</strong> <span className="  mb-2">Mumbai</span></p>
+                            <p className="text-sm mb-2"><strong className="  text-sm mb-2">PT Enrollment Number:</strong> <span className="  mb-2">PT1234587954</span></p>
+                            <p className="text-sm mb-2"><strong className="  text-sm mb-2">PT Registration Number:</strong> <span className="  mb-2">REG98765354879</span></p>
+                            <p className="text-sm mb-2"><strong className="  text-sm mb-2">PT Registration Date:</strong> <span className="  mb-2">2023-01-01</span></p>
+                            <p className="text-sm mb-2"><strong className="  text-sm mb-2">PT Remmitance Mode:</strong> <span className="  mb-2">Online</span></p>
+                            <p className="text-sm mb-2"><strong className="  text-sm mb-2">PT User ID:</strong> <span className="  mb-2">User01</span></p>
                         </div>
-                    </DetailBox>
+                        <div className="space-y-2">
+                            <p className="text-sm mb-2"><strong className="  text-sm mb-2">PT Password:</strong> <span className="  mb-2">password01</span></p>
+                            <p className="text-sm mb-2"><strong className="  text-sm mb-2">PTRC Payment Frequency:</strong> <span className="  mb-2">Quarterly</span></p>
+                            <p className="text-sm mb-2"><strong className="  text-sm mb-2">PTEC Payment Frequency:</strong> <span className="  mb-2">Monthly</span></p>
+                            <p className="text-sm mb-2"><strong className="  text-sm mb-2">Authorized Signatory:</strong> <span className="  mb-2">Amit</span></p>
+                            <p className="text-sm mb-2"><strong className="  text-sm mb-2">Designation:</strong> <span className="  mb-2">Manager</span></p>
+                            <p className="text-sm mb-2"><strong className="  text-sm mb-2">Mobile:</strong> <span className="  mb-2">9145786945</span></p>
+                            <p className="text-sm mb-2"><strong className="  text-sm mb-2">Email:</strong> <span className="mb-2">amit@gmail.com</span></p>
+                        </div>
+                    </div>
                 </div>
             </div>
-        // </div>
+        </AdaptableCard>
     );
 };
-
-interface DetailBoxProps {
-    title: string;
-    children: React.ReactNode;
-    className?: string;
-}
-
-const DetailBox: React.FC<DetailBoxProps> = ({ title, children, className }) => (
-    <div className={`border p-4 rounded-lg shadow-sm bg-white ${className}`}>
-        <h3 className="text-xl font-semibold mb-4 text-gray-700">{title}</h3>
-        {children}
-    </div>
-);
-
-const DetailColumn: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-    <div className="space-y-2">
-        {children}
-    </div>
-);
-
-const DetailItem: React.FC<{ label: string; value: string }> = ({ label, value }) => (
-    <p className="text-sm">
-        <strong className="text-gray-500">{label}:</strong>{' '}
-        <span className="text-gray-400">{value}</span>
-    </p>
-);
 
 export default CompanyDetails;

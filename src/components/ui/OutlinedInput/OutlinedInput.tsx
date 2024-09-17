@@ -4,9 +4,10 @@ interface OutlinedInputProps {
   label: string;
   value: string;
   onChange: (value: string) => void;
+  textarea?: boolean; // Add a prop for textarea support
 }
 
-const OutlinedInput: React.FC<OutlinedInputProps> = ({ label, value, onChange }) => {
+const OutlinedInput: React.FC<OutlinedInputProps> = ({ label, value, onChange, textarea = false }) => {
   const [isFocused, setIsFocused] = useState(false);
 
   const handleFocus = () => setIsFocused(true);
@@ -27,14 +28,26 @@ const OutlinedInput: React.FC<OutlinedInputProps> = ({ label, value, onChange })
           {label}
         </span>
       </div>
-      <input
-        type="text"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-        className="w-full px-3 py-2 bg-transparent border-none focus:outline-none"
-      />
+
+      {textarea ? (
+        <textarea
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          className="w-full px-3 py-2 bg-transparent border-none focus:outline-none resize-none"
+          rows={4} // You can control the rows here
+        />
+      ) : (
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          className="w-full px-3 py-2 bg-transparent border-none focus:outline-none"
+        />
+      )}
     </div>
   );
 };

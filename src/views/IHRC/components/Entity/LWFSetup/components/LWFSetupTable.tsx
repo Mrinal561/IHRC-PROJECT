@@ -1,8 +1,9 @@
 import React, { useMemo, useState } from 'react';
-import { Button, Dialog, Tooltip } from '@/components/ui';
+import { Button, Dialog, toast, Tooltip, Notification } from '@/components/ui';
 import { FiTrash } from 'react-icons/fi';
 import { MdEdit } from 'react-icons/md';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
+import LWFEditedData from './LWFEditedData';
 
 export interface LWFSetupData {
     Company_Group_Name: string;
@@ -159,6 +160,17 @@ const LWFSetupTable: React.FC<ESISetupTableProps> = ({ data, onDelete, onEdit })
     []
   );
 
+  const openNotification = (type: 'success' | 'info' | 'danger' | 'warning', message: string) => {
+    toast.push(
+        <Notification
+            title={type.charAt(0).toUpperCase() + type.slice(1)}
+            type={type}
+        >
+            {message}
+        </Notification>
+    )
+}
+
   const openDialog = (index: number) => {
     setItemToDelete(index);
     setDialogIsOpen(true);
@@ -183,6 +195,7 @@ const LWFSetupTable: React.FC<ESISetupTableProps> = ({ data, onDelete, onEdit })
       onDelete(itemToDelete);
       setDialogIsOpen(false);
       setItemToDelete(null);
+      openNotification('danger', 'LWF Setup deleted successfully');
     }
   };
 
@@ -246,9 +259,12 @@ const LWFSetupTable: React.FC<ESISetupTableProps> = ({ data, onDelete, onEdit })
         isOpen={editDialogIsOpen}
         onClose={handleDialogClose}
         onRequestClose={handleDialogClose}
+        width={800}
+        height={570}
       >
-        <h5 className="mb-4">Edit PF Setup</h5>
+        <h5 className="mb-4">Edit LWF Setup</h5>
         {/* Add your edit form fields here */}
+        <LWFEditedData />
         <div className="text-right mt-6">
           <Button
             className="ltr:mr-2 rtl:ml-2"
