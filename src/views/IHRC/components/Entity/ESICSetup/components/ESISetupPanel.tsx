@@ -205,10 +205,10 @@ const ESISetupPanel: React.FC<ESISetupSidePanelProps> = ({
             isMulti
             options={[
               ...existingSignatories.map(s => ({ value: s.name, label: s.name })),
-              { value: 'add_new', label: '+ Add New Signatory' }
+              // { value: 'add_new'}
             ]}
-            value={esiSetupData.authorizedSignatory.map(name => ({ value: name, label: name }))}
-            onChange={handleSignatoryChange}
+            // value={esiSetupData.authorizedSignatory.map(name => ({ value: name, label: name }))}
+            // onChange={handleSignatoryChange}
             />
             </div>
         </div>

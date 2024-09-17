@@ -109,7 +109,6 @@ const ESIEditedData: React.FC = () => {
                 { value: 'Amit', label: 'Amit' },
                 { value: 'Krishna Kumar Singh', label: 'Krishna Kumar Singh' },
               ]}
-              isDisabled
             />
           </div>
         </div>

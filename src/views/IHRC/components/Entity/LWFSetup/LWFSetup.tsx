@@ -161,9 +161,9 @@ const LWFSetup: React.FC = () => {
       </div>
 
       <LWFSetupTable
-        data={LWFSetupData}
-        onDelete={handleDelete}
-        onEdit={handleEdit}
+        // data={LWFSetupData}
+        // onDelete={handleDelete}
+        // onEdit={handleEdit}
       />
 
       <Dialog
