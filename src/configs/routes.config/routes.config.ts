@@ -224,4 +224,10 @@ export const protectedRoutes = [
         component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/ESITracker/ESITracker')),
         authority: [],
     },    
+    {
+        key: 'pftracker.uploadeddetail',
+        path: '/uploadedpfdetail',
+        component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/PFTracker/components/UploadedPFDetails')),
+        authority: [],
+    },
 ]
