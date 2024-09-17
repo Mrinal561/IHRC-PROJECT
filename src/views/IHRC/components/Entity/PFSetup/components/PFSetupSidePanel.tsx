@@ -217,10 +217,10 @@ const PFSetupSidePanel: React.FC<PFSetupSidePanelProps> = ({
             isMulti
             options={[
               ...existingSignatories.map(s => ({ value: s.name, label: s.name })),
-              { value: 'add_new', label: '+ Add New Signatory' }
+              { value: 'add_new'}
             ]}
-            value={pfSetupData.authorizedSignatory.map(name => ({ value: name, label: name }))}
-            onChange={handleSignatoryChange}
+            // value={pfSetupData.authorizedSignatory.map(name => ({ value: name, label: name }))}
+            // onChange={handleSignatoryChange}
             />
             </div>
         </div>

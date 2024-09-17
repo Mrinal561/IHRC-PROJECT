@@ -112,7 +112,7 @@ const PTEditedData: React.FC = () => {
                         <DatePicker
                             placeholder="Select date"
                             value={new Date("2023-01-01")}
-                            disabled
+                            // disabled
                         />
                     </div>
                 </div>
@@ -130,7 +130,7 @@ const PTEditedData: React.FC = () => {
                             { value: 'Amit', label: 'Amit' },
                             { value: 'Ajay Thakur', label: 'Ajay Thakur' },
                         ]}
-                        isDisabled
+                        // isDisabled
                     />
                 </div>
             </div>
@@ -140,7 +140,7 @@ const PTEditedData: React.FC = () => {
                 <Input
                     id="file-upload"
                     type="file"
-                    disabled
+                    // disabled
                 />
             </div>
 

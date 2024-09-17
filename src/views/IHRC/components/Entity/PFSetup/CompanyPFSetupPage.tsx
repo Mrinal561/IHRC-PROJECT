@@ -147,9 +147,9 @@ const CompanyPFSetupPage: React.FC = () => {
       </div>
 
       <PFSetupTable
-        data={pfSetupData}
-        onDelete={handleDelete}
-        onEdit={handleEdit}
+        // data={pfSetupData}
+        // onDelete={handleDelete}
+        // onEdit={handleEdit}
       />
 
       <Dialog

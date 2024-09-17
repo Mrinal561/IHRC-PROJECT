@@ -1,41 +1,57 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Input, Dialog, DatePicker, Select } from '@/components/ui';
 import OutlinedInput from '@/components/ui/OutlinedInput';
+import { LWFSetupData } from './LWFSetupTable';
 
-const LWFEditedData: React.FC = ({ onClose }) => {
+interface LWFEditedDataProps {
+  initialData: LWFSetupData | null;
+  onClose: () => void;
+  onSubmit: (data: LWFSetupData) => void;
+}
+
+const LWFEditedData: React.FC<LWFEditedDataProps> = ({ initialData, onClose, onSubmit }) => {
   // Hardcoded LWF Setup Data
-  const LWFSetupData = {
-    Company_Group_Name: 'Tata Group',
-    Company_Name: 'Tata Consultancy Services',
-    lwfState: 'Maharashtra',
-    lwfLocation: 'Mumbai',
-    lwfRegistrationNumber: 'REG98765354879',
-    lwfRegistrationDate: new Date('2023-01-01'),
-    lwfRemmitanceMode: 'Online',
-    lwfUserId: 'User01',
-    lwfPassword: 'password01',
-    authorizedSignatory: ['Amit', 'Krishna Kumar Singh'],
-  };
+  const [formData, setFormData] = useState<LWFSetupData>({
+    Company_Group_Name: '',
+    Company_Name: '',
+    lwfState: '',
+    lwfLocation: '',
+    lwfRegistrationNumber: '',
+    lwfRegistrationDate: '',
+    lwfRemmitanceMode: '',
+    lwfRemmitanceFrequency: '',
+    lwfUserId: '',
+    lwfPassword: '',
+    authorizedSignatory: '',
+    signatoryDesignation: '',
+    signatoryMobile: '',
+    signatoryEmail: '',
+    lwfFrequency: '',
+    lwfPaymentDueDate: '',
+    lwfApplicableState: '',
+  });
 
   // Hardcoded signatories
-  const existingSignatories = [
-    { name: 'Amit', designation: 'Manager', mobile: '1234567890', email: 'amit@example.com' },
-    { name: 'Krishna Kumar Singh', designation: 'Director', mobile: '9876543210', email: 'krishna@example.com' },
-  ];
+  useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);
+    }
+  }, [initialData]);
 
-  // Static handlers for demo purposes
-  const handleSubmit = () => {
-    alert('LWF Setup successfully created');
-    onClose();
+  const handleChange = (field: keyof LWFSetupData, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  const handleSubmit = () => {
+    onSubmit(formData);
+  }
   return (
     <div className="p-4 space-y-4">
       <div className="flex gap-4 items-center">
         <div className="w-full">
           <OutlinedInput
                       label="Company Group Name"
-                      value={LWFSetupData.Company_Group_Name} onChange={function (value: string): void {
+                      value={formData.Company_Group_Name} onChange={function (value: string): void {
                           throw new Error('Function not implemented.');
                       } }            
           />
@@ -43,7 +59,7 @@ const LWFEditedData: React.FC = ({ onClose }) => {
         <div className="w-full">
           <OutlinedInput
                       label="Company Name"
-                      value={LWFSetupData.Company_Name} onChange={function (value: string): void {
+                      value={formData.Company_Name} onChange={function (value: string): void {
                           throw new Error('Function not implemented.');
                       } }            
           />
@@ -56,7 +72,7 @@ const LWFEditedData: React.FC = ({ onClose }) => {
           <div className='w-[219px]'>
           <OutlinedInput
             label="State"
-            value={LWFSetupData.lwfState}
+            value={formData.lwfState}
             onChange={function (value: string): void {
                 throw new Error('Function not implemented.');
             } }
@@ -68,7 +84,7 @@ const LWFEditedData: React.FC = ({ onClose }) => {
           <div className='w-[219px]'>
           <OutlinedInput
             label="Location"
-            value={LWFSetupData.lwfLocation}
+            value={formData.lwfLocation}
             onChange={function (value: string): void {
                 throw new Error('Function not implemented.');
             } }            
@@ -80,7 +96,7 @@ const LWFEditedData: React.FC = ({ onClose }) => {
           <div className='w-[219px]'>
           <OutlinedInput
             label="Registration Number"
-            value={LWFSetupData.lwfRegistrationNumber || ''}
+            value={formData.lwfRegistrationNumber || ''}
             onChange={function (value: string): void {
                 throw new Error('Function not implemented.');
             } }    
@@ -95,7 +111,7 @@ const LWFEditedData: React.FC = ({ onClose }) => {
           <div className='w-[219px]'>
           <OutlinedInput
             label="User ID (Optional)"
-            value={LWFSetupData.lwfUserId || ''}
+            value={formData.lwfUserId || ''}
             onChange={function (value: string): void {
                 throw new Error('Function not implemented.');
             } }   
@@ -107,7 +123,7 @@ const LWFEditedData: React.FC = ({ onClose }) => {
           <div className='w-[219px]'>
           <OutlinedInput
             label="Password (Optional)"
-            value={LWFSetupData.lwfPassword || ''}
+            value={formData.lwfPassword || ''}
             onChange={function (value: string): void {
                 throw new Error('Function not implemented.');
             } }   
@@ -119,7 +135,7 @@ const LWFEditedData: React.FC = ({ onClose }) => {
           <div className='w-[219px]'>
           <OutlinedInput
             label="Mode"
-            value={LWFSetupData.lwfRemmitanceMode || ''}
+            value={formData.lwfRemmitanceMode || ''}
             onChange={function (value: string): void {
                 throw new Error('Function not implemented.');
             } }   
@@ -136,26 +152,24 @@ const LWFEditedData: React.FC = ({ onClose }) => {
                         <DatePicker
                             placeholder="Select date"
                             value={new Date("2023-01-01")}
-                            disabled
+                            // disabled
                         />
                     </div>
                 </div>
                 <div className='flex flex-col gap-4 w-full'>
           <label>Choose the Signatory</label>
           <div>
-          <Select
-            isMulti
-            options={existingSignatories.map((s) => ({ value: s.name, label: s.name }))}
-            value={LWFSetupData.authorizedSignatory.map((name) => ({ value: name, label: name }))}
-            isDisabled
-          />
-        </div>
+            <Input
+              value={formData.authorizedSignatory}
+              onChange={(e) => handleChange('authorizedSignatory', e.target.value)}
+            />
+          </div>
         </div>
       </div>
 
       <div className="flex flex-col gap-4">
         <label>Please upload the LWF certificate</label>
-        <Input id="file-upload" type="file" disabled />
+        <Input id="file-upload" type="file"  />
       </div>
 
      

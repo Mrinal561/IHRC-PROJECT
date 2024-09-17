@@ -1,15 +1,50 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Input, Dialog, Select, DatePicker } from '@/components/ui';
 import OutlinedInput from '@/components/ui/OutlinedInput';
+import {PFSetupData} from './PFSetupTable';
 
-const PFEditedData: React.FC = () => {
+interface PFEditedDataProps {
+  initialData: PFSetupData | null;
+  onClose: () => void;
+  onSubmit: (data: PFSetupData) => void;
+}
+
+const PFEditedData: React.FC<PFEditedDataProps> = ({ initialData, onClose, onSubmit }) => {
+  const [formData, setFormData] = useState<PFSetupData>({
+    Company_Group_Name: '',
+    Company_Name: '',
+    pfCode: '',
+    pfCodeLocation: '',
+    registrationDate: '',
+    pfUserId: '',
+    pfPassword: '',
+    authorizedSignatory: '',
+    signatoryDesignation: '',
+    signatoryMobile: '',
+    signatoryEmail: '',
+    dscValidDate: '',
+    esign: '',
+  });
+  useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);
+    }
+  }, [initialData]);
+
+  const handleChange = (field: keyof PFSetupData, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = () => {
+    onSubmit(formData);
+  }
   return (
     <div className="p-4 space-y-4">
       <div className='flex gap-4 items-center'>
         <div className='w-full'>
           <OutlinedInput
                       label="Company Group Name"
-                      value={'Tata Group'} onChange={function (value: string): void {
+                      value={formData.Company_Group_Name} onChange={function (value: string): void {
                           throw new Error('Function not implemented.');
                       } }            
           />
@@ -17,7 +52,7 @@ const PFEditedData: React.FC = () => {
         <div className='w-full'>
           <OutlinedInput
                       label="Company Name"
-                      value={'Tata Consultancy Services'} onChange={function (value: string): void {
+                      value={formData.Company_Name} onChange={function (value: string): void {
                           throw new Error('Function not implemented.');
                       } }            
           />
@@ -30,7 +65,7 @@ const PFEditedData: React.FC = () => {
           <div className='w-[352px]'>
             <OutlinedInput
                           label="PF Code"
-                          value={'DRET12457893'} onChange={function (value: string): void {
+                          value={formData.pfCode} onChange={function (value: string): void {
                               throw new Error('Function not implemented.');
                           } }              
             />
@@ -41,7 +76,7 @@ const PFEditedData: React.FC = () => {
           <div className='w-[352px]'>
             <OutlinedInput
                           label="Location"
-                          value={'Mumbai'} onChange={function (value: string): void {
+                          value={formData.pfCodeLocation} onChange={function (value: string): void {
                               throw new Error('Function not implemented.');
                           } }              
             />
@@ -55,7 +90,7 @@ const PFEditedData: React.FC = () => {
           <div className='w-[352px]'>
             <OutlinedInput
                           label="PF User ID (Optional)"
-                          value={'User01'} onChange={function (value: string): void {
+                          value={formData.pfUserId} onChange={function (value: string): void {
                               throw new Error('Function not implemented.');
                           } }              
             />
@@ -66,7 +101,7 @@ const PFEditedData: React.FC = () => {
           <div className='w-[352px]'>
             <OutlinedInput
                           label="PF Password (Optional)"
-                          value={'password01'} onChange={function (value: string): void {
+                          value={formData.pfPassword} onChange={function (value: string): void {
                               throw new Error('Function not implemented.');
                           } }              
             />
@@ -80,7 +115,7 @@ const PFEditedData: React.FC = () => {
           <div className='w-56'>
             <DatePicker
               placeholder="Select date"
-              value={new Date('2023-01-01')}
+              value={formData.registrationDate}
               
             />
           </div>
@@ -89,18 +124,9 @@ const PFEditedData: React.FC = () => {
         <div className='flex flex-col gap-2 w-full'>
           <label>Choose the Signatories</label>
           <div className=''>
-            <Select
-              isMulti
-              options={[
-                { value: 'Amit', label: 'Amit' },
-                { value: 'Krishna Kumar Singh', label: 'Krishna Kumar Singh' },
-                { value: 'Ajay Thakur', label: 'Ajay Thakur' },
-              ]}
-              value={[
-                { value: 'Amit', label: 'Amit' },
-                { value: 'Krishna Kumar Singh', label: 'Krishna Kumar Singh' }
-              ]}
-              isDisabled
+          <Input
+              value={formData.authorizedSignatory}
+              onChange={(e) => handleChange('authorizedSignatory', e.target.value)}
             />
           </div>
         </div>
@@ -108,7 +134,7 @@ const PFEditedData: React.FC = () => {
 
       <div className='flex flex-col gap-2'>
         <label>Please upload the PF certificate</label>
-        <Input id="file-upload" type="file" disabled />
+        <Input id="file-upload" type="file" />
       </div>
 
       {/* <div className="flex justify-end space-x-2">

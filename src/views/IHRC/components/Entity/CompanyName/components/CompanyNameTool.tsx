@@ -72,7 +72,7 @@ const CompanyNameTool: React.FC = () => {
         onClick={openDialog}
         variant="solid"
       >
-        Add Company Name
+        Add Company
       </Button>
       <Dialog
         isOpen={dialogIsOpen}

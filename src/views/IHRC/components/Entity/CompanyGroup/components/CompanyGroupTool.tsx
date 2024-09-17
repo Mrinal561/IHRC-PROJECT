@@ -43,7 +43,7 @@ const CompanyGroupTool: React.FC = () => {
   return (
     <div>
       <Button variant="solid" onClick={openDialog} icon={<HiPlusCircle />} size='sm'>
-        Add Company Group Name
+        Add Company Group
       </Button>
       <Dialog
         isOpen={dialogIsOpen}
@@ -53,7 +53,7 @@ const CompanyGroupTool: React.FC = () => {
         height={250}
       >
         <div className="flex flex-col h-full justify-between">
-          <h5 className="mb-4">Add Company Name</h5>
+          <h5 className="mb-4">Add Company Group</h5>
           <div className='flex flex-col gap-2'>
             <p>Enter Your Company Group Name</p>
             <OutlinedInput 
