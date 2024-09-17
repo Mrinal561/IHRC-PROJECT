@@ -1,12 +1,49 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Input, Dialog, Notification } from '@/components/ui';
 import OutlinedInput from '@/components/ui/OutlinedInput';
 import { Select, DatePicker } from '@/components/ui';
+import {PTSetupData} from './PTSetupTable';
 
-const PTEditedData: React.FC = () => {
+interface PTEditedDataProps {
+    initialData: PTSetupData | null;
+    onClose: () => void;
+    onSubmit: (data: PTSetupData) => void;
+  }
+
+
+const PTEditedData: React.FC<PTEditedDataProps> = ({ initialData, onClose, onSubmit }) => {
     const [showAddSignatoryDialog, setShowAddSignatoryDialog] = useState(false);
-
-   
+    const [formData, setFormData] = useState<PTSetupData>({
+        Company_Group_Name:'',
+    Company_Name:'',
+    ptState:'',
+    ptLocation:'',
+    ptEnrollmentNumber:'',
+    ptRegistrationNumber:'',
+    ptRegistrationDate:'',
+    ptRemmitanceMode:'',
+    ptUserId:'',
+    ptPassword:'',
+    authorizedSignatory:'',
+    signatoryDesignation:'',
+    signatoryMobile:'',
+    signatoryEmail:'',
+    ptecPaymentFrequency:'',
+    ptrcPaymentFrequency:'',
+    })
+    useEffect(() => {
+        if (initialData) {
+          setFormData(initialData);
+        }
+      }, [initialData]);
+    
+      const handleChange = (field: keyof PTSetupData, value: string) => {
+        setFormData(prev => ({ ...prev, [field]: value }));
+      };
+    
+      const handleSubmit = () => {
+        onSubmit(formData);
+      }
 
     const handleAddSignatory = () => {
         setShowAddSignatoryDialog(false);
@@ -18,7 +55,7 @@ const PTEditedData: React.FC = () => {
                 <div className="w-full">
                     <OutlinedInput
                         label="Company Group Name"
-                        value="Tata Group" onChange={function (value: string): void {
+                        value={formData.Company_Group_Name} onChange={function (value: string): void {
                             throw new Error('Function not implemented.');
                         } }                        
                     />
@@ -26,7 +63,7 @@ const PTEditedData: React.FC = () => {
                 <div className="w-full">
                     <OutlinedInput
                         label="Company Name"
-                        value="Tata Consultancy Services" onChange={function (value: string): void {
+                        value={formData.Company_Name} onChange={function (value: string): void {
                             throw new Error('Function not implemented.');
                         } }                        
                     />
@@ -39,7 +76,7 @@ const PTEditedData: React.FC = () => {
                     <div className="w-56">
                         <OutlinedInput
                             label="State"
-                            value="Maharashtra" onChange={function (value: string): void {
+                            value={formData.ptState} onChange={function (value: string): void {
                                 throw new Error('Function not implemented.');
                             } }                            
                         />
@@ -50,7 +87,7 @@ const PTEditedData: React.FC = () => {
                     <div className="w-56">
                         <OutlinedInput
                             label="Location"
-                            value="Mumbai" onChange={function (value: string): void {
+                            value={formData.ptLocation} onChange={function (value: string): void {
                                 throw new Error('Function not implemented.');
                             } }                            
                         />
@@ -61,7 +98,7 @@ const PTEditedData: React.FC = () => {
                     <div className="w-56">
                         <OutlinedInput
                             label="Registration Number"
-                            value="PT1234587954" onChange={function (value: string): void {
+                            value={formData.ptRegistrationNumber} onChange={function (value: string): void {
                                 throw new Error('Function not implemented.');
                             } }                            
                         />
@@ -75,7 +112,7 @@ const PTEditedData: React.FC = () => {
                     <div className="w-56">
                         <OutlinedInput
                             label="User ID (Optional)"
-                            value="User01" onChange={function (value: string): void {
+                            value={formData.ptUserId} onChange={function (value: string): void {
                                 throw new Error('Function not implemented.');
                             } }                            
                         />
@@ -86,7 +123,7 @@ const PTEditedData: React.FC = () => {
                     <div className="w-56">
                         <OutlinedInput
                             label="Password (Optional)"
-                            value="password01" onChange={function (value: string): void {
+                            value={formData.ptPassword} onChange={function (value: string): void {
                                 throw new Error('Function not implemented.');
                             } }                            
                         />
@@ -97,7 +134,7 @@ const PTEditedData: React.FC = () => {
                     <div className="w-56">
                         <OutlinedInput
                             label="Mode"
-                            value="Online" onChange={function (value: string): void {
+                            value={formData.ptRemmitanceMode} onChange={function (value: string): void {
                                 throw new Error('Function not implemented.');
                             } }                            
                         />
@@ -111,7 +148,7 @@ const PTEditedData: React.FC = () => {
                     <div className="w-56">
                         <DatePicker
                             placeholder="Select date"
-                            value={new Date("2023-01-01")}
+                            value={new Date(formData.ptRegistrationDate)}
                             // disabled
                         />
                     </div>
@@ -119,19 +156,10 @@ const PTEditedData: React.FC = () => {
 
                 <div className="flex flex-col gap-2 w-full">
                     <label>Choose the Signatories</label>
-                    <Select
-                        isMulti
-                        options={[
-                            { value: 'Amit', label: 'Amit' },
-                            { value: 'Krishna Kumar Singh', label: 'Krishna Kumar Singh' },
-                            { value: 'Ajay Thakur', label: 'Ajay Thakur' },
-                        ]}
-                        value={[
-                            { value: 'Amit', label: 'Amit' },
-                            { value: 'Ajay Thakur', label: 'Ajay Thakur' },
-                        ]}
-                        // isDisabled
-                    />
+                    <Input
+              value={formData.authorizedSignatory}
+              onChange={(e) => handleChange('authorizedSignatory', e.target.value)}
+            />
                 </div>
             </div>
 

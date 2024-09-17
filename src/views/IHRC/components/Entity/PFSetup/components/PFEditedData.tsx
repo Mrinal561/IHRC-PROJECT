@@ -115,7 +115,7 @@ const PFEditedData: React.FC<PFEditedDataProps> = ({ initialData, onClose, onSub
           <div className='w-56'>
             <DatePicker
               placeholder="Select date"
-              value={formData.registrationDate}
+              value={new Date(formData.registrationDate)}
               
             />
           </div>

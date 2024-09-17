@@ -145,9 +145,9 @@ const CompanyESISetupPage: React.FC = () => {
       </div>
 
       <ESISetupTable
-        data={esiSetupData}
-        onDelete={handleDelete}
-        onEdit={handleEdit}
+        // data={esiSetupData}
+        // onDelete={handleDelete}
+        // onEdit={handleEdit}
       />
 
       <Dialog
