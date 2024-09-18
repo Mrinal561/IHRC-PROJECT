@@ -249,6 +249,16 @@ const navigationConfig: NavigationTree[] = [
                 authority: [],
                 subMenu: [],
             }, 
+            {
+                key: 'remittanceTracker.collapse.item2',
+                path: '/esi-tracker',
+                title: 'ESI Tracker',
+                translateKey: 'nav.remittanceTracker.collapse.item2',
+                icon: '',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [],
+                subMenu: [],
+            }, 
         ],
     },
 ]
