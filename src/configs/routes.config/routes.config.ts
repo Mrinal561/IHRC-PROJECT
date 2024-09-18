@@ -263,7 +263,7 @@ export const protectedRoutes = [
     {
         key: 'lwftracker.uploadeddetail',
         path: '/uploadedLWFdetails',
-        component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/LWFTracker/components/UploadedLWFDetail')),
+        component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/LWFTracker/components/UploadedLWFDetails')),
         authority: [],
     },
 ]
