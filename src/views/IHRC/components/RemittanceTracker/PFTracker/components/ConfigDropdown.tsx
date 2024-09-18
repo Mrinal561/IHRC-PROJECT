@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { Button, Tooltip, Dialog, Input, toast, Notification } from '@/components/ui';
 import { FiSettings, FiUpload } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
+import { HiUpload } from 'react-icons/hi';
 
 const ConfigDropdown = ({ companyName, companyGroupName }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -99,9 +100,7 @@ const ConfigDropdown = ({ companyName, companyGroupName }) => {
       <Tooltip title="Click to upload">
         <Button
           ref={buttonRef}
-          shape="circle"
-          variant="plain"
-          icon={<FiSettings />}
+          icon={<HiUpload />}
           onClick={() => setIsOpen(!isOpen)}
         />
       </Tooltip>

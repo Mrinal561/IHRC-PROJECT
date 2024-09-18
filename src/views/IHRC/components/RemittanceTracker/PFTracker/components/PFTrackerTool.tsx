@@ -3,9 +3,13 @@ import PFTrackerFilter from './PFTrackerFilter';
 import PFTrackerTable from './PFTrackerTable';
 import PFTrackerBulkUpload from './PFTrackerBulkUpload';
 import UploadedPFDetails from './UploadedPFDetails';
+import { dummyData } from './PFTrackerTable';
+
 
 const PFTrackerTool: React.FC = () => {
   const [showUploadedDetails, setShowUploadedDetails] = useState(false);
+  const [filters, setFilters] = useState({ groupName: '', companyName: '', pfCode: '' });
+
 
   const handleUploadConfirm = () => {
     setShowUploadedDetails(true);
@@ -15,6 +19,11 @@ const PFTrackerTool: React.FC = () => {
     setShowUploadedDetails(false);
   };
 
+  const handleFilterChange = (newFilters) => {
+    setFilters(newFilters);
+    // You can apply the filters to your data here or pass them to PFTrackerTable
+  };
+
   if (showUploadedDetails) {
     return <UploadedPFDetails onBack={handleBack} />;
   }
@@ -22,7 +31,7 @@ const PFTrackerTool: React.FC = () => {
   return (
     <div>
       <div className="flex gap-3 items-center mb-4">
-        <PFTrackerFilter />
+        <PFTrackerFilter data={dummyData} onFilterChange={handleFilterChange} />
         <PFTrackerBulkUpload onUploadConfirm={handleUploadConfirm} />
       </div>
     </div>

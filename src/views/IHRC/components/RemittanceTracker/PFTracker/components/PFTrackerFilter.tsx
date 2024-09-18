@@ -1,88 +1,92 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 import { EntityData, entityDataSet } from '../../../../store/dummyEntityData';
+
+// Define the structure of your PFTrackerData (based on your dummy data)
+interface PFTrackerData {
+  companyName: string;
+  pfCode: string;
+  location: string;
+  month: string;
+  noOfEmployees: number;
+  wages: string;
+  epsWage: string;
+  totalChallanAmount: number;
+  dueDate: string;
+  dateOfPayment: string;
+  delay: string;
+  delayReason: string;
+  typeOfChallan: string;
+  trrnNo: string;
+  crnNo: string;
+}
 
 type Option = {
   value: string;
   label: string;
 };
 
-
-const getUniqueGroup = (data: EntityData[]): string[] => {
-    const companyGroupName = data.map(item => item.Company_Group_Name);
-    return Array.from(new Set(companyGroupName)).filter((companyGroupName): companyGroupName is string => companyGroupName !== undefined);
-  };
-  
-  
-  const groupOptions: Option[] = getUniqueGroup(entityDataSet).map(companyGroupName => ({
-    value: companyGroupName,
-    label: companyGroupName,
-  }));
-
-  const getUniqueName = (data: EntityData[]): string[] => {
-    const companyName = data.map(item => item.Company_Name);
-    return Array.from(new Set(companyName)).filter((companyName): companyName is string => companyName !== undefined);
-  };
-  
-  const nameOptions: Option[] = getUniqueName(entityDataSet).map(companyName => ({
-    value: companyName,
-    label: companyName,
-  }));
-const getUniqueDistricts = (data: EntityData[]): string[] => {
-  const state = data.map(item => item.State);
-  return Array.from(new Set(state)).filter((state): state is string => state !== undefined);
+const getUniqueValues = (data: any[], key: string): string[] => {
+  const values = data.map(item => item[key]);
+  return Array.from(new Set(values)).filter((value): value is string => value !== undefined);
 };
 
-const options: Option[] = getUniqueDistricts(entityDataSet).map(state => ({
-  value: state,
-  label: state,
-}));
+const createOptions = (values: string[]): Option[] => 
+  values.map(value => ({ value, label: value }));
 
-const PFTrackerFilter: React.FC = () => {
-  const [currentFilter, setCurrentFilter] = useState<string>(options[0]?.value ||'');
-  const [currentGroup, setCurrentGroup] = useState<string>(groupOptions[0]?.value||'');
-  const [groupName, setGroupName] = useState<string>(nameOptions[0]?.value||'');
+interface PFTrackerFilterProps {
+  data: PFTrackerData[];
+  onFilterChange: (filters: { groupName: string; companyName: string; pfCode: string }) => void;
+}
 
-  const handleFilterChange = (selectedOption: Option | null) => {
-    if (selectedOption) {
-      setCurrentFilter(selectedOption.value);
-      
-      // You can add any additional logic here that needs to happen when the filter changes
-    }
-  };
-  const handleGroupChange = (selectedOption: Option | null) => {
-    if (selectedOption) {
-        setCurrentGroup(selectedOption.value)
-      
-      // You can add any additional logic here that needs to happen when the filter changes
-    }
-  };
-  const handleNameChange = (selectedOption: Option | null) => {
-    if (selectedOption) {
-        setGroupName(selectedOption.value)
-      
-      // You can add any additional logic here that needs to happen when the filter changes
-    }
-  };
+const PFTrackerFilter: React.FC<PFTrackerFilterProps> = ({ data, onFilterChange }) => {
+  const groupOptions = useMemo(() => createOptions(getUniqueValues(entityDataSet, 'Company_Group_Name')), []);
+  const nameOptions = useMemo(() => createOptions(getUniqueValues(entityDataSet, 'Company_Name')), []);
+  const pfCodeOptions = useMemo(() => createOptions(getUniqueValues(data, 'pfCode')), [data]);
+
+  const [currentGroup, setCurrentGroup] = useState<string>(groupOptions[0]?.value || '');
+  const [groupName, setGroupName] = useState<string>(nameOptions[0]?.value || '');
+  const [currentPfCode, setCurrentPfCode] = useState<string>(pfCodeOptions[0]?.value || '');
+
+  const handleChange = (setter: React.Dispatch<React.SetStateAction<string>>, filterType: string) => 
+    (selectedOption: Option | null) => {
+      if (selectedOption) {
+        setter(selectedOption.value);
+        onFilterChange({
+          groupName: filterType === 'groupName' ? selectedOption.value : currentGroup,
+          companyName: filterType === 'companyName' ? selectedOption.value : groupName,
+          pfCode: filterType === 'pfCode' ? selectedOption.value : currentPfCode,
+        });
+      }
+    };
 
   return ( 
-    <div className=" flex gap-3">    
-        <div>
+    <div className="flex gap-3">  
+     <div className='w-52'>
         <OutlinedSelect
-        label="Group Name"
-        options={groupOptions}
-        value={groupOptions.find((option) => option.value === currentGroup)}
-        onChange={handleGroupChange}
-      />
-        </div>
-        <div>
+          label="PF Code"
+          options={pfCodeOptions}
+          value={pfCodeOptions.find((option) => option.value === currentPfCode)}
+          onChange={handleChange(setCurrentPfCode, 'pfCode')}
+        />
+      </div> 
+      <div className='w-52'>
         <OutlinedSelect
-        label="Company Name"
-        options={nameOptions}
-        value={nameOptions.find((option) => option.value === groupName)}
-        onChange={handleNameChange}
-      />
-        </div>
+          label="Group Name"
+          options={groupOptions}
+          value={groupOptions.find((option) => option.value === currentGroup)}
+          onChange={handleChange(setCurrentGroup, 'groupName')}
+        />
+      </div>
+      <div className='w-52'>
+        <OutlinedSelect
+          label="Company Name"
+          options={nameOptions}
+          value={nameOptions.find((option) => option.value === groupName)}
+          onChange={handleChange(setGroupName, 'companyName')}
+        />
+      </div>
+     
     </div>
   );
 };
