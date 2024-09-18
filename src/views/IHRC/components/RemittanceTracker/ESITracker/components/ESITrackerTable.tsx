@@ -190,7 +190,7 @@ const ESITrackerTable: React.FC = () => {
                 accessorKey: 'esiGrossWages',
                 cell: (props) => (
                     <div className="w-40 truncate">
-                        {(props.getValue() as number).toLocaleString()}
+                        ₹{(props.getValue() as number).toLocaleString()}
                     </div>
                 ),
             },
@@ -199,7 +199,7 @@ const ESITrackerTable: React.FC = () => {
                 accessorKey: 'eeESI',
                 cell: (props) => (
                     <div className="w-28 truncate">
-                        {(props.getValue() as number).toLocaleString()}
+                        ₹{(props.getValue() as number).toLocaleString()}
                     </div>
                 ),
             },
@@ -208,7 +208,7 @@ const ESITrackerTable: React.FC = () => {
                 accessorKey: 'erESI',
                 cell: (props) => (
                     <div className="w-28 truncate">
-                        {(props.getValue() as number).toLocaleString()}
+                        ₹{(props.getValue() as number).toLocaleString()}
                     </div>
                 ),
             },
@@ -217,7 +217,7 @@ const ESITrackerTable: React.FC = () => {
                 accessorKey: 'totalESI',
                 cell: (props) => (
                     <div className="w-28 truncate">
-                        {(props.getValue() as number).toLocaleString()}
+                        ₹{(props.getValue() as number).toLocaleString()}
                     </div>
                 ),
             },
@@ -226,7 +226,7 @@ const ESITrackerTable: React.FC = () => {
                 accessorKey: 'totalAmountAsPerChallan',
                 cell: (props) => (
                     <div className="w-52 truncate">
-                        {(props.getValue() as number).toLocaleString()}
+                        ₹{(props.getValue() as number).toLocaleString()}
                     </div>
                 ),
             },
