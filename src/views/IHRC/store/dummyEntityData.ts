@@ -6,6 +6,8 @@ export interface EntityData {
     Branch?:string,
     PF_Setup?: string,
     District?:string
+    BranchAddress: string,
+    BranchOpeningDate: string;
 }
 
 export const entityDataSet: EntityData[] = [
@@ -15,6 +17,8 @@ export const entityDataSet: EntityData[] = [
         State: "Haryana",
         Location: "Gurgaon",
         Branch: "Gurgaon",
+        BranchAddress: 'Shop No. 67B & 68, Second Floor, P. no. 277 (East), Tagore Nagar, Next to DCM, Ajmer Road, Jaipur- 302021',
+        BranchOpeningDate: "6-May-2010",
         PF_Setup: "Yes",
         District: "Gurgaon District"
     },
@@ -24,6 +28,8 @@ export const entityDataSet: EntityData[] = [
         State: "Maharashtra",
         Location: "Mumbai",
         Branch: "Andheri East",
+        BranchAddress: 'Shop No. F-1,2 1st Floor , Prem Bhawan, Gandhi Nagar, Behind LIC HFL, Opp.Vodafone Store,Bhilwara - 311001',
+        BranchOpeningDate: "1-Feb-2012",
         PF_Setup: "Yes",
         District: "Mumbai Suburban"
     },
@@ -33,6 +39,8 @@ export const entityDataSet: EntityData[] = [
         State: "Maharashtra",
         Location: "Navi Mumbai",
         Branch: "Ghansoli",
+        BranchAddress: 'Plot No. A-94,95,  1st Floor , Aakhiliya Vikash Yojana, Shiv Gauri Plaza Jodhpur - 342001',
+        BranchOpeningDate: "8-May-2008",
         PF_Setup: "Yes",
         District: "Thane"
     },
@@ -41,6 +49,8 @@ export const entityDataSet: EntityData[] = [
         Company_Name: "Infosys Technologies",
         State: "Karnataka",
         Location: "Bengaluru",
+        BranchAddress: 'Marwad House, 2nd Floor, Jaipur Road, Suchana Kendra Chouraha,Ajmer - 305001',
+        BranchOpeningDate: "10-Jun-2015",
         Branch: "Electronic City",
         PF_Setup: "Yes",
         District: "Bengaluru Urban"
@@ -50,6 +60,8 @@ export const entityDataSet: EntityData[] = [
         Company_Name: "Wipro Limited",
         State: "Karnataka",
         Location: "Bengaluru",
+        BranchAddress: 'Shop No. 3 & 4, Ground Floor, Yadav Complex, Near Rastra Unnati School No. 04, Rani Bazar, Bikaner - 334001',
+        BranchOpeningDate: "6-May-2019",
         Branch: "Sarjapur",
         PF_Setup: "Yes",
         District: "Bengaluru Urban"
@@ -59,7 +71,9 @@ export const entityDataSet: EntityData[] = [
         Company_Name: "HCL Technologies Ltd",
         State: "Uttar Pradesh",
         Location: "Noida",
+        BranchAddress: 'PLOT NO: 226-227, FIRST FLOOR, PU-4, SCHEME NO 54, BRAJ LAKSHMI, LANDMARK- BEHIND HOTEL SURE STAY , RASOMA SQUARE, INDORE-450021, MADHYA PRADESH.',
         Branch: "Sector 126",
+        BranchOpeningDate: "6-Aug-2010",
         PF_Setup: "Yes",
         District: "Gautam Buddh Nagar"
     },
@@ -68,7 +82,9 @@ export const entityDataSet: EntityData[] = [
         Company_Name: "Tech Mahindra Ltd",
         State: "Maharashtra",
         Location: "Pune",
+        BranchAddress: 'Shri Ram Complex, 123-A, Ground Floor, Kalani Bagh, A.B. Road, Dewas - 455001',
         Branch: "Hinjewadi",
+        BranchOpeningDate: "16-Jan-2005",
         PF_Setup: "Yes",
         District: "Pune"
     },
@@ -77,7 +93,9 @@ export const entityDataSet: EntityData[] = [
         Company_Name: "L&T Infotech",
         State: "Maharashtra",
         Location: "Mumbai",
+        BranchAddress: 'Above Canara Bank, 3rd Floor,Opp.Dak Banglow, Near Bus Stand,Ajmer road,Madanganj, Kishangarh, Dist Ajmer -305801',
         Branch: "Powai",
+        BranchOpeningDate: "26-Nov-2020",
         PF_Setup: "Yes",
         District: "Mumbai Suburban"
     },
@@ -85,8 +103,10 @@ export const entityDataSet: EntityData[] = [
         Company_Group_Name: "Mindtree",
         Company_Name: "Mindtree Ltd",
         State: "Karnataka",
+        BranchAddress: 'Plot No. 69, 3rd Floor, MP Nagar, Zone-1, Bhopal - 462011',
         Location: "Bengaluru",
         Branch: "Whitefield",
+        BranchOpeningDate: "6-May-2011",
         PF_Setup: "Yes",
         District: "Bengaluru Urban"
     },
@@ -96,6 +116,8 @@ export const entityDataSet: EntityData[] = [
         State: "Tamil Nadu",
         Location: "Chennai",
         Branch: "Thoraipakkam",
+        BranchAddress: '1st Floor, 10-D, Panjawani Complex, Opposite Multipurpose School, Gumanpura, Kota-324007, Rajasthan',
+        BranchOpeningDate: "25-Sep-2002",
         PF_Setup: "Yes",
         District: "Chennai"
     },
@@ -105,6 +127,8 @@ export const entityDataSet: EntityData[] = [
         State: "Maharashtra",
         Location: "Mumbai",
         Branch: "Airoli",
+        BranchOpeningDate: "28-May-2016",
+        BranchAddress: 'Khasara No.- 1539, Chak No. 2, Brham Vihar, Gautam Vihar, Main Sojat Road, Pali - 306401',
         PF_Setup: "Yes",
         District: "Thane"
     }
