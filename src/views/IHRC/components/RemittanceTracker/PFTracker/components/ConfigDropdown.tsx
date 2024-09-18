@@ -100,6 +100,7 @@ const ConfigDropdown = ({ companyName, companyGroupName }) => {
       <Tooltip title="Click to upload">
         <Button
           ref={buttonRef}
+          size='sm'
           icon={<HiUpload />}
           onClick={() => setIsOpen(!isOpen)}
         />

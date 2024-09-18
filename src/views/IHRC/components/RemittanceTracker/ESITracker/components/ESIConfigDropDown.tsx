@@ -95,6 +95,7 @@ const ESIConfigDropdown = ({ companyName, companyGroupName }) => {
         <Button
           ref={buttonRef}
           icon={<HiUpload />}
+          size='sm'
           onClick={() => setIsOpen(!isOpen)}
         />
       </Tooltip>

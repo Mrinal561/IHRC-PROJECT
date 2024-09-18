@@ -8,6 +8,9 @@ import type { CommonProps } from '@/@types/common'
 import Notification from '../Notification'
 import { Select } from '@/components/ui'
 import { useState } from 'react'
+import OutlinedSelect from '@/components/ui/Outlined'
+
+
 type SidePanelProps = SidePanelContentProps & CommonProps
 
 
@@ -15,14 +18,24 @@ type SidePanelProps = SidePanelContentProps & CommonProps
 const FinancialYearFilter = ({ onChange }) => {
     const currentYear = new Date().getFullYear()
     const years = Array.from({ length: 5 }, (_, i) => `${currentYear - i}-${currentYear - i + 1}`)
-  
+    const options = years.map(year => ({ value: year, label: year }))
+    const [selectedYear, setSelectedYear] = useState('')
+
+    const handleChange = (newValue) => {
+        setSelectedYear(newValue)
+        onChange(newValue)
+      }
+
+
     return (
-      <Select
-        className="w-52"
-        placeholder="Select Financial Year"
-        options={years.map(year => ({ value: year, label: year }))}
+        <div className='w-52'>
+      <OutlinedSelect
+        label="Financial Year"
+        value={selectedYear}
+        options={options}
         onChange={(selectedOption) => onChange(selectedOption.value)}
-      />
+        />
+        </div>
     )
   }
 
