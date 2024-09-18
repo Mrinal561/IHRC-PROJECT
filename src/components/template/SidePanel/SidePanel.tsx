@@ -6,7 +6,25 @@ import withHeaderItem from '@/utils/hoc/withHeaderItem'
 import { setPanelExpand, useAppSelector, useAppDispatch } from '@/store'
 import type { CommonProps } from '@/@types/common'
 import Notification from '../Notification'
+import { Select } from '@/components/ui'
+import { useState } from 'react'
 type SidePanelProps = SidePanelContentProps & CommonProps
+
+
+
+const FinancialYearFilter = ({ onChange }) => {
+    const currentYear = new Date().getFullYear()
+    const years = Array.from({ length: 5 }, (_, i) => `${currentYear - i}-${currentYear - i + 1}`)
+  
+    return (
+      <Select
+        className="w-52"
+        placeholder="Select Financial Year"
+        options={years.map(year => ({ value: year, label: year }))}
+        onChange={(selectedOption) => onChange(selectedOption.value)}
+      />
+    )
+  }
 
 const _SidePanel = (props: SidePanelProps) => {
     const dispatch = useAppDispatch()
@@ -16,6 +34,9 @@ const _SidePanel = (props: SidePanelProps) => {
     const panelExpand = useAppSelector((state) => state.theme.panelExpand)
 
     const direction = useAppSelector((state) => state.theme.direction)
+
+    const [selectedFinancialYear, setSelectedFinancialYear] = useState(null)
+
 
     const openPanel = () => {
         dispatch(setPanelExpand(true))
@@ -29,9 +50,15 @@ const _SidePanel = (props: SidePanelProps) => {
         }
     }
 
+    const handleFinancialYearChange = (year) => {
+        setSelectedFinancialYear(year)
+        // You can add any additional logic here, such as fetching data for the selected year
+      }
+
     return (
         <div className='flex items-center'>
-            <div className='flex items-center'>
+            <div className='flex items-center gap-6'>
+            <FinancialYearFilter onChange={handleFinancialYearChange} />
                 <Notification />
             </div>
             <Drawer

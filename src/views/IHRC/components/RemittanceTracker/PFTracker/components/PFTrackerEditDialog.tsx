@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Dialog, Button, DatePicker, toast, Notification } from '@/components/ui';
 import OutlinedInput from '@/components/ui/OutlinedInput';
 import { PFTrackerData } from './PFTrackerTable';
+import OutlinedSelect from '@/components/ui/Outlined';
 
 
 
@@ -53,82 +54,162 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
 }
 
 
+const challanTypeOptions = [
+  { value: 'Main Challan', label: 'Main Challan' },
+  { value: 'Arrear Challan', label: 'Arrear Challan' },
+];
+
   return (
     <Dialog
       isOpen={isOpen}
       onClose={onClose}
       onRequestClose={onClose}
       width={800}
-      height={520}
+      height={600}
     >
       <h5 className="mb-4">Edit PF Tracker</h5>
-      <div className="grid grid-cols-2 gap-4">
-        <div className='flex flex-col gap-3'>
-            <label>Please select the Month</label>
-        <DatePicker
-          placeholder="Month"
-          value={new Date(editedData.month)}
-          onChange={(date) => handleDateChange('month', date)}
-          />
+
+      
+      <div className="p-4 space-y-4">
+        <div className='flex gap-4 items-center'>
+          <div className='flex flex-col gap-2 w-full'>
+            <label>Enter TRR NO.</label>
+            <div className='w-full'>
+            <OutlinedInput
+                label="TRRN No"
+                value={editedData.trrnNo}
+                onChange={(value) => handleChange('trrnNo', value)}
+                />
           </div>
-          <div className='flex flex-col gap-4'>
-            <label>Please enter the number of employee</label>
-        <OutlinedInput
-          label="No. of Employees"
-          value={editedData.noOfEmployees.toString()}
-          onChange={(value) => handleChange('noOfEmployees', parseInt(value, 10))}
-          />
+                </div>
+
+          <div className='flex flex-col gap-2 w-full'>
+            <label>Enter CRN NO.</label>
+            <div className='w-full'>
+            <OutlinedInput
+                label="CRN No"
+                value={editedData.crnNo}
+                onChange={(value) => handleChange('crnNo', value)}
+                />
+                </div>
           </div>
-        <OutlinedInput
+        </div>
+
+        <div className="flex gap-8 items-center">
+      <div className='flex flex-col gap-2'>
+          <label>Enter the Wages</label>
+          <div className='w-[219px]'>
+          <OutlinedInput
           label="Wages"
           value={editedData.wages}
           onChange={(value) => handleChange('wages', value)}
         />
-        <OutlinedInput
+            </div>
+        </div>
+        <div className='flex flex-col gap-2'>
+          <label>Enter EPS Wage</label>
+          <div className='w-[219px]'>
+          <OutlinedInput
           label="EPS Wage"
           value={editedData.epsWage}
           onChange={(value) => handleChange('epsWage', value)}
         />
-        <OutlinedInput
+            </div>
+        </div>
+        <div className='flex flex-col gap-2'>
+          <label>Enter Total Challan Amount</label>
+          <div className='w-[219px]'>
+          <OutlinedInput
           label="Total Challan Amount"
           value={editedData.totalChallanAmount.toString()}
           onChange={(value) => handleChange('totalChallanAmount', parseFloat(value))}
         />
-        <DatePicker
+            </div>
+        </div>
+      </div>
+
+      <div className='flex gap-8 items-center'>
+        <div className='flex flex-col gap-2'>
+          <label>Select Month</label>
+          <div className='w-[219px]'>
+          <DatePicker
+          placeholder="Month"
+          value={new Date(editedData.month)}
+          onChange={(date) => handleDateChange('month', date)}
+          />
+            </div>
+        </div>
+         <div className='flex flex-col gap-2'>
+          <label>Select Due Date</label>
+          <div className='w-[219px]'>
+          <DatePicker
           placeholder="Due Date"
           value={new Date(editedData.dueDate)}
           onChange={(date) => handleDateChange('dueDate', date)}
         />
-        <DatePicker
+            </div>
+        </div>
+        <div className='flex flex-col gap-2'>
+          <label>Select Date of Payment</label>
+          <div className='w-[219px]'>
+          <DatePicker
           placeholder="Date of Payment"
           value={new Date(editedData.dateOfPayment)}
           onChange={(date) => handleDateChange('dateOfPayment', date)}
         />
-        <OutlinedInput
+            </div>
+        </div>
+      </div>
+
+
+      <div className='flex gap-4 items-center'>
+          <div className='flex flex-col gap-2 w-full'>
+            <label>Select Type of Challan</label>
+            <div className='w-full'>
+            <OutlinedSelect
+                label="Type of Challan"
+                options={challanTypeOptions}
+                value={challanTypeOptions.find(option => option.value === editedData.typeOfChallan)}
+                onChange={(option) => handleChange('typeOfChallan', option?.value || '')}
+              />
+          </div>
+                </div>
+
+          <div className='flex flex-col gap-2 w-full'>
+            <label>Enter Number of Employees</label>
+            <div className='w-full'>
+            <OutlinedInput
+          label="No. of Employees"
+          value={editedData.noOfEmployees.toString()}
+          onChange={(value) => handleChange('noOfEmployees', parseInt(value, 10))}
+          />
+                </div>
+          </div>
+        </div>
+
+        <div className='flex gap-4 items-center'>
+          <div className='flex flex-col gap-2 w-full'>
+            <label>Enter Delay</label>
+            <div className='w-full'>
+            <OutlinedInput
           label="Delay"
           value={editedData.delay}
           onChange={(value) => handleChange('delay', value)}
         />
-        <OutlinedInput
+          </div>
+                </div>
+
+          <div className='flex flex-col gap-2 w-full'>
+            <label>Enter Delay Reason</label>
+            <div className='w-full'>
+            <OutlinedInput
           label="Delay Reason"
           value={editedData.delayReason}
           onChange={(value) => handleChange('delayReason', value)}
         />
-        <OutlinedInput
-          label="Type of Challan"
-          value={editedData.typeOfChallan}
-          onChange={(value) => handleChange('typeOfChallan', value)}
-        />
-        <OutlinedInput
-          label="TRRN No"
-          value={editedData.trrnNo}
-          onChange={(value) => handleChange('trrnNo', value)}
-        />
-        <OutlinedInput
-          label="CRN No"
-          value={editedData.crnNo}
-          onChange={(value) => handleChange('crnNo', value)}
-        />
+                </div>
+          </div>
+        </div>
       </div>
       <div className="flex justify-end mt-6">
         <Button variant="plain" onClick={onClose} className="mr-2">

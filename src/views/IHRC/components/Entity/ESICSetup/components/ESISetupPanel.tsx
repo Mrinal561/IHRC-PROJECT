@@ -121,6 +121,11 @@ const ESISetupPanel: React.FC<ESISetupSidePanelProps> = ({
     setNewSignatory(prev => ({ ...prev, [field]: value }));
   };
 
+  const challanTypeOptions = [
+    { value: 'Main Challan', label: 'Main Challan' },
+    { value: 'Arrear Challan', label: 'Arrear Challan' },
+  ];
+
   return (
     <div className="p-4 space-y-4">
        <div className='flex gap-4 items-center'>

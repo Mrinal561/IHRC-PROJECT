@@ -6,7 +6,7 @@ import UploadedPFDetails from './UploadedPFDetails';
 import { dummyData } from './PFTrackerTable';
 
 
-const PFTrackerTool: React.FC = () => {
+const PFTrackerTool: React.FC<{ onFilterChange: (filters: any) => void }> = ({ onFilterChange }) => {
   const [showUploadedDetails, setShowUploadedDetails] = useState(false);
   const [filters, setFilters] = useState({ groupName: '', companyName: '', pfCode: '' });
 
@@ -31,7 +31,7 @@ const PFTrackerTool: React.FC = () => {
   return (
     <div>
       <div className="flex gap-3 items-center mb-4">
-        <PFTrackerFilter data={dummyData} onFilterChange={handleFilterChange} />
+        <PFTrackerFilter data={dummyData} onFilterChange={onFilterChange} />
         <PFTrackerBulkUpload onUploadConfirm={handleUploadConfirm} />
       </div>
     </div>
