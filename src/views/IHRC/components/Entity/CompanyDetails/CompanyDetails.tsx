@@ -67,7 +67,7 @@ import { MdEdit } from 'react-icons/md';
         Email: string
     }
 
-    
+
 const CompanyDetails: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
@@ -76,6 +76,14 @@ const CompanyDetails: React.FC = () => {
     const handleBack = () => {
         navigate(-1);
     };
+
+    const tableHeight = '400px';
+
+    const tableStyle = {
+        height: tableHeight,
+        overflowY: 'auto' as const, // TypeScript requires this to be explicitly set
+    };
+
 
     // Dummy data for PF Setup Details
     const pfData = [
@@ -410,6 +418,7 @@ const CompanyDetails: React.FC = () => {
                 stickyLastColumn={true} />
                 </div>
             </div>
+           
         </AdaptableCard>
     );
 };
