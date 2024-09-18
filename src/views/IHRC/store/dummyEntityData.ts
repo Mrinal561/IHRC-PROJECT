@@ -10,6 +10,15 @@ export interface EntityData {
 
 export const entityDataSet: EntityData[] = [
     {
+        Company_Group_Name: "IND MONEY",
+        Company_Name: "India shelter Pvt Ltd",
+        State: "Haryana",
+        Location: "Gurgaon",
+        Branch: "Gurgaon",
+        PF_Setup: "Yes",
+        District: "Gurgaon District"
+    },
+    {
         Company_Group_Name: "Tata Group",
         Company_Name: "Tata Consultancy Services",
         State: "Maharashtra",

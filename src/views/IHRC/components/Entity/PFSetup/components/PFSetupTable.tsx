@@ -22,18 +22,68 @@ export interface PFSetupData {
   pfRegistrationCertificate?: File | null;
 }
 
-interface PFSetupTableProps {
-  data: PFSetupData[];
-  onDelete: (index: number) => void;
-  onEdit: (index: number, newData: Partial<PFSetupData>) => void;
-}
+// interface PFSetupTableProps {
+//   data: PFSetupData[];
+//   onDelete: (index: number) => void;
+//   onEdit: (index: number, newData: Partial<PFSetupData>) => void;
+// }
 
-const PFSetupTable: React.FC<PFSetupTableProps> = ({ data, onDelete, onEdit }) => {
+const PFSetupTable: React.FC<PFSetupTableProps> = () => {
   const [dialogIsOpen, setDialogIsOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<number | null>(null);
   const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
   const [itemToEdit, setItemToEdit] = useState<number | null>(null);
   const [editedData, setEditedData] = useState<Partial<PFSetupData>>({});
+
+  const [data , setData] = useState<PFSetupData[]>([
+    {
+      Company_Group_Name: "IND Money",
+      Company_Name: "India shelter Pvt Ltd",
+      pfCode: "RJUDR0021857000",
+      pfCodeLocation: "UDAIPUR",
+      registrationDate: "2023-01-15",
+      pfUserId: "user123",
+      pfPassword: "********",
+      authorizedSignatory: "Amit",
+      signatoryDesignation: "HR Manager",
+      signatoryMobile: "+91 9556543210",
+      signatoryEmail: "Amit@example.com",
+      dscValidDate: "2025-01-15",
+      esign: "Yes",
+    },
+    {
+      Company_Group_Name: "IND Money",
+      Company_Name: "India shelter Pvt Ltd",
+      pfCode: "GNGGN2789109000",
+      pfCodeLocation: "UDAIPUR",
+      registrationDate: "2023-01-15",
+      pfUserId: "user1234",
+      pfPassword: "********",
+      authorizedSignatory: "Ajay Thakur",
+      signatoryDesignation: "CFO",
+      signatoryMobile: "+91 9877743210",
+      signatoryEmail: "Ajay@example.com",
+      dscValidDate: "2026-01-15",
+      esign: "Yes",
+    },
+    {
+      Company_Group_Name: "IND Money",
+      Company_Name: "India shelter Pvt Ltd",
+      pfCode: "GNGGN2789109000",
+      pfCodeLocation: "UDAIPUR",
+      registrationDate: "2023-01-15",
+      pfUserId: "user1234",
+      pfPassword: "********",
+      authorizedSignatory: "Krishna Kumar Singh",
+      signatoryDesignation: "SEO",
+      signatoryMobile: "+91 9878743210",
+      signatoryEmail: "Krishna@example.com",
+      dscValidDate: "2027-01-15",
+      esign: "Yes",
+    }
+    
+  ])
+
 
   const columns: ColumnDef<PFSetupData>[] = useMemo(
     () => [
@@ -136,7 +186,7 @@ const PFSetupTable: React.FC<PFSetupTableProps> = ({ data, onDelete, onEdit }) =
             <Tooltip title="Edit">
               <Button
                 size="sm"
-                onClick={() => openEditDialog(row.index)}
+                onClick={() => openEditDialog(row.original)}
                 icon={<MdEdit />}
                 className="text-blue-500"
               />
@@ -171,9 +221,9 @@ const PFSetupTable: React.FC<PFSetupTableProps> = ({ data, onDelete, onEdit }) =
     setDialogIsOpen(true);
   };
 
-  const openEditDialog = (index: number) => {
-    setItemToEdit(index);
-    setEditedData(data[index]);
+  const openEditDialog = (item: PFSetupData) => {
+    setItemToEdit(item);
+    // setEditedData(data[index]);
     setEditDialogIsOpen(true);
   };
 
@@ -182,12 +232,14 @@ const PFSetupTable: React.FC<PFSetupTableProps> = ({ data, onDelete, onEdit }) =
     setEditDialogIsOpen(false);
     setItemToDelete(null);
     setItemToEdit(null);
-    setEditedData({});
+    // setEditedData({});
   };
 
   const handleDialogOk = () => {
     if (itemToDelete !== null) {
-      onDelete(itemToDelete);
+      const newData = [...data];
+      newData.splice(itemToDelete, 1);
+      setData(newData);
       setDialogIsOpen(false);
       setItemToDelete(null);
       openNotification('danger', 'PF Setup deleted successfully');
@@ -197,10 +249,15 @@ const PFSetupTable: React.FC<PFSetupTableProps> = ({ data, onDelete, onEdit }) =
 
   const handleEditConfirm = () => {
     if (itemToEdit !== null) {
-      onEdit(itemToEdit, editedData);
+      // onEdit(itemToEdit, editedData);
+      const newData = [...data];
+      const index = newData.findIndex(item => item === itemToEdit);
+      if(index !== -1){
       setEditDialogIsOpen(false);
       setItemToEdit(null);
-      setEditedData({});
+      openNotification('success', 'PF Setup updated successfully');
+      // setEditedData({});
+      }
     }
   };
 
@@ -260,7 +317,10 @@ const PFSetupTable: React.FC<PFSetupTableProps> = ({ data, onDelete, onEdit }) =
       >
         <h5 className="mb-4">Edit PF Setup</h5>
         {/* Add your edit form fields here */}
-        <PFEditedData />
+        <PFEditedData
+        initialData={itemToEdit}
+        onClose={handleDialogClose}
+        onSubmit={handleEditConfirm} />
         <div className="text-right mt-6">
           <Button
             className="ltr:mr-2 rtl:ml-2"

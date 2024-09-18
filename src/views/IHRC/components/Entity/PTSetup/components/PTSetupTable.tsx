@@ -26,19 +26,81 @@ export interface PTSetupData {
     ptrcUpload?: File | null;
 }
 
-interface ESISetupTableProps {
-  data: PTSetupData[];
-  onDelete: (index: number) => void;
-  onEdit: (index: number, newData: Partial<PTSetupData>) => void;
-}
+// interface ESISetupTableProps {
+//   data: PTSetupData[];
+//   onDelete: (index: number) => void;
+//   onEdit: (index: number, newData: Partial<PTSetupData>) => void;
+// }
 
-const PTSetupTable: React.FC<ESISetupTableProps> = ({ data, onDelete, onEdit }) => {
+const PTSetupTable: React.FC<ESISetupTableProps> = () => {
   const [dialogIsOpen, setDialogIsOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<number | null>(null);
   const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
   const [itemToEdit, setItemToEdit] = useState<number | null>(null);
   const [editedData, setEditedData] = useState<Partial<PTSetupData>>({});
-
+  const [data, setData] = useState<PTSetupData[]>([
+    {
+      Company_Group_Name: "IND Money",
+      Company_Name: "India Shelter Pvt Ltd",
+      ptState: "Rajasthan",
+      ptLocation: "Jaipur",
+      ptEnrollmentNumber: "RJ0012345678",
+      ptRegistrationNumber: "REG-101",
+      ptRegistrationDate: "2023-01-15",
+      ptRemmitanceMode: "Online",
+      ptUserId: "user123",
+      ptPassword: "********",
+      authorizedSignatory: "Amit Sharma",
+      signatoryDesignation: "HR Manager",
+      signatoryMobile: "+91 9556543210",
+      signatoryEmail: "amit.sharma@example.com",
+      ptecPaymentFrequency: "Monthly",
+      ptrcPaymentFrequency: "Quarterly",
+      lwfRegistrationCertificate: null, // Assuming no file is uploaded
+      ptrcUpload: null // Assuming no file is uploaded
+    },
+    {
+      Company_Group_Name: "IND Money",
+      Company_Name: "India Shelter Pvt Ltd",
+      ptState: "Gujarat",
+      ptLocation: "Ahmedabad",
+      ptEnrollmentNumber: "GJ0098765432",
+      ptRegistrationNumber: "REG-102",
+      ptRegistrationDate: "2023-02-20",
+      ptRemmitanceMode: "Bank Transfer",
+      ptUserId: "user124",
+      ptPassword: "********",
+      authorizedSignatory: "Ajay Patel",
+      signatoryDesignation: "CFO",
+      signatoryMobile: "+91 9877743210",
+      signatoryEmail: "ajay.patel@example.com",
+      ptecPaymentFrequency: "Yearly",
+      ptrcPaymentFrequency: "Monthly",
+      lwfRegistrationCertificate: new File([""], "lwf-certificate.pdf"), // Mock file
+      ptrcUpload: new File([""], "ptrc-upload.pdf") // Mock file
+    },
+    {
+      Company_Group_Name: "IND Money",
+      Company_Name: "India Shelter Pvt Ltd",
+      ptState: "Maharashtra",
+      ptLocation: "Mumbai",
+      ptEnrollmentNumber: "MH0123456789",
+      ptRegistrationNumber: "REG-103",
+      ptRegistrationDate: "2023-03-10",
+      ptRemmitanceMode: "Cheque",
+      ptUserId: "user125",
+      ptPassword: "********",
+      authorizedSignatory: "Krishna Reddy",
+      signatoryDesignation: "SEO",
+      signatoryMobile: "+91 9874443210",
+      signatoryEmail: "krishna.reddy@example.com",
+      ptecPaymentFrequency: "Monthly",
+      ptrcPaymentFrequency: "Biannual",
+      lwfRegistrationCertificate: null, // Assuming no file is uploaded
+      ptrcUpload: null // Assuming no file is uploaded
+    }
+  ]);
+  
   const columns: ColumnDef<PTSetupData>[] = useMemo(
     () => [
       {
@@ -147,7 +209,7 @@ const PTSetupTable: React.FC<ESISetupTableProps> = ({ data, onDelete, onEdit }) 
             <Tooltip title="Edit PF Setup">
               <Button
                 size="sm"
-                onClick={() => openEditDialog(row.index)}
+                onClick={() => openEditDialog(row.original)}
                 icon={<MdEdit />}
                 className="text-blue-500"
               />
@@ -183,9 +245,9 @@ const PTSetupTable: React.FC<ESISetupTableProps> = ({ data, onDelete, onEdit }) 
     setDialogIsOpen(true);
   };
 
-  const openEditDialog = (index: number) => {
-    setItemToEdit(index);
-    setEditedData(data[index]);
+  const openEditDialog = (item:PTSetupData) => {
+    setItemToEdit(item);
+    // setEditedData(data[index]);
     setEditDialogIsOpen(true);
   };
 
@@ -194,12 +256,15 @@ const PTSetupTable: React.FC<ESISetupTableProps> = ({ data, onDelete, onEdit }) 
     setEditDialogIsOpen(false);
     setItemToDelete(null);
     setItemToEdit(null);
-    setEditedData({});
+    // setEditedData({});
   };
 
   const handleDialogOk = () => {
     if (itemToDelete !== null) {
-      onDelete(itemToDelete);
+      // onDelete(itemToDelete);
+      const newData = [...data];
+      newData.splice(itemToDelete, 1);
+      setData(newData);
       setDialogIsOpen(false);
       setItemToDelete(null);
       openNotification('danger', 'PT Setup deleted successfully');
@@ -209,10 +274,14 @@ const PTSetupTable: React.FC<ESISetupTableProps> = ({ data, onDelete, onEdit }) 
 
   const handleEditConfirm = () => {
     if (itemToEdit !== null) {
-      onEdit(itemToEdit, editedData);
+      const newData = [...data];
+      const index = newData.findIndex(item => item === itemToEdit);
+      if(index!== -1){
       setEditDialogIsOpen(false);
       setItemToEdit(null);
-      setEditedData({});
+      openNotification('success', 'PF Setup updated successfully');
+      // setEditedData({});
+      }
     }
   };
 
@@ -272,7 +341,10 @@ const PTSetupTable: React.FC<ESISetupTableProps> = ({ data, onDelete, onEdit }) 
       >
         <h5 className="mb-4">Edit PT Setup</h5>
         {/* Add your edit form fields here */}
-        <PTEditedData />
+        <PTEditedData
+        initialData={itemToEdit}
+        onClose={handleDialogClose}
+        onSubmit={handleEditConfirm} />
         <div className="text-right mt-6">
           <Button
             className="ltr:mr-2 rtl:ml-2"

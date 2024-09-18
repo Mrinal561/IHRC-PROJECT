@@ -26,18 +26,97 @@ export interface LWFSetupData {
     lwfRegistrationCertificate?: File | null;
 }
 
-interface ESISetupTableProps {
-  data: LWFSetupData[];
-  onDelete: (index: number) => void;
-  onEdit: (index: number, newData: Partial<LWFSetupData>) => void;
-}
+// interface ESISetupTableProps {
+//   data: LWFSetupData[];
+//   onDelete: (index: number) => void;
+//   onEdit: (index: number, newData: Partial<LWFSetupData>) => void;
+// }
 
-const LWFSetupTable: React.FC<ESISetupTableProps> = ({ data, onDelete, onEdit }) => {
+const LWFSetupTable: React.FC<ESISetupTableProps> = () => {
   const [dialogIsOpen, setDialogIsOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<number | null>(null);
   const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
   const [itemToEdit, setItemToEdit] = useState<number | null>(null);
   const [editedData, setEditedData] = useState<Partial<LWFSetupData>>({});
+  const [data, setData] = useState<LWFSetupData[]>([
+    {
+      Company_Group_Name: "IND Money",
+      Company_Name: "India shelter Pvt Ltd",
+      lwfState: "ANDHRA PRADESH",
+      lwfLocation: "Vishakapatnam",
+      lwfRegistrationNumber: "LWF12345",
+      lwfRegistrationDate: "2023-01-15",
+      lwfRemmitanceMode: "Online",
+      lwfRemmitanceFrequency: "Monthly",
+      lwfUserId: "user123",
+      lwfPassword: "********",
+      authorizedSignatory: "Amit",
+      signatoryDesignation: "HR Manager",
+      signatoryMobile: "+91 9876543210",
+      signatoryEmail: "Amit@example.com",
+      lwfFrequency: "Monthly",
+      lwfPaymentDueDate: "15th",
+      lwfApplicableState: "Vishakapatnam"
+    },
+    {
+      Company_Group_Name: "IND Money",
+      Company_Name: "India shelter Pvt Ltd",
+      lwfState: "CHHATTISGARH",
+      lwfLocation: "CHHATTISGARH",
+      lwfRegistrationNumber: "LWF67890",
+      lwfRegistrationDate: "2023-02-20",
+      lwfRemmitanceMode: "Offline",
+      lwfRemmitanceFrequency: "Quarterly",
+      lwfUserId: "user2",
+      lwfPassword: "********",
+      authorizedSignatory: "Krishna Kumar Singh",
+      signatoryDesignation: "Finance Director",
+      signatoryMobile: "+91 9876543211",
+      signatoryEmail: "Krishna@example.com",
+      lwfFrequency: "Quarterly",
+      lwfPaymentDueDate: "20th",
+      lwfApplicableState: "CHHATTISGARH"
+    },
+    {
+      Company_Group_Name: "IND Money",
+      Company_Name: "India shelter Pvt Ltd",
+      lwfState: "DELHI",
+      lwfLocation: "DELHI",
+      lwfRegistrationNumber: "LWF67890",
+      lwfRegistrationDate: "2023-02-20",
+      lwfRemmitanceMode: "Offline",
+      lwfRemmitanceFrequency: "Quarterly",
+      lwfUserId: "user23",
+      lwfPassword: "********",
+      authorizedSignatory: "Ajay Thakur",
+      signatoryDesignation: "Finance Director",
+      signatoryMobile: "+91 9876543211",
+      signatoryEmail: "Ajay@example.com",
+      lwfFrequency: "Yearly",
+      lwfPaymentDueDate: "20th",
+      lwfApplicableState: "DELHI"
+    },
+    {
+      Company_Group_Name: "IND Money",
+      Company_Name: "India shelter Pvt Ltd",
+      lwfState: "TAMILNADU",
+      lwfLocation: "TAMILNADU",
+      lwfRegistrationNumber: "LWF67890",
+      lwfRegistrationDate: "2023-02-20",
+      lwfRemmitanceMode: "Online",
+      lwfRemmitanceFrequency: "Quarterly",
+      lwfUserId: "user234",
+      lwfPassword: "********",
+      authorizedSignatory: "Ajay Thakur",
+      signatoryDesignation: "Finance Director",
+      signatoryMobile: "+91 9876543211",
+      signatoryEmail: "Ajay@example.com",
+      lwfFrequency: "Monthly",
+      lwfPaymentDueDate: "20th",
+      lwfApplicableState: "TAMILNADU"
+    }
+  ]);
+
 
   const columns: ColumnDef<LWFSetupData>[] = useMemo(
     () => [
@@ -140,7 +219,7 @@ const LWFSetupTable: React.FC<ESISetupTableProps> = ({ data, onDelete, onEdit })
             <Tooltip title="Edit">
               <Button
                 size="sm"
-                onClick={() => openEditDialog(row.index)}
+                onClick={() => openEditDialog(row.original)}
                 icon={<MdEdit />}
                 className="text-blue-500"
               />
@@ -176,9 +255,9 @@ const LWFSetupTable: React.FC<ESISetupTableProps> = ({ data, onDelete, onEdit })
     setDialogIsOpen(true);
   };
 
-  const openEditDialog = (index: number) => {
-    setItemToEdit(index);
-    setEditedData(data[index]);
+  const openEditDialog = (item: LWFSetupData) => {
+    setItemToEdit(item);
+    // setEditedData(data[index]);
     setEditDialogIsOpen(true);
   };
 
@@ -187,24 +266,31 @@ const LWFSetupTable: React.FC<ESISetupTableProps> = ({ data, onDelete, onEdit })
     setEditDialogIsOpen(false);
     setItemToDelete(null);
     setItemToEdit(null);
-    setEditedData({});
+    // setEditedData({});
   };
 
   const handleDialogOk = () => {
     if (itemToDelete !== null) {
-      onDelete(itemToDelete);
+      const newData = [...data];
+      newData.splice(itemToDelete, 1);
+      setData(newData);
       setDialogIsOpen(false);
       setItemToDelete(null);
       openNotification('danger', 'LWF Setup deleted successfully');
     }
   };
 
-  const handleEditConfirm = () => {
+  const handleEditConfirm = (editedData: LWFSetupData) => {
     if (itemToEdit !== null) {
-      onEdit(itemToEdit, editedData);
-      setEditDialogIsOpen(false);
-      setItemToEdit(null);
-      setEditedData({});
+      const newData = [...data];
+      const index = newData.findIndex(item => item === itemToEdit);
+      if (index !== -1) {
+        newData[index] = editedData;
+        setData(newData);
+        setEditDialogIsOpen(false);
+        setItemToEdit(null);
+        openNotification('success', 'LWF Setup updated successfully');
+      }
     }
   };
 
@@ -264,7 +350,11 @@ const LWFSetupTable: React.FC<ESISetupTableProps> = ({ data, onDelete, onEdit })
       >
         <h5 className="mb-4">Edit LWF Setup</h5>
         {/* Add your edit form fields here */}
-        <LWFEditedData />
+        <LWFEditedData
+          initialData={itemToEdit}
+          onClose={handleDialogClose}
+          onSubmit={handleEditConfirm}
+        />
         <div className="text-right mt-6">
           <Button
             className="ltr:mr-2 rtl:ml-2"

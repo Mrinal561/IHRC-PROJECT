@@ -237,10 +237,10 @@ const LWFSetupPanel: React.FC<LWFSetupSidePanelProps> = ({
             isMulti
             options={[
               ...existingSignatories.map(s => ({ value: s.name, label: s.name })),
-              { value: 'add_new', label: '+ Add New Signatory' }
+              // { value: 'add_new', label: '+ Add New Signatory' }
             ]}
-            value={LWFSetupData.authorizedSignatory.map(name => ({ value: name, label: name }))}
-            onChange={handleSignatoryChange}
+            // value={LWFSetupData.authorizedSignatory.map(name => ({ value: name, label: name }))}
+            // onChange={handleSignatoryChange}
             />
             </div>
         </div>

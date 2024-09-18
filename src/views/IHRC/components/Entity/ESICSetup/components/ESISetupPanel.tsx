@@ -121,6 +121,11 @@ const ESISetupPanel: React.FC<ESISetupSidePanelProps> = ({
     setNewSignatory(prev => ({ ...prev, [field]: value }));
   };
 
+  const challanTypeOptions = [
+    { value: 'Main Challan', label: 'Main Challan' },
+    { value: 'Arrear Challan', label: 'Arrear Challan' },
+  ];
+
   return (
     <div className="p-4 space-y-4">
        <div className='flex gap-4 items-center'>
@@ -205,10 +210,10 @@ const ESISetupPanel: React.FC<ESISetupSidePanelProps> = ({
             isMulti
             options={[
               ...existingSignatories.map(s => ({ value: s.name, label: s.name })),
-              { value: 'add_new', label: '+ Add New Signatory' }
+              // { value: 'add_new'}
             ]}
-            value={esiSetupData.authorizedSignatory.map(name => ({ value: name, label: name }))}
-            onChange={handleSignatoryChange}
+            // value={esiSetupData.authorizedSignatory.map(name => ({ value: name, label: name }))}
+            // onChange={handleSignatoryChange}
             />
             </div>
         </div>

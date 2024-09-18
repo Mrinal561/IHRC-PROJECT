@@ -1,3 +1,4 @@
+
 import React, { useMemo, useState } from 'react';
 import { Button, Dialog, Tooltip, toast, Notification } from '@/components/ui';
 import { FiTrash } from 'react-icons/fi';
@@ -21,18 +22,57 @@ export interface ESISetupData {
 }
 
 interface ESISetupTableProps {
-  data: ESISetupData[];
-  onDelete: (index: number) => void;
-  onEdit: (index: number, newData: Partial<ESISetupData>) => void;
+  // Add any props if needed
 }
 
-const ESISetupTable: React.FC<ESISetupTableProps> = ({ data, onDelete, onEdit }) => {
+const ESISetupTable: React.FC<ESISetupTableProps> = () => {
   const [dialogIsOpen, setDialogIsOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<number | null>(null);
   const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
-  const [itemToEdit, setItemToEdit] = useState<number | null>(null);
-  const [editedData, setEditedData] = useState<Partial<ESISetupData>>({});
+  const [itemToEdit, setItemToEdit] = useState<ESISetupData | null>(null);
 
+  const [data, setData] = useState<ESISetupData[]>([
+    {
+      Company_Group_Name: "IND Money",
+      Company_Name: "India Shelter Pvt Ltd",
+      esiCode: "ESI1234567890",
+      esiCodeType: "Regular",
+      esiCodeLocation: "Delhi",
+      esiUserId: "esiuser01",
+      esiPassword: "********",
+      authorizedSignatory: "Ajay Thakur",
+      signatoryDesignation: "HR Head",
+      signatoryMobile: "+91 9911223344",
+      signatoryEmail: "AjayThakur@example.com",
+    },
+    {
+      Company_Group_Name: "IND Money",
+      Company_Name: "India Shelter Pvt Ltd",
+      esiCode: "ESI0987654321",
+      esiCodeType: "Special",
+      esiCodeLocation: "Mumbai",
+      esiUserId: "esiuser02",
+      esiPassword: "********",
+      authorizedSignatory: "Krishna Kumar Singh",
+      signatoryDesignation: "Finance Manager",
+      signatoryMobile: "+91 9922334455",
+      signatoryEmail: "Krishna@example.com",
+    },
+    {
+      Company_Group_Name: "IND Money",
+      Company_Name: "India Shelter Pvt Ltd",
+      esiCode: "ESI1122334455",
+      esiCodeType: "Regular",
+      esiCodeLocation: "Bengaluru",
+      esiUserId: "esiuser03",
+      esiPassword: "********",
+      authorizedSignatory: "Ajay Thakur",
+      signatoryDesignation: "Legal Advisor",
+      signatoryMobile: "+91 9933445566",
+      signatoryEmail: "AjayThakur@example.com",
+    }
+  ]);
+  
   const columns: ColumnDef<ESISetupData>[] = useMemo(
     () => [
       {
@@ -120,7 +160,7 @@ const ESISetupTable: React.FC<ESISetupTableProps> = ({ data, onDelete, onEdit })
             <Tooltip title="Edit">
               <Button
                 size="sm"
-                onClick={() => openEditDialog(row.index)}
+                onClick={() => openEditDialog(row.original)}
                 icon={<MdEdit />}
                 className="text-blue-500"
               />
@@ -149,16 +189,15 @@ const ESISetupTable: React.FC<ESISetupTableProps> = ({ data, onDelete, onEdit })
             {message}
         </Notification>
     )
-}
+  }
 
   const openDialog = (index: number) => {
     setItemToDelete(index);
     setDialogIsOpen(true);
   };
 
-  const openEditDialog = (index: number) => {
-    setItemToEdit(index);
-    setEditedData(data[index]);
+  const openEditDialog = (item: ESISetupData) => {
+    setItemToEdit(item);
     setEditDialogIsOpen(true);
   };
 
@@ -167,25 +206,26 @@ const ESISetupTable: React.FC<ESISetupTableProps> = ({ data, onDelete, onEdit })
     setEditDialogIsOpen(false);
     setItemToDelete(null);
     setItemToEdit(null);
-    setEditedData({});
   };
 
   const handleDialogOk = () => {
     if (itemToDelete !== null) {
-      onDelete(itemToDelete);
+      const newData = [...data];
+      newData.splice(itemToDelete, 1);
+      setData(newData);
       setDialogIsOpen(false);
       setItemToDelete(null);
       openNotification('danger', 'ESI Setup deleted successfully');
-
     }
   };
 
   const handleEditConfirm = () => {
-    if (itemToEdit !== null) {
-      onEdit(itemToEdit, editedData);
+    const newData = [...data];
+    const index = newData.findIndex(item => item === itemToEdit);
+    if (index !== -1) {
       setEditDialogIsOpen(false);
       setItemToEdit(null);
-      setEditedData({});
+      openNotification('success', 'ESI Setup updated successfully');
     }
   };
 
@@ -220,7 +260,7 @@ const ESISetupTable: React.FC<ESISetupTableProps> = ({ data, onDelete, onEdit })
       >
         <h5 className="mb-4">Confirm Deletion</h5>
         <p>
-          Are you sure you want to delete this PF Setup?
+          Are you sure you want to delete this ESI Setup?
         </p>
         <div className="text-right mt-6">
           <Button
@@ -244,9 +284,14 @@ const ESISetupTable: React.FC<ESISetupTableProps> = ({ data, onDelete, onEdit })
         height={570}
       >
         <h5 className="mb-4">Edit ESI Setup</h5>
-        {/* Add your edit form fields here */}
-        <ESIEditedData />
-        <div className="text-right mt-6">
+        {itemToEdit && (
+          <ESIEditedData
+            initialData={itemToEdit}
+            onClose={handleDialogClose}
+            onSubmit={handleEditConfirm}
+          />
+        )}
+         <div className="text-right mt-6">
           <Button
             className="ltr:mr-2 rtl:ml-2"
             variant="plain"

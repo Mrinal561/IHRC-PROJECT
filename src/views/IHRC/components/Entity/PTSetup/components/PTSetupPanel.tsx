@@ -217,7 +217,7 @@ const PTSetupPanel: React.FC<PTSetupSidePanelProps> = ({
           <label>PT Registration Date</label>
           <div className='w-56'>
           <DatePicker
-            placeholder="Select date"
+            placeholder="Select Date"
             value={PTSetupData.ptRegistrationDate}
             onChange={(date: Date | null) => handleInputChange('ptRegistrationDate', date)}
             />
@@ -231,10 +231,8 @@ const PTSetupPanel: React.FC<PTSetupSidePanelProps> = ({
             isMulti
             options={[
               ...existingSignatories.map(s => ({ value: s.name, label: s.name })),
-              { value: 'add_new', label: '+ Add New Signatory' }
+              // { value: 'add_new'}
             ]}
-            value={PTSetupData.authorizedSignatories.map(name => ({ value: name, label: name }))}
-            onChange={handleSignatoryChange}
             />
             </div>
         </div>

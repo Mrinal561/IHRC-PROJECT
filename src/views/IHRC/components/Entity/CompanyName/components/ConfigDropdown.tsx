@@ -32,10 +32,10 @@ const ConfigDropdown = ({ companyName, companyGroupName }) => {
   };
 
   const options = [
-    { key: 'PF', label: 'PF Config Setup' },
-    { key: 'PT', label: 'PT Config Setup' },
-    { key: 'ESI', label: 'ESI Config Setup' },
-    { key: 'LWF', label: 'LWF Config Setup' },
+    { key: 'PF', label: 'PF Setup' },
+    { key: 'PT', label: 'PT Setup' },
+    { key: 'ESI', label: 'ESI Setup' },
+    { key: 'LWF', label: 'LWF Setup' },
   ];
 
   const updateDropdownPosition = () => {
