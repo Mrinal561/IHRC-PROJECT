@@ -203,7 +203,7 @@ const PFSetupSidePanel: React.FC<PFSetupSidePanelProps> = ({
           <label>PF Registration Date</label>
           <div className='w-56'>
           <DatePicker
-            placeholder="Select date"
+            placeholder="Select Date"
             value={pfSetupData.registrationDate}
             onChange={(date: Date | null) => handleInputChange('registrationDate', date)}
             />
