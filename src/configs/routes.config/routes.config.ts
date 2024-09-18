@@ -225,6 +225,24 @@ export const protectedRoutes = [
         authority: [],
     },    
     {
+        key: 'remittanceTracker.collapse.item7',
+        path: '/pfiw-tracker',
+        component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/PFIWTracker/PFIWTracker')),
+        authority: [],
+    },    
+    {
+        key: 'remittanceTracker.collapse.item3',
+        path: '/lwf-tracker',
+        component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/LWFTracker/LWFTracker')),
+        authority: [],
+    },    
+    {
+        key: 'remittanceTracker.collapse.item4',
+        path: '/pt-tracker',
+        component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/PTTracker/PTTracker')),
+        authority: [],
+    },    
+    {
         key: 'pftracker.uploadeddetail',
         path: '/uploadedpfdetail',
         component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/PFTracker/components/UploadedPFDetails')),
@@ -234,6 +252,18 @@ export const protectedRoutes = [
         key: 'esitracker.uploadeddetail',
         path: '/uploadedesidetails',
         component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/ESITracker/components/UploadedESIDetails')),
+        authority: [],
+    },
+    {
+        key: 'pttracker.uploadeddetail',
+        path: '/uploadedptdetail',
+        component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/PTTracker/components/UploadedPTDetails')),
+        authority: [],
+    },
+    {
+        key: 'lwftracker.uploadeddetail',
+        path: '/uploadedLWFdetails',
+        component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/LWFTracker/components/UploadedLWFDetail')),
         authority: [],
     },
 ]
