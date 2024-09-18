@@ -255,6 +255,12 @@ export const protectedRoutes = [
         authority: [],
     },
     {
+        key: 'pttracker.uploadeddetail',
+        path: '/uploadedptdetail',
+        component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/PTTracker/components/UploadedPTDetails')),
+        authority: [],
+    },
+    {
         key: 'lwftracker.uploadeddetail',
         path: '/uploadedLWFdetails',
         component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/LWFTracker/components/UploadedLWFDetail')),
