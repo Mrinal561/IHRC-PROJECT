@@ -79,6 +79,20 @@ const BranchTable: React.FC = () => {
                 ),
             },
             {
+                header: 'Branch Address',
+                accessorKey: 'BranchAddress',
+                cell: (props) => (
+                  <div className="w-40 truncate">{props.getValue() as string}</div>
+                ),
+            },
+            {
+                header: 'Branch Opening Date',
+                accessorKey: 'BranchOpeningDate',
+                cell: (props) => (
+                  <div className="w-44 ">{props.getValue() as string}</div>
+                ),
+            },
+            {
                 header: 'Actions',
                 id: 'actions',
                 cell: ({ row }) => (
