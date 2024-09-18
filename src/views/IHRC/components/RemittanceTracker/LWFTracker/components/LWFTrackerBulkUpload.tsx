@@ -23,7 +23,7 @@ const LWFTrackerBulkUpload: React.FC<LWFTrackerBulkUploadProps> = ({ onUploadCon
 
   const handleConfirm = () => {
     setIsDialogOpen(false);
-    navigate('/uploadedpfdetail')
+    navigate('/uploadedLWFdetails')
   };
 
 
@@ -74,7 +74,7 @@ const LWFTrackerBulkUpload: React.FC<LWFTrackerBulkUploadProps> = ({ onUploadCon
         onClose={handleCancel}
         width={450}
       >
-        <h5 className="mb-4">Upload PF</h5>
+        <h5 className="mb-4">Upload LWF</h5>
         <div className="my-4 flex gap-2 items-center">
           <p>Download LWF Upload Format</p>
           <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
