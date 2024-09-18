@@ -28,14 +28,14 @@ const FinancialYearFilter = ({ onChange }) => {
 
 
     return (
-        <div className='w-52'>
+    <div className='w-52'>
       <OutlinedSelect
         label="Financial Year"
         value={selectedYear}
         options={options}
         onChange={(selectedOption) => onChange(selectedOption.value)}
         />
-        </div>
+    </div>
     )
   }
 
