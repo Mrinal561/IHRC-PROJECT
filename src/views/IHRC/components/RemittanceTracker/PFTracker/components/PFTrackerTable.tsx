@@ -200,17 +200,17 @@ const PFTrackerTable: React.FC = () => {
             {
                 header: 'Wages',
                 accessorKey: 'wages',
-                cell: (props) => <div className="w-28 truncate">{(props.getValue() as number).toLocaleString()}</div>,
+                cell: (props) => <div className="w-28 truncate">₹{(props.getValue() as number).toLocaleString()}</div>,
             },
             {
                 header: 'EPS Wage',
                 accessorKey: 'epsWage',
-                cell: (props) => <div className="w-28 truncate">{(props.getValue() as number).toLocaleString()}</div>,
+                cell: (props) => <div className="w-28 truncate">₹{(props.getValue() as number).toLocaleString()}</div>,
             },
             {
                 header: 'Total Challan Amount',
                 accessorKey: 'totalChallanAmount',
-                cell: (props) => <div className="w-52 truncate">{(props.getValue() as number).toLocaleString()}</div>,
+                cell: (props) => <div className="w-52 truncate">₹{(props.getValue() as number).toLocaleString()}</div>,
             },
             {
                 header: 'Due Date',
