@@ -119,19 +119,6 @@ const ConfigDropdown = ({ companyName, companyGroupName }) => {
       )}
       <Dialog isOpen={isDialogOpen}>
             <div className='mb-4'>Please Upload {selectedOption} reciept</div>
-          
-          {/* <div className="mt-4">
-            <label htmlFor="file-upload" className="cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-md inline-flex items-center">
-              <FiUpload className="mr-2" />
-              Choose File
-            </label>
-            <input
-              id="file-upload"
-              type="file"
-              className="hidden"
-              onChange={handleFileUpload}
-            />
-          </div> */}
           <div className="flex flex-col gap-2">
           <Input
             type="file"

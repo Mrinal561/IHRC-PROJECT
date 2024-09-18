@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { MdEdit } from 'react-icons/md';
 import { FiTrash } from 'react-icons/fi';
 import { LWFTrackerData } from './LWFTrackerTable';
-import ConfigDropdown from './ConfigDropdown';
+import ConfigDropdown from './ConfigDropDown';
 
 
 
