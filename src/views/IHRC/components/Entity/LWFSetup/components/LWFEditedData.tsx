@@ -151,7 +151,7 @@ const LWFEditedData: React.FC<LWFEditedDataProps> = ({ initialData, onClose, onS
                     <div className="w-56">
                         <DatePicker
                             placeholder="Select date"
-                            value={new Date("2023-01-01")}
+                            value={new Date(formData.lwfRegistrationDate)}
                             // disabled
                         />
                     </div>

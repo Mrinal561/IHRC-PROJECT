@@ -217,7 +217,7 @@ const PTSetupPanel: React.FC<PTSetupSidePanelProps> = ({
           <label>PT Registration Date</label>
           <div className='w-56'>
           <DatePicker
-            placeholder="Select date"
+            placeholder="Select Date"
             value={PTSetupData.ptRegistrationDate}
             onChange={(date: Date | null) => handleInputChange('ptRegistrationDate', date)}
             />

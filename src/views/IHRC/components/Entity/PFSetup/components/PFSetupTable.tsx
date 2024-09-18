@@ -76,7 +76,7 @@ const PFSetupTable: React.FC<PFSetupTableProps> = () => {
       pfPassword: "********",
       authorizedSignatory: "Krishna Kumar Singh",
       signatoryDesignation: "SEO",
-      signatoryMobile: "+91 9874443210",
+      signatoryMobile: "+91 9878743210",
       signatoryEmail: "Krishna@example.com",
       dscValidDate: "2027-01-15",
       esign: "Yes",

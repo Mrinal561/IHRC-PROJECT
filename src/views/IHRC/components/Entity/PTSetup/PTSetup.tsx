@@ -147,9 +147,9 @@ const PTSetup: React.FC = () => {
       </div>
 
       <PTSetupTable
-        data={PTSetupData}
-        onDelete={handleDelete}
-        onEdit={handleEdit}
+        // data={PTSetupData}
+        // onDelete={handleDelete}
+        // onEdit={handleEdit}
       />
 
       <Dialog

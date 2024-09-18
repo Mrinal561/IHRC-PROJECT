@@ -1,8 +1,43 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Input, Dialog, Notification, DatePicker, Select } from '@/components/ui';
 import OutlinedInput from '@/components/ui/OutlinedInput';
+import { ESISetupData } from './EsicSetupTable';
 
-const ESIEditedData: React.FC = () => {
+
+
+interface ESIEditedDataProps {
+  initialData: ESISetupData | null;
+  onClose: () => void;
+  onSubmit: (data: ESISetupData) => void;
+}
+
+
+const ESIEditedData: React.FC<ESIEditedDataProps> = ({ initialData, onClose, onSubmit }) => {
+
+  const [formData, setFormData] = useState<ESISetupData>({
+    Company_Group_Name:'',
+    Company_Name:'',
+    esiCode:'',
+    esiCodeType:'',
+    esiCodeLocation:'',
+    esiUserId:'',
+    esiPassword:'',
+    authorizedSignatory:'',
+    signatoryDesignation:'',
+    signatoryMobile:'',
+    signatoryEmail:'',
+  })
+  useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);
+    }
+  }, [initialData]);
+
+  const handleChange = (field: keyof PFSetupData, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+
   const [showAddSignatoryDialog, setShowAddSignatoryDialog] = useState(false);
 
  
@@ -16,7 +51,7 @@ const ESIEditedData: React.FC = () => {
         <div className='w-full'>
           <OutlinedInput
                       label="Company Group Name"
-                      value="Tata Group" onChange={function (value: string): void {
+                      value={formData.Company_Group_Name} onChange={function (value: string): void {
                           throw new Error('Function not implemented.');
                       } }               
           />
@@ -24,7 +59,7 @@ const ESIEditedData: React.FC = () => {
         <div className='w-full'>
           <OutlinedInput
                       label="Company Name"
-                      value="Tata Consultancy Services" onChange={function (value: string): void {
+                      value={formData.Company_Name} onChange={function (value: string): void {
                           throw new Error('Function not implemented.');
                       } }               
           />
@@ -37,7 +72,7 @@ const ESIEditedData: React.FC = () => {
           <div className='w-[352px]'>
             <OutlinedInput
                           label="ESI Code Type"
-                          value="Main" onChange={function (value: string): void {
+                          value={formData.esiCodeType} onChange={function (value: string): void {
                               throw new Error('Function not implemented.');
                           } }                 
             />
@@ -48,8 +83,7 @@ const ESIEditedData: React.FC = () => {
           <div className='w-[352px]'>
             <OutlinedInput
                           label="ESI Code"
-                          value="DRET12457893
-" onChange={function (value: string): void {
+                          value={formData.esiCode} onChange={function (value: string): void {
                               throw new Error('Function not implemented.');
                           } }                 
             />
@@ -63,7 +97,7 @@ const ESIEditedData: React.FC = () => {
           <div className='w-[352px]'>
             <OutlinedInput
                           label="ESI Code Location"
-                          value="Mumbai" onChange={function (value: string): void {
+                          value={formData.esiCodeLocation} onChange={function (value: string): void {
                               throw new Error('Function not implemented.');
                           } }                 
             />
@@ -74,7 +108,7 @@ const ESIEditedData: React.FC = () => {
           <div className='w-[352px]'>
             <OutlinedInput
                           label="ESI User ID (Optional)"
-                          value="User01" onChange={function (value: string): void {
+                          value={formData.esiUserId} onChange={function (value: string): void {
                               throw new Error('Function not implemented.');
                           } }                 
             />
@@ -88,7 +122,7 @@ const ESIEditedData: React.FC = () => {
           <div className='w-56'>
             <OutlinedInput
                           label="ESI Password (Optional)"
-                          value="Password01" onChange={function (value: string): void {
+                          value={formData.esiPassword} onChange={function (value: string): void {
                               throw new Error('Function not implemented.');
                           } }                 
             />
@@ -98,17 +132,9 @@ const ESIEditedData: React.FC = () => {
         <div className='flex flex-col gap-2 w-full'>
           <label>Choose the Signatories</label>
           <div>
-            <Select
-              isMulti
-              options={[
-                { value: 'Amit', label: 'Amit' },
-                { value: 'Krishna Kumar Singh', label: 'Krishna Kumar Singh' },
-                { value: 'Ajay Thakur', label: 'Ajay Thakur' },
-              ]}
-              value={[
-                { value: 'Amit', label: 'Amit' },
-                { value: 'Krishna Kumar Singh', label: 'Krishna Kumar Singh' },
-              ]}
+          <Input
+              value={formData.authorizedSignatory}
+              onChange={(e) => handleChange('authorizedSignatory', e.target.value)}
             />
           </div>
         </div>

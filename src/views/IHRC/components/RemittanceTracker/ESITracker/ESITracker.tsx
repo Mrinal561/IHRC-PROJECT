@@ -1,8 +1,19 @@
+import  AdaptableCard  from '@/components/shared/AdaptableCard'
+import ESITrackerTable from './components/ESITrackerTable';
+import ESITrackerTool from './components/ESITrackerTool';
 import React from 'react'
 
 const ESITracker = () => {
   return (
-    <div>ESITracker</div>
+    <AdaptableCard className="h-full" bodyClass="h-full">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-10">
+        <div className="mb-4 lg:mb-0">
+          <h3 className="text-2xl font-bold">ESI Tracker</h3>
+        </div>
+        <ESITrackerTool />
+      </div>
+      <ESITrackerTable/>
+    </AdaptableCard>
   )
 }
 
