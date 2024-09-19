@@ -243,6 +243,12 @@ export const protectedRoutes = [
         authority: [],
     },    
     {
+        key: 'remittanceTracker.collapse.item8',
+        path: '/s&e-tracker',
+        component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/S&ETracker/SandETracker')),
+        authority: [],
+    },    
+    {
         key: 'pftracker.uploadeddetail',
         path: '/uploadedpfdetail',
         component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/PFTracker/components/UploadedPFDetails')),
@@ -261,9 +267,21 @@ export const protectedRoutes = [
         authority: [],
     },
     {
+        key: 'pfiwtracker.uploadeddetail',
+        path: '/uploadedpfiwdetail',
+        component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/PFIWTracker/components/UploadedPFIWDetails')),
+        authority: [],
+    },
+    {
         key: 'lwftracker.uploadeddetail',
         path: '/uploadedLWFdetails',
         component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/LWFTracker/components/UploadedLWFDetails')),
+        authority: [],
+    },
+    {
+        key: 's&eTracker.uploadeddetail',
+        path: '/uploadeds&eDetails',
+        component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/S&ETracker/components/UploadedSandEDetails')),
         authority: [],
     },
 ]

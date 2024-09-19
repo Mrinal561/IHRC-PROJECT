@@ -60,7 +60,7 @@ const LWFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
       width={800}
       height={450}
     >
-      <h5 className="mb-4">Edit LWF Tracker</h5>
+      <h5 className="mb-4">Edit LWF Tracker Detail</h5>
 
       
       <div className="p-4 space-y-4">
