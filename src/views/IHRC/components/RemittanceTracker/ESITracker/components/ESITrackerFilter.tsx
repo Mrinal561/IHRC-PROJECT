@@ -61,7 +61,7 @@ const ESITrackerFilter: React.FC<ESITrackerFilterProps> = ({ data, onFilterChang
 
   return ( 
     <div className="flex gap-3">  
-      <div className='w-52'>
+      <div className='w-full'>
         <OutlinedSelect
           label="Group Name"
           options={groupOptions}
@@ -69,7 +69,7 @@ const ESITrackerFilter: React.FC<ESITrackerFilterProps> = ({ data, onFilterChang
           onChange={handleChange(setCurrentGroup, 'groupName')}
         />
       </div>
-      <div className='w-52'>
+      <div className='w-full'>
         <OutlinedSelect
           label="Company Name"
           options={nameOptions}
@@ -77,7 +77,7 @@ const ESITrackerFilter: React.FC<ESITrackerFilterProps> = ({ data, onFilterChang
           onChange={handleChange(setGroupName, 'companyName')}
         />
       </div>
-      <div className='w-52 z-20'>
+      <div className='w-full z-20'>
         <OutlinedSelect
           label="ESI Code"
           options={esiCodeOptions}

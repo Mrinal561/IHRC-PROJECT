@@ -10,6 +10,7 @@ import { Select } from '@/components/ui'
 import { useEffect, useState } from 'react'
 import OutlinedSelect from '@/components/ui/Outlined'
 import {Badge} from '@/components/ui'
+import OutlinedBadgeSelect from '@/components/ui/OutlinedBadgeSelect'
 
 type SidePanelProps = SidePanelContentProps & CommonProps
 
@@ -51,17 +52,16 @@ interface Option {
   
       return (
           <div className='w-52'>
-              <OutlinedSelect
+              <OutlinedBadgeSelect
                   label="Financial Year"
                   value={options.find(option => option.value === selectedYear)}
                   options={options}
                   onChange={handleChange}
-                  selectedIndicator="★"
                   optionRenderer={(option, isSelected) => (
                       <div className="flex items-center justify-between w-full">
                           <span>{option.label}</span>
                           {isSelected && (
-                              <div className="w-2 h-2 rounded-full bg-green-500" />
+                              <Badge className="w-2 h-2 rounded-full bg-emerald-500" />
                           )}
                       </div>
                   )}

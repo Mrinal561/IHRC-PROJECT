@@ -57,7 +57,7 @@ const PFIWTrackerFilter: React.FC<PFIWTrackerFilterProps> = ({ data, onFilterCha
 
   return ( 
     <div className="flex gap-3">  
-    <div className='w-52'>
+    <div className='w-full'>
         <OutlinedSelect
           label="Group Name"
           options={companyOptions}
@@ -65,7 +65,7 @@ const PFIWTrackerFilter: React.FC<PFIWTrackerFilterProps> = ({ data, onFilterCha
           onChange={handleChange(setCurrentCompany, 'companyName')}
         />
       </div>
-      <div className='w-52'>
+      <div className='w-full'>
         <OutlinedSelect
           label="Company Name"
           options={entityOptions}
@@ -73,7 +73,7 @@ const PFIWTrackerFilter: React.FC<PFIWTrackerFilterProps> = ({ data, onFilterCha
           onChange={handleChange(setCurrentEntity, 'entityName')}
         />
       </div>
-      <div className='w-52'>
+      <div className='w-full z-20'>
         <OutlinedSelect
           label="PF Code"
           options={pfCodeOptions}

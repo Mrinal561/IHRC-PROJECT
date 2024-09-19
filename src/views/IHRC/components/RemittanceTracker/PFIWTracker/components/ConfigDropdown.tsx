@@ -92,7 +92,7 @@ const ConfigDropdown = ({ companyName, companyGroupName }) => {
 
   return (
     <>
-      <Tooltip title="Click to upload PFIW documents">
+      <Tooltip title="Click to upload PF IW documents">
         <Button
           ref={buttonRef}
           size='sm'

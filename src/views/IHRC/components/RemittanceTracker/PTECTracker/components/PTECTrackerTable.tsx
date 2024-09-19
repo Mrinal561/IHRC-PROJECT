@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Button, Tooltip } from '@/components/ui';
-import { FiEdit, FiTrash } from 'react-icons/fi';
+import { FiEdit, FiEye, FiEyeOff, FiTrash } from 'react-icons/fi';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 import { MdEdit } from 'react-icons/md';
 import PTTrackerEditDialog from './PTECTrackerEditDialog';
@@ -121,6 +121,8 @@ const PTECTrackerTable: React.FC = () => {
   const [data, setData] = useState<PTTrackerData[]>(dummyData);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editingData, setEditingData] = useState<PTTrackerData | null>(null);
+  const [visiblePasswords, setVisiblePasswords] = useState<{ [key: string]: boolean }>({});
+
 
   const handleEdit = (row: PTTrackerData) => {
     setEditingData(row);
@@ -172,7 +174,27 @@ const handleEditSubmit = (editedData: PTTrackerData) => {
       {
         header: 'Password',
         accessorKey: 'password',
-        cell: (props) => <div className="w-32 truncate">********</div>,
+        cell: (props) => {
+          const rowId = props.row.id;
+          const password = props.getValue() as string;
+          const isVisible = visiblePasswords[rowId];
+
+          
+
+          return (
+            <div className="w-32 flex items-center justify-between">
+              <span className="truncate">
+                {isVisible ? password : '********'}
+              </span>
+              <Button
+                size="xs"
+                variant="plain"
+                icon={isVisible ? <FiEyeOff className="text-gray-400" /> : <FiEye className="text-gray-400" />}
+                // onClick={() => togglePasswordVisibility(rowId)}
+              />
+            </div>
+          );
+        },
       },
       {
         header: 'Frequency',
