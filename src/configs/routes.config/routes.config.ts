@@ -225,7 +225,7 @@ export const protectedRoutes = [
         authority: [],
     },    
     {
-        key: 'remittanceTracker.collapse.item7',
+        key: 'remittanceTracker.collapse.item6',
         path: '/pfiw-tracker',
         component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/PFIWTracker/PFIWTracker')),
         authority: [],
@@ -238,8 +238,14 @@ export const protectedRoutes = [
     },    
     {
         key: 'remittanceTracker.collapse.item4',
-        path: '/pt-tracker',
-        component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/PTTracker/PTTracker')),
+        path: '/ptrc-tracker',
+        component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/PTRCTracker/PTRCTracker')),
+        authority: [],
+    },    
+    {
+        key: 'remittanceTracker.collapse.item5',
+        path: '/ptec-tracker',
+        component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/PTECTracker/PTECTracker')),
         authority: [],
     },    
     {
@@ -261,9 +267,21 @@ export const protectedRoutes = [
         authority: [],
     },
     {
-        key: 'pttracker.uploadeddetail',
-        path: '/uploadedptdetail',
-        component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/PTTracker/components/UploadedPTDetails')),
+        key: 'ptrctracker.uploadeddetail',
+        path: '/uploadedptrcdetail',
+        component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/PTRCTracker/components/UploadedPTRCDetails')),
+        authority: [],
+    },
+    {
+        key: 'ptrctracker.uploadeddetail',
+        path: '/uploadedptrcdetail',
+        component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/PTRCTracker/components/UploadedPTRCDetails')),
+        authority: [],
+    },
+    {
+        key: 'ptectracker.uploadeddetail',
+        path: '/uploadedptecdetail',
+        component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/PTECTracker/components/UploadedPTECDetails')),
         authority: [],
     },
     {

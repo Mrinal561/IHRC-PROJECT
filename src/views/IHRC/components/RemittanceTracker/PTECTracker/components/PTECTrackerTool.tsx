@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import PTTrackerFilter from './PTTrackerFilter';
-import PTTrackerBulkUpload from './PTTrackerBulkUpload.js';
-import { dummyData } from './PTTrackerTable';
-import UploadedPTDetails from './UploadedPTDetails';
+import { dummyData } from './PTECTrackerTable';
+import UploadedPTDetails from './UploadedPTECDetails';
+import PTRCTrackerFilter from './PTECTrackerFilter';
+import PTRCTrackerBulkUpload from './PTECTrackerBulkUpload.js';
 
 
-const PTTrackerTool: React.FC<{ onFilterChange: (filters: any) => void }> = ({ onFilterChange }) => {
+const PTECTrackerTool: React.FC<{ onFilterChange: (filters: any) => void }> = ({ onFilterChange }) => {
   const [showUploadedDetails, setShowUploadedDetails] = useState(false);
   const [filters, setFilters] = useState({ groupName: '', companyName: '', pfCode: '' });
 
@@ -30,11 +30,11 @@ const PTTrackerTool: React.FC<{ onFilterChange: (filters: any) => void }> = ({ o
   return (
     <div>
       <div className="flex gap-3 items-center mb-4">
-        <PTTrackerFilter data={dummyData} onFilterChange={onFilterChange} />
-        <PTTrackerBulkUpload onUploadConfirm={handleUploadConfirm} />
+        <PTRCTrackerFilter data={dummyData} onFilterChange={onFilterChange} />
+        <PTRCTrackerBulkUpload onUploadConfirm={handleUploadConfirm} />
       </div>
     </div>
   );
 };
 
-export default PTTrackerTool;
+export default PTECTrackerTool;

@@ -3,7 +3,7 @@ import { Button, Tooltip } from '@/components/ui';
 import { FiEdit, FiTrash } from 'react-icons/fi';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 import { MdEdit } from 'react-icons/md';
-import PTTrackerEditDialog from './PTTrackerEditDialog';
+import PTTrackerEditDialog from './PTECTrackerEditDialog';
 
 // Define the structure of your data
 export interface PTTrackerData {
@@ -103,7 +103,7 @@ export const dummyData: PTTrackerData[] = [
   // Add more dummy data here
 ];
 
-const PTTrackerTable: React.FC = () => {
+const PTECTrackerTable: React.FC = () => {
   const [data, setData] = useState<PTTrackerData[]>(dummyData);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editingData, setEditingData] = useState<PTTrackerData | null>(null);
@@ -140,11 +140,11 @@ const handleEditSubmit = (editedData: PTTrackerData) => {
         accessorKey: 'ptRCLocation',
         cell: (props) => <div className="w-36 truncate">{props.getValue() as string}</div>,
       },
-      {
-        header: 'State/Location',
-        accessorKey: 'stateLocation',
-        cell: (props) => <div className="w-36 truncate">{props.getValue() as string}</div>,
-      },
+      // {
+      //   header: 'State/Location',
+      //   accessorKey: 'stateLocation',
+      //   cell: (props) => <div className="w-36 truncate">{props.getValue() as string}</div>,
+      // },
       {
         header: 'PT RC',
         accessorKey: 'ptRC',
@@ -276,4 +276,4 @@ const handleEditSubmit = (editedData: PTTrackerData) => {
   );
 };
 
-export default PTTrackerTable;
+export default PTECTrackerTable;

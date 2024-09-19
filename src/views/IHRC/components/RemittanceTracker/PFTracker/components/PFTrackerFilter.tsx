@@ -63,7 +63,7 @@ const PFTrackerFilter: React.FC<PFTrackerFilterProps> = ({ data, onFilterChange 
   return ( 
     <div className="flex gap-3">  
      
-      <div className='w-52'>
+      <div className='w-40'>
         <OutlinedSelect
           label="Group Name"
           options={groupOptions}
@@ -71,7 +71,7 @@ const PFTrackerFilter: React.FC<PFTrackerFilterProps> = ({ data, onFilterChange 
           onChange={handleChange(setCurrentGroup, 'groupName')}
         />
       </div>
-      <div className='w-52'>
+      <div className='w-40'>
         <OutlinedSelect
           label="Company Name"
           options={nameOptions}
@@ -79,7 +79,7 @@ const PFTrackerFilter: React.FC<PFTrackerFilterProps> = ({ data, onFilterChange 
           onChange={handleChange(setGroupName, 'companyName')}
         />
       </div>
-      <div className='w-52 z-20'>
+      <div className='w-40 z-20'>
         <OutlinedSelect
           label="PF Code"
           options={pfCodeOptions}

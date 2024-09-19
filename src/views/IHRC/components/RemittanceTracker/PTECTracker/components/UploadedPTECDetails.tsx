@@ -80,7 +80,7 @@ interface UploadedPTDetailsProps {
   onBack: () => void;
 }
 
-const UploadedPTDetails: React.FC<UploadedPTDetailsProps> = ({ onBack }) => {
+const UploadedPTECDetails: React.FC<UploadedPTDetailsProps> = ({ onBack }) => {
   const navigate = useNavigate();
 
   const columns: ColumnDef<PTTrackerData>[] = useMemo(
@@ -148,7 +148,7 @@ const UploadedPTDetails: React.FC<UploadedPTDetailsProps> = ({ onBack }) => {
   );
 
   const backFunction = () => {
-    navigate('/pt-tracker');
+    navigate('/ptec-tracker');
   };
 
   return (
@@ -162,7 +162,7 @@ const UploadedPTDetails: React.FC<UploadedPTDetailsProps> = ({ onBack }) => {
           className="mr-4"
         >
         </Button>
-        <h2 className="text-2xl font-bold">Uploaded PT Tracker Details</h2>
+        <h2 className="text-2xl font-bold">Uploaded PT EC Tracker Details</h2>
       </div>
       <DataTable
         columns={columns}
@@ -177,4 +177,4 @@ const UploadedPTDetails: React.FC<UploadedPTDetailsProps> = ({ onBack }) => {
   );
 };
 
-export default UploadedPTDetails;
+export default UploadedPTECDetails;

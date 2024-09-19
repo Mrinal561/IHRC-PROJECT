@@ -5,6 +5,10 @@ import { FiEdit, FiTrash } from 'react-icons/fi';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 import { MdEdit } from 'react-icons/md';
 import PFTrackerEditDialog from './PFTrackerEditDialog';
+import ConfigDropdown from './ConfigDropdown';
+
+
+const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
 
 // Define the structure of your data
@@ -24,6 +28,9 @@ export interface PFTrackerData {
     typeOfChallan: string;
     trrnNo: string;
     crnNo: string;
+    ecr: string;
+    challan: string;
+    payment: string;
 }
 
 // Dummy data (replace with your actual data source)
@@ -43,7 +50,10 @@ export const dummyData: PFTrackerData[] = [
         delayReason: 'Gov. Portal server down',
         typeOfChallan: 'Main Challan',
         trrnNo: '2032305004230',
-        crnNo: '229100523000279'
+        crnNo: '229100523000279',
+        ecr: "Ecr Receipt",
+        challan: "Challan Receipt",
+        payment: "Payment Receipt",
     },
     {
         companyName: 'India shelter PVT Ltd',
@@ -60,7 +70,10 @@ export const dummyData: PFTrackerData[] = [
         delayReason: '',
         typeOfChallan: 'Main Challan',
         trrnNo: '2032306009449',
-        crnNo: '229130623009410'
+        crnNo: '229130623009410',
+        ecr: "Ecr Receipt",
+        challan: "Challan Receipt",
+        payment: "Payment Receipt",
     },
     {
         companyName: 'India shelter PVT Ltd',
@@ -77,7 +90,10 @@ export const dummyData: PFTrackerData[] = [
         delayReason: '',
         typeOfChallan: 'Arrear Challan',
         trrnNo: '2032307004954',
-        crnNo: '229130723000561'
+        crnNo: '229130723000561',
+        ecr: "Ecr Receipt",
+        challan: "Challan Receipt",
+        payment: "",
     },
     {
         companyName: 'India shelter PVT Ltd',
@@ -94,60 +110,11 @@ export const dummyData: PFTrackerData[] = [
         delayReason: '',
         typeOfChallan: 'Main Challan',
         trrnNo: '2032307004894',
-        crnNo: '229130723000523'
+        crnNo: '229130723000523',
+        ecr: "Ecr Receipt",
+        challan: "",
+        payment: "Payment Receipt",
     },
-    // {
-    //     companyName: 'India shelter PVT Ltd',
-    //     pfCode: 'RJUDR0021857000',
-    //     location: 'Udaipur',
-    //     month: 'Apr-22',
-    //     noOfEmployees: 3,
-    //     wages: "64,028",
-    //     epsWage: "45,000",
-    //     totalChallanAmount: 15914,
-    //     dueDate: '15-May-22',
-    //     dateOfPayment: '13-May-23',
-    //     delay: "",
-    //     delayReason: '',
-    //     typeOfChallan: '3 employees Udaipur challan (Apr22) ',
-    //     trrnNo: '4032304005732',
-    //     crnNo: '229130523000438'
-    // },
-    // {
-    //     companyName: 'India shelter PVT Ltd',
-    //     pfCode: 'RJUDR0021857000',
-    //     location: 'Udaipur',
-    //     month: 'May-22',
-    //     noOfEmployees: 3,
-    //     wages: "71,815",
-    //     epsWage: "45,000",
-    //     totalChallanAmount: 17820,
-    //     dueDate: '15-Jun-22',
-    //     dateOfPayment: '13-May-23',
-    //     delay: "",
-    //     delayReason: '',
-    //     typeOfChallan: '3 employees Udaipur challan (Apr22) ',
-    //     trrnNo: '4032304005739',
-    //     crnNo: '229130523000451'
-    // },
-    // {
-    //     companyName: 'India shelter PVT Ltd',
-    //     pfCode: 'RJUDR0021857000',
-    //     location: 'Udaipur',
-    //     month: 'Jun-22',
-    //     noOfEmployees: 3,
-    //     wages: "71,815",
-    //     epsWage: "45,000",
-    //     totalChallanAmount: 17820,
-    //     dueDate: '15-Jul-22',
-    //     dateOfPayment: '13-May-23',
-    //     delay: "",
-    //     delayReason: '',
-    //     typeOfChallan: '3 employees Udaipur challan (Apr22) ',
-    //     trrnNo: '4032304005754',
-    //     crnNo: '229130523000473'
-    // },
-    // Add more dummy data here
 ];
 
 const PFTrackerTable: React.FC = () => {
@@ -248,6 +215,48 @@ const PFTrackerTable: React.FC = () => {
                 cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
             },
             {
+                header: 'ECR',
+                accessorKey: 'ecr',
+                cell: (props) => 
+                <div className="w-40 truncate">
+                  <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
+                    {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
+                    {props.getValue() as string}
+                  </a>
+                </div>,
+              },
+              {
+                header: 'Challan',
+                accessorKey: 'challan',
+                cell: (props) => 
+                <div className="w-40 truncate">
+                  <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
+                    {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
+                    {props.getValue() as string}
+                  </a>
+                </div>,
+              },
+              {
+                header: 'Payment Receipt',
+                accessorKey: 'payment',
+                cell: (props) => 
+                <div className="w-40 truncate">
+                  <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
+                    {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
+                    {props.getValue() as string}
+                  </a>
+                </div>,
+              },
+              {
+                header: 'Upload Status',
+                id: 'uploadStatus',
+                cell: ({ row }) => {
+                    const { ecr, challan, payment } = row.original;
+                    const uploadedCount = [ecr, challan, payment].filter(Boolean).length;
+                    return <div className="w-32 truncate">{`${uploadedCount}/3`}</div>;
+                },
+            },
+            {
                 header: 'Actions',
                 id: 'actions',
                 cell: ({ row }) => (
@@ -267,12 +276,32 @@ const PFTrackerTable: React.FC = () => {
                                 className="text-red-500"
                             />
                         </Tooltip>
+                        <ConfigDropdown companyName={undefined} companyGroupName={undefined}            />
                     </div>
                 ),
             },
         ],
         []
     );
+
+    const handleDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
+        e.preventDefault();
+        // Implement the download functionality here
+        // For example, you could use the `fetch` API to download the file
+        fetch(documentPath)
+          .then(response => response.blob())
+          .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = 'AllMappedCompliancesDetails.xls';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+          })
+          .catch(() => console.error('Download failed'));
+      };
 
     return (
         <div className="relative">

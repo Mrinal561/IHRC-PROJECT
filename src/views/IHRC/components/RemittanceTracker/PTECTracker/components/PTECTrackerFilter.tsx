@@ -38,7 +38,7 @@ interface PTTrackerFilterProps {
   onFilterChange: (filters: { groupName: string; companyName: string; ptCode: string }) => void;
 }
 
-const PTTrackerFilter: React.FC<PTTrackerFilterProps> = ({ data, onFilterChange }) => {
+const PTECTrackerFilter: React.FC<PTTrackerFilterProps> = ({ data, onFilterChange }) => {
   const groupOptions = useMemo(() => createOptions(getUniqueValues(entityDataSet, 'Company_Group_Name')), []);
   const nameOptions = useMemo(() => createOptions(getUniqueValues(entityDataSet, 'Company_Name')), []);
   const ptCodeOptions = useMemo(() => createOptions(getUniqueValues(data, 'ptRC')), [data]);
@@ -89,4 +89,4 @@ const PTTrackerFilter: React.FC<PTTrackerFilterProps> = ({ data, onFilterChange 
   );
 };
 
-export default PTTrackerFilter;
+export default PTECTrackerFilter;
