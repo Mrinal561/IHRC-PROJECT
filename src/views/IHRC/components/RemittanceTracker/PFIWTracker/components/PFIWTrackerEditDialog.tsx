@@ -56,7 +56,7 @@ const PFIWTrackerEditDialog: React.FC<PFIWTrackerEditDialogProps> = ({
       onRequestClose={onClose}
       width={600}
     >
-      <h5 className="mb-4">Edit PFIW Tracker</h5>
+      <h5 className="mb-4">Edit PFIW Tracker Detail</h5>
       
       <div className="p-4 space-y-4">
 
