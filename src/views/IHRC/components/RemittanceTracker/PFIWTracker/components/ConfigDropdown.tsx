@@ -5,7 +5,7 @@ import { FiSettings, FiUpload } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import { HiUpload } from 'react-icons/hi';
 
-const PFIWConfigDropdown = ({ companyName, companyGroupName }) => {
+const ConfigDropdown = ({ companyName, companyGroupName }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
@@ -144,4 +144,4 @@ const PFIWConfigDropdown = ({ companyName, companyGroupName }) => {
   );
 };
 
-export default PFIWConfigDropdown;
+export default ConfigDropdown;
