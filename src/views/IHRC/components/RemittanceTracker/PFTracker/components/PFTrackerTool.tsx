@@ -39,7 +39,7 @@ const PFTrackerTool: React.FC<{ onFilterChange: (filters: any) => void }> = ({ o
 
   return (
     <div>
-      <div className="flex gap-3 items-center mb-4">
+      <div className="flex gap-4 items-center mb-4 w-full">
         <PFTrackerFilter data={dummyData} onFilterChange={onFilterChange} />
         <CustomDateRangePicker onApply={handleDateRangeApply} />
         <Button  

@@ -146,7 +146,14 @@ const SandETrackerTable: React.FC = () => {
             {
                 header: 'Address',
                 accessorKey: 'address',
-                cell: (props) => <div className="w-52 truncate">{props.getValue() as string}</div>,
+                cell: (props) => {
+                    const value = props.getValue() as string;
+                    return(
+                        <Tooltip title={value} placement="top">
+                        <div className="w-52 truncate">{props.getValue() as string}</div>,
+                        </Tooltip>
+                    );
+                }
             },
             {
                 header: 'Opening Date',

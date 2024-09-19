@@ -15,8 +15,8 @@ const PFTracker: React.FC = () => {
 
   return (
     <AdaptableCard className="h-full" bodyClass="h-full">
-      <div className="flex flex-col lg:flex-row items-center justify-between mb-10">
-        <div className="mb-4 lg:mb-0">
+      <div className="flex flex-wrap gap-6 items-center justify-between mb-6">
+        <div className="">
           <h3 className="text-2xl font-bold">PF Tracker</h3>
         </div>
         <PFTrackerTool onFilterChange={handleFilterChange} />
