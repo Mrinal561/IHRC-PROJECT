@@ -56,6 +56,7 @@ interface Option {
                   value={options.find(option => option.value === selectedYear)}
                   options={options}
                   onChange={handleChange}
+                  selectedIndicator="★"
                   optionRenderer={(option, isSelected) => (
                       <div className="flex items-center justify-between w-full">
                           <span>{option.label}</span>

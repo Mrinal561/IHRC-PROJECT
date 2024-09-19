@@ -21,7 +21,7 @@ const navigationConfig: NavigationTree[] = [
         path: '',
         title: 'Audit Checklist',
         translateKey: 'nav.collapseMenu.collapseMenu',
-        icon: 'collapseMenu',
+        icon: 'auditCollapse',
         type: NAV_ITEM_TYPE_COLLAPSE,
         authority: [],
         subMenu: [
@@ -102,7 +102,7 @@ const navigationConfig: NavigationTree[] = [
         path: '',
         title: 'Global Settings',
         translateKey: 'nav.groupMenu.collapse.collapse',
-        icon: 'groupCollapseMenu',
+        icon: 'globeCollapse',
         type: NAV_ITEM_TYPE_COLLAPSE,
         authority: [],
         subMenu: [
@@ -143,7 +143,7 @@ const navigationConfig: NavigationTree[] = [
         path: '',
         title: 'Company Setup',
         translateKey: 'nav.companySetup.collapse.collapse',
-        icon: 'groupCollapseMenu',
+        icon: 'buildingCollapse',
         type: NAV_ITEM_TYPE_COLLAPSE,
         authority: [],
         subMenu: [
@@ -169,7 +169,7 @@ const navigationConfig: NavigationTree[] = [
                     {
                         key: 'companySetup.collapse.entitySetup.collapse.item2',
                         path: '/company-name',
-                        title: 'Company Name',
+                        title: 'Company',
                         translateKey: 'nav.companySetup.collapse.entitySetup.collapse.item2',
                         icon: '',
                         type: NAV_ITEM_TYPE_ITEM,
@@ -235,7 +235,7 @@ const navigationConfig: NavigationTree[] = [
         path: '/remittanceTracker',
         title: 'Remittance Tracker',
         translateKey: 'nav.remittanceTracker.collapse.collapse',
-        icon: 'groupCollapseMenu',
+        icon: 'remittanceCollapse',
         type: NAV_ITEM_TYPE_COLLAPSE,
         authority: [],
         subMenu: [
