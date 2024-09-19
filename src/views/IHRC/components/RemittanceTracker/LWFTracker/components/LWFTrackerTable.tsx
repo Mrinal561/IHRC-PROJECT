@@ -5,6 +5,9 @@ import { FiEdit, FiTrash } from 'react-icons/fi';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 import { MdEdit } from 'react-icons/md';
 import LWFTrackerEditDialog from './LWFTrackerEditDialog';
+import ConfigDropdown from './ConfigDropDown';
+
+const documentPath = "../store/AllMappedCompliancesDetails.xls";
 // import PFTrackerEditDialog from './PFTrackerEditDialog';
 
 
@@ -24,6 +27,7 @@ export interface LWFTrackerData {
     receiptNo: string;
     amountDiff: string;
     amountDiffReason: string;
+    payment: string;
 }
 
 // Dummy data (replace with your actual data source)
@@ -43,6 +47,7 @@ export const dummyData: LWFTrackerData[] = [
         receiptNo: '24071001017115355215',
         amountDiff: '',
         amountDiffReason: '',
+        payment: "Payment Receipt",
     },
     {
         companyName: 'India shelter PVT Ltd',
@@ -59,6 +64,7 @@ export const dummyData: LWFTrackerData[] = [
         receiptNo: '531347',
         amountDiff: '',
         amountDiffReason: '',
+        payment: "Payment Receipt",
     },
     {
         companyName: 'India shelter PVT Ltd',
@@ -75,6 +81,7 @@ export const dummyData: LWFTrackerData[] = [
         receiptNo: 'DLWB202400007165',
         amountDiff: '',
         amountDiffReason: '',
+        payment: "",
     },
     {
         companyName: 'India shelter PVT Ltd',
@@ -91,6 +98,7 @@ export const dummyData: LWFTrackerData[] = [
         receiptNo: 'ONL/2024/T/0026476',
         amountDiff: '',
         amountDiffReason: '',
+        payment: "Payment Receipt",
     },
 ];
 
@@ -178,6 +186,26 @@ const LWFTrackerTable: React.FC = () => {
                 cell: (props) => <div className="w-52 truncate">{props.getValue() as string}</div>,
             },
             {
+                header: 'Payment Receipt',
+                accessorKey: 'payment',
+                cell: (props) => 
+                <div className="w-40 truncate">
+                  <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
+                    {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
+                    {props.getValue() as string}
+                  </a>
+                </div>,
+              },
+              {
+                header: 'Upload Status',
+                id: 'uploadStatus',
+                cell: ({ row }) => {
+                    const { payment } = row.original;
+                    const uploadedCount = [ payment].filter(Boolean).length;
+                    return <div className="w-32 truncate">{`${uploadedCount}/1`}</div>;
+                },
+            },
+            {
                 header: 'Actions',
                 id: 'actions',
                 cell: ({ row }) => (
@@ -197,12 +225,32 @@ const LWFTrackerTable: React.FC = () => {
                                 className="text-red-500"
                             />
                         </Tooltip>
+                        <ConfigDropdown companyName={undefined} companyGroupName={undefined}            />
                     </div>
                 ),
             },
         ],
         []
     );
+
+    const handleDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
+        e.preventDefault();
+        // Implement the download functionality here
+        // For example, you could use the `fetch` API to download the file
+        fetch(documentPath)
+          .then(response => response.blob())
+          .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = 'AllMappedCompliancesDetails.xls';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+          })
+          .catch(() => console.error('Download failed'));
+      };
 
     return (
         <div className="relative">

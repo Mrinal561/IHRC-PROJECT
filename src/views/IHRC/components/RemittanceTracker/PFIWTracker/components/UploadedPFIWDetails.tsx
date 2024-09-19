@@ -4,6 +4,7 @@ import { HiArrowLeft } from 'react-icons/hi';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 import { useNavigate } from 'react-router-dom';
 import ConfigDropdown from './ConfigDropdown';
+const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
 // Updated PFIWTrackerData interface
 interface PFIWTrackerData {
@@ -15,6 +16,8 @@ interface PFIWTrackerData {
     submissionDate: string;
     delay: string;
     delayReason: string;
+    challan:string;
+    payment:string;
 }
 
 const dummyData: PFIWTrackerData[] = [
@@ -26,7 +29,9 @@ const dummyData: PFIWTrackerData[] = [
     dueDate: '15-May-23',
     submissionDate: '20-May-23',
     delay: "5 Days",
-    delayReason: 'Technical issues with the portal'
+    delayReason: 'Technical issues with the portal',
+    challan: "Challan Receipt",
+        payment: "Payment Receipt",
   },
   {
     companyName: 'India shelter PVT Ltd',
@@ -36,7 +41,9 @@ const dummyData: PFIWTrackerData[] = [
     dueDate: '15-Jun-23',
     submissionDate: '14-Jun-23',
     delay: "",
-    delayReason: ''
+    delayReason: '',
+    challan: "Challan Receipt",
+        payment: "Payment Receipt",
   },
   // Add more dummy data entries here...
 ];
@@ -91,6 +98,28 @@ const UploadedPFIWDetails: React.FC<UploadedPFIWDetailsProps> = ({ onBack }) => 
         cell: (props) => <div className="w-60 truncate">{props.getValue() as string}</div>,
       },
       {
+        header: 'Challan',
+        accessorKey: 'challan',
+        cell: (props) => 
+        <div className="w-40 truncate">
+          <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
+            {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
+            {props.getValue() as string}
+          </a>
+        </div>,
+      },
+      {
+        header: 'Payment Receipt',
+        accessorKey: 'payment',
+        cell: (props) => 
+        <div className="w-40 truncate">
+          <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
+            {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
+            {props.getValue() as string}
+          </a>
+        </div>,
+      },
+      {
         header: 'Actions',
         id: 'actions',
         cell: ({ row }) => (
@@ -105,6 +134,24 @@ const UploadedPFIWDetails: React.FC<UploadedPFIWDetailsProps> = ({ onBack }) => 
     navigate('/pfiw-tracker');
   };
 
+  const handleDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    // Implement the download functionality here
+    // For example, you could use the `fetch` API to download the file
+    fetch(documentPath)
+      .then(response => response.blob())
+      .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = 'AllMappedCompliancesDetails.xls';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+      })
+      .catch(() => console.error('Download failed'));
+  };
   return (
     <div className="p-4">
       <div className="flex items-center mb-8">

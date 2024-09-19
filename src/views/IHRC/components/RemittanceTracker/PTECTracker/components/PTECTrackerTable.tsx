@@ -4,6 +4,8 @@ import { FiEdit, FiTrash } from 'react-icons/fi';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 import { MdEdit } from 'react-icons/md';
 import PTTrackerEditDialog from './PTECTrackerEditDialog';
+import ConfigDropdown from './ConfigDropdown';
+const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
 // Define the structure of your data
 export interface PTTrackerData {
@@ -28,6 +30,9 @@ export interface PTTrackerData {
   remarks: string;
   delay: string;
   delayReason:string;
+  challan: string;
+  payment: string;
+  ret:string;
 }
 
 // Dummy data (replace with your actual data source)
@@ -54,6 +59,9 @@ export const dummyData: PTTrackerData[] = [
     remarks: '',
     delay: "5 Days",
     delayReason:"Server Error",
+    challan: "Challan Receipt",
+        payment: "Payment Receipt",
+        ret:"Return Receipt"
   },
   {
     companyName: 'India Shelter',
@@ -77,6 +85,9 @@ export const dummyData: PTTrackerData[] = [
     remarks: '',
     delay: "",
     delayReason:"",
+    challan: "Challan Receipt",
+        payment: "Payment Receipt",
+        ret:"Return Receipt"
   },{
     companyName: 'India Shelter',
     state: 'Gujarat',
@@ -99,6 +110,9 @@ export const dummyData: PTTrackerData[] = [
     remarks: '',
     delay: "",
     delayReason:"",
+    challan: "Challan Receipt",
+        payment: "Payment Receipt",
+        ret:""
   },
   // Add more dummy data here
 ];
@@ -225,7 +239,48 @@ const handleEditSubmit = (editedData: PTTrackerData) => {
         accessorKey: 'delayReason',
         cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
       },
-     
+      {
+        header: 'Challan',
+        accessorKey: 'challan',
+        cell: (props) => 
+        <div className="w-40 truncate">
+          <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
+            {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
+            {props.getValue() as string}
+          </a>
+        </div>,
+      },
+      {
+        header: 'Payment Receipt',
+        accessorKey: 'payment',
+        cell: (props) => 
+        <div className="w-40 truncate">
+          <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
+            {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
+            {props.getValue() as string}
+          </a>
+        </div>,
+      },
+      {
+        header: 'Return Receipt',
+        accessorKey: 'ret',
+        cell: (props) => 
+        <div className="w-40 truncate">
+          <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
+            {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
+            {props.getValue() as string}
+          </a>
+        </div>,
+      },
+      {
+        header: 'Upload Status',
+        id: 'uploadStatus',
+        cell: ({ row }) => {
+            const {  challan, payment,ret } = row.original;
+            const uploadedCount = [challan, payment, ret].filter(Boolean).length;
+            return <div className="w-32 truncate">{`${uploadedCount}/3`}</div>;
+        },
+    },
       {
         header: 'Actions',
         id: 'actions',
@@ -246,13 +301,31 @@ const handleEditSubmit = (editedData: PTTrackerData) => {
                 className="text-red-500"
               />
             </Tooltip>
+            <ConfigDropdown companyName={undefined} companyGroupName={undefined}            />
           </div>
         ),
       },
     ],
     []
   );
-
+  const handleDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    // Implement the download functionality here
+    // For example, you could use the `fetch` API to download the file
+    fetch(documentPath)
+      .then(response => response.blob())
+      .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = 'AllMappedCompliancesDetails.xls';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+      })
+      .catch(() => console.error('Download failed'));
+  };
   return (
     <div className="relative">
       <DataTable

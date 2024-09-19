@@ -4,6 +4,7 @@ import { HiArrowLeft } from 'react-icons/hi';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 import { useNavigate } from 'react-router-dom';
 import EsiConfigDropdown from './ESIConfigDropDown';
+const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
 // Define the ESITrackerData interface
 interface ESITrackerData {
@@ -21,6 +22,8 @@ interface ESITrackerData {
     delayReason: string;
     typeOfChallan: string;
     challanNo: string;
+    challan:string,
+    payment:string,
 }
 
 const dummyData: ESITrackerData[] = [
@@ -38,7 +41,9 @@ const dummyData: ESITrackerData[] = [
         delay: "5 Days",
         delayReason: 'Gov. Portal server down',
         typeOfChallan: 'Main Challan',
-        challanNo: '2032305004230'
+        challanNo: '2032305004230',
+        challan: "Challan Receipt",
+        payment: "Payment Receipt",
     },
     {
         companyName: 'India shelter PVT Ltd',
@@ -54,7 +59,9 @@ const dummyData: ESITrackerData[] = [
         delay: "",
         delayReason: '',
         typeOfChallan: 'Main Challan',
-        challanNo: '2032306009449'
+        challanNo: '2032306009449',
+        challan: "Challan Receipt",
+        payment: "Payment Receipt",
     },
     // Add more dummy data entries here...
 ];
@@ -119,6 +126,28 @@ const UploadedESIDetails: React.FC<UploadedESIDetailsProps> = ({ onBack }) => {
         cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
       },
       {
+        header: 'Challan',
+        accessorKey: 'challan',
+        cell: (props) => 
+        <div className="w-40 truncate">
+          <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
+            {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
+            {props.getValue() as string}
+          </a>
+        </div>,
+      },
+      {
+        header: 'Payment Receipt',
+        accessorKey: 'payment',
+        cell: (props) => 
+        <div className="w-40 truncate">
+          <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
+            {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
+            {props.getValue() as string}
+          </a>
+        </div>,
+      },
+      {
         header: 'Actions',
         id: 'actions',
         cell: ({ row }) => (
@@ -131,6 +160,24 @@ const UploadedESIDetails: React.FC<UploadedESIDetailsProps> = ({ onBack }) => {
 
   const backFunction = () => {
     navigate('/esi-tracker');
+  };
+  const handleDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    // Implement the download functionality here
+    // For example, you could use the `fetch` API to download the file
+    fetch(documentPath)
+      .then(response => response.blob())
+      .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = 'AllMappedCompliancesDetails.xls';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+      })
+      .catch(() => console.error('Download failed'));
   };
 
   return (
