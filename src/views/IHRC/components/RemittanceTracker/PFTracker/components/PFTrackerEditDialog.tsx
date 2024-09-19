@@ -67,7 +67,7 @@ const challanTypeOptions = [
       width={800}
       height={600}
     >
-      <h5 className="mb-4">Edit PF Tracker</h5>
+      <h5 className="mb-4">Edit PF Tracker Detail</h5>
 
       
       <div className="p-4 space-y-4">

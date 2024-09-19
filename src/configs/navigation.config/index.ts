@@ -289,6 +289,16 @@ const navigationConfig: NavigationTree[] = [
                 authority: [],
                 subMenu: [],
             }, 
+            {
+                key: 'remittanceTracker.collapse.item8',
+                path: '/s&e-tracker',
+                title: 'S&E Tracker',
+                translateKey: 'nav.remittanceTracker.collapse.item8',
+                icon: '',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [],
+                subMenu: [],
+            }, 
         ],
     },
 ]

@@ -71,7 +71,7 @@ const PTTrackerEditDialog: React.FC<PTTrackerEditDialogProps> = ({
       width={800}
       height={600}
     >
-      <h5 className="mb-4">Edit PT Tracker</h5>
+      <h5 className="mb-4">Edit PT Tracker Detail</h5>
 
       <div className="p-4 space-y-4">
         <div className='flex gap-4 items-center'>
