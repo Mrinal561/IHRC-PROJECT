@@ -29,7 +29,7 @@
                     "collapse": {
                         "collapse": "Entity Setup",
                         "item1": "Company Group",
-                        "item2": "Company Name",
+                        "item2": "Company",
                         "item3": "State",
                         "item4": "District",
                         "item5": "Location",
@@ -47,11 +47,10 @@
                 "item1": "PF Tracker",
                 "item2": "ESI Tracker",
                 "item3": "LWF Tracker",
-                "item4": "PT Tracker",
-                "item5": "PTRC Tracker",
-                "item6": "PTEC Tracker",
-                "item7": "PF IW Tracker",
-                "item8": "S&E Tracker"
+                "item4": "PT RC Tracker",
+                "item5": "PT EC Tracker",
+                "item6": "PF IW Tracker",
+                "item7": "S&E Tracker"
             }
         }
         }

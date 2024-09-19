@@ -43,9 +43,9 @@ const ConfigDropdown = ({ companyName, companyGroupName }) => {
   };
 
   const options = [
-    
-    { key: 'ChallanUpload', label: 'Challan Upload' },
-    { key: 'ReceitUpload', label: 'Payment Receipt Upload' },
+    { key: 'PTChallan', label: 'PT Challan Upload' },
+    { key: 'PTReceipt', label: 'PT Payment Receipt Upload' },
+    { key: 'PTReturn', label: 'PT Return Upload' },
   ];
 
   const updateDropdownPosition = () => {
@@ -72,18 +72,18 @@ const ConfigDropdown = ({ companyName, companyGroupName }) => {
 
   const openNotification = (type: 'success' | 'info' | 'danger' | 'warning', message: string) => {
     toast.push(
-      <Notification
-        title={type.charAt(0).toUpperCase() + type.slice(1)}
-        type={type}
-      >
-        {message}
-      </Notification>
+        <Notification
+            title={type.charAt(0).toUpperCase() + type.slice(1)}
+            type={type}
+        >
+            {message}
+        </Notification>
     )
   }
 
   const handleConfirm = () => {
     setIsDialogOpen(false);
-    openNotification('success', 'PFIW document uploaded successfully');
+    openNotification('success', 'PT document uploaded successfully');
   };
 
   const handleCancel = () => {
@@ -92,7 +92,7 @@ const ConfigDropdown = ({ companyName, companyGroupName }) => {
 
   return (
     <>
-      <Tooltip title="Click to upload PF IW documents">
+      <Tooltip title="Click to upload PT EC documents">
         <Button
           ref={buttonRef}
           size='sm'
@@ -101,7 +101,7 @@ const ConfigDropdown = ({ companyName, companyGroupName }) => {
         />
       </Tooltip>
       {isOpen && ReactDOM.createPortal(
-        <div ref={dropdownRef} className="py-2 w-52 bg-white rounded-md shadow-xl mt-2 border border-gray-200 z-50">
+        <div ref={dropdownRef} className="py-2 w-52 h-36 bg-white rounded-md shadow-xl mt-2 border border-gray-200 z-50">
           {options.map((option) => (
             <button
               key={option.key}

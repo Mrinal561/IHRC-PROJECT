@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Dialog, Button, DatePicker, toast, Notification } from '@/components/ui';
 import OutlinedInput from '@/components/ui/OutlinedInput';
 import OutlinedSelect from '@/components/ui/Outlined';
-import { PTTrackerData } from './PTTrackerTable';
+import { PTTrackerData } from './PTRCTrackerTable';
 
 interface PTTrackerEditDialogProps {
   isOpen: boolean;
@@ -13,7 +13,7 @@ interface PTTrackerEditDialogProps {
   data: PTTrackerData;
 }
 
-const PTTrackerEditDialog: React.FC<PTTrackerEditDialogProps> = ({
+const PTRCTrackerEditDialog: React.FC<PTTrackerEditDialogProps> = ({
   isOpen,
   onClose,
   onSubmit,
@@ -32,7 +32,7 @@ const PTTrackerEditDialog: React.FC<PTTrackerEditDialogProps> = ({
   const handleSubmit = () => {
     onSubmit(editedData);
     onClose();
-    openNotification('success', 'PT Tracker edited successfully');
+    openNotification('success', 'PT RC Tracker edited successfully');
   };
   
   const handleDateChange = (field: 'dueDate' | 'dateOfPayment' | 'month', date: Date | null) => {
@@ -71,7 +71,7 @@ const PTTrackerEditDialog: React.FC<PTTrackerEditDialogProps> = ({
       width={800}
       height={600}
     >
-      <h5 className="mb-4">Edit PT Tracker Detail</h5>
+      <h5 className="mb-4">Edit PT RC Tracker Detail</h5>
 
       <div className="p-4 space-y-4">
         <div className='flex gap-4 items-center'>
@@ -208,4 +208,4 @@ const PTTrackerEditDialog: React.FC<PTTrackerEditDialogProps> = ({
   );
 };
 
-export default PTTrackerEditDialog;
+export default PTRCTrackerEditDialog;

@@ -91,7 +91,7 @@ const ESIConfigDropdown = ({ companyName, companyGroupName }) => {
 
   return (
     <>
-      <Tooltip title="Click to upload">
+      <Tooltip title="Click to upload ESI documents">
         <Button
           ref={buttonRef}
           icon={<HiUpload />}

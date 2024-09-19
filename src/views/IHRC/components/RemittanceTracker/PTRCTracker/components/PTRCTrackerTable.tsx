@@ -1,9 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Button, Tooltip } from '@/components/ui';
-import { FiEdit, FiTrash } from 'react-icons/fi';
+import { FiEdit, FiEye, FiEyeOff, FiTrash } from 'react-icons/fi';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 import { MdEdit } from 'react-icons/md';
-import PTTrackerEditDialog from './PTTrackerEditDialog';
+import PTTrackerEditDialog from './PTRCTrackerEditDialog';
+import ConfigDropdown from './ConfigDropdown';
+const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
 // Define the structure of your data
 export interface PTTrackerData {
@@ -28,6 +30,9 @@ export interface PTTrackerData {
   remarks: string;
   delay: string;
   delayReason:string;
+  challan: string;
+  payment: string;
+  ret:string;
 }
 
 // Dummy data (replace with your actual data source)
@@ -54,6 +59,9 @@ export const dummyData: PTTrackerData[] = [
     remarks: '',
     delay: "5 Days",
     delayReason:"Server Error",
+    challan: "Challan Receipt",
+        payment: "Payment Receipt",
+        ret:"Return Receipt"
   },
   {
     companyName: 'India Shelter',
@@ -77,6 +85,9 @@ export const dummyData: PTTrackerData[] = [
     remarks: '',
     delay: "",
     delayReason:"",
+    challan: "Challan Receipt",
+        payment: "",
+        ret:"Return Receipt"
   },{
     companyName: 'India Shelter',
     state: 'Gujarat',
@@ -99,14 +110,19 @@ export const dummyData: PTTrackerData[] = [
     remarks: '',
     delay: "",
     delayReason:"",
+    challan: "Challan Receipt",
+        payment: "Payment Receipt",
+        ret:"Return Receipt"
   },
   // Add more dummy data here
 ];
 
-const PTTrackerTable: React.FC = () => {
+const PTRCTrackerTable: React.FC = () => {
   const [data, setData] = useState<PTTrackerData[]>(dummyData);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editingData, setEditingData] = useState<PTTrackerData | null>(null);
+  const [visiblePasswords, setVisiblePasswords] = useState<{ [key: string]: boolean }>({});
+
 
   const handleEdit = (row: PTTrackerData) => {
     setEditingData(row);
@@ -123,6 +139,11 @@ const handleEditSubmit = (editedData: PTTrackerData) => {
     setEditDialogOpen(false);
     setEditingData(null);
 };
+
+
+
+
+
   const columns: ColumnDef<PTTrackerData>[] = useMemo(
     () => [
       {
@@ -140,11 +161,11 @@ const handleEditSubmit = (editedData: PTTrackerData) => {
         accessorKey: 'ptRCLocation',
         cell: (props) => <div className="w-36 truncate">{props.getValue() as string}</div>,
       },
-      {
-        header: 'State/Location',
-        accessorKey: 'stateLocation',
-        cell: (props) => <div className="w-36 truncate">{props.getValue() as string}</div>,
-      },
+      // {
+      //   header: 'State/Location',
+      //   accessorKey: 'stateLocation',
+      //   cell: (props) => <div className="w-36 truncate">{props.getValue() as string}</div>,
+      // },
       {
         header: 'PT RC',
         accessorKey: 'ptRC',
@@ -158,7 +179,27 @@ const handleEditSubmit = (editedData: PTTrackerData) => {
       {
         header: 'Password',
         accessorKey: 'password',
-        cell: (props) => <div className="w-32 truncate">********</div>,
+        cell: (props) => {
+          const rowId = props.row.id;
+          const password = props.getValue() as string;
+          const isVisible = visiblePasswords[rowId];
+
+          
+
+          return (
+            <div className="w-32 flex items-center justify-between">
+              <span className="truncate">
+                {isVisible ? password : '********'}
+              </span>
+              <Button
+                size="xs"
+                variant="plain"
+                icon={isVisible ? <FiEyeOff className="text-gray-400" /> : <FiEye className="text-gray-400" />}
+                // onClick={() => togglePasswordVisibility(rowId)}
+              />
+            </div>
+          );
+        },
       },
       {
         header: 'Frequency',
@@ -225,7 +266,48 @@ const handleEditSubmit = (editedData: PTTrackerData) => {
         accessorKey: 'delayReason',
         cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
       },
-     
+      {
+        header: 'Challan',
+        accessorKey: 'challan',
+        cell: (props) => 
+        <div className="w-40 truncate">
+          <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
+            {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
+            {props.getValue() as string}
+          </a>
+        </div>,
+      },
+      {
+        header: 'Payment Receipt',
+        accessorKey: 'payment',
+        cell: (props) => 
+        <div className="w-40 truncate">
+          <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
+            {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
+            {props.getValue() as string}
+          </a>
+        </div>,
+      },
+      {
+        header: 'Return Receipt',
+        accessorKey: 'ret',
+        cell: (props) => 
+        <div className="w-40 truncate">
+          <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
+            {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
+            {props.getValue() as string}
+          </a>
+        </div>,
+      },
+      {
+        header: 'Upload Status',
+        id: 'uploadStatus',
+        cell: ({ row }) => {
+            const {  challan, payment,ret } = row.original;
+            const uploadedCount = [challan, payment, ret].filter(Boolean).length;
+            return <div className="w-32 truncate">{`${uploadedCount}/3`}</div>;
+        },
+    },
       {
         header: 'Actions',
         id: 'actions',
@@ -246,13 +328,31 @@ const handleEditSubmit = (editedData: PTTrackerData) => {
                 className="text-red-500"
               />
             </Tooltip>
+            <ConfigDropdown companyName={undefined} companyGroupName={undefined}            />
           </div>
         ),
       },
     ],
     []
   );
-
+  const handleDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    // Implement the download functionality here
+    // For example, you could use the `fetch` API to download the file
+    fetch(documentPath)
+      .then(response => response.blob())
+      .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = 'AllMappedCompliancesDetails.xls';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+      })
+      .catch(() => console.error('Download failed'));
+  };
   return (
     <div className="relative">
       <DataTable
@@ -276,4 +376,4 @@ const handleEditSubmit = (editedData: PTTrackerData) => {
   );
 };
 
-export default PTTrackerTable;
+export default PTRCTrackerTable;

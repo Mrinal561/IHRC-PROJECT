@@ -9,7 +9,7 @@ interface PTTrackerBulkUploadProps {
   onUploadConfirm: () => void;
 }
 
-const PTTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({ onUploadConfirm }) => {
+const PTRCTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({ onUploadConfirm }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [remark, setRemark] = useState('');
   const [file, setFile] = useState<File | null>(null);
@@ -21,7 +21,7 @@ const PTTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({ onUploadConfi
 
   const handleConfirm = () => {
     setIsDialogOpen(false);
-    navigate('/uploadedptdetail')
+    navigate('/uploadedptrcdetail')
   };
 
   const handleCancel = () => {
@@ -61,7 +61,7 @@ const PTTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({ onUploadConfi
         icon={<HiUpload />} 
         onClick={handleUploadClick}
       >
-        Upload PT
+        Upload PT RC
       </Button>
 
       <Dialog
@@ -69,7 +69,7 @@ const PTTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({ onUploadConfi
         onClose={handleCancel}
         width={450}
       >
-        <h5 className="mb-4">Upload PT</h5>
+        <h5 className="mb-4">Upload PT RC</h5>
         <div className="my-4 flex gap-2 items-center">
           <p>Download PT Upload Format</p>
           <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
@@ -113,4 +113,4 @@ const PTTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({ onUploadConfi
   );
 };
 
-export default PTTrackerBulkUpload;
+export default PTRCTrackerBulkUpload;

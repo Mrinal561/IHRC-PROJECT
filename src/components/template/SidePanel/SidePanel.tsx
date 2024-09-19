@@ -7,37 +7,68 @@ import { setPanelExpand, useAppSelector, useAppDispatch } from '@/store'
 import type { CommonProps } from '@/@types/common'
 import Notification from '../Notification'
 import { Select } from '@/components/ui'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import OutlinedSelect from '@/components/ui/Outlined'
-
+import {Badge} from '@/components/ui'
+import OutlinedBadgeSelect from '@/components/ui/OutlinedBadgeSelect'
 
 type SidePanelProps = SidePanelContentProps & CommonProps
 
 
 
-const FinancialYearFilter = ({ onChange }) => {
-    const currentYear = new Date().getFullYear()
-    const years = Array.from({ length: 5 }, (_, i) => `${currentYear - i}-${currentYear - i + 1}`)
-    const options = years.map(year => ({ value: year, label: year }))
-    const [selectedYear, setSelectedYear] = useState('')
-
-    const handleChange = (newValue) => {
-        setSelectedYear(newValue)
-        onChange(newValue)
-      }
 
 
-    return (
-    <div className='w-52'>
-      <OutlinedSelect
-        label="Financial Year"
-        value={selectedYear}
-        options={options}
-        onChange={(selectedOption) => onChange(selectedOption.value)}
-        />
-    </div>
-    )
+
+interface Option {
+    value: string;
+    label: React.ReactNode;
   }
+  
+  interface FinancialYearFilterProps {
+    onChange: (year: string) => void;
+  }
+  
+  const FinancialYearFilter: React.FC<FinancialYearFilterProps> = ({ onChange }) => {
+      const currentYear = new Date().getFullYear();
+      const years = Array.from({ length: 5 }, (_, i) => `${currentYear - i}-${currentYear - i + 1}`);
+      
+      const [selectedYear, setSelectedYear] = useState<string>(years[0]);
+  
+      useEffect(() => {
+          onChange(selectedYear);
+      }, []);
+  
+      const options: Option[] = years.map(year => ({
+          value: year,
+          label: year
+      }));
+  
+      const handleChange = (selectedOption: Option | null) => {
+          if (selectedOption) {
+              setSelectedYear(selectedOption.value);
+              onChange(selectedOption.value);
+          }
+      };
+  
+      return (
+          <div className='w-52'>
+              <OutlinedBadgeSelect
+                  label="Financial Year"
+                  value={options.find(option => option.value === selectedYear)}
+                  options={options}
+                  onChange={handleChange}
+                  optionRenderer={(option, isSelected) => (
+                      <div className="flex items-center justify-between w-full">
+                          <span>{option.label}</span>
+                          {isSelected && (
+                              <Badge className="w-2 h-2 rounded-full bg-emerald-500" />
+                          )}
+                      </div>
+                  )}
+              />
+          </div>
+      );
+  };
 
 const _SidePanel = (props: SidePanelProps) => {
     const dispatch = useAppDispatch()

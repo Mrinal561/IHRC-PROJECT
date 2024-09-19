@@ -95,7 +95,7 @@ const ConfigDropDown = ({ companyName, companyGroupName }) => {
 
   return (
     <>
-      <Tooltip title="Click to upload">
+      <Tooltip title="Click to upload S&E documents">
         <Button
           ref={buttonRef}
           size='sm'

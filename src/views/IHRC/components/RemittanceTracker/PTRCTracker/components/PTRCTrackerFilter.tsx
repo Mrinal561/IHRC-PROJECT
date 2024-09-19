@@ -1,23 +1,23 @@
 import React, { useState, useMemo } from 'react';
-import { EntityData, entityDataSet } from '../../../../store/dummyEntityData';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
+import { EntityData, entityDataSet } from '../../../../store/dummyEntityData';
 
-// Define the structure of your ESITrackerData
-interface ESITrackerData {
+// Define the structure of your PTTrackerData (based on your dummy data)
+interface PTTrackerData {
   companyName: string;
-  esiCode: string;
+  ptCode: string;
   location: string;
   month: string;
   noOfEmployees: number;
   wages: string;
-  esiContribution: string;
   totalChallanAmount: number;
   dueDate: string;
   dateOfPayment: string;
   delay: string;
   delayReason: string;
   typeOfChallan: string;
-  challanNo: string;
+  trrnNo: string;
+  crnNo: string;
 }
 
 type Option = {
@@ -33,19 +33,19 @@ const getUniqueValues = (data: any[], key: string): string[] => {
 const createOptions = (values: string[]): Option[] => 
   values.map(value => ({ value, label: value }));
 
-interface ESITrackerFilterProps {
-  data: ESITrackerData[];
-  onFilterChange: (filters: { groupName: string; companyName: string; esiCode: string }) => void;
+interface PTTrackerFilterProps {
+  data: PTTrackerData[];
+  onFilterChange: (filters: { groupName: string; companyName: string; ptCode: string }) => void;
 }
 
-const ESITrackerFilter: React.FC<ESITrackerFilterProps> = ({ data, onFilterChange }) => {
+const PTRCTrackerFilter: React.FC<PTTrackerFilterProps> = ({ data, onFilterChange }) => {
   const groupOptions = useMemo(() => createOptions(getUniqueValues(entityDataSet, 'Company_Group_Name')), []);
   const nameOptions = useMemo(() => createOptions(getUniqueValues(entityDataSet, 'Company_Name')), []);
-  const esiCodeOptions = useMemo(() => createOptions(getUniqueValues(data, 'esiCode')), [data]);
+  const ptCodeOptions = useMemo(() => createOptions(getUniqueValues(data, 'ptRC')), [data]);
 
   const [currentGroup, setCurrentGroup] = useState<string>(groupOptions[0]?.value || '');
   const [groupName, setGroupName] = useState<string>(nameOptions[0]?.value || '');
-  const [currentEsiCode, setCurrentEsiCode] = useState<string>(esiCodeOptions[0]?.value || '');
+  const [currentPtCode, setCurrentPtCode] = useState<string>(ptCodeOptions[0]?.value || '');
 
   const handleChange = (setter: React.Dispatch<React.SetStateAction<string>>, filterType: string) => 
     (selectedOption: Option | null) => {
@@ -54,7 +54,7 @@ const ESITrackerFilter: React.FC<ESITrackerFilterProps> = ({ data, onFilterChang
         onFilterChange({
           groupName: filterType === 'groupName' ? selectedOption.value : currentGroup,
           companyName: filterType === 'companyName' ? selectedOption.value : groupName,
-          esiCode: filterType === 'esiCode' ? selectedOption.value : currentEsiCode,
+          ptCode: filterType === 'ptCode' ? selectedOption.value : currentPtCode,
         });
       }
     };
@@ -79,14 +79,14 @@ const ESITrackerFilter: React.FC<ESITrackerFilterProps> = ({ data, onFilterChang
       </div>
       <div className='w-full z-20'>
         <OutlinedSelect
-          label="ESI Code"
-          options={esiCodeOptions}
-          value={esiCodeOptions.find((option) => option.value === currentEsiCode)}
-          onChange={handleChange(setCurrentEsiCode, 'esiCode')}
+          label="PT Code"
+          options={ptCodeOptions}
+          value={ptCodeOptions.find((option) => option.value === currentPtCode)}
+          onChange={handleChange(setCurrentPtCode, 'ptCode')}
         />
       </div> 
     </div>
   );
 };
 
-export default ESITrackerFilter;
+export default PTRCTrackerFilter;

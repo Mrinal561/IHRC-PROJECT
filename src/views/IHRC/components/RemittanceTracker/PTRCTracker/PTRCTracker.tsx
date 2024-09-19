@@ -1,11 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import AdaptableCard from '@/components/shared/AdaptableCard';
-import PFTrackerTool from './components/PFTrackerTool';
-import PFTrackerTable from './components/PFTrackerTable';
+import PTRCTrackerTool from './components/PTRCTrackerTool';
+import PTRCTrackerTable from './components/PTRCTrackerTable';
 
-
-
-const PFTracker: React.FC = () => {
+const PTRCTracker = () => {
   const [filters, setFilters] = useState({ groupName: '', companyName: '', pfCode: '' });
 
   const handleFilterChange = (newFilters) => {
@@ -16,14 +14,14 @@ const PFTracker: React.FC = () => {
   return (
     <AdaptableCard className="h-full" bodyClass="h-full">
       <div className="flex flex-wrap gap-6 items-center justify-between mb-6">
-        <div className="">
-          <h3 className="text-2xl font-bold">PF Tracker</h3>
+        <div className="mb-4 lg:mb-0">
+          <h3 className="text-2xl font-bold">PT RC Tracker</h3>
         </div>
-        <PFTrackerTool onFilterChange={handleFilterChange} />
+        <PTRCTrackerTool onFilterChange={handleFilterChange} />
       </div>
-      <PFTrackerTable filters={filters} />
+      <PTRCTrackerTable filters={filters} />
     </AdaptableCard>
   );
 };
 
-export default PFTracker
+export default PTRCTracker

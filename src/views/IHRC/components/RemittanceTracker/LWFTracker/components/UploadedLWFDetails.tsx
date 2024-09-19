@@ -7,6 +7,7 @@ import { MdEdit } from 'react-icons/md';
 import { FiTrash } from 'react-icons/fi';
 import { LWFTrackerData } from './LWFTrackerTable';
 import ConfigDropdown from './ConfigDropDown';
+const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
 
 
@@ -27,6 +28,7 @@ const dummyData: LWFTrackerData[] = [
         receiptNo: '24071001017115355215',
         amountDiff: '',
         amountDiffReason: '',
+        payment: "Payment Receipt",
     },
     {
         companyName: 'India shelter PVT Ltd',
@@ -43,6 +45,7 @@ const dummyData: LWFTrackerData[] = [
         receiptNo: '531347',
         amountDiff: '',
         amountDiffReason: '',
+        payment: "Payment Receipt",
     },
     {
         companyName: 'India shelter PVT Ltd',
@@ -59,6 +62,7 @@ const dummyData: LWFTrackerData[] = [
         receiptNo: 'DLWB202400007165',
         amountDiff: '',
         amountDiffReason: '',
+        payment: "",
     },
     {
         companyName: 'India shelter PVT Ltd',
@@ -75,6 +79,7 @@ const dummyData: LWFTrackerData[] = [
         receiptNo: 'ONL/2024/T/0026476',
         amountDiff: '',
         amountDiffReason: '',
+        payment: "Payment Receipt",
     },
 ];
 
@@ -143,6 +148,17 @@ const UploadedLWFDetails: React.FC<UploadedPFDetailsProps> = ({ onBack }) => {
             accessorKey: 'receiptNo',
             cell: (props) => <div className="w-52 truncate">{props.getValue() as string}</div>,
         },
+        {
+          header: 'Payment Receipt',
+          accessorKey: 'payment',
+          cell: (props) => 
+          <div className="w-40 truncate">
+            <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
+              {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
+              {props.getValue() as string}
+            </a>
+          </div>,
+        },
       {
         header: 'Actions',
         id: 'actions',
@@ -157,6 +173,25 @@ const UploadedLWFDetails: React.FC<UploadedPFDetailsProps> = ({ onBack }) => {
   const backFunction = () => {
     navigate('/lwf-tracker');
   };
+  const handleDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    // Implement the download functionality here
+    // For example, you could use the `fetch` API to download the file
+    fetch(documentPath)
+      .then(response => response.blob())
+      .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = 'AllMappedCompliancesDetails.xls';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+      })
+      .catch(() => console.error('Download failed'));
+  };
+
 
   return (
     <div className="p-4">
