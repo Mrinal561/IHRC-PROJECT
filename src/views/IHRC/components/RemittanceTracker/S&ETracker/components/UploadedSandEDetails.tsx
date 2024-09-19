@@ -5,9 +5,8 @@ import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 import { useNavigate } from 'react-router-dom';
 import { MdEdit } from 'react-icons/md';
 import { FiTrash } from 'react-icons/fi';
-import ConfigDropdown from './ConfigDropDown';
 import { SandETrackerData } from './SandETrackerTable';
-
+import ConfigDropDown from './ConfigDropDown';
 
 
 const dummyData: SandETrackerData[] = [
@@ -151,7 +150,7 @@ const UploadedSandEDetails: React.FC<UploadedPFDetailsProps> = ({ onBack }) => {
         header: 'Actions',
         id: 'actions',
         cell: ({ row }) => (
-            <ConfigDropdown companyName={undefined} companyGroupName={undefined}            />
+            <ConfigDropDown companyName={undefined} companyGroupName={undefined}            />
         ),
     },
     ],
