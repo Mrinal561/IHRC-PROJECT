@@ -3,6 +3,9 @@ import { dummyData } from './PTECTrackerTable';
 import UploadedPTDetails from './UploadedPTECDetails';
 import PTRCTrackerFilter from './PTECTrackerFilter';
 import PTRCTrackerBulkUpload from './PTECTrackerBulkUpload.js';
+import CustomDateRangePicker from './CustomDateRangePicker';
+import { Button } from '@/components/ui';
+import { HiDownload } from 'react-icons/hi';
 
 
 const PTECTrackerTool: React.FC<{ onFilterChange: (filters: any) => void }> = ({ onFilterChange }) => {
@@ -26,11 +29,19 @@ const PTECTrackerTool: React.FC<{ onFilterChange: (filters: any) => void }> = ({
   if (showUploadedDetails) {
     return <UploadedPTDetails onBack={handleBack} />;
   }
-
+  const handleDateRangeApply = (start: Date, end: Date) => {
+    setStartDate(start);
+    setEndDate(end);
+  };
   return (
     <div>
       <div className="flex gap-3 items-center mb-4">
         <PTRCTrackerFilter data={dummyData} onFilterChange={onFilterChange} />
+        <CustomDateRangePicker onApply={handleDateRangeApply} />
+        <Button  
+        variant="solid" 
+        size="sm" 
+        icon={<HiDownload />}>Download PT EC Data</Button>
         <PTRCTrackerBulkUpload onUploadConfirm={handleUploadConfirm} />
       </div>
     </div>

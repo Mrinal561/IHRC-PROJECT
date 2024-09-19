@@ -7,7 +7,10 @@ import { MdEdit } from 'react-icons/md';
 import SandETrackerEditDialog from './SandETrackerEditDialog';
 // import LWFTrackerEditDialog from './LWFTrackerEditDialog';
 // import PFTrackerEditDialog from './PFTrackerEditDialog';
+import ConfigDropDown from './ConfigDropDown';
 
+
+const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
 // Define the structure of your data
 export interface SandETrackerData {
@@ -24,6 +27,7 @@ export interface SandETrackerData {
     actualDate: string;
     delay: string;
     delayReason: string;
+    payment: string;
 }
 
 // Dummy data (replace with your actual data source)
@@ -42,6 +46,7 @@ export const dummyData: SandETrackerData[] = [
         actualDate: '',
         delay: '',
         delayReason: '',
+        payment: "Payment Receipt",
     },
     {
         companyName: 'India shelter PVT Ltd',
@@ -57,6 +62,7 @@ export const dummyData: SandETrackerData[] = [
         actualDate: '',
         delay: '',
         delayReason: '',
+        payment: "Payment Receipt",
     },
     {
         companyName: 'India shelter PVT Ltd',
@@ -72,6 +78,7 @@ export const dummyData: SandETrackerData[] = [
         actualDate: '26-Apr-23',
         delay: '',
         delayReason: '',
+        payment: "Payment Receipt",
     },
     {
         companyName: 'India shelter PVT Ltd',
@@ -87,6 +94,7 @@ export const dummyData: SandETrackerData[] = [
         actualDate: '',
         delay: '',
         delayReason: '',
+        payment: "",
     },
     {
         companyName: 'India shelter PVT Ltd',
@@ -102,6 +110,7 @@ export const dummyData: SandETrackerData[] = [
         actualDate: '26-Apr-23',
         delay: '',
         delayReason: '',
+        payment: "Payment Receipt",
     },
     
 ];
@@ -201,6 +210,26 @@ const SandETrackerTable: React.FC = () => {
               cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
           },
           {
+            header: 'Payment Receipt',
+            accessorKey: 'payment',
+            cell: (props) => 
+            <div className="w-40 truncate">
+              <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
+                {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
+                {props.getValue() as string}
+              </a>
+            </div>,
+          },
+          {
+            header: 'Upload Status',
+            id: 'uploadStatus',
+            cell: ({ row }) => {
+                const {  payment} = row.original;
+                const uploadedCount = [payment].filter(Boolean).length;
+                return <div className="w-32 truncate">{`${uploadedCount}/1`}</div>;
+            },
+        },
+          {
                 header: 'Actions',
                 id: 'actions',
                 cell: ({ row }) => (
@@ -220,13 +249,31 @@ const SandETrackerTable: React.FC = () => {
                                 className="text-red-500"
                             />
                         </Tooltip>
+                        <ConfigDropDown companyName={undefined} companyGroupName={undefined}            />
                     </div>
                 ),
             },
         ],
         []
     );
-
+    const handleDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
+        e.preventDefault();
+        // Implement the download functionality here
+        // For example, you could use the `fetch` API to download the file
+        fetch(documentPath)
+          .then(response => response.blob())
+          .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = 'AllMappedCompliancesDetails.xls';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+          })
+          .catch(() => console.error('Download failed'));
+      };
     return (
         <div className="relative">
             <DataTable

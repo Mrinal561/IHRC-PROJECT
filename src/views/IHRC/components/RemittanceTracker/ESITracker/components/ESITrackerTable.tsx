@@ -4,6 +4,10 @@ import { FiEdit, FiTrash } from 'react-icons/fi';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 import { MdEdit } from 'react-icons/md';
 import ESITrackerEditDialog from './ESITrackerEditDialog';
+import ESIConfigDropdown from './ESIConfigDropDown'
+const documentPath = "../store/AllMappedCompliancesDetails.xls";
+
+
 // Define the structure of your ESI data
 export interface ESITrackerData {
   companyName: string;
@@ -24,6 +28,8 @@ export interface ESITrackerData {
     remarks: string;
     delay:string;
     delayReason:string;
+    challan: string;
+    payment: string;
 }
 
 // Sample data (replace with your actual data source)
@@ -46,7 +52,9 @@ export const sampleData: ESITrackerData[] = [
         amountPaidOn: '11-May-24',
         remarks: 'Pay from SBI',
         delay:"5 Days",
-        delayReason:"server problem"
+        delayReason:"server problem",
+        challan: "Challan Receipt",
+        payment: "Payment Receipt",
     },
     { 
       companyName: 'India shelter PVT Ltd',
@@ -66,7 +74,9 @@ export const sampleData: ESITrackerData[] = [
         amountPaidOn: '12-Jun-24',
         remarks: 'Pay from SBI',
         delay:"",
-        delayReason:""
+        delayReason:"",
+        challan: "Challan Receipt",
+        payment: "Payment Receipt",
     },{ 
       companyName: 'India shelter PVT Ltd',
         esiCode: '16000502200001004',
@@ -85,7 +95,9 @@ export const sampleData: ESITrackerData[] = [
         amountPaidOn: '12-Jul-24',
         remarks: 'Pay from SBI',
         delay:"",
-        delayReason:""
+        delayReason:"",
+        challan: "Challan Receipt",
+        payment: "",
     },{ 
       companyName: 'India shelter PVT Ltd',
         esiCode: '16000502200001004',
@@ -104,7 +116,9 @@ export const sampleData: ESITrackerData[] = [
         amountPaidOn: '12-Aug-24',
         remarks: 'Pay from SBI',
         delay:"",
-        delayReason:""
+        delayReason:"",
+        challan: "",
+        payment: "Payment Receipt",
     },
     // Add more sample data here
 ];
@@ -295,6 +309,37 @@ const ESITrackerTable: React.FC = () => {
                 ),
             },
             {
+                header: 'Challan',
+                accessorKey: 'challan',
+                cell: (props) => 
+                <div className="w-40 truncate">
+                  <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
+                    {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
+                    {props.getValue() as string}
+                  </a>
+                </div>,
+              },
+              {
+                header: 'Payment Receipt',
+                accessorKey: 'payment',
+                cell: (props) => 
+                <div className="w-40 truncate">
+                  <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
+                    {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
+                    {props.getValue() as string}
+                  </a>
+                </div>,
+              },
+              {
+                header: 'Upload Status',
+                id: 'uploadStatus',
+                cell: ({ row }) => {
+                    const { challan, payment } = row.original;
+                    const uploadedCount = [challan, payment].filter(Boolean).length;
+                    return <div className="w-32 truncate">{`${uploadedCount}/2`}</div>;
+                },
+            },
+            {
                 header: 'Actions',
                 id: 'actions',
                 cell: ({ row }) => (
@@ -316,12 +361,32 @@ const ESITrackerTable: React.FC = () => {
                                 className="text-red-500"
                             />
                         </Tooltip>
+                        <ESIConfigDropdown companyName={undefined} companyGroupName={undefined}            />
                     </div>
                 ),
             },
         ],
         [],
     )
+
+    const handleDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
+        e.preventDefault();
+        // Implement the download functionality here
+        // For example, you could use the `fetch` API to download the file
+        fetch(documentPath)
+          .then(response => response.blob())
+          .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = 'AllMappedCompliancesDetails.xls';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+          })
+          .catch(() => console.error('Download failed'));
+      };
 
     return (
         <div className="relative">

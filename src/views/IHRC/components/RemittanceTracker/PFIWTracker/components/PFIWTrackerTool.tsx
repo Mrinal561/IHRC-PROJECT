@@ -6,6 +6,9 @@ import PFIWTrackerTable from './PFIWTrackerTable';
 import { dummyData } from './PFIWTrackerTable';
 import PFIWTrackerBulkUpload from './PFIWTrackerBulkUpload';
 import UploadedPFIWDetails from './UploadedPFIWDetails';
+import { HiDownload } from 'react-icons/hi';
+import { Button } from '@/components/ui';
+import CustomDateRangePicker from './CustomDateRangePicker';
 
 const PFIWTrackerTool: React.FC<{ onFilterChange: (filters: any) => void }> = ({ onFilterChange }) => {
   const [showUploadedDetails, setShowUploadedDetails] = useState(false);
@@ -26,12 +29,25 @@ const PFIWTrackerTool: React.FC<{ onFilterChange: (filters: any) => void }> = ({
 
   if (showUploadedDetails) {
     return <UploadedPFIWDetails onBack={handleBack} />;
-  }
+    }
+
+    const handleDateRangeApply = (start: Date, end: Date) => {
+      setStartDate(start);
+      setEndDate(end);
+    };
+  
+
+
 
   return (
     <div>
       <div className="flex gap-3 items-center mb-4">
         <PFIWTrackerFilter data={dummyData} onFilterChange={handleFilterChange} />
+        <CustomDateRangePicker onApply={handleDateRangeApply} />
+        <Button  
+        variant="solid" 
+        size="sm" 
+        icon={<HiDownload />}>Download PFIW Data</Button>
         <PFIWTrackerBulkUpload onUploadConfirm={handleUploadConfirm} />
       </div>
     </div>

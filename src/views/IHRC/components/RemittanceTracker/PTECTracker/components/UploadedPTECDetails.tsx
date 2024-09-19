@@ -4,6 +4,7 @@ import { HiArrowLeft } from 'react-icons/hi';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 import { useNavigate } from 'react-router-dom';
 import ConfigDropdown from './ConfigDropdown';
+const documentPath = "../store/AllMappedCompliancesDetails.xls";
 // import ConfigDropdown from './ConfigDropdown';
 
 // Define the interface for PT Tracker Data
@@ -22,6 +23,9 @@ interface PTTrackerData {
   typeOfChallan: string;
   challanNo: string;
   acknowledgementNo: string;
+  challan: string;
+  payment: string;
+  ret:string;
 }
 
 const dummyData: PTTrackerData[] = [
@@ -39,7 +43,10 @@ const dummyData: PTTrackerData[] = [
     delayReason: '',
     typeOfChallan: 'Regular',
     challanNo: 'PT2023042801',
-    acknowledgementNo: 'ACK2023042801'
+    acknowledgementNo: 'ACK2023042801',
+    challan: "Challan Receipt",
+        payment: "Payment Receipt",
+        ret:"Return Receipt"
   },
   {
     companyName: 'India Shelter PVT Ltd',
@@ -55,7 +62,10 @@ const dummyData: PTTrackerData[] = [
     delayReason: 'Bank holiday',
     typeOfChallan: 'Regular',
     challanNo: 'PT2023070201',
-    acknowledgementNo: 'ACK2023070201'
+    acknowledgementNo: 'ACK2023070201',
+    challan: "Challan Receipt",
+        payment: "Payment Receipt",
+        ret:"Return Receipt"
   },
   {
     companyName: 'India Shelter PVT Ltd',
@@ -71,7 +81,10 @@ const dummyData: PTTrackerData[] = [
     delayReason: '',
     typeOfChallan: 'Regular',
     challanNo: 'PT2023070201',
-    acknowledgementNo: 'ACK2023070221'
+    acknowledgementNo: 'ACK2023070221',
+    challan: "Challan Receipt",
+        payment: "Payment Receipt",
+        ret:"Return Receipt"
   },
   // Add more dummy data as needed
 ];
@@ -137,6 +150,39 @@ const UploadedPTECDetails: React.FC<UploadedPTDetailsProps> = ({ onBack }) => {
         cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
       },
       {
+        header: 'Challan',
+        accessorKey: 'challan',
+        cell: (props) => 
+        <div className="w-40 truncate">
+          <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
+            {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
+            {props.getValue() as string}
+          </a>
+        </div>,
+      },
+      {
+        header: 'Payment Receipt',
+        accessorKey: 'payment',
+        cell: (props) => 
+        <div className="w-40 truncate">
+          <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
+            {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
+            {props.getValue() as string}
+          </a>
+        </div>,
+      },
+      {
+        header: 'Return Receipt',
+        accessorKey: 'ret',
+        cell: (props) => 
+        <div className="w-40 truncate">
+          <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
+            {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
+            {props.getValue() as string}
+          </a>
+        </div>,
+      },
+      {
         header: 'Actions',
         id: 'actions',
         cell: ({ row }) => (
@@ -149,6 +195,24 @@ const UploadedPTECDetails: React.FC<UploadedPTDetailsProps> = ({ onBack }) => {
 
   const backFunction = () => {
     navigate('/ptec-tracker');
+  };
+  const handleDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    // Implement the download functionality here
+    // For example, you could use the `fetch` API to download the file
+    fetch(documentPath)
+      .then(response => response.blob())
+      .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = 'AllMappedCompliancesDetails.xls';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+      })
+      .catch(() => console.error('Download failed'));
   };
 
   return (
