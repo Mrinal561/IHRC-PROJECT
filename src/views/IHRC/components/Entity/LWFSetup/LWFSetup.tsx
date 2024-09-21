@@ -4,31 +4,31 @@ import { Button, Dialog, Notification, toast } from '@/components/ui';
 import { HiArrowLeft, HiPlusCircle } from 'react-icons/hi';
 import { setPanelExpand, useAppDispatch } from '@/store';
 import LWFSetupPanel from './components/LWFSetupPanel';
-import LWFSetupTable from './components/LWFSetupTable';
+import LWFSetupTable, { LWFSetupData } from './components/LWFSetupTable';
 
 
 
 
-export interface LWFSetupData {
-    Company_Group_Name: string;
-    Company_Name: string;
-    lwfState: string;
-    lwfLocation: string;
-    lwfRegistrationNumber: string;
-    lwfRegistrationDate: string;
-    lwfRemmitanceMode: string;
-    lwfRemmitanceFrequency: string;
-    lwfUserId?: string;
-    lwfPassword?: string;
-    authorizedSignatory: string;
-    signatoryDesignation?: string;
-    signatoryMobile?: string;
-    signatoryEmail?: string;
-    lwfFrequency: string;
-    lwfPaymentDueDate: string;
-    lwfApplicableState: string;
-    lwfRegistrationCertificate?: File | null;
-  }
+// export interface LWFSetupData {
+//     Company_Group_Name: string;
+//     Company_Name: string;
+//     lwfState: string;
+//     lwfLocation: string;
+//     lwfRegistrationNumber: string;
+//     lwfRegistrationDate: string;
+//     lwfRemmitanceMode: string;
+//     lwfRemmitanceFrequency: string;
+//     lwfUserId?: string;
+//     lwfPassword?: string;
+//     authorizedSignatory: string;
+//     signatoryDesignation?: string;
+//     signatoryMobile?: string;
+//     signatoryEmail?: string;
+//     lwfFrequency: string;
+//     lwfPaymentDueDate: string;
+//     lwfApplicableState: string;
+//     lwfRegistrationCertificate?: File | null;
+//   }
 
   interface LocationState {
     companyName?: string;
@@ -67,31 +67,7 @@ const LWFSetup: React.FC = () => {
     fetchCompanyData();
   }, [actualCompanyName, actualCompanyGroupName], );
 
-  useEffect(() => {
-    // Set dummy data for PT Setup
-    const dummyData: LWFSetupData[] = [
-      {
-        Company_Group_Name: actualCompanyGroupName,
-        Company_Name: actualCompanyName,
-        lwfState: 'Maharashtra',
-        lwfLocation: 'Mumbai',
-        lwfRegistrationNumber: 'REG98765354879',
-        lwfRegistrationDate: '2023-01-01',
-        lwfRemmitanceMode: 'Online',
-        lwfRemmitanceFrequency: 'Yearly',
-        lwfUserId: 'User01',
-        lwfPassword: 'password01',
-        authorizedSignatory: 'Amit',
-        signatoryDesignation: 'Manager',
-        signatoryMobile: '9145786945',
-        signatoryEmail: 'amit@gmail.com',
-        lwfFrequency: 'Monthly',
-        lwfPaymentDueDate: '2023-10-22',
-        lwfApplicableState: 'Tamil Nadu',
-      },
-    ];
-    setLWFSetupData(dummyData);
-  }, [actualCompanyName, actualCompanyGroupName]);
+  // 
 
   const handleBack = () => {
     navigate(-1);
@@ -160,11 +136,7 @@ const LWFSetup: React.FC = () => {
         </Button>
       </div>
 
-      <LWFSetupTable
-        // data={LWFSetupData}
-        // onDelete={handleDelete}
-        // onEdit={handleEdit}
-      />
+      <LWFSetupTable />
 
       <Dialog
         isOpen={isOpen}

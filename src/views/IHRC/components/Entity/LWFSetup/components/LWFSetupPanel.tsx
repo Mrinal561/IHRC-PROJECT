@@ -209,11 +209,13 @@ const LWFSetupPanel: React.FC<LWFSetupSidePanelProps> = ({
         <div className='flex flex-col gap-2'>
           <label>Enter the Remmitance Mode</label>
           <div className='w-[219px]'>
-          <OutlinedInput
-            label="Mode"
-            value={LWFSetupData.lwfRemmitanceMode || ''}
-            onChange={(value: string ) => handleInputChange('lwfRemmitanceMode', value || '')}
-            />
+          <OutlinedSelect
+              label="Mode"
+              options={[
+                { value: 'online', label: 'Online' },
+                { value: 'offline', label: 'Offline' },
+              ]}
+              onChange={(value: string) => handleInputChange('lwfRemmitanceMode', value || '')} value={undefined}            />
             </div>
         </div>
       </div>

@@ -102,8 +102,8 @@ const Filter: React.FC = () => {
     }
   };
   return (
-    <div className=" flex gap-3">    
-        <div>
+    <div className=" flex gap-3 w-full">    
+        <div className='w-full'>
         <OutlinedSelect
         label="Group Name"
         options={groupOptions}
@@ -111,7 +111,7 @@ const Filter: React.FC = () => {
         onChange={handleGroupChange}
       />
         </div>
-        <div>
+        <div className='w-full'>
         <OutlinedSelect
         label="Company Name"
         options={nameOptions}
@@ -119,7 +119,7 @@ const Filter: React.FC = () => {
         onChange={handleNameChange}
       />
         </div>
-        <div>
+        <div className='w-full'>
         <OutlinedSelect
         label="State"
         options={optionState}
@@ -127,7 +127,7 @@ const Filter: React.FC = () => {
         onChange={handleStateChange}
       />
         </div>
-        <div>
+        <div className='w-full'>
         <OutlinedSelect
         label="District"
         options={options}
@@ -135,7 +135,7 @@ const Filter: React.FC = () => {
         onChange={handleFilterChange}
       />
         </div>
-        <div>
+        <div className='w-full'>
         <OutlinedSelect
         label="Location"
         options={optionsLocations}

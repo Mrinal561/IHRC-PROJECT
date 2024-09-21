@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Button } from '@/components/ui';
+import { Button, Tooltip } from '@/components/ui';
 import { HiArrowLeft } from 'react-icons/hi';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 import { useNavigate } from 'react-router-dom';
@@ -17,7 +17,6 @@ interface PFIWTrackerData {
     delay: string;
     delayReason: string;
     challan:string;
-    payment:string;
 }
 
 const dummyData: PFIWTrackerData[] = [
@@ -30,8 +29,7 @@ const dummyData: PFIWTrackerData[] = [
     submissionDate: '20-May-23',
     delay: "5 Days",
     delayReason: 'Technical issues with the portal',
-    challan: "Challan Receipt",
-        payment: "Payment Receipt",
+    challan: "Challan_IndiaShelter_Apr2023.pdf",
   },
   {
     companyName: 'India shelter PVT Ltd',
@@ -42,8 +40,7 @@ const dummyData: PFIWTrackerData[] = [
     submissionDate: '14-Jun-23',
     delay: "",
     delayReason: '',
-    challan: "Challan Receipt",
-        payment: "Payment Receipt",
+    challan: "Challan_IndiaShelter_May2023.pdf",
   },
   // Add more dummy data entries here...
 ];
@@ -83,7 +80,7 @@ const UploadedPFIWDetails: React.FC<UploadedPFIWDetailsProps> = ({ onBack }) => 
         cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
       },
       {
-        header: 'Submission Date',
+        header: 'Date OF Payment',
         accessorKey: 'submissionDate',
         cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
       },
@@ -93,10 +90,17 @@ const UploadedPFIWDetails: React.FC<UploadedPFIWDetailsProps> = ({ onBack }) => 
         cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
       },
       {
-        header: 'Delay Reason',
+        header: 'Dealy Reason',
         accessorKey: 'delayReason',
-        cell: (props) => <div className="w-60 truncate">{props.getValue() as string}</div>,
-      },
+        cell: (props) =>{
+            const value = props.getValue() as string;
+            return(
+                <Tooltip title={value}>
+                <div className="w-40 truncate">{props.getValue() as string}</div>
+                </Tooltip>
+            )
+            }
+    },
       {
         header: 'Challan',
         accessorKey: 'challan',
@@ -108,17 +112,7 @@ const UploadedPFIWDetails: React.FC<UploadedPFIWDetailsProps> = ({ onBack }) => 
           </a>
         </div>,
       },
-      {
-        header: 'Payment Receipt',
-        accessorKey: 'payment',
-        cell: (props) => 
-        <div className="w-40 truncate">
-          <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
-            {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
-            {props.getValue() as string}
-          </a>
-        </div>,
-      },
+     
       {
         header: 'Actions',
         id: 'actions',

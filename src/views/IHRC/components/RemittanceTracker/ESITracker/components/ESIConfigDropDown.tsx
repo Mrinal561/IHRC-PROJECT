@@ -44,7 +44,6 @@ const ESIConfigDropdown = ({ companyName, companyGroupName }) => {
 
   const options = [
     { key: 'Challan', label: 'Challan Upload' },
-    { key: 'PaymentReceipt', label: 'Payment Receipt Upload' },
   ];
 
   const updateDropdownPosition = () => {
@@ -100,7 +99,7 @@ const ESIConfigDropdown = ({ companyName, companyGroupName }) => {
         />
       </Tooltip>
       {isOpen && ReactDOM.createPortal(
-        <div ref={dropdownRef} className="py-2 w-52 h-24 bg-white rounded-md shadow-xl mt-2 border border-gray-200 z-50">
+        <div ref={dropdownRef} className="py-2 w-52 bg-white rounded-md shadow-xl mt-2 border border-gray-200 z-50">
           {options.map((option) => (
             <button
               key={option.key}

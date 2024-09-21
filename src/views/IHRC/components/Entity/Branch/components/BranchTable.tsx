@@ -65,6 +65,13 @@ const BranchTable: React.FC = () => {
                 ),
             },
             {
+                header: 'District',
+                accessorKey: 'District',
+                cell: (props) => (
+                    <div className="w-52 truncate">{props.getValue() as string}</div>
+                ),
+            },
+            {
                 header: 'Location',
                 accessorKey: 'Location',
                 cell: (props) => (

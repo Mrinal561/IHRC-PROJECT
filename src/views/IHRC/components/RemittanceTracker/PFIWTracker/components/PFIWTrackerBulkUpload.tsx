@@ -62,7 +62,7 @@ const PFIWTrackerBulkUpload: React.FC<PFIWTrackerBulkUploadProps> = ({ onUploadC
         icon={<HiUpload />}
         onClick={handleUploadClick}
       >
-        Upload PFIW
+        Upload PF IW
       </Button>
       <Dialog
         isOpen={isDialogOpen}

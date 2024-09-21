@@ -12,6 +12,7 @@ export interface ESISetupData {
     esiCode: string;
     esiCodeType: string;
     esiCodeLocation: string;
+    esiRegistrationDate: string;
     esiUserId?: string;
     esiPassword?: string;
     authorizedSignatory: string;
@@ -36,8 +37,9 @@ const ESISetupTable: React.FC<ESISetupTableProps> = () => {
       Company_Group_Name: "IND Money",
       Company_Name: "India Shelter Pvt Ltd",
       esiCode: "ESI1234567890",
-      esiCodeType: "Regular",
+      esiCodeType: "Main",
       esiCodeLocation: "Delhi",
+      esiRegistrationDate: "",
       esiUserId: "esiuser01",
       esiPassword: "********",
       authorizedSignatory: "Ajay Thakur",
@@ -49,8 +51,9 @@ const ESISetupTable: React.FC<ESISetupTableProps> = () => {
       Company_Group_Name: "IND Money",
       Company_Name: "India Shelter Pvt Ltd",
       esiCode: "ESI0987654321",
-      esiCodeType: "Special",
+      esiCodeType: "Main",
       esiCodeLocation: "Mumbai",
+      esiRegistrationDate: "",
       esiUserId: "esiuser02",
       esiPassword: "********",
       authorizedSignatory: "Krishna Kumar Singh",
@@ -62,8 +65,9 @@ const ESISetupTable: React.FC<ESISetupTableProps> = () => {
       Company_Group_Name: "IND Money",
       Company_Name: "India Shelter Pvt Ltd",
       esiCode: "ESI1122334455",
-      esiCodeType: "Regular",
+      esiCodeType: "Main",
       esiCodeLocation: "Bengaluru",
+      esiRegistrationDate: "",
       esiUserId: "esiuser03",
       esiPassword: "********",
       authorizedSignatory: "Ajay Thakur",

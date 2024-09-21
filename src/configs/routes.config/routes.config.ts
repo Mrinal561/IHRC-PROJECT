@@ -302,4 +302,10 @@ export const protectedRoutes = [
         component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/S&ETracker/components/UploadedSandEDetails')),
         authority: [],
     },
+    {
+        key: 'pfSetup.adddetail',
+        path: '/add-pf-setup',
+        component: lazy(() => import('@/views/IHRC/components/Entity/PFSetup/components/PFSetupPage')),
+        authority: [],
+    },
 ]

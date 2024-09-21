@@ -111,7 +111,7 @@ const UserForm: React.FC = () => {
          
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+        {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           <div>
             <p className="mb-2">DSC</p>
             <OutlinedSelect
@@ -134,32 +134,9 @@ const UserForm: React.FC = () => {
               }}
             />
           </div>
-        </div>
+        </div> */}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-          <div>
-            <p className="mb-2">eSign</p>
-            <OutlinedSelect
-              label="eSign"
-              options={[
-                { value: 'yes', label: 'Yes' },
-                { value: 'no', label: 'No' },
-              ]}
-              value={null}
-              onChange={() => {}}
-            />
-          </div>
-          <div>
-            <p className="mb-1">PAN (Optional)</p>
-            <OutlinedInput
-              label="PAN"
-              value={pan}
-              onChange={(value: string) => {
-                setPan(value);
-              }}
-            />
-          </div>
-        </div>
+      
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-2">
           <div>
@@ -183,6 +160,33 @@ const UserForm: React.FC = () => {
             />
           </div>
         </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+          {/* <div>
+            <p className="mb-2">eSign</p>
+            <OutlinedSelect
+              label="eSign"
+              options={[
+                { value: 'yes', label: 'Yes' },
+                { value: 'no', label: 'No' },
+              ]}
+              value={null}
+              onChange={() => {}}
+            />
+          </div> */}
+          <div>
+            <p className="mb-1">PAN (Optional)</p>
+            <OutlinedInput
+              label="PAN"
+              value={pan}
+              onChange={(value: string) => {
+                setPan(value);
+              }}
+            />
+          </div>
+        </div>
+
+        
         <div className="grid grid-cols-2 md:grid-cols-2 gap-2">
         <div className="flex items-center">
           <Checkbox >User will be assigned as a <b>Authorised Signatory</b></Checkbox>

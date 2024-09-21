@@ -5,6 +5,7 @@ import { HiArrowLeft, HiPlusCircle } from 'react-icons/hi';
 import PFSetupSidePanel from './components/PFSetupSidePanel';
 import PFSetupTable from './components/PFSetupTable';
 import { setPanelExpand, useAppDispatch } from '@/store';
+import PFSetupPage from './components/PFSetupPage';
 
 export interface PFSetupData {
     Company_Group_Name: string;
@@ -45,10 +46,7 @@ const CompanyPFSetupPage: React.FC = () => {
 
 
   useEffect(() => {
-    // Fetch company data based on companyName
-    // This is a placeholder. Replace with actual API call or data fetching logic
     const fetchCompanyData = async () => {
-      // Simulating API call
       const data = {
         Company_Group_Name: actualCompanyGroupName,
         Company_Name: actualCompanyName
@@ -87,6 +85,12 @@ const CompanyPFSetupPage: React.FC = () => {
     navigate(-1);
   };
 
+  const handleAddPFSetup = () => {
+    navigate(`/add-pf-setup`, { state: { companyData } });
+  };
+
+
+
   const showNotification = (message: string) => {
     toast.push(
       <Notification title="Success" type="success">
@@ -97,10 +101,10 @@ const CompanyPFSetupPage: React.FC = () => {
     );
   };
 
-  const handleAddPFSetup = (newPFSetup: PFSetupData) => {
-    setPfSetupData([...pfSetupData, newPFSetup]);
-    setIsOpen(false);
-  };
+  // const handleAddPFSetup = (newPFSetup: PFSetupData) => {
+  //   setPfSetupData([...pfSetupData, newPFSetup]);
+  //   setIsOpen(false);
+  // };
 
   const handleDelete = (index: number) => {
     const newData = pfSetupData.filter((_, i) => i !== index);
@@ -138,21 +142,22 @@ const CompanyPFSetupPage: React.FC = () => {
           variant="solid"
           size="sm"
           icon={<HiPlusCircle />}
-          onClick={() => {
-            setIsOpen(true);
-          }}
+          onClick={handleAddPFSetup}
         >
           Add PF Setup
         </Button>
       </div>
 
-      <PFSetupTable
-        // data={pfSetupData}
+      <PFSetupTable data={[]} onDelete={function (index: number): void {
+        throw new Error('Function not implemented.');
+      } } onEdit={function (index: number, newData: Partial<PFSetupData>): void {
+        throw new Error('Function not implemented.');
+      } }        // data={pfSetupData}
         // onDelete={handleDelete}
         // onEdit={handleEdit}
       />
 
-      <Dialog
+      {/* <Dialog
         isOpen={isOpen}
         onClose={handleClose}
         onRequestClose={() => setIsOpen(false)}
@@ -161,13 +166,13 @@ const CompanyPFSetupPage: React.FC = () => {
       >
         <h4 className="mb-4">Add PF Setup</h4>
         
-        <PFSetupSidePanel
-          addPFSetup={handleAddPFSetup}
+        <PFSetupPage
           onClose={() => setIsOpen(false)}
+          addPFSetup={handleAddPFSetup}
           companyGroupName={companyData?.Company_Group_Name || ''}
           companyName={companyData?.Company_Name || ''}
         />
-      </Dialog>
+      </Dialog> */}
        
     </div>
   );

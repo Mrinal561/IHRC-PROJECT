@@ -15,13 +15,19 @@ const BranchTool: React.FC = () => {
   };
 
   return (
-    <div className='flex gap-3 items-center'>
+    <div className='flex gap-3 items-center w-full'>
       
-      <Filter></Filter>
-      <Bu></Bu>
+      <div>
+      <Filter />
+      </div>
+      <div>
+      <Bu/>
+      </div>
+      <div>
       <Button variant="solid" onClick={handleAddBranch} icon={<HiPlusCircle />} size="sm">
         Add Branch
       </Button>
+      </div>
     </div>
   );
 };

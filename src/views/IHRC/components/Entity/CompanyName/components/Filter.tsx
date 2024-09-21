@@ -65,7 +65,7 @@ const Filter: React.FC = () => {
   };
 
   return ( 
-    <div className=" flex gap-3">    
+    <div className=" flex gap-3 z-20">    
         <div>
         <OutlinedSelect
         label="Group Name"
