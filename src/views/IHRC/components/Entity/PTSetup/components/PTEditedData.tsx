@@ -11,6 +11,14 @@ interface PTEditedDataProps {
     onSubmit: (data: PTSetupData) => void;
   }
 
+  
+interface Signatory {
+    name: string;
+    designation: string;
+    mobile: string;
+    email: string;
+  }
+
 
 const PTEditedData: React.FC<PTEditedDataProps> = ({ initialData, onClose, onSubmit }) => {
     const [showAddSignatoryDialog, setShowAddSignatoryDialog] = useState(false);
@@ -53,6 +61,12 @@ const PTEditedData: React.FC<PTEditedDataProps> = ({ initialData, onClose, onSub
     const handleInputChange = (field: keyof PTSetupData, value: string | Date | null | File | string[]) => {
         setPTSetupData(prev => ({ ...prev, [field]: value }));
       };
+
+      const [existingSignatories, setExistingSignatories] = useState<Signatory[]>([
+        { name: 'Amit', designation: 'Manager', mobile: '1234567890', email: 'amit@example.com'},
+        { name: 'Krishna Kumar Singh', designation: 'Director', mobile: '9876543210', email: 'krishna@example.com'},
+        { name: 'Ajay Thakur', designation: 'CFO', mobile: '5555555555', email: 'ajay@example.com'},
+      ]);
 
     return (
         <div className="py-4 px-2 space-y-4">
@@ -162,13 +176,20 @@ const PTEditedData: React.FC<PTEditedDataProps> = ({ initialData, onClose, onSub
                     </div>
                 </div>
 
-                <div className="flex flex-col gap-2 w-full">
-                    <label>Choose the Signatories</label>
-                    <Input
-              value={formData.authorizedSignatory}
-              onChange={(e) => handleChange('authorizedSignatory', e.target.value)}
+                <div className='flex flex-col gap-2 w-full'>
+          <label>Choose the Signatories</label>
+          <div>
+          <Select
+            isMulti
+            options={[
+              ...existingSignatories.map(s => ({ value: s.name, label: s.name })),
+              // { value: 'add_new'}
+            ]}
+            // value={esiSetupData.authorizedSignatory.map(name => ({ value: name, label: name }))}
+            // onChange={handleSignatoryChange}
             />
-                </div>
+            </div>
+        </div>
             </div>
 
             <div className="flex flex-col gap-2">
