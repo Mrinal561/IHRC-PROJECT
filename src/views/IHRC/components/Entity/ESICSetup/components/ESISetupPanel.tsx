@@ -149,8 +149,12 @@ const ESISetupPanel: React.FC<ESISetupSidePanelProps> = ({
         <div className='flex flex-col gap-2'>
           <label>Enter the ESI Code Type</label>
           <div className='w-[352px]'>
-          <OutlinedInput
+          <OutlinedSelect
             label="ESI Code Type"
+            options={[
+              { value: 'main', label: 'Main' },
+              { value: 'subCode', label: 'Sub Code' },
+            ]}
             value={esiSetupData.esiCodeType}
             onChange={(value: string) => handleInputChange('esiCodeType', value)}
             />

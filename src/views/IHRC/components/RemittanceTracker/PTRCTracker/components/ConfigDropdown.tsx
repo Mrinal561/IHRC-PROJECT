@@ -43,7 +43,6 @@ const ConfigDropdown = ({ companyName, companyGroupName }) => {
   };
 
   const options = [
-    { key: 'PTChallan', label: 'PT Challan Upload' },
     { key: 'PTReceipt', label: 'PT Payment Receipt Upload' },
     { key: 'PTReturn', label: 'PT Return Upload' },
   ];
@@ -101,7 +100,7 @@ const ConfigDropdown = ({ companyName, companyGroupName }) => {
         />
       </Tooltip>
       {isOpen && ReactDOM.createPortal(
-        <div ref={dropdownRef} className="py-2 w-52 h-36 bg-white rounded-md shadow-xl mt-2 border border-gray-200 z-50">
+        <div ref={dropdownRef} className="py-2 w-52 bg-white rounded-md shadow-xl mt-2 border border-gray-200 z-50">
           {options.map((option) => (
             <button
               key={option.key}

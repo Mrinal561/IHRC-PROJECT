@@ -4,6 +4,7 @@ import OutlinedInput from '@/components/ui/OutlinedInput';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 import { Select, DatePicker } from '@/components/ui';
 import { MultiValue, ActionMeta } from 'react-select';
+import style from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark';
 
 export interface PTSetupData {
     Company_Group_Name: string;
@@ -14,12 +15,12 @@ export interface PTSetupData {
     ptRegistrationNumber: string;
     ptRegistrationDate: Date | null;
     ptRemmitanceMode: string;
-    ptUserId?: string;
-    ptPassword?: string;
+    ptUserId: string;
+    ptPassword: string;
     authorizedSignatories: string[];
     signatoryDesignation?: string;
-    signatoryMobile?: string;
-    signatoryEmail?: string;
+    signatoryMobile: string;
+    signatoryEmail: string;
     ptecPaymentFrequency: string;
     ptrcPaymentFrequency: string;
     lwfRegistrationCertificate?: File | null;
@@ -57,7 +58,11 @@ const PTSetupPanel: React.FC<PTSetupSidePanelProps> = ({
     ptRegistrationDate: null,
     ptRemmitanceMode: '',
     ptecPaymentFrequency: '',
-    ptrcPaymentFrequency: ''
+    ptrcPaymentFrequency: '',
+    signatoryEmail: '',
+    signatoryMobile: '',
+    ptUserId: '',
+    ptPassword: '',
   });
 
   const [existingSignatories, setExistingSignatories] = useState<Signatory[]>([
@@ -130,37 +135,46 @@ const PTSetupPanel: React.FC<PTSetupSidePanelProps> = ({
 
   return (
     <div className="py-4 px-2 space-y-4">
-      <div className='flex gap-4 items-center'>
-        <div className='w-full'>
-        <OutlinedInput
-          label="Company Group Name"
-          value={PTSetupData.Company_Group_Name}
-          onChange={(value: string) => handleInputChange('Company_Group_Name', value)}
-          />
+
+
+<div className='flex gap-4 items-center'>
+        <div className='flex flex-col gap-2 w-full'>
+            <label>Enter Company Group</label>
+            <div className=' w-full'>
+              <OutlinedInput
+                label="State"
+                value={PTSetupData.Company_Group_Name}
+                onChange={(value: string) => handleInputChange('Company_Group_Name', value)}
+                />
+            </div>
           </div>
-          <div className='w-full'>
-        <OutlinedInput
-          label="Company Name"
-          value={PTSetupData.Company_Name}
-          onChange={(value: string) => handleInputChange('Company_Name', value)}
-          />
+          <div className='flex flex-col gap-2 w-full'>
+            <label>Enter Company Name</label>
+            <div className=' w-full'>
+              <OutlinedInput
+                label="Company Name"
+                value={PTSetupData.Company_Name}
+                onChange={(value: string) => handleInputChange('Company_Name', value)}
+              />
+            </div>
           </div>
-      </div>
+          <div className='flex flex-col gap-2 w-full'>
+            <label>Enter State</label>
+            <div className='w-full'>
+              <OutlinedInput
+                label="State"
+                value={PTSetupData.ptState}
+            onChange={(value: string) => handleInputChange('ptState', value)}
+              />
+            </div>
+          </div>
+        </div>
 
       <div className='flex gap-8 items-center'>
-        <div className='flex flex-col gap-2'>
-          <label>Enter the PT State</label>
-          <div className='w-56'>
-          <OutlinedInput
-            label="State"
-            value={PTSetupData.ptState}
-            onChange={(value: string) => handleInputChange('ptState', value)}
-            />
-            </div>
-        </div>
+       
         <div className='flex flex-col gap-2'>
           <label>Enter the PT Location</label>
-          <div className='w-56'>
+          <div className='w-full'>
           <OutlinedInput
             label="Location"
             value={PTSetupData.ptLocation}
@@ -170,7 +184,7 @@ const PTSetupPanel: React.FC<PTSetupSidePanelProps> = ({
         </div>
         <div className='flex flex-col gap-2'>
           <label>PT Registration Number</label>
-          <div className='w-56'>
+          <div className='w-full'>
           <OutlinedInput
             label="Registration Number"
             value={PTSetupData.ptRegistrationNumber || ''}
@@ -178,12 +192,21 @@ const PTSetupPanel: React.FC<PTSetupSidePanelProps> = ({
             />
             </div>
         </div>
-      </div>
 
-      <div className='flex gap-8 items-center'>
+        <div className='flex flex-col gap-2'>
+          <label>PT Enrollment Number</label>
+          <div className='w-full'>
+          <OutlinedInput
+            label="Enrollment Number"
+            value={PTSetupData.ptEnrollmentNumber || ''}
+            onChange={(value: string ) => handleInputChange('ptEnrollmentNumber', value || '')}
+            />
+            </div>
+        </div>
+
         <div className='flex flex-col gap-2'>
           <label>Enter User ID</label>
-          <div className='w-56'>
+          <div className='w-full'>
           <OutlinedInput
             label="User ID (Optional)"
             value={PTSetupData.ptUserId || ''}
@@ -191,9 +214,15 @@ const PTSetupPanel: React.FC<PTSetupSidePanelProps> = ({
             />
             </div>
         </div>
-         <div className='flex flex-col gap-2'>
+
+       
+      </div>
+
+      <div className='flex gap-8 items-center'>
+        
+         <div className='flex flex-col gap-2 w-full'>
           <label>Enter User Password</label>
-          <div className='w-56'>
+          <div className='w-full'>
           <OutlinedInput
             label="Password (Optional)"
             value={PTSetupData.ptPassword || ''}
@@ -201,45 +230,84 @@ const PTSetupPanel: React.FC<PTSetupSidePanelProps> = ({
             />
             </div>
         </div>
-        <div className='flex flex-col gap-2'>
-          <label>Enter the Remmitance Mode</label>
-          <div className='w-56'>
-          <OutlinedInput
+
+        <div className='flex flex-col gap-2 w-full'>
+          <label>Select Remittance Mode</label>
+          <div className='w-full'>
+          <OutlinedSelect
             label="Mode"
-            value={PTSetupData.ptRemmitanceMode || ''}
-            onChange={(value: string ) => handleInputChange('ptRemmitanceMode', value || '')}
+            options={[
+              { value: 'online', label: 'Online' },
+              { value: 'offline', label: 'Offline' },
+            ]}
+            value={PTSetupData.ptRemmitanceMode}
+            onChange={(value: string) => handleInputChange('ptRemmitanceMode', value)}
             />
             </div>
         </div>
-      </div>
-      <div className='flex gap-4 items-center'>
-        <div className='flex flex-col gap-2'>
+        <div className='flex flex-col gap-2 w-full'>
           <label>PT Registration Date</label>
-          <div className='w-56'>
+          <div className='w-full'>
           <DatePicker
             placeholder="Select Date"
             value={PTSetupData.ptRegistrationDate}
             onChange={(date: Date | null) => handleInputChange('ptRegistrationDate', date)}
+            size='sm'
             />
             </div>
         </div>
 
         <div className='flex flex-col gap-2 w-full'>
-          <label>Choose the Signatories</label>
-          <div className=''>
-          <Select
-            isMulti
-            options={[
-              ...existingSignatories.map(s => ({ value: s.name, label: s.name })),
-              // { value: 'add_new'}
-            ]}
+          <label>Enter Email</label>
+          <div className='w-full'>
+          <OutlinedInput
+            label="Email"
+            value={PTSetupData.signatoryEmail || ''}
+            onChange={(value: string) => handleInputChange('signatoryEmail', value)}
             />
             </div>
         </div>
+        
       </div>
 
-      <div className='flex flex-col gap-2'>
-        <label>Please upload the PT certificate</label>
+      
+
+      <div className='flex gap-4 items-center'>
+
+      <div className='flex flex-col gap-2 w-full'>
+          <label>Enter Mobile Number</label>
+          <div className='w-full'>
+          <OutlinedInput
+            label="Mobile"
+            value={PTSetupData.signatoryMobile || ''}
+            onChange={(value: string) => handleInputChange('signatoryMobile', value)}
+            />
+            </div>
+        </div>
+
+
+        <div className='w-full flex flex-col gap-2'>
+          <label>PT EC Frequency</label>
+        <OutlinedInput
+          label="PT EC Frequency"
+          value={PTSetupData.ptecPaymentFrequency}
+          onChange={(value: string) => handleInputChange('ptecPaymentFrequency', value)}
+          />
+          </div>
+          <div className='w-full flex flex-col gap-2'>
+          <label>PT RC Frequency</label>
+
+        <OutlinedInput
+          label="PT RC Frequency"
+          value={PTSetupData.ptrcPaymentFrequency}
+          onChange={(value: string) => handleInputChange('ptrcPaymentFrequency', value)}
+          />
+          </div>
+      </div>
+      <div className='flex gap-4 items-center'>
+
+      <div className='flex flex-col gap-2 w-full'>
+        <label>Please upload the PT EC certificate</label>
         <Input
           id="file-upload"
           type="file"
@@ -249,6 +317,20 @@ const PTSetupPanel: React.FC<PTSetupSidePanelProps> = ({
           }}
         />
       </div>
+      <div className='flex flex-col gap-2 w-full'>
+        <label>Please upload the PT RC certificate</label>
+        <Input
+          id="file-upload"
+          type="file"
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            const file = e.target.files?.[0] || null;
+            handleInputChange('lwfRegistrationCertificate', file);
+          }}
+        />
+      </div>
+      </div>
+
+      
 
       <div className="flex justify-end space-x-2">
         <Button onClick={onClose}>Cancel</Button>

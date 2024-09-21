@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Button, Dialog, Input, Notification, toast } from '@/components/ui';
 import { HiDownload, HiUpload } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
+import CustomDateRangePicker from './CustomDateRangePicker';
+import DatePickerRange from '@/components/ui/DatePicker/DatePickerRange';
 
 const documentPath = "../store/AllMappedESICompliancesDetails.xls";
 
@@ -53,6 +55,11 @@ const ESITrackerBulkUpload: React.FC<ESITrackerBulkUploadProps> = ({ onUploadCon
     }
   };
 
+  const handleDateRangeApply = (start: Date, end: Date) => {
+    setStartDate(start);
+    setEndDate(end);
+  };
+
   return (
     <>
       <Button 
@@ -67,9 +74,14 @@ const ESITrackerBulkUpload: React.FC<ESITrackerBulkUploadProps> = ({ onUploadCon
       <Dialog
         isOpen={isDialogOpen}
         onClose={handleCancel}
-        width={450}
+        width={500}
       >
         <h5 className="mb-4">Upload ESI</h5>
+        <div className='flex items-center gap-3'>
+          {/* <p>Please Select the Date Range</p> */}
+          {/* <CustomDateRangePicker onApply={handleDateRangeApply}  /> */}
+          {/* <DatePickerRange /> */}
+        </div>
         <div className="my-4 flex gap-2 items-center">
           <p>Download ESI Upload Format</p>
           <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">

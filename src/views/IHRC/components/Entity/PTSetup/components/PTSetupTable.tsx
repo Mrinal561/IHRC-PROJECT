@@ -4,6 +4,7 @@ import { FiTrash } from 'react-icons/fi';
 import { MdEdit } from 'react-icons/md';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 import PTEditedData from './PTEditedData';
+import { IoPersonRemoveOutline } from 'react-icons/io5';
 
 export interface PTSetupData {
     Company_Group_Name: string;
@@ -26,11 +27,11 @@ export interface PTSetupData {
     ptrcUpload?: File | null;
 }
 
-// interface ESISetupTableProps {
-//   data: PTSetupData[];
-//   onDelete: (index: number) => void;
-//   onEdit: (index: number, newData: Partial<PTSetupData>) => void;
-// }
+interface ESISetupTableProps {
+  data: PTSetupData[];
+  onDelete: (index: number) => void;
+  onEdit: (index: number, newData: Partial<PTSetupData>) => void;
+}
 
 const PTSetupTable: React.FC<ESISetupTableProps> = () => {
   const [dialogIsOpen, setDialogIsOpen] = useState(false);
@@ -38,6 +39,12 @@ const PTSetupTable: React.FC<ESISetupTableProps> = () => {
   const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
   const [itemToEdit, setItemToEdit] = useState<number | null>(null);
   const [editedData, setEditedData] = useState<Partial<PTSetupData>>({});
+  const [suspendDialogIsOpen, setSuspendDialogIsOpen] = useState(false);
+
+  const openSuspendDialog = (index: number) => {
+    setSuspendDialogIsOpen(true);
+};
+
   const [data, setData] = useState<PTSetupData[]>([
     {
       Company_Group_Name: "IND Money",
@@ -54,8 +61,8 @@ const PTSetupTable: React.FC<ESISetupTableProps> = () => {
       signatoryDesignation: "HR Manager",
       signatoryMobile: "+91 9556543210",
       signatoryEmail: "amit.sharma@example.com",
-      ptecPaymentFrequency: "Monthly",
-      ptrcPaymentFrequency: "Quarterly",
+      ptecPaymentFrequency: "Yearly",
+      ptrcPaymentFrequency: "Monthly",
       lwfRegistrationCertificate: null, // Assuming no file is uploaded
       ptrcUpload: null // Assuming no file is uploaded
     },
@@ -67,7 +74,7 @@ const PTSetupTable: React.FC<ESISetupTableProps> = () => {
       ptEnrollmentNumber: "GJ0098765432",
       ptRegistrationNumber: "REG-102",
       ptRegistrationDate: "2023-02-20",
-      ptRemmitanceMode: "Bank Transfer",
+      ptRemmitanceMode: "Online",
       ptUserId: "user124",
       ptPassword: "********",
       authorizedSignatory: "Ajay Patel",
@@ -87,15 +94,15 @@ const PTSetupTable: React.FC<ESISetupTableProps> = () => {
       ptEnrollmentNumber: "MH0123456789",
       ptRegistrationNumber: "REG-103",
       ptRegistrationDate: "2023-03-10",
-      ptRemmitanceMode: "Cheque",
+      ptRemmitanceMode: "Offline",
       ptUserId: "user125",
       ptPassword: "********",
       authorizedSignatory: "Krishna Reddy",
       signatoryDesignation: "SEO",
       signatoryMobile: "+91 9874443210",
       signatoryEmail: "krishna.reddy@example.com",
-      ptecPaymentFrequency: "Monthly",
-      ptrcPaymentFrequency: "Biannual",
+      ptecPaymentFrequency: "Yearly",
+      ptrcPaymentFrequency: "Monthly",
       lwfRegistrationCertificate: null, // Assuming no file is uploaded
       ptrcUpload: null // Assuming no file is uploaded
     }
@@ -160,6 +167,20 @@ const PTSetupTable: React.FC<ESISetupTableProps> = () => {
         ),
       },
       {
+        header: 'PT EC Frequency ',
+        accessorKey: 'ptecPaymentFrequency',
+        cell: (props) => (
+          <div className="w-40 flex items-center justify-center">{props.getValue() as string}</div>
+        ),
+      },
+      {
+        header: 'PT RC Frequency',
+        accessorKey: 'ptrcPaymentFrequency',
+        cell: (props) => (
+          <div className="w-40 flex items-center justify-center">{props.getValue() as string}</div>
+        ),
+      },
+      {
         header: 'User ID',
         accessorKey: 'ptUserId',
         cell: (props) => (
@@ -173,20 +194,20 @@ const PTSetupTable: React.FC<ESISetupTableProps> = () => {
           <div className="w-48 truncate">{props.getValue() as string}</div>
         ),
       },
-      {
-        header: 'Authorised Signatory',
-        accessorKey: 'authorizedSignatory',
-        cell: (props) => (
-          <div className="w-48 truncate">{props.getValue() as string}</div>
-        ),
-      },
-      {
-        header: 'Designation',
-        accessorKey: 'signatoryDesignation',
-        cell: (props) => (
-          <div className="w-48 truncate">{props.getValue() as string}</div>
-        ),
-      },
+      // {
+      //   header: 'Authorised Signatory',
+      //   accessorKey: 'authorizedSignatory',
+      //   cell: (props) => (
+      //     <div className="w-48 truncate">{props.getValue() as string}</div>
+      //   ),
+      // },
+      // {
+      //   header: 'Designation',
+      //   accessorKey: 'signatoryDesignation',
+      //   cell: (props) => (
+      //     <div className="w-48 truncate">{props.getValue() as string}</div>
+      //   ),
+      // },
       {
         header: 'Mobile',
         accessorKey: 'signatoryMobile',
@@ -222,6 +243,14 @@ const PTSetupTable: React.FC<ESISetupTableProps> = () => {
                 className="text-red-500"
               />
             </Tooltip>
+            <Tooltip title="Suspend User">
+                            <Button
+                                size="sm"
+                                onClick={() => openSuspendDialog(row.index)}
+                                icon={<IoPersonRemoveOutline />}
+                                className="text-blue-500"
+                            />
+                        </Tooltip>
           </div>
         ),
       },

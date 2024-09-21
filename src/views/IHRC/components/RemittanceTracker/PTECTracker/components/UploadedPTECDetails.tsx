@@ -8,86 +8,94 @@ const documentPath = "../store/AllMappedCompliancesDetails.xls";
 // import ConfigDropdown from './ConfigDropdown';
 
 // Define the interface for PT Tracker Data
-interface PTTrackerData {
+export interface PTTrackerData {
   companyName: string;
-  ptCode: string;
-  location: string;
-  month: string;
-  noOfEmployees: number;
-  grossSalary: string;
-  ptAmount: number;
+  state: string;
+  ptEcLocation: string;
+  ptEcNumber: string;
+  dateOfEnrolment: string;
+  ptEcEnrolmentAddress: string;
+  remittanceMode: string;
+  frequency: string;
+  period: string;
+  totalAmountAsPerChallan: number;
+  totalAmountPaid: number;
   dueDate: string;
   dateOfPayment: string;
   delay: string;
-  delayReason: string;
-  typeOfChallan: string;
-  challanNo: string;
-  acknowledgementNo: string;
+  delayReason:string;
+  receiptNo: number;
   challan: string;
   payment: string;
   ret:string;
 }
 
-const dummyData: PTTrackerData[] = [
+ const dummyData: PTTrackerData[] = [
   {
-    companyName: 'India Shelter PVT Ltd',
-    ptCode: 'MH/PT/000123',
-    location: 'Mumbai',
-    month: 'Apr-23',
-    noOfEmployees: 1500,
-    grossSalary: "35,000,000",
-    ptAmount: 300000,
-    dueDate: '30-May-23',
-    dateOfPayment: '28-May-23',
-    delay: "",
+    companyName: 'India Shelter',
+    state: 'Karnataka',
+    ptEcLocation: 'Bangalore',
+    ptEcNumber: 'PEC010513005484',
+    dateOfEnrolment: '2018-08-29',
+    ptEcEnrolmentAddress: 'SY NO 250 1 OLD MADRAS ROAD NH 4 ABOVE AXIS BANK HOSKOTE TOWN BANGALORE, PIN:562114',
+    remittanceMode: 'Online',
+    frequency: 'Yearly',
+    period: 'Jul-2024',
+    totalAmountAsPerChallan: 50000,
+    totalAmountPaid: 50000,
+    dueDate: '2024-08-15',
+    dateOfPayment: '2024-08-10',
+    delay: '',
     delayReason: '',
-    typeOfChallan: 'Regular',
-    challanNo: 'PT2023042801',
-    acknowledgementNo: 'ACK2023042801',
-    challan: "Challan Receipt",
-        payment: "Payment Receipt",
-        ret:"Return Receipt"
+    receiptNo: 987654,
+    challan: 'Challan_IndiaShelter_Jul2024.pdf',
+    payment: 'Payment_IndiaShelter_Jul2024.pdf',
+    ret: 'Return_IndiaShelter_Jul2024.pdf'
   },
   {
-    companyName: 'India Shelter PVT Ltd',
-    ptCode: 'MH/PT/000123',
-    location: 'Mumbai',
-    month: 'May-23',
-    noOfEmployees: 1550,
-    grossSalary: "36,500,000",
-    ptAmount: 310000,
-    dueDate: '30-Jun-23',
-    dateOfPayment: '02-Jul-23',
-    delay: "2 Days",
+    companyName: 'GreenEnergy Solutions',
+    state: 'Maharashtra',
+    ptEcLocation: 'Mumbai',
+    ptEcNumber: 'PTEC789012',
+    dateOfEnrolment: '2022-11-30',
+    ptEcEnrolmentAddress: '456 Green Building, Andheri, Mumbai 400069',
+    remittanceMode: 'Offline',
+    frequency: 'Yearly',
+    period: 'Q2-2024',
+    totalAmountAsPerChallan: 150000,
+    totalAmountPaid: 145000,
+    dueDate: '2024-07-31',
+    dateOfPayment: '2024-08-05',
+    delay: '5 days',
     delayReason: 'Bank holiday',
-    typeOfChallan: 'Regular',
-    challanNo: 'PT2023070201',
-    acknowledgementNo: 'ACK2023070201',
-    challan: "Challan Receipt",
-        payment: "Payment Receipt",
-        ret:"Return Receipt"
+    receiptNo: 456789,
+    challan: 'Challan_GreenEnergy_Q22024.pdf',
+    payment: 'Payment_GreenEnergy_Q22024.pdf',
+    ret: ''
   },
   {
-    companyName: 'India Shelter PVT Ltd',
-    ptCode: 'MH/PT/000123',
-    location: 'Mumbai',
-    month: 'Jun-23',
-    noOfEmployees: 1550,
-    grossSalary: "37,500,000",
-    ptAmount: 320000,
-    dueDate: '30-Jul-23',
-    dateOfPayment: '28-Jul-23',
-    delay: "",
+    companyName: 'AutoParts Manufacturing',
+    state: 'Tamil Nadu',
+    ptEcLocation: 'Chennai',
+    ptEcNumber: 'PTEC345678',
+    dateOfEnrolment: '2023-03-01',
+    ptEcEnrolmentAddress: '789 Industrial Area, Ambattur, Chennai 600053',
+    remittanceMode: 'Online',
+    frequency: 'Yearly',
+    period: 'Aug-2024',
+    totalAmountAsPerChallan: 75000,
+    totalAmountPaid: 75000,
+    dueDate: '2024-09-15',
+    dateOfPayment: '2024-09-14',
+    delay: '',
     delayReason: '',
-    typeOfChallan: 'Regular',
-    challanNo: 'PT2023070201',
-    acknowledgementNo: 'ACK2023070221',
-    challan: "Challan Receipt",
-        payment: "Payment Receipt",
-        ret:"Return Receipt"
-  },
-  // Add more dummy data as needed
+    receiptNo: 234567,
+    challan: 'Challan_AutoParts_Aug2024.pdf',
+    payment: 'Payment_AutoParts_Aug2024.pdf',
+    ret: 'Return_AutoParts_Aug2024.pdf'
+  }
 ];
+
 
 interface UploadedPTDetailsProps {
   onBack: () => void;
@@ -96,92 +104,120 @@ interface UploadedPTDetailsProps {
 const UploadedPTECDetails: React.FC<UploadedPTDetailsProps> = ({ onBack }) => {
   const navigate = useNavigate();
 
-  const columns: ColumnDef<PTTrackerData>[] = useMemo(
-    () => [
-      {
-        header: 'PT Code',
-        accessorKey: 'ptCode',
-        cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
-      },
-      {
-        header: 'Month',
-        accessorKey: 'month',
-        cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
-      },
-      {
-        header: 'No. of Employees',
-        accessorKey: 'noOfEmployees',
-        cell: (props) => <div className="w-40 truncate">{props.getValue() as number}</div>,
-      },
-      {
-        header: 'Gross Salary',
-        accessorKey: 'grossSalary',
-        cell: (props) => <div className="w-28 truncate">₹{props.getValue() as string}</div>,
-      },
-      {
-        header: 'PT Amount',
-        accessorKey: 'ptAmount',
-        cell: (props) => <div className="w-28 truncate">₹{(props.getValue() as number).toLocaleString()}</div>,
-      },
-      {
-        header: 'Due Date',
-        accessorKey: 'dueDate',
-        cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
-      },
-      {
-        header: 'Date of Payment',
-        accessorKey: 'dateOfPayment',
-        cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
-      },
-      {
-        header: 'Delay',
-        accessorKey: 'delay',
-        cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
-      },
-      {
-        header: 'Delay Reason',
-        accessorKey: 'delayReason',
-        cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
-      },
-      
-      {
-        header: 'Type of Challan',
-        accessorKey: 'typeOfChallan',
-        cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
-      },
-      {
-        header: 'Challan',
-        accessorKey: 'challan',
-        cell: (props) => 
+  const columns: ColumnDef<PTTrackerData>[] = [
+    {
+      header: 'Company Name',
+      accessorKey: 'companyName',
+      cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
+    },
+    {
+      header: 'State',
+      accessorKey: 'state',
+      cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
+    },
+    {
+      header: 'PT EC Location',
+      accessorKey: 'ptEcLocation',
+      cell: (props) => <div className="w-36 truncate">{props.getValue() as string}</div>,
+    },
+    {
+      header: 'PT EC Number',
+      accessorKey: 'ptEcNumber',
+      cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
+    },
+    {
+      header: 'Date of Enrolment',
+      accessorKey: 'dateOfEnrolment',
+      cell: (props) => <div className="w-36 truncate">{props.getValue() as string}</div>,
+    },
+    {
+      header: 'PT EC Enrolment Address',
+      accessorKey: 'ptEcEnrolmentAddress',
+      cell: (props) => <div className="w-64 truncate">{props.getValue() as string}</div>,
+    },
+    {
+      header: 'Remittance Mode',
+      accessorKey: 'remittanceMode',
+      cell: (props) => <div className="w-36 truncate">{props.getValue() as string}</div>,
+    },
+    {
+      header: 'Frequency',
+      accessorKey: 'frequency',
+      cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
+    },
+    {
+      header: 'Period',
+      accessorKey: 'period',
+      cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
+    },
+    {
+      header: 'Total Amount (Challan)',
+      accessorKey: 'totalAmountAsPerChallan',
+      cell: (props) => <div className="w-40 truncate">₹{(props.getValue() as number).toLocaleString()}</div>,
+    },
+    {
+      header: 'Total Amount Paid',
+      accessorKey: 'totalAmountPaid',
+      cell: (props) => <div className="w-40 truncate">₹{(props.getValue() as number).toLocaleString()}</div>,
+    },
+    {
+      header: 'Due Date',
+      accessorKey: 'dueDate',
+      cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
+    },
+    {
+      header: 'Date of Payment',
+      accessorKey: 'dateOfPayment',
+      cell: (props) => <div className="w-36 truncate">{props.getValue() as string}</div>,
+    },
+    {
+      header: 'Delay',
+      accessorKey: 'delay',
+      cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
+    },
+    {
+      header: 'Delay Reason',
+      accessorKey: 'delayReason',
+      cell: (props) => <div className="w-36 truncate">{props.getValue() as string}</div>,
+    },
+    {
+      header: 'Receipt No',
+      accessorKey: 'receiptNo',
+      cell: (props) => <div className="w-28 truncate">{props.getValue() as number}</div>,
+    },
+    {
+      header: 'Challan',
+      accessorKey: 'challan',
+      cell: (props) => (
         <div className="w-40 truncate">
-          <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
-            {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
+          <a href="#" className="text-blue-600 hover:underline">
             {props.getValue() as string}
           </a>
-        </div>,
-      },
-      {
-        header: 'Payment Receipt',
-        accessorKey: 'payment',
-        cell: (props) => 
+        </div>
+      ),
+    },
+    {
+      header: 'Payment',
+      accessorKey: 'payment',
+      cell: (props) => (
         <div className="w-40 truncate">
-          <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
-            {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
+          <a href="#" className="text-blue-600 hover:underline">
             {props.getValue() as string}
           </a>
-        </div>,
-      },
-      {
-        header: 'Return Receipt',
-        accessorKey: 'ret',
-        cell: (props) => 
+        </div>
+      ),
+    },
+    {
+      header: 'Return',
+      accessorKey: 'ret',
+      cell: (props) => (
         <div className="w-40 truncate">
-          <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
-            {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
+          <a href="#" className="text-blue-600 hover:underline">
             {props.getValue() as string}
           </a>
-        </div>,
-      },
+        </div>
+      ),
+    },
       {
         header: 'Actions',
         id: 'actions',
@@ -189,9 +225,8 @@ const UploadedPTECDetails: React.FC<UploadedPTDetailsProps> = ({ onBack }) => {
           <ConfigDropdown companyName={undefined} companyGroupName={undefined} />
         ),
       },
-    ],
-    []
-  );
+    ]
+
 
   const backFunction = () => {
     navigate('/ptec-tracker');

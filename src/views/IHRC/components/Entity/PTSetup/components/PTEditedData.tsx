@@ -3,6 +3,7 @@ import { Button, Input, Dialog, Notification } from '@/components/ui';
 import OutlinedInput from '@/components/ui/OutlinedInput';
 import { Select, DatePicker } from '@/components/ui';
 import {PTSetupData} from './PTSetupTable';
+import OutlinedSelect from '@/components/ui/Outlined';
 
 interface PTEditedDataProps {
     initialData: PTSetupData | null;
@@ -48,6 +49,10 @@ const PTEditedData: React.FC<PTEditedDataProps> = ({ initialData, onClose, onSub
     const handleAddSignatory = () => {
         setShowAddSignatoryDialog(false);
     };
+
+    const handleInputChange = (field: keyof PTSetupData, value: string | Date | null | File | string[]) => {
+        setPTSetupData(prev => ({ ...prev, [field]: value }));
+      };
 
     return (
         <div className="py-4 px-2 space-y-4">
@@ -112,7 +117,7 @@ const PTEditedData: React.FC<PTEditedDataProps> = ({ initialData, onClose, onSub
                     <div className="w-56">
                         <OutlinedInput
                             label="User ID (Optional)"
-                            value={formData.ptUserId} onChange={function (value: string): void {
+                            value={formData.ptUserId || ''} onChange={function (value: string): void {
                                 throw new Error('Function not implemented.');
                             } }                            
                         />
@@ -123,23 +128,26 @@ const PTEditedData: React.FC<PTEditedDataProps> = ({ initialData, onClose, onSub
                     <div className="w-56">
                         <OutlinedInput
                             label="Password (Optional)"
-                            value={formData.ptPassword} onChange={function (value: string): void {
+                            value={formData.ptPassword || ''} onChange={function (value: string): void {
                                 throw new Error('Function not implemented.');
                             } }                            
                         />
                     </div>
                 </div>
-                <div className="flex flex-col gap-2">
-                    <label>Enter the Remittance Mode</label>
-                    <div className="w-56">
-                        <OutlinedInput
-                            label="Mode"
-                            value={formData.ptRemmitanceMode} onChange={function (value: string): void {
-                                throw new Error('Function not implemented.');
-                            } }                            
-                        />
-                    </div>
-                </div>
+                <div className='flex flex-col gap-2 w-full'>
+          <label>Select Remittance Mode</label>
+          <div className='w-full'>
+          <OutlinedSelect
+            label="Mode"
+            options={[
+              { value: 'online', label: 'Online' },
+              { value: 'offline', label: 'Offline' },
+            ]}
+            value={formData.ptRemmitanceMode}
+            onChange={(value: string) => handleInputChange('ptRemmitanceMode', value)}
+            />
+            </div>
+        </div>
             </div>
 
             <div className="flex gap-4 items-center">

@@ -4,6 +4,7 @@ import { FiTrash } from 'react-icons/fi';
 import { MdEdit } from 'react-icons/md';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 import PFEditedData from './PFEditedData';
+import { IoPersonRemoveOutline } from 'react-icons/io5';
 
 export interface PFSetupData {
   Company_Group_Name: string;
@@ -22,11 +23,11 @@ export interface PFSetupData {
   pfRegistrationCertificate?: File | null;
 }
 
-// interface PFSetupTableProps {
-//   data: PFSetupData[];
-//   onDelete: (index: number) => void;
-//   onEdit: (index: number, newData: Partial<PFSetupData>) => void;
-// }
+interface PFSetupTableProps {
+  data: PFSetupData[];
+  onDelete: (index: number) => void;
+  onEdit: (index: number, newData: Partial<PFSetupData>) => void;
+}
 
 const PFSetupTable: React.FC<PFSetupTableProps> = () => {
   const [dialogIsOpen, setDialogIsOpen] = useState(false);
@@ -34,6 +35,11 @@ const PFSetupTable: React.FC<PFSetupTableProps> = () => {
   const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
   const [itemToEdit, setItemToEdit] = useState<number | null>(null);
   const [editedData, setEditedData] = useState<Partial<PFSetupData>>({});
+  const [suspendDialogIsOpen, setSuspendDialogIsOpen] = useState(false);
+
+  const openSuspendDialog = (index: number) => {
+    setSuspendDialogIsOpen(true);
+};
 
   const [data , setData] = useState<PFSetupData[]>([
     {
@@ -199,6 +205,14 @@ const PFSetupTable: React.FC<PFSetupTableProps> = () => {
                 className="text-red-500"
               />
             </Tooltip>
+            <Tooltip title="Suspend User">
+                            <Button
+                                size="sm"
+                                onClick={() => openSuspendDialog(row.index)}
+                                icon={<IoPersonRemoveOutline />}
+                                className="text-blue-500"
+                            />
+                        </Tooltip>
           </div>
         ),
       },

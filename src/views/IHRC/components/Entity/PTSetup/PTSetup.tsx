@@ -156,8 +156,8 @@ const PTSetup: React.FC = () => {
         isOpen={isOpen}
         onClose={handleClose}
         onRequestClose={() => setIsOpen(false)}
-        width={800}
-        height={550}
+        width={1000}
+        height={570}
       >
         <h4 className="mb-4">Add PT Setup</h4>
         

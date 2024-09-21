@@ -20,7 +20,7 @@ export const entityDataSet: EntityData[] = [
         BranchAddress: 'Shop No. 67B & 68, Second Floor, P. no. 277 (East), Tagore Nagar, Next to DCM, Ajmer Road, Jaipur- 302021',
         BranchOpeningDate: "6-May-2010",
         PF_Setup: "Yes",
-        District: "Gurgaon District"
+        District: "Ambala"
     },
     {
         Company_Group_Name: "Tata Group",
@@ -31,7 +31,7 @@ export const entityDataSet: EntityData[] = [
         BranchAddress: 'Shop No. F-1,2 1st Floor , Prem Bhawan, Gandhi Nagar, Behind LIC HFL, Opp.Vodafone Store,Bhilwara - 311001',
         BranchOpeningDate: "1-Feb-2012",
         PF_Setup: "Yes",
-        District: "Mumbai Suburban"
+        District: "Amravati"
     },
     {
         Company_Group_Name: "Reliance Industries",
@@ -42,7 +42,7 @@ export const entityDataSet: EntityData[] = [
         BranchAddress: 'Plot No. A-94,95,  1st Floor , Aakhiliya Vikash Yojana, Shiv Gauri Plaza Jodhpur - 342001',
         BranchOpeningDate: "8-May-2008",
         PF_Setup: "Yes",
-        District: "Thane"
+        District: "Aurangabad"
     },
     {
         Company_Group_Name: "Infosys",
@@ -75,7 +75,7 @@ export const entityDataSet: EntityData[] = [
         Branch: "Sector 126",
         BranchOpeningDate: "6-Aug-2010",
         PF_Setup: "Yes",
-        District: "Gautam Buddh Nagar"
+        District: "Amethi"
     },
     {
         Company_Group_Name: "Tech Mahindra",
@@ -86,7 +86,7 @@ export const entityDataSet: EntityData[] = [
         Branch: "Hinjewadi",
         BranchOpeningDate: "16-Jan-2005",
         PF_Setup: "Yes",
-        District: "Pune"
+        District: "Akola"
     },
     {
         Company_Group_Name: "Larsen & Toubro",
@@ -97,7 +97,7 @@ export const entityDataSet: EntityData[] = [
         Branch: "Powai",
         BranchOpeningDate: "26-Nov-2020",
         PF_Setup: "Yes",
-        District: "Mumbai Suburban"
+        District: "Ahmednagar"
     },
     {
         Company_Group_Name: "Mindtree",
@@ -108,7 +108,7 @@ export const entityDataSet: EntityData[] = [
         Branch: "Whitefield",
         BranchOpeningDate: "6-May-2011",
         PF_Setup: "Yes",
-        District: "Bengaluru Urban"
+        District: "Bengaluru Rural"
     },
     {
         Company_Group_Name: "Cognizant",

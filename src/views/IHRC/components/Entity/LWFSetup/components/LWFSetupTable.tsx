@@ -4,6 +4,7 @@ import { FiTrash } from 'react-icons/fi';
 import { MdEdit } from 'react-icons/md';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 import LWFEditedData from './LWFEditedData';
+import { IoPersonRemoveOutline } from 'react-icons/io5';
 
 export interface LWFSetupData {
     Company_Group_Name: string;
@@ -26,11 +27,11 @@ export interface LWFSetupData {
     lwfRegistrationCertificate?: File | null;
 }
 
-// interface ESISetupTableProps {
-//   data: LWFSetupData[];
-//   onDelete: (index: number) => void;
-//   onEdit: (index: number, newData: Partial<LWFSetupData>) => void;
-// }
+interface ESISetupTableProps {
+  data: LWFSetupData[];
+  onDelete: (index: number) => void;
+  onEdit: (index: number, newData: Partial<LWFSetupData>) => void;
+}
 
 const LWFSetupTable: React.FC<ESISetupTableProps> = () => {
   const [dialogIsOpen, setDialogIsOpen] = useState(false);
@@ -38,6 +39,12 @@ const LWFSetupTable: React.FC<ESISetupTableProps> = () => {
   const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
   const [itemToEdit, setItemToEdit] = useState<number | null>(null);
   const [editedData, setEditedData] = useState<Partial<LWFSetupData>>({});
+  const [suspendDialogIsOpen, setSuspendDialogIsOpen] = useState(false);
+
+  const openSuspendDialog = (index: number) => {
+    setSuspendDialogIsOpen(true);
+};
+
   const [data, setData] = useState<LWFSetupData[]>([
     {
       Company_Group_Name: "IND Money",
@@ -47,14 +54,14 @@ const LWFSetupTable: React.FC<ESISetupTableProps> = () => {
       lwfRegistrationNumber: "LWF12345",
       lwfRegistrationDate: "2023-01-15",
       lwfRemmitanceMode: "Online",
-      lwfRemmitanceFrequency: "Monthly",
+      lwfRemmitanceFrequency: "Yearly",
       lwfUserId: "user123",
       lwfPassword: "********",
       authorizedSignatory: "Amit",
       signatoryDesignation: "HR Manager",
       signatoryMobile: "+91 9876543210",
       signatoryEmail: "Amit@example.com",
-      lwfFrequency: "Monthly",
+      lwfFrequency: "Yearly",
       lwfPaymentDueDate: "15th",
       lwfApplicableState: "Vishakapatnam"
     },
@@ -66,14 +73,14 @@ const LWFSetupTable: React.FC<ESISetupTableProps> = () => {
       lwfRegistrationNumber: "LWF67890",
       lwfRegistrationDate: "2023-02-20",
       lwfRemmitanceMode: "Offline",
-      lwfRemmitanceFrequency: "Quarterly",
+      lwfRemmitanceFrequency: "Yearly",
       lwfUserId: "user2",
       lwfPassword: "********",
       authorizedSignatory: "Krishna Kumar Singh",
       signatoryDesignation: "Finance Director",
       signatoryMobile: "+91 9876543211",
       signatoryEmail: "Krishna@example.com",
-      lwfFrequency: "Quarterly",
+      lwfFrequency: "Yearly",
       lwfPaymentDueDate: "20th",
       lwfApplicableState: "CHHATTISGARH"
     },
@@ -85,7 +92,7 @@ const LWFSetupTable: React.FC<ESISetupTableProps> = () => {
       lwfRegistrationNumber: "LWF67890",
       lwfRegistrationDate: "2023-02-20",
       lwfRemmitanceMode: "Offline",
-      lwfRemmitanceFrequency: "Quarterly",
+      lwfRemmitanceFrequency: "Yearly",
       lwfUserId: "user23",
       lwfPassword: "********",
       authorizedSignatory: "Ajay Thakur",
@@ -104,14 +111,14 @@ const LWFSetupTable: React.FC<ESISetupTableProps> = () => {
       lwfRegistrationNumber: "LWF67890",
       lwfRegistrationDate: "2023-02-20",
       lwfRemmitanceMode: "Online",
-      lwfRemmitanceFrequency: "Quarterly",
+      lwfRemmitanceFrequency: "Half Yearly",
       lwfUserId: "user234",
       lwfPassword: "********",
       authorizedSignatory: "Ajay Thakur",
       signatoryDesignation: "Finance Director",
       signatoryMobile: "+91 9876543211",
       signatoryEmail: "Ajay@example.com",
-      lwfFrequency: "Monthly",
+      lwfFrequency: "Half Yearly",
       lwfPaymentDueDate: "20th",
       lwfApplicableState: "TAMILNADU"
     }
@@ -144,6 +151,13 @@ const LWFSetupTable: React.FC<ESISetupTableProps> = () => {
       {
         header: 'LWF Location',
         accessorKey: 'lwfLocation',
+        cell: (props) => (
+          <div className="w-36 text-start">{props.getValue() as string}</div>
+        ),
+      },
+      {
+        header: 'LWF Frequency',
+        accessorKey: 'lwfFrequency',
         cell: (props) => (
           <div className="w-36 text-start">{props.getValue() as string}</div>
         ),
@@ -232,6 +246,14 @@ const LWFSetupTable: React.FC<ESISetupTableProps> = () => {
                 className="text-red-500"
               />
             </Tooltip>
+            <Tooltip title="Suspend User">
+                            <Button
+                                size="sm"
+                                onClick={() => openSuspendDialog(row.index)}
+                                icon={<IoPersonRemoveOutline />}
+                                className="text-blue-500"
+                            />
+                        </Tooltip>
           </div>
         ),
       },

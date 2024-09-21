@@ -21,6 +21,9 @@ export interface PFTrackerData {
     wages: string;
     epsWage: string;
     totalChallanAmount: number;
+    totalAmountPaid: number;
+    difference: string;
+    reasonForDifference: string;
     dueDate: string;
     dateOfPayment: string;
     delay: string;
@@ -44,16 +47,19 @@ export const dummyData: PFTrackerData[] = [
         wages: "43,355,212",
         epsWage: "33,792,208",
         totalChallanAmount: 11000569,
+        totalAmountPaid: 11000569 ,
+        difference: '',
+        reasonForDifference: '',
         dueDate: '15-May-23',
         dateOfPayment: '20-May-23',
         delay: "5 Days",
         delayReason: 'Gov. Portal server down',
-        typeOfChallan: 'Main Challan',
+        typeOfChallan: 'Main',
         trrnNo: '2032305004230',
         crnNo: '229100523000279',
-        ecr: "Ecr Receipt",
-        challan: "Challan Receipt",
-        payment: "Payment Receipt",
+        challan: 'Challan_IndiaShelter_Apr2023.pdf',
+        payment: 'Payment_IndiaShelter_Apr2023.pdf',
+        ecr: 'ECR_IndiaShelter_Apr2023.pdf'
     },
     {
         companyName: 'India shelter PVT Ltd',
@@ -64,16 +70,19 @@ export const dummyData: PFTrackerData[] = [
         wages: "46,326,266",
         epsWage: "35,492,350",
         totalChallanAmount: 11715531,
+        totalAmountPaid: 11715531 ,
+        difference: '',
+        reasonForDifference: '',
         dueDate: '15-Jun-23',
         dateOfPayment: '13-Jun-23',
         delay: "",
         delayReason: '',
-        typeOfChallan: 'Main Challan',
+        typeOfChallan: 'Main',
         trrnNo: '2032306009449',
         crnNo: '229130623009410',
-        ecr: "Ecr Receipt",
-        challan: "Challan Receipt",
-        payment: "Payment Receipt",
+        challan: 'Challan_IndiaShelter_May2023.pdf',
+        payment: 'Payment_IndiaShelter_May2023.pdf',
+        ecr: 'ECR_IndiaShelter_May2023.pdf'
     },
     {
         companyName: 'India shelter PVT Ltd',
@@ -84,16 +93,19 @@ export const dummyData: PFTrackerData[] = [
         wages: "947,447",
         epsWage: "599,602",
         totalChallanAmount: 235132,
+        totalAmountPaid: 235132 ,
+        difference: '',
+        reasonForDifference: '',
         dueDate: '15-Jun-23',
         dateOfPayment: '13-Jul-23',
         delay: "",
         delayReason: '',
-        typeOfChallan: 'Arrear Challan',
+        typeOfChallan: 'Arrear',
         trrnNo: '2032307004954',
         crnNo: '229130723000561',
-        ecr: "Ecr Receipt",
-        challan: "Challan Receipt",
-        payment: "",
+        challan: 'Challan_IndiaShelter_Jun2023.pdf',
+        payment: '',
+        ecr: 'ECR_IndiaShelter_Jun2023.pdf'
     },
     {
         companyName: 'India shelter PVT Ltd',
@@ -104,16 +116,19 @@ export const dummyData: PFTrackerData[] = [
         wages: "947,447",
         epsWage: "599,602",
         totalChallanAmount: 235132,
+        totalAmountPaid: 235132 ,
+        difference: '',
+        reasonForDifference: '',
         dueDate: '15-Jun-23',
         dateOfPayment: '12-Jul-23',
         delay: "",
         delayReason: '',
-        typeOfChallan: 'Main Challan',
+        typeOfChallan: 'Main',
         trrnNo: '2032307004894',
         crnNo: '229130723000523',
-        ecr: "Ecr Receipt",
-        challan: "",
-        payment: "Payment Receipt",
+        challan: '',
+        payment: 'Payment_IndiaShelter_Jun2023.pdf',
+        ecr: 'ECR_IndiaShelter_Jun2023.pdf'
     },
 ];
 
@@ -165,7 +180,7 @@ const PFTrackerTable: React.FC = () => {
                 cell: (props) => <div className="w-40 truncate">{props.getValue() as number}</div>,
             },
             {
-                header: 'Wages',
+                header: 'EPF Wages',
                 accessorKey: 'wages',
                 cell: (props) => <div className="w-28 truncate">₹{(props.getValue() as number).toLocaleString()}</div>,
             },
@@ -178,6 +193,21 @@ const PFTrackerTable: React.FC = () => {
                 header: 'Total Challan Amount',
                 accessorKey: 'totalChallanAmount',
                 cell: (props) => <div className="w-52 truncate">₹{(props.getValue() as number).toLocaleString()}</div>,
+            },
+            {
+                header: 'Total Amount Paid',
+                accessorKey: 'totalAmountPaid',
+                cell: (props) => <div className="w-52 truncate">₹{(props.getValue() as number).toLocaleString()}</div>,
+            },
+            {
+                header: 'Difference',
+                accessorKey: 'difference',
+                cell: (props) => <div className="w-52 truncate">{(props.getValue() as number).toLocaleString()}</div>,
+            },
+            {
+                header: 'Reason For Difference',
+                accessorKey: 'reasonForDifference',
+                cell: (props) => <div className="w-52 truncate">{(props.getValue() as number).toLocaleString()}</div>,
             },
             {
                 header: 'Due Date',

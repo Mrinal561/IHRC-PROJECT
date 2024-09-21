@@ -45,7 +45,6 @@ const ConfigDropdown = ({ companyName, companyGroupName }) => {
   const options = [
     
     { key: 'ChallanUpload', label: 'Challan Upload' },
-    { key: 'ReceitUpload', label: 'Payment Receipt Upload' },
   ];
 
   const updateDropdownPosition = () => {

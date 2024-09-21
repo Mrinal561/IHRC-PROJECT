@@ -22,7 +22,9 @@ export interface ESITrackerData {
     totalESI: number;
     totalAmountAsPerChallan: number;
     differenceInAmount: number;
+    reasonForDifference: string;
     challanNo: string;
+    challanType: string;
     dueDate: string;
     amountPaidOn: string;
     remarks: string;
@@ -37,7 +39,7 @@ export const sampleData: ESITrackerData[] = [
     {
         companyName: 'India shelter PVT Ltd',
         esiCode: '16000502200001004',
-        codeType: 'ESI Main Code',
+        codeType: 'Main Code',
         esiCodeLocation: 'Udaipur',
         month: 'Apr-24',
         noOfEmployees: 900,
@@ -46,20 +48,22 @@ export const sampleData: ESITrackerData[] = [
         erESI: 725536,
         totalESI: 893406,
         totalAmountAsPerChallan: 893487,
-        differenceInAmount: -81,
+        differenceInAmount: 81,
+        reasonForDifference: "Change in ESI contribution rates",
         challanNo: '0162411718861',
+        challanType: 'Main',
         dueDate: '15-May-24',
         amountPaidOn: '11-May-24',
         remarks: 'Pay from SBI',
         delay:"5 Days",
         delayReason:"server problem",
-        challan: "Challan Receipt",
-        payment: "Payment Receipt",
+        challan: "Challan_IndiaShelter_Apr2024.pdf",
+        payment: "Payment_IndiaShelter_Apr2024.pdf",
     },
     { 
       companyName: 'India shelter PVT Ltd',
         esiCode: '16000502200001004',
-        codeType: 'ESI Main Code',
+        codeType: 'Main Code',
         esiCodeLocation: 'Udaipur',
         month: 'May-24',
         noOfEmployees: 924,
@@ -68,19 +72,21 @@ export const sampleData: ESITrackerData[] = [
         erESI: 691973,
         totalESI: 852117,
         totalAmountAsPerChallan: 852201,
-        differenceInAmount: -84,
+        differenceInAmount: 84,
+        reasonForDifference: "Delayed reporting of employee exits",
         challanNo: '0162412183044',
+        challanType: 'Main',
         dueDate: '15-Jun-24',
         amountPaidOn: '12-Jun-24',
         remarks: 'Pay from SBI',
         delay:"",
         delayReason:"",
-        challan: "Challan Receipt",
-        payment: "Payment Receipt",
+        challan: "Challan_IndiaShelter_May2024.pdf",
+        payment: "Payment_IndiaShelter_May2024.pdf",
     },{ 
       companyName: 'India shelter PVT Ltd',
         esiCode: '16000502200001004',
-        codeType: 'ESI Main Code',
+        codeType: 'Sub Code',
         esiCodeLocation: 'Udaipur',
         month: 'Jun-24',
         noOfEmployees: 947,
@@ -89,19 +95,21 @@ export const sampleData: ESITrackerData[] = [
         erESI: 655529,
         totalESI: 807276,
         totalAmountAsPerChallan: 807384,
-        differenceInAmount: -108,
+        challanType: 'Main',
+        differenceInAmount: 108,
+        reasonForDifference: "Salary structure changes affecting ESI eligibility",
         challanNo: '01624125706547',
         dueDate: '15-Jul-24',
         amountPaidOn: '12-Jul-24',
         remarks: 'Pay from SBI',
         delay:"",
         delayReason:"",
-        challan: "Challan Receipt",
+        challan: "Challan_IndiaShelter_May2024.pdf",
         payment: "",
     },{ 
       companyName: 'India shelter PVT Ltd',
         esiCode: '16000502200001004',
-        codeType: 'ESI Main Code',
+        codeType: 'Main Code',
         esiCodeLocation: 'Udaipur',
         month: 'Jul-24',
         noOfEmployees: 977,
@@ -110,7 +118,9 @@ export const sampleData: ESITrackerData[] = [
         erESI: 745700,
         totalESI: 918260,
         totalAmountAsPerChallan: 918350,
-        differenceInAmount: -90,
+        differenceInAmount: 90,
+        challanType: 'Main',
+        reasonForDifference: "Rounding differences in ESI calculation",
         challanNo: '01624129468490',
         dueDate: '15-Aug-24',
         amountPaidOn: '12-Aug-24',
@@ -118,7 +128,7 @@ export const sampleData: ESITrackerData[] = [
         delay:"",
         delayReason:"",
         challan: "",
-        payment: "Payment Receipt",
+        payment: "Payment_IndiaShelter_May2024.pdf",
     },
     // Add more sample data here
 ];
@@ -249,20 +259,26 @@ const ESITrackerTable: React.FC = () => {
                 accessorKey: 'differenceInAmount',
                 cell: (props) => (
                     <div className="w-40 truncate">
+                        ₹{(props.getValue() as number).toLocaleString()}
+                    </div>
+                ),
+            },
+            {
+                header: 'Reason For Difference',
+                accessorKey: 'reasonForDifference',
+                cell: (props) => {
+                    const value = props.getValue() as number;
+                    return(
+                        <Tooltip title={value}>
+                        <div className="w-40 truncate">
                         {(props.getValue() as number).toLocaleString()}
                     </div>
-                ),
+                        </Tooltip>
+                    )
+                },
             },
             
-            {
-                header: 'Challan No',
-                accessorKey: 'challanNo',
-                cell: (props) => (
-                    <div className="w-40 truncate">
-                        {props.getValue() as string}
-                    </div>
-                ),
-            },
+           
             {
                 header: 'Due Date',
                 accessorKey: 'dueDate',
@@ -273,7 +289,7 @@ const ESITrackerTable: React.FC = () => {
                 ),
             },
             {
-                header: 'Amount Paid On',
+                header: 'Date of Payment',
                 accessorKey: 'amountPaidOn',
                 cell: (props) => (
                     <div className="w-40 truncate">
@@ -300,8 +316,17 @@ const ESITrackerTable: React.FC = () => {
               ),
           },
             {
-                header: 'Remarks',
-                accessorKey: 'remarks',
+                header: 'Challan No',
+                accessorKey: 'challanNo',
+                cell: (props) => (
+                    <div className="w-40 truncate">
+                        {props.getValue() as string}
+                    </div>
+                ),
+            },
+            {
+                header: 'Challan Type',
+                accessorKey: 'challanType',
                 cell: (props) => (
                     <div className="w-40 truncate">
                         {props.getValue() as string}
@@ -319,24 +344,24 @@ const ESITrackerTable: React.FC = () => {
                   </a>
                 </div>,
               },
-              {
-                header: 'Payment Receipt',
-                accessorKey: 'payment',
-                cell: (props) => 
-                <div className="w-40 truncate">
-                  <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
-                    {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
-                    {props.getValue() as string}
-                  </a>
-                </div>,
-              },
+            //   {
+            //     header: 'Payment Receipt',
+            //     accessorKey: 'payment',
+            //     cell: (props) => 
+            //     <div className="w-40 truncate">
+            //       <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
+            //         {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
+            //         {props.getValue() as string}
+            //       </a>
+            //     </div>,
+            //   },
               {
                 header: 'Upload Status',
                 id: 'uploadStatus',
                 cell: ({ row }) => {
-                    const { challan, payment } = row.original;
-                    const uploadedCount = [challan, payment].filter(Boolean).length;
-                    return <div className="w-32 truncate">{`${uploadedCount}/2`}</div>;
+                    const { challan } = row.original;
+                    const uploadedCount = [challan].filter(Boolean).length;
+                    return <div className="w-32 truncate">{`${uploadedCount}/1`}</div>;
                 },
             },
             {

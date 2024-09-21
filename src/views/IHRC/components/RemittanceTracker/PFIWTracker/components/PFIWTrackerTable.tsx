@@ -19,7 +19,6 @@ export interface PFIWTrackerData {
     delay:string;
     delayReason:string;
     challan: string;
-    payment: string;
 }
 
 // Dummy data (replace with your actual data source)
@@ -33,8 +32,7 @@ export const dummyData: PFIWTrackerData[] = [
         submissionDate: '1-May-23',
         delay:'5 Days',
         delayReason:'Technical issues with the portal',
-        challan: "Challan Receipt",
-        payment: "Payment Receipt",
+        challan: "Challan_IndiaShelter_Apr2023.pdf",
     },
     {
       companyName: 'India Shelter',
@@ -45,8 +43,7 @@ export const dummyData: PFIWTrackerData[] = [
         submissionDate: '1-May-23',
         delay:'',
         delayReason:'',
-        challan: "Challan Receipt",
-        payment: "",
+        challan: "Challan_IndiaShelter_Apr2023.pdf",
     },
     // Add more dummy data here
 ];
@@ -100,7 +97,7 @@ const PFIWTrackerTable: React.FC = () => {
                 cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
             },
             {
-                header: 'Submission Date',
+                header: 'Date Of Payment',
                 accessorKey: 'submissionDate',
                 cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
             },
@@ -112,7 +109,14 @@ const PFIWTrackerTable: React.FC = () => {
           {
             header: 'Dealy Reason',
             accessorKey: 'delayReason',
-            cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
+            cell: (props) =>{
+                const value = props.getValue() as string;
+                return(
+                    <Tooltip title={value}>
+                    <div className="w-40 truncate">{props.getValue() as string}</div>
+                    </Tooltip>
+                )
+                }
         },
         {
             header: 'Challan',
@@ -125,24 +129,24 @@ const PFIWTrackerTable: React.FC = () => {
               </a>
             </div>,
           },
-          {
-            header: 'Payment Receipt',
-            accessorKey: 'payment',
-            cell: (props) => 
-            <div className="w-40 truncate">
-              <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
-                {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
-                {props.getValue() as string}
-              </a>
-            </div>,
-          },
+        //   {
+        //     header: 'Payment Receipt',
+        //     accessorKey: 'payment',
+        //     cell: (props) => 
+        //     <div className="w-40 truncate">
+        //       <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
+        //         {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
+        //         {props.getValue() as string}
+        //       </a>
+        //     </div>,
+        //   },
           {
             header: 'Upload Status',
             id: 'uploadStatus',
             cell: ({ row }) => {
-                const { challan, payment } = row.original;
-                const uploadedCount = [challan, payment].filter(Boolean).length;
-                return <div className="w-32 truncate">{`${uploadedCount}/2`}</div>;
+                const { challan } = row.original;
+                const uploadedCount = [challan].filter(Boolean).length;
+                return <div className="w-32 truncate">{`${uploadedCount}/1`}</div>;
             },
         },
           

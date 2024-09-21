@@ -13,11 +13,6 @@ export interface PFSetupData {
   pfUserId?: string;
   pfPassword?: string;
   authorizedSignatory: string[];
-  signatoryDesignation?: string;
-  signatoryMobile?: string;
-  signatoryEmail?: string;
-  dscValidDate?: string;
-  esign?: string;
   pfRegistrationCertificate?: File | null;
 }
 
@@ -39,8 +34,8 @@ interface Signatory {
   designation: string;
   mobile: string;
   email: string;
-  dscValidDate: string;
-  esign: string;
+  dscFile?: File | null;
+  eSignFile?: File | null;
 }
 
 const PFSetupSidePanel: React.FC<PFSetupSidePanelProps> = ({
@@ -59,20 +54,15 @@ const PFSetupSidePanel: React.FC<PFSetupSidePanelProps> = ({
   });
 
   const [existingSignatories, setExistingSignatories] = useState<Signatory[]>([
-    { name: 'Amit', designation: 'Manager', mobile: '1234567890', email: 'amit@example.com', dscValidDate: '2024-12-31', esign: 'Active' },
-    { name: 'Krishna Kumar Singh', designation: 'Director', mobile: '9876543210', email: 'krishna@example.com', dscValidDate: '2025-06-30', esign: 'Active' },
-    { name: 'Ajay Thakur', designation: 'CFO', mobile: '5555555555', email: 'ajay@example.com', dscValidDate: '2024-09-30', esign: 'Inactive' },
+    { name: 'Amit', designation: 'Manager', mobile: '1234567890', email: 'amit@example.com' },
+    { name: 'Krishna Kumar Singh', designation: 'Director', mobile: '9876543210', email: 'krishna@example.com' },
+    { name: 'Ajay Thakur', designation: 'CFO', mobile: '5555555555', email: 'ajay@example.com' },
   ]);
 
-  const [showAddSignatoryDialog, setShowAddSignatoryDialog] = useState(false);
-  const [newSignatory, setNewSignatory] = useState<Signatory>({
-    name: '',
-    designation: '',
-    mobile: '',
-    email: '',
-    dscValidDate: '',
-    esign: '',
-  });
+
+
+   const [selectedSignatories, setSelectedSignatories] = useState<Signatory[]>([]);
+
 
   const handleInputChange = (field: keyof PFSetupData, value: string | Date | null | File | string[]) => {
     setPfSetupData(prev => ({ ...prev, [field]: value }));
@@ -82,13 +72,13 @@ const PFSetupSidePanel: React.FC<PFSetupSidePanelProps> = ({
     newValue: MultiValue<{ value: string; label: string }>,
     actionMeta: ActionMeta<{ value: string; label: string }>
   ) => {
-    const selectedSignatories = newValue.map(option => option.value);
-    handleInputChange('authorizedSignatory', selectedSignatories);
+    const selectedNames = newValue.map(option => option.value);
+    handleInputChange('authorizedSignatory', selectedNames);
 
-    if (actionMeta.action === 'select-option' && actionMeta.option?.value === 'add_new') {
-      setShowAddSignatoryDialog(true);
-      handleInputChange('authorizedSignatory', selectedSignatories.filter(name => name !== 'add_new'));
-    }
+    const newSelectedSignatories = existingSignatories.filter(signatory => 
+      selectedNames.includes(signatory.name)
+    );
+    setSelectedSignatories(newSelectedSignatories);
   };
 
 
@@ -115,21 +105,16 @@ const PFSetupSidePanel: React.FC<PFSetupSidePanelProps> = ({
     }
   };
 
-  const handleAddSignatory = () => {
-    setExistingSignatories(prev => [...prev, newSignatory]);
-    setShowAddSignatoryDialog(false);
-    setNewSignatory({
-      name: '',
-      designation: '',
-      mobile: '',
-      email: '',
-      dscValidDate: '',
-      esign: '',
-    });
-  };
-
-  const handleNewSignatoryInputChange = (field: keyof Signatory, value: string) => {
-    setNewSignatory(prev => ({ ...prev, [field]: value }));
+  const handleFileUpload = (signatoryName: string, fileType: 'dsc' | 'eSign', file: File | null) => {
+    setSelectedSignatories(prev => prev.map(signatory => {
+      if (signatory.name === signatoryName) {
+        return {
+          ...signatory,
+          [fileType === 'dsc' ? 'dscFile' : 'eSignFile']: file
+        };
+      }
+      return signatory;
+    }));
   };
 
   return (
@@ -211,19 +196,42 @@ const PFSetupSidePanel: React.FC<PFSetupSidePanelProps> = ({
         </div>
 
         <div className='flex flex-col gap-2 w-full'>
-          <label>Choose the Signatories</label>
-          <div className=''>
+        <label>Choose the Signatories</label>
+        <div className=''>
           <Select
             isMulti
-            options={[
-              ...existingSignatories.map(s => ({ value: s.name, label: s.name })),
-              { value: 'add_new'}
-            ]}
-            // value={pfSetupData.authorizedSignatory.map(name => ({ value: name, label: name }))}
-            // onChange={handleSignatoryChange}
-            />
-            </div>
+            options={existingSignatories.map(s => ({ value: s.name, label: s.name }))}
+            onChange={handleSignatoryChange}
+          />
         </div>
+      </div>
+      {selectedSignatories.map(signatory => (
+        <div key={signatory.name} className="border p-4 rounded-md">
+          <h6 className="mb-2">{signatory.name}</h6>
+          <div className="flex gap-4">
+            <div className="flex-1">
+              <label className="block mb-1">DSC Upload</label>
+              <Input
+                type="file"
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  const file = e.target.files?.[0] || null;
+                  handleFileUpload(signatory.name, 'dsc', file);
+                }}
+              />
+            </div>
+            <div className="flex-1">
+              <label className="block mb-1">E-Sign Upload</label>
+              <Input
+                type="file"
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  const file = e.target.files?.[0] || null;
+                  handleFileUpload(signatory.name, 'eSign', file);
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      ))}
       </div>
 
 
@@ -244,48 +252,7 @@ const PFSetupSidePanel: React.FC<PFSetupSidePanelProps> = ({
         <Button variant="solid" onClick={handleSubmit}>Confirm</Button>
       </div>
 
-      <Dialog
-        isOpen={showAddSignatoryDialog}
-        onClose={() => setShowAddSignatoryDialog(false)}
-      >
-        <h5 className="mb-4">Add New Signatory</h5>
-        <div className="space-y-4">
-          <OutlinedInput
-            label="Name"
-            value={newSignatory.name}
-            onChange={(value) => handleNewSignatoryInputChange('name', value)}
-          />
-          <OutlinedInput
-            label="Designation"
-            value={newSignatory.designation}
-            onChange={(value) => handleNewSignatoryInputChange('designation', value)}
-          />
-          <OutlinedInput
-            label="Mobile"
-            value={newSignatory.mobile}
-            onChange={(value) => handleNewSignatoryInputChange('mobile', value)}
-          />
-          <OutlinedInput
-            label="Email"
-            value={newSignatory.email}
-            onChange={(value) => handleNewSignatoryInputChange('email', value)}
-          />
-          <OutlinedInput
-            label="DSC Valid Date"
-            value={newSignatory.dscValidDate}
-            onChange={(value) => handleNewSignatoryInputChange('dscValidDate', value)}
-          />
-          <OutlinedInput
-            label="E-Sign"
-            value={newSignatory.esign}
-            onChange={(value) => handleNewSignatoryInputChange('esign', value)}
-          />
-        </div>
-        <div className="flex justify-end space-x-2 mt-4">
-          <Button onClick={() => setShowAddSignatoryDialog(false)}>Cancel</Button>
-          <Button variant="solid" onClick={handleAddSignatory}>Add Signatory</Button>
-        </div>
-      </Dialog>
+     
     </div>
   );
 };

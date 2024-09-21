@@ -11,8 +11,10 @@ const documentPath = "../store/AllMappedCompliancesDetails.xls";
 export interface PTTrackerData {
   companyName: string;
   state: string;
+  ptRCDistrict: string;
   ptRCLocation: string;
   stateLocation: string;
+  locationAddress: string;
   ptRC: string;
   userId: string;
   password: string;
@@ -24,6 +26,7 @@ export interface PTTrackerData {
   pt: number;
   totalAmountPaid: number;
   differenceInAmount: number;
+  differenceReason: string;
   receiptNo: string;
   dueDate: string;
   dateOfPayment: string;
@@ -40,8 +43,10 @@ export const dummyData: PTTrackerData[] = [
   {
     companyName: 'India Shelter',
     state: 'Gujarat',
-    ptRCLocation: 'Ahmedabad',
+    ptRCDistrict: 'Ahmedabad',
+    ptRCLocation: 'Navrangpura',
     stateLocation: 'GUJARAT',
+    locationAddress: '123 Main St, Navrangpura, Ahmedabad, Gujarat 380009',
     ptRC: 'PRC010512001831',
     userId: 'sakshamhrservices',
     password: 'Tonk@304001',
@@ -53,68 +58,133 @@ export const dummyData: PTTrackerData[] = [
     pt: 2024,
     totalAmountPaid: 660000,
     differenceInAmount: 66,
+    differenceReason: 'Rounding error',
     receiptNo: '1275383',
     dueDate: '15-Aug-24',
     dateOfPayment: '20-Aug-24',
-    remarks: '',
+    remarks: 'Paid with delay due to technical issues',
     delay: "5 Days",
-    delayReason:"Server Error",
-    challan: "Challan Receipt",
-        payment: "Payment Receipt",
-        ret:"Return Receipt"
+    delayReason: "Server Error",
+    challan: 'Challan_IndiaShelter_Jul2024.pdf',
+    payment: 'Payment_IndiaShelter_Jul2024.pdf',
+    ret: 'Return_IndiaShelter_Jul2024.pdf'
   },
   {
-    companyName: 'India Shelter',
-    state: 'Gujarat',
-    ptRCLocation: 'Ahmedabad',
-    stateLocation: 'GUJARAT',
-    ptRC: 'PRC010512001831',
-    userId: 'sakshamhrservices',
-    password: 'Tonk@304001',
-    frequency: 'Monthly',
+    companyName: 'Tech Solutions',
+    state: 'Maharashtra',
+    ptRCDistrict: 'Mumbai Suburban',
+    ptRCLocation: 'Andheri',
+    stateLocation: 'MAHARASHTRA',
+    locationAddress: '456 Tech Park, Andheri East, Mumbai 400093',
+    ptRC: 'PRC020613002942',
+    userId: 'techsolutionshr',
+    password: 'Mumbai@2024',
+    frequency: 'Half Yearly',
     remittanceMode: 'Online',
     month: 'Jun-24',
-    noOfEmployees: 74,
-    wages: 560166,
-    pt: 2024,
-    totalAmountPaid: 560000,
-    differenceInAmount: 166,
-    receiptNo: '1275383',
-    dueDate: '15-Aug-24',
-    dateOfPayment: '7-Aug-24',
-    remarks: '',
+    noOfEmployees: 120,
+    wages: 3500000,
+    pt: 7500,
+    totalAmountPaid: 7500,
+    differenceInAmount: 0,
+    differenceReason: '',
+    receiptNo: '2468101',
+    dueDate: '30-Jun-24',
+    dateOfPayment: '28-Jun-24',
+    remarks: 'Paid on time',
     delay: "",
-    delayReason:"",
-    challan: "Challan Receipt",
-        payment: "",
-        ret:"Return Receipt"
-  },{
-    companyName: 'India Shelter',
-    state: 'Gujarat',
-    ptRCLocation: 'Bhavnagar',
-    stateLocation: 'GUJARAT',
-    ptRC: 'PRC010512001831',
-    userId: 'sakshamhrservices',
-    password: 'Tonk@304001',
+    delayReason: "",
+    challan: 'Challan_TechSolution_Jun2024.pdf',
+    payment: 'Payment_TechSolution_Jun2024.pdf',
+    ret: 'Return_TechSolution_Jun2024.pdf'
+  },
+  {
+    companyName: 'Green Energy Ltd',
+    state: 'Tamil Nadu',
+    ptRCDistrict: 'Chennai',
+    ptRCLocation: 'Anna Nagar',
+    stateLocation: 'TAMIL NADU',
+    locationAddress: '789 Eco Building, Anna Nagar, Chennai 600040',
+    ptRC: 'PRC030714003053',
+    userId: 'greenenergytax',
+    password: 'Chennai@2024',
+    frequency: 'Monthly',
+    remittanceMode: 'Offline',
+    month: 'Aug-24',
+    noOfEmployees: 67,
+    wages: 1200000,
+    pt: 3500,
+    totalAmountPaid: 3400,
+    differenceInAmount: 100,
+    differenceReason: 'Calculation error',
+    receiptNo: '3579246',
+    dueDate: '15-Sep-24',
+    dateOfPayment: '14-Sep-24',
+    remarks: 'Difference to be adjusted next month',
+    delay: "",
+    delayReason: "",
+    challan: 'Challan_Green_Energy_Ltd__Aug2024.pdf',
+    payment: 'Payment_Green_Energy_Ltd__Aug2024.pdf',
+    ret: ''
+  },
+  {
+    companyName: 'Innovate Systems',
+    state: 'Karnataka',
+    ptRCDistrict: 'Bengaluru Urban',
+    ptRCLocation: 'Whitefield',
+    stateLocation: 'KARNATAKA',
+    locationAddress: '101 Tech Valley, Whitefield, Bengaluru 560066',
+    ptRC: 'PRC040815004164',
+    userId: 'innovatesyshr',
+    password: 'Bangalore@2024',
     frequency: 'Monthly',
     remittanceMode: 'Online',
-    month: 'Jul-24',
-    noOfEmployees: 43,
-    wages: 460166,
-    pt: 2024,
-    totalAmountPaid: 450000,
-    differenceInAmount: 10166,
-    receiptNo: '1275383',
-    dueDate: '15-Aug-24',
-    dateOfPayment: '7-Aug-24',
-    remarks: '',
+    month: 'Sep-24',
+    noOfEmployees: 89,
+    wages: 2800000,
+    pt: 6000,
+    totalAmountPaid: 6000,
+    differenceInAmount: 0,
+    differenceReason: '',
+    receiptNo: '4681012',
+    dueDate: '15-Oct-24',
+    dateOfPayment: '10-Oct-24',
+    remarks: 'Paid early',
     delay: "",
-    delayReason:"",
-    challan: "Challan Receipt",
-        payment: "Payment Receipt",
-        ret:"Return Receipt"
+    delayReason: "",
+    challan: 'Challan_Innovate_Systems_Sep2024.pdf',
+    payment: 'Payment_Innovate_Systems_Sep2024.pdf',
+    ret: 'Return_Innovate_Systems_Sep2024.pdf'
   },
-  // Add more dummy data here
+  {
+    companyName: 'Global Logistics',
+    state: 'West Bengal',
+    ptRCDistrict: 'Kolkata',
+    ptRCLocation: 'Howrah',
+    stateLocation: 'WEST BENGAL',
+    locationAddress: '222 Port Road, Howrah, Kolkata 711101',
+    ptRC: 'PRC050916005275',
+    userId: 'globallogisticsfinance',
+    password: 'Kolkata@2024',
+    frequency: 'Half Yearly',
+    remittanceMode: 'Online',
+    month: 'Oct-24',
+    noOfEmployees: 145,
+    wages: 4000000,
+    pt: 9000,
+    totalAmountPaid: 8800,
+    differenceInAmount: 200,
+    differenceReason: 'New joinees not included',
+    receiptNo: '5792468',
+    dueDate: '31-Oct-24',
+    dateOfPayment: '05-Nov-24',
+    remarks: 'Paid with delay, difference to be paid separately',
+    delay: "5 Days",
+    delayReason: "Administrative delay",
+    challan: 'Challan_Global_Logistics_Oct2024.pdf',
+    payment: '',
+    ret: 'Return_Global_Logistics_Oct2024.pdf'
+  }
 ];
 
 const PTRCTrackerTable: React.FC = () => {
@@ -157,63 +227,42 @@ const handleEditSubmit = (editedData: PTTrackerData) => {
         cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
       },
       {
-        header: 'PT RC Location',
-        accessorKey: 'ptRCLocation',
+        header: 'PT RC District',
+        accessorKey: 'ptRCDistrict',
         cell: (props) => <div className="w-36 truncate">{props.getValue() as string}</div>,
       },
-      // {
-      //   header: 'State/Location',
-      //   accessorKey: 'stateLocation',
-      //   cell: (props) => <div className="w-36 truncate">{props.getValue() as string}</div>,
-      // },
       {
-        header: 'PT RC',
+        header: 'PT RC Location',
+        accessorKey: 'ptRCLocation',
+        cell: (props) => 
+        <div className="w-36 truncate">{props.getValue() as string}</div>,
+      },
+      {
+        header: 'PT RC Location Address',
+        accessorKey: 'locationAddress',
+        cell: (props) =>  {
+          const value = props.getValue() as string;
+          return (
+              <Tooltip title={value} placement="top">
+          <div className="w-36 truncate">{props.getValue() as string}</div>
+        </Tooltip>
+          )
+      },
+      },
+      {
+        header: 'PT RC Number',
         accessorKey: 'ptRC',
         cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
       },
-      {
-        header: 'User ID (RC)',
-        accessorKey: 'userId',
-        cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
-      },
-      {
-        header: 'Password',
-        accessorKey: 'password',
-        cell: (props) => {
-          const rowId = props.row.id;
-          const password = props.getValue() as string;
-          const isVisible = visiblePasswords[rowId];
-
-          
-
-          return (
-            <div className="w-32 flex items-center justify-between">
-              <span className="truncate">
-                {isVisible ? password : '********'}
-              </span>
-              <Button
-                size="xs"
-                variant="plain"
-                icon={isVisible ? <FiEyeOff className="text-gray-400" /> : <FiEye className="text-gray-400" />}
-                // onClick={() => togglePasswordVisibility(rowId)}
-              />
-            </div>
-          );
-        },
-      },
-      {
-        header: 'Frequency',
-        accessorKey: 'frequency',
-        cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
-      },
+      
       {
         header: 'Remittance Mode',
         accessorKey: 'remittanceMode',
         cell: (props) => <div className="w-36 truncate">{props.getValue() as string}</div>,
       },
       {
-        header: 'Month',
-        accessorKey: 'month',
+        header: 'Frequency',
+        accessorKey: 'frequency',
         cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
       },
       {
@@ -222,12 +271,17 @@ const handleEditSubmit = (editedData: PTTrackerData) => {
         cell: (props) => <div className="w-36 truncate">{props.getValue() as number}</div>,
       },
       {
-        header: 'Wages',
-        accessorKey: 'wages',
-        cell: (props) => <div className="w-32 truncate">₹{(props.getValue() as number).toLocaleString()}</div>,
+        header: 'Month',
+        accessorKey: 'month',
+        cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
       },
       {
-        header: 'PT',
+        header: 'Gross Salary',
+        accessorKey: 'wages',
+        cell: (props) => <div className="w-32 truncate">₹{(props.getValue() as number).toLocaleString()}</div>,
+      }, 
+      {
+        header: 'PT Amount',
         accessorKey: 'pt',
         cell: (props) => <div className="w-28 truncate">₹{(props.getValue() as number).toLocaleString()}</div>,
       },
@@ -242,9 +296,9 @@ const handleEditSubmit = (editedData: PTTrackerData) => {
         cell: (props) => <div className="w-44 truncate">₹{(props.getValue() as number).toLocaleString()}</div>,
       },
       {
-        header: 'Receipt No/Ack no',
-        accessorKey: 'receiptNo',
-        cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
+        header: 'Reason for Difference',
+        accessorKey: 'differenceReason',
+        cell: (props) => <div className="w-44 truncate">{(props.getValue() as number).toLocaleString()}</div>,
       },
       {
         header: 'Due Date',
@@ -266,17 +320,17 @@ const handleEditSubmit = (editedData: PTTrackerData) => {
         accessorKey: 'delayReason',
         cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
       },
-      {
-        header: 'Challan',
-        accessorKey: 'challan',
-        cell: (props) => 
-        <div className="w-40 truncate">
-          <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
-            {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
-            {props.getValue() as string}
-          </a>
-        </div>,
-      },
+      // {
+      //   header: 'Challan',
+      //   accessorKey: 'challan',
+      //   cell: (props) => 
+      //   <div className="w-40 truncate">
+      //     <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
+      //       {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
+      //       {props.getValue() as string}
+      //     </a>
+      //   </div>,
+      // },
       {
         header: 'Payment Receipt',
         accessorKey: 'payment',
@@ -303,9 +357,9 @@ const handleEditSubmit = (editedData: PTTrackerData) => {
         header: 'Upload Status',
         id: 'uploadStatus',
         cell: ({ row }) => {
-            const {  challan, payment,ret } = row.original;
-            const uploadedCount = [challan, payment, ret].filter(Boolean).length;
-            return <div className="w-32 truncate">{`${uploadedCount}/3`}</div>;
+            const {  payment,ret } = row.original;
+            const uploadedCount = [ payment, ret].filter(Boolean).length;
+            return <div className="w-32 truncate">{`${uploadedCount}/2`}</div>;
         },
     },
       {
