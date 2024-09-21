@@ -148,7 +148,14 @@ const columns: ColumnDef<PTTrackerData>[] = [
   {
     header: 'PT EC Enrolment Address',
     accessorKey: 'ptEcEnrolmentAddress',
-    cell: (props) => <div className="w-64 truncate">{props.getValue() as string}</div>,
+    cell: (props) =>{ 
+      const value= props.getValue() as string;
+      return(
+        <Tooltip title={value}>
+        <div className="w-52 truncate">{props.getValue() as string}</div> 
+        </Tooltip>
+      )
+  }
   },
   {
     header: 'Remittance Mode',

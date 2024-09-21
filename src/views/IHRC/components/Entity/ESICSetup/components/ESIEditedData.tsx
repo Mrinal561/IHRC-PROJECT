@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Input, Dialog, Notification, DatePicker, Select } from '@/components/ui';
 import OutlinedInput from '@/components/ui/OutlinedInput';
 import { ESISetupData } from './EsicSetupTable';
+import OutlinedSelect from '@/components/ui/Outlined';
 
 
 
@@ -9,6 +10,13 @@ interface ESIEditedDataProps {
   initialData: ESISetupData | null;
   onClose: () => void;
   onSubmit: (data: ESISetupData) => void;
+}
+
+interface Signatory {
+  name: string;
+  designation: string;
+  mobile: string;
+  email: string;
 }
 
 
@@ -26,6 +34,7 @@ const ESIEditedData: React.FC<ESIEditedDataProps> = ({ initialData, onClose, onS
     signatoryDesignation:'',
     signatoryMobile:'',
     signatoryEmail:'',
+    esiRegistrationDate: ''
   })
   useEffect(() => {
     if (initialData) {
@@ -44,6 +53,13 @@ const ESIEditedData: React.FC<ESIEditedDataProps> = ({ initialData, onClose, onS
   const handleAddSignatory = () => {
     setShowAddSignatoryDialog(false);
   };
+
+
+  const [existingSignatories, setExistingSignatories] = useState<Signatory[]>([
+    { name: 'Amit', designation: 'Manager', mobile: '1234567890', email: 'amit@example.com'},
+    { name: 'Krishna Kumar Singh', designation: 'Director', mobile: '9876543210', email: 'krishna@example.com'},
+    { name: 'Ajay Thakur', designation: 'CFO', mobile: '5555555555', email: 'ajay@example.com'},
+  ]);
 
   return (
     <div className="p-4 space-y-4">
@@ -70,8 +86,12 @@ const ESIEditedData: React.FC<ESIEditedDataProps> = ({ initialData, onClose, onS
         <div className='flex flex-col gap-2'>
           <label>Enter the ESI Code Type</label>
           <div className='w-[352px]'>
-            <OutlinedInput
-                          label="ESI Code Type"
+          <OutlinedSelect
+            label="ESI Code Type"
+            options={[
+              { value: 'main', label: 'Main' },
+              { value: 'subCode', label: 'Sub Code' },
+            ]}
                           value={formData.esiCodeType} onChange={function (value: string): void {
                               throw new Error('Function not implemented.');
                           } }                 
@@ -129,7 +149,7 @@ const ESIEditedData: React.FC<ESIEditedDataProps> = ({ initialData, onClose, onS
           </div>
         </div>
 
-        <div className='flex flex-col gap-2 w-full'>
+        {/* <div className='flex flex-col gap-2 w-full'>
           <label>Choose the Signatories</label>
           <div>
           <Input
@@ -137,6 +157,21 @@ const ESIEditedData: React.FC<ESIEditedDataProps> = ({ initialData, onClose, onS
               onChange={(e) => handleChange('authorizedSignatory', e.target.value)}
             />
           </div>
+        </div> */}
+
+<div className='flex flex-col gap-2 w-full'>
+          <label>Choose the Signatories</label>
+          <div>
+          <Select
+            isMulti
+            options={[
+              ...existingSignatories.map(s => ({ value: s.name, label: s.name })),
+              // { value: 'add_new'}
+            ]}
+            // value={esiSetupData.authorizedSignatory.map(name => ({ value: name, label: name }))}
+            // onChange={handleSignatoryChange}
+            />
+            </div>
         </div>
       </div>
 
