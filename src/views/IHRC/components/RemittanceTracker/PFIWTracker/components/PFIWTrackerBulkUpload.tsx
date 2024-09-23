@@ -92,7 +92,7 @@ const PFIWTrackerBulkUpload: React.FC<PFIWTrackerBulkUploadProps> = ({ onUploadC
         onClose={handleCancel}
         width={450}
       >
-        <h5 className="mb-4">Upload PFIW</h5>
+        <h5 className="mb-4">Upload PF IW</h5>
         <div className='flex gap-3 w-full items-center mb-4'>
           <p className=''>Select Month:</p>
           <div className='w-40'>
