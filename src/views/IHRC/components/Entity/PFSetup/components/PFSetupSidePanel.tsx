@@ -236,7 +236,7 @@ const PFSetupSidePanel: React.FC<PFSetupSidePanelProps> = ({
 
 
       <div className='flex flex-col gap-2'>
-        <label>Please upload the PF certificate</label>
+        <label>Upload the PF certificate</label>
         <Input
           id="file-upload"
           type="file"

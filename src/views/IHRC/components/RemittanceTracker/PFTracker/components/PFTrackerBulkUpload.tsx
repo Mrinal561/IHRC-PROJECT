@@ -1,21 +1,37 @@
+
 import React, { useState } from 'react';
-import { Button, Dialog, Input, Notification, toast } from '@/components/ui';
+import { Button, Dialog, Input, Notification, toast} from '@/components/ui';
+import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 import { HiDownload, HiUpload } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 
 const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
-
 interface PFTrackerBulkUploadProps {
-    onUploadConfirm: () => void;
-  }
-
+  onUploadConfirm: () => void;
+}
 
 const PFTrackerBulkUpload: React.FC<PFTrackerBulkUploadProps> = ({ onUploadConfirm }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [remark, setRemark] = useState('');
   const [file, setFile] = useState<File | null>(null);
+  const [currentGroup, setCurrentGroup] = useState('');
   const navigate = useNavigate();
+
+  const groupOptions = [
+    { value: '01', label: 'January 2023' },
+    { value: '02', label: 'February 2023' },
+    { value: '03', label: 'March 2023' },
+    { value: '04', label: 'April 2023' },
+    { value: '05', label: 'May 2023' },
+    { value: '06', label: 'June 2023' },
+    { value: '07', label: 'July 2023' },
+    { value: '08', label: 'August 2023' },
+    { value: '09', label: 'September 2023' },
+    { value: '10', label: 'October 2023' },
+    { value: '11', label: 'November 2023' },
+    { value: '12', label: 'December 2023' },
+  ];
 
   const handleUploadClick = () => {
     setIsDialogOpen(true);
@@ -23,20 +39,24 @@ const PFTrackerBulkUpload: React.FC<PFTrackerBulkUploadProps> = ({ onUploadConfi
 
   const handleConfirm = () => {
     setIsDialogOpen(false);
-    navigate('/uploadedpfdetail')
+    navigate('/uploadedpfdetail');
   };
-
 
   const handleCancel = () => {
     setIsDialogOpen(false);
     setRemark('');
     setFile(null);
+    setCurrentGroup('');
   };
 
   const handleDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    // Implement the download functionality here
-    // For example, you could use the `fetch` API to download the file
+    if (!currentGroup) {
+      toast.push(<Notification type="warning" title="Please select a month before downloading" />, {
+        placement: 'top-center'
+      });
+      return;
+    }
     fetch(documentPath)
       .then(response => response.blob())
       .then(blob => {
@@ -44,7 +64,7 @@ const PFTrackerBulkUpload: React.FC<PFTrackerBulkUploadProps> = ({ onUploadConfi
         const a = document.createElement('a');
         a.style.display = 'none';
         a.href = url;
-        a.download = 'AllMappedCompliancesDetails.xls';
+        a.download = `AllMappedCompliancesDetails_${currentGroup}.xls`;
         document.body.appendChild(a);
         a.click();
         window.URL.revokeObjectURL(url);
@@ -55,6 +75,14 @@ const PFTrackerBulkUpload: React.FC<PFTrackerBulkUploadProps> = ({ onUploadConfi
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       setFile(event.target.files[0]);
+    }
+  };
+
+  const handleChange = (setter: React.Dispatch<React.SetStateAction<string>>, field: string) => (
+    selectedOption: { value: string; label: string } | null
+  ) => {
+    if (selectedOption) {
+      setter(selectedOption.value);
     }
   };
 
@@ -75,13 +103,19 @@ const PFTrackerBulkUpload: React.FC<PFTrackerBulkUploadProps> = ({ onUploadConfi
         width={450}
       >
         <h5 className="mb-4">Upload PF</h5>
-        <div className="my-4 flex gap-2 items-center">
-          <p>Download PF Upload Format</p>
-          <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
-            <Button size="xs" icon={<HiDownload />}>Download</Button>
-          </a>
+        <div className='flex gap-3 w-full items-center'>
+          <p className=''>Select Month:</p>
+          <div className='w-40'>
+          <OutlinedSelect
+            label="Month"
+            options={groupOptions}
+            value={groupOptions.find((option) => option.value === currentGroup)}
+            onChange={handleChange(setCurrentGroup, 'groupName')}
+          />
+          </div>
         </div>
-        <div className="flex flex-col gap-2">
+        
+        <div className="flex flex-col gap-2 my-4">
           <p>Upload PF File:</p>
           <Input
             type="file"
@@ -89,14 +123,20 @@ const PFTrackerBulkUpload: React.FC<PFTrackerBulkUploadProps> = ({ onUploadConfi
             className="mb-4"
           />
         </div>
-        <p>Please Enter the Remark:</p>
+        <div className="my-4 flex gap-2 items-center">
+          {/* <p>Download PF Upload Format</p> */}
+          <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
+            <Button size="sm" icon={<HiDownload />}>Download Format</Button>
+          </a>
+        </div>
+        {/* <p>Please Enter the Remark:</p>
         <textarea
           className="w-full p-2 border rounded mb-2"
           rows={3}
           placeholder="Enter remark"
           value={remark}
           onChange={(e) => setRemark(e.target.value)}
-        />
+        /> */}
         <div className="mt-6 text-right">
           <Button
             size="sm"
