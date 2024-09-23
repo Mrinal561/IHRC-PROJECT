@@ -105,7 +105,7 @@ const PFIWTrackerBulkUpload: React.FC<PFIWTrackerBulkUploadProps> = ({ onUploadC
           </div>
         </div>
         <div className="flex flex-col gap-2">
-          <p>Upload PF File:</p>
+          <p>Upload PF IW File:</p>
           <Input
             type="file"
             onChange={handleFileChange}
