@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button, Dialog, Input } from '@/components/ui';
 import { HiDownload, HiUpload } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
+import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 
 const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
@@ -12,8 +13,23 @@ interface PTTrackerBulkUploadProps {
 const PTRCTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({ onUploadConfirm }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [remark, setRemark] = useState('');
-  const [file, setFile] = useState<File | null>(null);
+  const [file, setFile] = useState<File | null>(null);  const [currentGroup, setCurrentGroup] = useState('');
   const navigate = useNavigate();
+
+  const groupOptions = [
+    { value: '01', label: 'January 2024' },
+    { value: '02', label: 'February 2024' },
+    { value: '03', label: 'March 2024' },
+    { value: '04', label: 'April 2024' },
+    { value: '05', label: 'May 2024' },
+    { value: '06', label: 'June 2024' },
+    { value: '07', label: 'July 2024' },
+    { value: '08', label: 'August 2024' },
+    { value: '09', label: 'September 2024' },
+    { value: '10', label: 'October 2024' },
+    { value: '11', label: 'November 2024' },
+    { value: '12', label: 'December 2024' },
+  ];
 
   const handleUploadClick = () => {
     setIsDialogOpen(true);
@@ -52,6 +68,13 @@ const PTRCTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({ onUploadCon
       setFile(event.target.files[0]);
     }
   };
+  const handleChange = (setter: React.Dispatch<React.SetStateAction<string>>, field: string) => (
+    selectedOption: { value: string; label: string } | null
+  ) => {
+    if (selectedOption) {
+      setter(selectedOption.value);
+    }
+  };
 
   return (
     <>
@@ -70,9 +93,19 @@ const PTRCTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({ onUploadCon
         width={450}
       >
         <h5 className="mb-4">Upload PT RC</h5>
-        
+        <div className='flex gap-3 w-full items-center mb-4'>
+          <p className=''>Select Month:</p>
+          <div className='w-40'>
+          <OutlinedSelect
+            label="Month"
+            options={groupOptions}
+            value={groupOptions.find((option) => option.value === currentGroup)}
+            onChange={handleChange(setCurrentGroup, 'groupName')}
+          />
+          </div>
+        </div>
         <div className="flex flex-col gap-2">
-          <p>Upload PT File:</p>
+          <p>Upload PT RC File:</p>
           <Input
             type="file"
             onChange={handleFileChange}
