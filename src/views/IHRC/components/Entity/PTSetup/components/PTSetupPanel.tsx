@@ -311,7 +311,7 @@ const PTSetupPanel: React.FC<PTSetupSidePanelProps> = ({
       <div className='flex gap-4 items-center'>
 
       <div className='flex flex-col gap-2 w-full'>
-        <label>Upload PT EC certificate</label>
+        <label>Upload the PT EC certificate</label>
         <Input
           id="file-upload"
           type="file"
@@ -322,7 +322,7 @@ const PTSetupPanel: React.FC<PTSetupSidePanelProps> = ({
         />
       </div>
       <div className='flex flex-col gap-2 w-full'>
-        <label>Upload PT RC certificate</label>
+        <label>Upload the PT RC certificate</label>
         <Input
           id="file-upload"
           type="file"
