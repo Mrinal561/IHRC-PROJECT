@@ -70,12 +70,7 @@ const PTRCTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({ onUploadCon
         width={450}
       >
         <h5 className="mb-4">Upload PT RC</h5>
-        <div className="my-4 flex gap-2 items-center">
-          <p>Download PT Upload Format</p>
-          <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
-            <Button size="xs" icon={<HiDownload />}>Download</Button>
-          </a>
-        </div>
+        
         <div className="flex flex-col gap-2">
           <p>Upload PT File:</p>
           <Input
@@ -84,14 +79,20 @@ const PTRCTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({ onUploadCon
             className="mb-4"
           />
         </div>
-        <p>Please Enter the Remark:</p>
+        <div className="my-4 flex gap-2 items-center">
+          {/* <p>Download PT Upload Format</p> */}
+          <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
+            <Button size="sm" icon={<HiDownload />}>Download Format</Button>
+          </a>
+        </div>
+        {/* <p>Please Enter the Remark:</p>
         <textarea
           className="w-full p-2 border rounded mb-2"
           rows={3}
           placeholder="Enter remark"
           value={remark}
           onChange={(e) => setRemark(e.target.value)}
-        />
+        /> */}
         <div className="mt-6 text-right">
           <Button
             size="sm"

@@ -344,17 +344,7 @@ const ESITrackerTable: React.FC = () => {
                   </a>
                 </div>,
               },
-            //   {
-            //     header: 'Payment Receipt',
-            //     accessorKey: 'payment',
-            //     cell: (props) => 
-            //     <div className="w-40 truncate">
-            //       <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
-            //         {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
-            //         {props.getValue() as string}
-            //       </a>
-            //     </div>,
-            //   },
+          
               {
                 header: 'Upload Status',
                 id: 'uploadStatus',

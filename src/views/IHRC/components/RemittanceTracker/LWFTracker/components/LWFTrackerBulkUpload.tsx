@@ -75,12 +75,7 @@ const LWFTrackerBulkUpload: React.FC<LWFTrackerBulkUploadProps> = ({ onUploadCon
         width={450}
       >
         <h5 className="mb-4">Upload LWF</h5>
-        <div className="my-4 flex gap-2 items-center">
-          <p>Download LWF Upload Format</p>
-          <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
-            <Button size="xs" icon={<HiDownload />}>Download</Button>
-          </a>
-        </div>
+       
         <div className="flex flex-col gap-2">
           <p>Upload LWF File:</p>
           <Input
@@ -89,14 +84,12 @@ const LWFTrackerBulkUpload: React.FC<LWFTrackerBulkUploadProps> = ({ onUploadCon
             className="mb-4"
           />
         </div>
-        <p>Please Enter the Remark:</p>
-        <textarea
-          className="w-full p-2 border rounded mb-2"
-          rows={3}
-          placeholder="Enter remark"
-          value={remark}
-          onChange={(e) => setRemark(e.target.value)}
-        />
+        <div className="my-4 flex gap-2 items-center">
+          {/* <p>Download LWF Upload Format</p> */}
+          <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
+            <Button size="sm" icon={<HiDownload />}>Download Format</Button>
+          </a>
+        </div>
         <div className="mt-6 text-right">
           <Button
             size="sm"

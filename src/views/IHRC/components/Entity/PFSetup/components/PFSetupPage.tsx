@@ -4,6 +4,7 @@ import OutlinedInput from '@/components/ui/OutlinedInput';
 import { MultiValue, ActionMeta } from 'react-select';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { HiArrowLeft } from 'react-icons/hi';
+import OutlinedSelect from '@/components/ui/Outlined';
 
 export interface PFSetupData {
   Company_Group_Name: string;
@@ -11,6 +12,8 @@ export interface PFSetupData {
   pfCode: string;
   pfCodeLocation: string;
   registrationDate?: Date | null;
+  dscDate?: Date | null;
+  esignStatus: string;
   pfUserId?: string;
   pfPassword?: string;
   authorizedSignatory: string[];
@@ -30,6 +33,7 @@ interface Signatory {
   email: string;
   dscFile?: File | null;
   eSignFile?: File | null;
+  esignStatus?: string;
 }
 
 const PFSetupPage: React.FC = () => {
@@ -44,6 +48,7 @@ const PFSetupPage: React.FC = () => {
       pfCodeLocation: '',
       authorizedSignatory: [],
       registrationDate: null,
+      esignStatus: '',
     });
   
     const [existingSignatories] = useState<Signatory[]>([
@@ -64,11 +69,24 @@ const PFSetupPage: React.FC = () => {
     ) => {
       const selectedNames = newValue.map(option => option.value);
       handleInputChange('authorizedSignatory', selectedNames);
-  
-      const newSelectedSignatories = existingSignatories.filter(signatory => 
-        selectedNames.includes(signatory.name)
-      );
+    
+      const newSelectedSignatories = selectedNames.map(name => {
+        const existingSignatory = selectedSignatories.find(s => s.name === name);
+        if (existingSignatory) {
+          return existingSignatory;
+        }
+        return existingSignatories.find(s => s.name === name) || { name, designation: '', mobile: '', email: '' };
+      });
       setSelectedSignatories(newSelectedSignatories);
+    };
+
+    const handleESignStatusChange = (signatoryName: string, status: string) => {
+      setSelectedSignatories(prev => prev.map(signatory => {
+        if (signatory.name === signatoryName) {
+          return { ...signatory, esignStatus: status };
+        }
+        return signatory;
+      }));
     };
   
     const handleFileUpload = (signatoryName: string, fileType: 'dsc' | 'eSign', file: File | null) => {
@@ -152,7 +170,7 @@ const PFSetupPage: React.FC = () => {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">PF Registration Date</label>
               <DatePicker
-                placeholder="Select Date"
+                placeholder="Pick a Date"
                 value={pfSetupData.registrationDate}
                 onChange={(date: Date | null) => handleInputChange('registrationDate', date)}
               />
@@ -167,14 +185,14 @@ const PFSetupPage: React.FC = () => {
             </div>
           </div>
           {selectedSignatories.length > 0 && (
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Signatory Documents</h3>
+            <div className="space-y-4 border rounded-lg p-4">
+              <h3 className="text-sm font-semibold">Signatory Documents</h3>
               {selectedSignatories.map(signatory => (
                 <div key={signatory.name} className="border p-4 rounded-lg">
-                  <h4 className="text-md font-medium mb-4">{signatory.name}</h4>
+                  <h4 className="text-sm mb-4">{signatory.name}</h4>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">DSC Upload</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-4">DSC Upload</label>
                       <Input
                         type="file"
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -184,7 +202,7 @@ const PFSetupPage: React.FC = () => {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">E-Sign Upload</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-4">E-Sign Upload</label>
                       <Input
                         type="file"
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -192,6 +210,34 @@ const PFSetupPage: React.FC = () => {
                           handleFileUpload(signatory.name, 'eSign', file);
                         }}
                       />
+                    </div>
+                    <div>
+                      <div>
+                        <label className='block text-sm font-medium text-gray-700 mb-4'> DSC Valid Upto </label>
+                        <DatePicker
+                          placeholder="Pick a Date"
+                          value={pfSetupData.dscDate}
+                          onChange={(date: Date | null) => handleInputChange('dscDate', date)}
+                          size='sm'
+                        />          
+                      </div>
+                    </div>
+                    <div>
+                      <div>
+                        <label className='block text-sm font-medium text-gray-700 mb-4'>E Sign Status</label>
+                        <div>
+                        <OutlinedSelect
+                          label="Status"
+                          options={[
+                            { value: 'active', label: 'Active' },
+                            { value: 'inactive', label: 'Inactive' },
+                          ]}
+                          value={signatory.esignStatus || ''}
+                          onChange={(value: string) => handleESignStatusChange(signatory.name, value)}
+                          
+                          />
+                          </div>
+                      </div>
                     </div>
                   </div>
                 </div>
