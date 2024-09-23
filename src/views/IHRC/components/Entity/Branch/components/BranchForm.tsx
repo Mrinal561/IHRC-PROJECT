@@ -18,6 +18,9 @@ interface BranchData extends EntityData {
   SERegistrationNumber: string;
   SEValidity: String;
   sandeRegistrationCertificate?: File | null;
+  remark: string;
+  mobile: string;
+  email: string;
 
 }
 
@@ -322,6 +325,9 @@ const AddBranchForm: React.FC = () => {
     BranchType: '',
     SERegistrationNumber: '',
     SEValidity: '',
+    remark: '',
+    mobile: '',
+    email: ''
   });
 
   const branchTypeOptions = [
@@ -527,6 +533,43 @@ const AddBranchForm: React.FC = () => {
           />
         </div>
     
+        </div>
+
+        <div className='border rounded-md py-4 p-2 mt-4'>
+          <div className="flex flex-col gap-4">
+            <h4>Custom Fields</h4>
+            <div className='grid grid-cols-1 md:grid-cols-3 gap-2'>
+
+           
+            <div className='w-full'>
+            <OutlinedInput
+                label="Remark"
+                value={formData.remark}
+                onChange={(value: string) => {
+                  setFormData(prev => ({ ...prev, remark: value }));
+                  }}
+                  />
+            </div>
+            <div className='w-full'>
+            <OutlinedInput
+                label="Email"
+                value={formData.email}
+                onChange={(value: string) => {
+                  setFormData(prev => ({ ...prev, email: value }));
+                  }}
+                  />
+            </div>
+            <div className='w-full'>
+            <OutlinedInput
+                label="Mobile"
+                value={formData.mobile}
+                onChange={(value: string) => {
+                  setFormData(prev => ({ ...prev, mobile: value }));
+                  }}
+                  />
+            </div>
+            </div>
+          </div>
         </div>
       
 
