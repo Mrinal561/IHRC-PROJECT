@@ -196,7 +196,7 @@ const LWFEditedData: React.FC<LWFEditedDataProps> = ({ initialData, onClose, onS
       </div>
 
       <div className="flex flex-col gap-4">
-        <label>Please upload the LWF certificate</label>
+        <label>Upload the LWF certificate</label>
         <Input id="file-upload" type="file"  />
       </div>
 

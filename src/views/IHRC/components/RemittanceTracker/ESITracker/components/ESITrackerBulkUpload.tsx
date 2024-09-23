@@ -4,6 +4,7 @@ import { HiDownload, HiUpload } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 import CustomDateRangePicker from './CustomDateRangePicker';
 import DatePickerRange from '@/components/ui/DatePicker/DatePickerRange';
+import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 
 const documentPath = "../store/AllMappedESICompliancesDetails.xls";
 
@@ -15,7 +16,22 @@ const ESITrackerBulkUpload: React.FC<ESITrackerBulkUploadProps> = ({ onUploadCon
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [remark, setRemark] = useState('');
   const [file, setFile] = useState<File | null>(null);
+  const [currentGroup, setCurrentGroup] = useState('');
   const navigate = useNavigate();
+  const groupOptions = [
+    { value: '01', label: 'January 2023' },
+    { value: '02', label: 'February 2023' },
+    { value: '03', label: 'March 2023' },
+    { value: '04', label: 'April 2023' },
+    { value: '05', label: 'May 2023' },
+    { value: '06', label: 'June 2023' },
+    { value: '07', label: 'July 2023' },
+    { value: '08', label: 'August 2023' },
+    { value: '09', label: 'September 2023' },
+    { value: '10', label: 'October 2023' },
+    { value: '11', label: 'November 2023' },
+    { value: '12', label: 'December 2023' },
+  ];
 
   const handleUploadClick = () => {
     setIsDialogOpen(true);
@@ -59,6 +75,13 @@ const ESITrackerBulkUpload: React.FC<ESITrackerBulkUploadProps> = ({ onUploadCon
     setStartDate(start);
     setEndDate(end);
   };
+  const handleChange = (setter: React.Dispatch<React.SetStateAction<string>>, field: string) => (
+    selectedOption: { value: string; label: string } | null
+  ) => {
+    if (selectedOption) {
+      setter(selectedOption.value);
+    }
+  };
 
   return (
     <>
@@ -77,17 +100,18 @@ const ESITrackerBulkUpload: React.FC<ESITrackerBulkUploadProps> = ({ onUploadCon
         width={500}
       >
         <h5 className="mb-4">Upload ESI</h5>
-        <div className='flex items-center gap-3'>
-          {/* <p>Please Select the Date Range</p> */}
-          {/* <CustomDateRangePicker onApply={handleDateRangeApply}  /> */}
-          {/* <DatePickerRange /> */}
+        <div className='flex gap-3 w-full items-center mb-4'>
+          <p className=''>Select Month:</p>
+          <div className='w-40'>
+          <OutlinedSelect
+            label="Month"
+            options={groupOptions}
+            value={groupOptions.find((option) => option.value === currentGroup)}
+            onChange={handleChange(setCurrentGroup, 'groupName')}
+          />
+          </div>
         </div>
-        <div className="my-4 flex gap-2 items-center">
-          <p>Download ESI Upload Format</p>
-          <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
-            <Button size="xs" icon={<HiDownload />}>Download</Button>
-          </a>
-        </div>
+        
         <div className="flex flex-col gap-2">
           <p>Upload ESI File:</p>
           <Input
@@ -96,14 +120,12 @@ const ESITrackerBulkUpload: React.FC<ESITrackerBulkUploadProps> = ({ onUploadCon
             className="mb-4"
           />
         </div>
-        <p>Please Enter the Remark:</p>
-        <textarea
-          className="w-full p-2 border rounded mb-2"
-          rows={3}
-          placeholder="Enter remark"
-          value={remark}
-          onChange={(e) => setRemark(e.target.value)}
-        />
+        <div className="my-4 flex gap-2 items-center">
+          {/* <p>Download ESI Upload Format</p> */}
+          <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
+            <Button size="sm" icon={<HiDownload />}>Download Format</Button>
+          </a>
+        </div>
         <div className="mt-6 text-right">
           <Button
             size="sm"

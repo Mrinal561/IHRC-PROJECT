@@ -250,7 +250,7 @@ const LWFSetupPanel: React.FC<LWFSetupSidePanelProps> = ({
 
     
       <div className='flex flex-col gap-4'>
-        <label>Please upload the LWF certificate</label>
+        <label>Upload the LWF certificate</label>
         <Input
           id="file-upload"
           type="file"
