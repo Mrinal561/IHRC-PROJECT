@@ -1,4 +1,3 @@
-import CustomFieldTool from './components/CustomFieldTool'
 import React, { useState } from 'react';
 import { Button, Card, Dialog } from '@/components/ui';
 import { HiPlusCircle } from 'react-icons/hi';
