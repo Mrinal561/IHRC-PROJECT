@@ -11,7 +11,7 @@ const CustomField = () => {
 
     const [isModuleDialogOpen, setIsModuleDialogOpen] = useState(false);
   const [selectedModule, setSelectedModule] = useState(null);
-  const [modules, setModules] = useState([]);
+  const [modules, setModules] = useState([{ value: 'branch', label: 'Branch' }]);
   const navigate = useNavigate();
 
   const moduleOptions = [
@@ -27,12 +27,12 @@ const CustomField = () => {
   };
 
   const handleModuleConfirm = () => {
-    if (selectedModule) {
-      setModules([...modules, selectedModule]);
-      setIsModuleDialogOpen(false);
-      setSelectedModule(null);
+    if (selectedModule && !modules.some(module => module.value === selectedModule.value)) {
+        setModules([...modules, selectedModule]);
+        setIsModuleDialogOpen(false);
+        setSelectedModule(null);
     }
-  };
+};
 
   const handleOpenModule = (module) => {
     const fullPath = `${APP_PREFIX_PATH}/custom-fields/${module.value}`
