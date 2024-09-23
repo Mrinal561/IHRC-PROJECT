@@ -128,12 +128,12 @@ export const protectedRoutes = [
         ),
         authority: [],
     },
-    {
-        key: 'customFields',
-        path: `${APP_PREFIX_PATH}/custom-fields`,
-        component: lazy(() => import('@/views/IHRC/components/GlobalSettings/CustomField/CustomField')),
-        authority: [],
-    },
+    // {
+    //     key: 'customFields',
+    //     path: `${APP_PREFIX_PATH}/custom-fields`,
+    //     component: lazy(() => import('@/views/IHRC/components/GlobalSettings/CustomField/CustomField')),
+    //     authority: [],
+    // },
     {
         key: 'customFields.moduleDetail',
         path: `${APP_PREFIX_PATH}/custom-fields/:moduleValue`,
