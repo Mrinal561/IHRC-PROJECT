@@ -537,7 +537,7 @@ const AddBranchForm: React.FC = () => {
 
         <div className='border rounded-md py-4 p-2 mt-4'>
           <div className="flex flex-col gap-4">
-            <h4 className='text-lg'>Custom Fields</h4>
+            <h6>Custom Fields</h6>
             <div className='grid grid-cols-1 md:grid-cols-3 gap-2'>
 
            
