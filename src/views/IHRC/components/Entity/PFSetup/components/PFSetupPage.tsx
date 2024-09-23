@@ -224,7 +224,7 @@ const PFSetupPage: React.FC = () => {
                     </div>
                     <div>
                       <div>
-                        <label className='block text-sm font-medium text-gray-700 mb-4'>E Sign Status</label>
+                        <label className='block text-sm font-medium text-gray-700 mb-4'>E-Sign Status</label>
                         <div>
                         <OutlinedSelect
                           label="Status"
