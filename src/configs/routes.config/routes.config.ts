@@ -129,6 +129,14 @@ export const protectedRoutes = [
         authority: [],
     },
     {
+        key: 'groupMenu.collapse.item4',
+        path: '/custom-fields',
+        component: lazy(() =>
+            import('@/views/IHRC/components/GlobalSettings/CustomField/CustomField')
+        ),
+        authority: [],
+    },
+    {
         key: 'entityMenu.collapse.item1',
         path: '/company-group',
         component: lazy(() =>

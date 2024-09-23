@@ -56,6 +56,16 @@ const navigationConfig: NavigationTree[] = [
                 authority: [],
                 subMenu: [],
             },
+            {
+                key: 'groupMenu.collapse.item4',
+                path: '/custom-fields',
+                title: 'Custom Fields',
+                translateKey: 'nav.groupMenu.collapse.item4',
+                icon: '',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [],
+                subMenu: [],
+            },
         ],
     },
     {

@@ -19,7 +19,8 @@
                 "collapse": "Global Settings",
                 "item1": "Certificate Template",
                 "item2": "Notification Settings",
-                "item3": "Status Settings"
+                "item3": "Status Settings",
+                "item4": "Custom Fields"
             }
         },
         "companySetup": {
