@@ -118,7 +118,7 @@ const ConfigDropdown = ({ companyName, companyGroupName }) => {
         document.body
       )}
       <Dialog isOpen={isDialogOpen}>
-            <div className='mb-4'>Please Upload {selectedOption} reciept</div>
+            <div className='mb-4'>Upload {selectedOption} reciept</div>
           <div className="flex flex-col gap-2">
           <Input
             type="file"

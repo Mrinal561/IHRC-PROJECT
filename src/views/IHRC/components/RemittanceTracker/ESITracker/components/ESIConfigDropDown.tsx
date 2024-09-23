@@ -113,7 +113,7 @@ const ESIConfigDropdown = ({ companyName, companyGroupName }) => {
         document.body
       )}
       <Dialog isOpen={isDialogOpen}>
-        <div className='mb-4'>Please Upload {selectedOption} receipt</div>
+        <div className='mb-4'>Upload {selectedOption} receipt</div>
         <div className="flex flex-col gap-2">
           <Input
             type="file"

@@ -120,7 +120,7 @@ const ConfigDropdown = ({ companyName, companyGroupName }) => {
         document.body
       )}
       <Dialog isOpen={isDialogOpen}>
-            <div className='mb-4'>Please Upload {selectedOption} reciept</div>
+            <div className='mb-4'>Upload {selectedOption} reciept</div>
           
           {/* <div className="mt-4">
             <label htmlFor="file-upload" className="cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-md inline-flex items-center">

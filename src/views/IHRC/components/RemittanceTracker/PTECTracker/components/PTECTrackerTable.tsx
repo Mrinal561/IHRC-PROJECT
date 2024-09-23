@@ -269,6 +269,7 @@ const columns: ColumnDef<PTTrackerData>[] = [
             className="text-red-500"
           />
         </Tooltip>
+        <ConfigDropdown companyName={undefined} companyGroupName={undefined}            />
       </div>
     ),
   },

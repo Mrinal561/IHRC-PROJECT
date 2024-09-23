@@ -43,8 +43,8 @@ const ConfigDropdown = ({ companyName, companyGroupName }) => {
   };
 
   const options = [
-    { key: 'PTReceipt', label: 'PT Payment Receipt Upload' },
-    { key: 'PTReturn', label: 'PT Return Upload' },
+    { key: 'PT RC Receipt', label: 'PT Payment Receipt Upload' },
+    { key: 'PT RC Return', label: 'PT Return Upload' },
   ];
 
   const updateDropdownPosition = () => {
@@ -114,7 +114,7 @@ const ConfigDropdown = ({ companyName, companyGroupName }) => {
         document.body
       )}
       <Dialog isOpen={isDialogOpen}>
-        <div className='mb-4'>Please Upload {selectedOption} document</div>
+        <div className='mb-4'>Upload {selectedOption} document</div>
         <div className="flex flex-col gap-2">
           <Input
             type="file"
