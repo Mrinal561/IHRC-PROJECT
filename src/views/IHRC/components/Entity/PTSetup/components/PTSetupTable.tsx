@@ -365,7 +365,7 @@ const PTSetupTable: React.FC<ESISetupTableProps> = () => {
         isOpen={editDialogIsOpen}
         onClose={handleDialogClose}
         onRequestClose={handleDialogClose}
-        width={800}
+        width={1060}
         height={570}
       >
         <h5 className="mb-4">Edit PT Setup</h5>

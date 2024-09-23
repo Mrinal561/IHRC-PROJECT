@@ -74,17 +74,19 @@ const PTEditedData: React.FC<PTEditedDataProps> = ({ initialData, onClose, onSub
                 <div className="w-full">
                     <OutlinedInput
                         label="Company Group Name"
-                        value={formData.Company_Group_Name} onChange={function (value: string): void {
-                            throw new Error('Function not implemented.');
-                        } }                        
+                        value={formData.Company_Group_Name}
+                        onChange={function (value: string): void {
+                            throw new Error('Function not implemented.')
+                        }}
                     />
                 </div>
                 <div className="w-full">
                     <OutlinedInput
                         label="Company Name"
-                        value={formData.Company_Name} onChange={function (value: string): void {
-                            throw new Error('Function not implemented.');
-                        } }                        
+                        value={formData.Company_Name}
+                        onChange={function (value: string): void {
+                            throw new Error('Function not implemented.')
+                        }}
                     />
                 </div>
             </div>
@@ -95,9 +97,10 @@ const PTEditedData: React.FC<PTEditedDataProps> = ({ initialData, onClose, onSub
                     <div className="w-56">
                         <OutlinedInput
                             label="State"
-                            value={formData.ptState} onChange={function (value: string): void {
-                                throw new Error('Function not implemented.');
-                            } }                            
+                            value={formData.ptState}
+                            onChange={function (value: string): void {
+                                throw new Error('Function not implemented.')
+                            }}
                         />
                     </div>
                 </div>
@@ -106,9 +109,10 @@ const PTEditedData: React.FC<PTEditedDataProps> = ({ initialData, onClose, onSub
                     <div className="w-56">
                         <OutlinedInput
                             label="Location"
-                            value={formData.ptLocation} onChange={function (value: string): void {
-                                throw new Error('Function not implemented.');
-                            } }                            
+                            value={formData.ptLocation}
+                            onChange={function (value: string): void {
+                                throw new Error('Function not implemented.')
+                            }}
                         />
                     </div>
                 </div>
@@ -117,9 +121,22 @@ const PTEditedData: React.FC<PTEditedDataProps> = ({ initialData, onClose, onSub
                     <div className="w-56">
                         <OutlinedInput
                             label="Registration Number"
-                            value={formData.ptRegistrationNumber} onChange={function (value: string): void {
-                                throw new Error('Function not implemented.');
-                            } }                            
+                            value={formData.ptRegistrationNumber}
+                            onChange={function (value: string): void {
+                                throw new Error('Function not implemented.')
+                            }}
+                        />
+                    </div>
+                </div>
+                <div className="flex flex-col gap-2">
+                    <label>PT Enrollment Number</label>
+                    <div className="w-56">
+                        <OutlinedInput
+                            label="Enrollment Number"
+                            value={formData.ptEnrollmentNumber}
+                            onChange={function (value: string): void {
+                                throw new Error('Function not implemented.')
+                            }}
                         />
                     </div>
                 </div>
@@ -131,9 +148,10 @@ const PTEditedData: React.FC<PTEditedDataProps> = ({ initialData, onClose, onSub
                     <div className="w-56">
                         <OutlinedInput
                             label="User ID (Optional)"
-                            value={formData.ptUserId || ''} onChange={function (value: string): void {
-                                throw new Error('Function not implemented.');
-                            } }                            
+                            value={formData.ptUserId || ''}
+                            onChange={function (value: string): void {
+                                throw new Error('Function not implemented.')
+                            }}
                         />
                     </div>
                 </div>
@@ -142,29 +160,44 @@ const PTEditedData: React.FC<PTEditedDataProps> = ({ initialData, onClose, onSub
                     <div className="w-56">
                         <OutlinedInput
                             label="Password (Optional)"
-                            value={formData.ptPassword || ''} onChange={function (value: string): void {
-                                throw new Error('Function not implemented.');
-                            } }                            
+                            value={formData.ptPassword || ''}
+                            onChange={function (value: string): void {
+                                throw new Error('Function not implemented.')
+                            }}
                         />
                     </div>
                 </div>
-                <div className='flex flex-col gap-2 w-full'>
-          <label>Select Remittance Mode</label>
-          <div className='w-full'>
-          <OutlinedSelect
-            label="Mode"
-            options={[
-              { value: 'online', label: 'Online' },
-              { value: 'offline', label: 'Offline' },
-            ]}
-            value={formData.ptRemmitanceMode}
-            onChange={(value: string) => handleInputChange('ptRemmitanceMode', value)}
-            />
-            </div>
-        </div>
+                <div className="flex flex-col gap-2 w-full">
+                    <label>Select Remittance Mode</label>
+                    <div className="w-full">
+                        <OutlinedSelect
+                            label="Mode"
+                            options={[
+                                { value: 'online', label: 'Online' },
+                                { value: 'offline', label: 'Offline' },
+                            ]}
+                            value={formData.ptRemmitanceMode}
+                            onChange={(value: string) =>
+                                handleInputChange('ptRemmitanceMode', value)
+                            }
+                        />
+                    </div>
+                </div>
+                <div className="flex flex-col gap-2">
+                    <label>Enter Email</label>
+                    <div className="w-56">
+                        <OutlinedInput
+                            label="Email"
+                            value={formData.signatoryEmail}
+                            onChange={function (value: string): void {
+                                throw new Error('Function not implemented.')
+                            }}
+                        />
+                    </div>
+                </div>
             </div>
 
-            <div className="flex gap-4 items-center">
+            <div className="flex gap-8 items-center">
                 <div className="flex flex-col gap-2">
                     <label>PT Registration Date</label>
                     <div className="w-56">
@@ -175,35 +208,75 @@ const PTEditedData: React.FC<PTEditedDataProps> = ({ initialData, onClose, onSub
                         />
                     </div>
                 </div>
-
-                <div className='flex flex-col gap-2 w-full'>
-          <label>Choose the Signatories</label>
-          <div>
-          <Select
-            isMulti
-            options={[
-              ...existingSignatories.map(s => ({ value: s.name, label: s.name })),
-              // { value: 'add_new'}
-            ]}
-            // value={esiSetupData.authorizedSignatory.map(name => ({ value: name, label: name }))}
-            // onChange={handleSignatoryChange}
-            />
+                <div className="flex flex-col gap-2">
+                    <label>Enter Mobile Number</label>
+                    <div className="w-56">
+                        <OutlinedInput
+                            label="Mobile"
+                            value={formData.signatoryMobile}
+                            onChange={function (value: string): void {
+                                throw new Error('Function not implemented.')
+                            }}
+                        />
+                    </div>
+                </div>
+                <div className="flex flex-col gap-2">
+                    <label>PT EC Frequency</label>
+                    <div className="w-56">
+                        <OutlinedInput
+                            label="PT EC Frequency"
+                            value={formData.ptecPaymentFrequency}
+                            onChange={function (value: string): void {
+                                throw new Error('Function not implemented.')
+                            }}
+                        />
+                    </div>
+                </div>
+                <div className="flex flex-col gap-2">
+                    <label>PT RC Frequency</label>
+                    <div className="w-56">
+                        <OutlinedInput
+                            label="PT RC Frequency"
+                            value={formData.ptrcPaymentFrequency}
+                            onChange={function (value: string): void {
+                                throw new Error('Function not implemented.')
+                            }}
+                        />
+                    </div>
+                </div>
+            </div>
+            <div className="flex gap-4 items-center">
+                <div className="flex flex-col gap-2 w-full">
+                    <label>Upload the PT EC certificate</label>
+                    <Input
+                        id="file-upload"
+                        type="file"
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            const file = e.target.files?.[0] || null
+                            handleInputChange(
+                                'lwfRegistrationCertificate',
+                                file,
+                            )
+                        }}
+                    />
+                </div>
+                <div className="flex flex-col gap-2 w-full">
+                    <label>Upload the PT RC certificate</label>
+                    <Input
+                        id="file-upload"
+                        type="file"
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            const file = e.target.files?.[0] || null
+                            handleInputChange(
+                                'lwfRegistrationCertificate',
+                                file,
+                            )
+                        }}
+                    />
+                </div>
             </div>
         </div>
-            </div>
-
-            <div className="flex flex-col gap-2">
-                <label>Please upload the PT certificate</label>
-                <Input
-                    id="file-upload"
-                    type="file"
-                    // disabled
-                />
-            </div>
-
-            
-        </div>
-    );
+    )
 };
 
 export default PTEditedData;
