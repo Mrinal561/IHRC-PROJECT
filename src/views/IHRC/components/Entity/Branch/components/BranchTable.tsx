@@ -44,14 +44,14 @@ const BranchTable: React.FC = () => {
     const columns: ColumnDef<EntityData>[] = useMemo(
         () => [
             {
-                header: 'Company Group Name',
+                header: 'Company Group',
                 accessorKey: 'Company_Group_Name',
                 cell: (props) => (
                     <div className="w-52 truncate">{props.getValue() as string}</div>
                 ),
             },
             {
-                header: 'Company Name',
+                header: 'Company',
                 accessorKey: 'Company_Name',
                 cell: (props) => (
                     <div className="w-52 truncate">{props.getValue() as string}</div>
@@ -338,7 +338,7 @@ const BranchTable: React.FC = () => {
                 <h5 className="mb-4">Edit Branch</h5>
                 <div className="mb-4">
                     <OutlinedSelect
-                        label="Company Group Name"
+                        label="Company Group"
                         options={companyGroupOptions}
                         value={selectedCompanyGroup}
                         onChange={handleCompanyGroupChange}
@@ -346,7 +346,7 @@ const BranchTable: React.FC = () => {
                 </div>
                 <div className="mb-4">
                     <OutlinedSelect
-                        label="Company Name"
+                        label="Company"
                         options={companyOptions}
                         value={selectedCompany}
                         onChange={(option: SelectOption | null) =>

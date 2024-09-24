@@ -81,9 +81,9 @@ const CompanyNameTool: React.FC = () => {
       >
         <h5 className="mb-4">Add Company </h5>
         <div className='mb-4 flex flex-col gap-3'>
-          <label>Select the company group name</label>
+          <label>Select the company group</label>
           <OutlinedSelect
-            label="Select The Company Group"
+            label="Company Group"
             options={companyGroupOptions}
             value={selectedCompanyGroup}
             onChange={(option: SelectOption | null) => {
@@ -93,9 +93,9 @@ const CompanyNameTool: React.FC = () => {
           />
         </div>
         <div className='mb-4 flex flex-col gap-3'>
-        <label>Select the company name</label>
+        <label>Enter company name</label>
           <OutlinedInput
-            label="Enter Your Company Name"
+            label="Company"
             value={companyName}
             onChange={(value: string) => {
               console.log("Company Name changed:", value);

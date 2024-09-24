@@ -63,7 +63,7 @@ const PTECTrackerFilter: React.FC<PTTrackerFilterProps> = ({ data, onFilterChang
     <div className="flex gap-3">  
       <div className='w-40'>
         <OutlinedSelect
-          label="Group Name"
+          label="Company Group"
           options={groupOptions}
           value={groupOptions.find((option) => option.value === currentGroup)}
           onChange={handleChange(setCurrentGroup, 'groupName')}

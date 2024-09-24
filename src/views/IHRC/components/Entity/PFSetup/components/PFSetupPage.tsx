@@ -144,12 +144,12 @@ const PFSetupPage: React.FC = () => {
         <div className="space-y-6">
           <div className="grid grid-cols-2 gap-4">
             <OutlinedInput
-              label="Company Group Name"
+              label="Company Group"
               value={pfSetupData.Company_Group_Name}
               onChange={(value: string) => handleInputChange('Company_Group_Name', value)}
             />
             <OutlinedInput
-              label="Company Name"
+              label="Company"
               value={pfSetupData.Company_Name}
               onChange={(value: string) => handleInputChange('Company_Name', value)}
             />

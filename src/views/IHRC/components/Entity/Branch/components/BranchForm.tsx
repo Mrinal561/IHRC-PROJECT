@@ -414,7 +414,7 @@ const AddBranchForm: React.FC = () => {
           <div>
             <p className="mb-2">Company Name</p>
             <OutlinedSelect
-              label="Select Company Name"
+              label="Select Company"
               options={filteredCompanyNameOptions}
               value={filteredCompanyNameOptions.find(option => option.value === formData.Company_Name)}
               onChange={(selectedOption: SelectOption | null) => {
