@@ -105,7 +105,7 @@ const Filter: React.FC = () => {
     <div className=" flex gap-3 w-full">    
         <div className='w-40'>
         <OutlinedSelect
-        label="Group Name"
+        label="Company Group"
         options={groupOptions}
         value={groupOptions.find((option) => option.value === currentGroup)}
         onChange={handleGroupChange}
@@ -113,7 +113,7 @@ const Filter: React.FC = () => {
         </div>
         <div className='w-40'>
         <OutlinedSelect
-        label="Company Name"
+        label="Company"
         options={nameOptions}
         value={nameOptions.find((option) => option.value === groupName)}
         onChange={handleNameChange}

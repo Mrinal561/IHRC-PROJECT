@@ -92,7 +92,7 @@ const UploadedLWFDetails: React.FC<UploadedPFDetailsProps> = ({ onBack }) => {
   const columns: ColumnDef<LWFTrackerData>[] = useMemo(
     () => [
       {
-        header: 'Company Name',
+        header: 'Company',
         accessorKey: 'companyName',
         cell: (props) => <div className="w-52 truncate">{props.getValue() as string}</div>,
     },

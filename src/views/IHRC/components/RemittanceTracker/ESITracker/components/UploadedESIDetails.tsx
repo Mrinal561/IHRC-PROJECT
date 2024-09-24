@@ -141,7 +141,7 @@ const UploadedESIDetails: React.FC<UploadedESIDetailsProps> = ({ onBack }) => {
   const columns: ColumnDef<ESITrackerData>[] = useMemo(
     () => [
       {
-        header: 'Company Name',
+        header: 'Company',
         accessorKey: 'companyName',
         cell: (props) => (
             <div className="w-52 truncate">

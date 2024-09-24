@@ -217,7 +217,7 @@ const handleEditSubmit = (editedData: PTTrackerData) => {
   const columns: ColumnDef<PTTrackerData>[] = useMemo(
     () => [
       {
-        header: 'Company Name',
+        header: 'Company',
         accessorKey: 'companyName',
         cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
       },

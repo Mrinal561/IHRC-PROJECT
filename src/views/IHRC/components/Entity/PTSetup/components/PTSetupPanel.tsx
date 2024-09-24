@@ -142,7 +142,7 @@ const PTSetupPanel: React.FC<PTSetupSidePanelProps> = ({
             <label>Enter Company Group</label>
             <div className=' w-full'>
               <OutlinedInput
-                label="State"
+                label="Company Group"
                 value={PTSetupData.Company_Group_Name}
                 onChange={(value: string) => handleInputChange('Company_Group_Name', value)}
                 />
@@ -152,7 +152,7 @@ const PTSetupPanel: React.FC<PTSetupSidePanelProps> = ({
             <label>Enter Company Name</label>
             <div className=' w-full'>
               <OutlinedInput
-                label="Company Name"
+                label="Company"
                 value={PTSetupData.Company_Name}
                 onChange={(value: string) => handleInputChange('Company_Name', value)}
               />
