@@ -3,10 +3,11 @@ import { Button, Dialog, Input, toast, Tooltip, Notification } from '@/component
 import { AdaptableCard } from '@/components/shared';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 import { DataTable } from '@/components/shared';
-import { HiPlusCircle, HiX } from 'react-icons/hi';
+import { HiArrowLeft, HiPlusCircle, HiX } from 'react-icons/hi';
 import { MdEdit } from 'react-icons/md';
 import { FiTrash } from 'react-icons/fi';
 import OutlinedInput from '@/components/ui/OutlinedInput';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const dummyData = [
   { id: 1, name: 'Remark', type: 'Text' },
@@ -25,6 +26,9 @@ const ModuleCustomFields = () => {
   const [newOption, setNewOption] = useState('');
   const [fields, setFields] = useState(dummyData);
   const [editingField, setEditingField] = useState(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { moduleLabel, moduleValue } = location.state || {};
 
   const fieldTypeOptions = [
     { value: 'text', label: 'Text' },
@@ -123,10 +127,21 @@ const ModuleCustomFields = () => {
     );
   };
 
+
   return (
     <AdaptableCard className="h-full" bodyClass="h-full">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-2xl font-bold">Custom Fields</h3>
+      <div className='flex gap-3'>
+       <Button
+           variant="plain"
+           size="sm"
+           icon={<HiArrowLeft />}
+           onClick={() => navigate(-1)}
+           className="mb-4"
+           >
+         </Button>
+       <h3 className="text-2xl font-bold">{moduleLabel || moduleValue} Custom Fields</h3>
+               </div>
         <Button
           size="sm"
           variant="solid"
