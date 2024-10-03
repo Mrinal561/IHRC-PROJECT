@@ -163,7 +163,6 @@ const ESIEditedData: React.FC<ESIEditedDataProps> = ({ initialData, onClose, onS
           <label>Choose the Signatories</label>
           <div>
           <Select
-            isMulti
             options={[
               ...existingSignatories.map(s => ({ value: s.name, label: s.name })),
               // { value: 'add_new'}
