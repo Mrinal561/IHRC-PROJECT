@@ -1,3 +1,4 @@
+import Location from '../components/Entity/Location/Location';
 export interface EntityData {
     Company_Group_Name?:string,
     Company_Name?:string,
@@ -9,7 +10,13 @@ export interface EntityData {
     BranchAddress: string,
     BranchOpeningDate: string;
 }
-
+export interface LocationData{
+    Location?:string,
+}
+export const LocationData : LocationData[]=[
+    {Location:'Mumbai'},
+    {Location:'Delhi'},
+]
 export const entityDataSet: EntityData[] = [
     {
         Company_Group_Name: "IND MONEY",
@@ -59,7 +66,7 @@ export const entityDataSet: EntityData[] = [
         Company_Group_Name: "Wipro",
         Company_Name: "Wipro Limited",
         State: "Karnataka",
-        Location: "Bengaluru",
+        Location: "Mysore",
         BranchAddress: 'Shop No. 3 & 4, Ground Floor, Yadav Complex, Near Rastra Unnati School No. 04, Rani Bazar, Bikaner - 334001',
         BranchOpeningDate: "6-May-2019",
         Branch: "Sarjapur",
@@ -92,7 +99,7 @@ export const entityDataSet: EntityData[] = [
         Company_Group_Name: "Larsen & Toubro",
         Company_Name: "L&T Infotech",
         State: "Maharashtra",
-        Location: "Mumbai",
+        Location: "Nagpur",
         BranchAddress: 'Above Canara Bank, 3rd Floor,Opp.Dak Banglow, Near Bus Stand,Ajmer road,Madanganj, Kishangarh, Dist Ajmer -305801',
         Branch: "Powai",
         BranchOpeningDate: "26-Nov-2020",
@@ -104,7 +111,7 @@ export const entityDataSet: EntityData[] = [
         Company_Name: "Mindtree Ltd",
         State: "Karnataka",
         BranchAddress: 'Plot No. 69, 3rd Floor, MP Nagar, Zone-1, Bhopal - 462011',
-        Location: "Bengaluru",
+        Location: "Mangalore",
         Branch: "Whitefield",
         BranchOpeningDate: "6-May-2011",
         PF_Setup: "Yes",
@@ -125,7 +132,7 @@ export const entityDataSet: EntityData[] = [
         Company_Group_Name: "Capgemini",
         Company_Name: "Capgemini India",
         State: "Maharashtra",
-        Location: "Mumbai",
+        Location: "Nashik",
         Branch: "Airoli",
         BranchOpeningDate: "28-May-2016",
         BranchAddress: 'Khasara No.- 1539, Chak No. 2, Brham Vihar, Gautam Vihar, Main Sojat Road, Pali - 306401',
@@ -146,6 +153,7 @@ export interface UserData {
     Pan?:string,
     Aadhar?:string,
     DateOfJoin?:string,
+    Company_Group_Name?:string,
 }
 export const userDataSet: UserData[] = [
     {
@@ -160,6 +168,7 @@ export const userDataSet: UserData[] = [
       Pan: "ABCDE1234F",
       Aadhar: "1234-5678-9123",
       DateOfJoin: "2021-01-15",
+      Company_Group_Name: "IND MONEY",
     },
     {
       FirstName: "Krishna Kumar",
@@ -173,6 +182,7 @@ export const userDataSet: UserData[] = [
       Pan: "FGHIJ5678K",
       Aadhar: "2345-6789-1234",
       DateOfJoin: "2019-07-10",
+      Company_Group_Name: "Tata Group",
     },
     {
       FirstName: "Ajay",
@@ -186,6 +196,7 @@ export const userDataSet: UserData[] = [
       Pan: "KLMNO2345P",
       Aadhar: "3456-7890-2345",
       DateOfJoin: "2020-03-25",
+      Company_Group_Name: "Reliance Industries",
     },
     {
       FirstName: "Sneha",
@@ -199,6 +210,7 @@ export const userDataSet: UserData[] = [
       Pan: "PQRST3456R",
       Aadhar: "4567-8901-3456",
       DateOfJoin: "2018-11-05",
+      Company_Group_Name: "Infosys",
     },
     {
       FirstName: "Vikram",
@@ -212,6 +224,7 @@ export const userDataSet: UserData[] = [
       Pan: "UVWXY6789S",
       Aadhar: "5678-9012-4567",
       DateOfJoin: "2022-08-19",
+      Company_Group_Name: "Larsen & Toubro",
     }
   ];
   
