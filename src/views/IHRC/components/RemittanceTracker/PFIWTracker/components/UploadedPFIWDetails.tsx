@@ -157,7 +157,7 @@ const UploadedPFIWDetails: React.FC<UploadedPFIWDetailsProps> = ({ onBack }) => 
           className="mr-4"
         >
         </Button>
-        <h2 className="text-2xl font-bold">Uploaded PFIW Tracker Details</h2>
+        <h2 className="text-2xl font-bold">Uploaded PF IW Tracker Details</h2>
       </div>
       <DataTable
         columns={columns}

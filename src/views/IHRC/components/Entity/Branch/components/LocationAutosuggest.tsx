@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Input } from '@/components/ui';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+// import { ChevronDown, ChevronUp } from 'lucide-react';
+import { IoIosArrowUp, IoIosArrowDown  } from "react-icons/io";
 
 interface LocationAutosuggestProps {
   value: string;
@@ -78,6 +79,7 @@ const LocationAutosuggest = ({
       <div className="mb-2">{label}</div>
       <div className="relative">
         <Input
+        size='sm'
           value={value}
           onChange={e => {
             onChange(e.target.value);
@@ -93,9 +95,9 @@ const LocationAutosuggest = ({
               type="button"
             >
               {isOpen ? (
-                <ChevronUp className="h-4 w-4 text-gray-500" />
+                <IoIosArrowUp className="h-4 w-4 text-gray-500" />
               ) : (
-                <ChevronDown className="h-4 w-4 text-gray-500" />
+                <IoIosArrowDown  className="h-4 w-4 text-gray-500" />
               )}
             </button>
           }
