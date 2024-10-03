@@ -146,6 +146,7 @@ export interface UserData {
     Pan?:string,
     Aadhar?:string,
     DateOfJoin?:string,
+    Company_Group_Name?:string,
 }
 export const userDataSet: UserData[] = [
     {
@@ -160,6 +161,7 @@ export const userDataSet: UserData[] = [
       Pan: "ABCDE1234F",
       Aadhar: "1234-5678-9123",
       DateOfJoin: "2021-01-15",
+      Company_Group_Name: "IND MONEY",
     },
     {
       FirstName: "Krishna Kumar",
@@ -173,6 +175,7 @@ export const userDataSet: UserData[] = [
       Pan: "FGHIJ5678K",
       Aadhar: "2345-6789-1234",
       DateOfJoin: "2019-07-10",
+      Company_Group_Name: "Tata Group",
     },
     {
       FirstName: "Ajay",
@@ -186,6 +189,7 @@ export const userDataSet: UserData[] = [
       Pan: "KLMNO2345P",
       Aadhar: "3456-7890-2345",
       DateOfJoin: "2020-03-25",
+      Company_Group_Name: "Reliance Industries",
     },
     {
       FirstName: "Sneha",
@@ -199,6 +203,7 @@ export const userDataSet: UserData[] = [
       Pan: "PQRST3456R",
       Aadhar: "4567-8901-3456",
       DateOfJoin: "2018-11-05",
+      Company_Group_Name: "Infosys",
     },
     {
       FirstName: "Vikram",
@@ -212,6 +217,7 @@ export const userDataSet: UserData[] = [
       Pan: "UVWXY6789S",
       Aadhar: "5678-9012-4567",
       DateOfJoin: "2022-08-19",
+      Company_Group_Name: "Larsen & Toubro",
     }
   ];
   
