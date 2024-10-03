@@ -5,7 +5,7 @@ import { IoArrowBack } from 'react-icons/io5';
 import { EntityData, entityDataSet, LocationData } from '../../../../store/dummyEntityData';
 import OutlinedSelect from '@/components/ui/Outlined';
 import OutlinedInput from '@/components/ui/OutlinedInput';
-import LocationAutosuggest from './LocationAutoSuggest';
+import LocationAutosuggest from './LocationAutosuggest';
 
 interface BranchData extends EntityData {
   Branch: string;
