@@ -109,7 +109,7 @@ const SideNav = () => {
                         sideNavCollapse && 'side-nav-expand'
                     )}
                 >
-                    <div className="side-nav-content-content h-full flex flex-col">
+                    <div className="side-nav-content-content h-full flex flex-col ">
                         <div className="side-nav-header">
                             <Logo
                                 mode={logoMode()}

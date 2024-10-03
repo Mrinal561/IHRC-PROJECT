@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Checkbox, toast, Notification, DatePicker } from '@/components/ui';
 import { IoArrowBack } from 'react-icons/io5';
 import OutlinedSelect from '@/components/ui/Outlined';
 import OutlinedInput from '@/components/ui/OutlinedInput';
+import { entityDataSet, EntityData } from '../../../store/dummyEntityData';
+
+interface SelectOption {
+  value: string;
+  label: string;
+}
 
 const UserForm: React.FC = () => {
   const navigate = useNavigate();
@@ -16,7 +22,15 @@ const UserForm: React.FC = () => {
   const [dscVal, setDscVal] = useState('');
   const [pan, setPan] = useState('');
   const [aadhar, setAadhar] = useState('');
-  const [mobile, setMobile] = useState('')
+  const [mobile, setMobile] = useState('');
+  const [selectedCompanyGroup, setSelectedCompanyGroup] = useState<SelectOption | null>(null);
+  const companyGroupOptions = useMemo(() => {
+    const uniqueGroups = Array.from(new Set(entityDataSet.map(entity => entity.Company_Group_Name)));
+    return uniqueGroups.filter(Boolean).map(group => ({
+      value: group as string,
+      label: group as string
+    }));
+  }, []);
 
   const openNotification = (type: 'success' | 'info' | 'danger' | 'warning', message: string) => {
     toast.push(
@@ -48,6 +62,18 @@ const UserForm: React.FC = () => {
       </div>
       <form className="space-y-5">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+        <div className='flex flex-col gap-2'>
+          <label>Select the company group </label>
+          <OutlinedSelect
+            label="Select The Company Group"
+            options={companyGroupOptions}
+            value={selectedCompanyGroup}
+            onChange={(option: SelectOption | null) => {
+              console.log("Company Group selected:", option);
+              setSelectedCompanyGroup(option);
+            }}
+          />
+        </div>
           <div>
             <p className="mb-2">First Name</p>
             <OutlinedInput
@@ -58,7 +84,11 @@ const UserForm: React.FC = () => {
               }}
             />
           </div>
-          <div>
+         
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+        <div>
             <p className="mb-2">Last Name</p>
             <OutlinedInput
               label="Last Name"
@@ -68,9 +98,6 @@ const UserForm: React.FC = () => {
               }}
             />
           </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           <div>
             <p className="mb-2">Email</p>
             <OutlinedInput
@@ -81,7 +108,11 @@ const UserForm: React.FC = () => {
               }}
             />
           </div>
-          <div>
+          
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+        <div>
             <p className="mb-2">Username</p>
             <OutlinedInput
               label="Username"
@@ -91,9 +122,6 @@ const UserForm: React.FC = () => {
               }}
             />
           </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           <div>
             <p className="mb-2">Job Role</p>
             <OutlinedInput
@@ -103,10 +131,6 @@ const UserForm: React.FC = () => {
                 setJobRole(value);
               }}
             />
-          </div>
-          <div>
-            <p className="mb-2">Date of Joining</p>
-            <DatePicker size='sm' placeholder="Pick a date" />
           </div>
          
         </div>
@@ -150,6 +174,10 @@ const UserForm: React.FC = () => {
             />
           </div>
           <div>
+            <p className="mb-1">Date of Joining</p>
+            <DatePicker size='sm' placeholder="Pick a date" />
+          </div>
+          {/* <div>
             <p className="mb-2">Mobile No</p>
             <OutlinedInput
               label="Mobile no"
@@ -158,7 +186,7 @@ const UserForm: React.FC = () => {
                 setMobile(value);
               }}
             />
-          </div>
+          </div> */}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -184,6 +212,17 @@ const UserForm: React.FC = () => {
               }}
             />
           </div>
+          <div>
+            <p className="mb-1">Mobile No</p>
+            <OutlinedInput
+              label="Mobile no"
+              value={mobile}
+              onChange={(value: string) => {
+                setMobile(value);
+              }}
+            />
+          </div>
+          
         </div>
 
         

@@ -68,7 +68,7 @@ const Table = forwardRef<HTMLElement, TableProps>((props, ref) => {
         .sticky-column {
             position: sticky;
             background: #ffffff;
-            z-index: 10;
+            // z-index: 10;
         }
         .sticky-left {
                 left: 0;
@@ -78,7 +78,7 @@ const Table = forwardRef<HTMLElement, TableProps>((props, ref) => {
         }
         .sticky-header {
             position: sticky;
-            z-index: 10;
+            // z-index: 10;
             background: #f9fafb;
         }
         .table-row:hover .sticky-column {

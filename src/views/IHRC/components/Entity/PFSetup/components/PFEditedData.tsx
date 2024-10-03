@@ -141,7 +141,6 @@ const PFEditedData: React.FC<PFEditedDataProps> = ({ initialData, onClose, onSub
           <label>Choose the Signatories</label>
           <div>
           <Select
-            isMulti
             options={[
               ...existingSignatories.map(s => ({ value: s.name, label: s.name })),
               // { value: 'add_new'}

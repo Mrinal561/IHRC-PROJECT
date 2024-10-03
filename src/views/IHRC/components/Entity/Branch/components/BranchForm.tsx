@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, DatePicker, Input, Notification, toast } from '@/components/ui';
 import { IoArrowBack } from 'react-icons/io5';
-import { EntityData, entityDataSet } from '../../../../store/dummyEntityData';
+import { EntityData, entityDataSet, LocationData } from '../../../../store/dummyEntityData';
 import OutlinedSelect from '@/components/ui/Outlined';
 import OutlinedInput from '@/components/ui/OutlinedInput';
+import LocationAutosuggest from './LocationAutoSuggest';
 
 interface BranchData extends EntityData {
   Branch: string;
@@ -307,6 +308,7 @@ const districtsByState: { [key: string]: SelectOption[] } = {
 const AddBranchForm: React.FC = () => {
   const navigate = useNavigate();
   const [locationData, setLocationData] = useState<EntityData[]>([]);
+  // const [locations, setLocations] = useState<LocationData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -384,293 +386,362 @@ const AddBranchForm: React.FC = () => {
   const districtOptions = formData.State ? (districtsByState[formData.State] || []) : [];
 
   return (
-    <div className="p-2 bg-white rounded-lg">
-      <div className='flex gap-2 items-center mb-3'>
-        <Button
-          size="sm"
-          variant="plain"
-          icon={<IoArrowBack className="text-[#72828e] hover:text-[#5d6169]" />}
-          onClick={() => navigate('/branch')}
-        />
-        <h3 className="text-2xl font-semibold mb-2">Add New Branch</h3>
-      </div>
-      <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-          <div>
-            <p className="mb-2">Company Group</p>
-            <OutlinedSelect
-              label="Select Company Group"
-              options={companyGroupOptions}
-              value={companyGroupOptions.find(option => option.value === formData.Company_Group_Name)}
-              onChange={(selectedOption: SelectOption | null) => {
-                setFormData(prev => ({
-                  ...prev,
-                  Company_Group_Name: selectedOption?.value || '',
-                  Company_Name: '',
-                }));
-              }}
-            />
+      <div className="p-2 bg-white rounded-lg">
+          <div className="flex gap-2 items-center mb-3">
+              <Button
+                  size="sm"
+                  variant="plain"
+                  icon={
+                      <IoArrowBack className="text-[#72828e] hover:text-[#5d6169]" />
+                  }
+                  onClick={() => navigate('/branch')}
+              />
+              <h3 className="text-2xl font-semibold mb-2">Add New Branch</h3>
           </div>
-          <div>
-            <p className="mb-2">Company Name</p>
-            <OutlinedSelect
-              label="Select Company"
-              options={filteredCompanyNameOptions}
-              value={filteredCompanyNameOptions.find(option => option.value === formData.Company_Name)}
-              onChange={(selectedOption: SelectOption | null) => {
-                setFormData(prev => ({
-                  ...prev,
-                  Company_Name: selectedOption?.value || '',
-                }));
-              }}
-            />
-          </div>
-        </div>
+          <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  <div>
+                      <p className="mb-2">Company Group</p>
+                      <OutlinedSelect
+                          label="Select Company Group"
+                          options={companyGroupOptions}
+                          value={companyGroupOptions.find(
+                              (option) =>
+                                  option.value === formData.Company_Group_Name,
+                          )}
+                          onChange={(selectedOption: SelectOption | null) => {
+                              setFormData((prev) => ({
+                                  ...prev,
+                                  Company_Group_Name:
+                                      selectedOption?.value || '',
+                                  Company_Name: '',
+                              }))
+                          }}
+                      />
+                  </div>
+                  <div>
+                      <p className="mb-2">Company Name</p>
+                      <OutlinedSelect
+                          label="Select Company"
+                          options={filteredCompanyNameOptions}
+                          value={filteredCompanyNameOptions.find(
+                              (option) =>
+                                  option.value === formData.Company_Name,
+                          )}
+                          onChange={(selectedOption: SelectOption | null) => {
+                              setFormData((prev) => ({
+                                  ...prev,
+                                  Company_Name: selectedOption?.value || '',
+                              }))
+                          }}
+                      />
+                  </div>
+              </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-          <div>
-            <p className="mb-2">State</p>
-            <OutlinedSelect
-              label="Select State"
-              options={indianStates}
-              value={indianStates.find(option => option.label === formData.State)}
-              onChange={(selectedOption: SelectOption | null) => {
-                setFormData(prev => ({
-                  ...prev,
-                  State: selectedOption?.label || '',
-                  District: '',
-                }));
-              }}
-            />
-          </div>
-          <div>
-            <p className="mb-2">District</p>
-            <OutlinedSelect
-              label="Select District"
-              options={districtOptions}
-              value={districtOptions.find(option => option.label === formData.District)}
-              onChange={(selectedOption: SelectOption | null) => {
-                setFormData(prev => ({
-                  ...prev,
-                  District: selectedOption?.label || '',
-                }));
-              }}
-            />
-          </div>
-        </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  <div>
+                      <p className="mb-2">State</p>
+                      <OutlinedSelect
+                          label="Select State"
+                          options={indianStates}
+                          value={indianStates.find(
+                              (option) => option.label === formData.State,
+                          )}
+                          onChange={(selectedOption: SelectOption | null) => {
+                              setFormData((prev) => ({
+                                  ...prev,
+                                  State: selectedOption?.label || '',
+                                  District: '',
+                              }))
+                          }}
+                      />
+                  </div>
+                  <div>
+                      <p className="mb-2">District</p>
+                      <OutlinedSelect
+                          label="Select District"
+                          options={districtOptions}
+                          value={districtOptions.find(
+                              (option) => option.label === formData.District,
+                          )}
+                          onChange={(selectedOption: SelectOption | null) => {
+                              setFormData((prev) => ({
+                                  ...prev,
+                                  District: selectedOption?.label || '',
+                              }))
+                          }}
+                      />
+                  </div>
+              </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-        <div>
-            <p className="mb-2">Branch Location</p>
-            <OutlinedInput
-              label="Branch Location"
-              value={formData.Location}
-              onChange={(value: string) => {
-                setFormData(prev => ({ ...prev, Branch: value }));
-              }}
-            />
-          </div>
-          <div>
-            <p className="mb-2">Branch Name</p>
-            <OutlinedInput
-              label="Branch Name"
-              value={formData.Branch}
-              onChange={(value: string) => {
-                setFormData(prev => ({ ...prev, Branch: value }));
-              }}
-            />
-          </div>
-          
-          
-        </div>
-
-        <div>
-            <p className="mb-2">Branch Address</p>
-            <OutlinedInput
-              label="Branch Address"
-              value={formData.BranchAddress}
-              onChange={(value: string) => {
-                setFormData(prev => ({ ...prev, BranchAddress: value }));
-              }}
-              textarea={true}
-            />
-          </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-          <div>
-            <p className="mb-2">Branch Opening Date</p>
-            <DatePicker 
-              size='sm' 
-              placeholder="Pick a Date"
-              onChange={(date) => {
-                setFormData(prev => ({ ...prev, BranchOpeningDate: date ? date.toString() : '' }));
-              }}
-            />
-          </div>
-          <div>
-            <p className="mb-2">Branch Head Count</p>
-            <OutlinedInput
-              label="Branch Head Count"
-              value={formData.BranchHeadCount}
-              onChange={(value: string) => {
-                setFormData(prev => ({ ...prev, BranchHeadCount: value }));
-              }}
-            />
-          </div>
-
-          <div>
-          <p className="mb-2">Branch Type</p>
-          <OutlinedSelect
-            label="Select Branch Type"
-            options={branchTypeOptions}
-            value={branchTypeOptions.find(option => option.value === formData.BranchType)}
-            onChange={(selectedOption: SelectOption | null) => {
-              setFormData(prev => ({
-                ...prev,
-                BranchType: selectedOption?.value || '',
-              }));
-            }}
-          />
-        </div>
-    
-        </div>
-
-        <div className='border rounded-md py-4 p-2 mt-4'>
-          <div className="flex flex-col gap-4">
-            <h6>Custom Fields</h6>
-            <div className='grid grid-cols-1 md:grid-cols-3 gap-2'>
-
-           
-            <div className='w-full'>
-            <OutlinedInput
-                label="Remark"
-                value={formData.remark}
-                onChange={(value: string) => {
-                  setFormData(prev => ({ ...prev, remark: value }));
-                  }}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  <LocationAutosuggest
+                      value={formData.Location}
+                      onChange={(value) => {
+                          setFormData((prev) => ({ ...prev, Location: value }))
+                      }}
+                      suggestions={locationData.map(item => item.Location).filter((location): location is string => location !== undefined)}
                   />
-            </div>
-            <div className='w-full'>
-            <OutlinedInput
-                label="Email"
-                value={formData.email}
-                onChange={(value: string) => {
-                  setFormData(prev => ({ ...prev, email: value }));
-                  }}
-                  />
-            </div>
-            <div className='w-full'>
-            <OutlinedInput
-                label="Mobile"
-                value={formData.mobile}
-                onChange={(value: string) => {
-                  setFormData(prev => ({ ...prev, mobile: value }));
-                  }}
-                  />
-            </div>
-            </div>
-          </div>
-        </div>
-      
+                  <div>
+                      <p className="mb-2">Branch Name</p>
+                      <OutlinedInput
+                          label="Branch Name"
+                          value={formData.Branch}
+                          onChange={(value: string) => {
+                              setFormData((prev) => ({
+                                  ...prev,
+                                  Branch: value,
+                              }))
+                          }}
+                      />
+                  </div>
+              </div>
 
-
-
-        {formData.BranchType === 'owned' && (
-        <div className='border rounded-md py-4 p-2 mt-4'>
-          <div className='flex flex-col gap-8'>
-            <h4>S&E Setup</h4>
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-2'>
               <div>
-                <p className="mb-2">S&E Registration Number</p>
-                <OutlinedInput
-                label="S&E Registration Number"
-                value={formData.SERegistrationNumber}
-                onChange={(value: string) => {
-                  setFormData(prev => ({ ...prev, SERegistrationNumber: value }));
-                  }}
+                  <p className="mb-2">Branch Address</p>
+                  <OutlinedInput
+                      label="Branch Address"
+                      value={formData.BranchAddress}
+                      onChange={(value: string) => {
+                          setFormData((prev) => ({
+                              ...prev,
+                              BranchAddress: value,
+                          }))
+                      }}
+                      textarea={true}
                   />
               </div>
-              <div>
-              <p className="mb-2">S&E Validity</p>
-            <DatePicker 
-              size='sm' 
-              placeholder="Pick a Date"
-              onChange={(date) => {
-                setFormData(prev => ({ ...prev, SEValidity: date ? date.toString() : '' }));
-              }}
-            />
-              </div>
-              <div>
-              <div className='flex flex-col gap-4'>
-             <label>Please upload the S&E Registration certificate</label>
-             <Input
-               id="file-upload"
-               type="file"
-               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                 const file = e.target.files?.[0] || null;
-               }}
-             />
-          </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
-      {formData.BranchType === 'rented' && (
-        <div className='border rounded-md py-4 p-2 mt-4'>
-        <div className='flex flex-col gap-8'>
-          <h4>Lease / Rent Setup</h4>
-          <div className='grid grid-cols-1 md:grid-cols-2 gap-2'>
-            <div>
-              <p className="mb-2">Lease / Rent Agreement Status 
-              </p>
-              <OutlinedInput
-              label="Status"
-              value={formData.SERegistrationNumber}
-              onChange={(value: string) => {
-                setFormData(prev => ({ ...prev, SERegistrationNumber: value }));
-                }}
-                />
-            </div>
-            <div>
-            <p className="mb-2">Lease deed / Rent Agreement  valid up to</p>
-          <DatePicker 
-            size='sm' 
-            placeholder="Pick a Date"
-            onChange={(date) => {
-              setFormData(prev => ({ ...prev, SEValidity: date ? date.toString() : '' }));
-            }}
-          />
-            </div>
-            <div>
-            <div className='flex flex-col gap-4'>
-           <label>Please upload Leaase deed copy</label>
-           <Input
-             id="file-upload"
-             type="file"
-             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-               const file = e.target.files?.[0] || null;
-             }}
-           />
-        </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      )}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                  <div>
+                      <p className="mb-2">Branch Opening Date</p>
+                      <DatePicker
+                          size="sm"
+                          placeholder="Pick a Date"
+                          onChange={(date) => {
+                              setFormData((prev) => ({
+                                  ...prev,
+                                  BranchOpeningDate: date
+                                      ? date.toString()
+                                      : '',
+                              }))
+                          }}
+                      />
+                  </div>
+                  <div>
+                      <p className="mb-2">Branch Head Count</p>
+                      <OutlinedInput
+                          label="Branch Head Count"
+                          value={formData.BranchHeadCount}
+                          onChange={(value: string) => {
+                              setFormData((prev) => ({
+                                  ...prev,
+                                  BranchHeadCount: value,
+                              }))
+                          }}
+                      />
+                  </div>
 
-        <div className="flex justify-end gap-2">
-          <Button type="button" variant="solid" size="sm" onClick={handleAddBranch}>
-            Add Branch
-          </Button>
-          <Button type="button" variant="plain" size="sm" onClick={() => navigate(-1)}>
-            Cancel
-          </Button>
-        </div>
+                  <div>
+                      <p className="mb-2">Branch Type</p>
+                      <OutlinedSelect
+                          label="Select Branch Type"
+                          options={branchTypeOptions}
+                          value={branchTypeOptions.find(
+                              (option) => option.value === formData.BranchType,
+                          )}
+                          onChange={(selectedOption: SelectOption | null) => {
+                              setFormData((prev) => ({
+                                  ...prev,
+                                  BranchType: selectedOption?.value || '',
+                              }))
+                          }}
+                      />
+                  </div>
+              </div>
+
+              <div className="border rounded-md py-4 p-2 mt-4">
+                  <div className="flex flex-col gap-4">
+                      <h6>Custom Fields</h6>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                          <div className="w-full">
+                              <OutlinedInput
+                                  label="Remark"
+                                  value={formData.remark}
+                                  onChange={(value: string) => {
+                                      setFormData((prev) => ({
+                                          ...prev,
+                                          remark: value,
+                                      }))
+                                  }}
+                              />
+                          </div>
+                          <div className="w-full">
+                              <OutlinedInput
+                                  label="Email"
+                                  value={formData.email}
+                                  onChange={(value: string) => {
+                                      setFormData((prev) => ({
+                                          ...prev,
+                                          email: value,
+                                      }))
+                                  }}
+                              />
+                          </div>
+                          <div className="w-full">
+                              <OutlinedInput
+                                  label="Mobile"
+                                  value={formData.mobile}
+                                  onChange={(value: string) => {
+                                      setFormData((prev) => ({
+                                          ...prev,
+                                          mobile: value,
+                                      }))
+                                  }}
+                              />
+                          </div>
+                      </div>
+                  </div>
+              </div>
+
+              {formData.BranchType === 'owned' && (
+                  <div className="border rounded-md py-4 p-2 mt-4">
+                      <div className="flex flex-col gap-8">
+                          <h4>S&E Setup</h4>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                              <div>
+                                  <p className="mb-2">
+                                      S&E Registration Number
+                                  </p>
+                                  <OutlinedInput
+                                      label="S&E Registration Number"
+                                      value={formData.SERegistrationNumber}
+                                      onChange={(value: string) => {
+                                          setFormData((prev) => ({
+                                              ...prev,
+                                              SERegistrationNumber: value,
+                                          }))
+                                      }}
+                                  />
+                              </div>
+                              <div>
+                                  <p className="mb-2">S&E Validity</p>
+                                  <DatePicker
+                                      size="sm"
+                                      placeholder="Pick a Date"
+                                      onChange={(date) => {
+                                          setFormData((prev) => ({
+                                              ...prev,
+                                              SEValidity: date
+                                                  ? date.toString()
+                                                  : '',
+                                          }))
+                                      }}
+                                  />
+                              </div>
+                              <div>
+                                  <div className="flex flex-col gap-4">
+                                      <label>
+                                          Please upload the S&E Registration
+                                          certificate
+                                      </label>
+                                      <Input
+                                          id="file-upload"
+                                          type="file"
+                                          onChange={(
+                                              e: React.ChangeEvent<HTMLInputElement>,
+                                          ) => {
+                                              const file =
+                                                  e.target.files?.[0] || null
+                                          }}
+                                      />
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              )}
+
+              {formData.BranchType === 'rented' && (
+                  <div className="border rounded-md py-4 p-2 mt-4">
+                      <div className="flex flex-col gap-8">
+                          <h4>Lease / Rent Setup</h4>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                              <div>
+                                  <p className="mb-2">
+                                      Lease / Rent Agreement Status
+                                  </p>
+                                  <OutlinedInput
+                                      label="Status"
+                                      value={formData.SERegistrationNumber}
+                                      onChange={(value: string) => {
+                                          setFormData((prev) => ({
+                                              ...prev,
+                                              SERegistrationNumber: value,
+                                          }))
+                                      }}
+                                  />
+                              </div>
+                              <div>
+                                  <p className="mb-2">
+                                      Lease deed / Rent Agreement valid up to
+                                  </p>
+                                  <DatePicker
+                                      size="sm"
+                                      placeholder="Pick a Date"
+                                      onChange={(date) => {
+                                          setFormData((prev) => ({
+                                              ...prev,
+                                              SEValidity: date
+                                                  ? date.toString()
+                                                  : '',
+                                          }))
+                                      }}
+                                  />
+                              </div>
+                              <div>
+                                  <div className="flex flex-col gap-4">
+                                      <label>
+                                          Please upload Leaase deed copy
+                                      </label>
+                                      <Input
+                                          id="file-upload"
+                                          type="file"
+                                          onChange={(
+                                              e: React.ChangeEvent<HTMLInputElement>,
+                                          ) => {
+                                              const file =
+                                                  e.target.files?.[0] || null
+                                          }}
+                                      />
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              )}
+
+              <div className="flex justify-end gap-2">
+                  <Button
+                      type="button"
+                      variant="solid"
+                      size="sm"
+                      onClick={handleAddBranch}
+                  >
+                      Add Branch
+                  </Button>
+                  <Button
+                      type="button"
+                      variant="plain"
+                      size="sm"
+                      onClick={() => navigate(-1)}
+                  >
+                      Cancel
+                  </Button>
+              </div>
+          </div>
       </div>
-    </div>
-  );
+  )
 };
 
 export default AddBranchForm;

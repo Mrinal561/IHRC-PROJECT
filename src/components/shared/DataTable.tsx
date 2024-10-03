@@ -176,7 +176,7 @@ function _DataTable<T>(
                     .sticky-column {
                         position: sticky;
                         background: #ffffff;
-                        z-index: 10;
+                        // z-index: 10;
                     }
                     .sticky-left {
                         left: 0;
@@ -187,7 +187,7 @@ function _DataTable<T>(
                     .sticky-header {
                         position: sticky;
                         background: #f9fafb;
-                        z-index: 10;
+                        // z-index: 10;
                     }
                     .table-row:hover .sticky-column {
                         background-color: #f3f4f6;  
