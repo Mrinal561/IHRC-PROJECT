@@ -1,119 +1,4 @@
-// import React, { useState, ChangeEvent } from 'react';
-// import { Switcher, Checkbox, Button } from '@/components/ui';
-// import OutlinedInput from '@/components/ui/OutlinedInput';
-
-// const NotificationContent = () => {
-//   const [enableAll, setEnableAll] = useState(false);
-//   const [notificationTypes, setNotificationTypes] = useState({
-//     ComplianceApproved: false,
-//     ComplianceRejected: false,
-//     ComplianceUpdateRequired: false,
-//     ComplianceDeadlineReminder: false,
-//     NewComplianceAdded: false,
-//   });
-//   const [deadlineReminder, setDeadlineReminder] = useState('');
-
-//   const onSwitcherToggle = () => {
-//     const newEnableAll = !enableAll;
-//     setEnableAll(newEnableAll);
-    
-//     setNotificationTypes(prevTypes => 
-//       Object.keys(prevTypes).reduce((acc, key) => {
-//         acc[key] = newEnableAll;
-//         return acc;
-//       }, {...prevTypes})
-//     );
-//   };
-
-//   const onNotificationTypeChange = (type: string) => {
-//     setNotificationTypes(prev => ({
-//       ...prev,
-//       [type]: !prev[type as keyof typeof prev],
-//     }));
-    
-//     // Check if all notification types are true or false after change
-//     const allTrue = Object.values(notificationTypes).every(value => value === true);
-//     const allFalse = Object.values(notificationTypes).every(value => value === false);
-    
-//     if (allTrue) {
-//       setEnableAll(true);
-//     } else if (allFalse) {
-//       setEnableAll(false);
-//     }
-//   };
-
-
-  
-
-//   const onDeadlineReminderChange = (value: string) => {
-//     setDeadlineReminder(value);
-//   };
-
-
-//   const onSaveChanges = () => {
-//     console.log('Saving changes:', {
-//       enableAll,
-//       notificationTypes,
-//       deadlineReminder,
-//     });
-//   };
-
-//   return (
-//     <div className='space-y-8'>
-//       <div>
-//         <h2 className="text-lg font-semibold text-gray-700 mb-2">General Settings</h2>
-//         <div className="flex items-center justify-between">
-//           <span className="text-gray-600">Enable all notifications</span>
-//           <Switcher checked={enableAll} onChange={onSwitcherToggle} />
-//         </div>
-//       </div>
-
-//       <div>
-//         <h3 className="text-lg font-semibold text-gray-700 mb-4">Notification types:</h3>
-//         <div className="space-y-4">
-//           {Object.entries(notificationTypes).map(([key, value]) => (
-//             <div key={key} className="flex items-center">
-//               <Checkbox 
-//                 checked={value} 
-//                 onChange={() => onNotificationTypeChange(key)}
-//               />
-//               <label htmlFor={key} className="ml-2 text-gray-600">
-//                 {key.split(/(?=[A-Z])/).join(' ')}
-//               </label>
-//             </div>
-//           ))}
-//         </div>
-//       </div>
-
-//       <div className='pt-4'>
-//         <h2 className="text-lg font-semibold text-gray-700 mb-2">Compliance Deadline Reminder</h2>
-//         <div className="flex items-center space-x-2">
-//           <span className="text-gray-600">Notify me</span>
-//           <div>
-//             <OutlinedInput 
-//               label={'Enter Days'} 
-//               value={deadlineReminder} 
-//               onChange={onDeadlineReminderChange}
-//             />
-//           </div>
-//           <span className="text-gray-600">days before deadline</span>
-//         </div>
-//       </div>
-
-//       <div className='flex justify-end'>
-//       <Button variant='solid' className="" onClick={onSaveChanges}>
-//         Save Changes
-//       </Button>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default NotificationContent;
-
-
-
-import React, { useState, ChangeEvent } from 'react';
+import React, { useState, ChangeEvent, useEffect } from 'react';
 import { Switcher, Checkbox, Button, Avatar } from '@/components/ui';
 import OutlinedInput from '@/components/ui/OutlinedInput';
 import {
@@ -121,50 +6,54 @@ import {
     HiOutlineCalendar,
     HiOutlineClipboardCheck,
     HiOutlineBan,
-    HiOutlineMailOpen,
-    HiOutlineExclamation,
     HiOutlinePlusCircle,
+    HiOutlineDocumentText,
+    HiOutlineClipboardList,
+    HiOutlineExclamationCircle,
+    HiOutlineBadgeCheck
 } from 'react-icons/hi'
 
-const NotificationContent = () => {
-  const [enableAll, setEnableAll] = useState(false);
-  const [notificationTypes, setNotificationTypes] = useState({
+const NotificationContent: React.FC = () => {
+    const [selectAll, setSelectAll] = useState(false);
+    const [notificationTypes, setNotificationTypes] = useState({
     ComplianceApproved: false,
     ComplianceRejected: false,
     ComplianceUpdateRequired: false,
     ComplianceDeadlineReminder: false,
     NewComplianceAdded: false,
+    PolicyUpdate: false,
+    AuditNotification: false,
+    ViolationsNotification: false,
+    CertificationExpirationsNotification: false,
+
   });
   const [deadlineReminder, setDeadlineReminder] = useState('');
 
-  const onSwitcherToggle = () => {
-    const newEnableAll = !enableAll;
-    setEnableAll(newEnableAll);
-    
+  useEffect(() => {
+    const allChecked = Object.values(notificationTypes).every(value => value === true);
+    setSelectAll(allChecked);
+  }, [notificationTypes]);
+
+  const handleSelectAll = () => {
+    const newSelectAll = !selectAll;
+    setSelectAll(newSelectAll);
     setNotificationTypes(prevTypes => 
       Object.keys(prevTypes).reduce((acc, key) => {
-        acc[key] = newEnableAll;
+        acc[key] = newSelectAll;
         return acc;
       }, {...prevTypes})
     );
   };
+
+  
+  
 
   const onNotificationTypeChange = (type: string) => {
     setNotificationTypes(prev => ({
       ...prev,
       [type]: !prev[type as keyof typeof prev],
     }));
-    
-    // Check if all notification types are true or false after change
-    const allTrue = Object.values(notificationTypes).every(value => value === true);
-    const allFalse = Object.values(notificationTypes).every(value => value === false);
-    
-    if (allTrue) {
-      setEnableAll(true);
-    } else if (allFalse) {
-      setEnableAll(false);
-    }
-  };
+}
 
   const onDeadlineReminderChange = (value: string) => {
     setDeadlineReminder(value);
@@ -172,7 +61,6 @@ const NotificationContent = () => {
 
   const onSaveChanges = () => {
     console.log('Saving changes:', {
-      enableAll,
       notificationTypes,
       deadlineReminder,
     });
@@ -221,6 +109,38 @@ const NotificationContent = () => {
                     icon={<HiOutlinePlusCircle />}
                 />
             )
+            case 'PolicyUpdate':
+                return (
+                  <Avatar
+                    shape="circle"
+                    className="bg-indigo-100 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-100"
+                    icon={<HiOutlineDocumentText />}
+                  />
+                )
+              case 'AuditNotification':
+                return (
+                  <Avatar
+                    shape="circle"
+                    className="bg-teal-100 text-teal-600 dark:bg-teal-500/20 dark:text-teal-100"
+                    icon={<HiOutlineClipboardList />}
+                  />
+                )
+              case 'ViolationsNotification':
+                return (
+                  <Avatar
+                    shape="circle"
+                    className="bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-100"
+                    icon={<HiOutlineExclamationCircle />}
+                  />
+                )
+              case 'CertificationExpirationsNotification':
+                return (
+                  <Avatar
+                    shape="circle"
+                    className="bg-pink-100 text-pink-600 dark:bg-pink-500/20 dark:text-pink-100"
+                    icon={<HiOutlineBadgeCheck />}
+                  />
+            )
           default:
             return null;
         }
@@ -242,6 +162,14 @@ const NotificationContent = () => {
               return 'Compliance ID: C54321 deadline is approaching';
             case 'NewComplianceAdded':
               return 'New compliance added: Annual Review 2024';
+            case 'PolicyUpdate':
+              return 'Policy update: New data protection guidelines effective from next month';
+            case 'AuditNotification':
+              return 'Upcoming compliance audit scheduled for next week';
+            case 'ViolationsNotification':
+              return 'Alert: Potential compliance violation detected in Department X';
+            case 'CertificationExpirationsNotification':
+              return 'Your ISO 27001 certification expires in 30 days. Renewal required.';
             default:
               return '';
           }
@@ -261,22 +189,32 @@ const NotificationContent = () => {
     );
   };
 
-  return (
-    <div className='space-y-8'>
-      <div>
-        <h2 className="text-lg font-semibold text-gray-700 mb-2">General Settings</h2>
-        <div className="flex items-center justify-between">
-          <span className="text-gray-600">Enable all notifications</span>
-          <Switcher checked={enableAll} onChange={onSwitcherToggle} />
-        </div>
-      </div>
 
-      <div className="flex space-x-8">
+  const EmptyPreviewMessage = () => (
+    <div className="flex flex-col items-center justify-center h-full text-gray-500">
+        <HiOutlineBell className="w-12 h-12 mb-4 text-gray-300" />
+        <p className="text-center">
+            To see previews of notifications,<br />select one or more notification types.
+        </p>
+    </div>
+);
+
+
+  return (
+   <div className='space-y-8'>
+      <div className="flex space-x-4">
         <div className="w-1/2">
-          <h3 className="text-lg font-semibold text-gray-700 mb-4">Notification Types:</h3>
           <div className="space-y-8">
+            <div className="flex items-center mb-6">
+              <Checkbox 
+                checked={selectAll} 
+                onChange={handleSelectAll}
+              />
+          <h3 className="text-lg font-semibold text-gray-700">Notification Types:</h3>
+             
+            </div>
             {Object.entries(notificationTypes).map(([key, value]) => (
-              <div key={key} className="flex items-center">
+              <div key={key} className="flex items-center ml-4">
                 <Checkbox 
                   checked={value} 
                   onChange={() => onNotificationTypeChange(key)}
@@ -291,11 +229,15 @@ const NotificationContent = () => {
 
         <div className="w-1/2">
           <h3 className="text-lg font-semibold text-gray-700 mb-4">Notification Previews:</h3>
-          <div className="space-y-2 max-h-80 overflow-y-auto border p-4 rounded-md h-64">
-            {Object.entries(notificationTypes).map(([key, value]) => (
-              <NotificationPreview key={key} type={key} isChecked={value} />
-            ))}
-          </div>
+          <div className="space-y-2 overflow-y-auto border p-4 rounded-md h-[410px]">
+                        {Object.values(notificationTypes).some(value => value) ? (
+                            Object.entries(notificationTypes).map(([key, value]) => (
+                                <NotificationPreview key={key} type={key} isChecked={value} />
+                            ))
+                        ) : (
+                            <EmptyPreviewMessage />
+                        )}
+                    </div>
         </div>
       </div>
 
