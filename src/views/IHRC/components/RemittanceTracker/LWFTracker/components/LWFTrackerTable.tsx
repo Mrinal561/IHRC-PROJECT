@@ -106,7 +106,7 @@ const LWFTrackerTable: React.FC = () => {
     };
     const columns: ColumnDef<LWFTrackerData>[] = [
         {
-            header: 'Company Name',
+            header: 'Company',
             accessorKey: 'companyName',
             cell: (props) => <div className="w-52 truncate">{props.getValue() as string}</div>,
         },

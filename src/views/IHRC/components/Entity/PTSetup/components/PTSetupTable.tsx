@@ -111,14 +111,14 @@ const PTSetupTable: React.FC<ESISetupTableProps> = () => {
   const columns: ColumnDef<PTSetupData>[] = useMemo(
     () => [
       {
-        header: 'Company Group Name',
+        header: 'Company Group',
         accessorKey: 'Company_Group_Name',
         cell: (props) => (
           <div className="w-44 text-start">{props.getValue() as string}</div>
         ),
       },
       {
-        header: 'Company Name',
+        header: 'Company',
         accessorKey: 'Company_Name',
         cell: (props) => (
           <div className="w-48 text-start">{props.getValue() as string}</div>

@@ -55,7 +55,7 @@ const CompanyGroupTool: React.FC = () => {
         <div className="flex flex-col h-full justify-between">
           <h5 className="mb-4">Add Company Group</h5>
           <div className='flex flex-col gap-2'>
-            <p>Enter Your Company Group Name</p>
+            <p>Enter Your Company Group</p>
             <OutlinedInput 
               label="Company Group Name"
               value={companyGroupName}

@@ -65,7 +65,7 @@ const PFTrackerFilter: React.FC<PFTrackerFilterProps> = ({ data, onFilterChange 
      
       <div className='w-full'>
         <OutlinedSelect
-          label="Group Name"
+          label="Company Group"
           options={groupOptions}
           value={groupOptions.find((option) => option.value === currentGroup)}
           onChange={handleChange(setCurrentGroup, 'groupName')}
@@ -73,7 +73,7 @@ const PFTrackerFilter: React.FC<PFTrackerFilterProps> = ({ data, onFilterChange 
       </div>
       <div className='w-full'>
         <OutlinedSelect
-          label="Company Name"
+          label="Company"
           options={nameOptions}
           value={nameOptions.find((option) => option.value === groupName)}
           onChange={handleChange(setGroupName, 'companyName')}

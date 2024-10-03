@@ -128,14 +128,14 @@ const LWFSetupTable: React.FC<ESISetupTableProps> = () => {
   const columns: ColumnDef<LWFSetupData>[] = useMemo(
     () => [
         {
-            header: 'Company Group Name',
+            header: 'Company Group',
             accessorKey: 'Company_Group_Name',
             cell: (props) => (
               <div className="w-36 text-start">{props.getValue() as string}</div>
             ),
           },
           {
-            header: 'Company Name',
+            header: 'Company',
             accessorKey: 'Company_Name',
             cell: (props) => (
               <div className="w-36 text-start">{props.getValue() as string}</div>

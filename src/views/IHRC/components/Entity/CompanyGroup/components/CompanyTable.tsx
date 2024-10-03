@@ -26,7 +26,7 @@ const CompanyTable: React.FC = () => {
     const columns: ColumnDef<EntityData>[] = useMemo(
         () => [
             {
-                header: 'Company Group Name',
+                header: 'Company Group',
                 accessorKey: 'Company_Group_Name',
                 cell: (props) => (
                     <div className="w-96 truncate">{props.getValue() as string}</div>

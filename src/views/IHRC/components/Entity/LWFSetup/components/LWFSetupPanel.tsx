@@ -138,14 +138,14 @@ const LWFSetupPanel: React.FC<LWFSetupSidePanelProps> = ({
       <div className='flex gap-4 items-center'>
         <div className='w-full'>
         <OutlinedInput
-          label="Company Group Name"
+          label="Company Group"
           value={LWFSetupData.Company_Group_Name}
           onChange={(value: string) => handleInputChange('Company_Group_Name', value)}
           />
           </div>
           <div className='w-full'>
         <OutlinedInput
-          label="Company Name"
+          label="Company"
           value={LWFSetupData.Company_Name}
           onChange={(value: string) => handleInputChange('Company_Name', value)}
           />

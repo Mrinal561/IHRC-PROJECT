@@ -66,7 +66,7 @@ const ESIEditedData: React.FC<ESIEditedDataProps> = ({ initialData, onClose, onS
       <div className='flex gap-4 items-center'>
         <div className='w-full'>
           <OutlinedInput
-                      label="Company Group Name"
+                      label="Company Group"
                       value={formData.Company_Group_Name} onChange={function (value: string): void {
                           throw new Error('Function not implemented.');
                       } }               
@@ -74,7 +74,7 @@ const ESIEditedData: React.FC<ESIEditedDataProps> = ({ initialData, onClose, onS
         </div>
         <div className='w-full'>
           <OutlinedInput
-                      label="Company Name"
+                      label="Company"
                       value={formData.Company_Name} onChange={function (value: string): void {
                           throw new Error('Function not implemented.');
                       } }               
@@ -163,7 +163,6 @@ const ESIEditedData: React.FC<ESIEditedDataProps> = ({ initialData, onClose, onS
           <label>Choose the Signatories</label>
           <div>
           <Select
-            isMulti
             options={[
               ...existingSignatories.map(s => ({ value: s.name, label: s.name })),
               // { value: 'add_new'}

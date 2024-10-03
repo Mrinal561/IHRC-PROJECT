@@ -94,14 +94,14 @@ const PFSetupTable: React.FC<PFSetupTableProps> = () => {
   const columns: ColumnDef<PFSetupData>[] = useMemo(
     () => [
       {
-        header: 'Company Group Name',
+        header: 'Company Group',
         accessorKey: 'Company_Group_Name',
         cell: (props) => (
           <div className="w-36 text-start">{props.getValue() as string}</div>
         ),
       },
       {
-        header: 'Company Name',
+        header: 'Company',
         accessorKey: 'Company_Name',
         cell: (props) => (
           <div className="w-36 text-start">{props.getValue() as string}</div>

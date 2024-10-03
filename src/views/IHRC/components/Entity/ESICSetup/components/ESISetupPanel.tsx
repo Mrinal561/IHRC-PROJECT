@@ -131,14 +131,14 @@ const ESISetupPanel: React.FC<ESISetupSidePanelProps> = ({
        <div className='flex gap-4 items-center'>
         <div className='w-full'>
         <OutlinedInput
-          label="Company Group Name"
+          label="Company Group"
           value={esiSetupData.Company_Group_Name}
           onChange={(value: string) => handleInputChange('Company_Group_Name', value)}
           />
           </div>
           <div className='w-full'>
         <OutlinedInput
-          label="Company Name"
+          label="Company"
           value={esiSetupData.Company_Name}
           onChange={(value: string) => handleInputChange('Company_Name', value)}
           />

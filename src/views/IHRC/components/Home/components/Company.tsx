@@ -42,7 +42,7 @@ const Company = () => {
 
   return (
     <div className="flex gap-3 items-center">
-      <div className="w-48"> {/* 192px */}
+      <div className="w-48 z-20"> {/* 192px */}
         <OutlinedSelect
           label="Company Group"
           value={selectedCompanyGroup}
@@ -51,7 +51,7 @@ const Company = () => {
         />
       </div>
 
-      <div className="w-44"> {/* 176px */}
+      <div className="w-44 z-20"> {/* 176px */}
         <OutlinedSelect
           label="Company"
           value={selectedCompany}
@@ -60,7 +60,7 @@ const Company = () => {
         />
       </div>
 
-      <div className="w-44"> {/* 144px */}
+      <div className="w-44 z-20"> {/* 144px */}
         <OutlinedSelect
           label="State"
           value={selectedState}
@@ -69,7 +69,7 @@ const Company = () => {
         />
       </div>
 
-      <div className="w-44"> {/* 160px */}
+      <div className="w-44 z-20"> {/* 160px */}
         <OutlinedSelect
           label="Location"
           value={selectedCity}
@@ -78,7 +78,7 @@ const Company = () => {
         />
       </div>
 
-      <div className="w-44"> {/* 160px */}
+      <div className="w-44 z-20"> {/* 160px */}
         <OutlinedSelect
           label="Branch"
           value={selectedBranch}

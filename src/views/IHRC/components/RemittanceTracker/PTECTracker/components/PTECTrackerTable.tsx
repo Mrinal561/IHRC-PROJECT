@@ -121,7 +121,7 @@ const handleEditSubmit = (editedData: PTTrackerData) => {
 };
 const columns: ColumnDef<PTTrackerData>[] = [
   {
-    header: 'Company Name',
+    header: 'Company',
     accessorKey: 'companyName',
     cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
   },

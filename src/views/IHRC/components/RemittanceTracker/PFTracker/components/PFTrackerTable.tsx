@@ -155,7 +155,7 @@ const PFTrackerTable: React.FC = () => {
     const columns: ColumnDef<PFTrackerData>[] = useMemo(
         () => [
             {
-                header: 'Company Name',
+                header: 'Company',
                 accessorKey: 'companyName',
                 cell: (props) => <div className="w-52 truncate">{props.getValue() as string}</div>,
             },

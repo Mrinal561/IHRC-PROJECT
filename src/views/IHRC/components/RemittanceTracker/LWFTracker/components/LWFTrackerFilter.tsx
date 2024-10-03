@@ -68,7 +68,7 @@ const LWFTrackerFilter: React.FC = () => {
     <div className=" flex gap-3">    
         <div>
         <OutlinedSelect
-        label="Group Name"
+        label="Company Group"
         options={groupOptions}
         value={groupOptions.find((option) => option.value === currentGroup)}
         onChange={handleGroupChange}
@@ -76,7 +76,7 @@ const LWFTrackerFilter: React.FC = () => {
         </div>
         <div>
         <OutlinedSelect
-        label="Company Name"
+        label="Company"
         options={nameOptions}
         value={nameOptions.find((option) => option.value === groupName)}
         onChange={handleNameChange}

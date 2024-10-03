@@ -144,12 +144,12 @@ const PFSetupPage: React.FC = () => {
         <div className="space-y-6">
           <div className="grid grid-cols-2 gap-4">
             <OutlinedInput
-              label="Company Group Name"
+              label="Company Group"
               value={pfSetupData.Company_Group_Name}
               onChange={(value: string) => handleInputChange('Company_Group_Name', value)}
             />
             <OutlinedInput
-              label="Company Name"
+              label="Company"
               value={pfSetupData.Company_Name}
               onChange={(value: string) => handleInputChange('Company_Name', value)}
             />
@@ -186,7 +186,7 @@ const PFSetupPage: React.FC = () => {
           </div>
           {selectedSignatories.length > 0 && (
             <div className="space-y-4 border rounded-lg p-4">
-              <h3 className="text-sm font-semibold">Signatory Documents</h3>
+              <h6 className=" font-semibold">Signatory Documents</h6>
               {selectedSignatories.map(signatory => (
                 <div key={signatory.name} className="border p-4 rounded-lg">
                   <h4 className="text-sm mb-4">{signatory.name}</h4>
@@ -224,7 +224,7 @@ const PFSetupPage: React.FC = () => {
                     </div>
                     <div>
                       <div>
-                        <label className='block text-sm font-medium text-gray-700 mb-4'>E Sign Status</label>
+                        <label className='block text-sm font-medium text-gray-700 mb-4'>E-Sign Status</label>
                         <div>
                         <OutlinedSelect
                           label="Status"
