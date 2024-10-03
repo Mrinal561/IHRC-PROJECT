@@ -15,6 +15,7 @@ import {
     HiOutlineBan,
     HiOutlineMailOpen,
     HiOutlineExclamation,
+    HiOutlinePlusCircle
 } from 'react-icons/hi'
 import { Link } from 'react-router-dom'
 import isLastChild from '@/utils/isLastChild'
@@ -29,7 +30,7 @@ type NotificationList = {
     title: string
     description: string
     date: string
-    type: 'approval' | 'rejection' | 'update' | 'reminder'
+    type: 'approval' | 'rejection' | 'update' | 'reminder' | 'added'
     readed: boolean
 }
 
@@ -88,7 +89,15 @@ const notificationTypeAvatar = (type: string) => {
                 <Avatar
                     shape="circle"
                     className="bg-yellow-100 text-yellow-600 dark:bg-yellow-500/20 dark:text-yellow-100"
-                    icon={<HiOutlineExclamation />}
+                    icon={<HiOutlineBell />}
+                />
+            )
+        case 'added':
+            return (
+                <Avatar
+                    shape="circle"
+                    className="bg-purple-100 text-purple-600 dark:bg-yellow-500/20 dark:text-yellow-100"
+                    icon={<HiOutlinePlusCircle />}
                 />
             )
         default:
@@ -147,7 +156,7 @@ const _Notification = ({ className }: { className?: string }) => {
             title: 'New Compliance Added',
             description: 'A new compliance (ID: C13579) has been added for Begusarai',
             date: '3 days ago',
-            type: 'update',
+            type: 'added',
             readed: true
         },
     ]
