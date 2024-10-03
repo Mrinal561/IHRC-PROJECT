@@ -124,6 +124,10 @@ import {
     HiOutlineMailOpen,
     HiOutlineExclamation,
     HiOutlinePlusCircle,
+    HiOutlineDocumentText,
+    HiOutlineClipboardList,
+    HiOutlineExclamationCircle,
+    HiOutlineBadgeCheck
 } from 'react-icons/hi'
 
 const NotificationContent = () => {
@@ -134,6 +138,11 @@ const NotificationContent = () => {
     ComplianceUpdateRequired: false,
     ComplianceDeadlineReminder: false,
     NewComplianceAdded: false,
+    PolicyUpdate: false,
+    AuditNotification: false,
+    ViolationsNotification: false,
+    CertificationExpirationsNotification: false,
+
   });
   const [deadlineReminder, setDeadlineReminder] = useState('');
 
@@ -221,6 +230,38 @@ const NotificationContent = () => {
                     icon={<HiOutlinePlusCircle />}
                 />
             )
+            case 'PolicyUpdate':
+                return (
+                  <Avatar
+                    shape="circle"
+                    className="bg-indigo-100 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-100"
+                    icon={<HiOutlineDocumentText />}
+                  />
+                )
+              case 'AuditNotification':
+                return (
+                  <Avatar
+                    shape="circle"
+                    className="bg-teal-100 text-teal-600 dark:bg-teal-500/20 dark:text-teal-100"
+                    icon={<HiOutlineClipboardList />}
+                  />
+                )
+              case 'ViolationsNotification':
+                return (
+                  <Avatar
+                    shape="circle"
+                    className="bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-100"
+                    icon={<HiOutlineExclamationCircle />}
+                  />
+                )
+              case 'CertificationExpirationsNotification':
+                return (
+                  <Avatar
+                    shape="circle"
+                    className="bg-pink-100 text-pink-600 dark:bg-pink-500/20 dark:text-pink-100"
+                    icon={<HiOutlineBadgeCheck />}
+                  />
+            )
           default:
             return null;
         }
@@ -242,6 +283,14 @@ const NotificationContent = () => {
               return 'Compliance ID: C54321 deadline is approaching';
             case 'NewComplianceAdded':
               return 'New compliance added: Annual Review 2024';
+            case 'PolicyUpdate':
+              return 'Policy update: New data protection guidelines effective from next month';
+            case 'AuditNotification':
+              return 'Upcoming compliance audit scheduled for next week';
+            case 'ViolationsNotification':
+              return 'Alert: Potential compliance violation detected in Department X';
+            case 'CertificationExpirationsNotification':
+              return 'Your ISO 27001 certification expires in 30 days. Renewal required.';
             default:
               return '';
           }
@@ -263,15 +312,15 @@ const NotificationContent = () => {
 
   return (
     <div className='space-y-8'>
-      <div>
+      {/* <div>
         <h2 className="text-lg font-semibold text-gray-700 mb-2">General Settings</h2>
         <div className="flex items-center justify-between">
           <span className="text-gray-600">Enable all notifications</span>
           <Switcher checked={enableAll} onChange={onSwitcherToggle} />
         </div>
-      </div>
+      </div> */}
 
-      <div className="flex space-x-8">
+      <div className="flex space-x-4">
         <div className="w-1/2">
           <h3 className="text-lg font-semibold text-gray-700 mb-4">Notification Types:</h3>
           <div className="space-y-8">
@@ -291,7 +340,7 @@ const NotificationContent = () => {
 
         <div className="w-1/2">
           <h3 className="text-lg font-semibold text-gray-700 mb-4">Notification Previews:</h3>
-          <div className="space-y-2 max-h-80 overflow-y-auto border p-4 rounded-md h-64">
+          <div className="space-y-2 overflow-y-auto border p-4 rounded-md h-[410px]">
             {Object.entries(notificationTypes).map(([key, value]) => (
               <NotificationPreview key={key} type={key} isChecked={value} />
             ))}
