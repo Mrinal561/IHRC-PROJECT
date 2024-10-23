@@ -2,7 +2,7 @@ import React from 'react'
 
 const LeaveRegister = () => {
   return (
-    <div>LeaveRegister</div>
+    <div>Leave Register</div>
   )
 }
 

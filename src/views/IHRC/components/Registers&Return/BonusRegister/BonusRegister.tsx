@@ -2,7 +2,7 @@ import React from 'react'
 
 const BonusRegister = () => {
   return (
-    <div>BonusRegister</div>
+    <div>Bonus Register</div>
   )
 }
 
