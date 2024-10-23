@@ -60,7 +60,27 @@ const TemplateCards = () => {
             <h4 className="text-lg font-semibold h-16 flex items-center justify-center text-center">
               {title}
             </h4>
-            <div className="flex space-x-4 justify-center">
+            <div className="flex space-x-5 justify-center">
+              <Button
+                size="sm"
+                variant="solid"
+                onClick={() => handleUploadClick(index)}
+                className="flex items-center gap-2 px-[18px]"
+                icon={<RiUploadLine />}
+              >
+               Input Upload
+              </Button>
+              <Button
+                size="sm"
+                variant="solid"
+                onClick={() => handleDownload(index)}
+                className="flex items-center gap-2 px-[18px] "
+                icon={<RiDownloadLine />}
+              >
+               Input Download
+              </Button>
+            </div>
+            <div className="flex space-x-5 justify-center">
               <Button
                 size="sm"
                 variant="solid"
@@ -68,7 +88,7 @@ const TemplateCards = () => {
                 className="flex items-center gap-2"
                 icon={<RiUploadLine />}
               >
-                Upload
+               Output Upload
               </Button>
               <Button
                 size="sm"
@@ -77,7 +97,7 @@ const TemplateCards = () => {
                 className="flex items-center gap-2"
                 icon={<RiDownloadLine />}
               >
-                Download
+               Output Download
               </Button>
             </div>
           </div>
