@@ -142,6 +142,14 @@ export const protectedRoutes = [
     ),
     authority: [],
 },
+    {
+        key: 'groupMenu.collapse.item5',
+        path: '/register-template',
+        component: lazy(() =>
+            import('@/views/IHRC/components/GlobalSettings/RegisterTemplate/RegisterTemplate')
+    ),
+    authority: [],
+},
 {
     key: 'customFields.moduleDetail',
     path: `${APP_PREFIX_PATH}/custom-fields/:moduleValue`,
@@ -328,4 +336,36 @@ export const protectedRoutes = [
         component: lazy(() => import('@/views/IHRC/components/Entity/PFSetup/components/PFSetupPage')),
         authority: [],
     },
+
+    {
+        key: 'register.collapse.item1',
+        path: '/salary-register',
+        component: lazy(() => import('@/views/IHRC/components/Registers&Return/SalaryRegister/SalaryRegister')),
+        authority: [],
+    },    
+    {
+        key: 'register.collapse.item2',
+        path: '/attendance-register',
+        component: lazy(() => import('@/views/IHRC/components/Registers&Return/AttendanceRegister/AttendanceRegister')),
+        authority: [],
+    },    
+    {
+        key: 'register.collapse.item3',
+        path: '/leave-register',
+        component: lazy(() => import('@/views/IHRC/components/Registers&Return/LeaveRegister/LeaveRegister')),
+        authority: [],
+    },    
+    {
+        key: 'register.collapse.item4',
+        path: '/bonus-register',
+        component: lazy(() => import('@/views/IHRC/components/Registers&Return/BonusRegister/BonusRegister')),
+        authority: [],
+    },    
+    {
+        key: 'register.collapse.item5',
+        path: '/maternity-register',
+        component: lazy(() => import('@/views/IHRC/components/Registers&Return/MaternityRegister/MaternityRegister')),
+        authority: [],
+    },    
+    
 ]
