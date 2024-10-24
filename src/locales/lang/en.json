@@ -58,12 +58,27 @@
         "register": {
             "register": "Register & Return",
             "collapse": {
-                "collapse": "Register & Return",
-                "item1": "Salary Register",
-                "item2": "Attendance Register",
-                "item3": "Leave Register",
-                "item4": "Bonus Register",
-                "item5": "Maternity Register"
+                "inputSetup": {
+                    "collapse": {
+                        "collapse": "Input",
+                        "item1": "Salary Register",
+                        "item2": "Attendance Register",
+                        "item3": "Leave Register",
+                        "item4": "Bonus Register",
+                        "item5": "Maternity Register"
+                    }
+                },
+                "outputSetup": {
+                    "collapse": {
+                        "collapse": "Output",
+                        "item1": "Salary Register",
+                        "item2": "Attendance Register",
+                        "item3": "Leave Register",
+                        "item4": "Bonus Register",
+                        "item5": "Maternity Register"
+                    }
+                }
+
             }
         }
         }
