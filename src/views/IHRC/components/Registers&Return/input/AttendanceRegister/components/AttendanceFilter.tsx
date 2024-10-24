@@ -88,10 +88,8 @@ const dummyData = {
     { value: 'december', label: 'December' },
   ],
   types: [
-    { value: 'FormXVII', label: 'Form XVII' },
-    { value: 'FormXV', label: 'Form XV' },
-    { value: 'Form8', label: 'Form 8' },
-    { value: 'FormD', label: 'Form D' }
+    { value: 'Uploaded', label: 'Uploaded' },
+    { value: 'Not Uploaded', label: 'Not Uploaded' }
   ]
 };
 
