@@ -1,6 +1,7 @@
 import { AdaptableCard } from '@/components/shared'
 import React from 'react'
 import AttendanceFilter from './components/AttendanceFilter'
+import AttendanceRegisterTable from './components/AttendanceRegisterTable';
 
 const AttendanceRegister = () => {
   return (
@@ -13,10 +14,7 @@ const AttendanceRegister = () => {
             </div>
             <AttendanceFilter/>
             </div>
-            <div className='mb-8'>
-            {/* <Company /> */}
-            </div>
-                {/* <RecommendedTableContent /> */}
+            <AttendanceRegisterTable/>
         </AdaptableCard>
   )
 }

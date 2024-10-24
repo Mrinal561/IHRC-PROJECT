@@ -1,7 +1,7 @@
 export interface SalaryData {
     company_name: string;
-    state: string;
     sl_no: number;
+    state: string;
     employee_no: string;
     name: string;
     join_date: string;
@@ -73,8 +73,8 @@ export interface SalaryData {
 export const salaryDummyData: SalaryData[] = [
     {
         company_name: "Tech Solutions Inc",
-        state: "Karnataka",
         sl_no: 1,
+        state: "Karnataka",
         employee_no: "EMP001",
         name: "John Doe",
         join_date: "2023-01-15",
@@ -139,8 +139,8 @@ export const salaryDummyData: SalaryData[] = [
     },
     {
         company_name: "Tech Solutions Inc",
-        state: "Maharashtra",
         sl_no: 2,
+        state: "Maharashtra",
         employee_no: "EMP002",
         name: "Sarah Williams",
         join_date: "2023-03-20",
