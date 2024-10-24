@@ -2,6 +2,7 @@ import { AdaptableCard } from '@/components/shared'
 import React from 'react'
 import AttendanceFilter from './components/AttendanceFilter'
 import AttendanceRegisterTable from './components/AttendanceRegisterTable';
+import TableFilter from './components/TableFilter';
 
 const AttendanceRegister = () => {
   return (
@@ -14,7 +15,8 @@ const AttendanceRegister = () => {
             </div>
             <AttendanceFilter/>
             </div>
-            <AttendanceRegisterTable />
+            {/* <AttendanceRegisterTable /> */}
+            <TableFilter />
         </AdaptableCard>
   )
 }
