@@ -24,6 +24,20 @@ const dummyData = {
     { value: 'b1', label: 'Branch 1' },
     { value: 'b2', label: 'Branch 2' },
   ],
+  registerStatus: [
+    { value: 'january', label: 'January' },
+    { value: 'february', label: 'February' },
+    { value: 'march', label: 'March' },
+    { value: 'april', label: 'April' },
+    { value: 'may', label: 'May' },
+    { value: 'june', label: 'June' },
+    { value: 'july', label: 'July' },
+    { value: 'august', label: 'August' },
+    { value: 'september', label: 'September' },
+    { value: 'october', label: 'October' },
+    { value: 'november', label: 'November' },
+    { value: 'december', label: 'December' },
+  ],
   types: [
     { value: 'FormXVII', label: 'Form XVII' },
     { value: 'FormXV', label: 'Form XV' },
@@ -41,6 +55,8 @@ const OutputRegisterFilter = () => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [selectedTypes, setSelectedTypes] = useState(dummyData.types[0]);
+  const [selectedRegisterStatus, setSelectedRegisterStatus] = useState(dummyData.registerStatus[0]);
+
 
 
   const handleDateRangeApply = (start: Date, end: Date) => {
@@ -92,6 +108,14 @@ const OutputRegisterFilter = () => {
           value={selectedBranch}
           onChange={setSelectedBranch}
           options={dummyData.branches}
+        />
+      </div>
+      <div className="w-44 z-auto">
+        <OutlinedSelect
+          label="Month"
+          value={selectedRegisterStatus}
+          onChange={setSelectedRegisterStatus}
+          options={dummyData.registerStatus}
         />
       </div>
       <div className="w-44 z-auto">
