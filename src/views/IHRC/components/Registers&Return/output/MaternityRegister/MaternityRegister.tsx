@@ -1,6 +1,7 @@
 import { AdaptableCard } from '@/components/shared'
 import React from 'react'
 import MaternityFilter from './components/MaternityFilter'
+import MaternityTable from './components/MaternityTable'
 
 const MaternityRegister = () => {
   return (
@@ -13,7 +14,7 @@ const MaternityRegister = () => {
             </div>
             <MaternityFilter/>
             </div>
-                {/* <RecommendedTableContent /> */}
+            <MaternityTable />
         </AdaptableCard>
   )
 }
