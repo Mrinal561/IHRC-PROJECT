@@ -10,13 +10,13 @@ import { MdEdit } from 'react-icons/md';
 const TableFilter = () => {
     const columns: ColumnDef<Company>[] = useMemo(
         () => [
-            {
-                header: 'Sl No',
-                accessorKey: 'sl_no',
-                cell: (props) => (
-                    <div className="w-16 truncate">{props.getValue()}</div>
-                ),
-            },
+            // {
+            //     header: 'Sl No',
+            //     accessorKey: 'sl_no',
+            //     cell: (props) => (
+            //         <div className="w-16 truncate">{props.getValue()}</div>
+            //     ),
+            // },
             {
                 header: 'Company Name',
                 accessorKey: 'company_name',
