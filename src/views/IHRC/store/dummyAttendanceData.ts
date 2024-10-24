@@ -37,7 +37,7 @@ export const attendanceData: AttendanceRecord[] = [
     {   company_name: "Tech Solutions Inc",
         sl_no: 1,
         employeeNumber: "EMP001",
-        employeeName: "John Doe",
+        employeeName: "Pulkit Kumar",
         jobTitle: "Senior Developer",
         businessUnit: "Engineering",
         location: "Bangalore",
