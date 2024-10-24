@@ -80,7 +80,7 @@ const TableFilter = () => {
                   const compliance = row.original;
                   return (
                     <div className='flex gap-2'>
-                      <Tooltip title="View Uploaded Leave Register" placement="top">
+                      <Tooltip title="View Uploaded Salary Register" placement="top">
                                 <Button
                                   size="sm"
                                 //   onClick={() => navigate(`/app/IHRC/assign-list-detail/${row.original.Compliance_ID}`, { state: row.original })}
@@ -89,7 +89,7 @@ const TableFilter = () => {
                                 />
                                 
                     </Tooltip>
-                      <Tooltip title="Upload Leave Register" placement="top">
+                      <Tooltip title="Upload Salary Register" placement="top">
                         <Button
                           size="sm"
                         //   onClick={() => openDialog(compliance)}
