@@ -1,6 +1,7 @@
 import { AdaptableCard } from '@/components/shared'
 import React from 'react'
 import BonusFilter from './components/BonusFilter'
+import BonusRegisterTable from './components/BonusRegisterTable';
 
 const BonusRegister = () => {
   return (
@@ -13,7 +14,7 @@ const BonusRegister = () => {
             </div>
             <BonusFilter/>
             </div>
-                {/* <RecommendedTableContent /> */}
+            <BonusRegisterTable />
         </AdaptableCard>
   )
 }
