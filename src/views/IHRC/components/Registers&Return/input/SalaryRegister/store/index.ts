@@ -1,4 +1,3 @@
 import SalaryRegister from "../SalaryRegister";
 
-
-export default SalaryRegister;
+export default SalaryRegister
