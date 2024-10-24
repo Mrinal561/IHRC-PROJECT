@@ -13,9 +13,6 @@ const AttendanceRegister = () => {
             </div>
             <AttendanceFilter/>
             </div>
-            <div className='mb-8'>
-            {/* <Company /> */}
-            </div>
                 {/* <RecommendedTableContent /> */}
         </AdaptableCard>
   )

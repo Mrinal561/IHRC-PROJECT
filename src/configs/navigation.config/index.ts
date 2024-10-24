@@ -116,36 +116,7 @@ const navigationConfig: NavigationTree[] = [
                         authority: [],
                         subMenu: [],
                     },
-                    // {
-                    //     key: 'companySetup.collapse.entitySetup.collapse.item3',
-                    //     path: '/state',
-                    //     title: 'State',
-                    //     translateKey: 'nav.companySetup.collapse.entitySetup.collapse.item3',
-                    //     icon: '',
-                    //     type: NAV_ITEM_TYPE_ITEM,
-                    //     authority: [],
-                    //     subMenu: [],
-                    // },
-                    // {
-                    //     key: 'companySetup.collapse.entitySetup.collapse.item4',
-                    //     path: '/district',
-                    //     title: 'District',
-                    //     translateKey: 'nav.companySetup.collapse.entitySetup.collapse.item4',
-                    //     icon: '',
-                    //     type: NAV_ITEM_TYPE_ITEM,
-                    //     authority: [],
-                    //     subMenu: [],
-                    // },
-                    // {
-                    //     key: 'companySetup.collapse.entitySetup.collapse.item5',
-                    //     path: '/location',
-                    //     title: 'Location',
-                    //     translateKey: 'nav.companySetup.collapse.entitySetup.collapse.item5',
-                    //     icon: '',
-                    //     type: NAV_ITEM_TYPE_ITEM,
-                    //     authority: [],
-                    //     subMenu: [],
-                    // },
+
                     {
                         key: 'companySetup.collapse.entitySetup.collapse.item6',
                         path: '/branch',
@@ -351,7 +322,7 @@ const navigationConfig: NavigationTree[] = [
                 subMenu: [
                     {
                         key: 'register.collapse.inputSetup.collapse.item1',
-                        path: '/salary-register',
+                        path: '/salary-register-input',
                         title: 'Salary Register',
                         translateKey: 'nav.register.collapse.item1',
                         icon: '',
@@ -361,7 +332,7 @@ const navigationConfig: NavigationTree[] = [
                     },
                     {
                         key: 'register.collapse.inputSetup.collapse.item2',
-                        path: '/attendance-register',
+                        path: '/attendance-register-input',
                         title: 'Attendance Register',
                         translateKey: 'nav.register.collapse.item2',
                         icon: '',
@@ -371,7 +342,7 @@ const navigationConfig: NavigationTree[] = [
                     },
                     {
                         key: 'register.collapse.inputSetup.collapse.item3',
-                        path: '/leave-register',
+                        path: '/leave-register-input',
                         title: 'Leave Register',
                         translateKey: 'nav.register.collapse.item3',
                         icon: '',
@@ -381,7 +352,7 @@ const navigationConfig: NavigationTree[] = [
                     },
                     {
                         key: 'register.collapse.inputSetup.collapse.item4',
-                        path: '/bonus-register',
+                        path: '/bonus-register-input',
                         title: 'Bonus Register',
                         translateKey: 'nav.register.collapse.item4',
                         icon: '',
@@ -391,7 +362,7 @@ const navigationConfig: NavigationTree[] = [
                     },
                     {
                         key: 'register.collapse.inputSetup.collapse.item5',
-                        path: '/maternity-register',
+                        path: '/maternity-register-input',
                         title: 'Maternity Register',
                         translateKey: 'nav.register.collapse.item5',
                         icon: '',
@@ -412,7 +383,7 @@ const navigationConfig: NavigationTree[] = [
                 subMenu: [
                     {
                         key: 'register.collapse.outputSetup.collapse.item1',
-                        path: '/salary-register',
+                        path: '/salary-register-output',
                         title: 'Salary Register',
                         translateKey: 'nav.register.collapse.item1',
                         icon: '',
@@ -422,7 +393,7 @@ const navigationConfig: NavigationTree[] = [
                     },
                     {
                         key: 'register.collapse.outputSetup.collapse.item2',
-                        path: '/attendance-register',
+                        path: '/attendance-register-output',
                         title: 'Attendance Register',
                         translateKey: 'nav.register.collapse.item2',
                         icon: '',
@@ -432,7 +403,7 @@ const navigationConfig: NavigationTree[] = [
                     },
                     {
                         key: 'register.collapse.outputSetup.collapse.item3',
-                        path: '/leave-register',
+                        path: '/leave-register-output',
                         title: 'Leave Register',
                         translateKey: 'nav.register.collapse.item3',
                         icon: '',
@@ -442,7 +413,7 @@ const navigationConfig: NavigationTree[] = [
                     },
                     {
                         key: 'register.collapse.outputSetup.collapse.item4',
-                        path: '/bonus-register',
+                        path: '/bonus-register-output',
                         title: 'Bonus Register',
                         translateKey: 'nav.register.collapse.item4',
                         icon: '',
@@ -452,7 +423,7 @@ const navigationConfig: NavigationTree[] = [
                     },
                     {
                         key: 'register.collapse.outputSetup.collapse.item5',
-                        path: '/maternity-register',
+                        path: '/maternity-register-output',
                         title: 'Maternity Register',
                         translateKey: 'nav.register.collapse.item5',
                         icon: '',

@@ -1,7 +1,7 @@
 import { AdaptableCard } from '@/components/shared'
 import React from 'react'
 import SalaryFilter from './components/SalaryFilter';
-import SalaryRegisterTable from './components/salaryRegisterTable';
+import SalaryRegisterTable from './components/SalaryRegisterTable';
 
 const SalaryRegister = () => {
   return (
