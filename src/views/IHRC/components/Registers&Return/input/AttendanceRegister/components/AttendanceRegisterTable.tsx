@@ -30,13 +30,13 @@ const AttendanceRegisterTable = () => {
 
     const columns: ColumnDef<typeof attendanceData[0]>[] = useMemo(
         () => [
-            {
-                header: 'Sl No',
-                accessorKey: 'sl_no',
-                cell: (props) => (
-                    <div className="w-16 truncate">{props.getValue()}</div>
-                ),
-            },
+            // {
+            //     header: 'Sl No',
+            //     accessorKey: 'sl_no',
+            //     cell: (props) => (
+            //         <div className="w-16 truncate">{props.getValue()}</div>
+            //     ),
+            // },
             {
                 header: 'Company',
                 accessorKey: 'company_name',

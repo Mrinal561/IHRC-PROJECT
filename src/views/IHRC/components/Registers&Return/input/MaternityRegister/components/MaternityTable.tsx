@@ -20,13 +20,13 @@ const MaternityTable = () => {
 
     const columns: ColumnDef<MaternityBenefitRecord>[] = useMemo(
         () => [
-            {
-                header: 'Sl No',
-                accessorKey: 'srNo',
-                cell: (props) => (
-                    <div className="w-16 truncate">{props.getValue()}</div>
-                ),
-            },
+            // {
+            //     header: 'Sl No',
+            //     accessorKey: 'srNo',
+            //     cell: (props) => (
+            //         <div className="w-16 truncate">{props.getValue()}</div>
+            //     ),
+            // },
             {
                 header: 'Company',
                 accessorKey: 'company_name',
