@@ -2,6 +2,7 @@ import { AdaptableCard } from '@/components/shared'
 import React from 'react'
 import MaternityFilter from './components/MaternityFilter'
 import MaternityTable from './components/MaternityTable';
+import TableFilter from './components/TableFilter';
 
 const MaternityRegister = () => {
   return (
@@ -14,7 +15,8 @@ const MaternityRegister = () => {
             </div>
             <MaternityFilter/>
             </div>
-            <MaternityTable />
+            {/* <MaternityTable /> */}
+            <TableFilter/>
         </AdaptableCard>
   )
 }
