@@ -44,13 +44,13 @@ const SalaryRegisterTable = () => {
 
     const columns: ColumnDef<SalaryData>[] = useMemo(
         () => [
-            {
-                header: 'Sl No',
-                accessorKey: 'sl_no',
-                cell: (props) => (
-                    <div className="w-16 truncate">{props.getValue()}</div>
-                ),
-            },
+            // {
+            //     header: 'Sl No',
+            //     accessorKey: 'sl_no',
+            //     cell: (props) => (
+            //         <div className="w-16 truncate">{props.getValue()}</div>
+            //     ),
+            // },
             {
                 header: 'Company',
                 accessorKey: 'company_name',

@@ -370,33 +370,10 @@ export const protectedRoutes = [
 
     {
         key: 'register.collapse.item1',
-        path: '/salary-register-output',
-        component: lazy(() => import('@/views/IHRC/components/Registers&Return/output/SalaryRegister/SalaryRegister')),
+        path: '/output-register',
+        component: lazy(() => import('@/views/IHRC/components/Registers&Return/output/OutputRegisters/OutputRegisters')),
         authority: [],
     },    
-    {
-        key: 'register.collapse.item2',
-        path: '/attendance-register-output',
-        component: lazy(() => import('@/views/IHRC/components/Registers&Return/output/AttendanceRegister/AttendanceRegister')),
-        authority: [],
-    },    
-    {
-        key: 'register.collapse.item3',
-        path: '/leave-register-output',
-        component: lazy(() => import('@/views/IHRC/components/Registers&Return/output/LeaveRegister/LeaveRegister')),
-        authority: [],
-    },    
-    {
-        key: 'register.collapse.item4',
-        path: '/bonus-register-output',
-        component: lazy(() => import('@/views/IHRC/components/Registers&Return/output/BonusRegister/BonusRegister')),
-        authority: [],
-    },    
-    {
-        key: 'register.collapse.item5',
-        path: '/maternity-register-output',
-        component: lazy(() => import('@/views/IHRC/components/Registers&Return/output/MaternityRegister/MaternityRegister')),
-        authority: [],
-    },    
+  
     
 ]

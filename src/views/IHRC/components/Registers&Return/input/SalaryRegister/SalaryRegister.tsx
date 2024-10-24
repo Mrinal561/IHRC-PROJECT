@@ -2,6 +2,7 @@ import { AdaptableCard } from '@/components/shared'
 import React from 'react'
 import SalaryFilter from './components/SalaryFilter';
 import SalaryRegisterTable from './components/SalaryRegisterTable';
+import TableFilter from './components/TableFilter';
 
 const SalaryRegister = () => {
   return (
@@ -14,7 +15,8 @@ const SalaryRegister = () => {
             </div>
             <SalaryFilter/>
             </div>
-                <SalaryRegisterTable />
+                {/* <SalaryRegisterTable /> */}
+                <TableFilter/>
         </AdaptableCard>
   )
 }
