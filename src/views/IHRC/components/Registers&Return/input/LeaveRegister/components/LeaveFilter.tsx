@@ -74,16 +74,18 @@ const dummyData = {
     { value: 'KOL005', label: 'Gariahat Branch' }
   ],
   registerStatus: [
-    { value: 'draft', label: 'Draft' },
-    { value: 'pending_approval', label: 'Pending Approval' },
-    { value: 'approved', label: 'Approved' },
-    { value: 'rejected', label: 'Rejected' },
-    { value: 'in_process', label: 'In Process' },
-    { value: 'under_review', label: 'Under Review' },
-    { value: 'on_hold', label: 'On Hold' },
-    { value: 'completed', label: 'Completed' },
-    { value: 'cancelled', label: 'Cancelled' },
-    { value: 'archived', label: 'Archived' }
+    { value: 'january', label: 'January' },
+    { value: 'february', label: 'February' },
+    { value: 'march', label: 'March' },
+    { value: 'april', label: 'April' },
+    { value: 'may', label: 'May' },
+    { value: 'june', label: 'June' },
+    { value: 'july', label: 'July' },
+    { value: 'august', label: 'August' },
+    { value: 'september', label: 'September' },
+    { value: 'october', label: 'October' },
+    { value: 'november', label: 'November' },
+    { value: 'december', label: 'December' },
   ],
   types: [
     { value: 'FormXVII', label: 'Form XVII' },
@@ -121,7 +123,7 @@ const LeaveFilter = () => {
 
       <div className="w-44 z-auto">
         <OutlinedSelect
-          label="Register Status"
+          label="Month"
           value={selectedRegisterStatus}
           onChange={setSelectedRegisterStatus}
           options={dummyData.registerStatus}
