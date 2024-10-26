@@ -1,79 +1,70 @@
 import React, { useState } from 'react';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
-// import DashboardFilter from './DashboardFilter';
-// import CustomDateRangePicker from './CustomDateRangePicker';
+import DashboardFilter from '@/views/IHRC/components/Home/components/DashboardFilter';
 
 const dummyData = {
-  companyGroups: [
-    { value: 'cg1', label: 'Company Group 1' },
-    { value: 'cg2', label: 'Company Group 2' },
-  ],
   companies: [
     { value: 'c1', label: 'CEAT' },
     { value: 'c2', label: 'MRF' },
   ],
   states: [
-    { value: 's1', label: 'Bihar' },
+    { value: 's1', label: 'Maharashtra' },
     { value: 's2', label: 'West Bengal' },
   ],
+  frequencies: [
+    { value: 'monthly', label: 'Monthly' },
+    { value: 'yearly', label: 'Yearly' },
+  ],
   cities: [
-    { value: 'city1', label: 'Muzaffarpur' },
-    { value: 'city2', label: 'Patna' },
+    { value: 'city1', label: 'Mumbai' },
+    { value: 'city2', label: 'Kolkata' },
   ],
   branches: [
     { value: 'b1', label: 'Branch 1' },
     { value: 'b2', label: 'Branch 2' },
   ],
-  registerStatus: [
-    { value: 'january', label: 'January' },
-    { value: 'february', label: 'February' },
-    { value: 'march', label: 'March' },
-    { value: 'april', label: 'April' },
-    { value: 'may', label: 'May' },
-    { value: 'june', label: 'June' },
-    { value: 'july', label: 'July' },
-    { value: 'august', label: 'August' },
-    { value: 'september', label: 'September' },
-    { value: 'october', label: 'October' },
-    { value: 'november', label: 'November' },
-    { value: 'december', label: 'December' },
+  months: [
+    { value: 'march-2024', label: 'March 2024' },
+    { value: 'april-2024', label: 'April 2024' },
+    { value: 'may-2024', label: 'May 2024' },
+    { value: 'june-2024', label: 'June 2024' },
+    { value: 'july-2024', label: 'July 2024' },
+    { value: 'august-2024', label: 'August 2024' },
+    { value: 'september-2024', label: 'September 2024' },
+    { value: 'october-2024', label: 'October 2024' },
+    { value: 'november-2024', label: 'November 2024' },
+    { value: 'december-2024', label: 'December 2024' },
+    { value: 'january-2025', label: 'January 2025' },
+    { value: 'february-2025', label: 'February 2025' },
   ],
-  types:[
-    { value: 'Uploaded', label: 'Uploaded' },
-    { value: 'Not Uploaded', label: 'Not Uploaded' }
-  ]
+};
+
+type SelectOption = {
+  value: string;
+  label: string;
 };
 
 const OutputRegisterFilter = () => {
-  const [selectedCompanyGroup, setSelectedCompanyGroup] = useState(dummyData.companyGroups[0]);
-  const [selectedCompany, setSelectedCompany] = useState(dummyData.companies[0]);
-  const [selectedState, setSelectedState] = useState(dummyData.states[0]);
-  const [selectedCity, setSelectedCity] = useState(dummyData.cities[0]);
-  const [selectedBranch, setSelectedBranch] = useState(dummyData.branches[0]);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-  const [selectedTypes, setSelectedTypes] = useState(dummyData.types[0]);
-  const [selectedRegisterStatus, setSelectedRegisterStatus] = useState(dummyData.registerStatus[0]);
+  const [selectedCompany, setSelectedCompany] = useState<SelectOption>(dummyData.companies[0]);
+  const [selectedState, setSelectedState] = useState<SelectOption>(dummyData.states[0]);
+  const [selectedFrequency, setSelectedFrequency] = useState<SelectOption>(dummyData.frequencies[0]);
+  const [selectedCity, setSelectedCity] = useState<SelectOption>(dummyData.cities[0]);
+  const [selectedBranch, setSelectedBranch] = useState<SelectOption>(dummyData.branches[0]);
+  const [selectedMonth, setSelectedMonth] = useState<SelectOption | undefined>(dummyData.months[0]);
 
-
-
-  const handleDateRangeApply = (start: Date, end: Date) => {
-    setStartDate(start);
-    setEndDate(end);
+  const handleFrequencyChange = (value: SelectOption) => {
+    setSelectedFrequency(value);
+    if (value.value === 'yearly') {
+      setSelectedMonth(undefined);
+    } else {
+      setSelectedMonth(dummyData.months[0]);
+    }
   };
 
   return (
-    <div className="flex gap-3 items-center">
-      <div className="w-48 z-auto"> {/* 192px */}
-        <OutlinedSelect
-          label="Company Group"
-          value={selectedCompanyGroup}
-          onChange={setSelectedCompanyGroup}
-          options={dummyData.companyGroups}
-        />
-      </div>
-
-      <div className="w-44 z-auto"> {/* 176px */}
+    <div className="w-full flex items-center gap-3">
+      {/* Company Filter */}
+      <div className="flex-1 min-w-[140px]">
         <OutlinedSelect
           label="Company"
           value={selectedCompany}
@@ -82,7 +73,8 @@ const OutputRegisterFilter = () => {
         />
       </div>
 
-      <div className="w-44 z-auto"> {/* 144px */}
+      {/* State Filter */}
+      <div className="flex-1 min-w-[140px]">
         <OutlinedSelect
           label="State"
           value={selectedState}
@@ -91,7 +83,18 @@ const OutputRegisterFilter = () => {
         />
       </div>
 
-      <div className="w-44 z-auto"> {/* 160px */}
+      {/* Frequency Filter */}
+      <div className="flex-1 min-w-[140px]">
+        <OutlinedSelect
+          label="Frequency"
+          value={selectedFrequency}
+          onChange={handleFrequencyChange}
+          options={dummyData.frequencies}
+        />
+      </div>
+
+      {/* Location Filter */}
+      <div className="flex-1 min-w-[140px]">
         <OutlinedSelect
           label="Location"
           value={selectedCity}
@@ -100,7 +103,8 @@ const OutputRegisterFilter = () => {
         />
       </div>
 
-      <div className="w-44 z-auto"> {/* 160px */}
+      {/* Branch Filter */}
+      <div className="flex-1 min-w-[140px]">
         <OutlinedSelect
           label="Branch"
           value={selectedBranch}
@@ -108,25 +112,23 @@ const OutputRegisterFilter = () => {
           options={dummyData.branches}
         />
       </div>
-      <div className="w-44 z-auto">
-        <OutlinedSelect
-          label="Month"
-          value={selectedRegisterStatus}
-          onChange={setSelectedRegisterStatus}
-          options={dummyData.registerStatus}
-        />
-      </div>
-      <div className="w-44 z-auto">
-        <OutlinedSelect
-          label="Types"
-          value={selectedTypes}
-          onChange={setSelectedTypes}
-          options={dummyData.types}
-        />
-      </div>
 
-      {/* <CustomDateRangePicker onApply={handleDateRangeApply} /> */}
-      {/* <DashboardFilter /> */}
+      {/* Month Filter - Only shown when frequency is monthly */}
+      {selectedFrequency.value === 'monthly' && (
+        <div className="flex-1 min-w-[140px]">
+          <OutlinedSelect
+            label="Month"
+            value={selectedMonth}
+            onChange={setSelectedMonth}
+            options={dummyData.months}
+          />
+        </div>
+      )}
+
+      {/* Filter Button */}
+      <div className="flex-none">
+        <DashboardFilter />
+      </div>
     </div>
   );
 };

@@ -1,22 +1,29 @@
 import React, { useMemo, useState } from 'react';
 import DataTable from '@/components/shared/DataTable';
-import { Button, Tooltip } from '@/components/ui';
+import { Button, Tooltip, Dialog, Input, Notification, toast } from '@/components/ui';
 import cloneDeep from 'lodash/cloneDeep';
 import type { OnSortParam, ColumnDef } from '@/components/shared/DataTable';
 import { Company, companies } from '@/views/IHRC/store/dummyCompany';
 import { RiEyeLine, RiUploadLine } from 'react-icons/ri';
 import { MdEdit } from 'react-icons/md';
+import BulkUpload from './BulkUpload';
 
 const TableFilter = () => {
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
+
+    const openDialog = (company: Company) => {
+        setSelectedCompany(company);
+        setIsDialogOpen(true);
+    };
+
+    const handleDialogClose = () => {
+        setIsDialogOpen(false);
+        setSelectedCompany(null);
+    };
+
     const columns: ColumnDef<Company>[] = useMemo(
         () => [
-            // {
-            //     header: 'Sl No',
-            //     accessorKey: 'sl_no',
-            //     cell: (props) => (
-            //         <div className="w-16 truncate">{props.getValue()}</div>
-            //     ),
-            // },
             {
                 header: 'Company Name',
                 accessorKey: 'company_name',
@@ -74,33 +81,44 @@ const TableFilter = () => {
                 },
             },
             {
+                header: 'Status',
+                accessorKey: 'status',
+                cell: (props) => {
+                    const value = props.getValue() as string;
+                    return (
+                        <Tooltip title={value} placement="top">
+                            <div className="w-32 truncate">
+                                {value.length > 18 ? value.substring(0, 18) + '...' : value}
+                            </div>
+                        </Tooltip>
+                    );
+                },
+            },
+            {
                 header: 'Actions',
                 id: 'actions',
                 cell: ({ row }) => {
-                  const compliance = row.original;
-                  return (
-                    <div className='flex gap-2'>
-                      <Tooltip title="View Uploaded Leave Register" placement="top">
+                    const company = row.original;
+                    return (
+                        <div className='flex gap-2'>
+                            <Tooltip title="View Uploaded Salary Register" placement="top">
                                 <Button
-                                  size="sm"
-                                //   onClick={() => navigate(`/app/IHRC/assign-list-detail/${row.original.Compliance_ID}`, { state: row.original })}
-                                  icon={<RiEyeLine />}
-                                  className='hover:bg-transparent'
+                                    size="sm"
+                                    icon={<RiEyeLine />}
+                                    className='hover:bg-transparent'
                                 />
-                                
-                    </Tooltip>
-                      <Tooltip title="Upload Leave Register" placement="top">
-                        <Button
-                          size="sm"
-                        //   onClick={() => openDialog(compliance)}
-                        >
-                         {<RiUploadLine />}
-                        </Button>
-                      </Tooltip>
-                    </div>
-                  );
+                            </Tooltip>
+                            <Tooltip title="Upload Salary Register" placement="top">
+                                <Button
+                                    size="sm"
+                                    onClick={() => openDialog(company)}
+                                    icon={<RiUploadLine />}
+                                />
+                            </Tooltip>
+                        </div>
+                    );
                 },
-              },
+            },
         ],
         []
     );
@@ -153,6 +171,14 @@ const TableFilter = () => {
                 stickyLastColumn={true}
                 selectable={true}
             />
+            
+            {isDialogOpen && selectedCompany && (
+                <BulkUpload 
+                    isOpen={isDialogOpen}
+                    onClose={handleDialogClose}
+                    company={selectedCompany}
+                />
+            )}
         </div>
     );
 };
