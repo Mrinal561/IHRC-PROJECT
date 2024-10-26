@@ -2,6 +2,7 @@ import { AdaptableCard } from '@/components/shared'
 import React from 'react'
 import LeaveFilter from './components/LeaveFilter'
 import LeaveRegisterTable from './components/LeaveRegisterTable';
+import TableFilter from './components/TableFilter';
 
 const LeaveRegister = () => {
   return (
@@ -16,7 +17,7 @@ const LeaveRegister = () => {
             <LeaveFilter/>
             </div>
             </div>
-            <LeaveRegisterTable />
+            <TableFilter />
         </AdaptableCard>
   )
 }

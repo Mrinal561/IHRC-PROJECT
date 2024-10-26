@@ -58,25 +58,14 @@ const LeaveFilter = () => {
   const [selectedTypes, setSelectedTypes] = useState(dummyData.types[0]);
   const [selectedRegisterStatus, setSelectedRegisterStatus] = useState(dummyData.registerStatus[0]);
 
-
-
   const handleDateRangeApply = (start: Date, end: Date) => {
     setStartDate(start);
     setEndDate(end);
   };
 
   return (
-    <div className="flex gap-3 items-center">
-      {/* <div className="w-48 z-auto">
-        <OutlinedSelect
-          label="Company Group"
-          value={selectedCompanyGroup}
-          onChange={setSelectedCompanyGroup}
-          options={dummyData.companyGroups}
-        />
-      </div> */}
-
-      <div className="w-44 z-auto"> {/* 176px */}
+    <div className="w-full grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] items-center gap-3 auto-cols-fr">
+      <div>
         <OutlinedSelect
           label="Company"
           value={selectedCompany}
@@ -85,7 +74,7 @@ const LeaveFilter = () => {
         />
       </div>
 
-      <div className="w-44 z-auto"> {/* 144px */}
+      <div>
         <OutlinedSelect
           label="State"
           value={selectedState}
@@ -94,16 +83,17 @@ const LeaveFilter = () => {
         />
       </div>
 
-      {/* <div className="w-44 z-auto"> 
+
+      <div>
         <OutlinedSelect
           label="Location"
           value={selectedCity}
           onChange={setSelectedCity}
           options={dummyData.cities}
         />
-      </div> */}
+      </div>
 
-      <div className="w-44 z-auto"> {/* 160px */}
+      <div>
         <OutlinedSelect
           label="Branch"
           value={selectedBranch}
@@ -111,7 +101,8 @@ const LeaveFilter = () => {
           options={dummyData.branches}
         />
       </div>
-      <div className="w-44 z-auto">
+
+      <div>
         <OutlinedSelect
           label="Month"
           value={selectedRegisterStatus}
@@ -119,24 +110,16 @@ const LeaveFilter = () => {
           options={dummyData.registerStatus}
         />
       </div>
-      <div className="w-44 z-auto">
-        <OutlinedSelect
-          label="Status"
-          value={selectedTypes}
-          onChange={setSelectedTypes}
-          options={dummyData.types}
-        />
-      </div>
 
-      {/* <CustomDateRangePicker onApply={handleDateRangeApply} /> */}
-      {/* <DashboardFilter /> */}
-      <Button
-                size="sm"
-                className="h-[38px]"
-                icon={<HiOutlineFilter />}
-            >
-                Filter
-            </Button>
+      <div className="flex justify-start">
+        <Button
+          size="sm"
+          className="h-[38px] whitespace-nowrap"
+          icon={<HiOutlineFilter />}
+        >
+          Filter
+        </Button>
+      </div>
     </div>
   );
 };
