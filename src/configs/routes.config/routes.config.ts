@@ -142,14 +142,14 @@ export const protectedRoutes = [
     ),
     authority: [],
 },
-    {
-        key: 'groupMenu.collapse.item5',
-        path: '/register-template',
-        component: lazy(() =>
-            import('@/views/IHRC/components/GlobalSettings/RegisterTemplate/RegisterTemplate')
-    ),
-    authority: [],
-},
+//     {
+//         key: 'groupMenu.collapse.item5',
+//         path: '/register-template',
+//         component: lazy(() =>
+//             import('@/views/IHRC/components/GlobalSettings/RegisterTemplate/RegisterTemplate')
+//     ),
+//     authority: [],
+// },
 {
     key: 'customFields.moduleDetail',
     path: `${APP_PREFIX_PATH}/custom-fields/:moduleValue`,
