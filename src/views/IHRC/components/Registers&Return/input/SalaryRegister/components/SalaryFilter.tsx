@@ -13,12 +13,12 @@ const dummyData = {
     { value: 'c2', label: 'MRF' },
   ],
   states: [
-    { value: 's1', label: 'Bihar' },
+    { value: 's1', label: 'Maharashtra' },
     { value: 's2', label: 'West Bengal' },
   ],
   cities: [
-    { value: 'city1', label: 'Muzaffarpur' },
-    { value: 'city2', label: 'Patna' },
+    { value: 'city1', label: 'Mumbai' },
+    { value: 'city2', label: 'Kolkata' },
   ],
   branches: [
     { value: 'b1', label: 'Branch 1' },

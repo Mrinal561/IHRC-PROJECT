@@ -15,19 +15,18 @@ const dummyData = {
     { value: 'c2', label: 'MRF' },
   ],
   states: [
-    { value: 's1', label: 'Bihar' },
+    { value: 's1', label: 'Maharashtra' },
     { value: 's2', label: 'West Bengal' },
   ],
   cities: [
-    { value: 'city1', label: 'Muzaffarpur' },
-    { value: 'city2', label: 'Patna' },
+    { value: 'city1', label: 'Mumbai' },
+    { value: 'city2', label: 'Kolkata' },
   ],
   branches: [
     { value: 'b1', label: 'Branch 1' },
     { value: 'b2', label: 'Branch 2' },
   ],
   registerStatus: [
-    
     { value: 'march 2024', label: 'March 2024' },
     { value: 'april 2024', label: 'April 2024' },
     { value: 'may 2024', label: 'May 2024' },
@@ -41,10 +40,11 @@ const dummyData = {
     { value: 'january 2025', label: 'January 2025' },
     { value: 'february 2025', label: 'February 2025' },
   ],
-  types:[
+  types: [
     { value: 'Uploaded', label: 'Uploaded' },
     { value: 'Not Uploaded', label: 'Not Uploaded' }
   ]
+
 };
 
 const BonusFilter = () => {

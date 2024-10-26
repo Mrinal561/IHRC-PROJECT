@@ -81,6 +81,20 @@ const TableFilter = () => {
                 },
             },
             {
+                header: 'Status',
+                accessorKey: 'status',
+                cell: (props) => {
+                    const value = props.getValue() as string;
+                    return (
+                        <Tooltip title={value} placement="top">
+                            <div className="w-32 truncate">
+                                {value.length > 18 ? value.substring(0, 18) + '...' : value}
+                            </div>
+                        </Tooltip>
+                    );
+                },
+            },
+            {
                 header: 'Actions',
                 id: 'actions',
                 cell: ({ row }) => {
