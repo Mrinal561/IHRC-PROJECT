@@ -284,13 +284,13 @@ export const fetchCompaniesByGroupId = createAsyncThunk(
 
 export const fetchCompanies = createAsyncThunk(
     'company/fetchCompanies',
-    async (_, { rejectWithValue }) => {
-        try {
-            const { data } = await httpClient.get(endpoints.company.getAll());
+    async (param:any) => {
+       
+            const { data } = await httpClient.get(endpoints.company.getAll(), {
+                params: param,
+              });
             return data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || 'Failed to fetch companies');
-        }
+       
     }
 );
 

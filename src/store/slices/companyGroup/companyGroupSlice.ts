@@ -27,14 +27,13 @@ const initialState: CompanyGroupState = {
 
 export const fetchCompanyGroups = createAsyncThunk(
     'companyGroup/fetchCompanyGroups',
-    async (_, { rejectWithValue }) => {
-      try {
-        const { data } = await httpClient.get(endpoints.companyGroup.getAll());
+    async (param: any) => {
+
+        const { data } = await httpClient.get(endpoints.companyGroup.getAll(), {
+          params: param,
+        });
         return data;
-      } catch (error: any) {
-        return rejectWithValue(error.response?.data?.message || 'Failed to fetch company groups');
       }
-    }
   );
   
   export const createCompanyGroup = createAsyncThunk(

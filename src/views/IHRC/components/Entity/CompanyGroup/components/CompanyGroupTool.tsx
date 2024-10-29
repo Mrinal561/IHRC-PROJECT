@@ -11,10 +11,11 @@ import { useDispatch } from 'react-redux';
 import { CompanyGroupData } from '@/store/slices/companyGroup/companyGroupSlice';
 
 interface CompanyGroupToolProps {
+    setLoader:any;
     onDataChange: () => void;
 }
 
-const CompanyGroupTool: React.FC<CompanyGroupToolProps> = ({ onDataChange }) => {
+const CompanyGroupTool: React.FC<CompanyGroupToolProps> = ({setLoader, onDataChange }) => {
     const dispatch = useDispatch<AppDispatch>();
     const [dialogIsOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -35,13 +36,16 @@ const CompanyGroupTool: React.FC<CompanyGroupToolProps> = ({ onDataChange }) => 
         setIsLoading(true);
         try {
             await dispatch(createCompanyGroup(newCompanyGroup));
+
+            onDialogClose();
+            setLoader(true)
             toast.push(
                 <Notification title="Success" type="success">
                     Company Group added successfully
                 </Notification>
             );
-            onDialogClose();
             onDataChange(); // Trigger parent refresh
+            console.log('re rendering')
         } catch (error) {
             toast.push(
                 <Notification title="Failed" type="danger">
@@ -50,6 +54,7 @@ const CompanyGroupTool: React.FC<CompanyGroupToolProps> = ({ onDataChange }) => 
             );
         }
         setIsLoading(false);
+        
     };
 
     const onDialogClose = () => {
@@ -102,7 +107,7 @@ const CompanyGroupTool: React.FC<CompanyGroupToolProps> = ({ onDataChange }) => 
                             onClick={handleConfirm}
                             loading={isLoading}
                         >
-                            Submit
+                            Confirm
                         </Button>
                     </div>
                 </div>

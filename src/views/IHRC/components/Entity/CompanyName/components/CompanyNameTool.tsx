@@ -275,6 +275,7 @@ const CompanyNameTool: React.FC<CompanyToolProps> = ({ onDataChange }) => {
         </Notification>
       );
       onDialogClose();
+      console.log("re rendering in tool")
       onDataChange(); // This will trigger the parent component to refresh the data
     } catch (error) {
       toast.push(

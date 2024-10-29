@@ -74,7 +74,7 @@ const CompanyName = () => {
       console.log("**********",data.data);
      
       if (data && data.data) {
-        setCompanyData(data?.data?.map((v: any) => ({     ...v,    company_group_name: v?.CompanyGroup?.name })) || []);
+        setCompanyData(data?.data?.map((v: any) => ({...v,company_group_name: v?.CompanyGroup?.name })) || []);
       }
     } catch (error) {
       console.error('Failed to fetch companies:', error);
