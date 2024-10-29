@@ -15,7 +15,17 @@ export const endpoints = {
         create: () => api('companyadmin/company-group'),
         update: (id: string) => api(`companyadmin/company-group/${id}`),
         delete: (id: string) => api(`companyadmin/company-group/${id}`),
-    }
+    },
+    company: {
+        getAll: () => api('companyadmin/company'),
+        getById: (id: string) => api(`companyadmin/company/${id}`),
+        create: () => api('companyadmin/company'),
+        update: (id: string) => api(`companyadmin/company/${id}`),
+        delete: (id: string) => api(`companyadmin/company/${id}`),
+    },
+        common:{
+            getAll: ()=> api('/company-group')
+        }
 
     
 

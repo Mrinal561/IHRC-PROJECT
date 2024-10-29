@@ -116,7 +116,7 @@ export const fetchCompanyGroups = createAsyncThunk(
         })
         .addCase(createCompanyGroup.fulfilled, (state, action) => {
           state.loading = false;
-          state.companyGroups.push(action.payload);
+        //   state.companyGroups.push(action.payload);
         })
         .addCase(createCompanyGroup.rejected, (state, action) => {
           state.loading = false;
@@ -129,10 +129,10 @@ export const fetchCompanyGroups = createAsyncThunk(
         })
         .addCase(updateCompanyGroup.fulfilled, (state, action) => {
           state.loading = false;
-          const index = state.companyGroups.findIndex((g) => g.id === action.payload.id);
-          if (index !== -1) {
-            state.companyGroups[index] = action.payload;
-          }
+        //   const index = state.companyGroups.findIndex((g) => g.id === action.payload.id);
+        //   if (index !== -1) {
+        //     state.companyGroups[index] = action.payload;
+        //   }
         })
         .addCase(updateCompanyGroup.rejected, (state, action) => {
           state.loading = false;

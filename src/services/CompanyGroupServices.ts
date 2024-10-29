@@ -6,15 +6,15 @@ import { CompanyGroupData , CompanyResponseGroupData} from '../@types/companyGro
 
 export async function getCompanyGroups(data: CompanyGroupData){
   return ApiService.fetchData<CompanyResponseGroupData>({
-    url:'/state',
+    url:'/company-group',
     method: 'get',
     data,
   })
 }
 
-export async function getCompanyGroupBayId(id: string){
+export async function getCompanyGroupById(id: string){
   return ApiService.fetchData({
-    url: endpoints.companyGroup.getById(id),
+    url: endpoints.companyGroup.getById(id),  
     method: 'get',
   })
 }
