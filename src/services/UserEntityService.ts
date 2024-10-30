@@ -21,6 +21,7 @@ export async function createUser(data: any ) {
     return ApiService.fetchData({
         url: endpoints.user.create(),
         method: 'post',
+        data,
     });
 }
 

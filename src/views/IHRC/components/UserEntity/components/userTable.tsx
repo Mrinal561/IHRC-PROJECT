@@ -211,7 +211,7 @@ const UserTable: React.FC = () => {
     useEffect(() => {
         fetchUserData(1, 10)
         // setPfTableLoading(false)
-    })
+    }, [])
 
     const fetchUserData = async (page: number, size: number) => {
         const { payload: data } = await dispatch(fetchUsers({page: page, page_size: size}))

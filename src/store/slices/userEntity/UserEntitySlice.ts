@@ -40,10 +40,13 @@ export const fetchUsers = createAsyncThunk(
 
 export const createUser = createAsyncThunk(
     'user/create',
-    async (userData: UserData) => {
+    async (userData: UserData, { rejectWithValue }) => {
+        try {
             const { data } = await httpClient.post(endpoints.user.create(), userData);
-            return data ;
-       
+            return data;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || 'Failed to create user');
+        }
     }
 );
 
@@ -104,6 +107,8 @@ const userSlice = createSlice({
             .addCase(createUser.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
+                state.error = null;
+
             })
             // Update user
             .addCase(updateUser.pending, (state) => {

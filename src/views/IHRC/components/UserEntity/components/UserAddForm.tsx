@@ -39,6 +39,18 @@ interface SelectOption {
 interface NewUser {
     name: string;
     group_id: number;
+    first_name: string;
+  last_name: string;
+  email: string;
+  mobile: string;
+  username: string;
+  joining_date: string;
+  role: string;
+  aadhar_no: string;
+  pan_card: string;
+  auth_signatory: boolean;
+  suspend: boolean;
+  disable: boolean;
   }
 
 const UserAddForm = () => {
@@ -50,7 +62,19 @@ const [user, setUser] = useState('');
 const [selectedCompanyGroup, setSelectedCompanyGroup] = useState<SelectOption | null>(null);
 const [newCompany, setNewCompany] = useState<NewUser>({
     name: '',
-    group_id: 0
+    group_id: 0,
+    first_name: '',
+    last_name: '',
+    email: '',
+    mobile: '',
+    username: '',
+    joining_date: '',
+    role: '',
+    aadhar_no: '',
+    pan_card: '',
+    auth_signatory: false,
+    suspend: false,
+    disable: false,
   });
 
   // Update newCompany when inputs change
@@ -89,7 +113,6 @@ const loadCompanyGroups = async () => {
 
     
   const [formData, setFormData] = useState({
-      group_id: 0,
       first_name: '',
       last_name: '',
       email: '',
@@ -101,7 +124,8 @@ const loadCompanyGroups = async () => {
       pan_card: '',
       auth_signatory: false,
       suspend: false,
-      disable: false
+      disable: false,
+      group_id: 0
   });
 
   const openNotification = (type: 'success' | 'info' | 'danger' | 'warning', message: string) => {
@@ -122,11 +146,11 @@ const loadCompanyGroups = async () => {
     }));
 };
 
-const handleAddUser = async (e: React.FormEvent) => {
+const handleAddUser = async () => {
     // e.preventDefault();
     console.log(newCompany.name);
     try {
-        await dispatch(createUser(newCompany));
+        await dispatch(createUser(formData)).unwrap();
         toast.push(
             <Notification title="Success" type="success">
                 User added successfully
@@ -140,7 +164,7 @@ const handleAddUser = async (e: React.FormEvent) => {
                 Failed to add user
             </Notification>
         );
-    // }
+    }
 };
 
 // const selectedGroupOption: SelectOption | null = formData.group_id 
@@ -332,6 +356,5 @@ const handleAddUser = async (e: React.FormEvent) => {
         
     </div>
   );
-};
-
+}
 export default UserAddForm;
