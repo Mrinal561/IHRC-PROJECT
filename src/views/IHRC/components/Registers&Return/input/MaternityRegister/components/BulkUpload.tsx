@@ -2,16 +2,36 @@ import React, { useState } from 'react';
 import { Button, Dialog, Input, Notification, toast } from '@/components/ui';
 import { Company } from '@/views/IHRC/store/dummyCompany';
 import { HiDownload } from 'react-icons/hi';
+import OutlinedSelect from '@/components/ui/Outlined';
 
 interface BulkUploadProps {
     isOpen: boolean;
     onClose: () => void;
     company: Company;
 }
+const dummyData = {
+    registerStatus: [
+      { value: 'march 2024', label: 'March 2024' },
+      { value: 'april 2024', label: 'April 2024' },
+      { value: 'may 2024', label: 'May 2024' },
+      { value: 'june 2024', label: 'June 2024' },
+      { value: 'july 2024', label: 'July 2024' },
+      { value: 'august 2024', label: 'August 2024' },
+      { value: 'september 2024', label: 'September 2024' },
+      { value: 'october 2024', label: 'October 2024' },
+      { value: 'november 2024', label: 'November 2024' },
+      { value: 'december 2024', label: 'December 2024' },
+      { value: 'january 2025', label: 'January 2025' },
+      { value: 'february 2025', label: 'February 2025' },
+    ]
+  };
+  
 
 const BulkUpload: React.FC<BulkUploadProps> = ({ isOpen, onClose, company }) => {
     const [file, setFile] = useState<File | null>(null);
     const [remark, setRemark] = useState('');
+    const [selectedRegisterStatus, setSelectedRegisterStatus] = useState(dummyData.registerStatus[0]);
+
 
     const openNotification = (type: 'success' | 'info' | 'danger' | 'warning', message: string) => {
         toast.push(
@@ -51,10 +71,25 @@ const BulkUpload: React.FC<BulkUploadProps> = ({ isOpen, onClose, company }) => 
             <h5 className="mb-4">
                 Upload Maternity Register
             </h5>
+
+            <div className='flex flex-col gap-4'>
+                <div className='flex gap-2 items-center my-4'>
+                   <p> Select the Month</p>
+                   <div className="w-48">
+                      <OutlinedSelect
+                        label="Month"
+                        value={selectedRegisterStatus}
+                        onChange={setSelectedRegisterStatus}
+                        options={dummyData.registerStatus}
+                        
+                      />
+                  </div>
+                </div>
+            </div>
             
             <div className="flex flex-col gap-4">
             <div className="my-4 flex gap-2 items-center">
-          <p>Download Maternity Register Format</p>
+          <p>Download Salary Register Format</p>
           <a className="text-blue-600 hover:underline">
             <Button size="xs" icon={<HiDownload />} >Download</Button>
           </a>
