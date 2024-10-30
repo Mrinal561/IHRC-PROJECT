@@ -57,9 +57,9 @@ export const protectedRoutes = [
         authority: [],
       },
       {
-        key: 'userInputDetail.item',
+        key: 'userEntity.add',
         path: `/add-user`,
-        component: lazy(() => import('@/views/IHRC/components/UserEntity/components/userform')),
+        component: lazy(() => import('@/views/IHRC/components/UserEntity/components/UserAddForm')),
         authority: [],
       },
     {
@@ -239,7 +239,13 @@ export const protectedRoutes = [
         path: '/user-entity',
         component: lazy(() => import('@/views/IHRC/components/UserEntity/UserEntity')),
         authority: [],
-    },    
+    },   
+    // {
+    //     key: 'customChecklist.customChecklistForm',
+    //     path: '/add-user-form',
+    //     component: lazy(() => import('@/views/IHRC/components/UserEntity/components/UserAddForm')),
+    //     authority: [],
+    // },
     {
         key: 'remittanceTracker.collapse.item1',
         path: '/pf-tracker',

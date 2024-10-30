@@ -1,12 +1,15 @@
 import { Navigate, Outlet } from 'react-router-dom'
 import appConfig from '@/configs/app.config'
 import useAuth from '@/utils/hooks/useAuth'
+import { useAppSelector } from '@/store'
+
 
 const { authenticatedEntryPath } = appConfig
 
 const PublicRoute = () => {
-    const { authenticated } = useAuth()
-
+    const authenticated = useAppSelector(
+        (state) => state.login.user.authenticated,
+    )
     return authenticated ? <Navigate to={authenticatedEntryPath} /> : <Outlet />
 }
 

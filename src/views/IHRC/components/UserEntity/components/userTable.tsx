@@ -1,87 +1,91 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Table, Button, Dialog, Tooltip, Notification, toast } from '@/components/ui';
 import { FiTrash } from 'react-icons/fi';
 import { MdEdit } from 'react-icons/md';
 import OutlinedInput from '@/components/ui/OutlinedInput/OutlinedInput';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
-import { UserData, userDataSet } from '../../../store/dummyEntityData'; // Adjust the import path as needed
 import { RiCloseLine, RiEyeLine } from 'react-icons/ri';
 import { CiSquareRemove } from "react-icons/ci";
 import { IoPersonRemoveOutline } from "react-icons/io5";
+import { 
+    fetchUsers, 
+    deleteUser, 
+    updateUser,
+    selectUsers,
+    selectLoading
+} from '@/store/slices/userEntity/UserEntitySlice';
+import { AppDispatch } from '@/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { UserData } from "@/@types/userEntity";
 
 
 const UserTable: React.FC = () => {
-    const [data, setData] = useState<UserData[]>(userDataSet);
-    const [dialogIsOpen, setDialogIsOpen] = useState(false);
-    const [itemToDelete, setItemToDelete] = useState<number | null>(null);
-    const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
-    const [itemToEdit, setItemToEdit] = useState<number | null>(null);
-    const [suspendDialogIsOpen, setSuspendDialogIsOpen] = useState(false);
-    const [disableDialogIsOpen, setDisableDialogIsOpen] = useState(false);
-    const [editedUser, setEditedUser] = useState<UserData>({});
+    const dispatch = useDispatch<AppDispatch>();
+    const users = useSelector(selectUsers);
+    const loading = useSelector(selectLoading);
+    const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
+    const [dialogState, setDialogState] = useState({
+        delete: false,
+        edit: false,
+        suspend: false,
+        disable: false
+    });
 
-    const columns: ColumnDef<UserData>[] = useMemo(
+    const [userTableData, setUserTableData] = useState([]);
+
+
+    const columns = useMemo(
         () => [
             {
                 header: 'Company Group',
-                accessorKey: 'Company_Group_Name',
+                accessorKey: 'CompanyGroup.name',
                 cell: (props) => (
                     <div className="w-32 truncate">{props.getValue() as string}</div>
                 ),
             },
             {
                 header: 'First Name',
-                accessorKey: 'FirstName',
+                accessorKey: 'first_name',
                 cell: (props) => <div className="w-32 truncate">{props.getValue() as string}</div>,
             },
             {
                 header: 'Last Name',
-                accessorKey: 'LastName',
+                accessorKey: 'last_name',
                 cell: (props) => <div className="w-32 truncate">{props.getValue() as string}</div>,
             },
             {
                 header: 'Email',
-                accessorKey: 'Email',
+                accessorKey: 'email',
                 cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
             },
             {
                 header: 'Username',
-                accessorKey: 'UserName',
+                accessorKey: 'username',
                 cell: (props) => <div className="w-32 truncate">{props.getValue() as string}</div>,
             },
             {
                 header: 'Mobile Number',
-                accessorKey: 'MobileNum',
+                accessorKey: 'mobile',
                 cell: (props) => <div className="w-36 truncate">{props.getValue() as string}</div>,
             },
             {
                 header: 'Job Role',
-                accessorKey: 'JobRole',
-                cell: (props) => <div className="w-32 truncate">{props.getValue() as string}</div>,
-            },
-            {
-                header: 'DSC',
-                accessorKey: 'Dsc',
-                cell: (props) => <div className="w-24 truncate">{props.getValue() as string}</div>,
-            },
-            {
-                header: 'DSC Validity',
-                accessorKey: 'DscValidity',
+                accessorKey: 'role',
                 cell: (props) => <div className="w-32 truncate">{props.getValue() as string}</div>,
             },
             {
                 header: 'PAN',
-                accessorKey: 'Pan',
+                accessorKey: 'pan_card',
                 cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
             },
             {
                 header: 'Aadhar',
-                accessorKey: 'Aadhar',
+                accessorKey: 'aadhar_no',
                 cell: (props) => <div className="w-36 truncate">{props.getValue() as string}</div>,
             },
             {
                 header: 'Date of Joining',
-                accessorKey: 'DateOfJoin',
+                accessorKey: 'joining_date',
                 cell: (props) => <div className="w-32 truncate">{props.getValue() as string}</div>,
             },
             {
@@ -99,7 +103,7 @@ const UserTable: React.FC = () => {
                         <Tooltip title="Edit User Details">
                             <Button
                                 size="sm"
-                                onClick={() => openEditDialog(row.index)}
+                                // onClick={() => openEditDialog(row.original)}
                                 icon={<MdEdit />}
                                 className="text-blue-500"
                             />
@@ -107,7 +111,7 @@ const UserTable: React.FC = () => {
                         <Tooltip title="Suspend User">
                             <Button
                                 size="sm"
-                                onClick={() => openSuspendDialog(row.index)}
+                                // onClick={() => openSuspendDialog(row.original)}
                                 icon={<IoPersonRemoveOutline />}
                                 className="text-blue-500"
                             />
@@ -115,7 +119,7 @@ const UserTable: React.FC = () => {
                         <Tooltip title="Disable Login">
                             <Button
                                 size="sm"
-                                onClick={() => openDisableDialog(row.index)}
+                                // onClick={() => openDisableDialog(row.original)}
                                 icon={<RiCloseLine />}
                                 className="text-blue-500"
                             />
@@ -123,7 +127,7 @@ const UserTable: React.FC = () => {
                         <Tooltip title="Delete User">
                             <Button
                                 size="sm"
-                                onClick={() => openDeleteDialog(row.index)}
+                                // onClick={() => openDeleteDialog(row.original)}
                                 icon={<FiTrash />}
                                 className="text-red-500"
                             />
@@ -146,95 +150,108 @@ const UserTable: React.FC = () => {
         )
     }
 
-    const openDeleteDialog = (index: number) => {
-        setItemToDelete(index);
-        setDialogIsOpen(true);
-    };
-    const openSuspendDialog = (index: number) => {
-        setSuspendDialogIsOpen(true);
-    };
-    const openDisableDialog = (index: number) => {
-        setDisableDialogIsOpen(true);
-    };
+    // const openDeleteDialog = (index: number) => {
+    //     setItemToDelete(index);
+    //     setDialogIsOpen(true);
+    // };
+    // const openSuspendDialog = (index: number) => {
+    //     setSuspendDialogIsOpen(true);
+    // };
+    // const openDisableDialog = (index: number) => {
+    //     setDisableDialogIsOpen(true);
+    // };
 
-    const openEditDialog = (index: number) => {
-        setItemToEdit(index);
-        setEditedUser(data[index]);
-        setEditDialogIsOpen(true);
-    };
+    // const openEditDialog = (index: number) => {
+    //     setItemToEdit(index);
+    //     setEditedUser(data[index]);
+    //     setEditDialogIsOpen(true);
+    // };
 
-    const handleDialogClose = () => {
-        setDialogIsOpen(false);
-        setEditDialogIsOpen(false);
-        setItemToDelete(null);
-        setItemToEdit(null);
-        setEditedUser({});
-        setSuspendDialogIsOpen(false);
-        setDisableDialogIsOpen(false);
-    };
+    // const handleDialogClose = () => {
+    //     setDialogIsOpen(false);
+    //     setEditDialogIsOpen(false);
+    //     setItemToDelete(null);
+    //     setItemToEdit(null);
+    //     setEditedUser({});
+    //     setSuspendDialogIsOpen(false);
+    //     setDisableDialogIsOpen(false);
+    // };
 
-    const handleDialogOk = () => {
-        if (itemToDelete !== null) {
-            const newData = [...data];
-            newData.splice(itemToDelete, 1);
-            setData(newData);
-            setDialogIsOpen(false);
-            setItemToDelete(null);
-            openNotification('danger', 'User deleted successfully');
-        }
-    };
-    const suspendConfirm = () => {
-        setSuspendDialogIsOpen(false)
-        openNotification('success', 'User suspended successfully');
+    // const handleDialogOk = () => {
+    //     if (itemToDelete !== null) {
+    //         const newData = [...data];
+    //         newData.splice(itemToDelete, 1);
+    //         setData(newData);
+    //         setDialogIsOpen(false);
+    //         setItemToDelete(null);
+    //         openNotification('danger', 'User deleted successfully');
+    //     }
+    // };
+    // const suspendConfirm = () => {
+    //     setSuspendDialogIsOpen(false)
+    //     openNotification('success', 'User suspended successfully');
+    // }
+    // const disableConfirm = () => {
+    //     setDisableDialogIsOpen(false);
+    //     openNotification('success', 'User disable successfully');
+    // }
+
+    // const handleEditConfirm = () => {
+    //     if (itemToEdit !== null) {
+    //         const newData = [...data];
+    //         newData[itemToEdit] = editedUser;
+    //         setData(newData);
+    //         setEditDialogIsOpen(false);
+    //         setItemToEdit(null);
+    //         setEditedUser({});
+    //         openNotification('success', 'User updated successfully');
+    //     }
+    // };
+
+    useEffect(() => {
+        fetchUserData(1, 10)
+        // setPfTableLoading(false)
+    },[])
+
+    const fetchUserData = async (page: number, size: number) => {
+        const { payload: data } = await dispatch(fetchUsers({page: page, page_size: size}))
+        setUserTableData(data?.data);
+        setTableData((prev) => ({
+            ...prev,
+            total: data?.paginate_data.totalResult,
+            pageIndex: data?.paginate_data.page,
+        }))
     }
-    const disableConfirm = () => {
-        setDisableDialogIsOpen(false);
-        openNotification('success', 'User disable successfully');
-    }
-
-    const handleEditConfirm = () => {
-        if (itemToEdit !== null) {
-            const newData = [...data];
-            newData[itemToEdit] = editedUser;
-            setData(newData);
-            setEditDialogIsOpen(false);
-            setItemToEdit(null);
-            setEditedUser({});
-            openNotification('success', 'User updated successfully');
-        }
-    };
 
     const [tableData, setTableData] = useState({
-        total: data.length,
+        total: 0,
         pageIndex: 1,
-        pageSize: 5,
+        pageSize: 10,
         query: '',
         sort: { order: '', key: '' },
     });
     
     const onPaginationChange = (page: number) => {
         setTableData(prev => ({ ...prev, pageIndex: page }));
+        fetchUserData(page, tableData.pageSize)
     };
     
     const onSelectChange = (value: number) => {
         setTableData(prev => ({ ...prev, pageSize: Number(value), pageIndex: 1 }));
+        fetchUserData(1, value)
     };
 
     return (
         <div className='relative'>
-            {data.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
-                    No data available
-                </div>
-            ) : (
+            
                 <DataTable
                     columns={columns}
-                    data={data}
+                    data={userTableData}
                     skeletonAvatarColumns={[0]}
                     skeletonAvatarProps={{ className: 'rounded-md' }}
                     loading={false}
                     pagingData={{
-                        total: data.length,
+                        total: tableData.total,
                         pageIndex: tableData.pageIndex,
                         pageSize: tableData.pageSize,
                     }}
@@ -244,9 +261,9 @@ const UserTable: React.FC = () => {
                     stickyFirstColumn={true}
                     stickyLastColumn={true}
                 />
-            )}
+            
 
-            <Dialog
+            {/* <Dialog
                 isOpen={dialogIsOpen}
                 onClose={handleDialogClose}
                 onRequestClose={handleDialogClose}
@@ -341,7 +358,7 @@ const UserTable: React.FC = () => {
                         Confirm
                     </Button>
                 </div>
-            </Dialog>
+            </Dialog> */}
         </div>
     );
 };
