@@ -267,7 +267,7 @@ const ConfigDropdown = ({ companyName, companyGroupName }) => {
 
   return (
     <>
-      <Tooltip title="Click to upload PF documents">
+      <Tooltip title="Click to download Register">
         <Button
           ref={buttonRef}
           size='sm'
