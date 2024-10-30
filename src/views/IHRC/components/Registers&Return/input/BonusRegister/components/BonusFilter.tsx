@@ -1,9 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
-import { Button } from '@/components/ui';
+import { Badge, Button } from '@/components/ui';
 import { HiOutlineFilter } from 'react-icons/hi';
+import OutlinedBadgeSelect from '@/components/ui/OutlinedBadgeSelect/OutlinedBadgeSelect';
 // import DashboardFilter from './DashboardFilter';
 // import CustomDateRangePicker from './CustomDateRangePicker';
+
+
+type SelectOption = {
+  value: string;
+  label: string;
+};
+
 
 const dummyData = {
   companyGroups: [
@@ -43,29 +51,80 @@ const dummyData = {
   types: [
     { value: 'Uploaded', label: 'Uploaded' },
     { value: 'Not Uploaded', label: 'Not Uploaded' }
-  ]
+  ],
+
 
 };
 
-const BonusFilter = () => {
-  const [selectedCompanyGroup, setSelectedCompanyGroup] = useState(dummyData.companyGroups[0]);
-  const [selectedCompany, setSelectedCompany] = useState(dummyData.companies[0]);
-  const [selectedState, setSelectedState] = useState(dummyData.states[0]);
-  const [selectedCity, setSelectedCity] = useState(dummyData.cities[0]);
-  const [selectedBranch, setSelectedBranch] = useState(dummyData.branches[0]);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-  const [selectedTypes, setSelectedTypes] = useState(dummyData.types[0]);
-  const [selectedRegisterStatus, setSelectedRegisterStatus] = useState(dummyData.registerStatus[0]);
+interface FinancialYearFilterProps {
+  value: SelectOption | null;
+  onChange: (value: SelectOption | null) => void;
+}
 
-  const handleDateRangeApply = (start: Date, end: Date) => {
-    setStartDate(start);
-    setEndDate(end);
+const FinancialYearFilter: React.FC<FinancialYearFilterProps> = ({ value, onChange }) => {
+  const [options, setOptions] = useState<SelectOption[]>([]);
+  const [defaultOption, setDefaultOption] = useState<SelectOption | null>(null);
+
+  useEffect(() => {
+    // Generate financial year options
+    const currentYear = new Date().getFullYear();
+    const financialYearOptions = [
+      { value: `${currentYear}-${currentYear + 1}`, label: `${currentYear}-${currentYear + 1}` },
+      { value: `${currentYear - 1}-${currentYear}`, label: `${currentYear - 1}-${currentYear}` },
+      { value: `${currentYear - 2}-${currentYear - 1}`, label: `${currentYear - 2}-${currentYear - 1}` },
+      { value: `${currentYear - 3}-${currentYear - 2}`, label: `${currentYear - 3}-${currentYear - 2}` },
+      { value: `${currentYear - 4}-${currentYear - 3}`, label: `${currentYear - 4}-${currentYear - 3}` },
+    ];
+
+    setOptions(financialYearOptions);
+    setDefaultOption(financialYearOptions[0]);
+  }, []);
+
+  const handleChange = (selectedOption: SelectOption | null) => {
+    onChange(selectedOption);
   };
 
+  useEffect(() => {
+    // If value is not set, select the default option
+    if (!value) {
+      onChange(defaultOption);
+    }
+  }, [value, defaultOption, onChange]);
+
   return (
-    <div className="w-full grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] items-center gap-3 auto-cols-fr">
-      <div>
+    <OutlinedBadgeSelect
+      label="Financial Year"
+      value={value || defaultOption}
+      options={options}
+      onChange={handleChange}
+      optionRenderer={(option, isSelected) => (
+        <div className="flex items-center justify-between w-full">
+          <span>{option.label}</span>
+          {isSelected && <Badge className="w-2 h-2 rounded-full bg-emerald-500" />}
+        </div>
+      )}
+    />
+  );
+};
+
+const BonusFilter = () => {
+  const [selectedCompany, setSelectedCompany] = useState(dummyData.companies[0]);
+  const [selectedState, setSelectedState] = useState(dummyData.states[0]);
+  const [selectedRegisterStatus, setSelectedRegisterStatus] = useState(dummyData.registerStatus[0]);
+  const [selectedFinancialYear, setSelectedFinancialYear] = useState<SelectOption | null>(null);
+
+
+  const handleFinancialYearChange = (value: SelectOption | null) => {
+    setSelectedFinancialYear(value);
+    // You can add any additional logic here, such as fetching data for the selected year
+  };
+
+
+
+
+  return (
+    <div className="w-full flex flex-nowrap items-center gap-4">
+      <div className="w-48">
         <OutlinedSelect
           label="Company"
           value={selectedCompany}
@@ -74,7 +133,7 @@ const BonusFilter = () => {
         />
       </div>
 
-      <div>
+      <div className="w-48">
         <OutlinedSelect
           label="State"
           value={selectedState}
@@ -83,35 +142,11 @@ const BonusFilter = () => {
         />
       </div>
 
-
-      <div>
-        <OutlinedSelect
-          label="Location"
-          value={selectedCity}
-          onChange={setSelectedCity}
-          options={dummyData.cities}
-        />
+      <div className="w-48">
+      <FinancialYearFilter value={selectedFinancialYear} onChange={handleFinancialYearChange} />
       </div>
 
       <div>
-        <OutlinedSelect
-          label="Branch"
-          value={selectedBranch}
-          onChange={setSelectedBranch}
-          options={dummyData.branches}
-        />
-      </div>
-
-      <div>
-        <OutlinedSelect
-          label="Month"
-          value={selectedRegisterStatus}
-          onChange={setSelectedRegisterStatus}
-          options={dummyData.registerStatus}
-        />
-      </div>
-
-      <div className="flex justify-start">
         <Button
           size="sm"
           className="h-[38px] whitespace-nowrap"

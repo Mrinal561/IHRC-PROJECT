@@ -47,24 +47,13 @@ const dummyData = {
 };
 
 const MaternityFilter = () => {
-  const [selectedCompanyGroup, setSelectedCompanyGroup] = useState(dummyData.companyGroups[0]);
   const [selectedCompany, setSelectedCompany] = useState(dummyData.companies[0]);
   const [selectedState, setSelectedState] = useState(dummyData.states[0]);
-  const [selectedCity, setSelectedCity] = useState(dummyData.cities[0]);
-  const [selectedBranch, setSelectedBranch] = useState(dummyData.branches[0]);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-  const [selectedTypes, setSelectedTypes] = useState(dummyData.types[0]);
   const [selectedRegisterStatus, setSelectedRegisterStatus] = useState(dummyData.registerStatus[0]);
 
-  const handleDateRangeApply = (start: Date, end: Date) => {
-    setStartDate(start);
-    setEndDate(end);
-  };
-
   return (
-    <div className="w-full grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] items-center gap-3 auto-cols-fr">
-      <div>
+    <div className="w-full flex flex-nowrap items-center gap-4">
+      <div className="w-48">
         <OutlinedSelect
           label="Company"
           value={selectedCompany}
@@ -73,7 +62,7 @@ const MaternityFilter = () => {
         />
       </div>
 
-      <div>
+      <div className="w-48">
         <OutlinedSelect
           label="State"
           value={selectedState}
@@ -82,26 +71,7 @@ const MaternityFilter = () => {
         />
       </div>
 
-
-      <div>
-        <OutlinedSelect
-          label="Location"
-          value={selectedCity}
-          onChange={setSelectedCity}
-          options={dummyData.cities}
-        />
-      </div>
-
-      <div>
-        <OutlinedSelect
-          label="Branch"
-          value={selectedBranch}
-          onChange={setSelectedBranch}
-          options={dummyData.branches}
-        />
-      </div>
-
-      <div>
+      <div className="w-48">
         <OutlinedSelect
           label="Month"
           value={selectedRegisterStatus}
@@ -110,7 +80,7 @@ const MaternityFilter = () => {
         />
       </div>
 
-      <div className="flex justify-start">
+      <div>
         <Button
           size="sm"
           className="h-[38px] whitespace-nowrap"
@@ -122,5 +92,4 @@ const MaternityFilter = () => {
     </div>
   );
 };
-
 export default MaternityFilter;
