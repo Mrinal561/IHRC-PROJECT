@@ -1,5 +1,5 @@
 import React from 'react';
-import Card from '@/components/ui/card';
+import Card from '../../../../../../components/ui/Card';
 import { NumericFormat } from 'react-number-format';
 import { CiViewList } from "react-icons/ci";
 import { FaHourglassHalf } from "react-icons/fa";
@@ -7,35 +7,41 @@ import { FaRegCircleXmark } from "react-icons/fa6";
 
 
 
-const StatisticCard = ({ icon, avatarClass, label, value, loading }) => {
-  return (
-    <Card bodyClass="p-4">
-      <div className="flex items-center">
-        <div className={`${avatarClass} rounded-lg mr-4 p-2 h-14 w-14 flex items-center justify-center`}>
-          {icon}
-        </div>
-        <div>
-          <h3 className="font-semibold text-sm text-[#7583a2]">{label}</h3>
-          <p className="font-semibold text-black text-2xl">
-            {loading ? (
-              <span className="animate-pulse bg-gray-200 rounded-md">&nbsp;&nbsp;&nbsp;&nbsp;</span>
-            ) : (
-              <NumericFormat
-                displayType="text"
-                value={value}
-                thousandSeparator
-              />
-            )}
-          </p>
-        </div>
-      </div>
-    </Card>
-  );
-};
+const StatisticCard = ({ icon, avatarClass, label, value, loading }: any) => {
+    return (
+        <Card bodyClass="p-4">
+            <div className="flex items-center">
+                <div
+                    className={`${avatarClass} rounded-lg mr-4 p-2 h-14 w-14 flex items-center justify-center`}
+                >
+                    {icon}
+                </div>
+                <div>
+                    <h3 className="font-semibold text-sm text-[#7583a2]">
+                        {label}
+                    </h3>
+                    <p className="font-semibold text-black text-2xl">
+                        {loading ? (
+                            <span className="animate-pulse bg-gray-200 rounded-md">
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                            </span>
+                        ) : (
+                            <NumericFormat
+                                displayType="text"
+                                value={value}
+                                thousandSeparator
+                            />
+                        )}
+                    </p>
+                </div>
+            </div>
+        </Card>
+    )
+}
 
 const StatusCard = () => {
-  // You might want to replace this with actual loading state
-  const loading = false;
+    // You might want to replace this with actual loading state
+    const loading = false
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -72,4 +78,4 @@ const StatusCard = () => {
   );
 };
 
-export default StatusCard;
+export default StatusCard

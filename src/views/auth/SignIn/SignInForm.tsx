@@ -14,13 +14,11 @@ import httpClient from '@/api/http-client'
 import { endpoints } from '@/api/endpoint'
 import { AxiosError } from 'axios'
 import { Notification, toast } from '@/components/ui'
-// import {
-//     fetchAuthUser,
-//     setIsAuthenticated,
-// } from '@store/'
-import { fetchAuthUser, setIsAuthenticated } from '@/store/slices/login'
+import {
+    fetchAuthUser,
+    setIsAuthenticated,
+} from '@/store/slices/login/loginSlice'
 import { useAppDispatch } from '@/store'
-// import Cookies from 'js-cookie'
 import Cookies from 'js-cookie'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
