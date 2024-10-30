@@ -267,7 +267,7 @@ const ConfigDropdown = ({ companyName, companyGroupName }) => {
 
   return (
     <>
-      <Tooltip title="Click to download Register">
+      <Tooltip title="Click to download Output Register">
         <Button
           ref={buttonRef}
           size='sm'
