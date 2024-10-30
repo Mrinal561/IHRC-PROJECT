@@ -14,13 +14,11 @@ import httpClient from '@/api/http-client'
 import { endpoints } from '@/api/endpoint'
 import { AxiosError } from 'axios'
 import { Notification, toast } from '@/components/ui'
-// import {
-//     fetchAuthUser,
-//     setIsAuthenticated,
-// } from '@store/'
-import { fetchAuthUser, setIsAuthenticated } from '@/store/slices/login'
+import {
+    fetchAuthUser,
+    setIsAuthenticated,
+} from '@/store/slices/login/loginSlice'
 import { useAppDispatch } from '@/store'
-// import Cookies from 'js-cookie'
 import Cookies from 'js-cookie'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
@@ -62,14 +60,6 @@ const SignInForm = (props: SignInFormProps) => {
     const navigate = useNavigate()
     const [loading, setLoading] = useState(false)
 
-<<<<<<< HEAD
-    const onSignIn = async (
-        values: SignInFormSchema,
-        setSubmitting: (isSubmitting: boolean) => void,
-    ) => {
-        const { userName, password } = values
-        setSubmitting(true)
-=======
     const onSignIn = async (values: SignInFormSchema) => {
         setLoading(true)
         try {
@@ -79,7 +69,6 @@ const SignInForm = (props: SignInFormProps) => {
                 password: values.password,
             })
             console.log('API call succeeded:', data) // Check if this logs
->>>>>>> cc717d42dd71fe5817ba1e18742d86cbfe8abf56
 
             console.log(data)
 
