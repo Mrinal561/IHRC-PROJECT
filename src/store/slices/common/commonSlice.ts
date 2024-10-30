@@ -17,13 +17,10 @@ const initialState: CommonState = {
 
 export const fetchAll = createAsyncThunk(
     'common/fetchAll',
-    async (_, { rejectWithValue }) => {
-        try {
+    async () => {
             const { data } = await httpClient.get(endpoints.common.getAll());
             return data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || 'Failed to fetch data');
-        }
+        
     }
 );
 

@@ -9,15 +9,16 @@ import Bu from './Bu';
 const UserTool: React.FC = () => {
   const navigate = useNavigate();
 
-  const handleAddBranch = () => {
-    navigate(`/add-user`);
+  const handleClick = () => {
+    navigate('/add-user');
+    console.log("hitting")
   };
 
   return (
     <div className='flex gap-3'>
       {/* <Filter></Filter> */}
       <Bu></Bu>
-      <Button variant="solid" onClick={handleAddBranch} icon={<HiPlusCircle />} size="sm">
+      <Button variant="solid" icon={<HiPlusCircle />} size="sm"  onClick={handleClick}>
         Add User
       </Button>
     </div>
