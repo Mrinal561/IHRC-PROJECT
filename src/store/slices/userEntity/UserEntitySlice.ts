@@ -4,10 +4,20 @@ import * as UserService from '@/services/UserEntityService';
 import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
 
-
 export interface UserData {
-    name: string;
     group_id: number;
+    first_name: string;
+    last_name: string;
+    email: string;
+    mobile: string;
+    username: string;
+    joining_date: Date;
+    role: string;
+    aadhar_no: string;
+    pan_card: string;
+    auth_signatory: boolean;
+    suspend: boolean;
+    disable: boolean;
 }
 
 export interface UserState {
@@ -99,7 +109,7 @@ const userSlice = createSlice({
             })
             .addCase(createUser.fulfilled, (state, action) => {
                 state.loading = false;
-                state.users.push(action.payload);
+                // state.users.push(action.payload);
             })
             .addCase(createUser.rejected, (state, action) => {
                 state.loading = false;
