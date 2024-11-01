@@ -36,8 +36,8 @@ const TableFilter = () => {
                 },
             },
             {
-                header: 'Date',
-                accessorKey: 'date',
+                header: 'Financial Year',
+                accessorKey: 'financial_year',
                 cell: (props) => {
                     const value = props.getValue() as string;
                     return (

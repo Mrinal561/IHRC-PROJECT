@@ -4,13 +4,15 @@ export interface Company {
     status: string;
     date: string;
     uploaded_Date: string;
+    financial_year: string;
 }
 
 export const companies: Company[] = [
   {
     company_name: "CEAT",
     sl_no: 1,
-    date: 'Oct, 2024',
+    date: 'Oct-2024',
+    financial_year: '2024-2025',
     // branch: "Western Branch",
     // location: "Mumbai",
     uploaded_Date: '2024-10-01',
