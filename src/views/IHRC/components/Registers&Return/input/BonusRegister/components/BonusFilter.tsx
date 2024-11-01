@@ -3,6 +3,9 @@ import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 import { Badge, Button } from '@/components/ui';
 import { HiOutlineFilter } from 'react-icons/hi';
 import OutlinedBadgeSelect from '@/components/ui/OutlinedBadgeSelect/OutlinedBadgeSelect';
+import { RiUploadLine } from 'react-icons/ri';
+import BulkUpload from './BulkUpload';
+import { Company } from '@/views/IHRC/store/dummyCompany';
 // import DashboardFilter from './DashboardFilter';
 // import CustomDateRangePicker from './CustomDateRangePicker';
 
@@ -112,6 +115,8 @@ const BonusFilter = () => {
   const [selectedState, setSelectedState] = useState(dummyData.states[0]);
   const [selectedRegisterStatus, setSelectedRegisterStatus] = useState(dummyData.registerStatus[0]);
   const [selectedFinancialYear, setSelectedFinancialYear] = useState<SelectOption | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
 
 
   const handleFinancialYearChange = (value: SelectOption | null) => {
@@ -119,10 +124,18 @@ const BonusFilter = () => {
     // You can add any additional logic here, such as fetching data for the selected year
   };
 
+  const selectedCompanyData: Company = {
+    company_name: selectedCompany.label,
+    date: new Date().toISOString(),
+    uploaded_Date: new Date().toISOString(),
+    status: 'Active',
+    id: selectedCompany.value
+  };
 
 
 
   return (
+    <>
     <div className="w-full flex flex-nowrap items-center gap-4">
       <div className="w-48">
         <OutlinedSelect
@@ -133,18 +146,14 @@ const BonusFilter = () => {
         />
       </div>
 
-      <div className="w-48">
-        <OutlinedSelect
-          label="State"
-          value={selectedState}
-          onChange={setSelectedState}
-          options={dummyData.states}
-        />
-      </div>
+      
 
       <div className="w-48">
       <FinancialYearFilter value={selectedFinancialYear} onChange={handleFinancialYearChange} />
       </div>
+
+
+      
 
       <div>
         <Button
@@ -155,7 +164,29 @@ const BonusFilter = () => {
           Filter
         </Button>
       </div>
+
+
+
+      <div>
+          <Button
+            size="sm"
+            variant='solid'
+            className="h-[38px] whitespace-nowrap"
+            icon={<RiUploadLine />}
+            onClick={() => setIsDialogOpen(true)}
+          >
+            Upload
+          </Button>
+        </div>
     </div>
+
+    <BulkUpload 
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        company={selectedCompanyData}
+      />
+
+    </>
   );
 };
 

@@ -6,7 +6,6 @@
 // import { HiUpload } from 'react-icons/hi';
 // import { HiDownload } from 'react-icons/hi';
 
-
 // const ConfigDropdown = ({ companyName, companyGroupName }) => {
 //   const [isOpen, setIsOpen] = useState(false);
 //   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -31,7 +30,7 @@
 
 //   const handleOptionClick = (option) => {
 //     setSelectedOption(option);
-//     setIsDialogOpen(true);
+//     showSuccessNotification(option);
 //     setIsOpen(false);
 //   };
 
@@ -73,25 +72,26 @@
 //     };
 //   }, [isOpen]);
 
-
 //   const openNotification = (type: 'success' | 'info' | 'danger' | 'warning', message: string) => {
 //     toast.push(
-//         <Notification
-//             title={type.charAt(0).toUpperCase() + type.slice(1)}
-//             type={type}
-//         >
-//             {message}
-//         </Notification>
-//     )
-// }
+//       <Notification
+//         title={type.charAt(0).toUpperCase() + type.slice(1)}
+//         type={type}
+//       >
+//         {message}
+//       </Notification>
+//     );
+//   };
 
+//   const showSuccessNotification = (option) => {
+//     const optionLabel = options.find((o) => o.key === option)?.label;
+//     openNotification('success', `${optionLabel}`);
+//   };
 
 //   const handleConfirm = () => {
 //     setIsDialogOpen(false);
 //     openNotification('success', 'Proof uploaded successfully');
-
 //   };
-
 
 //   const handleCancel = () => {
 //     setIsDialogOpen(false);
@@ -99,7 +99,7 @@
 
 //   return (
 //     <>
-//       <Tooltip title="Click to upload PF documents">
+//       <Tooltip title="Click to download output register">
 //         <Button
 //           ref={buttonRef}
 //           size='sm'
@@ -122,21 +122,8 @@
 //         document.body
 //       )}
 //       <Dialog isOpen={isDialogOpen}>
-//             <div className='mb-4'>Upload {selectedOption} reciept</div>
-          
-//           {/* <div className="mt-4">
-//             <label htmlFor="file-upload" className="cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-md inline-flex items-center">
-//               <FiUpload className="mr-2" />
-//               Choose File
-//             </label>
-//             <input
-//               id="file-upload"
-//               type="file"
-//               className="hidden"
-//               onChange={handleFileUpload}
-//             />
-//           </div> */}
-//           <div className="flex flex-col gap-2">
+//         <div className='mb-4'>Upload {selectedOption} receipt</div>
+//         <div className="flex flex-col gap-2">
 //           <Input
 //             type="file"
 //             onChange={handleFileUpload}
@@ -166,13 +153,12 @@
 
 // export default ConfigDropdown;
 
+
 import React, { useState, useRef, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { Button, Tooltip, Dialog, Input, toast, Notification } from '@/components/ui';
-import { FiSettings, FiUpload } from 'react-icons/fi';
-import { useNavigate } from 'react-router-dom';
-import { HiUpload } from 'react-icons/hi';
 import { HiDownload } from 'react-icons/hi';
+import { AiFillFilePdf, AiFillFileExcel, AiFillFileWord } from 'react-icons/ai';
 
 const ConfigDropdown = ({ companyName, companyGroupName }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -180,7 +166,6 @@ const ConfigDropdown = ({ companyName, companyGroupName }) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const buttonRef = useRef(null);
   const dropdownRef = useRef(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -206,15 +191,26 @@ const ConfigDropdown = ({ companyName, companyGroupName }) => {
     const file = event.target.files[0];
     if (file) {
       console.log(`Uploading ${file.name} for ${selectedOption}`);
-      // Here you would typically handle the file upload to your server
     }
     setIsDialogOpen(false);
   };
 
   const options = [
-    { key: 'pdf', label: 'PDF Download' },
-    { key: 'excel', label: 'Excel Download' },
-    { key: 'word', label: 'Word Download' },
+    { 
+      key: 'pdf', 
+      label: 'PDF Download',
+      icon: <AiFillFilePdf className="text-red-500 text-xl" />
+    },
+    { 
+      key: 'excel', 
+      label: 'Excel Download',
+      icon: <AiFillFileExcel className="text-green-600 text-xl" />
+    },
+    { 
+      key: 'word', 
+      label: 'Word Download',
+      icon: <AiFillFileWord className="text-blue-600 text-xl" />
+    },
   ];
 
   const updateDropdownPosition = () => {
@@ -223,7 +219,6 @@ const ConfigDropdown = ({ companyName, companyGroupName }) => {
       const dropdownWidth = dropdownRef.current.offsetWidth;
       dropdownRef.current.style.position = 'fixed';
       dropdownRef.current.style.top = `${rect.bottom + window.scrollY}px`;
-      // Adjust the left position to move the dropdown more to the left
       dropdownRef.current.style.left = `${rect.left + window.scrollX - dropdownWidth + rect.width}px`;
     }
   };
@@ -276,13 +271,14 @@ const ConfigDropdown = ({ companyName, companyGroupName }) => {
         />
       </Tooltip>
       {isOpen && ReactDOM.createPortal(
-        <div ref={dropdownRef} className="py-2 w-52 h-32 bg-white rounded-md shadow-xl mt-2 border border-gray-200 z-50">
+        <div ref={dropdownRef} className="py-2 w-52 bg-white rounded-md shadow-xl mt-2 border border-gray-200 z-50">
           {options.map((option) => (
             <button
               key={option.key}
-               className="block px-4 py-2 text-sm capitalize text-gray-700 hover:bg-gray-100 w-full text-left"
+              className="block px-4 py-2 text-sm capitalize text-gray-700 hover:bg-gray-100 w-full text-left flex items-center gap-2"
               onClick={() => handleOptionClick(option.key)}
             >
+              {option.icon}
               {option.label}
             </button>
           ))}

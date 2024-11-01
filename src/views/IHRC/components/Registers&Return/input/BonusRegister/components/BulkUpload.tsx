@@ -140,7 +140,7 @@ const BulkUpload: React.FC<BulkUploadProps> = ({ isOpen, onClose, company }) => 
 
             <div className='flex flex-col gap-4'>
                 <div className='flex gap-2 items-center my-4'>
-                   <p> Select the Month</p>
+                   <p> Select the Financial Year</p>
                    <div className="w-48">
                    <FinancialYearFilter value={selectedFinancialYear} onChange={handleFinancialYearChange} />
 
@@ -150,7 +150,7 @@ const BulkUpload: React.FC<BulkUploadProps> = ({ isOpen, onClose, company }) => 
             
             <div className="flex flex-col gap-4">
             <div className="my-4 flex gap-2 items-center">
-          <p>Download Salary Register Format</p>
+          <p>Download Bonus Register Format</p>
           <a className="text-blue-600 hover:underline">
             <Button size="xs" icon={<HiDownload />} >Download</Button>
           </a>

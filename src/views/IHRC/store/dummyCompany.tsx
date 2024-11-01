@@ -1,20 +1,20 @@
 export interface Company {
     company_name: string;
     sl_no: number;
-    state: string;
-    branch: string;
-    location: string;
     status: string;
+    date: string;
+    uploaded_Date: string;
 }
 
 export const companies: Company[] = [
   {
     company_name: "CEAT",
     sl_no: 1,
-    state: "Maharashtra",
-    branch: "Western Branch",
-    location: "Mumbai",
-    status: "Uploaded"
+    date: 'Oct, 2024',
+    // branch: "Western Branch",
+    // location: "Mumbai",
+    uploaded_Date: '2024-10-01',
+    status: "Uploaded",
   },
   // {
   //   company_name: "Infosys Ltd.",
