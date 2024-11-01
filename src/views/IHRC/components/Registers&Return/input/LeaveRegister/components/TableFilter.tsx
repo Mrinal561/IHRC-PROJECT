@@ -36,7 +36,7 @@ const TableFilter = () => {
                 },
             },
             {
-                header: 'Date',
+                header: 'Month',
                 accessorKey: 'date',
                 cell: (props) => {
                     const value = props.getValue() as string;
