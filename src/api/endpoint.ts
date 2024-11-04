@@ -24,7 +24,10 @@ export const endpoints = {
         delete: (id: string) => api(`companyadmin/company/${id}`),
     },
     common:{
-            getAll: ()=> api('/company-group')
+            getAll: ()=> api('/company-group'),
+            state: ()=> api('/states'),
+            district: ()=> api('/district'),
+            location: ()=> api('/location'),
     },
     user: {
         getAll: () => api('companyadmin/user'),
@@ -32,7 +35,15 @@ export const endpoints = {
         create: () => api('companyadmin/user'),
         update: (id: string) => api(`companyadmin/user/${id}`),
         delete: (id: string) => api(`companyadmin/user/${id}`),
+    },
+    branch: {
+        getAll: () => api('companyadmin/branch'),
+        getById: (id: string) => api(`companyadmin/branch/${id}`),
+        create: () => api('companyadmin/branch'),
+        update: (id: string) =>  api(`companyadmin/branch/${id}`),
+        delete: (id: string) => api(`companyadmin/branch/${id}`),
     }
+   
 
     
 

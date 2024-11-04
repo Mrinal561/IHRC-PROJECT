@@ -1,4 +1,4 @@
-import { CommonCompanyData } from "@/@types/commonApi";
+import { CommonCompanyData, CommonStateData } from "@/@types/commonApi";
 import ApiService from "./ApiService";
 
 export async function getAllCompanies() {
@@ -6,4 +6,11 @@ export async function getAllCompanies() {
         url: '/company-group',
         method: 'get',
     });
+}
+
+export async function getAllStates() {
+    return ApiService.fetchData<CommonStateData[]>({
+        url: '/state',
+        method: 'get',
+    })
 }

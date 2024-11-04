@@ -8,7 +8,7 @@ import login, {AuthenticationState} from './slices/login'
 import company, { CompanyState } from './slices/company/companySlice'
 import companyGroup ,{ CompanyGroupState } from './slices/companyGroup/companyGroupSlice'
 import user, { UserState } from './slices/userEntity/UserEntitySlice'
-
+import branch, { BranchState } from './slices/branch/branchSlice'
 
 
 
@@ -18,6 +18,7 @@ export type RootState = CombinedState<{
     login:CombinedState<AuthenticationState>
     companyGroup: CompanyGroupState
     company: CompanyState
+    branch: BranchState
     user: UserState
     locale: LocaleState
     theme: ThemeState
@@ -37,6 +38,7 @@ const staticReducers = {
     login,
     companyGroup,
     company,
+    branch,
     user,
     [RtkQueryService.reducerPath]: RtkQueryService.reducer,
 }

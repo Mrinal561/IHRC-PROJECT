@@ -1,9 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-// import { httpClient } from '@/api/httpClient';
 import { endpoints } from '@/api/endpoint';
-import { CommonCompanyData } from '@/@types/commonApi';
+import { CommonCompanyData, CommonStateData } from '@/@types/commonApi';
 import httpClient from '@/api/http-client';
-// import type { CommonCompanyData } from './CommonService';
 
 interface CommonState {
     data: CommonCompanyData[];
@@ -24,6 +22,14 @@ export const fetchAll = createAsyncThunk(
     }
 );
 
+export const fetchAllStates = createAsyncThunk(
+    'common/fetchAllStates',
+    async () => {
+        const { data } = await httpClient.get(endpoints.common.state());
+        return data;
+    }
+)
+
 const commonSlice = createSlice({
     name: 'common',
     initialState,
@@ -38,6 +44,18 @@ const commonSlice = createSlice({
                 state.loading = false;
             })
             .addCase(fetchAll.rejected, (state) => {
+                state.loading = false;
+            })
+
+            // for state
+            .addCase(fetchAllStates.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(fetchAllStates.fulfilled, (state, action) => {
+                state.data = action.payload;
+                state.loading = false;
+            })
+            .addCase(fetchAllStates.rejected, (state) => {
                 state.loading = false;
             });
     },

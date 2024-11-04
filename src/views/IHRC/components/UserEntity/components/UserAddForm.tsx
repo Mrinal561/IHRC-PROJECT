@@ -8,8 +8,7 @@ import OutlinedInput from '@/components/ui/OutlinedInput';
 import { AppDispatch } from '@/store';
 import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
-import { createUser } from '@/store/slices/userEntity/UserEntitySlice'// Make sure to import from your actual slice file
-
+import { createUser } from '@/store/slices/userEntity/UserEntitySlice'
 interface UserFormData {
   group_id: number;
   first_name: string;
