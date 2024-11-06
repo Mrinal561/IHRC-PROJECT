@@ -1,7 +1,6 @@
 {
     "nav": {
         "home": "Dashboard",
-        "singleMenuItem": "Single menu item",
         "collapseMenu": {
             "collapseMenu": "Audit Checklist",
             "item1": "Recommended Checklist",
@@ -14,14 +13,69 @@
             "item8": "History"
 
         },
-        "groupMenu": {
-            "groupMenu": "Group menu",
-            "single": "Group single menu item",
+        "globalMenu": {
+           "globalMenu": "Global Settings",
+           "collapse": {
+                "collapse": "Global Settings",
+                "item1": "Certificate Template",
+                "item2": "Notification Settings",
+                "item3": "Status Settings",
+                "item4": "Custom Fields",
+                "item5": "Register Template"
+            }
+        },
+        "companySetup": {
+            "companySetup": "Company Setup",
             "collapse": {
-                "collapse": "Group collapse menu",
-                "item1": "Group collapse menu item 1",
-                "item2": "Group collapse menu item 2"
+                "entitySetup": {
+                    "collapse": {
+                        "collapse": "Entity Setup",
+                        "item1": "Company Group",
+                        "item2": "Company",
+                        "item3": "State",
+                        "item4": "District",
+                        "item5": "Location",
+                        "item6": "Branch"
+                    }
+                },
+                "userSetup": "User Setup"
+
+            }
+        },
+        "remittanceTracker": {
+            "remittanceTracker": "Remittance Tracker",
+            "collapse": {
+                "collapse": "Remittance Tracker",
+                "item1": "PF Tracker",
+                "item2": "ESI Tracker",
+                "item3": "LWF Tracker",
+                "item4": "PT RC Tracker",
+                "item5": "PT EC Tracker",
+                "item6": "PF IW Tracker",
+                "item7": "S&E Tracker"
+            }
+        },
+        "register": {
+            "register": "Register & Return",
+            "collapse": {
+                "inputSetup": {
+                    "collapse": {
+                        "collapse": "Input",
+                        "item1": "Salary Register",
+                        "item2": "Attendance Register",
+                        "item3": "Leave Register",
+                        "item4": "Bonus Register",
+                        "item5": "Maternity Register"
+                    }
+                },
+                "outputSetup": {
+                    "collapse": {
+                        "collapse": "Output",
+                        "item1": "Output Registers"
+                    }
+                }
+
             }
         }
-    }
+        }
 }

@@ -5,8 +5,70 @@ import SidePanelContent, { SidePanelContentProps } from './SidePanelContent'
 import withHeaderItem from '@/utils/hoc/withHeaderItem'
 import { setPanelExpand, useAppSelector, useAppDispatch } from '@/store'
 import type { CommonProps } from '@/@types/common'
+import Notification from '../Notification'
+import { Select } from '@/components/ui'
+import { useEffect, useState } from 'react'
+import OutlinedSelect from '@/components/ui/Outlined'
+import {Badge} from '@/components/ui'
+import OutlinedBadgeSelect from '@/components/ui/OutlinedBadgeSelect'
 
 type SidePanelProps = SidePanelContentProps & CommonProps
+
+
+
+
+
+
+interface Option {
+    value: string;
+    label: React.ReactNode;
+  }
+  
+  interface FinancialYearFilterProps {
+    onChange: (year: string) => void;
+  }
+  
+  const FinancialYearFilter: React.FC<FinancialYearFilterProps> = ({ onChange }) => {
+      const currentYear = new Date().getFullYear();
+      const years = Array.from({ length: 5 }, (_, i) => `${currentYear - i}-${currentYear - i + 1}`);
+      
+      const [selectedYear, setSelectedYear] = useState<string>(years[0]);
+  
+      useEffect(() => {
+          onChange(selectedYear);
+      }, []);
+  
+      const options: Option[] = years.map(year => ({
+          value: year,
+          label: year
+      }));
+  
+      const handleChange = (selectedOption: Option | null) => {
+          if (selectedOption) {
+              setSelectedYear(selectedOption.value);
+              onChange(selectedOption.value);
+          }
+      };
+  
+      return (
+          <div className='w-52'>
+              <OutlinedBadgeSelect
+                  label="Financial Year"
+                  value={options.find(option => option.value === selectedYear)}
+                  options={options}
+                  onChange={handleChange}
+                  optionRenderer={(option, isSelected) => (
+                      <div className="flex items-center justify-between w-full">
+                          <span>{option.label}</span>
+                          {isSelected && (
+                              <Badge className="w-2 h-2 rounded-full bg-emerald-500" />
+                          )}
+                      </div>
+                  )}
+              />
+          </div>
+      );
+  };
 
 const _SidePanel = (props: SidePanelProps) => {
     const dispatch = useAppDispatch()
@@ -16,6 +78,9 @@ const _SidePanel = (props: SidePanelProps) => {
     const panelExpand = useAppSelector((state) => state.theme.panelExpand)
 
     const direction = useAppSelector((state) => state.theme.direction)
+
+    const [selectedFinancialYear, setSelectedFinancialYear] = useState(null)
+
 
     const openPanel = () => {
         dispatch(setPanelExpand(true))
@@ -29,14 +94,16 @@ const _SidePanel = (props: SidePanelProps) => {
         }
     }
 
+    const handleFinancialYearChange = (year) => {
+        setSelectedFinancialYear(year)
+        // You can add any additional logic here, such as fetching data for the selected year
+      }
+
     return (
-        <>
-            <div
-                className={classNames('text-2xl', className)}
-                onClick={openPanel}
-                {...rest}
-            >
-                <HiOutlineCog />
+        <div className='flex items-center'>
+            <div className='flex items-center gap-6'>
+            <FinancialYearFilter onChange={handleFinancialYearChange} />
+                <Notification />
             </div>
             <Drawer
                 title="Side Panel"
@@ -48,7 +115,7 @@ const _SidePanel = (props: SidePanelProps) => {
             >
                 <SidePanelContent callBackClose={closePanel} />
             </Drawer>
-        </>
+        </div>
     )
 }
 

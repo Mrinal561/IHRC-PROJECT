@@ -3,68 +3,27 @@ import { ColumnDef, OnSortParam } from '@/components/shared/DataTable';
 import DataTable from '@/components/shared/DataTable';
 import { Button, Calendar, Dialog, Tooltip, Select, Checkbox, Input, toast, Notification } from '@/components/ui';
 import { HiBellAlert } from "react-icons/hi2";
+import { MdEdit } from 'react-icons/md';
+import { RiEyeLine } from 'react-icons/ri';
+import { useNavigate } from 'react-router-dom';
 
-interface ChecklistDataRow {
-  Compliance_Instance_ID: number;
-  Compliance_ID: number;
-  Compliance_Header: string;
-  Due_Date: Date;
-  Owner_Name: string;
-  Approver_Name: string;
-}
-
-const initialData: ChecklistDataRow[] = [
-  {
-    Compliance_Instance_ID: 1001,
-    Compliance_ID: 3236,
-    Compliance_Header: 'Renewal of Registration',
-    Due_Date: new Date('2024-09-15'),
-    Owner_Name: 'Admin',
-    Approver_Name: 'Shivesh Verma'
-  },
-  {
-    Compliance_Instance_ID: 1002,
-    Compliance_ID: 4501,
-    Compliance_Header: 'Annual Renewal of License',
-    Due_Date: new Date('2024-10-01'),
-    Owner_Name: 'HR',
-    Approver_Name: 'Shivesh Verma'
-  },
-  {
-    Compliance_Instance_ID: 1003,
-    Compliance_ID: 5602,
-    Compliance_Header: 'Monthly Compliance Report',
-    Due_Date: new Date('2024-09-05'),
-    Owner_Name: 'Finance',
-    Approver_Name: 'Shivesh Verma'
-  },
-  {
-    Compliance_Instance_ID: 1004,
-    Compliance_ID: 6789,
-    Compliance_Header: 'Quarterly Wage Report',
-    Due_Date: new Date('2024-10-15'),
-    Owner_Name: 'Ravi Shankar Singh',
-    Approver_Name: 'Shivesh Verma'
-  },
-  {
-    Compliance_Instance_ID: 1005,
-    Compliance_ID: 7890,
-    Compliance_Header: 'Renewal of Trade License',
-    Due_Date: new Date('2024-11-01'),
-    Owner_Name: 'HR',
-    Approver_Name: 'Shivesh Verma'
-  }
-];
+import { dummyData, ComplianceData } from '@/views/IHRC/store/dummyData';
+import OutlinedSelect from '@/components/ui/Outlined/Outlined';
+import classNames from 'classnames';
 
 const AssignChecklistTable: React.FC = () => {
-  const [data, setData] = useState<ChecklistDataRow[]>(initialData);
+  const navigate = useNavigate();
+  const [data, setData] = useState<ComplianceData[]>(dummyData);
   const [activeRowId, setActiveRowId] = useState<number | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isReminderDialogOpen, setIsReminderDialogOpen] = useState(false);
-  const [editData, setEditData] = useState<Partial<ChecklistDataRow>>({});
+  const [editData, setEditData] = useState<Partial<ComplianceData>>({});
   const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
   const [reminderDate, setReminderDate] = useState<Date | null>(null);
   const [reminderEmail, setReminderEmail] = useState('');
+  const [tempDueDate, setTempDueDate] = useState<Date | string | null>(null);
+
+
 
   const isAllSelected = useMemo(
     () => selectedItems.size === data.length,
@@ -91,32 +50,39 @@ const AssignChecklistTable: React.FC = () => {
     }
   };
 
-  const handleEditClick = (row: ChecklistDataRow) => {
+  const handleEditClick = (row: ComplianceData) => {
     setActiveRowId(row.Compliance_Instance_ID);
     setEditData({
       Compliance_Instance_ID: row.Compliance_Instance_ID,
       Owner_Name: row.Owner_Name,
-      Approver_Name: row.Approver_Name
+      Approver_Name: row.Approver_Name,
+      Due_Date: row.Due_Date
     });
+    setTempDueDate(row.Due_Date);
     setIsEditDialogOpen(true);
   };
 
   const handleEditSave = () => {
     if (activeRowId) {
+      const updatedData = {
+        ...editData,
+        Due_Date: tempDueDate || editData.Due_Date
+      };
       setData((prevData) =>
         prevData.map((item) =>
           item.Compliance_Instance_ID === activeRowId
-            ? { ...item, ...editData }
+            ? { ...item, ...updatedData }
             : item
         )
       );
       setIsEditDialogOpen(false);
       setActiveRowId(null);
       setEditData({});
+      setTempDueDate(null);
     }
   };
 
-  const handleBellClick = (row: ChecklistDataRow) => {
+  const handleBellClick = (row: ComplianceData) => {
     setActiveRowId(row.Compliance_Instance_ID);
     setReminderDate(null);
     setReminderEmail('');
@@ -125,24 +91,17 @@ const AssignChecklistTable: React.FC = () => {
 
   const handleReminderSave = () => {
     if (activeRowId && reminderDate && reminderEmail) {
-      // Here you would typically send this data to your backend
       console.log(`Reminder set for compliance ID ${activeRowId} on ${reminderDate.toDateString()} to ${reminderEmail}`);
       
-      // Show the toast notification with the new style
       toast.push(
-        <Notification
-          title="Success"
-          type="success"
-        >
+        <Notification title="Success" type="success">
           Reminder set successfully
           <br />
           Date: {reminderDate.toDateString()}
           <br />
           Email: {reminderEmail}
         </Notification>,
-        {
-          placement: 'top-end',
-        }
+        { placement: 'top-end' }
       );
 
       setIsReminderDialogOpen(false);
@@ -150,42 +109,16 @@ const AssignChecklistTable: React.FC = () => {
       setReminderDate(null);
       setReminderEmail('');
     } else {
-      // Show an error toast if any required field is missing
       toast.push(
-        <Notification
-          title="Error"
-          type="danger"
-        >
+        <Notification title="Error" type="danger">
           Please fill in all fields
         </Notification>,
-        {
-          placement: 'top-end',
-        }
+        { placement: 'top-end' }
       );
     }
   };
 
-  const EditIcon = () => (
-    <span className="text-[#7c828e] hover:text-indigo-600">
-      <svg
-        fill="none"
-        strokeWidth="2"
-        viewBox="0 0 24 24"
-        aria-hidden="true"
-        height="1em"
-        width="1em"
-        xmlns="http://www.w3.org/2000/svg"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-        ></path>
-      </svg>
-    </span>
-  );
-  const columns: ColumnDef<ChecklistDataRow>[] = useMemo(
+  const columns: ColumnDef<ComplianceData>[] = useMemo(
     () => [
       {
         header: ({ table }) => (
@@ -209,25 +142,63 @@ const AssignChecklistTable: React.FC = () => {
       {
         header: 'Instance ID',
         accessorKey: 'Compliance_Instance_ID',
-        cell: (props) => (
-          <div className="w-16 text-start">{props.getValue()}</div>
-        ),
+        cell: (props) => <div className="w-24 text-start">{props.getValue()}</div>,
       },
       {
         header: 'Compliance ID',
         accessorKey: 'Compliance_ID',
-        cell: (props) => (
-          <div className="w-20 text-start">{props.getValue()}</div>
-        ),
+        cell: (props) => <div className="w-32 text-start">{props.getValue()}</div>,
       },
       {
-        header: 'Compliance Header',
+        header: 'Legislation',
+        accessorKey: 'Legislation',
+        cell: (props) => {
+          const value = props.getValue() as string;
+          return (
+            <Tooltip title={value} placement="top">
+              <div className="w-32 truncate">{value.length > 20 ? value.substring(0, 20) + '...' : value}</div>
+            </Tooltip>
+          );
+        },
+      },
+      {
+        header: 'Criticality',
+        accessorKey: 'Criticality',
+        cell: (props) => {
+          const criticality = props.getValue() as string;
+          return (
+            <div className="w-24 font-semibold truncate">
+              {criticality === 'High' ? (
+                <span className="text-red-500">{criticality}</span>
+              ) : criticality === 'Medium' ? (
+                <span className="text-yellow-500">{criticality}</span>
+              ) : (
+                <span className="text-green-500">{criticality}</span>
+              )}
+            </div>
+          );
+        }
+      },
+      {
+        header: 'Location',
+        accessorKey: 'Location',
+        cell: (props) => {
+          const value = props.getValue() as string;
+          return (
+            <Tooltip title={value} placement="top">
+              <div className="w-36 truncate">{value.length > 20 ? value.substring(0, 20) + '...' : value}</div>
+            </Tooltip>
+          );
+        },
+      },
+      {
+        header: 'Header',
         accessorKey: 'Compliance_Header',
         cell: (props) => {
           const value = props.getValue() as string;
           return (
             <Tooltip title={value} placement="top">
-              <div className="w-32 truncate">{value}</div>
+              <div className="w-40 truncate">{value}</div>
             </Tooltip>
           );
         },
@@ -236,61 +207,61 @@ const AssignChecklistTable: React.FC = () => {
         header: 'Due Date',
         accessorKey: 'Due_Date',
         cell: ({ getValue }) => {
-          const date = getValue<Date>();
-          return <div className="w-28">{date.toLocaleDateString()}</div>;
+          const date = getValue<Date | string>();
+          return <div className="w-20">
+            {date instanceof Date ? date.toLocaleDateString() : date || ''}
+          </div>;
         },
       },
       {
         header: "Owner's Name",
         accessorKey: 'Owner_Name',
-        cell: ({ getValue }) => {
-          return <div className="w-36">{getValue<string>()}</div>;
-        },
+        cell: ({ getValue }) => <div className="w-32">{getValue<string>()}</div>,
       },
       {
         header: "Approver's Name",
         accessorKey: 'Approver_Name',
-        cell: ({ getValue }) => {
-          return <div className="w-36">{getValue<string>()}</div>;
-        },
+        cell: ({ getValue }) => <div className="w-36">{getValue<string>()}</div>,
       },
       {
         header: 'Actions',
-        id: 'actions',
-        cell: ({ row }) => {
-            const value1= "Edit"
-            const value2= "Reminder"
-            return(
-
-            <div className='flex space-x-2'>
-            <Tooltip title={value1} placement="top">
-            <Button
+        id: 'actions',  
+        cell: ({ row }) => (
+          <div className='flex space-x-2'>
+             <Tooltip title="View Compliance Detail" placement="top">
+              <Button
                 size="sm"
-                variant="plain"
-                onClick={() => handleEditClick(row.original)}
-                icon={<EditIcon />}
+                onClick={() => navigate(`/app/IHRC/assign-list-detail/${row.original.Compliance_ID}`, { state: row.original })}
+                icon={<RiEyeLine />}
                 className='hover:bg-transparent'
-                />
+              />
             </Tooltip>
-            <Tooltip title={value2} placement="top">
-            <Button
+            <Tooltip title="Set Owner & Approver" placement="top">
+              <Button
                 size="sm"
-                variant="plain"
+                onClick={() => handleEditClick(row.original)}
+                icon={<MdEdit />}
+                className='hover:bg-transparent'
+              />
+            </Tooltip>
+            <Tooltip title="Set Compliance Reminder" placement="top">
+              <Button
+                size="sm"
                 onClick={() => handleBellClick(row.original)}
                 icon={<HiBellAlert />}
                 className='hover:bg-transparent text-red-500'
-                />
+              />
             </Tooltip>
-        </div>
-        )
-        },
+           
+          </div>
+        ),
       }
     ],
     [selectedItems, isAllSelected]
   );
 
   const [tableData, setTableData] = useState({
-    total: initialData.length,
+    total: dummyData.length,
     pageIndex: 1,
     pageSize: 10,
     query: '',
@@ -308,6 +279,17 @@ const AssignChecklistTable: React.FC = () => {
   const onSort = (sort: OnSortParam) => {
     setTableData(prev => ({ ...prev, sort }));
   };
+  const ownerOptions = useMemo(() => {
+    return Array.from(new Set(dummyData.map(item => item.Owner_Name)))
+      .filter(name => name) // Remove any undefined or empty names
+      .map(name => ({ value: name, label: name }));
+  }, []);
+  const approverOptions = useMemo(() => {
+    return Array.from(new Set(dummyData.map(item => item.Approver_Name)))
+      .filter(name => name) // Remove any undefined or empty names
+      .map(name => ({ value: name, label: name }));
+  }, []);
+  
 
   return (
     <div className="relative">
@@ -325,47 +307,67 @@ const AssignChecklistTable: React.FC = () => {
         onPaginationChange={onPaginationChange}
         onSelectChange={onSelectChange}
         onSort={onSort}
+        stickyHeader={true}
+        stickyFirstColumn={true}
+        stickyLastColumn={true}
+        selectable={true}
       />
 
       <Dialog
         isOpen={isEditDialogOpen}
-        onClose={() => setIsEditDialogOpen(false)}
-        onRequestClose={() => setIsEditDialogOpen(false)}
-        className="max-w-md p-6"
+        onClose={() => {
+          setIsEditDialogOpen(false);
+          setTempDueDate(null);
+        }}
+        onRequestClose={() => {
+          setIsEditDialogOpen(false);
+          setTempDueDate(null);
+        }}
+        className="max-w-md p-4"
       >
-        <h5 className="mb-4 text-lg font-semibold">
-          Compliance Instance ID: <span className="text-indigo-600">{editData.Compliance_Instance_ID}</span>
+        <h5 className="mb-2 text-lg font-semibold">
+          Compliance Instance ID:{' '}
+          <span className="text-indigo-600">
+            {editData.Compliance_Instance_ID}
+          </span>
         </h5>
-        <div className="space-y-4">
+        <div className="space-y-6">
           <div>
-            <label className="block mb-2">Set Owner</label>
-            <Select
-              options={[
-                { value: 'Admin', label: 'Admin' },
-                { value: 'User', label: 'User' },
-                { value: 'HR', label: 'HR' },
-                { value: 'Finance User', label: 'Finance User' },
-                { value: 'Ravi Shankar Singh', label: 'Ravi Shankar Singh' }
-              ]}
+            <label className="block mb-6">Set Owner Name</label>
+            <OutlinedSelect
+            label='Set Owner Name'
+              options={ownerOptions}
               value={editData.Owner_Name ? { value: editData.Owner_Name, label: editData.Owner_Name } : null}
               onChange={(selectedOption) => setEditData({ ...editData, Owner_Name: selectedOption ? selectedOption.value : '' })}
               isClearable
             />
           </div>
           <div>
-            <label className="block mb-2">Approver Name</label>
-            <Select
-              options={[
-                { value: 'Shivesh Varma', label: 'Shivesh Varma' },
-                { value: 'Amit Sharma', label: 'Amit Sharma' },
-                { value: 'Priya Singh', label: 'Priya Singh' },
-                { value: 'Ravi Kumar', label: 'Ravi Kumar' }
-              ]}
+            <label className="block mb-6">Set Approver Name</label>
+            <OutlinedSelect
+            label="Set Approver Name"
+              options={approverOptions}
               value={editData.Approver_Name ? { value: editData.Approver_Name, label: editData.Approver_Name } : null}
               onChange={(selectedOption) => setEditData({ ...editData, Approver_Name: selectedOption ? selectedOption.value : '' })}
               isClearable
             />
           </div>
+          {(!editData.Due_Date || editData.Due_Date === '') && (
+            <div>
+              <label className="block mb-2">Set Due Date</label>
+              {editData.Due_Date instanceof Date ? (
+                <div>{editData.Due_Date.toLocaleDateString()}</div>
+              ) : editData.Due_Date ? (
+                <div>{editData.Due_Date}</div>
+              ) : (
+                <div></div>
+              )}
+              <Calendar 
+                value={tempDueDate instanceof Date ? tempDueDate : undefined} 
+                onChange={(date) => setTempDueDate(date)}
+              />
+            </div>
+          )}
         </div>
         <div className="mt-6 text-right">
           <Button variant="solid" onClick={handleEditSave}>

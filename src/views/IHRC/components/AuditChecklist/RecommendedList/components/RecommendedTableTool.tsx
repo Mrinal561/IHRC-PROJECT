@@ -4,7 +4,12 @@ import { HiDownload, HiPlusCircle } from 'react-icons/hi'
 import RecommendedTableSearch from './RecommendedTableSearch'
 import RecommendedFilter from './RecommendedFilter'
 import { Link } from 'react-router-dom'
-import { Dialog, toast, Notification } from '../../../../../../components/ui'
+import { Dialog, toast, Notification, Select } from '../../../../../../components/ui'
+import { ActionMeta, components, SingleValue } from 'react-select'
+import { FaChevronDown } from 'react-icons/fa'
+import DashboardFilter from '../../../Home/components/DashboardFilter'
+import CustomDateRangePicker from '../../../Home/components/CustomDateRangePicker'
+import Company from '../../AssignChecklist/components/Company'
 
 
 
@@ -39,7 +44,6 @@ const AssignChecklistButton = () => {
     return (
         <>
             <Button
-                block
                 variant="solid"
                 size="sm"
                 icon={<HiPlusCircle />}
@@ -78,47 +82,17 @@ const AssignChecklistButton = () => {
 
 
 
+
 const RecommendedTableTool = () => {
-    const [isDialogOpen, setIsDialogOpen] = useState(false)
 
-    const handleAssignClick = () => {
-        setIsDialogOpen(true)
-    }
 
-    const handleDialogClose = () => {
-        setIsDialogOpen(false)
-    }
 
-    const handleConfirmAssign = () => {
-        setIsDialogOpen(false)
-        // Here you would typically call an API to assign the checklist
-        // For this example, we'll just show a success toast
-        toast.push(
-            <div className="flex items-center gap-2">
-                <span className="text-emerald-600">
-                    <HiPlusCircle />
-                </span>
-                <span>Compliance assigned successfully!</span>
-            </div>,
-            { placement: 'top-center' }
-        )
-    }
-
+    
     return (
         <>
-        <div className="flex flex-col lg:flex-row lg:items-center gap-1">
+        <div className="flex flex-col lg:flex-row lg:items-center gap-3">
             <RecommendedTableSearch />
-            <RecommendedFilter />
-            <Link
-                download
-                className="block lg:inline-block md:mx-2 md:mb-0 mb-4"
-                to="/data/product-list.csv"
-                target="_blank"
-            >
-                <Button block size="sm" icon={<HiDownload />}>
-                    Export
-                </Button>
-            </Link>
+            {/* <Company />    */}
             <div className="block lg:inline-block md:mb-0 mb-4">
                 <AssignChecklistButton />
             </div>

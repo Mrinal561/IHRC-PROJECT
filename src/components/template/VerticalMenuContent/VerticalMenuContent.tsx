@@ -55,6 +55,8 @@ const VerticalMenuContent = (props: VerticalMenuContentProps) => {
     }
 
     const getNavItem = (nav: NavigationTree) => {
+        console.log('Processing nav item:', nav);
+
         if (nav.subMenu.length === 0 && nav.type === NAV_ITEM_TYPE_ITEM) {
             return (
                 <VerticalSingleMenuItem
@@ -69,6 +71,8 @@ const VerticalMenuContent = (props: VerticalMenuContentProps) => {
         }
 
         if (nav.subMenu.length > 0 && nav.type === NAV_ITEM_TYPE_COLLAPSE) {
+            console.log('Rendering collapsed menu item:', nav);
+
             return (
                 <VerticalCollapsedMenuItem
                     key={nav.key}

@@ -14,6 +14,8 @@ import {
     HiOutlineClipboardCheck,
     HiOutlineBan,
     HiOutlineMailOpen,
+    HiOutlineExclamation,
+    HiOutlinePlusCircle
 } from 'react-icons/hi'
 import { Link } from 'react-router-dom'
 import isLastChild from '@/utils/isLastChild'
@@ -25,85 +27,28 @@ import acronym from '@/utils/acronym'
 
 type NotificationList = {
     id: string
-    target: string
+    title: string
     description: string
     date: string
-    image: string
-    type: number
-    location: string
-    locationLabel: string
-    status: string
+    type: 'approval' | 'rejection' | 'update' | 'reminder' | 'added'
     readed: boolean
 }
 
 const notificationHeight = 'h-72'
-const imagePath = '/img/avatars/'
-
-const GeneratedAvatar = ({ target }: { target: string }) => {
-    const color = useTwColorByName()
-    return (
-        <Avatar shape="circle" className={`${color(target)}`}>
-            {acronym(target)}
-        </Avatar>
-    )
-}
-
-const notificationTypeAvatar = (data: {
-    type: number
-    target: string
-    image: string
-    status: string
-}) => {
-    const { type, target, image, status } = data
-    switch (type) {
-        case 0:
-            if (image) {
-                return <Avatar shape="circle" src={`${imagePath}${image}`} />
-            } else {
-                return <GeneratedAvatar target={target} />
-            }
-        case 1:
-            return (
-                <Avatar
-                    shape="circle"
-                    className="bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-100"
-                    icon={<HiOutlineCalendar />}
-                />
-            )
-        case 2:
-            return (
-                <Avatar
-                    shape="circle"
-                    className={
-                        status === 'succeed'
-                            ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-100'
-                            : 'bg-red-100 text-red-600 dark:bg-red-500/20 dark:text-red-100'
-                    }
-                    icon={
-                        status === 'succeed' ? (
-                            <HiOutlineClipboardCheck />
-                        ) : (
-                            <HiOutlineBan />
-                        )
-                    }
-                />
-            )
-        default:
-            return <Avatar />
-    }
-}
 
 const NotificationToggle = ({
     className,
     dot,
+    count
 }: {
     className?: string
     dot: boolean
+    count: number
 }) => {
     return (
         <div className={classNames('text-2xl', className)}>
             {dot ? (
-                <Badge badgeStyle={{ top: '3px', right: '6px' }}>
+                <Badge badgeStyle={{ top: '3px', right: '6px' }} content={count}>
                     <HiOutlineBell />
                 </Badge>
             ) : (
@@ -113,11 +58,57 @@ const NotificationToggle = ({
     )
 }
 
+const notificationTypeAvatar = (type: string) => {
+    switch (type) {
+        case 'approval':
+            return (
+                <Avatar
+                    shape="circle"
+                    className="bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-100"
+                    icon={<HiOutlineClipboardCheck />}
+                />
+            )
+        case 'rejection':
+            return (
+                <Avatar
+                    shape="circle"
+                    className="bg-red-100 text-red-600 dark:bg-red-500/20 dark:text-red-100"
+                    icon={<HiOutlineBan />}
+                />
+            )
+        case 'update':
+            return (
+                <Avatar
+                    shape="circle"
+                    className="bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-100"
+                    icon={<HiOutlineCalendar />}
+                />
+            )
+        case 'reminder':
+            return (
+                <Avatar
+                    shape="circle"
+                    className="bg-yellow-100 text-yellow-600 dark:bg-yellow-500/20 dark:text-yellow-100"
+                    icon={<HiOutlineBell />}
+                />
+            )
+        case 'added':
+            return (
+                <Avatar
+                    shape="circle"
+                    className="bg-purple-100 text-purple-600 dark:bg-yellow-500/20 dark:text-yellow-100"
+                    icon={<HiOutlinePlusCircle />}
+                />
+            )
+        default:
+            return <Avatar shape="circle" icon={<HiOutlineBell />} />
+    }
+}
+
 const _Notification = ({ className }: { className?: string }) => {
-    const [notificationList, setNotificationList] = useState<
-        NotificationList[]
-    >([])
+    const [notificationList, setNotificationList] = useState<NotificationList[]>([])
     const [unreadNotification, setUnreadNotification] = useState(false)
+    const [unreadCount, setUnreadCount] = useState(0)
     const [noResult] = useState(false)
     const [loading] = useState(false)
 
@@ -127,43 +118,81 @@ const _Notification = ({ className }: { className?: string }) => {
 
     const direction = useAppSelector((state) => state.theme.direction)
 
-    const getNotificationCount = async () => {
-        // Fetch Notification count
-    }
+    const dummyNotifications: NotificationList[] = [
+        {
+            id: '1',
+            title: 'Compliance Approved',
+            description: 'Admin approved Compliance ID: C12345 for Muzaffarpur Branch',
+            date: '1 hour ago',
+            type: 'approval',
+            readed: false
+        },
+        {
+            id: '2',
+            title: 'Compliance Rejected',
+            description: 'Admin rejected Compliance ID: C67890 for samastipur Branch',
+            date: '2 hours ago',
+            type: 'rejection',
+            readed: false
+        },
+        {
+            id: '3',
+            title: 'Compliance Update Required',
+            description: 'You have 170 compliances to be updated by today',
+            date: 'Today',
+            type: 'update',
+            readed: false
+        },
+        {
+            id: '4',
+            title: 'Compliance Deadline Reminder',
+            description: 'Reminder: 50 compliances are due in the next 48 hours',
+            date: 'Yesterday',
+            type: 'reminder',
+            readed: true
+        },
+        {
+            id: '5',
+            title: 'New Compliance Added',
+            description: 'A new compliance (ID: C13579) has been added for Begusarai',
+            date: '3 days ago',
+            type: 'added',
+            readed: true
+        },
+    ]
 
     useEffect(() => {
-        getNotificationCount()
+        setNotificationList(dummyNotifications)
+        updateUnreadStatus(dummyNotifications)
     }, [])
 
+    const updateUnreadStatus = (notifications: NotificationList[]) => {
+        const unreadNotifications = notifications.filter(item => !item.readed)
+        setUnreadNotification(unreadNotifications.length > 0)
+        setUnreadCount(unreadNotifications.length)
+    }
+
     const onNotificationOpen = async () => {
-        // Fetch NotificationList
+        // In a real scenario, you'd fetch notifications here
+        // For now, we'll just use our dummy data
     }
 
     const onMarkAllAsRead = useCallback(() => {
-        const list = notificationList.map((item: NotificationList) => {
-            if (!item.readed) {
-                item.readed = true
-            }
-            return item
-        })
-        setNotificationList(list)
-        setUnreadNotification(false)
+        const updatedList = notificationList.map((item: NotificationList) => ({
+            ...item,
+            readed: true
+        }))
+        setNotificationList(updatedList)
+        updateUnreadStatus(updatedList)
     }, [notificationList])
 
     const onMarkAsRead = useCallback(
         (id: string) => {
-            const list = notificationList.map((item) => {
-                if (item.id === id) {
-                    item.readed = true
-                }
-                return item
-            })
-            setNotificationList(list)
-            const hasUnread = notificationList.some((item) => !item.readed)
-
-            if (!hasUnread) {
-                setUnreadNotification(false)
-            }
+            const updatedList = notificationList.map((item) => 
+                item.id === id ? { ...item, readed: true } : item
+            )
+            setNotificationList(updatedList)
+            updateUnreadStatus(updatedList)
         },
         [notificationList]
     )
@@ -173,6 +202,7 @@ const _Notification = ({ className }: { className?: string }) => {
             renderTitle={
                 <NotificationToggle
                     dot={unreadNotification}
+                    count={unreadCount}
                     className={className}
                 />
             }
@@ -182,7 +212,7 @@ const _Notification = ({ className }: { className?: string }) => {
         >
             <Dropdown.Item variant="header">
                 <div className="border-b border-gray-200 dark:border-gray-600 px-4 py-2 flex items-center justify-between">
-                    <h6>Notifications</h6>
+                    <h6>Notifications ({unreadCount})</h6>
                     <Tooltip title="Mark all as read">
                         <Button
                             variant="plain"
@@ -207,16 +237,14 @@ const _Notification = ({ className }: { className?: string }) => {
                                 }`}
                                 onClick={() => onMarkAsRead(item.id)}
                             >
-                                <div>{notificationTypeAvatar(item)}</div>
-                                <div className="ltr:ml-3 rtl:mr-3">
+                                <div>{notificationTypeAvatar(item.type)}</div>
+                                <div className="ltr:ml-3 rtl:mr-3 w-full">
                                     <div>
-                                        {item.target && (
-                                            <span className="font-semibold heading-text">
-                                                {item.target}{' '}
-                                            </span>
-                                        )}
-                                        <span>{item.description}</span>
+                                        <span className="font-semibold heading-text">
+                                            {item.title}
+                                        </span>
                                     </div>
+                                    <p className="mb-1 text-xs">{item.description}</p>
                                     <span className="text-xs">{item.date}</span>
                                 </div>
                                 <Badge
@@ -253,7 +281,7 @@ const _Notification = ({ className }: { className?: string }) => {
                                 <h6 className="font-semibold">
                                     No notifications!
                                 </h6>
-                                <p className="mt-1">Please Try again later</p>
+                                <p className="mt-1">You're all caught up!</p>
                             </div>
                         </div>
                     )}
@@ -265,7 +293,7 @@ const _Notification = ({ className }: { className?: string }) => {
                         to="/app/account/activity-log"
                         className="font-semibold cursor-pointer p-2 px-3 text-gray-600 hover:text-gray-900 dark:text-gray-200 dark:hover:text-white"
                     >
-                        View All Activity
+                        View All Notifications
                     </Link>
                 </div>
             </Dropdown.Item>

@@ -33,6 +33,36 @@ export const protectedRoutes = [
         authority: [],
     },
     {
+        key: 'historyDetail.complianceItem',
+        path:  `${APP_PREFIX_PATH}/IHRC/history-list-detail/:complianceID`,
+        component: lazy(() => import('@/views/IHRC/components/AuditChecklist/HistoryPage/components/ViewDetails')),
+        authority: [],
+    },
+    {
+        key: 'assignComplianceDetail.complianceItem',
+        path:  `${APP_PREFIX_PATH}/IHRC/assign-list-detail/:complianceID`,
+        component: lazy(() => import('@/views/IHRC/components/AuditChecklist/AssignChecklist/components/AssignComplianceDetails')),
+        authority: [],
+    },
+    {
+      key: 'complianceStatusDetail.complianceItem',
+      path:  `${APP_PREFIX_PATH}/IHRC/compliance-status-list-detail/:complianceID`,
+      component: lazy(() => import('@/views/IHRC/components/AuditChecklist/Status/components/ViewDetails')),
+      authority: [],
+    },
+    {
+        key: 'branchInputDetail.item',
+        path: `/add-branch`,
+        component: lazy(() => import('@/views/IHRC/components/Entity/Branch/components/BranchForm')),
+        authority: [],
+      },
+      {
+        key: 'userEntity.add',
+        path: `/add-user`,
+        component: lazy(() => import('@/views/IHRC/components/UserEntity/components/UserAddForm')),
+        authority: [],
+      },
+    {
         key: 'assignChecklist.item3',
         path: '/assigned-checklist',
         component: lazy(() => import('@/views/IHRC/components/AuditChecklist/AssignChecklist/AssignChecklist')),
@@ -74,28 +104,282 @@ export const protectedRoutes = [
         component: lazy(() => import('@/views/IHRC/components/AuditChecklist/CustomChecklist/components/AssignCustomFormPage')),
         authority: [],
     },
+    {
+        key: 'groupMenu.collapse.item1',
+        path: '/global-certificate',
+        component: lazy(() =>
+            import('@/views/IHRC/components/GlobalSettings/CertificateTemplate/CertificateTemplate')
+        ),
+        authority: [],
+    },
+    {
+        key: 'groupMenu.collapse.item2',
+        path: '/global-notification',
+        component: lazy(() =>
+            import('@/views/IHRC/components/GlobalSettings/NotificationSettings/NotificationSettings')
+        ),
+        authority: [],
+    },
+    {
+        key: 'groupMenu.collapse.item3',
+        path: '/global-status',
+        component: lazy(() =>
+            import('@/views/IHRC/components/GlobalSettings/StatusSettings/StatusSettings')
+        ),
+        authority: [],
+    },
     // {
-    //     key: 'groupMenu.single',
-    //     path: '/group-single-menu-item-view',
-    //     component: lazy(() =>
-    //         import('@/views/IHRC/components/demo/GroupSingleMenuItemView')
-    //     ),
+    //     key: 'customFields',
+    //     path: `${APP_PREFIX_PATH}/custom-fields`,
+    //     component: lazy(() => import('@/views/IHRC/components/GlobalSettings/CustomField/CustomField')),
     //     authority: [],
     // },
+    {
+        key: 'groupMenu.collapse.item4',
+        path: '/custom-fields',
+        component: lazy(() =>
+            import('@/views/IHRC/components/GlobalSettings/CustomField/CustomField')
+    ),
+    authority: [],
+},
+//     {
+//         key: 'groupMenu.collapse.item5',
+//         path: '/register-template',
+//         component: lazy(() =>
+//             import('@/views/IHRC/components/GlobalSettings/RegisterTemplate/RegisterTemplate')
+//     ),
+//     authority: [],
+// },
+{
+    key: 'customFields.moduleDetail',
+    path: `${APP_PREFIX_PATH}/custom-fields/:moduleValue`,
+    component: lazy(() => import('@/views/IHRC/components/GlobalSettings/CustomField/components/ModuleCustomFields')),
+    authority: [],
+},
+    {
+        key: 'entityMenu.collapse.item1',
+        path: '/company-group',
+        component: lazy(() =>
+            import('@/views/IHRC/components/Entity/CompanyGroup/CompanyGroup')
+        ),
+        authority: [],
+    },
+    {
+        key: 'entityMenu.collapse.item2',
+        path: '/company-name',
+        component: lazy(() =>
+            import('@/views/IHRC/components/Entity/CompanyName/CompanyName')
+        ),
+        authority: [],
+    },
+    {
+        key: 'entityMenu.collapse.item3',
+        path: '/state',
+        component: lazy(() =>
+            import('@/views/IHRC/components/Entity/State/State')
+        ),
+        authority: [],
+    },
+    {
+        key: 'entityMenu.collapse.item4',
+        path: '/district',
+        component: lazy(() =>
+            import('@/views/IHRC/components/Entity/District/District')
+        ),
+        authority: [],
+    },
+    {
+        key: 'entityMenu.collapse.item5',
+        path: '/location',
+        component: lazy(() =>
+            import('@/views/IHRC/components/Entity/Location/Location')
+        ),
+        authority: [],
+    },
+    {
+        key: 'entityMenu.collapse.item6',
+        path: '/branch',
+        component: lazy(() =>
+            import('@/views/IHRC/components/Entity/Branch/Branch')
+        ),
+        authority: [],
+    },
+    {
+        key: 'entityMenu.pfSetup',
+        path:  `${APP_PREFIX_PATH}/IHRC/pf-setup/:companyName`,
+        component: lazy(() => import('@/views/IHRC/components/Entity/PFSetup/CompanyPFSetupPage')),
+        authority: [],
+      },
+    {
+        key: 'entityMenu.esiSetup',
+        path:  `${APP_PREFIX_PATH}/IHRC/esi-setup/:companyName`,
+        component: lazy(() => import('@/views/IHRC/components/Entity/ESICSetup/EsicSetup')),
+        authority: [],
+      },
+    {
+        key: 'entityMenu.LWFSetup',
+        path:  `${APP_PREFIX_PATH}/IHRC/lwf-setup/:companyName`,
+        component: lazy(() => import('@/views/IHRC/components/Entity/LWFSetup/LWFSetup')),
+        authority: [],
+      },
+    {
+        key: 'entityMenu.ptSetup',
+        path:  `${APP_PREFIX_PATH}/IHRC/pt-setup/:companyName`,
+        component: lazy(() => import('@/views/IHRC/components/Entity/PTSetup/PTSetup')),
+        authority: [],
+      },
+    {
+        key: 'entityMenu.companyDetails',
+        path:  `${APP_PREFIX_PATH}/IHRC/company-details/:companyName`,
+        component: lazy(() => import('@/views/IHRC/components/Entity/CompanyDetails/CompanyDetails')),
+        authority: [],
+      },
+      {
+        key: 'companySetup.collapse.userSetup',
+        path: '/user-entity',
+        component: lazy(() => import('@/views/IHRC/components/UserEntity/UserEntity')),
+        authority: [],
+    },   
     // {
-    //     key: 'groupMenu.collapse.item1',
-    //     path: '/group-collapse-menu-item-view-1',
-    //     component: lazy(() =>
-    //         import('@/views/IHRC/components/demo/GroupCollapseMenuItemView1')
-    //     ),
+    //     key: 'customChecklist.customChecklistForm',
+    //     path: '/add-user-form',
+    //     component: lazy(() => import('@/views/IHRC/components/UserEntity/components/UserAddForm')),
     //     authority: [],
     // },
-    // {
-    //     key: 'groupMenu.collapse.item2',
-    //     path: '/group-collapse-menu-item-view-2',
-    //     component: lazy(() =>
-    //         import('@/views/IHRC/components/demo/GroupCollapseMenuItemView2')
-    //     ),
-    //     authority: [],
-    // },
+    {
+        key: 'remittanceTracker.collapse.item1',
+        path: '/pf-tracker',
+        component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/PFTracker/PFTracker')),
+        authority: [],
+    },    
+    {
+        key: 'remittanceTracker.collapse.item2',
+        path: '/esi-tracker',
+        component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/ESITracker/ESITracker')),
+        authority: [],
+    },    
+    {
+        key: 'remittanceTracker.collapse.item6',
+        path: '/pfiw-tracker',
+        component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/PFIWTracker/PFIWTracker')),
+        authority: [],
+    },    
+    {
+        key: 'remittanceTracker.collapse.item3',
+        path: '/lwf-tracker',
+        component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/LWFTracker/LWFTracker')),
+        authority: [],
+    },    
+    {
+        key: 'remittanceTracker.collapse.item4',
+        path: '/ptrc-tracker',
+        component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/PTRCTracker/PTRCTracker')),
+        authority: [],
+    },    
+    {
+        key: 'remittanceTracker.collapse.item5',
+        path: '/ptec-tracker',
+        component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/PTECTracker/PTECTracker')),
+        authority: [],
+    },    
+    {
+        key: 'remittanceTracker.collapse.item8',
+        path: '/s&e-tracker',
+        component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/S&ETracker/SandETracker')),
+        authority: [],
+    },    
+    {
+        key: 'pftracker.uploadeddetail',
+        path: '/uploadedpfdetail',
+        component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/PFTracker/components/UploadedPFDetails')),
+        authority: [],
+    },
+    {
+        key: 'esitracker.uploadeddetail',
+        path: '/uploadedesidetails',
+        component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/ESITracker/components/UploadedESIDetails')),
+        authority: [],
+    },
+    {
+        key: 'ptrctracker.uploadeddetail',
+        path: '/uploadedptrcdetail',
+        component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/PTRCTracker/components/UploadedPTRCDetails')),
+        authority: [],
+    },
+    {
+        key: 'ptrctracker.uploadeddetail',
+        path: '/uploadedptrcdetail',
+        component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/PTRCTracker/components/UploadedPTRCDetails')),
+        authority: [],
+    },
+    {
+        key: 'ptectracker.uploadeddetail',
+        path: '/uploadedptecdetail',
+        component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/PTECTracker/components/UploadedPTECDetails')),
+        authority: [],
+    },
+    {
+        key: 'pfiwtracker.uploadeddetail',
+        path: '/uploadedpfiwdetail',
+        component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/PFIWTracker/components/UploadedPFIWDetails')),
+        authority: [],
+    },
+    {
+        key: 'lwftracker.uploadeddetail',
+        path: '/uploadedLWFdetails',
+        component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/LWFTracker/components/UploadedLWFDetails')),
+        authority: [],
+    },
+    {
+        key: 's&eTracker.uploadeddetail',
+        path: '/uploadeds&eDetails',
+        component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/S&ETracker/components/UploadedSandEDetails')),
+        authority: [],
+    },
+    {
+        key: 'pfSetup.adddetail',
+        path: '/add-pf-setup',
+        component: lazy(() => import('@/views/IHRC/components/Entity/PFSetup/components/PFSetupPage')),
+        authority: [],
+    },
+
+    {
+        key: 'register.collapse.item1',
+        path: '/salary-register-input',
+        component: lazy(() => import('@/views/IHRC/components/Registers&Return/input/SalaryRegister/SalaryRegister')),
+        authority: [],
+    },    
+    {
+        key: 'register.collapse.item2',
+        path: '/attendance-register-input',
+        component: lazy(() => import('@/views/IHRC/components/Registers&Return/input/AttendanceRegister/AttendanceRegister')),
+        authority: [],
+    },    
+    {
+        key: 'register.collapse.item3',
+        path: '/leave-register-input',
+        component: lazy(() => import('@/views/IHRC/components/Registers&Return/input/LeaveRegister/LeaveRegister')),
+        authority: [],
+    },    
+    {
+        key: 'register.collapse.item4',
+        path: '/bonus-register-input',
+        component: lazy(() => import('@/views/IHRC/components/Registers&Return/input/BonusRegister/BonusRegister')),
+        authority: [],
+    },    
+    {
+        key: 'register.collapse.item5',
+        path: '/maternity-register-input',
+        component: lazy(() => import('@/views/IHRC/components/Registers&Return/input/MaternityRegister/MaternityRegister')),
+        authority: [],
+    },    
+
+    {
+        key: 'register.collapse.item1',
+        path: '/output-register',
+        component: lazy(() => import('@/views/IHRC/components/Registers&Return/output/OutputRegisters/OutputRegisters')),
+        authority: [],
+    },    
+  
+    
 ]

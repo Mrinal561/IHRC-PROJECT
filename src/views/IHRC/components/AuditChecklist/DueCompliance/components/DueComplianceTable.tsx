@@ -1,153 +1,238 @@
 
-import React, { useMemo, useState } from 'react';
-import { ColumnDef } from '../../../../../../components/shared/DataTable';
+
+import React, { useCallback, useMemo, useState } from 'react';
+import { ColumnDef } from '@/components/shared/DataTable';
 import DataTable from '@/components/shared/DataTable';
-import { Button, Tooltip, Dialog, Input, toast, Notification, Badge } from '../../../../../../components/ui';
-import { BsCloudUpload } from "react-icons/bs";
+import { Button, Tooltip, Dialog, Input, toast, Notification, Badge, Dropdown } from '@/components/ui';
+import { HiDownload, HiUpload } from 'react-icons/hi';
+import { MdEdit } from 'react-icons/md';
+import OutlinedSelect from '@/components/ui/Outlined/Outlined';
+import { RiEyeLine } from 'react-icons/ri';
 
-
-
-// Define the structure of our data
 interface DueComplianceDataRow {
   Compliance_Instance_ID: number;
   Compliance_ID: number;
+  Legislation: string;
+  Location: string;
+  Compliance_Categorization: string;
   Compliance_Header: string;
+  Compliance_Description: string;
+  Penalty_Description: string;
+  Compliance_Applicability: string;
+  Bare_Act_Text: string;
+  Compliance_Clause: string;
+  Compliance_Type: string;
+  Compliance_Frequency: string;
+  Compliance_Statutory_Authority: string;
+  Approval_Required: string;
+  Criticality: string;
+  Penalty_Type: string;
+  Default_Due_Date: string;
+  First_Due_Date: string;
   Due_Date: Date;
+  Scheduled_Frequency: string;
+  Proof_Of_Compliance_Mandatory: string;
   Owner_Name: string;
   Approver_Name: string;
   Category: string;
-  Status: 'due' | 'upcoming' | 'active';
+  Status2: 'due' | 'Upcoming';
+  Status: string;
 }
 
-// Sample data for the table
-const initialData: DueComplianceDataRow[] = [
-  {
-    Compliance_Instance_ID: 1001,
-    Compliance_ID: 3236,
-    Compliance_Header: 'Renewal of Registration',
-    Due_Date: new Date('2024-09-15'),
-    Owner_Name: 'Admin',
-    Approver_Name: 'Shivesh Verma',
-    Category: 'Legal',
-    Status: 'upcoming'
-  },
-  {
-    Compliance_Instance_ID: 1002,
-    Compliance_ID: 4501,
-    Compliance_Header: 'Annual Renewal of License',
-    Due_Date: new Date('2024-10-01'),
-    Owner_Name: 'HR',
-    Approver_Name: 'Shivesh Verma',
-    Category: 'HR',
-    Status: 'due'
-  },
-  {
-    Compliance_Instance_ID: 1003,
-    Compliance_ID: 5602,
-    Compliance_Header: 'Monthly Compliance Report',
-    Due_Date: new Date('2024-09-05'),
-    Owner_Name: 'Finance',
-    Approver_Name: 'Shivesh Verma',
-    Category: 'Finance',
-    Status: 'active'
-  },
-  {
-    Compliance_Instance_ID: 1004,
-    Compliance_ID: 6789,
-    Compliance_Header: 'Quarterly Wage Report',
-    Due_Date: new Date('2024-10-15'),
-    Owner_Name: 'Ravi Shankar Singh',
-    Approver_Name: 'Shivesh Verma',
-    Category: 'HR',
-    Status: 'upcoming'
-  },
-  {
-    Compliance_Instance_ID: 1005,
-    Compliance_ID: 7890,
-    Compliance_Header: 'Renewal of Trade License',
-    Due_Date: new Date('2024-11-01'),
-    Owner_Name: 'HR',
-    Approver_Name: 'Shivesh Verma',
-    Category: 'Legal',
-    Status: 'due'
-  }
-];
 
-const DueComplianceTable: React.FC = () => {
-  // State for the table data
-  const [data] = useState<DueComplianceDataRow[]>(initialData);
-  // State for controlling the dialog
+interface DueComplianceTableProps {
+  data: DueComplianceDataRow[];
+  onUploadSingle: (complianceId: number, file: File | undefined, remark: string) => void;
+  onUpdateStatus: (complianceId: number, newStatus: DueComplianceDataRow['Status']) => void;
+}
+
+const StatusOption = {
+    statusOption: [
+      { key: 'Complied', name: 'Complied' },
+      { key: 'Not Complied', name: 'Not Complied' },
+      { key: 'Not Applicable', name: 'Not Applicable' },
+  ],
+}
+
+interface StatusOption {
+  value: string;
+  label: string;
+}
+
+const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadSingle, onUpdateStatus }) => {
   const [dialogIsOpen, setDialogIsOpen] = useState(false);
-  // State for the selected file
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [remark, setRemark] = useState('');
+  const [selectedCompliance, setSelectedCompliance] = useState<DueComplianceDataRow | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState<StatusOption | null>(null);
+      // const [complianceStatuses, setComplianceStatuses] = useState<Record<number, string>>({});
 
-  // Function to open the dialog
-  const openDialog = () => {
+
+  const [tableData, setTableData] = useState({
+    total: data.length,
+    pageIndex: 1,
+    pageSize: 10,
+    query: '',
+    sort: { order: '', key: '' },
+  });
+
+  const openDialog = useCallback((compliance: DueComplianceDataRow) => {
+    setSelectedCompliance(compliance);
+    setSelectedStatus(compliance.Status ? { value: compliance.Status, label: compliance.Status } : null);
     setDialogIsOpen(true);
-  };
+  }, []);
 
-  // Function to close the dialog
-  const onDialogClose = () => {
+  const onDialogClose = useCallback(() => {
     setDialogIsOpen(false);
-    setSelectedFile(null);  // Clear the selected file when closing the dialog
-  };
+    setSelectedFile(null);
+    setRemark('');
+    setSelectedCompliance(null);
+    setSelectedStatus(null);
+  }, []);
 
-  // Function to handle file selection
-  const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onSubmit = useCallback(() => {
+    if (selectedCompliance && selectedStatus) {
+      console.log('Submitting:', { selectedCompliance, selectedStatus, remark });
+      try {
+        onUploadSingle(selectedCompliance.Compliance_Instance_ID, selectedFile || undefined, remark);
+        console.log('Upload successful');
+      } catch (error) {
+        console.error('Error in onUploadSingle:', error);
+        toast.push(
+          <Notification title="Error" type="danger">
+            Failed to upload file. Please try again.
+          </Notification>
+        );
+        return;
+      }
+
+      try {
+        onUpdateStatus(selectedCompliance.Compliance_Instance_ID, selectedStatus.value);
+        console.log('Status update successful');
+        toast.push(
+          <Notification title="Success" type="success">
+            Compliance status updated successfully
+          </Notification>
+        );
+      } catch (error) {
+        console.error('Error in onUpdateStatus:', error);
+        toast.push(
+          <Notification title="Error" type="danger">
+            Failed to update status. Please try again.
+          </Notification>
+        );
+        return;
+      }
+    } else {
+      console.warn('Submit clicked without selectedCompliance or selectedStatus');
+    }
+    onDialogClose();
+  }, [selectedCompliance, selectedFile, remark, selectedStatus, onUploadSingle, onUpdateStatus, onDialogClose]);
+
+
+
+
+
+  const onFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setSelectedFile(e.target.files[0]);
     }
+  }, []);
+
+  const handleDownload = () => {
+    toast.push(
+      <Notification title="Success" type="success">
+        All Documents downloaded successfully
+      </Notification>
+    );
   };
 
-  // Function to handle form submission
-  const onSubmit = () => {
-    if (selectedFile) {
-      // Here you would typically handle the file upload
-      console.log('File selected:', selectedFile.name);
-      // Show success toast
-      toast.push(
-        <Notification title="Success" type="success">
-          File uploaded successfully
-        </Notification>
-      );
-      onDialogClose();
-    } else {
-      // Show error toast if no file is selected
-      toast.push(
-        <Notification title="Error" type="danger">
-          Please select a file first
-        </Notification>
-      );
-    }
-  };
 
-  // Define the columns for the table
+
+  const onStatusChange = useCallback((value: StatusOption) => {
+    console.log('Status changed to:', value);
+    setSelectedStatus(value);
+  }, []);
+
+
+  
   const columns: ColumnDef<DueComplianceDataRow>[] = useMemo(
     () => [
       {
         header: 'Compliance ID',
         accessorKey: 'Compliance_ID',
         cell: (props) => (
-          <div className="w-32 text-start">{props.getValue()}</div>
+          <div className="w-10 text-start">{props.getValue()}</div>
         ),
       },
       {
-        header: 'Compliance Header',
-        accessorKey: 'Compliance_Header',
+        header: 'Legislation',
+        accessorKey: 'Legislation',
         cell: (props) => {
           const value = props.getValue() as string;
           return (
             <Tooltip title={value} placement="top">
-              <div className="w-40 truncate">{value}</div>
+              <div className="w-28 truncate">{value.length > 11 ? value.substring(0, 11) + '...' : value}</div>
             </Tooltip>
           );
         },
       },
       {
+        header: 'Criticality',
+        accessorKey: 'Criticality',
+        cell: (props) => {
+            const criticality = props.getValue();
+            return (
+                <div className="w-24 font-semibold truncate">
+                    {criticality === 'High' ? (
+                        <span className="text-red-500">{criticality}</span>
+                    ) : criticality === 'Medium' ? (
+                        <span className="text-yellow-500">{criticality}</span>
+                    ) : (
+                        <span className="text-green-500">{criticality}</span>
+                    )}
+                </div>
+            );
+        }
+    },
+      {
+        header: 'Location',
+        accessorKey: 'Location',
+        cell: (props) => {
+          const value = props.getValue() as string;
+          return (
+            <Tooltip title={value} placement="top">
+              <div className="w-20 truncate">{value.length > 20 ? value.substring(0, 20) + '...' : value}</div>
+            </Tooltip>
+          );
+        },
+      },
+      {
+        header: 'Header',
+        accessorKey: 'Compliance_Header',
+        cell: (props) => {
+          const value = props.getValue() as string;
+          return (
+            <Tooltip title={value} placement="top">
+              <div className="w-20 truncate">{value}</div>
+            </Tooltip>
+          );
+        },
+      },
+      {
+        header: 'Description',
+        accessorKey: 'Compliance_Description',
+        cell: (props) => (
+          <Tooltip title={props.getValue() as string} placement="left">
+            <div className="w-40 truncate">{(props.getValue() as string).substring(0, 30)}...</div>
+          </Tooltip>
+        ),
+      },
+      {
         header: 'Due Date',
         accessorKey: 'Due_Date',
         cell: (props) => (
-          <div className="w-32">
+          <div className="w-20">
             {new Date(props.getValue() as Date).toLocaleDateString()}
           </div>
         ),
@@ -156,27 +241,29 @@ const DueComplianceTable: React.FC = () => {
         header: 'Category',
         accessorKey: 'Category',
         cell: ({ getValue }) => {
-          return <div className="w-28">{getValue<string>()}</div>;
+          return <div className="w-24">{getValue<string>()}</div>;
         },
       },
+
       {
-        header: 'Status',
+        header: 'Compliance Status',
         accessorKey: 'Status',
         cell: ({ getValue }) => {
-          const status = getValue<'due' | 'upcoming' | 'active'>();
-          let statusColor = 'bg-yellow-500';
-          let textColor = 'text-yellow-500';
-          if (status === 'due') {
-            statusColor = 'bg-red-500';
+          const status = getValue<DueComplianceDataRow['Status']>();
+          let textColor = 'text-gray-500';
+          
+          if (status === 'Not Complied') {
             textColor = 'text-red-500';
-          }
-          if (status === 'active') {
-            statusColor = 'bg-green-500';
+          } else if (status === 'Not Applicable') {
+            textColor = 'text-yellow-500';
+          } else if (status === 'Complied') {
             textColor = 'text-green-500';
+          } else if (status === 'Complied With Delay') {
+            textColor = 'text-blue-500';
           }
+          
           return (
-            <div className="flex items-center">
-              <Badge className={`mr-2 ${statusColor}`} />
+            <div className="flex items-center w-40">
               <div className={`font-semibold ${textColor}`}>{status}</div>
             </div>
           );
@@ -185,46 +272,45 @@ const DueComplianceTable: React.FC = () => {
       {
         header: 'Actions',
         id: 'actions',
-        cell: () => {
-          const value= "Upload";
-          return(
-            <Tooltip title={value} placement="top">
-            <Button
-            size="sm"
-            onClick={openDialog}
-            >
-            <BsCloudUpload />
-          </Button>
-          </Tooltip>
-          )
+        cell: ({ row }) => {
+          const compliance = row.original;
+          return (
+            <div className='flex gap-2'>
+              <Tooltip title="View Compliance Detail" placement="top">
+                        <Button
+                          size="sm"
+                        //   onClick={() => navigate(`/app/IHRC/assign-list-detail/${row.original.Compliance_ID}`, { state: row.original })}
+                          icon={<RiEyeLine />}
+                          className='hover:bg-transparent'
+                        />
+                        
+            </Tooltip>
+              <Tooltip title="Change Compliance Status" placement="top">
+                <Button
+                  size="sm"
+                  onClick={() => openDialog(compliance)}
+                >
+                  <MdEdit />
+                </Button>
+              </Tooltip>
+            </div>
+          );
         },
       },
     ],
-    []
+    [openDialog]
   );
 
-  // State for table pagination and sorting
-  const [tableData, setTableData] = useState({
-    total: initialData.length,
-    pageIndex: 1,
-    pageSize: 10,
-    query: '',
-    sort: { order: '', key: '' },
-  });
-
-  // Function to handle pagination changes
   const onPaginationChange = (page: number) => {
     setTableData(prev => ({ ...prev, pageIndex: page }));
   };
 
-  // Function to handle page size changes
   const onSelectChange = (value: number) => {
     setTableData(prev => ({ ...prev, pageSize: Number(value), pageIndex: 1 }));
   };
 
   return (
     <div className="relative">
-      {/* Render the DataTable component */}
       <DataTable
         columns={columns}
         data={data}
@@ -232,14 +318,39 @@ const DueComplianceTable: React.FC = () => {
         skeletonAvatarProps={{ className: 'rounded-md' }}
         loading={false}
         pagingData={{
-          total: tableData.total,
-          pageIndex: tableData.pageIndex,
-          pageSize: tableData.pageSize,
+          total: data.length,
+          pageIndex: 1,
+          pageSize: 10,
         }}
         onPaginationChange={onPaginationChange}
-        onSelectChange={onSelectChange}
+        onSelectChange={(value: number) => {}}
+        stickyHeader={true}
+        stickyFirstColumn={true}
+        stickyLastColumn={true}
       />
+      <Dialog
+        isOpen={dialogIsOpen}
+        onClose={onDialogClose}
+      >
+        <h5 className="mb-4">Change Compliance Status</h5>
+        <div className='flex items-center gap-3 mb-4'>
+        <p className='font-semibold'>Select the Compliance status</p>
 
+        <div className='w-40'>
+
+        <OutlinedSelect
+  label="Set Status"
+  options={StatusOption.statusOption.map(option => ({
+    value: option.key,
+    label: option.name
+  }))}
+  value={selectedStatus}
+  onChange={onStatusChange}
+/>
+          </div>
+        </div>
+
+<<<<<<< HEAD
      
       <Dialog isOpen={dialogIsOpen} onClose={onDialogClose}>
         <h5 className="mb-4">Upload Confirmation File</h5>
@@ -250,9 +361,46 @@ const DueComplianceTable: React.FC = () => {
         <Input
           type="file"
           onChange={onFileChange}
+=======
+        {selectedCompliance?.Proof_Of_Compliance_Mandatory === 'Yes' && (
+          <>
+            <label className='text-red-500'>*Please Upload The Proof Of Compliance:</label>
+            <Input
+              type="file"
+              onChange={(e) => {
+                const file = e.target.files?.[0] || null;
+                console.log('File selected:', file?.name);
+                setSelectedFile(file);
+              }}
+              className="mb-4 mt-4"
+            />
+          </>
+        )}
+        {selectedCompliance?.Proof_Of_Compliance_Mandatory === 'No' && (
+          <>
+            <label>Please Upload The Proof Of Compliance:</label>
+            <Input
+              type="file"
+              onChange={(e) => {
+                const file = e.target.files?.[0] || null;
+                console.log('File selected:', file?.name);
+                setSelectedFile(file);
+              }}
+              className="mb-4 mt-4"
+            />
+          </>
+        )}
+        <label className='mb-2'>Please Enter the Remark:</label>
+        <Input 
+          placeholder="Remarks" 
+          textArea 
+          value={remark}
+          onChange={(e) => setRemark(e.target.value)}
+>>>>>>> design-sumit
           className="mb-4"
         />
-        <div className="text-right mt-6">
+
+<div className="text-right mt-6">
           <Button
             className="ltr:mr-2 rtl:ml-2"
             variant="plain"
@@ -261,12 +409,14 @@ const DueComplianceTable: React.FC = () => {
             Cancel
           </Button>
           <Button variant="solid" onClick={onSubmit}>
-            Submit
+            Confirm
           </Button>
         </div>
       </Dialog>
     </div>
   );
 };
+
+
 
 export default DueComplianceTable;
