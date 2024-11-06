@@ -1,19 +1,86 @@
-import React, { useMemo, useState } from 'react';
+
+import React, { useEffect, useMemo, useState } from 'react';
 import { ColumnDef, OnSortParam } from '@/components/shared/DataTable';
 import DataTable from '@/components/shared/DataTable';
-import { Button, Calendar, Dialog, Tooltip, Select, Checkbox, Input, toast, Notification } from '@/components/ui';
+import { Button, Calendar, Dialog, Tooltip, Input, toast, Notification , Checkbox} from '@/components/ui';
 import { HiBellAlert } from "react-icons/hi2";
 import { MdEdit } from 'react-icons/md';
 import { RiEyeLine } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
-
-import { dummyData, ComplianceData } from '@/views/IHRC/store/dummyData';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
-import classNames from 'classnames';
+import { useDispatch, useSelector } from 'react-redux';
+import httpClient from '@/api/http-client';
+import { endpoints } from '@/api/endpoint';
+import { updateApproverOwner, selectUpdateLoading, selectUpdateSuccess, resetUpdateStatus, selectUpdateError
+ } from '@/store/slices/AssignedCompliance/assignedComplianceSlice';
+import { fetchUsers } from '@/store/slices/userEntity/UserEntitySlice';
 
-const AssignChecklistTable: React.FC = () => {
+interface UserData {
+  id: number;
+  group_id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  mobile: string;
+  joining_date: string;
+  role: string;
+  aadhar_no: string;
+  pan_card: string;
+  auth_signatory: boolean;
+  suspend: boolean;
+  disable: boolean;
+  CompanyGroup: {
+    id: number;
+    name: string;
+  };
+}
+
+interface MasterCompliance {
+  id: number;
+  uuid: string;
+  legislation: string;
+  header: string;
+  criticality: string;
+  description: string;
+  default_due_date: {
+    first_date: string;
+    last_date: string;
+  };
+}
+
+interface Owner {
+  id: number;
+  first_name: string;
+  email: string;
+  last_name: string;
+}
+interface SelectOption {
+  value: string;
+  label: string;
+}
+
+interface ComplianceData {
+  id: number;
+  branch_id: number;
+  mst_compliance_id: number;
+  owner_id: number | null;
+  approver_id: number | null;
+  status: boolean;
+  MasterCompliance: MasterCompliance;
+  Owner: Owner | null;
+  Approver: Owner | null;
+}
+
+interface AssignChecklistTableProps {
+  data: ComplianceData[];
+  loading: boolean;
+  tableKey?: number;
+  refreshTable: () => void;
+}
+
+const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({ data, loading, tableKey, refreshTable }) => {
   const navigate = useNavigate();
-  const [data, setData] = useState<ComplianceData[]>(dummyData);
+  const dispatch = useDispatch<AppDispatch>();
   const [activeRowId, setActiveRowId] = useState<number | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isReminderDialogOpen, setIsReminderDialogOpen] = useState(false);
@@ -22,9 +89,98 @@ const AssignChecklistTable: React.FC = () => {
   const [reminderDate, setReminderDate] = useState<Date | null>(null);
   const [reminderEmail, setReminderEmail] = useState('');
   const [tempDueDate, setTempDueDate] = useState<Date | string | null>(null);
+  const [userOptions, setUserOptions] = useState<SelectOption[]>([]);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [selectedOwnerOption, setSelectedOwnerOption] = useState<any>(null);
+  const [selectedApproverOption, setSelectedApproverOption] = useState<any>(null);
+
+  const handleEditSave = async () => {
+    if (activeRowId && (selectedOwnerOption !== null || selectedApproverOption !== null)) {
+      const updateData = {
+        owner_id: selectedOwnerOption?.value || 0,
+        approver_id: selectedApproverOption?.value || 0
+      };
+
+      setIsUpdating(true);
+      try {
+        await dispatch(updateApproverOwner({
+          id: activeRowId.toString(),
+          data: updateData
+        })).unwrap();
+        
+        toast.push(
+          <Notification title="Success" type="success">
+            Owner and Approver updated successfully
+          </Notification>
+        );
+        setIsEditDialogOpen(false);
+        setSelectedOwnerOption(null);
+        setSelectedApproverOption(null);
+        refreshTable();
+      } catch (error) {
+        toast.push(
+          <Notification title="Error" type="danger">
+            Failed to update owner and approver
+          </Notification>
+        );
+        console.error('Error updating owner/approver:', error);
+      } finally {
+        setIsUpdating(false);
+      }
+    } else {
+      toast.push(
+        <Notification title="Warning" type="warning">
+          Please select an owner or approver
+        </Notification>
+      );
+    }
+  };
+  const handleOwnerChange = (value: any) => {
+    setSelectedOwnerOption(value);
+  };
+
+  const handleApproverChange = (value: any) => {
+    setSelectedApproverOption(value);
+  };
 
 
+  useEffect(() => {
+    fetchUsersData();
+  }, []);
 
+  const fetchUsersData = async () => {
+    try {
+      const response = await httpClient.get(endpoints.user.getAll());
+      console.log("Raw response:", response);
+      
+      if (response?.data?.data && Array.isArray(response.data.data)) {
+        const mappedOptions = response.data.data.map((user: any) => ({
+          label: `${user.first_name} ${user.last_name}`,
+          value: user.id
+        }));
+        
+        console.log("Mapped options:", mappedOptions);
+        setUserOptions(mappedOptions);
+      } else {
+        console.error("Invalid data structure:", response);
+        toast.push(
+          <Notification title="Error" type="danger">
+            Invalid data format received
+          </Notification>
+        );
+      }
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      toast.push(
+        <Notification title="Error" type="danger">
+          Failed to fetch users
+        </Notification>
+      );
+    }
+  };
+  useEffect(() => {
+    console.log("Updated userOptions:", userOptions);
+  }, [userOptions]);
   const isAllSelected = useMemo(
     () => selectedItems.size === data.length,
     [selectedItems, data]
@@ -46,76 +202,33 @@ const AssignChecklistTable: React.FC = () => {
     if (isAllSelected) {
       setSelectedItems(new Set());
     } else {
-      setSelectedItems(new Set(data.map((item) => item.Compliance_Instance_ID)));
+      setSelectedItems(new Set(data.map((item) => item.id)));
     }
   };
 
+  
   const handleEditClick = (row: ComplianceData) => {
-    setActiveRowId(row.Compliance_Instance_ID);
+    setActiveRowId(row.id);
     setEditData({
-      Compliance_Instance_ID: row.Compliance_Instance_ID,
-      Owner_Name: row.Owner_Name,
-      Approver_Name: row.Approver_Name,
-      Due_Date: row.Due_Date
+      id: row.id,
+      owner_id: row.owner_id,
+      approver_id: row.approver_id,
     });
-    setTempDueDate(row.Due_Date);
+    
+    // Set the initial selected options based on existing data
+    const ownerOption = userOptions.find(option => option.value === row.owner_id);
+    const approverOption = userOptions.find(option => option.value === row.approver_id);
+    
+    setSelectedOwnerOption(ownerOption || null);
+    setSelectedApproverOption(approverOption || null);
     setIsEditDialogOpen(true);
   };
 
-  const handleEditSave = () => {
-    if (activeRowId) {
-      const updatedData = {
-        ...editData,
-        Due_Date: tempDueDate || editData.Due_Date
-      };
-      setData((prevData) =>
-        prevData.map((item) =>
-          item.Compliance_Instance_ID === activeRowId
-            ? { ...item, ...updatedData }
-            : item
-        )
-      );
-      setIsEditDialogOpen(false);
-      setActiveRowId(null);
-      setEditData({});
-      setTempDueDate(null);
-    }
-  };
-
-  const handleBellClick = (row: ComplianceData) => {
-    setActiveRowId(row.Compliance_Instance_ID);
-    setReminderDate(null);
-    setReminderEmail('');
-    setIsReminderDialogOpen(true);
-  };
-
-  const handleReminderSave = () => {
-    if (activeRowId && reminderDate && reminderEmail) {
-      console.log(`Reminder set for compliance ID ${activeRowId} on ${reminderDate.toDateString()} to ${reminderEmail}`);
-      
-      toast.push(
-        <Notification title="Success" type="success">
-          Reminder set successfully
-          <br />
-          Date: {reminderDate.toDateString()}
-          <br />
-          Email: {reminderEmail}
-        </Notification>,
-        { placement: 'top-end' }
-      );
-
-      setIsReminderDialogOpen(false);
-      setActiveRowId(null);
-      setReminderDate(null);
-      setReminderEmail('');
-    } else {
-      toast.push(
-        <Notification title="Error" type="danger">
-          Please fill in all fields
-        </Notification>,
-        { placement: 'top-end' }
-      );
-    }
+  const handleDialogClose = () => {
+    setIsEditDialogOpen(false);
+    setTempDueDate(null);
+    setSelectedOwnerOption(null);
+    setSelectedApproverOption(null);
   };
 
   const columns: ColumnDef<ComplianceData>[] = useMemo(
@@ -133,25 +246,25 @@ const AssignChecklistTable: React.FC = () => {
         cell: ({ row }) => (
           <div className="w-2">
             <Checkbox
-              checked={selectedItems.has(row.original.Compliance_Instance_ID)}
-              onChange={() => handleCheckboxChange(row.original.Compliance_Instance_ID)}
+              checked={selectedItems.has(row.original.id)}
+              onChange={() => handleCheckboxChange(row.original.id)}
             />
           </div>
         ),
       },
       {
         header: 'Instance ID',
-        accessorKey: 'Compliance_Instance_ID',
+        accessorKey: 'id',
         cell: (props) => <div className="w-24 text-start">{props.getValue()}</div>,
       },
       {
         header: 'Compliance ID',
-        accessorKey: 'Compliance_ID',
+        accessorKey: 'mst_compliance_id',
         cell: (props) => <div className="w-32 text-start">{props.getValue()}</div>,
       },
       {
         header: 'Legislation',
-        accessorKey: 'Legislation',
+        accessorFn: (row) => row.MasterCompliance.legislation,
         cell: (props) => {
           const value = props.getValue() as string;
           return (
@@ -163,37 +276,25 @@ const AssignChecklistTable: React.FC = () => {
       },
       {
         header: 'Criticality',
-        accessorKey: 'Criticality',
+        accessorFn: (row) => row.MasterCompliance.criticality,
         cell: (props) => {
           const criticality = props.getValue() as string;
           return (
             <div className="w-24 font-semibold truncate">
-              {criticality === 'High' ? (
-                <span className="text-red-500">{criticality}</span>
-              ) : criticality === 'Medium' ? (
-                <span className="text-yellow-500">{criticality}</span>
+              {criticality === 'high' ? (
+                <span className="text-red-500">High</span>
+              ) : criticality === 'medium' ? (
+                <span className="text-yellow-500">Medium</span>
               ) : (
-                <span className="text-green-500">{criticality}</span>
+                <span className="text-green-500">Low</span>
               )}
             </div>
           );
         }
       },
       {
-        header: 'Location',
-        accessorKey: 'Location',
-        cell: (props) => {
-          const value = props.getValue() as string;
-          return (
-            <Tooltip title={value} placement="top">
-              <div className="w-36 truncate">{value.length > 20 ? value.substring(0, 20) + '...' : value}</div>
-            </Tooltip>
-          );
-        },
-      },
-      {
         header: 'Header',
-        accessorKey: 'Compliance_Header',
+        accessorFn: (row) => row.MasterCompliance.header,
         cell: (props) => {
           const value = props.getValue() as string;
           return (
@@ -205,33 +306,33 @@ const AssignChecklistTable: React.FC = () => {
       },
       {
         header: 'Due Date',
-        accessorKey: 'Due_Date',
+        accessorFn: (row) => row.MasterCompliance.default_due_date.last_date,
         cell: ({ getValue }) => {
-          const date = getValue<Date | string>();
+          const date = getValue<string>();
           return <div className="w-20">
-            {date instanceof Date ? date.toLocaleDateString() : date || ''}
+            {new Date(date).toLocaleDateString()}
           </div>;
         },
       },
       {
-        header: "Owner's Name",
-        accessorKey: 'Owner_Name',
-        cell: ({ getValue }) => <div className="w-32">{getValue<string>()}</div>,
+        header: "Owner",
+        accessorFn: (row) => row.Owner ? `${row.Owner.first_name} ${row.Owner.last_name}` : null,
+        cell: ({ getValue }) => <div className="w-32">{getValue() || 'Not Assigned'}</div>,
       },
       {
-        header: "Approver's Name",
-        accessorKey: 'Approver_Name',
-        cell: ({ getValue }) => <div className="w-36">{getValue<string>()}</div>,
+        header: "Approver",
+        accessorFn: (row) => row.Approver ? `${row.Approver.first_name} ${row.Approver.last_name}` : null,
+        cell: ({ getValue }) => <div className="w-36">{getValue<string>() || 'Not Assigned'}</div>,
       },
       {
         header: 'Actions',
         id: 'actions',  
         cell: ({ row }) => (
           <div className='flex space-x-2'>
-             <Tooltip title="View Compliance Detail" placement="top">
+            <Tooltip title="View Compliance Detail" placement="top">
               <Button
                 size="sm"
-                onClick={() => navigate(`/app/IHRC/assign-list-detail/${row.original.Compliance_ID}`, { state: row.original })}
+                onClick={() => navigate(`/app/IHRC/assign-list-detail/${row.original.mst_compliance_id}`, { state: row.original })}
                 icon={<RiEyeLine />}
                 className='hover:bg-transparent'
               />
@@ -252,7 +353,6 @@ const AssignChecklistTable: React.FC = () => {
                 className='hover:bg-transparent text-red-500'
               />
             </Tooltip>
-           
           </div>
         ),
       }
@@ -261,35 +361,12 @@ const AssignChecklistTable: React.FC = () => {
   );
 
   const [tableData, setTableData] = useState({
-    total: dummyData.length,
+    total: data.length,
     pageIndex: 1,
     pageSize: 10,
     query: '',
     sort: { order: '', key: '' },
   });
-
-  const onPaginationChange = (page: number) => {
-    setTableData(prev => ({ ...prev, pageIndex: page }));
-  };
-
-  const onSelectChange = (value: number) => {
-    setTableData(prev => ({ ...prev, pageSize: Number(value), pageIndex: 1 }));
-  };
-
-  const onSort = (sort: OnSortParam) => {
-    setTableData(prev => ({ ...prev, sort }));
-  };
-  const ownerOptions = useMemo(() => {
-    return Array.from(new Set(dummyData.map(item => item.Owner_Name)))
-      .filter(name => name) // Remove any undefined or empty names
-      .map(name => ({ value: name, label: name }));
-  }, []);
-  const approverOptions = useMemo(() => {
-    return Array.from(new Set(dummyData.map(item => item.Approver_Name)))
-      .filter(name => name) // Remove any undefined or empty names
-      .map(name => ({ value: name, label: name }));
-  }, []);
-  
 
   return (
     <div className="relative">
@@ -298,83 +375,62 @@ const AssignChecklistTable: React.FC = () => {
         data={data}
         skeletonAvatarColumns={[0]}
         skeletonAvatarProps={{ className: 'rounded-md' }}
-        loading={false}
+        loading={loading}
         pagingData={{
           total: tableData.total,
           pageIndex: tableData.pageIndex,
           pageSize: tableData.pageSize,
         }}
-        onPaginationChange={onPaginationChange}
-        onSelectChange={onSelectChange}
-        onSort={onSort}
+        onPaginationChange={(page) => setTableData(prev => ({ ...prev, pageIndex: page }))}
+        onSelectChange={(value) => setTableData(prev => ({ ...prev, pageSize: Number(value), pageIndex: 1 }))}
+        onSort={(sort) => setTableData(prev => ({ ...prev, sort }))}
         stickyHeader={true}
         stickyFirstColumn={true}
         stickyLastColumn={true}
         selectable={true}
       />
-
-      <Dialog
+<Dialog
         isOpen={isEditDialogOpen}
-        onClose={() => {
-          setIsEditDialogOpen(false);
-          setTempDueDate(null);
-        }}
-        onRequestClose={() => {
-          setIsEditDialogOpen(false);
-          setTempDueDate(null);
-        }}
+        onClose={handleDialogClose}
+        onRequestClose={handleDialogClose}
         className="max-w-md p-4"
       >
         <h5 className="mb-2 text-lg font-semibold">
           Compliance Instance ID:{' '}
-          <span className="text-indigo-600">
-            {editData.Compliance_Instance_ID}
-          </span>
+          <span className="text-indigo-600">{editData.id}</span>
         </h5>
         <div className="space-y-6">
           <div>
-            <label className="block mb-6">Set Owner Name</label>
+            <label className="block mb-2">Set Owner Name</label>
             <OutlinedSelect
-            label='Set Owner Name'
-              options={ownerOptions}
-              value={editData.Owner_Name ? { value: editData.Owner_Name, label: editData.Owner_Name } : null}
-              onChange={(selectedOption) => setEditData({ ...editData, Owner_Name: selectedOption ? selectedOption.value : '' })}
-              isClearable
+              label="Set Owner Name"
+              options={userOptions}
+              value={selectedOwnerOption}
+              onChange={handleOwnerChange}
             />
           </div>
           <div>
-            <label className="block mb-6">Set Approver Name</label>
+            <label className="block mb-2">Set Approver Name</label>
             <OutlinedSelect
-            label="Set Approver Name"
-              options={approverOptions}
-              value={editData.Approver_Name ? { value: editData.Approver_Name, label: editData.Approver_Name } : null}
-              onChange={(selectedOption) => setEditData({ ...editData, Approver_Name: selectedOption ? selectedOption.value : '' })}
-              isClearable
+              label="Set Approver Name"
+              options={userOptions}
+              value={selectedApproverOption}
+              onChange={handleApproverChange}
             />
           </div>
-          {(!editData.Due_Date || editData.Due_Date === '') && (
-            <div>
-              <label className="block mb-2">Set Due Date</label>
-              {editData.Due_Date instanceof Date ? (
-                <div>{editData.Due_Date.toLocaleDateString()}</div>
-              ) : editData.Due_Date ? (
-                <div>{editData.Due_Date}</div>
-              ) : (
-                <div></div>
-              )}
-              <Calendar 
-                value={tempDueDate instanceof Date ? tempDueDate : undefined} 
-                onChange={(date) => setTempDueDate(date)}
-              />
-            </div>
-          )}
         </div>
         <div className="mt-6 text-right">
-          <Button variant="solid" onClick={handleEditSave}>
-            Save Changes
+          <Button 
+            variant="solid" 
+            onClick={handleEditSave}
+            loading={isUpdating}
+            disabled={isUpdating}
+          >
+            {isUpdating ? 'Saving...' : 'Save Changes'}
           </Button>
         </div>
       </Dialog>
+
 
       <Dialog
         isOpen={isReminderDialogOpen}
@@ -402,7 +458,7 @@ const AssignChecklistTable: React.FC = () => {
           </div>
         </div>
         <div className="mt-6 text-right">
-          <Button variant="solid" onClick={handleReminderSave}>
+          <Button variant="solid">  
             Confirm
           </Button>
         </div>
