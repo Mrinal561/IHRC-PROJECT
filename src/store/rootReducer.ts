@@ -8,19 +8,22 @@ import login, {AuthenticationState} from './slices/login'
 import company, { CompanyState } from './slices/company/companySlice'
 import companyGroup ,{ CompanyGroupState } from './slices/companyGroup/companyGroupSlice'
 import user, { UserState } from './slices/userEntity/UserEntitySlice'
-
-
-
+import compliance, {ComplianceState} from './slices/compliance/complianceSlice'
+import assignedCompliance,{ ComplianceAssignmentState } from './slices/AssignedCompliance/assignedComplianceSlice';
+import dueCompliance, { DueComplianceState } from './slices/dueCompliance/dueComplianceSlice'
 
 export type RootState = CombinedState<{
     auth: CombinedState<AuthState>
     base: CombinedState<BaseState>
     login:CombinedState<AuthenticationState>
     companyGroup: CompanyGroupState
+    compliance: ComplianceState
     company: CompanyState
+    due: DueComplianceState
     user: UserState
     locale: LocaleState
     theme: ThemeState
+    assigedCompliance: ComplianceAssignmentState
     /* eslint-disable @typescript-eslint/no-explicit-any */
     [RtkQueryService.reducerPath]: any
 }>
@@ -38,6 +41,9 @@ const staticReducers = {
     companyGroup,
     company,
     user,
+    compliance,
+    assignedCompliance,
+    dueCompliance,
     [RtkQueryService.reducerPath]: RtkQueryService.reducer,
 }
 

@@ -32,6 +32,20 @@ export const endpoints = {
         create: () => api('companyadmin/user'),
         update: (id: string) => api(`companyadmin/user/${id}`),
         delete: (id: string) => api(`companyadmin/user/${id}`),
+    },
+    compliance: {
+        getAll: ()=> api('superadmin/compliance'),
+    },
+    branch:{
+        getAll:()=> api('companyadmin/branch')
+    },
+    assign: {
+        create:()=> api('companyadmin/compliance'),
+        getAll:()=> api('companyadmin/compliance'),
+        update: (id: string) => api(`companyadmin/compliance/assign-user/${id}`),
+    },
+    due: {
+        getAll:()=> api('companyadmin/compliance/data')
     }
 
     

@@ -1,28 +1,512 @@
-import React, { useMemo, useState } from 'react'
+
+// import React, { useMemo, useState, useEffect } from 'react'
+// import DataTable from '@/components/shared/DataTable'
+// import { Checkbox, Tooltip, Button, Notification, toast } from '@/components/ui'
+// import cloneDeep from 'lodash/cloneDeep'
+// import type { OnSortParam, ColumnDef } from '@/components/shared/DataTable'
+// import { useNavigate } from 'react-router-dom'
+// import { HiOutlineEye } from 'react-icons/hi'
+// import { RiCheckLine } from 'react-icons/ri'
+// import { useDispatch } from 'react-redux'
+// import { 
+//     assignCompliancesToBranch,
+// } from '@/store/slices/compliance/ComplianceApiSlice'
+// import { fetchAllComplianceAssignments } from '@/store/slices/AssignedCompliance/assignedComplianceSlice'
+
+// interface ComplianceData {
+//     id: number
+//     uuid: string
+//     legislation: string
+//     category: string
+//     penalty_type: string
+//     default_due_date: {
+//         first_date: string
+//         last_date: string
+//     }
+//     scheduled_frequency: string
+//     proof_mandatory: boolean
+//     header: string
+//     description: string
+//     penalty_description: string
+//     applicablility: string
+//     bare_act_text: string
+//     type: string
+//     caluse: string
+//     frequency: string
+//     statutory_auth: string
+//     approval_required: boolean
+//     criticality: string
+//     created_type: string
+//     created_at: string
+//     updated_at: string
+// }
+
+// interface RecommendedTableContentProps {
+//     data: ComplianceData[]
+//     loading: boolean
+//     tableKey: number
+//     branchValue?: string 
+//     onSelectedCompliancesChange: (selectedIds: number[]) => void
+// }
+
+// const ViewDetailsButton = ({ 
+//     compliance, 
+//     branchValue,
+//     onAssignSuccess 
+// }: { 
+//     compliance: ComplianceData;
+//     branchValue?: string;
+//     onAssignSuccess: (complianceId: number) => void;
+// }) => {
+//     const navigate = useNavigate()
+//     const dispatch = useDispatch()
+
+//     const handleViewDetails = () => {
+//         navigate(`/app/IHRC/compliance-list-detail/${compliance.uuid}`, {
+//             state: compliance,
+//         })
+//     }
+
+//     const handleAssignCompliance = async () => {
+//         if (!branchValue) {
+//             toast.push(
+//                 <Notification title="Empty" type="danger">
+//                     Please select a branch first
+//                 </Notification>
+//             )
+//             return
+//         }
+
+//         const assignData = {
+//             branch_id: parseInt(branchValue),
+//             compliance_id: [compliance.id]
+//         }
+
+//         try {
+//             await dispatch(assignCompliancesToBranch(assignData))
+//             toast.push(
+//                 <Notification title="Success" type="success">
+//                     Assigned Successfully
+//                 </Notification>
+//             )
+//             onAssignSuccess(compliance.id)
+//         } catch (error) {
+//             console.error('Failed to assign compliance:', error)
+//             toast.push( 
+//                 <Notification title="Failed" type="danger">
+//                     Not Assigned
+//                 </Notification>
+//             )
+//         }
+//     }
+
+//     return (
+//         <div className="flex gap-2 items-center">
+//             <Tooltip title="View Compliance Detail" placement="top">
+//                 <Button
+//                     size="sm"
+//                     className="text-[#737171]"
+//                     icon={<HiOutlineEye />}
+//                     onClick={handleViewDetails}
+//                 />
+//             </Tooltip>
+//             <Tooltip title="Assign Compliance">
+//                 <Button
+//                     size="sm"
+//                     onClick={handleAssignCompliance}
+//                     icon={<RiCheckLine />}
+//                     disabled={!branchValue}
+//                 />
+//             </Tooltip>
+//         </div>
+//     )
+// }
+
+// const RecommendedTable = ({ data, loading: initialLoading, tableKey, branchValue ,  onSelectedCompliancesChange}: RecommendedTableContentProps) => {
+//     const dispatch = useDispatch()
+//     const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set())
+//     const [assignedItems, setAssignedItems] = useState<Set<any>>(new Set())
+//     const [isLoadingAssigned, setIsLoadingAssigned] = useState(true)
+//     const [initialLoadComplete, setInitialLoadComplete] = useState(false)
+//     const [selectedId, setSelectedId] = useState<Set<number>>(new Set());
+
+//     useEffect(() => {
+//         const fetchAlreadyAssigned = async () => {
+//             setIsLoadingAssigned(true)
+//             try {
+//                 if (branchValue) {
+//                     const response = await dispatch(fetchAllComplianceAssignments(parseInt(branchValue))).unwrap()
+//                     const assignedIds = new Set(
+//                         response.data.map((compliance: ComplianceData) => compliance.id)
+//                     )
+//                     setAssignedItems(assignedIds)
+//                 } else {
+//                     // When no branch is selected, fetch assignments for all branches
+//                     const response = await dispatch(fetchAllComplianceAssignments(0)).unwrap()
+//                     const assignedIds = new Set(
+//                         response.data.map((compliance: ComplianceData) => compliance.id)
+//                     )
+//                     setAssignedItems(assignedIds)
+//                 }
+//             } catch (error) {
+//                 console.error('Failed to fetch assigned compliances:', error)
+//                 toast.push(
+//                     <Notification title="Error" type="danger">
+//                         Failed to fetch assigned compliances
+//                     </Notification>
+//                 )
+//             } finally {
+//                 setIsLoadingAssigned(false)
+//                 setInitialLoadComplete(true)
+//             }
+//         }
+
+//         fetchAlreadyAssigned()
+//     }, [branchValue, dispatch])
+
+//     // Filter out assigned items from the data
+//     const filteredData = useMemo(() => {
+//         return data.filter(item => !assignedItems.has(item.id))
+//     }, [data, assignedItems])
+
+//     const isAllSelected = useMemo(
+//         () => filteredData.length > 0 && selectedItems.size === filteredData.length,
+//         [selectedItems, filteredData]
+//     )
+
+//     const handleCheckboxChange = (id: number) => {
+//         setSelectedItems(prev => {
+//             const newSet = new Set(prev)
+//             if (newSet.has(id)) {
+//                 newSet.delete(id)
+//             } else {
+//                 newSet.add(id)
+//             }
+//             // Notify parent of selection changes
+//             onSelectedCompliancesChange(Array.from(newSet))
+//             return newSet
+//         })
+//     }
+
+//     const handleSelectAllChange = () => {
+//         const newSelectedItems = isAllSelected
+//             ? new Set()
+//             : new Set(filteredData.map(item => item.id))
+        
+//         setSelectedItems(newSelectedItems)
+//         // Notify parent of selection changes
+//         onSelectedCompliancesChange(Array.from(newSelectedItems))
+//     }
+
+//     const handleAssignSuccess = (complianceId: number) => {
+//         setAssignedItems(prev => new Set([...prev, complianceId]))
+//         setSelectedItems(prev => {
+//             const newSet = new Set(prev)
+//             newSet.delete(complianceId)
+//             onSelectedCompliancesChange(Array.from(newSet)) // Notify parent of changes
+//             return newSet
+//         })
+//     }
+
+//     const [tableData, setTableData] = useState({
+//         total: 0,
+//         pageIndex: 1,
+//         pageSize: 10,
+//         query: '',
+//         sort: { order: '', key: '' },
+//     })
+
+//     useEffect(() => {
+//         if (initialLoadComplete) {
+//             setTableData(prev => ({
+//                 ...prev,
+//                 total: filteredData.length
+//             }))
+//         }
+//     }, [filteredData, initialLoadComplete])
+
+//     // Show loading state until both initial data and assigned items are loaded
+//     const isLoading = initialLoading || isLoadingAssigned || !initialLoadComplete
+
+//     const columns = useMemo(
+//         () => [
+//             {
+//                 header: ({ table }) => (
+//                     <div className="w-2">
+//                         <Checkbox
+//                             checked={isAllSelected}
+//                             onChange={handleSelectAllChange}
+//                         />
+//                     </div>
+//                 ),
+//                 id: 'select',
+//                 cell: ({ row }) => (
+//                     <div className="w-2">
+//                         <Checkbox
+//                             checked={selectedItems.has(row.original.id)}
+//                             onChange={() => handleCheckboxChange(row.original.id)}
+//                         />
+//                     </div>
+//                 ),
+//             },
+//             {
+//                 header: 'ID',
+//                 accessorKey: 'uuid',
+//                 cell: (props) => (
+//                     <Tooltip title={`ID: ${props.getValue()}`} placement="top">
+//                         <div className="w-16 truncate">{props.getValue()}</div>
+//                     </Tooltip>
+//                 ),
+//             },
+//             {
+//                 header: 'Legislation',
+//                 accessorKey: 'legislation',
+//                 cell: (props) => {
+//                     const value = props.getValue() as string
+//                     return (
+//                         <Tooltip title={value} placement="top">
+//                             <div className="w-42 truncate">{value.length > 22 ? value.substring(0, 22) + '...' : value}</div>
+//                         </Tooltip>
+//                     )
+//                 },
+//             },
+//             {
+//                 header: 'Criticality',
+//                 accessorKey: 'criticality',
+//                 cell: (props) => {
+//                     const criticality = props.getValue() as string
+//                     return (
+//                         <div className="w-24 font-semibold truncate">
+//                             {criticality === 'high' ? (
+//                                 <span className="text-red-500">High</span>
+//                             ) : criticality === 'medium' ? (
+//                                 <span className="text-yellow-500">Medium</span>
+//                             ) : (
+//                                 <span className="text-green-500">Low</span>
+//                             )}
+//                         </div>
+//                     )
+//                 }
+//             },
+//             {
+//                 header: 'Category',
+//                 accessorKey: 'category',
+//                 cell: (props) => {
+//                     const value = props.getValue() as string
+//                     return (
+//                         <Tooltip title={value} placement="top">
+//                             <div className="w-36 truncate">{value.length > 20 ? value.substring(0, 20) + '...' : value}</div>
+//                         </Tooltip>
+//                     )
+//                 },
+//             },
+//             {
+//                 header: 'Header',
+//                 accessorKey: 'header',
+//                 cell: (props) => {
+//                     const value = props.getValue() as string
+//                     return (
+//                         <Tooltip title={value} placement="top">
+//                             <div className="w-36 truncate">{value.length > 18 ? value.substring(0, 18) + '...' : value}</div>
+//                         </Tooltip>
+//                     )
+//                 },
+//             },
+//             {
+//                 header: 'Description',
+//                 accessorKey: 'description',
+//                 cell: (props) => {
+//                     const value = props.getValue() as string
+//                     return (
+//                         <Tooltip title={value} placement="left">
+//                             <div className="w-48 truncate">{value.length > 30 ? value.substring(0, 30) + '...' : value}</div>
+//                         </Tooltip>
+//                     )
+//                 },
+//             },
+//             {
+//                 header: 'Due Date',
+//                 accessorKey: 'default_due_date',
+//                 cell: (props) => {
+//                     const dueDate = props.getValue() as { first_date: string; last_date: string }
+//                     const displayDate = `${new Date(dueDate.first_date).toLocaleDateString()} - ${new Date(dueDate.last_date).toLocaleDateString()}`
+//                     return (
+//                         <Tooltip title={displayDate} placement="top">
+//                             <div className="w-40 truncate">{displayDate}</div>
+//                         </Tooltip>
+//                     )
+//                 },
+//             },
+//             {
+//                 header: 'Action',
+//                 id: 'viewDetails',
+//                 cell: (props) => (
+//                     <div className="w-16 flex justify-center">
+//                         <ViewDetailsButton 
+//                             compliance={props.row.original} 
+//                             branchValue={branchValue}
+//                             onAssignSuccess={handleAssignSuccess}
+//                         />
+//                     </div>
+//                 ),
+//             }
+//         ],
+//         [selectedItems, isAllSelected, branchValue]
+//     )
+
+//     const onPaginationChange = (page: number) => {
+//         const newTableData = cloneDeep(tableData)
+//         newTableData.pageIndex = page
+//         setTableData(newTableData)
+//     }
+
+//     const onSelectChange = (value: number) => {
+//         const newTableData = cloneDeep(tableData)
+//         newTableData.pageSize = Number(value)
+//         newTableData.pageIndex = 1
+//         setTableData(newTableData)
+//     }
+
+//     const onSort = (sort: OnSortParam) => {
+//         const newTableData = cloneDeep(tableData)
+//         newTableData.sort = sort
+//         setTableData(newTableData)
+//     }
+
+//     return (
+//         <div className="w-full overflow-x-auto">
+//             <DataTable
+//                 columns={columns}
+//                 data={initialLoadComplete ? filteredData : []}
+//                 skeletonAvatarColumns={[0]}
+//                 skeletonAvatarProps={{ className: 'rounded-md' }}
+//                 loading={isLoading}
+//                 pagingData={{
+//                     total: tableData.total,
+//                     pageIndex: tableData.pageIndex,
+//                     pageSize: tableData.pageSize,
+//                 }}
+//                 onPaginationChange={onPaginationChange}
+//                 onSelectChange={onSelectChange}
+//                 onSort={onSort}
+//                 stickyHeader={true}
+//                 stickyFirstColumn={true}
+//                 stickyLastColumn={true}
+//                 selectable={true}
+//             />
+//         </div>
+//     )
+// }
+
+// export default RecommendedTable
+
+import React, { useMemo, useState, useEffect } from 'react'
 import DataTable from '@/components/shared/DataTable'
-import { Checkbox, Tooltip, Button } from '@/components/ui'
+import { Checkbox, Tooltip, Button, Notification, toast } from '@/components/ui'
 import cloneDeep from 'lodash/cloneDeep'
 import type { OnSortParam, ColumnDef } from '@/components/shared/DataTable'
 import { useNavigate } from 'react-router-dom'
 import { HiOutlineEye } from 'react-icons/hi'
 import { RiCheckLine } from 'react-icons/ri'
-import { dummyData, ComplianceData } from '@/views/IHRC/store/dummyData'
+import { useDispatch } from 'react-redux'
+import { 
+    assignCompliancesToBranch,
+} from '@/store/slices/compliance/ComplianceApiSlice'
+import { fetchAllComplianceAssignments } from '@/store/slices/AssignedCompliance/assignedComplianceSlice'
 
-const ViewDetailsButton = ({ compliance }: { compliance: ComplianceData }) => {
+interface ComplianceData {
+    id: number
+    uuid: string
+    legislation: string
+    category: string
+    penalty_type: string
+    default_due_date: {
+        first_date: string
+        last_date: string
+    }
+    scheduled_frequency: string
+    proof_mandatory: boolean
+    header: string
+    description: string
+    penalty_description: string
+    applicablility: string
+    bare_act_text: string
+    type: string
+    caluse: string
+    frequency: string
+    statutory_auth: string
+    approval_required: boolean
+    criticality: string
+    created_type: string
+    created_at: string
+    updated_at: string
+}
+
+interface RecommendedTableContentProps {
+    data: ComplianceData[]
+    loading: boolean
+    tableKey: number
+    branchValue?: string 
+    onSelectedCompliancesChange: (selectedIds: number[]) => void
+}
+
+const ViewDetailsButton = ({ 
+    compliance, 
+    branchValue,
+    onAssignSuccess 
+}: { 
+    compliance: ComplianceData;
+    branchValue?: string;
+    onAssignSuccess: (complianceId: number) => void;
+}) => {
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     const handleViewDetails = () => {
-        navigate(`/app/IHRC/compliance-list-detail/${compliance.Compliance_ID}`, {
+        navigate(`/app/IHRC/compliance-list-detail/${compliance.uuid}`, {
             state: compliance,
         })
     }
 
+    const handleAssignCompliance = async () => {
+        if (!branchValue) {
+            toast.push(
+                <Notification title="Empty" type="danger">
+                    Please select a branch first
+                </Notification>
+            )
+            return
+        }
+
+        const assignData = {
+            branch_id: parseInt(branchValue),
+            compliance_id: [compliance.id]
+        }
+
+        try {
+            await dispatch(assignCompliancesToBranch(assignData))
+            toast.push(
+                <Notification title="Success" type="success">
+                    Assigned Successfully
+                </Notification>
+            )
+            onAssignSuccess(compliance.id)
+        } catch (error) {
+            console.error('Failed to assign compliance:', error)
+            toast.push( 
+                <Notification title="Failed" type="danger">
+                    Not Assigned
+                </Notification>
+            )
+        }
+    }
+
     return (
-        <div className='flex gap-2 items-center'>
+        <div className="flex gap-2 items-center">
             <Tooltip title="View Compliance Detail" placement="top">
                 <Button
                     size="sm"
-                    className='text-[#737171]'
+                    className="text-[#737171]"
                     icon={<HiOutlineEye />}
                     onClick={handleViewDetails}
                 />
@@ -30,43 +514,121 @@ const ViewDetailsButton = ({ compliance }: { compliance: ComplianceData }) => {
             <Tooltip title="Assign Compliance">
                 <Button
                     size="sm"
-                    onClick={() => console.log('Assign')}
+                    onClick={handleAssignCompliance}
                     icon={<RiCheckLine />}
+                    disabled={!branchValue}
                 />
             </Tooltip>
         </div>
     )
 }
 
-const RecommendedTableContent = () => {
-    const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
+const RecommendedTable = ({ data, loading: initialLoading, tableKey, branchValue ,  onSelectedCompliancesChange}: RecommendedTableContentProps) => {
+    const dispatch = useDispatch()
+    const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set())
+    const [assignedItems, setAssignedItems] = useState<Set<number>>(new Set())
+    const [isLoadingAssigned, setIsLoadingAssigned] = useState(true)
+    const [initialLoadComplete, setInitialLoadComplete] = useState(false)
+
+    useEffect(() => {
+        const fetchAlreadyAssigned = async () => {
+            setIsLoadingAssigned(true)
+            try {
+                if (branchValue) {
+                    const response = await dispatch(fetchAllComplianceAssignments(parseInt(branchValue))).unwrap()
+                    const assignedIds = new Set(
+                        response.data.map((compliance: ComplianceData) => compliance.id)
+                    )
+                    setAssignedItems(assignedIds)
+                } else {
+                    // When no branch is selected, fetch assignments for all branches
+                    const response = await dispatch(fetchAllComplianceAssignments(0)).unwrap()
+                    const assignedIds = new Set(
+                        response.data.map((compliance: ComplianceData) => compliance.id)
+                    )
+                    setAssignedItems(assignedIds)
+                }
+            } catch (error) {
+                console.error('Failed to fetch assigned compliances:', error)
+                toast.push(
+                    <Notification title="Error" type="danger">
+                        Failed to fetch assigned compliances
+                    </Notification>
+                )
+            } finally {
+                setIsLoadingAssigned(false)
+                setInitialLoadComplete(true)
+            }
+        }
+
+        fetchAlreadyAssigned()
+    }, [branchValue, dispatch])
+
+    // Filter out assigned items from the data
+    const filteredData = useMemo(() => {
+        return data.filter(item => !assignedItems.has(item.id))
+    }, [data, assignedItems])
 
     const isAllSelected = useMemo(
-        () => selectedItems.size === dummyData.length,
-        [selectedItems]
-    );
+        () => filteredData.length > 0 && selectedItems.size === filteredData.length,
+        [selectedItems, filteredData]
+    )
 
     const handleCheckboxChange = (id: number) => {
-        setSelectedItems((prev) => {
-            const newSet = new Set(prev);
+        setSelectedItems(prev => {
+            const newSet = new Set(prev)
             if (newSet.has(id)) {
-                newSet.delete(id);
+                newSet.delete(id)
             } else {
-                newSet.add(id);
+                newSet.add(id)
             }
-            return newSet;
-        });
-    };
+            // Notify parent of selection changes
+            onSelectedCompliancesChange(Array.from(newSet))
+            return newSet
+        })
+    }
 
     const handleSelectAllChange = () => {
-        if (isAllSelected) {
-            setSelectedItems(new Set());
-        } else {
-            setSelectedItems(new Set(dummyData.map((item) => item.Compliance_ID)));
-        }
-    };
+        const newSelectedItems = isAllSelected
+            ? new Set()
+            : new Set(filteredData.map(item => item.id))
+        
+        setSelectedItems(newSelectedItems)
+        // Notify parent of selection changes
+        onSelectedCompliancesChange(Array.from(newSelectedItems))
+    }
 
-    const columns: ColumnDef<ComplianceData>[] = useMemo(
+    const handleAssignSuccess = (complianceId: number) => {
+        setAssignedItems(prev => new Set([...prev, complianceId]))
+        setSelectedItems(prev => {
+            const newSet = new Set(prev)
+            newSet.delete(complianceId)
+            onSelectedCompliancesChange(Array.from(newSet)) // Notify parent of changes
+            return newSet
+        })
+    }
+
+    const [tableData, setTableData] = useState({
+        total: 0,
+        pageIndex: 1,
+        pageSize: 10,
+        query: '',
+        sort: { order: '', key: '' },
+    })
+
+    useEffect(() => {
+        if (initialLoadComplete) {
+            setTableData(prev => ({
+                ...prev,
+                total: filteredData.length
+            }))
+        }
+    }, [filteredData, initialLoadComplete])
+
+    // Show loading state until both initial data and assigned items are loaded
+    const isLoading = initialLoading || isLoadingAssigned || !initialLoadComplete
+
+    const columns = useMemo(
         () => [
             {
                 header: ({ table }) => (
@@ -81,85 +643,98 @@ const RecommendedTableContent = () => {
                 cell: ({ row }) => (
                     <div className="w-2">
                         <Checkbox
-                            checked={selectedItems.has(row.original.Compliance_ID)}
-                            onChange={() => handleCheckboxChange(row.original.Compliance_ID)}
+                            checked={selectedItems.has(row.original.id)}
+                            onChange={() => handleCheckboxChange(row.original.id)}
                         />
                     </div>
                 ),
             },
             {
-                header: 'Compliance ID',
-                accessorKey: 'Compliance_ID',
+                header: 'ID',
+                accessorKey: 'uuid',
                 cell: (props) => (
-                    <Tooltip title={`Compliance ID: ${props.getValue()}`} placement="top">
-                        <div className="w-32 truncate">{props.getValue()}</div>
+                    <Tooltip title={`ID: ${props.getValue()}`} placement="top">
+                        <div className="w-16 truncate">{props.getValue()}</div>
                     </Tooltip>
                 ),
             },
             {
                 header: 'Legislation',
-                accessorKey: 'Legislation',
+                accessorKey: 'legislation',
                 cell: (props) => {
-                    const value = props.getValue() as string;
+                    const value = props.getValue() as string
                     return (
                         <Tooltip title={value} placement="top">
                             <div className="w-42 truncate">{value.length > 22 ? value.substring(0, 22) + '...' : value}</div>
                         </Tooltip>
-                    );
+                    )
                 },
             },
             {
                 header: 'Criticality',
-                accessorKey: 'Criticality',
+                accessorKey: 'criticality',
                 cell: (props) => {
-                    const criticality = props.getValue();
+                    const criticality = props.getValue() as string
                     return (
                         <div className="w-24 font-semibold truncate">
-                            {criticality === 'High' ? (
-                                <span className="text-red-500">{criticality}</span>
-                            ) : criticality === 'Medium' ? (
-                                <span className="text-yellow-500">{criticality}</span>
+                            {criticality === 'high' ? (
+                                <span className="text-red-500">High</span>
+                            ) : criticality === 'medium' ? (
+                                <span className="text-yellow-500">Medium</span>
                             ) : (
-                                <span className="text-green-500">{criticality}</span>
+                                <span className="text-green-500">Low</span>
                             )}
                         </div>
-                    );
+                    )
                 }
             },
             {
-                header: 'Location',
-                accessorKey: 'Location',
+                header: 'Category',
+                accessorKey: 'category',
                 cell: (props) => {
-                    const value = props.getValue() as string;
+                    const value = props.getValue() as string
                     return (
                         <Tooltip title={value} placement="top">
                             <div className="w-36 truncate">{value.length > 20 ? value.substring(0, 20) + '...' : value}</div>
                         </Tooltip>
-                    );
+                    )
                 },
             },
             {
                 header: 'Header',
-                accessorKey: 'Compliance_Header',
+                accessorKey: 'header',
                 cell: (props) => {
-                    const value = props.getValue() as string;
+                    const value = props.getValue() as string
                     return (
                         <Tooltip title={value} placement="top">
                             <div className="w-36 truncate">{value.length > 18 ? value.substring(0, 18) + '...' : value}</div>
                         </Tooltip>
-                    );
+                    )
                 },
             },
             {
                 header: 'Description',
-                accessorKey: 'Compliance_Description',
+                accessorKey: 'description',
                 cell: (props) => {
-                    const value = props.getValue() as string;
+                    const value = props.getValue() as string
                     return (
                         <Tooltip title={value} placement="left">
                             <div className="w-48 truncate">{value.length > 30 ? value.substring(0, 30) + '...' : value}</div>
                         </Tooltip>
-                    );
+                    )
+                },
+            },
+            {
+                header: 'Due Date',
+                accessorKey: 'default_due_date',
+                cell: (props) => {
+                    const dueDate = props.getValue() as { first_date: string; last_date: string }
+                    const displayDate = `${new Date(dueDate.first_date).toLocaleDateString()} - ${new Date(dueDate.last_date).toLocaleDateString()}`
+                    return (
+                        <Tooltip title={displayDate} placement="top">
+                            <div className="w-40 truncate">{displayDate}</div>
+                        </Tooltip>
+                    )
                 },
             },
             {
@@ -167,21 +742,17 @@ const RecommendedTableContent = () => {
                 id: 'viewDetails',
                 cell: (props) => (
                     <div className="w-16 flex justify-center">
-                        <ViewDetailsButton compliance={props.row.original} />
+                        <ViewDetailsButton 
+                            compliance={props.row.original} 
+                            branchValue={branchValue}
+                            onAssignSuccess={handleAssignSuccess}
+                        />
                     </div>
                 ),
             }
         ],
-        [selectedItems, isAllSelected]
+        [selectedItems, isAllSelected, branchValue]
     )
-
-    const [tableData, setTableData] = useState({
-        total: dummyData.length,
-        pageIndex: 1,
-        pageSize: 10,
-        query: '',
-        sort: { order: '', key: '' },
-    })
 
     const onPaginationChange = (page: number) => {
         const newTableData = cloneDeep(tableData)
@@ -206,10 +777,10 @@ const RecommendedTableContent = () => {
         <div className="w-full overflow-x-auto">
             <DataTable
                 columns={columns}
-                data={dummyData}
+                data={initialLoadComplete ? filteredData : []}
                 skeletonAvatarColumns={[0]}
                 skeletonAvatarProps={{ className: 'rounded-md' }}
-                loading={false}
+                loading={isLoading}
                 pagingData={{
                     total: tableData.total,
                     pageIndex: tableData.pageIndex,
@@ -219,12 +790,12 @@ const RecommendedTableContent = () => {
                 onSelectChange={onSelectChange}
                 onSort={onSort}
                 stickyHeader={true}
-        stickyFirstColumn={true}
-        stickyLastColumn={true}
-        selectable={true}
+                stickyFirstColumn={true}
+                stickyLastColumn={true}
+                selectable={true}
             />
         </div>
     )
 }
 
-export default RecommendedTableContent
+export default RecommendedTable
