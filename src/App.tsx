@@ -103,11 +103,7 @@ function App() {
     return (
         <PersistGate loading={null} persistor={persistor}>
             {!loading && (
-<<<<<<< HEAD
-                <BrowserRouter>
-=======
-                <BrowserRouter basename='ihrc'>
->>>>>>> 175a23e8ffc714fdc58772275a7b1b83ce31d737
+                <BrowserRouter basename="ihrc">
                     <Theme>
                         <Layout />
                     </Theme>
