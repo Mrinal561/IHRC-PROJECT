@@ -604,7 +604,7 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
       },
       {
         header: 'Status',
-        accessorKey: 'status',
+        accessorKey: 'data_status',
         cell: (props) => (
           <div className={`w-24 font-semibold ${getStatusBadgeColor(props.getValue() as DueComplianceDetailData['status'])}`}>
             {(props.getValue() as string).charAt(0).toUpperCase() + (props.getValue() as string).slice(1)}
