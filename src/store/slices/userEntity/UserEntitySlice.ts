@@ -4,10 +4,20 @@ import * as UserService from '@/services/UserEntityService';
 import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
 
-
 export interface UserData {
-    name: string;
     group_id: number;
+    first_name: string;
+    last_name: string;
+    email: string;
+    mobile: string;
+    username: string;
+    joining_date: Date;
+    role: string;
+    aadhar_no: string;
+    pan_card: string;
+    auth_signatory: boolean;
+    suspend: boolean;
+    disable: boolean;
 }
 
 export interface UserState {
@@ -40,10 +50,13 @@ export const fetchUsers = createAsyncThunk(
 
 export const createUser = createAsyncThunk(
     'user/create',
-    async (userData: UserData) => {
+    async (userData: UserData, { rejectWithValue }) => {
+        try {
             const { data } = await httpClient.post(endpoints.user.create(), userData);
-            return data ;
-       
+            return data;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || 'Failed to create user');
+        }
     }
 );
 
@@ -99,11 +112,13 @@ const userSlice = createSlice({
             })
             .addCase(createUser.fulfilled, (state, action) => {
                 state.loading = false;
-                state.users.push(action.payload);
+                // state.users.push(action.payload);
             })
             .addCase(createUser.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
+                state.error = null;
+
             })
             // Update user
             .addCase(updateUser.pending, (state) => {

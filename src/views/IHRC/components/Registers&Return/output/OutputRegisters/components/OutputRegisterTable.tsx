@@ -5,6 +5,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import type { OnSortParam, ColumnDef } from '@/components/shared/DataTable';
 import { HiDownload } from 'react-icons/hi';
 import { Register, registers } from '@/views/IHRC/store/registerData';
+import ConfigDropdown from './ConfigDropdown';
 
 
 
@@ -18,7 +19,21 @@ const OutputRegisterTable = () => {
                     const value = props.getValue() as string;
                     return (
                         <Tooltip title={value} placement="top">
-                            <div className="w-72 truncate">
+                            <div className="w-full">
+                                {value.length > 100 ? value.substring(0, 100) + '...' : value}
+                            </div>
+                        </Tooltip>
+                    );
+                },
+            },
+            {
+                header: 'Type',
+                accessorKey: 'type_of_act',
+                cell: (props) => {
+                    const value = props.getValue() as string;
+                    return (
+                        <Tooltip title={value} placement="top">
+                            <div className="w-16 truncate">
                                 {value.length > 50 ? value.substring(0, 50) + '...' : value}
                             </div>
                         </Tooltip>
@@ -32,8 +47,8 @@ const OutputRegisterTable = () => {
                     const value = props.getValue() as string;
                     return (
                         <Tooltip title={value} placement="top">
-                            <div className="w-72 truncate">
-                                {value.length > 30 ? value.substring(0, 30) + '...' : value}
+                            <div className="w-60 truncate">
+                                {value.length > 80 ? value.substring(0, 80) + '...' : value}
                             </div>
                         </Tooltip>
                     );
@@ -46,7 +61,7 @@ const OutputRegisterTable = () => {
                     const value = props.getValue() as string;
                     return (
                         <Tooltip title={value} placement="top">
-                            <div className="w-32 truncate">
+                            <div className="w-20 truncate">
                                 {value.length > 18 ? value.substring(0, 18) + '...' : value}
                             </div>
                         </Tooltip>
@@ -60,14 +75,7 @@ const OutputRegisterTable = () => {
                     const register = row.original;
                     return (
                         <div className="flex gap-2">
-                            <Tooltip title="Download Output" placement="top">
-                                <Button
-                                    size="sm"
-                                    onClick={() => console.log('Download clicked for:', register)}
-                                >
-                                    <HiDownload />
-                                </Button>
-                            </Tooltip>
+                            <ConfigDropdown companyName={undefined} companyGroupName={undefined}            />
                         </div>
                     );
                 },
@@ -76,8 +84,22 @@ const OutputRegisterTable = () => {
         []
     );
 
+    const pagingData = {
+        total: 0, // Set to actual total if needed
+        pageIndex: 1,
+        pageSize: 1000 // Large number to show all records
+    };
+
+
     return (
-        <div className="w-full overflow-x-auto">
+        <div className="w-full overflow-x-auto custom-datatable-wrapper">
+            <style>
+                {`
+                    .custom-datatable-wrapper > div > div:last-child {
+                        display: none;
+                    }
+                `}
+                </style>
             <DataTable
                 columns={columns}
                 data={registers}
@@ -88,6 +110,10 @@ const OutputRegisterTable = () => {
                 stickyFirstColumn={true}
                 stickyLastColumn={true}
                 selectable={true}
+                pagingData={pagingData}
+                pageSizes={[]} 
+                onPaginationChange={() => {}}
+                onSelectChange={() => {}}
                 // showPagination={false}
                 // showPageSize={false}  
             />

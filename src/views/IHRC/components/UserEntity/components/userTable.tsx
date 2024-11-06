@@ -38,7 +38,7 @@ const UserTable: React.FC = () => {
         () => [
             {
                 header: 'Company Group',
-                accessorKey: 'group_name',
+                accessorKey: 'CompanyGroup.name',
                 cell: (props) => (
                     <div className="w-32 truncate">{props.getValue() as string}</div>
                 ),
@@ -211,7 +211,7 @@ const UserTable: React.FC = () => {
     useEffect(() => {
         fetchUserData(1, 10)
         // setPfTableLoading(false)
-    })
+    },[])
 
     const fetchUserData = async (page: number, size: number) => {
         const { payload: data } = await dispatch(fetchUsers({page: page, page_size: size}))

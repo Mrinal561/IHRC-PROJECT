@@ -351,6 +351,7 @@ const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadS
         </div>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
      
       <Dialog isOpen={dialogIsOpen} onClose={onDialogClose}>
         <h5 className="mb-4">Upload Confirmation File</h5>
@@ -362,6 +363,8 @@ const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadS
           type="file"
           onChange={onFileChange}
 =======
+=======
+>>>>>>> 175a23e8ffc714fdc58772275a7b1b83ce31d737
         {selectedCompliance?.Proof_Of_Compliance_Mandatory === 'Yes' && (
           <>
             <label className='text-red-500'>*Please Upload The Proof Of Compliance:</label>
@@ -396,7 +399,10 @@ const DueComplianceTable: React.FC<DueComplianceTableProps> = ({ data, onUploadS
           textArea 
           value={remark}
           onChange={(e) => setRemark(e.target.value)}
+<<<<<<< HEAD
 >>>>>>> design-sumit
+=======
+>>>>>>> 175a23e8ffc714fdc58772275a7b1b83ce31d737
           className="mb-4"
         />
 

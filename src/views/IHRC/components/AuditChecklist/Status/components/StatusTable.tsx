@@ -49,7 +49,24 @@ const ConfirmDialog = ({ isOpen, onClose, onConfirm, title, message }: any) => {
     )
 }
 
-const RejectDialog = ({ isOpen, onClose, onConfirm }: any) => {
+const ConfirmDialog = ({ isOpen, onClose, onConfirm, title, message }) => {
+    return (
+        <Dialog isOpen={isOpen} onClose={onClose} width={400}>
+            <h5 className="mb-4">{title}</h5>
+            <p>{message}</p>
+            <div className="mt-6 text-right">
+                <Button size="sm" className="mr-2" onClick={onClose}>
+                    Cancel
+                </Button>
+                <Button variant="solid" size="sm" onClick={onConfirm}>
+                    Confirm
+                </Button>
+            </div>
+        </Dialog>
+    )
+}
+
+const RejectDialog = ({ isOpen, onClose, onConfirm }) => {
     const [reason, setReason] = useState('')
 
     return (
