@@ -11,6 +11,8 @@ import user, { UserState } from './slices/userEntity/UserEntitySlice'
 import compliance, {ComplianceState} from './slices/compliance/complianceSlice'
 import assignedCompliance,{ ComplianceAssignmentState } from './slices/AssignedCompliance/assignedComplianceSlice';
 import dueCompliance, { DueComplianceState } from './slices/dueCompliance/dueComplianceSlice'
+import status,{ StatusState } from './slices/dueCompliance/statusUpdateSlice'
+
 
 export type RootState = CombinedState<{
     auth: CombinedState<AuthState>
@@ -20,6 +22,7 @@ export type RootState = CombinedState<{
     compliance: ComplianceState
     company: CompanyState
     due: DueComplianceState
+    status:StatusState
     user: UserState
     locale: LocaleState
     theme: ThemeState
@@ -44,6 +47,7 @@ const staticReducers = {
     compliance,
     assignedCompliance,
     dueCompliance,
+    status,
     [RtkQueryService.reducerPath]: RtkQueryService.reducer,
 }
 

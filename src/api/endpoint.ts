@@ -45,7 +45,8 @@ export const endpoints = {
         update: (id: string) => api(`companyadmin/compliance/assign-user/${id}`),
     },
     due: {
-        getAll:()=> api('companyadmin/compliance/data')
+        getAll:()=> api('companyadmin/compliance/data'),
+        updateStatus:(id:string)=> api(`/companyadmin/compliance/data/update/${id}`)
     }
 
     
