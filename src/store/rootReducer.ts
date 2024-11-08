@@ -9,6 +9,7 @@ import company, { CompanyState } from './slices/company/companySlice'
 import companyGroup ,{ CompanyGroupState } from './slices/companyGroup/companyGroupSlice'
 import user, { UserState } from './slices/userEntity/UserEntitySlice'
 import branch, { BranchState } from './slices/branch/branchSlice'
+import esisetup, { EsiSetupState } from './slices/esiSetup/esiSetupSlice'
 
 
 
@@ -20,6 +21,7 @@ export type RootState = CombinedState<{
     company: CompanyState
     branch: BranchState
     user: UserState
+    esiSetup: EsiSetupState
     locale: LocaleState
     theme: ThemeState
     /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -40,6 +42,7 @@ const staticReducers = {
     company,
     branch,
     user,
+    esisetup,
     [RtkQueryService.reducerPath]: RtkQueryService.reducer,
 }
 

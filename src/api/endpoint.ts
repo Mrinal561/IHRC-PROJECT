@@ -46,11 +46,12 @@ export const endpoints = {
     role: {
         getAll: () => api('companyadmin/role'),
     },
-    compliance: {
-        getAll: () => api(`/companyadmin/compliance/data?data_status[]=${status}`),
-    }
-   
-
-    
-
+    // compliance: {
+    //     getAll: () => api(`/companyadmin/compliance/data?data_status[]=${status}`),
+    // }
+   esiSetup: {
+    getAll: () => api('companyadmin/esisetup'),
+    getById: (id: string) => api(`companyadmin/esisetup/${id}`),
+    create: () => api('companyadmin/esisetup'),
+   }
 }
