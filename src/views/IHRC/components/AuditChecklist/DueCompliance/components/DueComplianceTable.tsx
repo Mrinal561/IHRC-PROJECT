@@ -74,7 +74,7 @@ export type DueComplianceDetailData = {
 const StatusOption = {
   statusOption: [
     { value: 'complied', label: 'Complied' },
-    { value: 'not_Complied', label: 'Not Complied' },
+    { value: 'not_complied', label: 'Not Complied' },
     { value: 'not_applicable', label: 'Not Applicable' },
 ],
 }

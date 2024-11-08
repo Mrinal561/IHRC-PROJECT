@@ -285,8 +285,11 @@ const RecommendedList = () => {
     const fetchComplianceData = async (page = 1, pageSize = 10) => {
         setIsLoading(true);
         try {
-            const response = await httpClient.get(endpoints.compliance.getAll(), {
-                // Add any params if needed
+            const response = await httpClient.get(endpoints.complianceSuperadmin.getAll(), {
+                params: {
+                    page,
+                    pageSize
+                }
             });
 
             if (response?.data?.data) {

@@ -24,7 +24,10 @@ export const endpoints = {
         delete: (id: string) => api(`companyadmin/company/${id}`),
     },
     common:{
-            getAll: ()=> api('/company-group')
+            getAll: ()=> api('/company-group'),
+            state: ()=> api('/states'),
+            district: ()=> api('/district'),
+            location: ()=> api('/location'),
     },
     user: {
         getAll: () => api('companyadmin/user'),
@@ -33,11 +36,8 @@ export const endpoints = {
         update: (id: string) => api(`companyadmin/user/${id}`),
         delete: (id: string) => api(`companyadmin/user/${id}`),
     },
-    compliance: {
+    complianceSuperadmin: {
         getAll: ()=> api('superadmin/compliance'),
-    },
-    branch:{
-        getAll:()=> api('companyadmin/branch')
     },
     assign: {
         create:()=> api('companyadmin/compliance'),
@@ -47,7 +47,21 @@ export const endpoints = {
     due: {
         getAll:()=> api('companyadmin/compliance/data'),
         updateStatus:(id:string)=> api(`/companyadmin/compliance/data/update/${id}`)
+    },
+    branch: {
+        getAll: () => api('companyadmin/branch'),
+        getById: (id: string) => api(`companyadmin/branch/${id}`),
+        create: () => api('companyadmin/branch'),
+        update: (id: string) =>  api(`companyadmin/branch/${id}`),
+        delete: (id: string) => api(`companyadmin/branch/${id}`),
+    },
+    role: {
+        getAll: () => api('companyadmin/role'),
+    },
+    compliance: {
+        getAll: () => api(`/companyadmin/compliance/data?data_status[]=${status}`),
     }
+   
 
     
 

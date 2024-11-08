@@ -140,7 +140,7 @@ import { StatusRequest, StatusResponse } from '@/@types/status';
 import { endpoints } from '@/api/endpoint';
 import httpClient  from '@/api/http-client';    
 
-interface StatusState {
+export interface StatusState {
   loading: boolean;
   error: string | null;
   currentStatus: StatusResponse | null;

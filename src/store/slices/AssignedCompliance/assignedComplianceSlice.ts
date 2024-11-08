@@ -122,10 +122,10 @@ const complianceAssignmentSlice = createSlice({
             .addCase(updateApproverOwner.fulfilled, (state, action) => {
                 // Update the specific compliance in the data array
                 const updatedCompliance = action.payload;
-                const index = state.data.findIndex(item => item.id === updatedCompliance.id);
-                if (index !== -1) {
-                    state.data[index] = updatedCompliance;
-                }
+                // const index = state.data.findIndex(item => item.id === updatedCompliance.id);
+                // if (index !== -1) {
+                //     state.data[index] = updatedCompliance;
+                // }
                 state.updateLoading = false;
                 state.updateSuccess = true;
             })

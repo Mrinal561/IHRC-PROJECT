@@ -4,10 +4,10 @@ export type UserData = {
     first_name: string;
     last_name: string;
     email: string;
+    password: string;
     mobile: string;
-    username: string;
     joining_date: string;
-    role: string;
+    role_id: number;
     aadhar_no?: string;
     pan_card?: string;
     auth_signatory: boolean;

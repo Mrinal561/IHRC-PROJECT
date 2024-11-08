@@ -118,6 +118,7 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({ data, loadi
         setSelectedApproverOption(null);
         refreshTable();
       } catch (error) {
+        console.log(error)
         toast.push(
           <Notification title="Error" type="danger">
             Failed to update owner and approver

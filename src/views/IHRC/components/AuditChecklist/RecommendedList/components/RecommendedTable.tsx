@@ -529,6 +529,8 @@ const RecommendedTable = ({ data, loading: initialLoading, tableKey, branchValue
     const [assignedItems, setAssignedItems] = useState<Set<number>>(new Set())
     const [isLoadingAssigned, setIsLoadingAssigned] = useState(true)
     const [initialLoadComplete, setInitialLoadComplete] = useState(false)
+    const [checkboxState, setCheckboxState] = useState<{ [key: number]: boolean }>({});
+    
 
     useEffect(() => {
         const fetchAlreadyAssigned = async () => {
@@ -536,13 +538,6 @@ const RecommendedTable = ({ data, loading: initialLoading, tableKey, branchValue
             try {
                 if (branchValue) {
                     const response = await dispatch(fetchAllComplianceAssignments(parseInt(branchValue))).unwrap()
-                    const assignedIds = new Set(
-                        response.data.map((compliance: ComplianceData) => compliance.id)
-                    )
-                    setAssignedItems(assignedIds)
-                } else {
-                    // When no branch is selected, fetch assignments for all branches
-                    const response = await dispatch(fetchAllComplianceAssignments(0)).unwrap()
                     const assignedIds = new Set(
                         response.data.map((compliance: ComplianceData) => compliance.id)
                     )
@@ -574,6 +569,8 @@ const RecommendedTable = ({ data, loading: initialLoading, tableKey, branchValue
         [selectedItems, filteredData]
     )
 
+
+
     const handleCheckboxChange = (id: number) => {
         setSelectedItems(prev => {
             const newSet = new Set(prev)
@@ -598,16 +595,31 @@ const RecommendedTable = ({ data, loading: initialLoading, tableKey, branchValue
         onSelectedCompliancesChange(Array.from(newSelectedItems))
     }
 
-    const handleAssignSuccess = (complianceId: number) => {
-        setAssignedItems(prev => new Set([...prev, complianceId]))
-        setSelectedItems(prev => {
-            const newSet = new Set(prev)
-            newSet.delete(complianceId)
-            onSelectedCompliancesChange(Array.from(newSet)) // Notify parent of changes
-            return newSet
-        })
-    }
+    // const handleAssignSuccess = (complianceIdsAssigned: number[]) => {
+    //     // Update the assigned items
+    //     setAssignedItems(prev => new Set([...prev, ...complianceIdsAssigned]));
+    
+    //     // Uncheck the selected items that were just assigned
+    //     setSelectedItems(prev => {
+    //         const newSet = new Set(prev);
+    //         complianceIdsAssigned.forEach(id => newSet.delete(id));
+    //         onSelectedCompliancesChange(Array.from(newSet)); // Notify parent of changes
+    //         return newSet;
+    //     });
+    // };
 
+    const handleAssignSuccess = (complianceIdAssigned: number) => {
+        // Update the assigned items
+        setAssignedItems(prev => new Set([...prev, complianceIdAssigned]));
+    
+        // Uncheck the selected item that was just assigned
+        setSelectedItems(prev => {
+            const newSet = new Set(prev);
+            newSet.delete(complianceIdAssigned);
+            onSelectedCompliancesChange(Array.from(newSet)); // Notify parent of changes
+            return newSet;
+        });
+    };
     const [tableData, setTableData] = useState({
         total: 0,
         pageIndex: 1,
@@ -777,7 +789,7 @@ const RecommendedTable = ({ data, loading: initialLoading, tableKey, branchValue
         <div className="w-full overflow-x-auto">
             <DataTable
                 columns={columns}
-                data={initialLoadComplete ? filteredData : []}
+                data={data}
                 skeletonAvatarColumns={[0]}
                 skeletonAvatarProps={{ className: 'rounded-md' }}
                 loading={isLoading}

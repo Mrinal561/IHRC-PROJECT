@@ -3,22 +3,7 @@ import * as UserService from '@/services/UserEntityService';
 // import { UserData } from "@/@types/userEntity";
 import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
-
-export interface UserData {
-    group_id: number;
-    first_name: string;
-    last_name: string;
-    email: string;
-    mobile: string;
-    username: string;
-    joining_date: Date;
-    role: string;
-    aadhar_no: string;
-    pan_card: string;
-    auth_signatory: boolean;
-    suspend: boolean;
-    disable: boolean;
-}
+import { UserData } from '@/@types/userEntity';
 
 export interface UserState {
     users: UserData[];

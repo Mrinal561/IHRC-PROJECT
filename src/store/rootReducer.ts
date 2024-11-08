@@ -8,6 +8,7 @@ import login, {AuthenticationState} from './slices/login'
 import company, { CompanyState } from './slices/company/companySlice'
 import companyGroup ,{ CompanyGroupState } from './slices/companyGroup/companyGroupSlice'
 import user, { UserState } from './slices/userEntity/UserEntitySlice'
+import branch, { BranchState } from './slices/branch/branchSlice'
 import compliance, {ComplianceState} from './slices/compliance/complianceSlice'
 import assignedCompliance,{ ComplianceAssignmentState } from './slices/AssignedCompliance/assignedComplianceSlice';
 import dueCompliance, { DueComplianceState } from './slices/dueCompliance/dueComplianceSlice'
@@ -23,6 +24,7 @@ export type RootState = CombinedState<{
     company: CompanyState
     due: DueComplianceState
     status:StatusState
+    branch: BranchState
     user: UserState
     locale: LocaleState
     theme: ThemeState
@@ -43,6 +45,7 @@ const staticReducers = {
     login,
     companyGroup,
     company,
+    branch,
     user,
     compliance,
     assignedCompliance,
