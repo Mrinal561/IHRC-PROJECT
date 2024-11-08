@@ -42,6 +42,12 @@ export const endpoints = {
         create: () => api('companyadmin/branch'),
         update: (id: string) =>  api(`companyadmin/branch/${id}`),
         delete: (id: string) => api(`companyadmin/branch/${id}`),
+    },
+    role: {
+        getAll: () => api('companyadmin/role'),
+    },
+    compliance: {
+        getAll: () => api(`/companyadmin/compliance/data?data_status[]=${status}`),
     }
    
 

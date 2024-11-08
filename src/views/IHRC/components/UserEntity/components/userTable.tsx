@@ -21,6 +21,7 @@ import { UserData } from "@/@types/userEntity";
 
 const UserTable: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
+    const [isLoading, setIsLoading] = useState(false);
     const users = useSelector(selectUsers);
     const loading = useSelector(selectLoading);
     const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
@@ -58,11 +59,11 @@ const UserTable: React.FC = () => {
                 accessorKey: 'email',
                 cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
             },
-            {
-                header: 'Username',
-                accessorKey: 'username',
-                cell: (props) => <div className="w-32 truncate">{props.getValue() as string}</div>,
-            },
+            // {
+            //     header: 'Password',
+            //     accessorKey: 'password',
+            //     cell: (props) => <div className="w-32 truncate">{props.getValue() as string}</div>,
+            // },
             {
                 header: 'Mobile Number',
                 accessorKey: 'mobile',
@@ -70,7 +71,7 @@ const UserTable: React.FC = () => {
             },
             {
                 header: 'Job Role',
-                accessorKey: 'role',
+                accessorKey: 'role_id',
                 cell: (props) => <div className="w-32 truncate">{props.getValue() as string}</div>,
             },
             {
@@ -208,20 +209,36 @@ const UserTable: React.FC = () => {
     //     }
     // };
 
-    useEffect(() => {
-        fetchUserData(1, 10)
-        // setPfTableLoading(false)
-    },[])
 
     const fetchUserData = async (page: number, size: number) => {
-        const { payload: data } = await dispatch(fetchUsers({page: page, page_size: size}))
-        setUserTableData(data?.data);
-        setTableData((prev) => ({
-            ...prev,
-            total: data?.paginate_data.totalResult,
-            pageIndex: data?.paginate_data.page,
-        }))
-    }
+        setIsLoading(true);
+        try{
+
+            const { payload: data } = await dispatch(fetchUsers({page: page, page_size: size}))
+            setUserTableData(data?.data);
+            setTableData((prev) => ({
+                ...prev,
+                total: data?.paginate_data.totalResult,
+                pageIndex: data?.paginate_data.page,
+            }))
+        }
+        catch(error) {
+            console.error('Failed to fetch users:', error);
+            toast.push(
+              <Notification title="Error" type="danger">
+                Failed to fetch Users
+              </Notification>
+            );
+          } finally {
+            setIsLoading(false);
+          }
+        }
+    
+
+        useEffect(() => {
+            fetchUserData(1, 10)
+        },[])
+
 
     const [tableData, setTableData] = useState({
         total: 0,
@@ -249,7 +266,7 @@ const UserTable: React.FC = () => {
                     data={userTableData}
                     skeletonAvatarColumns={[0]}
                     skeletonAvatarProps={{ className: 'rounded-md' }}
-                    loading={false}
+                    loading={isLoading}
                     pagingData={{
                         total: tableData.total,
                         pageIndex: tableData.pageIndex,

@@ -5,9 +5,14 @@ import BranchTool from './components/BranchTool';
 import { EntityData } from '@/views/IHRC/store/dummyEntityData';
 import BranchTable from './components/BranchTable';
 import AddBranchForm from './components/BranchForm';
+import { fetchBranches } from '@/store/slices/branch/branchSlice';
+import { useAppDispatch } from '@/store';
+import { BranchData } from '@/@types/branch';
+import { toast, Notification } from '@/components/ui';
+
 
 const Branch = () => {
-
+ 
   return (
           <AdaptableCard className="h-full" bodyClass="h-full">
             <div className="flex flex-col flex-wrap lg:flex-row lg:items-center justify-between gap-8 mb-10">
@@ -18,7 +23,8 @@ const Branch = () => {
               <BranchTool />
               </div>
             </div>
-            <BranchTable />
+            <BranchTable 
+            />
           </AdaptableCard>
   );
 };
