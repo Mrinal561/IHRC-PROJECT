@@ -595,19 +595,6 @@ const RecommendedTable = ({ data, loading: initialLoading, tableKey, branchValue
         onSelectedCompliancesChange(Array.from(newSelectedItems))
     }
 
-    // const handleAssignSuccess = (complianceIdsAssigned: number[]) => {
-    //     // Update the assigned items
-    //     setAssignedItems(prev => new Set([...prev, ...complianceIdsAssigned]));
-    
-    //     // Uncheck the selected items that were just assigned
-    //     setSelectedItems(prev => {
-    //         const newSet = new Set(prev);
-    //         complianceIdsAssigned.forEach(id => newSet.delete(id));
-    //         onSelectedCompliancesChange(Array.from(newSet)); // Notify parent of changes
-    //         return newSet;
-    //     });
-    // };
-
     const handleAssignSuccess = (complianceIdAssigned: number) => {
         // Update the assigned items
         setAssignedItems(prev => new Set([...prev, complianceIdAssigned]));

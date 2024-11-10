@@ -61,6 +61,8 @@ const Company: React.FC<CompanyProps> = ({ onBranchChange }) => {
           value: String(v.id),
         }))
       );
+      console.log(data.data);
+      
     } catch (error) {
       console.error('Failed to load company groups:', error);
       showNotification('danger', 'Failed to load company groups');
@@ -76,6 +78,7 @@ const Company: React.FC<CompanyProps> = ({ onBranchChange }) => {
           'group_id[]': groupIdParam
         }
       });
+      console.log(data.data);
 
       if (data?.data) {
         const formattedCompanies = data.data.map((company: any) => ({
@@ -87,6 +90,7 @@ const Company: React.FC<CompanyProps> = ({ onBranchChange }) => {
         if (formattedCompanies.length === 0) {
           showNotification('info', 'No companies found for this group');
         }
+
       } else {
         setCompanies([]);
       }
@@ -108,6 +112,8 @@ const Company: React.FC<CompanyProps> = ({ onBranchChange }) => {
         }));
         setStates(formattedStates);
       }
+      console.log(response.data);
+
     } catch (error) {
       console.error('Failed to load states:', error);
       showNotification('danger', 'Failed to load states');
@@ -128,6 +134,8 @@ const Company: React.FC<CompanyProps> = ({ onBranchChange }) => {
         }));
         setDistricts(formattedDistricts);
       }
+      console.log(response.data);
+
     } catch (error) {
       console.error('Failed to load districts:', error);
       showNotification('danger', 'Failed to load districts');
@@ -182,6 +190,8 @@ const Company: React.FC<CompanyProps> = ({ onBranchChange }) => {
         setSelectedBranch(null);
         onBranchChange?.(null);
       }
+      console.log(data.data);
+
     } catch (error) {
       console.error('Failed to load branches:', error);
       showNotification('danger', 'Failed to load branches');
