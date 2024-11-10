@@ -47,6 +47,7 @@ const Company: React.FC<CompanyProps> = ({
   const [states, setStates] = useState<SelectOption[]>([]);
   const [districts, setDistricts] = useState<SelectOption[]>([]);
   const [location, setLocation] = useState<SelectOption[]>([]);
+  const [locationId, setLocationId] = useState();
   const [branches, setBranches] = useState<BranchOption[]>([]);
   
   const [startDate, setStartDate] = useState<Date | null>(null);
@@ -76,7 +77,7 @@ const Company: React.FC<CompanyProps> = ({
           value: String(v.id),
         }))
       );
-      console.log(data.data);
+      console.log('company group id ' + data.id);
       
     } catch (error) {
       console.error('Failed to load company groups:', error);
@@ -94,6 +95,8 @@ const Company: React.FC<CompanyProps> = ({
         }
       });
       console.log(data.data);
+      console.log('company id ' + data.data.id);
+
 
       if (data?.data) {
         const formattedCompanies = data.data.map((company: any) => ({
@@ -128,6 +131,8 @@ const Company: React.FC<CompanyProps> = ({
         setStates(formattedStates);
       }
       console.log(response.data);
+      console.log('state  id ' + response.data.id);
+
 
     } catch (error) {
       console.error('Failed to load states:', error);
@@ -150,6 +155,8 @@ const Company: React.FC<CompanyProps> = ({
         setDistricts(formattedDistricts);
       }
       console.log(response.data);
+      console.log('district  id ' + response.data.id);
+
 
     } catch (error) {
       console.error('Failed to load districts:', error);
@@ -165,6 +172,7 @@ const Company: React.FC<CompanyProps> = ({
       const response = await httpClient.get(endpoints.common.location(), {
         params: { district_id: districtId}
       })
+      // setLocationId(location.id);
  
       if (response.data) {
         const formattedLocation = response.data.map((location: any) => ({
@@ -176,6 +184,10 @@ const Company: React.FC<CompanyProps> = ({
         setLocation(formattedLocation);
       }
       // console.log(response.data);
+      console.log('location  id ' + response.data.id);
+      console.log('location district id ' + response.data.district_id);
+
+
     }
     catch (error) {
       console.error('Failed to load location:', error);
@@ -188,6 +200,11 @@ const Company: React.FC<CompanyProps> = ({
     try {
      
       const { data } = await httpClient.get(endpoints.branch.getAll());
+
+      console.log('branch  id ' + data.id);
+      console.log('branch location id ' + data.location_id);
+
+     
  
       console.log('Selected location:', { id: locationId, name: locationName });
       console.log('Available Branches:', data.data);
@@ -195,8 +212,8 @@ const Company: React.FC<CompanyProps> = ({
  
  
       // Filter branches where district_id matches the selected district
-      const filteredBranches = data.data.filter((branch: any) => {
-        const branchLocationId = String(branch.location_id);
+      const filteredBranches = data.data.filter((branch: any, location: any) => {
+        const branchLocationId = String(location.id);
         const branchLocationName = branch.Location?.name?.toLowerCase();
         const selectedLocationName = locationName.toLowerCase();
        
@@ -207,12 +224,16 @@ const Company: React.FC<CompanyProps> = ({
           branchId: branch.id,
           branchName: branch.name,
           branchLocationId,
+          locationId,
           branchLocationName,
           selectedLocationId: locationId,
           selectedLocationName,
           matchById,
           matchByName
         });
+        console.log('location id' + locationId);
+        console.log('branch location id' + branchLocationId);
+        
        
         return matchById || matchByName;
       });
@@ -394,14 +415,6 @@ const Company: React.FC<CompanyProps> = ({
           options={location}
           value={selectedLocation}
           onChange={handleLocationChange}
-        />
-      </div>
-      <div className="flex-1 min-w-[140px]">
-        <OutlinedSelect
-          label="Location"
-          options={location}
-          value={selectedLocation}
-          onChange={setSelectedLocation}
         />
       </div>
 
