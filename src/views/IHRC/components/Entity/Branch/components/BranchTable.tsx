@@ -63,7 +63,7 @@ const BranchTable: React.FC = () => {
             },
             {
                 header: 'Company',
-                accessorKey: 'CompanyName.name',
+                accessorKey: 'Company.name',
                 cell: (props) => (
                     <div className="w-52 truncate">{props.getValue() as string}</div>
                 ),
@@ -77,14 +77,14 @@ const BranchTable: React.FC = () => {
             },
             {
                 header: 'District',
-                accessorKey: 'district',
+                accessorKey: 'District.name',
                 cell: (props) => (
                     <div className="w-52 truncate">{props.getValue() as string}</div>
                 ),
             },
             {
                 header: 'Location',
-                accessorKey: 'location',
+                accessorKey: 'Location.name',
                 cell: (props) => (
                     <div className="w-40 truncate">{props.getValue() as string}</div>
                 ),

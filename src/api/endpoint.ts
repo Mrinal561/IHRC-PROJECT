@@ -28,6 +28,7 @@ export const endpoints = {
             state: ()=> api('/states'),
             district: ()=> api('/district'),
             location: ()=> api('/location'),
+            
     },
     user: {
         getAll: () => api('companyadmin/user'),
@@ -35,6 +36,18 @@ export const endpoints = {
         create: () => api('companyadmin/user'),
         update: (id: string) => api(`companyadmin/user/${id}`),
         delete: (id: string) => api(`companyadmin/user/${id}`),
+    },
+    complianceSuperadmin: {
+        getAll: ()=> api('superadmin/compliance'),
+    },
+    assign: {
+        create:()=> api('companyadmin/compliance'),
+        getAll:()=> api('companyadmin/compliance'),
+        update: (id: string) => api(`companyadmin/compliance/assign-user/${id}`),
+    },
+    due: {
+        getAll:()=> api('companyadmin/compliance/data'),
+        updateStatus:(id:string)=> api(`/companyadmin/compliance/data/update/${id}`)
     },
     branch: {
         getAll: () => api('companyadmin/branch'),
