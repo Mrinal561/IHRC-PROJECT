@@ -40,7 +40,6 @@ const Company: React.FC<CompanyProps> = ({
   const [selectedDistrict, setSelectedDistrict] = useState<SelectOption | null>(null);
   const [selectedLocation, setSelectedLocation] = useState<SelectOption | null>(null);
   const [selectedBranch, setSelectedBranch] = useState<BranchOption | null>(null);
-  const [selectedLocation, setSelectedLocation] = useState<SelectOption | null>(null);
 
 
   const [companyGroups, setCompanyGroups] = useState<SelectOption[]>([]);
@@ -49,7 +48,6 @@ const Company: React.FC<CompanyProps> = ({
   const [districts, setDistricts] = useState<SelectOption[]>([]);
   const [location, setLocation] = useState<SelectOption[]>([]);
   const [branches, setBranches] = useState<BranchOption[]>([]);
-  const [location, setLocation] = useState<SelectOption[]>([]);
   
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
@@ -212,10 +210,6 @@ const Company: React.FC<CompanyProps> = ({
           branchLocationName,
           selectedLocationId: locationId,
           selectedLocationName,
-          branchLocationId,
-          branchLocationName,
-          selectedLocationId: locationId,
-          selectedLocationName,
           matchById,
           matchByName
         });
@@ -299,7 +293,7 @@ const Company: React.FC<CompanyProps> = ({
       setLocation([]);
       setBranches([]);
     }
-  }, [selectedDistrict])
+  }}, [selectedDistrict])
 
 
   useEffect(() => {
