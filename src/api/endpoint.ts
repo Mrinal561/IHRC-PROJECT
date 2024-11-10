@@ -60,6 +60,7 @@ export const endpoints = {
     },
     compliance: {
         getAll: () => api(`/companyadmin/compliance/data?data_status[]=${status}`),
+        approveReject: () => api('/companyadmin/compliance/data/record-status')
     }
    
 

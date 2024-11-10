@@ -21,7 +21,8 @@ const DueCompliance = () => {
             const response = await httpClient.get(endpoints.due.getAll(), {
                 params: {
                     page,
-                    pageSize
+                    pageSize, 
+                    'data_status[]': ['due']                   
                 }
             });
 
