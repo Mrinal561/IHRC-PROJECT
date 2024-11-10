@@ -1,16 +1,11 @@
 // complianceSlice.ts
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-// import { httpClient } from '@/api/http-client'; // Assuming this is your http client
 import { endpoints } from '@/api/endpoint';
 import httpClient from "@/api/http-client";
 
-export type AssignCompliances = {
-    group_id: number;
-    company_id: number;
-    state_id: number;
-    location_id: number;
-    branch_id: number;
-    compliance_id: number[];
+export type ApproveRejectCompliances = {
+    status: string;
+    compliace_data_id: number[];
 }
 
 interface ComplianceState {
@@ -25,16 +20,11 @@ const initialState: ComplianceState = {
     success: false,
 };
 
-export const assignCompliancesToBranch = createAsyncThunk(
-    'compliance/assignCompliancesToBranch',
-    async (complianceData: AssignCompliances) => {
-        
-        try {
-            const { data } = await httpClient.post(endpoints.assign.create(), complianceData);
-            return data;
-        } catch(error){
-            console.log(error)
-        }
+export const approveRejectComplianceStatus = createAsyncThunk(
+    'compliance/approveRejectStatus',
+    async (statusData: ApproveRejectCompliances) => {
+        const { data } = await httpClient.put(endpoints.compliance.approveReject(), statusData);
+        return data;
     }
 );
 
@@ -50,17 +40,17 @@ const complianceSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(assignCompliancesToBranch.pending, (state) => {
+            .addCase(approveRejectComplianceStatus.pending, (state) => {
                 state.loading = true;
                 state.error = null;
                 state.success = false;
             })
-            .addCase(assignCompliancesToBranch.fulfilled, (state) => {
+            .addCase(approveRejectComplianceStatus.fulfilled, (state) => {
                 state.loading = false;
                 state.success = true;
                 state.error = null;
             })
-            .addCase(assignCompliancesToBranch.rejected, (state, action) => {
+            .addCase(approveRejectComplianceStatus.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message || 'An error occurred';
                 state.success = false;

@@ -38,7 +38,7 @@ export const endpoints = {
         delete: (id: string) => api(`companyadmin/user/${id}`),
     },
     complianceSuperadmin: {
-        getAll: ()=> api('superadmin/compliance'),
+        getAll: ()=> api('/companyadmin/compliance/recommend'),
     },
     assign: {
         create:()=> api('companyadmin/compliance'),
@@ -59,9 +59,10 @@ export const endpoints = {
     role: {
         getAll: () => api('companyadmin/role'),
     },
-    // compliance: {
-    //     getAll: () => api(`/companyadmin/compliance/data?data_status[]=${status}`),
-    // }
+    compliance: {
+        getAll: () => api(`/companyadmin/compliance/data?data_status[]=${status}`),
+        approveReject: () => api('/companyadmin/compliance/data/record-status')
+    },
    esiSetup: {
     getAll: () => api('companyadmin/esisetup'),
     getById: (id: string) => api(`companyadmin/esisetup/${id}`),
