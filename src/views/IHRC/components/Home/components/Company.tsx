@@ -26,12 +26,14 @@ const Company: React.FC<CompanyProps> = ({ onBranchChange }) => {
   const [selectedCompany, setSelectedCompany] = useState<SelectOption | null>(null);
   const [selectedState, setSelectedState] = useState<SelectOption | null>(null);
   const [selectedDistrict, setSelectedDistrict] = useState<SelectOption | null>(null);
+  const [selectedLocation, setSelectedLocation] = useState<SelectOption | null>(null);
   const [selectedBranch, setSelectedBranch] = useState<BranchOption | null>(null);
   
   const [companyGroups, setCompanyGroups] = useState<SelectOption[]>([]);
   const [companies, setCompanies] = useState<SelectOption[]>([]);
   const [states, setStates] = useState<SelectOption[]>([]);
   const [districts, setDistricts] = useState<SelectOption[]>([]);
+  const [location, setLocation] = useState<SelectOption[]>([]);
   const [branches, setBranches] = useState<BranchOption[]>([]);
   
   const [startDate, setStartDate] = useState<Date | null>(null);
@@ -143,55 +145,80 @@ const Company: React.FC<CompanyProps> = ({ onBranchChange }) => {
     }
   };
 
+  const loadLocation = async (districtId: string) => {
+    setIsLoadingBranches(true);
+
+    try{
+      const response = await httpClient.get(endpoints.common.location(), {
+        params: { district_id: districtId}
+      })
+
+      if (response.data) {
+        const formattedLocation = response.data.map((location: any) => ({
+          label: location.name,
+          value: String(location.id)
+        }));
+        console.log("location data" + response.data);
+        
+        setLocation(formattedLocation);
+      }
+      // console.log(response.data);
+    }
+    catch (error) {
+      console.error('Failed to load location:', error);
+    }
+  }
+
   // Load Branches based on selected District
-  const loadBranches = async (districtId: string, districtName: string)  => {
+  const loadBranches = async (locationId: string, locationName: string)  => {
     setIsLoadingBranches(true);
     try {
      
       const { data } = await httpClient.get(endpoints.branch.getAll());
 
-      console.log('Selected District:', { id: districtId, name: districtName });
+      console.log('Selected location:', { id: locationId, name: locationName });
       console.log('Available Branches:', data.data);
 
 
-       // Filter branches where district_id matches the selected district
+
+      // Filter branches where district_id matches the selected district
       const filteredBranches = data.data.filter((branch: any) => {
-        const branchDistrictId = String(branch.district_id);
-        const branchDistrictName = branch.District?.name?.toLowerCase();
-        const selectedDistrictName = districtName.toLowerCase();
+        const branchLocationId = String(branch.location_id);
+        const branchLocationName = branch.Location?.name?.toLowerCase();
+        const selectedLocationName = locationName.toLowerCase();
         
-        const matchById = branchDistrictId === districtId;
-        const matchByName = branchDistrictName === selectedDistrictName;
+        const matchById = branchLocationId === locationId;
+        const matchByName = branchLocationName === selectedLocationName;
         
         console.log('Branch District:', {
           branchId: branch.id,
           branchName: branch.name,
-          branchDistrictId,
-          branchDistrictName,
-          selectedDistrictId: districtId,
-          selectedDistrictName,
+          branchLocationId,
+          branchLocationName,
+          selectedLocationId: locationId,
+          selectedLocationName,
           matchById,
           matchByName
         });
         
         return matchById || matchByName;
       });
-    console.log('Filtered Branches:', filteredBranches);
-     
-      const formattedBranches = filteredBranches.map((branch: any) => ({
-        label: `${branch.name}`,
-        value: String(branch.id),
-      }));
-      
-      console.log('Formatted Branches:', formattedBranches);
-      setBranches(formattedBranches);
-      
-      if (selectedBranch && !formattedBranches.find(b => b.value === selectedBranch.value)) {
-        setSelectedBranch(null);
-        onBranchChange?.(null);
-      }
-      console.log(data.data);
+    console.log('Filtered Branches:', filteredBranches); 
 
+    const formattedBranches = filteredBranches.map((branch: any) => ({
+      label: `${branch.name}`,
+      value: String(branch.id),
+    }));
+    
+    console.log('Formatted Branches:', formattedBranches);
+    setBranches(formattedBranches);
+    
+    if (selectedBranch && !formattedBranches.find(b => b.value === selectedBranch.value)) {
+      setSelectedBranch(null);
+      onBranchChange?.(null);
+    }
+    console.log(data.data);
+     
     } catch (error) {
       console.error('Failed to load branches:', error);
       showNotification('danger', 'Failed to load branches');
@@ -223,24 +250,39 @@ const Company: React.FC<CompanyProps> = ({ onBranchChange }) => {
   useEffect(() => {
     if (selectedState?.value) {
       setSelectedDistrict(null);
+      setSelectedLocation(null);
       setSelectedBranch(null);
+      setLocation([]);
       setBranches([]);
       loadDistricts(selectedState.value);
     } else {
       setDistricts([]);
+      setLocation([]);
       setBranches([]);
     }
   }, [selectedState]);
 
 
   useEffect(() => {
-    if (selectedDistrict?.value && selectedDistrict?.label) {
+    if (selectedDistrict?.value) {
+      setSelectedLocation(null);
       setSelectedBranch(null);
-      loadBranches(selectedDistrict.value, selectedDistrict.label);
+      setBranches([]);
+      loadLocation(selectedDistrict.value);
     } else {
+      setLocation([]);
       setBranches([]);
     }
   }, [selectedDistrict]);
+
+  useEffect(() => {
+    if (selectedLocation?.value) {
+      setSelectedBranch(null);
+      loadBranches(selectedLocation.value, selectedLocation.label);
+    } else {
+      setBranches([]);
+    }
+  }, [selectedLocation]);
 
   const handleDateRangeApply = (start: Date, end: Date) => {
     setStartDate(start);
@@ -282,6 +324,14 @@ const Company: React.FC<CompanyProps> = ({ onBranchChange }) => {
           options={districts}
           value={selectedDistrict}
           onChange={setSelectedDistrict}
+        />
+      </div>
+      <div className="flex-1 min-w-[140px]">
+        <OutlinedSelect
+          label="Location"
+          options={location}
+          value={selectedLocation}
+          onChange={setSelectedLocation}
         />
       </div>
 
