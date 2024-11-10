@@ -5,6 +5,10 @@ import { endpoints } from '@/api/endpoint';
 import httpClient from "@/api/http-client";
 
 export type AssignCompliances = {
+    group_id: number;
+    company_id: number;
+    state_id: number;
+    location_id: number;
     branch_id: number;
     compliance_id: number[];
 }
@@ -24,8 +28,13 @@ const initialState: ComplianceState = {
 export const assignCompliancesToBranch = createAsyncThunk(
     'compliance/assignCompliancesToBranch',
     async (complianceData: AssignCompliances) => {
-        const { data } = await httpClient.post(endpoints.assign.create(), complianceData);
-        return data;
+        
+        try {
+            const { data } = await httpClient.post(endpoints.assign.create(), complianceData);
+            return data;
+        } catch(error){
+            console.log(error)
+        }
     }
 );
 

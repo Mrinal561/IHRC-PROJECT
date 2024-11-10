@@ -13,6 +13,8 @@ import compliance, {ComplianceState} from './slices/compliance/complianceSlice'
 import assignedCompliance,{ ComplianceAssignmentState } from './slices/AssignedCompliance/assignedComplianceSlice';
 import dueCompliance, { DueComplianceState } from './slices/dueCompliance/dueComplianceSlice'
 import status,{ StatusState } from './slices/dueCompliance/statusUpdateSlice'
+import esisetup, { EsiSetupState } from './slices/esiSetup/esiSetupSlice'
+
 
 
 export type RootState = CombinedState<{
@@ -26,6 +28,7 @@ export type RootState = CombinedState<{
     status:StatusState
     branch: BranchState
     user: UserState
+    esiSetup: EsiSetupState
     locale: LocaleState
     theme: ThemeState
     assigedCompliance: ComplianceAssignmentState
@@ -51,6 +54,7 @@ const staticReducers = {
     assignedCompliance,
     dueCompliance,
     status,
+    esisetup,
     [RtkQueryService.reducerPath]: RtkQueryService.reducer,
 }
 
