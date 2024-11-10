@@ -17,6 +17,13 @@ interface BranchOption {
     value: string;
 }
 
+
+interface SelectOption {
+    label: string;
+    value: string;
+}
+
+
 const RecommendedList = () => {
     const dispatch = useAppDispatch();
     const [isLoading, setIsLoading] = useState(false);
@@ -30,6 +37,33 @@ const RecommendedList = () => {
     const [selectedDistrict, setSelectedDistrict] = useState<SelectOption | null>(null);
     const [selectedLocation, setSelectedLocation] = useState<SelectOption | null>(null);
 
+    // const fetchComplianceData = async (page = 1, pageSize = 10) => {
+    //     setIsLoading(true);
+    //     try {
+    //         const response = await httpClient.get(endpoints.complianceSuperadmin.getAll(), {
+    //             params: {
+    //                 page,
+    //                 pageSize
+    //             }
+    //         });
+
+    //         if (response?.data?.data) {
+    //             setComplianceData(response.data.data);
+    //         } else {
+    //             console.log('No data in API response or unexpected response structure');
+    //         }
+    //     } catch (error) {
+    //         console.error('Error fetching compliance data:', error);
+    //         toast.push(
+    //             <Notification type="danger" title="Error">
+    //                 Failed to fetch compliance data
+    //             </Notification>
+    //         );
+    //     } finally {
+    //         setIsLoading(false);
+    //     }
+    // };
+
     const fetchComplianceData = async (page = 1, pageSize = 10) => {
         setIsLoading(true);
         try {
@@ -41,7 +75,11 @@ const RecommendedList = () => {
             });
 
             if (response?.data?.data) {
-                setComplianceData(response.data.data);
+                // Filter the data to only include items where assign is false
+                const filteredData = response.data.data.filter(
+                    (item: ComplianceData) => item.assign === false
+                );
+                setComplianceData(filteredData);
             } else {
                 console.log('No data in API response or unexpected response structure');
             }
@@ -57,6 +95,10 @@ const RecommendedList = () => {
         }
     };
 
+    interface SelectOption {
+    label: string;
+    value: string;
+}
     useEffect(() => {
         console.log({
             companyGroup: selectedCompanyGroup,

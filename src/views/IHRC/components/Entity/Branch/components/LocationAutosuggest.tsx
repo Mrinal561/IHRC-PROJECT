@@ -75,7 +75,7 @@ const LocationAutosuggest: React.FC<LocationAutosuggestProps> = ({
         name: locationName,
         district_id: districtId
       });
-      
+      console.log(response);
       const newLocation = response.data;
       setLocations(prev => [...prev, newLocation]);
       onChange(locationName);

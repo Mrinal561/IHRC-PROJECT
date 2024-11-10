@@ -22,6 +22,7 @@ export type ComplianceData = {
     statutory_auth: string;
     approval_required: boolean;
     criticality: string;
+    assign:boolean;
 }
 
 export type AssignCompliances = {
