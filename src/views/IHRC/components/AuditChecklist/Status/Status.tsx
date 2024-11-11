@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import StatusTable from './components/StatusTable';
 import StatusCard from './components/StatusCard';
 import Company from '../../Home/components/Company';
+import { endpoints } from '@/api/endpoint';
+import httpClient from '@/api/http-client';
 
 const Status: React.FC = () => {
   const [currentFilter, setCurrentFilter] = useState('Pending');
   const [searchTerm, setSearchTerm] = useState('');
-
   const handleFilterChange = (filter: string) => {
     setCurrentFilter(filter);
   };

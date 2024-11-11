@@ -42,12 +42,17 @@ interface SelectOption {
   label: string;
 }
 
+interface District {
+    id: number;
+    name: string;
+  }
+
 
 
 const AddBranchForm: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const [locationData, setLocationData] = useState([]);
+//   const [locationData, setLocationData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [companyGroups, setCompanyGroups] = useState<SelectOption[]>([]);
@@ -56,7 +61,10 @@ const AddBranchForm: React.FC = () => {
   const [selectedCompany, setSelectedCompany] = useState<SelectOption | null>(null);
 const [states, setStates] = useState<SelectOption[]>([]);
 const [selectedStates, setSelectedStates] = useState<SelectOption | null>(null);
-const [districtsData, setDistrictsData] = useState([]);
+const [selectedDistrict, setSelectedDistrict] = useState('');
+const [districtsData, setDistrictsData] = useState<District[]>([]);
+const [selectedDistrictId, setSelectedDistrictId] = useState<number | undefined>();
+const [selectedLocation, setSelectedLocation] = useState('');
 const [fileBase64, setFileBase64] = useState<string>('');
 
 
@@ -65,8 +73,8 @@ const [fileBase64, setFileBase64] = useState<string>('');
     group_id: 0,
     company_id: selectedCompany?.value ? parseInt(selectedCompany.value) : 0,
     state_id: selectedCompany?.value ? parseInt(selectedCompany.value) : 0,
-    district: '',
-    location: '',
+    district: selectedDistrict,
+    location: selectedLocation,
     name: '',
     opening_date: '',
     head_count: '',
@@ -116,7 +124,6 @@ const [fileBase64, setFileBase64] = useState<string>('');
     try {
       setIsLoading(true);
       const response = await httpClient.get(endpoints.common.state());
-      console.log('API Response:', response); // Debug log
       
       if (response.data) {
         const formattedStates = response.data.map((state: any) => ({
@@ -149,8 +156,8 @@ const [fileBase64, setFileBase64] = useState<string>('');
       setFormData(prev => ({
         ...prev,
         state_id: parseInt(option.value),
-        State: option.label,
-        District: '' // Reset district when state changes
+        // State: option.label,
+        // District: '' // Reset district when state changes
       }));
     }
   };
@@ -238,8 +245,10 @@ const loadCompanies = async (groupId: string[] | number[]) => {
     if (selectedCompanyGroup?.value) {
         setFormData(prev => ({
             ...prev,
-            Company_Group_Name: selectedCompanyGroup.label,
-            Company_Name: '', // Reset company name when group changes
+            // Company_Group_Name: selectedCompanyGroup.label,
+            // Company_Name: '', // Reset company name when group changes
+            group_id: parseInt(selectedCompanyGroup.value),
+            // Company_Group_Name: selectedCompanyGroup.label
           }));
           
           // Reset selected company
@@ -258,31 +267,10 @@ const loadCompanies = async (groupId: string[] | number[]) => {
       setFormData(prev => ({
         ...prev,
         company_id: parseInt(selectedCompany.value),
-        Company_Name: selectedCompany.label
+        // Company_Name: selectedCompany.label
       }));
     }
   }, [selectedCompany]);
-
-
-
-
-
-  useEffect(() => {
-    const loadLocationData = () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        setLocationData(entityDataSet);
-      } catch (err) {
-        console.error('Error loading location data:', err);
-        setError('Failed to load location data. Please try again later.');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadLocationData();
-  }, []);
 
   const openNotification = (type: 'success' | 'info' | 'danger' | 'warning', message: string) => {
     toast.push(
@@ -311,6 +299,22 @@ const loadCompanies = async (groupId: string[] | number[]) => {
     }
   };
 
+
+  useEffect(() => {
+    setFormData(prev => ({
+      ...prev,
+      district: selectedDistrict
+    }));
+  }, [selectedDistrict]);
+
+  // Update formData when location changes
+  useEffect(() => {
+    setFormData(prev => ({
+      ...prev,
+      location: selectedLocation
+    }));
+  }, [selectedLocation]);
+
   const handleAddBranch = async () => {
     console.log(formData);
 
@@ -326,11 +330,28 @@ const loadCompanies = async (groupId: string[] | number[]) => {
 
   if (isLoading) return <div>Loading location data...</div>;
   if (error) return <div className="text-red-500">{error}</div>;
-  if (!locationData || locationData.length === 0) {
-    return <div>No location data available. Please check your data source.</div>;
-  }
+//   if (!locationData || locationData.length === 0) {
+//     return <div>No location data available. Please check your data source.</div>;
+//   }
 
 
+  const handleDistrictChange = (districtName: string) => {
+    setSelectedDistrict(districtName);
+    // Find the district ID from the districtsData
+    const district = districtsData.find(d => d.name === districtName);
+    setSelectedDistrictId(district?.id);
+    setSelectedLocation(''); // Reset location when district changes
+  };
+
+//   useEffect(() => {
+//     setFormData(prev => ({
+//       ...prev,
+//       district: selectedDistrict,
+//       location: selectedLocation
+//     }));
+//   }, [selectedDistrict, selectedLocation]);
+  
+  
   return (
       <div className="p-2 bg-white rounded-lg">
           <div className="flex gap-2 items-center mb-3">
@@ -376,26 +397,31 @@ const loadCompanies = async (groupId: string[] | number[]) => {
                           options={states}
                           value={selectedStates}
                           onChange={handleStateChange}
+                          
                       />
                   </div>
                   <div>
                      
                       <DistrictAutosuggest 
-                      value={formData.district} 
-                      onChange={(value) => {
-                        setFormData((prev) => ({ ...prev, district: value }))
-                    }} suggestions={[]}                      />
+                      value={selectedDistrict}
+                      onChange={setSelectedDistrict}
+                      stateId={selectedStates?.value ? parseInt(selectedStates.value) : undefined}       
+                      onDistrictSelect={setSelectedDistrictId}
+
+                      />
                   </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                  <LocationAutosuggest
-                      value={formData.location}
-                      onChange={(value) => {
-                          setFormData((prev) => ({ ...prev, location: value }))
-                      }}
-                      suggestions={locationData.map(item => item.location).filter((location): location is string => location !== undefined)}
-                  />
+              <LocationAutosuggest
+                value={selectedLocation}
+                // onChange={setSelectedLocation} 
+                onChange={(value: string) => {
+                    setSelectedLocation(value);
+                  }}
+                districtId={selectedDistrictId}
+                // districtId={selectedDistrict ? parseInt(selectedDistrict) : undefined}
+                />
                   <div>
                       <p className="mb-2">Branch Name</p>
                       <OutlinedInput

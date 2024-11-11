@@ -46,9 +46,11 @@ const initialState: BranchState = {
 
 export const fetchBranches = createAsyncThunk(
     'branch/fetchBranches',
-    async () => {
+    async (param: any) => {
 
-        const { data } = await httpClient.get(endpoints.branch.getAll());
+        const { data } = await httpClient.get(endpoints.branch.getAll(), {
+          params: param,
+        });
         return data;
       }
   );

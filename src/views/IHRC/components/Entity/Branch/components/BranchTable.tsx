@@ -35,6 +35,8 @@ const BranchTable: React.FC = () => {
     const [stateOptions, setStateOptions] = useState<SelectOption[]>([]);
     const [districtOptions, setDistrictOptions] = useState<SelectOption[]>([]);
     const [locationOptions, setLocationOptions] = useState<SelectOption[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
+
 
 
     const [branchTableData, setBranchTableData] = useState([]);
@@ -61,7 +63,7 @@ const BranchTable: React.FC = () => {
             },
             {
                 header: 'Company',
-                accessorKey: 'CompanyName.name',
+                accessorKey: 'Company.name',
                 cell: (props) => (
                     <div className="w-52 truncate">{props.getValue() as string}</div>
                 ),
@@ -75,14 +77,14 @@ const BranchTable: React.FC = () => {
             },
             {
                 header: 'District',
-                accessorKey: 'district',
+                accessorKey: 'District.name',
                 cell: (props) => (
                     <div className="w-52 truncate">{props.getValue() as string}</div>
                 ),
             },
             {
                 header: 'Location',
-                accessorKey: 'location',
+                accessorKey: 'Location.name',
                 cell: (props) => (
                     <div className="w-40 truncate">{props.getValue() as string}</div>
                 ),
@@ -273,11 +275,10 @@ const BranchTable: React.FC = () => {
     //     updateLocationOptions(option?.value);
     // };
 
-    useEffect(() => {
-        fetchBranchData(1, 10)
-    }, [])
-
+ 
     const fetchBranchData = async (page: number, size: number) => {
+        setIsLoading(true);
+        try{
         const { payload: data } = await dispatch(fetchBranches({page: page, page_size: size}))
         setBranchTableData(data?.data);
         setTableData((prev) => ({
@@ -286,6 +287,22 @@ const BranchTable: React.FC = () => {
             pageIndex: data?.paginate_data.page,
         }))
     }
+    catch(error) {
+        console.error('Failed to fetch branch:', error);
+        toast.push(
+          <Notification title="Error" type="danger">
+            Failed to fetch Branch
+          </Notification>
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    useEffect(() => {
+        fetchBranchData(1, 10)
+    }, [])
+
 
     const [tableData, setTableData] = useState({
         total: 0,
@@ -319,9 +336,9 @@ const BranchTable: React.FC = () => {
                     data={branchTableData}
                     skeletonAvatarColumns={[0]}
                     skeletonAvatarProps={{ className: 'rounded-md' }}
-                    loading={false}
+                    loading={isLoading}
                     pagingData={{
-                        total: data.length,
+                        total: tableData.total,
                         pageIndex: tableData.pageIndex,
                         pageSize: tableData.pageSize,
                     }}

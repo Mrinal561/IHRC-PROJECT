@@ -17,7 +17,7 @@ export const endpoints = {
         delete: (id: string) => api(`companyadmin/company-group/${id}`),
     },
     company: {
-        getAll: () => api('companyadmin/company'),
+        getAll: (actualCompanyName: any) => api('companyadmin/company'),
         getById: (id: string) => api(`companyadmin/company/${id}`),
         create: () => api('companyadmin/company'),
         update: (id: string) => api(`companyadmin/company/${id}`),
@@ -28,6 +28,7 @@ export const endpoints = {
             state: ()=> api('/states'),
             district: ()=> api('/district'),
             location: ()=> api('/location'),
+            
     },
     user: {
         getAll: () => api('companyadmin/user'),
@@ -36,15 +37,37 @@ export const endpoints = {
         update: (id: string) => api(`companyadmin/user/${id}`),
         delete: (id: string) => api(`companyadmin/user/${id}`),
     },
+    complianceSuperadmin: {
+        getAll: ()=> api('/companyadmin/compliance/recommend'),
+    },
+    assign: {
+        create:()=> api('companyadmin/compliance'),
+        getAll:()=> api('companyadmin/compliance'),
+        update: () => api(`companyadmin/compliance/assign-user`),
+    },
+    due: {
+        getAll:()=> api('companyadmin/compliance/data'),
+        updateStatus:(id:string)=> api(`/companyadmin/compliance/data/update/${id}`)
+    },
     branch: {
         getAll: () => api('companyadmin/branch'),
         getById: (id: string) => api(`companyadmin/branch/${id}`),
         create: () => api('companyadmin/branch'),
         update: (id: string) =>  api(`companyadmin/branch/${id}`),
         delete: (id: string) => api(`companyadmin/branch/${id}`),
-    }
-   
-
-    
-
+    },
+    role: {
+        getAll: () => api('companyadmin/role'),
+    },
+    compliance: {
+        getAll: () => api(`/companyadmin/compliance/data?data_status[]=${status}`),
+        approveReject: () => api('/companyadmin/compliance/data/record-status'),
+        export: ()=> api('companyadmin/compliance/data/export'),
+        upload:()=> api('/companyadmin/compliance/data/bulk-update')
+    },
+   esiSetup: {
+    getAll: () => api('companyadmin/esisetup'),
+    getById: (id: string) => api(`companyadmin/esisetup/${id}`),
+    create: () => api('companyadmin/esisetup'),
+   }
 }
