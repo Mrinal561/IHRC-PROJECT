@@ -86,14 +86,14 @@ const ViewDetailsButton = ({
     };
 
     const handleAssignCompliance = async () => {
-        if (!companyGroupValue || !companyValue || !stateValue || !districtValue || !locationValue || !branchValue) {
-            toast.push(
-                <Notification title="Missing Information" type="danger">
-                    Please select all required fields (Company Group, Company, State, District, and Branch)
-                </Notification>
-            );
-            return;
-        }
+        // if (!companyGroupValue || !companyValue || !stateValue || !districtValue || !locationValue || !branchValue) {
+        //     toast.push(
+        //         <Notification title="Missing Information" type="danger">
+        //             Please select all required fields (Company Group, Company, State, District, and Branch)
+        //         </Notification>
+        //     );
+        //     return;
+        // }
 
         const assignData = {
             group_id: parseInt(companyGroupValue),
@@ -135,12 +135,12 @@ const ViewDetailsButton = ({
                     onClick={handleViewDetails}
                 />
             </Tooltip>
-            <Tooltip title={isAssignDisabled ? "Complete all selections to assign" : "Assign Compliance"}>
+            <Tooltip title= "Assign Compliance">
                 <Button
                     size="sm"
                     onClick={handleAssignCompliance}
                     icon={<RiCheckLine />}
-                    disabled={isAssignDisabled}
+                    // disabled={isAssignDisabled}
                 />
             </Tooltip>
         </div>
