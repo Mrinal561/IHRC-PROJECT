@@ -10,15 +10,7 @@ import companyGroup, {
     CompanyGroupState,
 } from './slices/companyGroup/companyGroupSlice'
 import user, { UserState } from './slices/userEntity/UserEntitySlice'
-import compliance, {
-    ComplianceState,
-} from './slices/compliance/complianceSlice'
-import assignedCompliance, {
-    ComplianceAssignmentState,
-} from './slices/AssignedCompliance/assignedComplianceSlice'
-import dueCompliance, {
-    DueComplianceState,
-} from './slices/dueCompliance/dueComplianceSlice'
+
 import branch, { BranchState } from './slices/branch/branchSlice'
 import compliance, {ComplianceState} from './slices/compliance/complianceSlice'
 import assignedCompliance,{ ComplianceAssignmentState } from './slices/AssignedCompliance/assignedComplianceSlice';

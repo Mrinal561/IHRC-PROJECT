@@ -58,13 +58,4 @@ export const endpoints = {
     compliance: {
         getAll: () => api('superadmin/compliance'),
     },
-    assign: {
-        create: () => api('companyadmin/compliance'),
-        getAll: () => api('companyadmin/compliance'),
-        update: (id: string) =>
-            api(`companyadmin/compliance/assign-user/${id}`),
-    },
-    due: {
-        getAll: () => api('companyadmin/compliance/data'),
-    },
 }
