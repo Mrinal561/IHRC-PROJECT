@@ -257,7 +257,7 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
         accessorFn: (row) => `${row.UploadBy?.first_name || ''} ${row.UploadBy?.last_name || ''}`.trim(),
         cell: (props) => (
           <div className="w-32">
-            {props.getValue() || 'Not Uploaded'}
+            {props.getValue() || '--'}
           </div>
           
         ),
@@ -266,7 +266,7 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
       {
         header: 'Approved By',
         accessorFn: (row) => row.ApprovedBy?.name,
-        cell: (props) => <div className="w-32">{props.getValue() || 'Not Approved'}</div>,
+        cell: (props) => <div className="w-32">{props.getValue() || '--'}</div>,
       },
       {
         header: 'Actions',

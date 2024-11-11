@@ -307,11 +307,11 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({ data, loadi
           </div>
         ),
       },
-      {
-        header: 'Instance ID',
-        accessorKey: 'id',
-        cell: (props) => <div className="w-24 text-start">{props.getValue()}</div>,
-      },
+      // {
+      //   header: 'Instance ID',
+      //   accessorKey: 'id',
+      //   cell: (props) => <div className="w-24 text-start">{props.getValue()}</div>,
+      // },
       {
         header: 'Compliance ID',
         accessorKey: 'MasterCompliance.record_id',
@@ -372,12 +372,12 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({ data, loadi
       {
         header: "Owner",
         accessorFn: (row) => row.Owner ? `${row.Owner.first_name} ${row.Owner.last_name}` : null,
-        cell: ({ getValue }) => <div className="w-32">{getValue() || 'Not Assigned'}</div>,
+        cell: ({ getValue }) => <div className="w-32">{getValue() || '--'}</div>,
       },
       {
         header: "Approver",
         accessorFn: (row) => row.Approver ? `${row.Approver.first_name} ${row.Approver.last_name}` : null,
-        cell: ({ getValue }) => <div className="w-36">{getValue<string>() || 'Not Assigned'}</div>,
+        cell: ({ getValue }) => <div className="w-36">{getValue<string>() || '--'}</div>,
       },
       {
         header: 'Actions',
@@ -451,8 +451,7 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({ data, loadi
         className="max-w-md p-4"
       >
         <h5 className="mb-2 text-lg font-semibold">
-          Compliance Instance ID:{' '}
-          <span className="text-indigo-600">{editData.id}</span>
+         Set Owner & Approver
         </h5>
         <div className="space-y-6">
           <div>
