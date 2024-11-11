@@ -9,6 +9,7 @@ import { fetchBranches } from '@/store/slices/branch/branchSlice';
 import { useAppDispatch } from '@/store';
 import { BranchData } from '@/@types/branch';
 import { toast, Notification } from '@/components/ui';
+import Company from '../../Home/components/Company';
 
 
 const Branch = () => {
@@ -21,6 +22,7 @@ const Branch = () => {
               </div>
               <div>
               <BranchTool />
+              {/* <Company></Company> */}
               </div>
             </div>
             <BranchTable 

@@ -307,11 +307,11 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({ data, loadi
           </div>
         ),
       },
-      {
-        header: 'Instance ID',
-        accessorKey: 'id',
-        cell: (props) => <div className="w-24 text-start">{props.getValue()}</div>,
-      },
+      // {
+      //   header: 'Instance ID',
+      //   accessorKey: 'id',
+      //   cell: (props) => <div className="w-24 text-start">{props.getValue()}</div>,
+      // },
       {
         header: 'Compliance ID',
         accessorKey: 'MasterCompliance.record_id',

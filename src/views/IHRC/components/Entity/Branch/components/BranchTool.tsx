@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { APP_PREFIX_PATH } from '@/constants/route.constant';
 import Bu from './Bu';
 import Filter from './Filter';
+import Company from '../../../Home/components/Company';
 
 const BranchTool: React.FC = () => {
   const navigate = useNavigate();
@@ -15,13 +16,12 @@ const BranchTool: React.FC = () => {
   };
 
   return (
-    <div className='flex gap-3 items-center w-full'>
-      
+    <div className='flex gap-2 items-center w-full'>
       <div>
-      <Filter />
+      <Company></Company>
       </div>
       <div>
-      <Bu/>
+      {/* <Bu/> */}
       </div>
       <div>
       <Button variant="solid" onClick={handleAddBranch} icon={<HiPlusCircle />} size="sm">
