@@ -23,11 +23,12 @@ export const endpoints = {
         update: (id: string) => api(`companyadmin/company/${id}`),
         delete: (id: string) => api(`companyadmin/company/${id}`),
     },
-    common: {
-        getAll: () => api('/company-group'),
-        state: () => api('/states'),
-        district: () => api('/district'),
-        location: () => api('/location'),
+    common:{
+            getAll: ()=> api('/company-group'),
+            state: ()=> api('/states'),
+            district: ()=> api('/district'),
+            location: ()=> api('/location'),
+            
     },
     user: {
         getAll: () => api('companyadmin/user'),
@@ -52,10 +53,21 @@ export const endpoints = {
         getAll: () => api('companyadmin/branch'),
         getById: (id: string) => api(`companyadmin/branch/${id}`),
         create: () => api('companyadmin/branch'),
-        update: (id: string) => api(`companyadmin/branch/${id}`),
+        update: (id: string) =>  api(`companyadmin/branch/${id}`),
         delete: (id: string) => api(`companyadmin/branch/${id}`),
     },
-    compliance: {
-        getAll: () => api('superadmin/compliance'),
+    role: {
+        getAll: () => api('companyadmin/role'),
     },
+    compliance: {
+        getAll: () => api(`/companyadmin/compliance/data?data_status[]=${status}`),
+        approveReject: () => api('/companyadmin/compliance/data/record-status'),
+        export: ()=> api('companyadmin/compliance/data/export'),
+        upload:()=> api('/companyadmin/compliance/data/bulk-update')
+    },
+   esiSetup: {
+    getAll: () => api('companyadmin/esisetup'),
+    getById: (id: string) => api(`companyadmin/esisetup/${id}`),
+    create: () => api('companyadmin/esisetup'),
+   }
 }
