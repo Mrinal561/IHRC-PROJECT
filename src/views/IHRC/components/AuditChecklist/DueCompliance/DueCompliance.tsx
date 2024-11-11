@@ -85,6 +85,7 @@ const DueCompliance = () => {
                 loading={isLoading}
                 onUploadSingle={handleUploadSingle} 
                 onUpdateStatus={handleUpdateStatus} 
+                onDataUpdate={fetchDueComplianceData}
             />
         </AdaptableCard>
     );

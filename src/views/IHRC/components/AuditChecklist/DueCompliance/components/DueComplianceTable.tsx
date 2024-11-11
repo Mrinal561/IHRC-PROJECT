@@ -85,6 +85,7 @@ interface ComplianceDetailTableProps {
   onViewDetail?: (compliance: DueComplianceDetailData) => void;
   onUpdateStatus?: (id: number, status: DueComplianceDetailData['status']) => void;
   onDownloadProof?: (documentUrl: string) => void;
+  onDataUpdate?: () => void;
 }
 
 const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
@@ -92,7 +93,8 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
   loading = false,
   onViewDetail,
   onUpdateStatus,
-  onDownloadProof
+  onDownloadProof,
+  onDataUpdate
 }) => {
   const [tableData, setTableData] = useState({
     total: data.length,
@@ -131,27 +133,6 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
     setSelectedStatus(value);
   }, []);
 
-  // const handleUpdateStatus = async () => {
-  //   if (!selectedCompliance || !selectedStatus) return;
-
-  //   const formData = new FormData();
-  //   formData.append('status', selectedStatus.value);
-  //   formData.append('remark', remark);
-  //   if (selectedFile) {
-  //     formData.append('document', selectedFile);
-  //   }
-
-  //   try {
-  //     console.log("comp",selectedCompliance)
-  //     await dispatch(updateStatus({ id: selectedCompliance.id.toString(), data: formData }));
-  //     // toast.success('Status updated successfully');
-  //     onDialogClose();
-  //   } catch (error) {
-  //     console.error('Error updating status:', error);
-  //     // toast.error('Failed to update status');
-  //   }
-  // };
-
   const handleUpdateStatus = async () => {
     if (!selectedCompliance || !selectedStatus) return;
 
@@ -174,6 +155,13 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
                 );
       setIsStatusDialogOpen(false)
       onDialogClose();
+
+      if (onDataUpdate) {
+        onDataUpdate();
+      }
+
+
+
     } catch (error) {
       console.error('Error updating status:', error);
       setIsStatusDialogOpen(false)
