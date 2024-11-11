@@ -43,7 +43,7 @@ export const endpoints = {
     assign: {
         create:()=> api('companyadmin/compliance'),
         getAll:()=> api('companyadmin/compliance'),
-        update: (id: string) => api(`companyadmin/compliance/assign-user/${id}`),
+        update: () => api(`companyadmin/compliance/assign-user`),
     },
     due: {
         getAll:()=> api('companyadmin/compliance/data'),

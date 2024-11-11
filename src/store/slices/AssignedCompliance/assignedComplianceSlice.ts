@@ -57,6 +57,7 @@ import { ComplianceAssignmentData } from '@/@types/assignedCompliance';
 export type ApproverOwnerAssignedCompliances = {
     owner_id: number;
     approver_id: number;
+    assigned_compliance_id: number[]; 
 }
 
 export interface ComplianceAssignmentState {
@@ -86,7 +87,7 @@ export const fetchAllComplianceAssignments = createAsyncThunk(
 export const updateApproverOwner = createAsyncThunk(
     'complianceAssignment/updateApproverOwner',
     async ({ id, data }: { id: string; data: ApproverOwnerAssignedCompliances }) => {
-        const response = await httpClient.put(endpoints.assign.update(id), data);
+        const response = await httpClient.put(endpoints.assign.update(), data);
         return response.data;
     }
 );

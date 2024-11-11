@@ -76,16 +76,17 @@ interface AssignChecklistTableProps {
   loading: boolean;
   tableKey?: number;
   refreshTable: () => void;
+  onSelectedIdsChange: (selectedIds: number[]) => void;
 }
 
-const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({ data, loading, tableKey, refreshTable }) => {
+const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({ data, loading, tableKey, refreshTable, onSelectedIdsChange }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const [activeRowId, setActiveRowId] = useState<number | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isReminderDialogOpen, setIsReminderDialogOpen] = useState(false);
   const [editData, setEditData] = useState<Partial<ComplianceData>>({});
-  const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
+  // const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
   const [reminderDate, setReminderDate] = useState<Date | null>(null);
   const [reminderEmail, setReminderEmail] = useState('');
   const [tempDueDate, setTempDueDate] = useState<Date | string | null>(null);
@@ -93,14 +94,61 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({ data, loadi
   const [isUpdating, setIsUpdating] = useState(false);
   const [selectedOwnerOption, setSelectedOwnerOption] = useState<any>(null);
   const [selectedApproverOption, setSelectedApproverOption] = useState<any>(null);
+  const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
 
+  // const handleEditSave = async () => {
+  //   if (activeRowId && (selectedOwnerOption !== null || selectedApproverOption !== null)) {
+  //     const updateData = {
+  //       owner_id: selectedOwnerOption?.value || 0,
+  //       approver_id: selectedApproverOption?.value || 0
+  //     };
+
+  //     setIsUpdating(true);
+  //     try {
+  //       await dispatch(updateApproverOwner({
+  //         id: activeRowId.toString(),
+  //         data: updateData
+  //       })).unwrap();
+        
+  //       toast.push(
+  //         <Notification title="Success" type="success">
+  //           Owner and Approver updated successfully
+  //         </Notification>
+  //       );
+  //       setIsEditDialogOpen(false);
+  //       setSelectedOwnerOption(null);
+  //       setSelectedApproverOption(null);
+  //       refreshTable();
+  //     } catch (error) {
+  //       console.log(error)
+  //       toast.push(
+  //         <Notification title="Error" type="danger">
+  //           Failed to update owner and approver
+  //         </Notification>
+  //       );
+  //       console.error('Error updating owner/approver:', error);
+  //     } finally {
+  //       setIsUpdating(false);
+  //     }
+  //   } else {
+  //     toast.push(
+  //       <Notification title="Warning" type="warning">
+  //         Please select an owner or approver
+  //       </Notification>
+  //     );
+  //   }
+  // };
+ 
+ 
   const handleEditSave = async () => {
     if (activeRowId && (selectedOwnerOption !== null || selectedApproverOption !== null)) {
-      const updateData = {
+      const updateData: ApproverOwnerAssignedCompliances = {
         owner_id: selectedOwnerOption?.value || 0,
-        approver_id: selectedApproverOption?.value || 0
+        approver_id: selectedApproverOption?.value || 0,
+        assigned_compliance_id: [activeRowId] // Pass the active row ID in an array as expected by the type
       };
-
+      console.log('INSIDE TABLE', updateData)
+  
       setIsUpdating(true);
       try {
         await dispatch(updateApproverOwner({
@@ -195,6 +243,8 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({ data, loadi
       } else {
         newSet.add(id);
       }
+      // Convert Set to Array and notify parent
+      onSelectedIdsChange(Array.from(newSet));
       return newSet;
     });
   };
@@ -202,8 +252,11 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({ data, loadi
   const handleSelectAllChange = () => {
     if (isAllSelected) {
       setSelectedItems(new Set());
+      onSelectedIdsChange([]);
     } else {
-      setSelectedItems(new Set(data.map((item) => item.id)));
+      const allIds = data.map((item) => item.id);
+      setSelectedItems(new Set(allIds));
+      onSelectedIdsChange(allIds);
     }
   };
 
