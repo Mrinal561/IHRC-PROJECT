@@ -201,7 +201,7 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
     () => [
       {
         header: 'Compliance ID',
-        accessorKey: 'ac_compliance_id',
+        accessorKey: 'compliance_detail.record_id',
         cell: (props) => <div className="w-24 text-start">{props.getValue()}</div>,
       },
       {

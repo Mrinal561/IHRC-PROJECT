@@ -61,7 +61,9 @@ export const endpoints = {
     },
     compliance: {
         getAll: () => api(`/companyadmin/compliance/data?data_status[]=${status}`),
-        approveReject: () => api('/companyadmin/compliance/data/record-status')
+        approveReject: () => api('/companyadmin/compliance/data/record-status'),
+        export: ()=> api('companyadmin/compliance/data/export'),
+        upload:()=> api('/companyadmin/compliance/data/bulk-update')
     },
    esiSetup: {
     getAll: () => api('companyadmin/esisetup'),
