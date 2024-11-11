@@ -1,7 +1,7 @@
 export type EsiSetupData = {
     group_id: number;
     company_id: number;
-    code_type: string;
+    code_Type: string;
     code: string;
     district: number;
     location: string;

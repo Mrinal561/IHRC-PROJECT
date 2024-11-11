@@ -320,7 +320,7 @@ const loadCompanies = async (groupId: string[] | number[]) => {
 
     try{
         await dispatch(createBranch(formData));
-        // navigate('/branch');
+        navigate('/branch');
         openNotification('success', 'Branch added successfully');
     }
     catch (error: any) {

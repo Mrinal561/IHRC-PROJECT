@@ -147,13 +147,8 @@ const RecommendedList = () => {
                     <h3 className="text-2xl font-bold">Recommended Checklist</h3>
                     <p className="text-gray-600">View your company's recommended compliance</p>
                 </div>
-                <RecommendedTableTool
-                    selectedComplianceIds={selectedComplianceIds} 
-                    branchValue={selectedBranch?.value || ''}
-                    onAssignSuccess={handleAssignSuccess}
-                />
             </div>
-            <div className='mb-8'>
+            <div className='mb-8 flex gap-4'>
                 <Company 
                     onBranchChange={(branch) => handleBranchChange(branch)}
                     onCompanyGroupChange={setSelectedCompanyGroup}
@@ -161,6 +156,16 @@ const RecommendedList = () => {
                     onStateChange={setSelectedState}
                     onDistrictChange={setSelectedDistrict}
                     onLocationChange={setSelectedLocation}
+                />
+                <RecommendedTableTool
+                    selectedComplianceIds={selectedComplianceIds} 
+                    branchValue={selectedBranch?.value || ''}
+                    companyGroupValue={selectedCompanyGroup?.value || ''}
+                    companyValue={selectedCompany?.value || ''}
+                    stateValue={selectedState?.value || ''}
+                    districtValue={selectedDistrict?.value || ''} 
+                    locationValue={selectedLocation?.value || ''} 
+                    onAssignSuccess={handleAssignSuccess}
                 />
             </div>
             <RecommendedTable
