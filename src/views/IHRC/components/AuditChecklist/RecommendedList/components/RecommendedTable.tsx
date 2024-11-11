@@ -300,7 +300,7 @@ const RecommendedTable = ({
             },
             {
                 header: 'ID',
-                accessorKey: 'uuid',
+                accessorKey: 'record_id',
                 cell: (props) => (
                     <Tooltip title={`ID: ${props.getValue()}`} placement="top">
                         <div className="w-16 truncate">{props.getValue()}</div>
