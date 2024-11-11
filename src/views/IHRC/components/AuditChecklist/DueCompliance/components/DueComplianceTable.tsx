@@ -109,6 +109,8 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
   const [remark, setRemark] = useState('');
     const [dialogIsOpen, setDialogIsOpen] = useState(false);
     const dispatch = useDispatch();
+    const [isLoading, setIsLoading] = useState(false);
+
 
 
 
@@ -331,7 +333,7 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
         data={data}
         skeletonAvatarColumns={[0]}
         skeletonAvatarProps={{ className: 'rounded-md' }}
-        loading={loading}
+        loading={isLoading}
         pagingData={{
           total: tableData.total,
           pageIndex: tableData.pageIndex,

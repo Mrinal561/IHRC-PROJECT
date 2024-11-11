@@ -103,12 +103,12 @@ const ViewDetailsButton = ({
 
         try {
             await dispatch(assignCompliancesToBranch(assignData));
+            onAssignSuccess(compliance.id);
             toast.push(
                 <Notification title="Success" type="success">
                     Assigned Successfully
                 </Notification>
             );
-            onAssignSuccess(compliance.id);
         } catch (error) {
             console.error('Failed to assign compliance:', error);
             toast.push( 

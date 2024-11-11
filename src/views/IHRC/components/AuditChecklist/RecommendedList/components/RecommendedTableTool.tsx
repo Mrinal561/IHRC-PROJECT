@@ -12,13 +12,23 @@ import {
 
 interface AssignChecklistButtonProps {
     selectedComplianceIds: number[];
-    branchValue?: string;
+    branchValue?: string 
+    companyGroupValue?: string;
+    companyValue?: string;
+    stateValue?: string;
+    districtValue?: string;
+    locationValue?: string 
     onAssignSuccess?: () => void;
 }
 
 const AssignChecklistButton = ({ 
     selectedComplianceIds, 
     branchValue,
+    companyGroupValue,
+    companyValue,
+    stateValue,
+    locationValue,
+    districtValue,
     onAssignSuccess 
 }: AssignChecklistButtonProps) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -26,10 +36,18 @@ const AssignChecklistButton = ({
     const dispatch = useDispatch();
     
     const handleAssignClick = () => {
-        if (!branchValue) {
+        // if (!branchValue) {
+        //     toast.push(
+        //         <Notification title="Empty" type="danger">
+        //             Please select a branch first
+        //         </Notification>
+        //     );
+        //     return;
+        // }
+        if (!companyGroupValue || !companyValue || !stateValue || !districtValue || !locationValue || !branchValue) {
             toast.push(
-                <Notification title="Empty" type="danger">
-                    Please select a branch first
+                <Notification title="Missing Information" type="danger">
+                    Please select all required fields (Company Group, Company, State, District, and Branch)
                 </Notification>
             );
             return;
@@ -48,11 +66,21 @@ const AssignChecklistButton = ({
     };
 
     const handleConfirm = async () => {
-        if (!branchValue || selectedComplianceIds.length === 0) return;
-
+        if (!companyGroupValue || !companyValue || !stateValue || !districtValue || !locationValue || !branchValue) {
+            toast.push(
+                <Notification title="Missing Information" type="danger">
+                    Please select all required fields (Company Group, Company, State, District, and Branch)
+                </Notification>
+            );
+            return;
+        }
         setIsAssigning(true);
         
         const assignData = {
+            group_id: parseInt(companyGroupValue),
+            company_id: parseInt(companyValue),
+            state_id: parseInt(stateValue),
+            location_id: parseInt(locationValue),
             branch_id: parseInt(branchValue),
             compliance_id: selectedComplianceIds // Using the array of selected IDs
         };
@@ -81,6 +109,8 @@ const AssignChecklistButton = ({
     const handleCancel = () => {
         setIsDialogOpen(false);
     };
+
+    const isAssignDisabled = !companyGroupValue || !companyValue || !stateValue || !districtValue || !locationValue || !branchValue;
 
     return (
         <>
@@ -128,23 +158,37 @@ const AssignChecklistButton = ({
 
 interface RecommendedTableToolProps {
     selectedComplianceIds: number[];
-    branchValue?: string;
+    branchValue?: string 
+    companyGroupValue?: string;
+    companyValue?: string;
+    stateValue?: string;
+    districtValue?: string;
+    locationValue?: string 
     onAssignSuccess?: () => void;
 }
 
 const RecommendedTableTool = ({ 
     selectedComplianceIds, 
     branchValue,
+    companyGroupValue,
+    companyValue,
+    stateValue,
+    locationValue, 
+    districtValue,
     onAssignSuccess 
 }: RecommendedTableToolProps) => {
     return (
         <>
             <div className="flex flex-col lg:flex-row lg:items-center gap-3">
-                <RecommendedTableSearch />
                 <div className="block lg:inline-block md:mb-0 mb-4">
                     <AssignChecklistButton 
                         selectedComplianceIds={selectedComplianceIds} 
                         branchValue={branchValue}
+                            companyGroupValue={companyGroupValue}
+                            companyValue={companyValue}
+                            stateValue={stateValue}
+                            districtValue={districtValue}
+                            locationValue={locationValue}
                         onAssignSuccess={onAssignSuccess}
                     />
                 </div>

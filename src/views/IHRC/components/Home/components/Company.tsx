@@ -428,13 +428,13 @@ const Company: React.FC<CompanyProps> = ({
         />
       </div>
 
-      <div className="flex-none">
+      {/* <div className="flex-none">
         <CustomDateRangePicker onApply={handleDateRangeApply} />
       </div>
 
       <div className="flex-none">
         <DashboardFilter />
-      </div>
+      </div> */}
     </div>
   );
 };
