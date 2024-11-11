@@ -1,151 +1,191 @@
-import React, { useCallback, useMemo, useState } from 'react'
-import { ColumnDef } from '@/components/shared/DataTable'
-import DataTable from '@/components/shared/DataTable'
-import {
-    Button,
-    Tooltip,
-    Dialog,
-    Input,
-    toast,
-    Notification,
-} from '@/components/ui'
-import { RiEyeLine } from 'react-icons/ri'
-import { MdEdit } from 'react-icons/md'
-import { HiDocumentDownload } from 'react-icons/hi'
-import OutlinedSelect from '@/components/ui/Outlined'
 
+import React, { useCallback, useMemo, useState } from 'react';
+import { ColumnDef } from '@/components/shared/DataTable';
+import DataTable from '@/components/shared/DataTable';
+import { Button, Tooltip, Dialog, Input, toast, Notification } from '@/components/ui';
+import { RiEyeLine } from 'react-icons/ri';
+import { MdEdit } from 'react-icons/md';
+import { HiDocumentDownload } from 'react-icons/hi';
+import OutlinedSelect from '@/components/ui/Outlined';
+import { updateStatus } from '@/store/slices/dueCompliance/statusUpdateSlice';
+import { useDispatch } from 'react-redux';
+import { StatusRequest } from '@/@types/status';
 export type DueComplianceDetailData = {
-    id: number
-    uuid: string
-    ac_compliance_id: number
-    proof_document: string | null
-    status: 'pending' | 'completed' | 'due' | 'overdue'
-    compliance_detail: {
-        id: number
-        uuid: string
-        legislation: string
-        category: string
-        penalty_type: string
-        default_due_date: {
-            first_date: string
-            last_date: string
-        }
-        scheduled_frequency: string
-        proof_mandatory: boolean
-        header: string
-        description: string
-        penalty_description: string
-        applicability: string
-        bare_act_text: string
-        type: string
-        clause: string
-        frequency: string
-        statutory_auth: string
-        approval_required: boolean
-        criticality: string
-        created_type: string
-        created_at: string
-        updated_at: string
-    }
-    upload_date: string | null
-    first_due_date: string | null
-    due_date: string
-    data_status: string
-    uploaded_by: number | null
-    approved_by: number | null
-    created_by: number
-    created_at: string
-    updated_at: string
-    UploadBy: {
-        id: number
-        name: string
-    } | null
-    ApprovedBy: {
-        id: number
-        name: string
-    } | null
-    AssignedComplianceRemark: Array<{
-        id: number
-        remark: string
-        created_by: number
-        created_at: string
-        updated_at: string
-    }>
-}
+  id: number;
+  uuid: string;
+  ac_compliance_id: number;
+  proof_document: string | null;
+  status: "pending" | "completed" | "due" | "overdue";
+  compliance_detail: {
+    id: number;
+    uuid: string;
+    legislation: string;
+    category: string;
+    penalty_type: string;
+    default_due_date: {
+      first_date: string;
+      last_date: string;
+    };
+    scheduled_frequency: string;
+    proof_mandatory: boolean;
+    header: string;
+    description: string;
+    penalty_description: string;
+    applicability: string;
+    bare_act_text: string;
+    type: string;
+    clause: string;
+    frequency: string;
+    statutory_auth: string;
+    approval_required: boolean;
+    criticality: string;
+    created_type: string;
+    created_at: string;
+    updated_at: string;
+  };
+  upload_date: string | null;
+  first_due_date: string | null;
+  due_date: string;
+  data_status: string;
+  uploaded_by: number | null;
+  approved_by: number | null;
+  created_by: number;
+  created_at: string;
+  updated_at: string;
+  UploadBy: {
+    id: number;
+   first_name: string,
+  last_name: string,
+  email: string,
+  mobile: number,
+  } | null;
+  ApprovedBy: {
+    id: number;
+    name: string;
+  } | null;
+  AssignedComplianceRemark: Array<{
+    id: number;
+    remark: string;
+    created_by: number;
+    created_at: string;
+    updated_at: string;
+  }>;
+};
 const StatusOption = {
-    statusOption: [
-        { key: 'Complied', name: 'Complied' },
-        { key: 'Not Complied', name: 'Not Complied' },
-        { key: 'Not Applicable', name: 'Not Applicable' },
-    ],
+  statusOption: [
+    { value: 'complied', label: 'Complied' },
+    { value: 'not_complied', label: 'Not Complied' },
+    { value: 'not_applicable', label: 'Not Applicable' },
+],
 }
 
 interface ComplianceDetailTableProps {
-    data: DueComplianceDetailData[]
-    loading?: boolean
-    onViewDetail?: (compliance: DueComplianceDetailData) => void
-    onUpdateStatus?: (
-        id: number,
-        status: DueComplianceDetailData['status'],
-    ) => void
-    onDownloadProof?: (documentUrl: string) => void
+  data: DueComplianceDetailData[];
+  loading?: boolean;
+  onViewDetail?: (compliance: DueComplianceDetailData) => void;
+  onUpdateStatus?: (id: number, status: DueComplianceDetailData['status']) => void;
+  onDownloadProof?: (documentUrl: string) => void;
+  onDataUpdate?: () => void;
 }
 
 const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
-    data,
-    loading = false,
-    onViewDetail,
-    onUpdateStatus,
-    onDownloadProof,
+  data,
+  loading = false,
+  onViewDetail,
+  onUpdateStatus,
+  onDownloadProof,
+  onDataUpdate
 }) => {
-    const [tableData, setTableData] = useState({
-        total: data.length,
-        pageIndex: 1,
-        pageSize: 10,
-        query: '',
-        sort: { order: '', key: '' },
-    })
+  const [tableData, setTableData] = useState({
+    total: data.length,
+    pageIndex: 1,
+    pageSize: 10,
+    query: '',
+    sort: { order: '', key: '' },
+  });
 
-    const [selectedCompliance, setSelectedCompliance] =
-        useState<DueComplianceDetailData | null>(null)
-    const [isStatusDialogOpen, setIsStatusDialogOpen] = useState(false)
-    const [selectedStatus, setSelectedStatus] = useState<StatusOption | null>(
-        null,
-    )
-    const [selectedFile, setSelectedFile] = useState<File | null>(null)
-    const [remark, setRemark] = useState('')
-    const [dialogIsOpen, setDialogIsOpen] = useState(false)
+  const [selectedCompliance, setSelectedCompliance] = useState<DueComplianceDetailData | null>(null);
+  const [isStatusDialogOpen, setIsStatusDialogOpen] = useState(false);
+    const [selectedStatus, setSelectedStatus] = useState<StatusOption | null>(null);
+      const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [remark, setRemark] = useState('');
+    const [dialogIsOpen, setDialogIsOpen] = useState(false);
+    const dispatch = useDispatch();
+    const [isLoading, setIsLoading] = useState(false);
+
+
+
 
     const onDialogClose = useCallback(() => {
-        setDialogIsOpen(false)
-        setSelectedFile(null)
-        setRemark('')
-        setSelectedCompliance(null)
-        setSelectedStatus(null)
-    }, [])
+    setDialogIsOpen(false);
+    setSelectedFile(null);
+    setSelectedCompliance(null);
+    setSelectedStatus(null);
+    setRemark('');
+  }, []);
 
-    const handleStatusUpdate = (compliance: DueComplianceDetailData) => {
-        setSelectedCompliance(compliance)
-        setIsStatusDialogOpen(true)
+  const handleStatusUpdate = (compliance: DueComplianceDetailData) => {
+    setSelectedCompliance(compliance);
+    setIsStatusDialogOpen(true);
+  };
+  const onStatusChange = useCallback((value: StatusOption) => {
+    console.log('Status changed to:', value);
+    setSelectedStatus(value);
+  }, []);
+
+  const handleUpdateStatus = async () => {
+    if (!selectedCompliance || !selectedStatus) return;
+
+    const formData = new FormData()
+    formData.append('status', selectedStatus.value)
+    formData.append('remark', remark)
+    if (selectedFile) {
+        formData.append('document', selectedFile)
     }
-    const onStatusChange = useCallback((value: StatusOption) => {
-        console.log('Status changed to:', value)
-        setSelectedStatus(value)
-    }, [])
-    const getStatusBadgeColor = (status: DueComplianceDetailData['status']) => {
-        switch (status) {
-            case 'completed':
-                return 'text-green-500'
-            case 'pending':
-                return 'text-yellow-500'
-            case 'due':
-                return 'text-blue-500'
-            case 'overdue':
-                return 'text-red-500'
-            default:
-                return 'text-gray-500'
-        }
+  
+    try {
+      console.log(selectedFile);
+      // return ;
+      await dispatch(updateStatus({ id: selectedCompliance.id.toString(), data: formData })).unwrap();
+      // toast.success('Status updated successfully');
+      toast.push(
+                  <Notification title="success" type="success">
+                    Status Uploaded successfully
+                  </Notification>
+                );
+      setIsStatusDialogOpen(false)
+      onDialogClose();
+
+      if (onDataUpdate) {
+        onDataUpdate();
+      }
+
+
+
+    } catch (error) {
+      console.error('Error updating status:', error);
+      setIsStatusDialogOpen(false)
+      toast.push(
+        <Notification title="Error" type="danger">
+          error
+        </Notification>
+      );
     }
+  };
+  const getStatusBadgeColor = (status: DueComplianceDetailData['status']) => {
+    switch (status) {
+      case 'completed':
+        return 'text-green-500';
+      case 'pending':
+        return 'text-yellow-500';
+      case 'due':
+        return 'text-blue-500';
+      case 'overdue':
+        return 'text-red-500';
+      default:
+        return 'text-gray-500';
+    }
+  };
 
   const columns: ColumnDef<DueComplianceDetailData>[] = useMemo(
     () => [
@@ -266,102 +306,91 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
     [onViewDetail, onDownloadProof]
   );
 
-    const handlePageChange = (page: number) => {
-        setTableData((prev) => ({ ...prev, pageIndex: page }))
-    }
+  const handlePageChange = (page: number) => {
+    setTableData(prev => ({ ...prev, pageIndex: page }));
+  };
 
-    const handlePageSizeChange = (pageSize: number) => {
-        setTableData((prev) => ({
-            ...prev,
-            pageSize: Number(pageSize),
-            pageIndex: 1,
-        }))
-    }
+  const handlePageSizeChange = (pageSize: number) => {
+    setTableData(prev => ({ ...prev, pageSize: Number(pageSize), pageIndex: 1 }));
+  };
 
-    return (
-        <div className="relative">
-            <DataTable
-                columns={columns}
-                data={data}
-                skeletonAvatarColumns={[0]}
-                skeletonAvatarProps={{ className: 'rounded-md' }}
-                loading={loading}
-                pagingData={{
-                    total: tableData.total,
-                    pageIndex: tableData.pageIndex,
-                    pageSize: tableData.pageSize,
-                }}
-                onPaginationChange={handlePageChange}
-                onSelectChange={handlePageSizeChange}
-                stickyHeader={true}
-                stickyFirstColumn={true}
-                stickyLastColumn={true}
+  return (
+    <div className="relative">
+      <DataTable
+        columns={columns}
+        data={data}
+        skeletonAvatarColumns={[0]}
+        skeletonAvatarProps={{ className: 'rounded-md' }}
+        loading={isLoading}
+        pagingData={{
+          total: tableData.total,
+          pageIndex: tableData.pageIndex,
+          pageSize: tableData.pageSize,
+        }}
+        onPaginationChange={handlePageChange}
+        onSelectChange={handlePageSizeChange}
+        stickyHeader={true}
+        stickyFirstColumn={true}
+        stickyLastColumn={true}
+      />
+
+<Dialog
+        isOpen={isStatusDialogOpen}
+        onClose={() => setIsStatusDialogOpen(false)}
+      >
+        <h5 className="mb-4">Change Compliance Status</h5>
+        <div className='flex items-center gap-3 mb-4'>
+          <p className='font-semibold'>Select the Compliance status</p>
+          <div className='w-40'>
+            <OutlinedSelect
+              label="Set Status"
+              options={StatusOption.statusOption.map(option => ({
+                value: option.value,
+                label: option.label
+              }))}
+              value={selectedStatus}
+              onChange={onStatusChange}
             />
-
-            <Dialog
-                isOpen={isStatusDialogOpen}
-                onClose={() => setIsStatusDialogOpen(false)}
-            >
-                <h5 className="mb-4">Change Compliance Status</h5>
-                <div className="flex items-center gap-3 mb-4">
-                    <p className="font-semibold">
-                        Select the Compliance status
-                    </p>
-                    <div className="w-40">
-                        <OutlinedSelect
-                            label="Set Status"
-                            options={StatusOption.statusOption.map(
-                                (option) => ({
-                                    value: option.key,
-                                    label: option.name,
-                                }),
-                            )}
-                            value={selectedStatus}
-                            onChange={onStatusChange}
-                        />
-                    </div>
-                </div>
-
-                <>
-                    <label className="text-red-500">
-                        *Please Upload The Proof Of Compliance:
-                    </label>
-                    <Input
-                        type="file"
-                        onChange={(e) => {
-                            const file = e.target.files?.[0] || null
-                            console.log('File selected:', file?.name)
-                            setSelectedFile(file)
-                        }}
-                        className="mb-4 mt-4"
-                    />
-                </>
-                <label className="mb-2">Please Enter the Remark:</label>
-                <Input
-                    placeholder="Remarks"
-                    textArea
-                    value={remark}
-                    onChange={(e) => setRemark(e.target.value)}
-                    className="mb-4"
-                />
-
-                <div className="text-right mt-6">
-                    <Button
-                        className="ltr:mr-2 rtl:ml-2"
-                        variant="plain"
-                        onClick={onDialogClose}
-                    >
-                        Cancel
-                    </Button>
-                    <Button variant="solid">
-                        {' '}
-                        {/*  onClick={onSubmit} */}
-                        Confirm
-                    </Button>
-                </div>
-            </Dialog>
+          </div>
         </div>
-    )
-}
 
-export default ComplianceDetailTable
+          <>
+            <label className='text-red-500'>*Please Upload The Proof Of Compliance:</label>
+            <Input
+              type="file"
+              onChange={(e) => {
+                const file = e.target.files?.[0] || null;
+                console.log('File selected:', file?.name);
+                setSelectedFile(file);
+              }}
+              className="mb-4 mt-4"
+            />
+          </>
+        <label className='mb-2'>Please Enter the Remark:</label>
+        <Input 
+          placeholder="Remarks" 
+          textArea 
+          value={remark}
+          onChange={(e) => setRemark(e.target.value)}
+          className="mb-4"
+        />
+
+        <div className="text-right mt-6">
+          <Button
+            className="ltr:mr-2 rtl:ml-2"
+            variant="plain"
+            onClick={() => setIsStatusDialogOpen(false)}
+          >
+            Cancel
+          </Button>
+          <Button variant="solid" onClick={handleUpdateStatus}>  {/*  onClick={onSubmit} */}
+            Confirm
+          </Button>
+        </div>
+      </Dialog>
+    </div>
+  );
+};
+
+export default ComplianceDetailTable;
+
