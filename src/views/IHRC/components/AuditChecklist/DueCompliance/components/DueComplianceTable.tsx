@@ -147,138 +147,124 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
         }
     }
 
-    const columns: ColumnDef<DueComplianceDetailData>[] = useMemo(
-        () => [
-            {
-                header: 'Compliance ID',
-                accessorKey: 'ac_compliance_id',
-                cell: (props) => (
-                    <div className="w-24 text-start">{props.getValue()}</div>
-                ),
-            },
-            {
-                header: 'Legislation',
-                accessorFn: (row) => row.compliance_detail.legislation,
-                cell: (props) => (
-                    <Tooltip title={props.getValue() as string} placement="top">
-                        <div className="w-32 truncate">
-                            {((props.getValue() as string) || '').length > 20
-                                ? `${(props.getValue() as string).substring(0, 20)}...`
-                                : props.getValue()}
-                        </div>
-                    </Tooltip>
-                ),
-            },
-            {
-                header: 'Criticality',
-                accessorFn: (row) => row.compliance_detail.criticality,
-                cell: (props) => {
-                    const criticality = props.getValue() as string
-                    return (
-                        <div className="w-24 font-semibold truncate">
-                            {criticality.toLowerCase() === 'high' ? (
-                                <span className="text-red-500">High</span>
-                            ) : criticality.toLowerCase() === 'medium' ? (
-                                <span className="text-yellow-500">Medium</span>
-                            ) : (
-                                <span className="text-green-500">Low</span>
-                            )}
-                        </div>
-                    )
-                },
-            },
-            {
-                header: 'Category',
-                accessorFn: (row) => row.compliance_detail.category,
-                cell: (props) => (
-                    <Tooltip title={props.getValue() as string} placement="top">
-                        <div className="w-32 truncate">{props.getValue()}</div>
-                    </Tooltip>
-                ),
-            },
-            {
-                header: 'Due Date',
-                accessorKey: 'due_date',
-                cell: (props) => (
-                    <div className="w-28">
-                        {new Date(
-                            props.getValue() as string,
-                        ).toLocaleDateString()}
-                    </div>
-                ),
-            },
-            {
-                header: 'Status',
-                accessorKey: 'data_status',
-                cell: (props) => (
-                    <div
-                        className={`w-24 font-semibold ${getStatusBadgeColor(props.getValue() as DueComplianceDetailData['status'])}`}
-                    >
-                        {(props.getValue() as string).charAt(0).toUpperCase() +
-                            (props.getValue() as string).slice(1)}
-                    </div>
-                ),
-            },
-            {
-                header: 'Uploaded By',
-                accessorFn: (row) => row.UploadBy?.name,
-                cell: (props) => (
-                    <div className="w-32">
-                        {props.getValue() || 'Not Uploaded'}
-                    </div>
-                ),
-            },
-            {
-                header: 'Approved By',
-                accessorFn: (row) => row.ApprovedBy?.name,
-                cell: (props) => (
-                    <div className="w-32">
-                        {props.getValue() || 'Not Approved'}
-                    </div>
-                ),
-            },
-            {
-                header: 'Actions',
-                id: 'actions',
-                cell: ({ row }) => (
-                    <div className="flex space-x-2">
-                        <Tooltip title="View Details" placement="top">
-                            <Button
-                                size="sm"
-                                onClick={() => onViewDetail?.(row.original)}
-                                icon={<RiEyeLine />}
-                                className="hover:bg-transparent"
-                            />
-                        </Tooltip>
-                        <Tooltip title="Update Status" placement="top">
-                            <Button
-                                size="sm"
-                                onClick={() => handleStatusUpdate(row.original)}
-                                icon={<MdEdit />}
-                                className="hover:bg-transparent"
-                            />
-                        </Tooltip>
-                        {row.original.proof_document && (
-                            <Tooltip title="Download Proof" placement="top">
-                                <Button
-                                    size="sm"
-                                    onClick={() =>
-                                        onDownloadProof?.(
-                                            row.original
-                                                .proof_document as string,
-                                        )
-                                    }
-                                    icon={<HiDocumentDownload />}
-                                    className="hover:bg-transparent"
-                                />
-                            </Tooltip>
-                        )}
-                    </div>
-                ),
-            },
-        ],
-        [onViewDetail, onDownloadProof],
-    )
+  const columns: ColumnDef<DueComplianceDetailData>[] = useMemo(
+    () => [
+      {
+        header: 'Compliance ID',
+        accessorKey: 'compliance_detail.record_id',
+        cell: (props) => <div className="w-24 text-start">{props.getValue()}</div>,
+      },
+      {
+        header: 'Legislation',
+        accessorFn: (row) => row.compliance_detail.legislation,
+        cell: (props) => (
+          <Tooltip title={props.getValue() as string} placement="top">
+            <div className="w-32 truncate">
+              {((props.getValue() as string) || '').length > 20
+                ? `${(props.getValue() as string).substring(0, 20)}...`
+                : props.getValue()}
+            </div>
+          </Tooltip>
+        ),
+      },
+      {
+        header: 'Criticality',
+        accessorFn: (row) => row.compliance_detail.criticality,
+        cell: (props) => {
+          const criticality = props.getValue() as string;
+          return (
+            <div className="w-24 font-semibold truncate">
+              {criticality.toLowerCase() === 'high' ? (
+                <span className="text-red-500">High</span>
+              ) : criticality.toLowerCase() === 'medium' ? (
+                <span className="text-yellow-500">Medium</span>
+              ) : (
+                <span className="text-green-500">Low</span>
+              )}
+            </div>
+          );
+        },
+      },
+      {
+        header: 'Category',
+        accessorFn: (row) => row.compliance_detail.category,
+        cell: (props) => (
+          <Tooltip title={props.getValue() as string} placement="top">
+            <div className="w-32 truncate">{props.getValue()}</div>
+          </Tooltip>
+        ),
+      },
+      {
+        header: 'Due Date',
+        accessorKey: 'due_date',
+        cell: (props) => (
+          <div className="w-28">
+            {new Date(props.getValue() as string).toLocaleDateString()}
+          </div>
+        ),
+      },
+      {
+        header: 'Status',
+        accessorKey: 'data_status',
+        cell: (props) => (
+          <div className={`w-24 font-semibold ${getStatusBadgeColor(props.getValue() as DueComplianceDetailData['status'])}`}>
+            {(props.getValue() as string).charAt(0).toUpperCase() + (props.getValue() as string).slice(1)}
+          </div>
+        ),
+      },
+      {
+        header: 'Uploaded By',
+        accessorFn: (row) => `${row.UploadBy?.first_name || ''} ${row.UploadBy?.last_name || ''}`.trim(),
+        cell: (props) => (
+          <div className="w-32">
+            {props.getValue() || '--'}
+          </div>
+          
+        ),
+      },
+      
+      {
+        header: 'Approved By',
+        accessorFn: (row) => row.ApprovedBy?.name,
+        cell: (props) => <div className="w-32">{props.getValue() || '--'}</div>,
+      },
+      {
+        header: 'Actions',
+        id: 'actions',
+        cell: ({ row }) => (
+          <div className="flex space-x-2">
+            <Tooltip title="View Details" placement="top">
+              <Button
+                size="sm"
+                onClick={() => onViewDetail?.(row.original)}
+                icon={<RiEyeLine />}
+                className="hover:bg-transparent"
+              />
+            </Tooltip>
+            <Tooltip title="Update Status" placement="top">
+              <Button
+                size="sm"
+                onClick={() => handleStatusUpdate(row.original)}
+                icon={<MdEdit />}
+                className="hover:bg-transparent"
+              />
+            </Tooltip>
+            {row.original.proof_document && (
+              <Tooltip title="Download Proof" placement="top">
+                <Button
+                  size="sm"
+                  onClick={() => onDownloadProof?.(row.original.proof_document as string)}
+                  icon={<HiDocumentDownload />}
+                  className="hover:bg-transparent"
+                />
+              </Tooltip>
+            )}
+          </div>
+        ),
+      },
+    ],
+    [onViewDetail, onDownloadProof]
+  );
 
     const handlePageChange = (page: number) => {
         setTableData((prev) => ({ ...prev, pageIndex: page }))

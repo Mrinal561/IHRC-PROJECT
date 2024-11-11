@@ -13,6 +13,7 @@ import { useDispatch } from 'react-redux';
 import DistrictAutosuggest from './DistrictAutoSuggest';
 import { createBranch } from '@/store/slices/branch/branchSlice';
 import { format } from 'date-fns';
+import { MdLabel } from 'react-icons/md';
 interface BranchFormData {
   group_id: number;
   company_id: number;
@@ -93,18 +94,21 @@ const [fileBase64, setFileBase64] = useState<string>('');
     document: ''
   });
 
+  const statusTypeOptions= [
+    {value: "active", label: 'Active'},
+    {value: "inactive", label: 'Inactive'},
+  ]
   const branchTypeOptions = [
     { value: 'rented', label: 'Rented' },
     { value: 'owned', label: 'Owned' },
   ];
 
   const officeTypeOption = [
-    // { value: 'register_office', label: 'Register Office' },
-    // { value: 'coorporate_office', label: 'Coorporate Office' },
-    // { value: 'regional_office', label: 'Regional Office' },
-    // { value: 'branch', label: 'Branch Office' },
+    { value: 'register_office', label: 'Register Office' },
+    { value: 'coorporate_office', label: 'Coorporate Office' },
+    { value: 'regional_office', label: 'Regional Office' },
+    { value: 'branch', label: 'Branch Office' },
     // { value: 'others', label: 'Others' },
-    { value: 'head', label: 'Head' },
     { value: 'branch', label: 'Branch' },
   ]
 
@@ -576,15 +580,25 @@ const loadCompanies = async (groupId: string[] | number[]) => {
                                   <p className="mb-2">
                                       Lease / Rent Agreement Status
                                   </p>
-                                  <OutlinedInput
+                                  <OutlinedSelect
                                       label="Status"
-                                      value={formData.register_number}
-                                      onChange={(value: string) => {
-                                          setFormData((prev) => ({
-                                              ...prev,
-                                              register_number: value,
-                                          }))
-                                      }}
+                                      options={statusTypeOptions}
+                                    //   value={formData.status}
+                                    value={statusTypeOptions.find(
+                                        (option) => option.value === formData.status,
+                                    )}
+                                    //   onChange={(value: string) => {
+                                    //       setFormData((prev) => ({
+                                    //           ...prev,
+                                    //           status: value,
+                                    //       }))
+                                    //   }}
+                                    onChange={(selectedOption: SelectOption | null) => {
+                                        setFormData((prev) => ({
+                                            ...prev,
+                                            status: selectedOption?.value || '',
+                                        }))
+                                    }}
                                   />
                               </div>
                               <div>

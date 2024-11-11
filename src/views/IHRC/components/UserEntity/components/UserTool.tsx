@@ -17,7 +17,7 @@ const UserTool: React.FC = () => {
   return (
     <div className='flex gap-3'>
       {/* <Filter></Filter> */}
-      <Bu></Bu>
+      {/* <Bu></Bu> */}
       <Button variant="solid" icon={<HiPlusCircle />} size="sm"  onClick={handleClick}>
         Add User
       </Button>
