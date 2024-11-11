@@ -66,7 +66,6 @@ import store, { persistor } from './store'
 import { setIsAuthenticated } from './store/slices/login'
 import { useAppDispatch } from './store'
 
-
 import Theme from '@/components/template/Theme'
 import Layout from '@/components/layouts'
 // import mockServer from './mock'
@@ -104,7 +103,7 @@ function App() {
     return (
         <PersistGate loading={null} persistor={persistor}>
             {!loading && (
-                <BrowserRouter basename='ihrc'>
+                <BrowserRouter basename="ihrc">
                     <Theme>
                         <Layout />
                     </Theme>
