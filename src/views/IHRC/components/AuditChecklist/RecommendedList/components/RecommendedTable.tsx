@@ -86,14 +86,14 @@ const ViewDetailsButton = ({
     };
 
     const handleAssignCompliance = async () => {
-        if (!companyGroupValue || !companyValue || !stateValue || !districtValue || !locationValue || !branchValue) {
-            toast.push(
-                <Notification title="Missing Information" type="danger">
-                    Please select all required fields (Company Group, Company, State, District, and Branch)
-                </Notification>
-            );
-            return;
-        }
+        // if (!companyGroupValue || !companyValue || !stateValue || !districtValue || !locationValue || !branchValue) {
+        //     toast.push(
+        //         <Notification title="Missing Information" type="danger">
+        //             Please select all required fields (Company Group, Company, State, District, and Branch)
+        //         </Notification>
+        //     );
+        //     return;
+        // }
 
         const assignData = {
             group_id: parseInt(companyGroupValue),
@@ -135,12 +135,12 @@ const ViewDetailsButton = ({
                     onClick={handleViewDetails}
                 />
             </Tooltip>
-            <Tooltip title={isAssignDisabled ? "Complete all selections to assign" : "Assign Compliance"}>
+            <Tooltip title= "Assign Compliance">
                 <Button
                     size="sm"
                     onClick={handleAssignCompliance}
                     icon={<RiCheckLine />}
-                    disabled={isAssignDisabled}
+                    // disabled={isAssignDisabled}
                 />
             </Tooltip>
         </div>
@@ -201,10 +201,15 @@ const RecommendedTable = ({
         return data.filter(item => !assignedItems.has(item.id))
     }, [data, assignedItems])
 
-    const isAllSelected = useMemo(() => {
-        if (filteredData.length === 0) return false;
-        return selectedItems.size === filteredData.length;
-    }, [selectedItems.size, filteredData.length]);
+    // const isAllSelected = useMemo(() => {
+    //     if (filteredData.length === 0) return false;
+    //     return selectedItems.size === filteredData.length;
+    // }, [selectedItems.size, filteredData.length]);
+
+    const isAllSelected = useMemo(
+        () => selectedItems.size === data.length,
+        [selectedItems, data]
+      );
 
     const isIndeterminate = useMemo(() => {
         return selectedItems.size > 0 && selectedItems.size < filteredData.length;
@@ -282,9 +287,9 @@ const RecommendedTable = ({
                     <div className="w-2">
                         <Checkbox
                             checked={isAllSelected}
-                            indeterminate={isIndeterminate}
+                            // indeterminate={isIndeterminate}
                             onChange={handleSelectAllChange}
-                            disabled={filteredData.length === 0}
+                            // disabled={filteredData.length === 0}
                         />
                     </div>
                 ),
@@ -303,7 +308,7 @@ const RecommendedTable = ({
                 accessorKey: 'record_id',
                 cell: (props) => (
                     <Tooltip title={`ID: ${props.getValue()}`} placement="top">
-                        <div className="w-40">{props.getValue()}</div>
+                        <div className="w-24 truncate">{props.getValue()}</div>
                     </Tooltip>
                 ),
             },
