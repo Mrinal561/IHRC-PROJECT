@@ -14,6 +14,7 @@ import { endpoints } from '@/api/endpoint';
 import { updateApproverOwner, selectUpdateLoading, selectUpdateSuccess, resetUpdateStatus, selectUpdateError
  } from '@/store/slices/AssignedCompliance/assignedComplianceSlice';
 import { fetchUsers } from '@/store/slices/userEntity/UserEntitySlice';
+import { AppDispatch } from '@/store';
 
 interface UserData {
   id: number;
