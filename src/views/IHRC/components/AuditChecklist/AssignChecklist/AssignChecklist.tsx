@@ -18,6 +18,17 @@ const AssignChecklist = () => {
     const [assignedData, setAssignedData] = useState([]);
     const [tableKey, setTableKey] = useState(0);
     const [selectedBranch, setSelectedBranch] = useState<BranchOption | null>(null);
+    const [selectedIds, setSelectedIds] = useState<number[]>([]); // New state for selected IDs
+
+    // Add handler for selected IDs
+    const handleSelectedIdsChange = (ids: number[]) => {
+        console.log('Selected IDs:', ids);
+        setSelectedIds(ids);
+        // You can now use these IDs in any way needed, for example:
+        console.log('selectedIdsForApiCall are:', { selectedIds: ids });
+    };
+
+
 
     const fetchAssignedData = async (page = 1, pageSize = 10) => {
         console.log('Fetching assigned checklist data...');
@@ -54,6 +65,12 @@ const AssignChecklist = () => {
         } finally {
             setIsLoading(false);
         }
+    };
+
+    const refreshTableAndReset = () => {
+        fetchAssignedData();
+        setSelectedIds([]); // Reset selected IDs
+        setTableKey(prevKey => prevKey + 1); // Force table refresh
     };
 
     useEffect(() => {
@@ -103,7 +120,8 @@ const AssignChecklist = () => {
                     <h3 className="text-2xl font-bold">Assigned Checklist</h3>
                     <p className="text-gray-600">View your company's assigned compliance</p>
                 </div>
-                <AssignChecklistTableTool />
+                <AssignChecklistTableTool selectedIds={selectedIds} 
+                    refreshTable={refreshTableAndReset}/>
             </div>
             <div className="mb-8">
                 <Company 
@@ -118,6 +136,7 @@ const AssignChecklist = () => {
                 loading={isLoading}
                 tableKey={tableKey}
                 refreshTable={refreshTable}
+                onSelectedIdsChange={handleSelectedIdsChange}
             />
         </AdaptableCard>
     );
