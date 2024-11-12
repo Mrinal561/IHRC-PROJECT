@@ -109,7 +109,7 @@ const [fileBase64, setFileBase64] = useState<string>('');
     { value: 'regional_office', label: 'Regional Office' },
     { value: 'branch', label: 'Branch Office' },
     // { value: 'others', label: 'Others' },
-    { value: 'branch', label: 'Branch' },
+    // { value: 'branch', label: 'Branch' },
   ]
 
 
@@ -322,14 +322,25 @@ const loadCompanies = async (groupId: string[] | number[]) => {
   const handleAddBranch = async () => {
     console.log(formData);
 
-    try{
-        await dispatch(createBranch(formData));
+    try {
+        const response = await dispatch(createBranch(formData)).unwrap();
+        // Only navigate and show success if we actually succeed
         navigate('/branch');
         openNotification('success', 'Branch added successfully');
-    }
-    catch (error: any) {
-        openNotification('danger', error.data?.message);
-    }
+      } catch (error: any) {
+        console.error('Branch creation error:', error);
+        // Handle different types of errors
+        if (error.status === 400) {
+          openNotification('danger', error.data?.message || 'Invalid form data. Please check your inputs.');
+        } else if (error.status === 401) {
+          openNotification('danger', 'Unauthorized. Please login again.');
+        } else if (error.status === 500) {
+          openNotification('danger', 'Server error. Please try again later.');
+        } else {
+          openNotification('danger', error.message || 'Failed to create branch. Please try again.');
+        }
+        // Don't navigate on error
+      }
   };
 
   if (isLoading) return <div>Loading location data...</div>;
