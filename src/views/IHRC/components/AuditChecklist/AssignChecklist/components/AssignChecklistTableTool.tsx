@@ -486,6 +486,8 @@ export const BulkSetOwnerApproverButton: React.FC<BulkSetOwnerApproverButtonProp
     setSelectedApproverOption(value);
   };
 
+
+
   const handleConfirm = async () => {
     if (!selectedIds.length) {
       toast.push(
@@ -524,7 +526,8 @@ export const BulkSetOwnerApproverButton: React.FC<BulkSetOwnerApproverButtonProp
           </Notification>
         );
         handleCancel();
-        refreshTable(); // This will refresh the table and reset selections
+        refreshTable();
+        // This will refresh the table and reset selections
       } else {
         throw new Error('Update failed');
       }

@@ -78,9 +78,10 @@ interface AssignChecklistTableProps {
   tableKey?: number;
   refreshTable: () => void;
   onSelectedIdsChange: (selectedIds: number[]) => void;
+  selectedId?: number[];
 }
 
-const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({ data, loading, tableKey, refreshTable, onSelectedIdsChange }) => {
+const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({ data, loading, tableKey, refreshTable, onSelectedIdsChange, selectedId }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const [activeRowId, setActiveRowId] = useState<number | null>(null);
@@ -97,50 +98,13 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({ data, loadi
   const [selectedApproverOption, setSelectedApproverOption] = useState<any>(null);
   const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
 
-  // const handleEditSave = async () => {
-  //   if (activeRowId && (selectedOwnerOption !== null || selectedApproverOption !== null)) {
-  //     const updateData = {
-  //       owner_id: selectedOwnerOption?.value || 0,
-  //       approver_id: selectedApproverOption?.value || 0
-  //     };
 
-  //     setIsUpdating(true);
-  //     try {
-  //       await dispatch(updateApproverOwner({
-  //         id: activeRowId.toString(),
-  //         data: updateData
-  //       })).unwrap();
-        
-  //       toast.push(
-  //         <Notification title="Success" type="success">
-  //           Owner and Approver updated successfully
-  //         </Notification>
-  //       );
-  //       setIsEditDialogOpen(false);
-  //       setSelectedOwnerOption(null);
-  //       setSelectedApproverOption(null);
-  //       refreshTable();
-  //     } catch (error) {
-  //       console.log(error)
-  //       toast.push(
-  //         <Notification title="Error" type="danger">
-  //           Failed to update owner and approver
-  //         </Notification>
-  //       );
-  //       console.error('Error updating owner/approver:', error);
-  //     } finally {
-  //       setIsUpdating(false);
-  //     }
-  //   } else {
-  //     toast.push(
-  //       <Notification title="Warning" type="warning">
-  //         Please select an owner or approver
-  //       </Notification>
-  //     );
-  //   }
-  // };
- 
- 
+  useEffect(()=> {
+    setSelectedItems(new Set());
+  },[])
+
+
+
   const handleEditSave = async () => {
     if (activeRowId && (selectedOwnerOption !== null || selectedApproverOption !== null)) {
       const updateData: ApproverOwnerAssignedCompliances = {
@@ -165,6 +129,7 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({ data, loadi
         setIsEditDialogOpen(false);
         setSelectedOwnerOption(null);
         setSelectedApproverOption(null);
+        setSelectedItems(new Set())
         refreshTable();
       } catch (error) {
         console.log(error)

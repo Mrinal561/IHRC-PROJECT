@@ -105,6 +105,7 @@ const AssignChecklist = () => {
     const refreshTable = () => {
         console.log('Refreshing table data...');
         fetchAssignedData();
+        setSelectedIds([])
     };
 
     console.log('Rendering AssignChecklist component', {
@@ -137,6 +138,7 @@ const AssignChecklist = () => {
                 tableKey={tableKey}
                 refreshTable={refreshTable}
                 onSelectedIdsChange={handleSelectedIdsChange}
+                // selectedId = {selectedIds}
             />
         </AdaptableCard>
     );

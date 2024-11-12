@@ -105,7 +105,6 @@ const ViewDetailsButton = ({
                     Assigned Successfully
                 </Notification>
             );
-            // onTableRerender();
             setIstableLoading(true)
         } catch (error) {
             console.error('Failed to assign compliance:', error);
