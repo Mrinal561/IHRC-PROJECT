@@ -210,7 +210,7 @@ const ESISetupPanel: React.FC<ESISetupPanelProps> = ({ onClose, addESISetup }) =
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-4 mb-4">
+      <div className="grid grid-cols-2 gap-4 mb-4">
         <div>
           <p className="mb-2">Code Type</p>
           <OutlinedSelect
@@ -220,7 +220,7 @@ const ESISetupPanel: React.FC<ESISetupPanelProps> = ({ onClose, addESISetup }) =
             onChange={(option: SelectOption | null) => {
               setFormData(prev => ({
                 ...prev,
-                code_type: option?.value || ''
+                code_Type: option?.value || ''
               }));
             }}
           />
@@ -238,9 +238,8 @@ const ESISetupPanel: React.FC<ESISetupPanelProps> = ({ onClose, addESISetup }) =
             }}
           />
         </div>
-
-
-        <div>
+      <div className="grid grid-cols-1 gap-4 mb-4">
+      <div>
           <p className="mb-2">Location</p>
           <OutlinedInput
             label="Location"
@@ -253,9 +252,23 @@ const ESISetupPanel: React.FC<ESISetupPanelProps> = ({ onClose, addESISetup }) =
             }}
           />
         </div>
+        <div>
+          <p className="mb-2">District</p>
+          <OutlinedInput
+              label="District" value={''} onChange={function (value: string): void {
+                throw new Error('Function not implemented.');
+              } }            // value={formData.district_id}
+            // onChange={(value: string) => {
+            //   setFormData(prev => ({
+            //     ...prev,
+            //     code: value
+            //   }));
+            // }}
+          />
+        </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 mb-4">
+      <div className="grid grid-cols-1 gap-4 mb-4">
         <div>
           <p className="mb-2">ESI User</p>
           <OutlinedInput
@@ -328,6 +341,7 @@ const ESISetupPanel: React.FC<ESISetupPanelProps> = ({ onClose, addESISetup }) =
           Cancel
         </Button>
       </div>
+    </div>
     </div>
   );
 };
