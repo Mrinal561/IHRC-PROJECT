@@ -489,14 +489,14 @@ export const BulkSetOwnerApproverButton: React.FC<BulkSetOwnerApproverButtonProp
 
 
   const handleConfirm = async () => {
-    if (!selectedIds.length) {
-      toast.push(
-        <Notification title="Warning" type="warning">
-          Please select compliances to update
-        </Notification>
-      );
-      return;
-    }
+    // if (selectedIds.length === 0) {
+    //   toast.push(
+    //     <Notification title="Warning" type="warning">
+    //       Please select compliances to update
+    //     </Notification>
+    //   );
+    //   return;
+    // }
 
     if (!selectedOwnerOption && !selectedApproverOption) {
       toast.push(
@@ -556,7 +556,16 @@ export const BulkSetOwnerApproverButton: React.FC<BulkSetOwnerApproverButtonProp
         variant="solid" 
         size="sm" 
         icon={<HiPlusCircle />} 
-        onClick={() => setIsDialogOpen(true)}
+        onClick={() =>{
+          if (selectedIds.length === 0) {
+            toast.push(
+              <Notification title="Warning" type="warning">
+                Please select compliances to update
+              </Notification>
+            );
+            return;
+          }
+          setIsDialogOpen(true)}}
       >
         Bulk Owner/Approver
       </Button>

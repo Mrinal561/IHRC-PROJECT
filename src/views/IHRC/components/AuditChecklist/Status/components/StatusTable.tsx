@@ -475,18 +475,24 @@ const StatusTable: React.FC<StatusTableProps> = ({
     () => [
       {
         header: ({ table }) => (
-          <Checkbox
-            checked={selectedItems.size === filteredData.length}
-            onChange={(checked: boolean) => handleBulkSelection(selectedItems.size !== filteredData.length)}
-          />
-        ),
+          filteredData.some((item) => item.data_status === 'pending')? (
+            <Checkbox
+              checked={selectedItems.size === filteredData.length}
+              onChange={(checked: boolean) => handleBulkSelection(selectedItems.size!== filteredData.length)}
+            />
+          ) : (
+            <div /> // or <span /> or any other empty element, to maintain table structure
+          )),
         id: 'select',
         cell: ({ row }) => (
-          <Checkbox
-            checked={selectedItems.has(row.original.id)}
-            onChange={(checked: boolean) => handleSingleSelection(row.original.id, checked)}
-          />
-        ),
+          row.original.data_status === 'pending'? (
+            <Checkbox
+              checked={selectedItems.has(row.original.id)}
+              onChange={(checked: boolean) => handleSingleSelection(row.original.id, checked)}
+            />
+          ) : (
+            <div /> // or <span /> or any other empty element, to maintain table structure
+          ))
       },
       {
         header: 'ID',
