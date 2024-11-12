@@ -87,6 +87,62 @@ const ViewDetailsButton = ({
     };
 
     const handleAssignCompliance = async () => {
+
+        if (!companyGroupValue && !companyValue && !stateValue && !districtValue && !locationValue && !branchValue) {
+            toast.push(
+                <Notification title="Missing Information" type="danger">
+                    Please select at least one field
+                </Notification>
+            );
+            return;
+        }
+    
+        // Check hierarchy only if fields are selected
+        if (companyValue && !companyGroupValue) {
+            toast.push(
+                <Notification title="Missing Information" type="danger">
+                    Please select Company Group before selecting Company
+                </Notification>
+            );
+            return;
+        }
+    
+        if (stateValue && (!companyGroupValue || !companyValue)) {
+            toast.push(
+                <Notification title="Missing Information" type="danger">
+                    Please select Company Group and Company before selecting State
+                </Notification>
+            );
+            return;
+        }
+    
+        if (districtValue && (!companyGroupValue || !companyValue || !stateValue)) {
+            toast.push(
+                <Notification title="Missing Information" type="danger">
+                    Please select Company Group, Company, and State before selecting District
+                </Notification>
+            );
+            return;
+        }
+    
+        if (locationValue && (!companyGroupValue || !companyValue || !stateValue || !districtValue)) {
+            toast.push(
+                <Notification title="Missing Information" type="danger">
+                    Please select Company Group, Company, State, and District before selecting Location
+                </Notification>
+            );
+            return;
+        }
+    
+        if (branchValue && (!companyGroupValue || !companyValue || !stateValue || !districtValue || !locationValue)) {
+            toast.push(
+                <Notification title="Missing Information" type="danger">
+                    Please select Company Group, Company, State, District, and Location before selecting Branch
+                </Notification>
+            );
+            return;
+        }
+
         const assignData = {
             group_id: parseInt(companyGroupValue),
             company_id: parseInt(companyValue),

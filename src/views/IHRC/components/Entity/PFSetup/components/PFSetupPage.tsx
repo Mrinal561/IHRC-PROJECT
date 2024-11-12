@@ -80,26 +80,7 @@ const PFSetupPage: React.FC = () => {
     const navigate = useNavigate()
     const location = useLocation()
     const companyData = location.state?.companyData
-    const [existingSignatories] = useState<Signatory[]>([
-        {
-            name: 'Amit',
-            designation: 'Manager',
-            mobile: '1234567890',
-            email: 'amit@example.com',
-        },
-        {
-            name: 'Krishna Kumar Singh',
-            designation: 'Director',
-            mobile: '9876543210',
-            email: 'krishna@example.com',
-        },
-        {
-            name: 'Ajay Thakur',
-            designation: 'CFO',
-            mobile: '5555555555',
-            email: 'ajay@example.com',
-        },
-    ])
+    const [fileBase64, setFileBase64] = useState<string>('');
 
     const [selectedSignatories, setSelectedSignatories] = useState<
         UserSignatory[]
@@ -122,17 +103,6 @@ const PFSetupPage: React.FC = () => {
         useState<SelectOption | null>(null)
     const [users, setUsers] = useState<any[]>([])
 
-    // const [pfSetupData, setPfSetupData] = useState<PFSetupData>({
-    //   group_id: 0,
-    //   company_id: 0,
-    //   Company_Group_Name: companyData?.Company_Group_Name || '',
-    //   Company_Name: companyData?.Company_Name || '',
-    //   pfCode: '',
-    //   pfCodeLocation: '',
-    //   authorizedSignatory: [],
-    //   registrationDate: null,
-    //   esignStatus: '',
-    // });
     const [pfSetupData, setPfSetupData] = useState<PFSetupData>({
         group_id: 0,
         company_id: 0,
@@ -140,10 +110,141 @@ const PFSetupPage: React.FC = () => {
         district_id: 0,
         location: '',
         pf_code: '',
-        register_date: '',
+        register_date: null,
         register_certificate: '',
         signatory_data: [],
     })
+
+    const convertToBase64 = (file: File): Promise<string> => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+                const base64String = (reader.result as string).split(',')[1];
+                resolve(base64String);
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+    };
+
+    // Handle registration certificate upload
+    const handleRegistrationCertificateUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            try {
+                const base64String = await convertToBase64(file);
+                setPfSetupData(prev => ({
+                    ...prev,
+                    register_certificate: base64String
+                }));
+            } catch (error) {
+                console.error('Error converting registration certificate to base64:', error);
+                toast.push(
+                    <Notification title="Error" type="danger">
+                        Failed to process registration certificate
+                    </Notification>
+                );
+            }
+        }
+    };
+
+    // Handle signatory document uploads (DSC and E-Sign)
+    const handleSignatoryFileUpload = async (
+        signatoryId: number,
+        fileType: 'dsc_document' | 'e_sign',
+        file: File | null
+    ) => {
+        if (!file) return;
+
+        try {
+            const base64String = await convertToBase64(file);
+            
+            setPfSetupData(prev => ({
+                ...prev,
+                signatory_data: prev.signatory_data.map(sig => {
+                    if (sig.signatory_id === signatoryId) {
+                        return {
+                            ...sig,
+                            [fileType]: base64String
+                        };
+                    }
+                    return sig;
+                })
+            }));
+        } catch (error) {
+            console.error(`Error converting ${fileType} to base64:`, error);
+            toast.push(
+                <Notification title="Error" type="danger">
+                    Failed to process {fileType === 'dsc_document' ? 'DSC' : 'E-Sign'} document
+                </Notification>
+            );
+        }
+    };
+
+    // Handle submit with base64 files
+    const handleSubmit = async () => {
+        // Validate required fields
+        if (!pfSetupData.pf_code || !pfSetupData.location || pfSetupData.signatory_data.length === 0) {
+            toast.push(
+                <Notification title="Error" type="danger">
+                    Please fill in all required fields
+                </Notification>
+            );
+            return;
+        }
+
+        const formData = {
+            ...pfSetupData,
+            register_date: pfSetupData.register_date?.toISOString() || '',
+        };
+
+        try {
+            // Here you would send the formData to your API
+            console.log('Submitting PF Setup with base64 files:', formData);
+            
+            // Example API call (uncomment and modify as needed)
+            // const response = await httpClient.post(endpoints.pfSetup.create(), formData);
+            
+            toast.push(
+                <Notification title="Success" type="success">
+                    <div className="flex items-center">
+                        <span>PF Setup successfully created</span>
+                    </div>
+                </Notification>
+            );
+            // navigate(-1);
+        } catch (error) {
+            console.error('Error submitting PF setup:', error);
+            toast.push(
+                <Notification title="Error" type="danger">
+                    Failed to create PF Setup
+                </Notification>
+            );
+        }
+    };
+
+
+
+
+    // const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     const file = e.target.files?.[0];
+    //     if (file) {
+    //       const reader = new FileReader();
+    //       reader.onload = () => {
+    //         const base64String = (reader.result as string).split(',')[1];
+    //         setFileBase64(base64String);
+    //         setPfSetupData(prev => ({
+    //           ...prev,
+    //           register_cerificate: base64String,
+    //           e_sign:,
+    //           dsc_document:
+
+    //         }));
+    //       };
+    //       reader.readAsDataURL(file);
+    //     }
+    //   };
+
 
     const loadCompanyGroups = async () => {
         try {
@@ -424,26 +525,26 @@ const PFSetupPage: React.FC = () => {
         )
     }
 
-    const handleFileUpload = (
-        signatoryId: number,
-        fileType: 'dsc' | 'e_sign',
-        file: File | null,
-    ) => {
-        setPfSetupData((prev) => ({
-            ...prev,
-            signatory_data: prev.signatory_data.map((sig) => {
-                if (sig.signatory_id === signatoryId) {
-                    return {
-                        ...sig,
-                        [fileType === 'dsc' ? 'dsc_document' : 'e_sign']: file
-                            ? file.name
-                            : '',
-                    }
-                }
-                return sig
-            }),
-        }))
-    }
+    // const handleFileUpload = (
+    //     signatoryId: number,
+    //     fileType: 'dsc' | 'e_sign',
+    //     file: File | null,
+    // ) => {
+    //     setPfSetupData((prev) => ({
+    //         ...prev,
+    //         signatory_data: prev.signatory_data.map((sig) => {
+    //             if (sig.signatory_id === signatoryId) {
+    //                 return {
+    //                     ...sig,
+    //                     [fileType === 'dsc' ? 'dsc_document' : 'e_sign']: file
+    //                         ? file.name
+    //                         : '',
+    //                 }
+    //             }
+    //             return sig
+    //         }),
+    //     }))
+    // }
 
     const handleDscValidityChange = (signatoryId: number, date: string) => {
         setPfSetupData((prev) => ({
@@ -460,50 +561,28 @@ const PFSetupPage: React.FC = () => {
         }))
     }
 
+
     // const handleSubmit = () => {
-    //   if (pfSetupData.pfCode && pfSetupData.pfCodeLocation && pfSetupData.authorizedSignatory.length > 0) {
-    //     // Here you would typically send the data to your backend
-    //     console.log('Submitting PF Setup:', pfSetupData);
+    //     const formData = {
+    //         ...pfSetupData,
+    //         register_date: pfSetupData.register_date || '',
+    //         location: pfSetupData.location || '',
+    //         pf_code: pfSetupData.pf_code || '',
+    //         register_certificate: pfSetupData.register_certificate || '',
+    //     }
+
+    //     console.log('Submitting PF Setup:', formData)
+
+    //     // Your existing submit logic...
     //     toast.push(
-    //       <Notification title="Success" type="success">
-    //         <div className="flex items-center">
-    //           <span>PF Setup successfully created</span>
-    //         </div>
-    //       </Notification>
-    //     );
-    //     navigate(-1); // Go back to the previous page
-    //   } else {
-    //     toast.push(
-    //       <Notification title="Error" type="danger">
-    //         <div className="flex items-center">
-    //           <span>Please fill in all required fields</span>
-    //         </div>
-    //       </Notification>
-    //     );
-    //   }
-    // };
-
-    const handleSubmit = () => {
-        const formData = {
-            ...pfSetupData,
-            register_date: pfSetupData.register_date || '',
-            location: pfSetupData.location || '',
-            pf_code: pfSetupData.pf_code || '',
-            register_certificate: pfSetupData.register_certificate || '',
-        }
-
-        console.log('Submitting PF Setup:', formData)
-
-        // Your existing submit logic...
-        toast.push(
-            <Notification title="Success" type="success">
-                <div className="flex items-center">
-                    <span>PF Setup successfully created</span>
-                </div>
-            </Notification>,
-        )
-        // navigate(-1);
-    }
+    //         <Notification title="Success" type="success">
+    //             <div className="flex items-center">
+    //                 <span>PF Setup successfully created</span>
+    //             </div>
+    //         </Notification>,
+    //     )
+    //     // navigate(-1);
+    // }
 
     const handleCancel = () => {
         navigate(-1)
@@ -618,31 +697,24 @@ const PFSetupPage: React.FC = () => {
                                             DSC Upload
                                         </label>
                                         <Input
-                                            type="file"
-                                            onChange={(
-                                                e: React.ChangeEvent<HTMLInputElement>,
-                                            ) => {
-                                                const file =
-                                                    e.target.files?.[0] || null
-                                                handleFileUpload(
-                                                    signatory.id,
-                                                    'dsc',
-                                                    file,
-                                                )
-                                            }}
-                                        />
+                                        type="file"
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                            const file = e.target.files?.[0] || null;
+                                            handleSignatoryFileUpload(signatory.id, 'dsc_document', file);
+                                        }}
+                                    />
                                     </div>
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-4">
                                             E-Sign Upload
                                         </label>
                                         <Input
-                                    type="file"
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                        const file = e.target.files?.[0] || null;
-                                        handleFileUpload(signatory.id, 'e_sign', file);
-                                    }}
-                                />
+                                        type="file"
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                            const file = e.target.files?.[0] || null;
+                                            handleSignatoryFileUpload(signatory.id, 'e_sign', file);
+                                        }}
+                                    />
                                     </div>
                                     <div>
                                         <div>
@@ -703,12 +775,9 @@ const PFSetupPage: React.FC = () => {
                         PF Registration Certificate
                     </label>
                     <Input
-                        type="file"
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                            const file = e.target.files?.[0] || null
-                            handleInputChange('register_certificate', file)
-                        }}
-                    />
+                    type="file"
+                    onChange={handleRegistrationCertificateUpload}
+                />
                 </div>
                 <div className="flex justify-end space-x-2">
                     <Button onClick={() => navigate(-1)}>Cancel</Button>

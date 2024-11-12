@@ -133,45 +133,100 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
     setSelectedStatus(value);
   }, []);
 
-  const handleUpdateStatus = async () => {
-    if (!selectedCompliance || !selectedStatus) return;
+  // const handleUpdateStatus = async () => {
+  //   if (!selectedCompliance || !selectedStatus) return;
 
-    const formData = new FormData()
-    formData.append('status', selectedStatus.value)
-    formData.append('remark', remark)
-    if (selectedFile) {
-        formData.append('document', selectedFile)
+  //   const formData = new FormData()
+  //   formData.append('status', selectedStatus.value)
+  //   formData.append('remark', remark)
+  //   if (selectedFile) {
+  //       formData.append('document', selectedFile)
+  //   }
+  
+  //   try {
+  //     console.log(selectedFile);
+  //     // return ;
+  //     await dispatch(updateStatus({ id: selectedCompliance.id.toString(), data: formData })).unwrap();
+  //     // toast.success('Status updated successfully');
+  //     toast.push(
+  //                 <Notification title="success" type="success">
+  //                   Status Uploaded successfully
+  //                 </Notification>
+  //               );
+  //     setIsStatusDialogOpen(false)
+  //     onDialogClose();
+
+  //     if (onDataUpdate) {
+  //       onDataUpdate();
+  //     }
+
+
+
+  //   } catch (error) {
+  //     console.error('Error updating status:', error);
+  //     setIsStatusDialogOpen(false)
+  //     toast.push(
+  //       <Notification title="Error" type="danger">
+  //         error
+  //       </Notification>
+  //     );
+  //   }
+  // };
+  
+  const handleUpdateStatus = async () => {
+    if (!selectedCompliance || !selectedStatus) {
+      toast.push(
+        <Notification title="Error" type="danger">
+          Please select a status and provide a remark.
+        </Notification>
+      );
+      return;
+    }
+  
+    const formData = new FormData();
+    formData.append('status', selectedStatus.value);
+    formData.append('remark', remark);
+  
+    if (selectedCompliance.compliance_detail.proof_mandatory) {
+      if (!selectedFile) {
+        toast.push(
+          <Notification title="Error" type="danger">
+            Please upload the proof of compliance.
+          </Notification>
+        );
+        return;
+      }
+      formData.append('document', selectedFile);
+    } else if (selectedFile) {
+      formData.append('document', selectedFile);
     }
   
     try {
       console.log(selectedFile);
-      // return ;
       await dispatch(updateStatus({ id: selectedCompliance.id.toString(), data: formData })).unwrap();
-      // toast.success('Status updated successfully');
       toast.push(
-                  <Notification title="success" type="success">
-                    Status Uploaded successfully
-                  </Notification>
-                );
-      setIsStatusDialogOpen(false)
+        <Notification title="Success" type="success">
+          Status updated successfully.
+        </Notification>
+      );
+      setIsStatusDialogOpen(false);
       onDialogClose();
-
+  
       if (onDataUpdate) {
         onDataUpdate();
       }
-
-
-
     } catch (error) {
       console.error('Error updating status:', error);
-      setIsStatusDialogOpen(false)
+      setIsStatusDialogOpen(false);
       toast.push(
         <Notification title="Error" type="danger">
-          error
+          Error updating status.
         </Notification>
       );
     }
   };
+  
+  
   const getStatusBadgeColor = (status: DueComplianceDetailData['status']) => {
     switch (status) {
       case 'completed':
@@ -355,7 +410,11 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
         </div>
 
           <>
-            <label className='text-red-500'>*Please Upload The Proof Of Compliance:</label>
+          {selectedCompliance?.compliance_detail.proof_mandatory ? (
+    <label className='text-red-500'>*Please Upload The Proof Of Compliance:</label>
+  ) : (
+    <label>Please Upload The Proof Of Compliance:</label>
+  )}
             <Input
               type="file"
               onChange={(e) => {
@@ -379,7 +438,9 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
           <Button
             className="ltr:mr-2 rtl:ml-2"
             variant="plain"
-            onClick={() => setIsStatusDialogOpen(false)}
+            onClick={() => {setIsStatusDialogOpen(false)
+              onDialogClose();
+            }}
           >
             Cancel
           </Button>
