@@ -1,4 +1,3 @@
-
 import React, { useCallback, useMemo, useState } from 'react';
 import { ColumnDef } from '@/components/shared/DataTable';
 import DataTable from '@/components/shared/DataTable';
@@ -78,7 +77,7 @@ const StatusOption = {
     { value: 'not_applicable', label: 'Not Applicable' },
 ],
 }
-
+ 
 interface ComplianceDetailTableProps {
   data: DueComplianceDetailData[];
   loading?: boolean;
@@ -87,7 +86,7 @@ interface ComplianceDetailTableProps {
   onDownloadProof?: (documentUrl: string) => void;
   onDataUpdate?: () => void;
 }
-
+ 
 const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
   data,
   loading = false,
@@ -103,7 +102,7 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
     query: '',
     sort: { order: '', key: '' },
   });
-
+ 
   const [selectedCompliance, setSelectedCompliance] = useState<DueComplianceDetailData | null>(null);
   const [isStatusDialogOpen, setIsStatusDialogOpen] = useState(false);
     const [selectedStatus, setSelectedStatus] = useState<StatusOption | null>(null);
@@ -112,10 +111,10 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
     const [dialogIsOpen, setDialogIsOpen] = useState(false);
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(false);
-
-
-
-
+ 
+ 
+ 
+ 
     const onDialogClose = useCallback(() => {
     setDialogIsOpen(false);
     setSelectedFile(null);
@@ -123,7 +122,7 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
     setSelectedStatus(null);
     setRemark('');
   }, []);
-
+ 
   const handleStatusUpdate = (compliance: DueComplianceDetailData) => {
     setSelectedCompliance(compliance);
     setIsStatusDialogOpen(true);
@@ -132,47 +131,8 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
     console.log('Status changed to:', value);
     setSelectedStatus(value);
   }, []);
-
-  // const handleUpdateStatus = async () => {
-  //   if (!selectedCompliance || !selectedStatus) return;
-
-  //   const formData = new FormData()
-  //   formData.append('status', selectedStatus.value)
-  //   formData.append('remark', remark)
-  //   if (selectedFile) {
-  //       formData.append('document', selectedFile)
-  //   }
-  
-  //   try {
-  //     console.log(selectedFile);
-  //     // return ;
-  //     await dispatch(updateStatus({ id: selectedCompliance.id.toString(), data: formData })).unwrap();
-  //     // toast.success('Status updated successfully');
-  //     toast.push(
-  //                 <Notification title="success" type="success">
-  //                   Status Uploaded successfully
-  //                 </Notification>
-  //               );
-  //     setIsStatusDialogOpen(false)
-  //     onDialogClose();
-
-  //     if (onDataUpdate) {
-  //       onDataUpdate();
-  //     }
-
-
-
-  //   } catch (error) {
-  //     console.error('Error updating status:', error);
-  //     setIsStatusDialogOpen(false)
-  //     toast.push(
-  //       <Notification title="Error" type="danger">
-  //         error
-  //       </Notification>
-  //     );
-  //   }
-  // };
-  
+ 
+ 
   const handleUpdateStatus = async () => {
     if (!selectedCompliance || !selectedStatus) {
       toast.push(
@@ -182,11 +142,11 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
       );
       return;
     }
-  
+ 
     const formData = new FormData();
     formData.append('status', selectedStatus.value);
     formData.append('remark', remark);
-  
+ 
     if (selectedCompliance.compliance_detail.proof_mandatory) {
       if (!selectedFile) {
         toast.push(
@@ -200,7 +160,7 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
     } else if (selectedFile) {
       formData.append('document', selectedFile);
     }
-  
+ 
     try {
       console.log(selectedFile);
       await dispatch(updateStatus({ id: selectedCompliance.id.toString(), data: formData })).unwrap();
@@ -211,7 +171,7 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
       );
       setIsStatusDialogOpen(false);
       onDialogClose();
-  
+ 
       if (onDataUpdate) {
         onDataUpdate();
       }
@@ -225,8 +185,8 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
       );
     }
   };
-  
-  
+ 
+ 
   const getStatusBadgeColor = (status: DueComplianceDetailData['status']) => {
     switch (status) {
       case 'completed':
@@ -241,7 +201,7 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
         return 'text-gray-500';
     }
   };
-
+ 
   const columns: ColumnDef<DueComplianceDetailData>[] = useMemo(
     () => [
       {
@@ -314,10 +274,10 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
           <div className="w-32">
             {props.getValue() || '--'}
           </div>
-          
+         
         ),
       },
-      
+     
       {
         header: 'Approved By',
         accessorFn: (row) => row.ApprovedBy?.name,
@@ -360,15 +320,15 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
     ],
     [onViewDetail, onDownloadProof]
   );
-
+ 
   const handlePageChange = (page: number) => {
     setTableData(prev => ({ ...prev, pageIndex: page }));
   };
-
+ 
   const handlePageSizeChange = (pageSize: number) => {
     setTableData(prev => ({ ...prev, pageSize: Number(pageSize), pageIndex: 1 }));
   };
-
+ 
   return (
     <div className="relative">
       <DataTable
@@ -388,7 +348,7 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
         stickyFirstColumn={true}
         stickyLastColumn={true}
       />
-
+ 
 <Dialog
         isOpen={isStatusDialogOpen}
         onClose={() => setIsStatusDialogOpen(false)}
@@ -408,7 +368,7 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
             />
           </div>
         </div>
-
+ 
           <>
           {selectedCompliance?.compliance_detail.proof_mandatory ? (
     <label className='text-red-500'>*Please Upload The Proof Of Compliance:</label>
@@ -426,14 +386,14 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
             />
           </>
         <label className='mb-2'>Please Enter the Remark:</label>
-        <Input 
-          placeholder="Remarks" 
-          textArea 
+        <Input
+          placeholder="Remarks"
+          textArea
           value={remark}
           onChange={(e) => setRemark(e.target.value)}
           className="mb-4"
         />
-
+ 
         <div className="text-right mt-6">
           <Button
             className="ltr:mr-2 rtl:ml-2"
@@ -452,6 +412,5 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
     </div>
   );
 };
-
-export default ComplianceDetailTable;
-
+ 
+export default ComplianceDetailTable

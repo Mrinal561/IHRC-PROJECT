@@ -374,7 +374,7 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
                         ? `${row.Owner.first_name} ${row.Owner.last_name}`
                         : null,
                 cell: ({ getValue }) => (
-                    <div className="w-32">{getValue() || 'Not Assigned'}</div>
+                    <div className="w-32">{getValue() || '--'}</div>
                 ),
             },
             {
@@ -385,7 +385,7 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
                         : null,
                 cell: ({ getValue }) => (
                     <div className="w-36">
-                        {getValue<string>() || 'Not Assigned'}
+                        {getValue<string>() || '--'}
                     </div>
                 ),
             },
