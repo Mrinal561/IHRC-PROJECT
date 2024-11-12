@@ -30,6 +30,7 @@ export const assignCompliancesToBranch = createAsyncThunk(
     async (complianceData: AssignCompliances) => {
         
         try {
+            console.log(complianceData)
             const { data } = await httpClient.post(endpoints.assign.create(), complianceData);
             return data;
         } catch(error){

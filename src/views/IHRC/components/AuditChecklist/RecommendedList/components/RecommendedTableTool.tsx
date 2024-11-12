@@ -44,14 +44,14 @@ const AssignChecklistButton = ({
         //     );
         //     return;
         // }
-        if (!companyGroupValue || !companyValue || !stateValue || !districtValue || !locationValue || !branchValue) {
-            toast.push(
-                <Notification title="Missing Information" type="danger">
-                    Please select all required fields (Company Group, Company, State, District, and Branch)
-                </Notification>
-            );
-            return;
-        }
+        // if (!companyGroupValue || !companyValue || !stateValue || !districtValue || !locationValue || !branchValue) {
+        //     toast.push(
+        //         <Notification title="Missing Information" type="danger">
+        //             Please select all required fields (Company Group, Company, State, District, and Branch)
+        //         </Notification>
+        //     );
+        //     return;
+        // }
         
         if (selectedComplianceIds.length === 0) {
             toast.push(
@@ -66,14 +66,14 @@ const AssignChecklistButton = ({
     };
 
     const handleConfirm = async () => {
-        if (!companyGroupValue || !companyValue || !stateValue || !districtValue || !locationValue || !branchValue) {
-            toast.push(
-                <Notification title="Missing Information" type="danger">
-                    Please select all required fields (Company Group, Company, State, District, and Branch)
-                </Notification>
-            );
-            return;
-        }
+        // if (!companyGroupValue || !companyValue || !stateValue || !districtValue || !locationValue || !branchValue) {
+        //     toast.push(
+        //         <Notification title="Missing Information" type="danger">
+        //             Please select all required fields (Company Group, Company, State, District, and Branch)
+        //         </Notification>
+        //     );
+        //     return;
+        // }
         setIsAssigning(true);
         
         const assignData = {
@@ -119,9 +119,9 @@ const AssignChecklistButton = ({
                 size="sm"
                 icon={<HiPlusCircle />}
                 onClick={handleAssignClick}
-                disabled={selectedComplianceIds.length === 0 || !branchValue || isAssigning}
+                // disabled={selectedComplianceIds.length === 0 || !branchValue || isAssigning}
             >
-                {isAssigning ? 'Assigning...' : 'Assign Checklist'}
+               Assign Checklist
             </Button>
 
             <Dialog
