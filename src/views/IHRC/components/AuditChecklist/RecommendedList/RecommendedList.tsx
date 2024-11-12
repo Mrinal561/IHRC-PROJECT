@@ -27,6 +27,7 @@ interface SelectOption {
 const RecommendedList = () => {
     const dispatch = useAppDispatch();
     const [isLoading, setIsLoading] = useState(false);
+    const [istableLoading, setIstableLoading] = useState(false)
     const [complianceData, setComplianceData] = useState<ComplianceData[]>([]);
     const [tableKey, setTableKey] = useState(0);
     const [selectedBranch, setSelectedBranch] = useState<BranchOption | null>(null);
@@ -80,6 +81,7 @@ const RecommendedList = () => {
                     (item: ComplianceData) => item.assign === false
                 );
                 setComplianceData(filteredData);
+                setIstableLoading(false)
             } else {
                 console.log('No data in API response or unexpected response structure');
             }
@@ -111,7 +113,7 @@ const RecommendedList = () => {
         
         // Fetch data with updated filters
         fetchComplianceData();
-    }, [selectedCompanyGroup, selectedCompany, selectedState, selectedLocation,  selectedDistrict, selectedBranch]);
+    }, [istableLoading]);
 
 
 
@@ -179,6 +181,8 @@ const RecommendedList = () => {
                 districtValue={selectedDistrict?.value || ''} 
                 locationValue={selectedLocation?.value || ''} 
                 onSelectedCompliancesChange={handleSelectedCompliancesChange}
+                onDataUpdate={fetchComplianceData}
+                setIstableLoading={setIstableLoading}
             />
         </AdaptableCard>
     );

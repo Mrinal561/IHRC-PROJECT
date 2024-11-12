@@ -74,7 +74,7 @@ const AssignChecklistButton = ({
         //     );
         //     return;
         // }
-        // setIsAssigning(true);
+        setIsAssigning(true);
         
         const assignData = {
             group_id: parseInt(companyGroupValue),
@@ -121,7 +121,7 @@ const AssignChecklistButton = ({
                 onClick={handleAssignClick}
                 // disabled={selectedComplianceIds.length === 0 || !branchValue || isAssigning}
             >
-                Assign Checklist
+               Assign Checklist
             </Button>
 
             <Dialog

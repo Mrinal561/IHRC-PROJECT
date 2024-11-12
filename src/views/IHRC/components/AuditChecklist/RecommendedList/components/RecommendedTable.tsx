@@ -1,3 +1,4 @@
+
 import React, { useMemo, useState, useEffect } from 'react'
 import DataTable from '@/components/shared/DataTable'
 import { Checkbox, Tooltip, Button, Notification, toast } from '@/components/ui'
@@ -10,7 +11,6 @@ import { useDispatch } from 'react-redux'
 import { 
     assignCompliancesToBranch,
 } from '@/store/slices/compliance/ComplianceApiSlice'
-import { fetchAllComplianceAssignments } from '@/store/slices/AssignedCompliance/assignedComplianceSlice'
 import { Loading } from '@/components/shared'
 
 interface ComplianceData {
@@ -46,14 +46,13 @@ interface RecommendedTableContentProps {
     loading: boolean
     tableKey: number
     branchValue?: string 
-    companyGroupValue?: string;
-    companyValue?: string;
-    stateValue?: string;
-    districtValue?: string;
+    companyGroupValue?: string
+    companyValue?: string
+    stateValue?: string
+    districtValue?: string
     locationValue?: string 
     onSelectedCompliancesChange: (selectedIds: number[]) => void
 }
-
 
 const ViewDetailsButton = ({ 
     compliance,
@@ -64,7 +63,8 @@ const ViewDetailsButton = ({
     locationValue,
     districtValue,
     onAssignSuccess,
-    onTableRerender
+    // onTableRerender,
+    setIstableLoading
 }: { 
     compliance: ComplianceData;
     branchValue?: string;
@@ -74,7 +74,8 @@ const ViewDetailsButton = ({
     locationValue?: string;
     districtValue?: string;
     onAssignSuccess: (complianceId: number) => void;
-    onTableRerender: () => void;
+    // onTableRerender: () => void;
+    setIstableLoading: () => void
 }) => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -86,15 +87,6 @@ const ViewDetailsButton = ({
     };
 
     const handleAssignCompliance = async () => {
-        // if (!companyGroupValue || !companyValue || !stateValue || !districtValue || !locationValue || !branchValue) {
-        //     toast.push(
-        //         <Notification title="Missing Information" type="danger">
-        //             Please select all required fields (Company Group, Company, State, District, and Branch)
-        //         </Notification>
-        //     );
-        //     return;
-        // }
-
         const assignData = {
             group_id: parseInt(companyGroupValue),
             company_id: parseInt(companyValue),
@@ -103,6 +95,7 @@ const ViewDetailsButton = ({
             branch_id: parseInt(branchValue),
             compliance_id: [compliance.id]
         };
+        console.log(assignData);
 
         try {
             await dispatch(assignCompliancesToBranch(assignData));
@@ -112,7 +105,8 @@ const ViewDetailsButton = ({
                     Assigned Successfully
                 </Notification>
             );
-            onTableRerender();
+            // onTableRerender();
+            setIstableLoading(true)
         } catch (error) {
             console.error('Failed to assign compliance:', error);
             toast.push( 
@@ -122,8 +116,6 @@ const ViewDetailsButton = ({
             );
         }
     };
-
-    const isAssignDisabled = !companyGroupValue || !companyValue || !stateValue || !districtValue || !locationValue || !branchValue;
 
     return (
         <div className="flex gap-2 items-center">
@@ -135,12 +127,11 @@ const ViewDetailsButton = ({
                     onClick={handleViewDetails}
                 />
             </Tooltip>
-            <Tooltip title= "Assign Compliance">
+            <Tooltip title="Assign Compliance">
                 <Button
                     size="sm"
                     onClick={handleAssignCompliance}
                     icon={<RiCheckLine />}
-                    // disabled={isAssignDisabled}
                 />
             </Tooltip>
         </div>
@@ -157,64 +148,39 @@ const RecommendedTable = ({
     stateValue,
     locationValue, 
     districtValue,
+    setIstableLoading,
     onSelectedCompliancesChange 
 }: RecommendedTableContentProps)  => {
     const dispatch = useDispatch()
     const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set())
     const [assignedItems, setAssignedItems] = useState<Set<number>>(new Set())
-    const [isLoadingAssigned, setIsLoadingAssigned] = useState(true)
     const [initialLoadComplete, setInitialLoadComplete] = useState(false)
-    const [checkboxState, setCheckboxState] = useState<{ [key: number]: boolean }>({});
+    const [checkboxState, setCheckboxState] = useState<{ [key: number]: boolean }>({})
     const [rerenderKey, setRerenderKey] = useState(0)
-    
+    const [tableData, setTableData] = useState({
+        total: 0,
+        pageIndex: 1,
+        pageSize: 10,
+        query: '',
+        sort: { order: '', key: '' },
+    })
 
-    // useEffect(() => {
-        const fetchAlreadyAssigned = async () => {
-            setIsLoadingAssigned(true)
-            try {
-                if (branchValue) {
-                    const response = await dispatch(fetchAllComplianceAssignments(parseInt(branchValue))).unwrap()
-                    const assignedIds = new Set(
-                        response.data.map((compliance: ComplianceData) => compliance.id)
-                    )
-                    setAssignedItems(assignedIds)
-                }
-            } catch (error) {
-                console.error('Failed to fetch assigned compliances:', error)
-                toast.push(
-                    <Notification title="Error" type="danger">
-                        Failed to fetch assigned compliances
-                    </Notification>
-                )
-            } finally {
-                setIsLoadingAssigned(false)
-                setInitialLoadComplete(true)
-            }
-        }
-        useEffect(() => {
-            fetchAlreadyAssigned()
-        }, [branchValue, dispatch])
-    // }, [branchValue, dispatch])
+    useEffect(() => {
+        setInitialLoadComplete(true)
+        setTableData(prev => ({
+            ...prev,
+            total: data.length
+        }))
+    }, [data])
 
-    // Filter out assigned items from the data
-    const filteredData = useMemo(() => {
-        return data.filter(item => !assignedItems.has(item.id))
-    }, [data, assignedItems])
-
-    // const isAllSelected = useMemo(() => {
-    //     if (filteredData.length === 0) return false;
-    //     return selectedItems.size === filteredData.length;
-    // }, [selectedItems.size, filteredData.length]);
-
-    const isAllSelected = useMemo(
-        () => selectedItems.size === data.length,
-        [selectedItems, data]
-      );
+    const isAllSelected = useMemo(() => {
+        if (data.length === 0) return false;
+        return selectedItems.size === data.length;
+    }, [selectedItems.size, data.length]);
 
     const isIndeterminate = useMemo(() => {
-        return selectedItems.size > 0 && selectedItems.size < filteredData.length;
-    }, [selectedItems.size, filteredData.length]);
-
+        return selectedItems.size > 0 && selectedItems.size < data.length;
+    }, [selectedItems.size, data.length]);
 
     const handleCheckboxChange = (id: number) => {
         setSelectedItems(prev => {
@@ -229,56 +195,29 @@ const RecommendedTable = ({
         });
     };
 
-
     const handleSelectAllChange = () => {
-        if (selectedItems.size === filteredData.length) {
-            // If all are selected, unselect all
+        if (selectedItems.size === data.length) {
             setSelectedItems(new Set());
             onSelectedCompliancesChange([]);
         } else {
-            // If not all are selected, select all
-            const newSelectedItems = new Set(filteredData.map(item => item.id));
+            const newSelectedItems = new Set(data.map(item => item.id));
             setSelectedItems(newSelectedItems);
             onSelectedCompliancesChange(Array.from(newSelectedItems));
         }
     };
 
-
     const handleAssignSuccess = async (complianceIdAssigned: number) => {
-        // Update the assigned items
-        // setAssignedItems(prev => new Set([...prev, complianceIdAssigned]));
-    
-        // Uncheck the selected item that was just assigned
         setSelectedItems(prev => {
             const newSet = new Set(prev);
             newSet.delete(complianceIdAssigned);
-            onSelectedCompliancesChange(Array.from(newSet)); // Notify parent of changes
+            onSelectedCompliancesChange(Array.from(newSet));
             return newSet;
         });
-        
     };
+
     const handleTableRerender = () => {
-        setRerenderKey(prev => prev + 1); // Increment key to force re-render
+        setRerenderKey(prev => prev + 1);
     };
-    const [tableData, setTableData] = useState({
-        total: 0,
-        pageIndex: 1,
-        pageSize: 10,
-        query: '',
-        sort: { order: '', key: '' },
-    })
-
-    useEffect(() => {
-        if (initialLoadComplete) {
-            setTableData(prev => ({
-                ...prev,
-                total: data.length
-            }))
-        }
-    }, [data, initialLoadComplete])
-
-    // Show loading state until both initial data and assigned items are loaded
-    const isLoading =  isLoadingAssigned
 
     const columns = useMemo(
         () => [
@@ -287,9 +226,7 @@ const RecommendedTable = ({
                     <div className="w-2">
                         <Checkbox
                             checked={isAllSelected}
-                            // indeterminate={isIndeterminate}
                             onChange={handleSelectAllChange}
-                            // disabled={filteredData.length === 0}
                         />
                     </div>
                 ),
@@ -405,27 +342,15 @@ const RecommendedTable = ({
                             districtValue={districtValue}
                             locationValue={locationValue}
                             onAssignSuccess={handleAssignSuccess}
-                            onTableRerender={handleTableRerender}
+                            // onTableRerender={IstableLoading}
+                            setIstableLoading={setIstableLoading}
                         />
                     </div>
                 ),
             }
         ],
-        [selectedItems, filteredData, isAllSelected, isIndeterminate, branchValue, companyGroupValue, companyValue, stateValue, districtValue, locationValue,handleTableRerender]
+        [selectedItems, data, isAllSelected, isIndeterminate, branchValue, companyGroupValue, companyValue, stateValue, districtValue, locationValue, setIstableLoading]
     );
-
-    // const onPaginationChange = (page: number) => {
-    //     const newTableData = cloneDeep(tableData)
-    //     newTableData.pageIndex = page
-    //     setTableData(newTableData)
-    // }
-
-    // const onSelectChange = (value: number) => {
-    //     const newTableData = cloneDeep(tableData)
-    //     newTableData.pageSize = Number(value)
-    //     newTableData.pageIndex = 1
-    //     setTableData(newTableData)
-    // }
 
     const onPaginationChange = (page: number) => {
         setTableData(prev => ({
@@ -442,12 +367,6 @@ const RecommendedTable = ({
         }))
     }
 
-    // const onSort = (sort: OnSortParam) => {
-    //     const newTableData = cloneDeep(tableData)
-    //     newTableData.sort = sort
-    //     setTableData(newTableData)
-    // }
-
     return (
         <div className="w-full overflow-x-auto">
             <DataTable
@@ -455,7 +374,7 @@ const RecommendedTable = ({
                 data={data}
                 skeletonAvatarColumns={[0]}
                 skeletonAvatarProps={{ className: 'rounded-md' }}
-                loading={loading || isLoading}
+                loading={loading}
                 pagingData={{
                     total: tableData.total,
                     pageIndex: tableData.pageIndex,
@@ -463,7 +382,6 @@ const RecommendedTable = ({
                 }}
                 onPaginationChange={onPaginationChange}
                 onSelectChange={onSelectChange}
-                // onSort={onSort}
                 stickyHeader={true}
                 stickyFirstColumn={true}
                 stickyLastColumn={true}
