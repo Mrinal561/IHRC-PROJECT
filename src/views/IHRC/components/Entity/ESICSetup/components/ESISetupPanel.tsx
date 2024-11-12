@@ -220,7 +220,7 @@ const ESISetupPanel: React.FC<ESISetupPanelProps> = ({ onClose, addESISetup }) =
             onChange={(option: SelectOption | null) => {
               setFormData(prev => ({
                 ...prev,
-                code_type: option?.value || ''
+                code_Type: option?.value || ''
               }));
             }}
           />
