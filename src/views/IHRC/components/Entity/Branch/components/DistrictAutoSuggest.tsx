@@ -158,7 +158,7 @@ const DistrictAutosuggest: React.FC<DistrictAutosuggestProps> = ({
               className="p-2 text-gray-600 cursor-pointer hover:bg-gray-100"
               onClick={() => handleCreateDistrict(value)}
             >
-              Create new district "{value}"
+            Press Enter to Create new district "{value}"
             </div>
           ) : (
             <div className="p-2 text-gray-500">

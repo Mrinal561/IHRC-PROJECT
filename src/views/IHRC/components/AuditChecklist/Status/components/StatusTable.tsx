@@ -13,26 +13,26 @@ import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
 import { useDispatch } from 'react-redux';
 import { approveRejectComplianceStatus } from '@/store/slices/approveRejected/approveRejectSlice';
-
+ 
 interface StatusTableProps {
   onFilterChange: (filter: string) => void;
   onSearch: (searchTerm: string) => void;
   onClearAll: () => void;
   currentFilter: string;
 }
-
+ 
 interface RejectDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: (reason: string) => void;
   complianceId?: number;  // Add this prop
 }
-
+ 
 interface BulkActionData {
   status: string;
   compliace_data_id: number[];
 }
-
+ 
 interface ComplianceData {
   id: number;
   uuid: string;
@@ -74,8 +74,8 @@ interface ComplianceData {
     created_at: string;
   }[];
 }
-
-
+ 
+ 
 const ConfirmDialog = ({ isOpen, onClose, onConfirm, title, message }) => {
   return (
     <Dialog
@@ -104,10 +104,10 @@ const ConfirmDialog = ({ isOpen, onClose, onConfirm, title, message }) => {
     </Dialog>
   );
 };
-
+ 
 const RejectDialog = ({ isOpen, onClose, onConfirm }) => {
   const [reason, setReason] = useState('');
-
+ 
   return (
     <Dialog
       isOpen={isOpen}
@@ -140,22 +140,22 @@ const RejectDialog = ({ isOpen, onClose, onConfirm }) => {
     </Dialog>
   );
 };
-
-
-
+ 
+ 
+ 
 const statusColor: Record<string, string> = {
   Approved: 'bg-emerald-500',
   Pending: 'bg-yellow-500',
   Rejected: 'bg-red-500',
 };
-
+ 
 const StatusTable: React.FC<StatusTableProps> = ({
   onSearch,
   onClearAll,
   onFilterChange,
   currentFilter,
 }) => {
-
+ 
   const dispatch = useDispatch();
   const [isProcessing, setIsProcessing] = useState(false);
   const [data, setData] = useState<ComplianceData[]>([]);
@@ -174,11 +174,11 @@ const StatusTable: React.FC<StatusTableProps> = ({
     status: '',
     compliace_data_id: []
   });
-  
-
+ 
+ 
   const fetchStatusData = async () => {
     console.log('Fetching status data...');
-    
+   
     setIsLoading(true);
     try {
       const response = await httpClient.get(endpoints.due.getAll(), {
@@ -196,37 +196,37 @@ const StatusTable: React.FC<StatusTableProps> = ({
       setIsLoading(false);
     }
   };
-
+ 
   const handleFilterChange = (filter: string) => {
     setDataStatus([filter.toLowerCase()]);
     fetchStatusData();
     console.log('filtered data', filteredData)
   };
-
+ 
   useEffect(() => {
     console.log('Fetching data due to update or status change...');
     fetchStatusData();
   }, [data_status, updateCounter]);
-
+ 
   // useEffect(() => {
   //   console.log('Initial component mount - Fetching data...');
   //   fetchStatusData();
   // }, [data_status]);
-
+ 
   // useEffect(() => {
   //   const filtered = currentFilter === 'ALL'
   //     ? data
   //     : data.filter(item => item.Status === currentFilter);
   //   setFilteredData(filtered);
   // }, [data, currentFilter]);
-
+ 
   const handleStatusChange = (id: number, newStatus: string) => {
     const updatedData = data.map((item) =>
       item.id === id ? { ...item, status: newStatus } : item
     );
     setData(updatedData);
     setFilteredData(updatedData);
-
+ 
     toast.push(
       <Notification
         title="Status Updated"
@@ -239,19 +239,19 @@ const StatusTable: React.FC<StatusTableProps> = ({
       }
     );
   };
-
+ 
   const handleBulkApprove = async () => {
     const bulkData: BulkActionData = {
       status: 'approved',
       compliace_data_id: Array.from(selectedItems)
     };
-    
+   
     console.log('Bulk Approve Data:', bulkData);
     setIsProcessing(true);
-    
+   
     try {
       await dispatch(approveRejectComplianceStatus(bulkData)).unwrap();
-      
+     
       toast.push(
         <Notification title="Bulk Action Completed" type="success">
           {selectedItems.size} items approved successfully
@@ -274,8 +274,8 @@ const StatusTable: React.FC<StatusTableProps> = ({
       setIsConfirmDialogOpen(false);
     }
   };
-  
-
+ 
+ 
   const BulkDownload = () => {
     toast.push(
       <Notification
@@ -289,8 +289,8 @@ const StatusTable: React.FC<StatusTableProps> = ({
       }
     );
   }
-
-
+ 
+ 
   const handleBulkReject = async (reason: string) => {
     if (!reason) {
       toast.push(
@@ -301,18 +301,18 @@ const StatusTable: React.FC<StatusTableProps> = ({
       );
       return;
     }
-  
+ 
     const bulkData: BulkActionData = {
       status: 'rejected',
       compliace_data_id: Array.from(selectedItems)
     };
-    
+   
     console.log('Bulk Reject Data:', bulkData);
     setIsProcessing(true);
-    
+   
     try {
       await dispatch(approveRejectComplianceStatus(bulkData)).unwrap();
-      
+     
       toast.push(
         <Notification title="Bulk Action Completed" type="success">
           {selectedItems.size} items rejected successfully
@@ -336,7 +336,7 @@ const StatusTable: React.FC<StatusTableProps> = ({
       setIsRejectDialogOpen(false);
     }
   };
-
+ 
   const handleBulkSelection = (isSelectAll: boolean) => {
     if (isSelectAll) {
       const allIds = filteredData.map(item => item.id);
@@ -353,7 +353,7 @@ const StatusTable: React.FC<StatusTableProps> = ({
       }));
     }
   };
-
+ 
   const handleSingleSelection = (id: number, checked: boolean) => {
     setSelectedItems(prev => {
       const newSet = new Set(prev);
@@ -364,35 +364,35 @@ const StatusTable: React.FC<StatusTableProps> = ({
       }
       return newSet;
     });
-
+ 
     setSelectedData(prev => ({
       ...prev,
-      compliace_data_id: checked 
+      compliace_data_id: checked
         ? [...prev.compliace_data_id, id]
         : prev.compliace_data_id.filter(itemId => itemId !== id)
     }));
   };
-
-
-
+ 
+ 
+ 
   const handleSingleApprove = async (id: number) => {
     const singleApproveData: BulkActionData = {
       status: 'approved',
       compliace_data_id: [id]
     };
-    
+   
     setIsProcessing(true);
-    
+   
     try {
       await dispatch(approveRejectComplianceStatus(singleApproveData)).unwrap();
-      
+     
       toast.push(
         <Notification title="Status Updated" type="success">
           Compliance status updated to approved
         </Notification>,
         { placement: 'top-end' }
       );
-      
+     
       setUpdateCounter(prev => prev + 1);
       // Refresh the data after successful update
       // fetchStatusData();
@@ -408,7 +408,7 @@ const StatusTable: React.FC<StatusTableProps> = ({
       setIsProcessing(false);
     }
   };
-
+ 
   const handleSingleReject = async (id: number, reason: string) => {
     console.log("single bulk is called")
     if (!reason) {
@@ -420,18 +420,18 @@ const StatusTable: React.FC<StatusTableProps> = ({
       );
       return;
     }
-
+ 
     const singleRejectData: BulkActionData = {
       status: 'rejected',
       compliace_data_id: [id]
     };
     console.log(singleRejectData)
-    
+   
     setIsProcessing(true);
-    
+   
     try {
       await dispatch(approveRejectComplianceStatus(singleRejectData)).unwrap();
-      
+     
       toast.push(
         <Notification title="Status Updated" type="success">
           Compliance status updated to rejected
@@ -439,7 +439,7 @@ const StatusTable: React.FC<StatusTableProps> = ({
         </Notification>,
         { placement: 'top-end' }
       );
-      
+     
       setUpdateCounter(prev => prev + 1);
       // Refresh the data after successful update
       // fetchStatusData();
@@ -457,36 +457,42 @@ const StatusTable: React.FC<StatusTableProps> = ({
       setCurrentRejectId(null);
     }
   };
-
+ 
   // Update the existing handlers to use the new functions
   const handleReject = (id: number) => {
     setCurrentRejectId(id);
     setIsRejectDialogOpen(true);
   };
-
+ 
   const handleConfirmReject = (reason: string) => {
     if (currentRejectId !== null) {
       handleSingleReject(currentRejectId, reason);
     }
   };
-
-
+ 
+ 
   const columns: ColumnDef<ComplianceData>[] = useMemo(
     () => [
       {
         header: ({ table }) => (
-          <Checkbox
-            checked={selectedItems.size === filteredData.length}
-            onChange={(checked: boolean) => handleBulkSelection(selectedItems.size !== filteredData.length)}
-          />
-        ),
+          filteredData.some((item) => item.data_status === 'pending')? (
+            <Checkbox
+              checked={selectedItems.size === filteredData.length}
+              onChange={(checked: boolean) => handleBulkSelection(selectedItems.size!== filteredData.length)}
+            />
+          ) : (
+            <div /> // or <span /> or any other empty element, to maintain table structure
+          )),
         id: 'select',
         cell: ({ row }) => (
-          <Checkbox
-            checked={selectedItems.has(row.original.id)}
-            onChange={(checked: boolean) => handleSingleSelection(row.original.id, checked)}
-          />
-        ),
+          row.original.data_status === 'pending'? (
+            <Checkbox
+              checked={selectedItems.has(row.original.id)}
+              onChange={(checked: boolean) => handleSingleSelection(row.original.id, checked)}
+            />
+          ) : (
+            <div /> // or <span /> or any other empty element, to maintain table structure
+          ))
       },
       {
         header: 'ID',
@@ -614,29 +620,29 @@ const StatusTable: React.FC<StatusTableProps> = ({
     query: '',
     sort: { order: '', key: '' },
   });
-
+ 
   const onPaginationChange = (page: number) => {
     setTableData(prev => ({ ...prev, pageIndex: page }));
   };
-
+ 
   const onSelectChange = (value: number) => {
     setTableData(prev => ({ ...prev, pageSize: Number(value), pageIndex: 1 }));
   };
-
+ 
   const onSort = (sort: OnSortParam) => {
     setTableData(prev => ({ ...prev, sort }));
   };
-
+ 
   useEffect(() => {
     setTableData(prev => ({ ...prev, total: filteredData.length }));
   }, [filteredData]);
-
+ 
   const handleDateRangeApply = (start: Date, end: Date) => {
     setStartDate(start);
     setEndDate(end);
     // You can add filtering logic here based on the selected date range
   }
-
+ 
   return (
     <div className="relative">
       <div className="flex items-center justify-between my-8">
@@ -649,7 +655,7 @@ const StatusTable: React.FC<StatusTableProps> = ({
         </div>
         <div className="flex gap-2">
         <StatusTableSearch onSearch={onSearch} />
-
+ 
           <CustomDateRangePicker onApply={handleDateRangeApply} />
           <Button
             size="sm"
@@ -711,5 +717,5 @@ const StatusTable: React.FC<StatusTableProps> = ({
     </div>
   );
 };
-
+ 
 export default StatusTable;

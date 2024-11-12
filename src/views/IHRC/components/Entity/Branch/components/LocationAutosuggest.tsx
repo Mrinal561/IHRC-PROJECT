@@ -157,7 +157,7 @@ const LocationAutosuggest: React.FC<LocationAutosuggestProps> = ({
               className="p-2 text-gray-600 cursor-pointer hover:bg-gray-100"
               onClick={() => handleCreateLocation(value)}
             >
-              Create new location "{value}"
+              Press Enter to create location "{value}"
             </div>
           ) : (
             <div className="p-2 text-gray-500">
