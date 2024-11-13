@@ -11,7 +11,8 @@ import {
     assignCompliancesToBranch,
 } from '@/store/slices/compliance/ComplianceApiSlice'
 import { Loading } from '@/components/shared'
- 
+import { type } from '../../../../../../components/ui/ScrollBar/index';
+
 interface ComplianceData {
     id: number
     uuid: string
@@ -153,7 +154,16 @@ const ViewDetailsButton = ({
         console.log(assignData);
  
         try {
-            await dispatch(assignCompliancesToBranch(assignData));
+            await dispatch(assignCompliancesToBranch(assignData))
+            .catch((error:any)=>{
+                error.map((v:string)=>{
+                    toast.push(
+                        <Notification title='error' type='danger'>
+                                {v}
+                            </Notification>
+                    )
+                })
+            })
             onAssignSuccess(compliance.id);
             toast.push(
                 <Notification title="Success" type="success">
@@ -202,6 +212,7 @@ const RecommendedTable = ({
     stateValue,
     locationValue,
     districtValue,
+    // onDataUpdate,
     setIstableLoading,
     onSelectedCompliancesChange
 }: RecommendedTableContentProps)  => {
@@ -214,7 +225,7 @@ const RecommendedTable = ({
     const [tableData, setTableData] = useState({
         total: 0,
         pageIndex: 1,
-        pageSize: 10,
+        pageSize: 5,
         query: '',
         sort: { order: '', key: '' },
     })
@@ -407,20 +418,20 @@ const RecommendedTable = ({
     );
  
     const onPaginationChange = (page: number) => {
-        setTableData(prev => ({
-            ...prev,
-            pageIndex: page
-        }))
-    }
- 
-    const onSelectChange = (value: number) => {
-        setTableData(prev => ({
-            ...prev,
-            pageSize: Number(value),
-            pageIndex: 1
-        }))
-    }
- 
+        setTableData(prev => ({...prev, pageIndex: page }));
+        fetchDataWithPagination(); // New function to fetch data with updated pagination
+      };
+    
+      const onSelectChange = (value: number) => {
+        setTableData(prev => ({...prev, pageSize: Number(value), pageIndex: 1 }));
+        fetchDataWithPagination(); // New function to fetch data with updated pagination
+      };
+    
+      const fetchDataWithPagination = () => {
+        // onDataUpdate(tableData.pageIndex, tableData.pageSize); // Callback to RecommendedList
+        setIstableLoading(true);
+      };
+
     return (
         <div className="w-full overflow-x-auto">
             <DataTable

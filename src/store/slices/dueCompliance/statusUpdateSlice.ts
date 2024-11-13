@@ -139,6 +139,7 @@ import { StatusRequest, StatusResponse } from '@/@types/status';
 // import { httpClient } from '@/utils/httpClient';
 import { endpoints } from '@/api/endpoint';
 import httpClient  from '@/api/http-client';    
+import { AxiosError } from 'axios';
 
 export interface StatusState {
   loading: boolean;
@@ -157,9 +158,14 @@ export const updateStatus = createAsyncThunk<
   { id: string; data: StatusRequest }
 >(
   'status/update',
-  async ({ id, data }) => {
-    const { data: responseData } = await httpClient.put(endpoints.due.updateStatus(id), data);
-    return responseData as StatusResponse;
+  async ({ id, data },{rejectWithValue}) => {
+    try{
+      const { data: responseData } = await httpClient.put(endpoints.due.updateStatus(id), data);
+      return responseData as StatusResponse;
+    } catch(error:any) {
+      const err = error as AxiosError<any>
+      return rejectWithValue(err.response?.data.message)
+  }
   }
 );
 
