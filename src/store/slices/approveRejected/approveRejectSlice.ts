@@ -2,6 +2,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { endpoints } from '@/api/endpoint';
 import httpClient from "@/api/http-client";
+import { AxiosError } from 'axios';
 
 export type ApproveRejectCompliances = {
     status: string;
@@ -22,9 +23,15 @@ const initialState: ComplianceState = {
 
 export const approveRejectComplianceStatus = createAsyncThunk(
     'compliance/approveRejectStatus',
-    async (statusData: ApproveRejectCompliances) => {
-        const { data } = await httpClient.put(endpoints.compliance.approveReject(), statusData);
-        return data;
+    async (statusData: ApproveRejectCompliances, { rejectWithValue }) => {
+        try{
+            const { data } = await httpClient.put(endpoints.compliance.approveReject(), statusData);
+            return data;
+        } catch (error: any) {
+            console.log(error)
+            // const err = error as AxiosError<any>
+            return rejectWithValue(error.response?.data.message)
+        }
     }
 );
 
