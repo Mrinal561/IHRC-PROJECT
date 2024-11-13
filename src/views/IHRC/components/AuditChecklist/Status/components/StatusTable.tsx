@@ -8,7 +8,6 @@ import StatusTableSearch from './StatusTableSearch';
 import { useNavigate } from 'react-router-dom';
 import { HiDownload } from 'react-icons/hi';
 import CustomDateRangePicker from '../../../Home/components/CustomDateRangePicker';
-// import { dummyData, ComplianceData } from '@/views/IHRC/store/dummyData';
 import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
 import { useDispatch } from 'react-redux';
@@ -19,13 +18,6 @@ interface StatusTableProps {
   onSearch: (searchTerm: string) => void;
   onClearAll: () => void;
   currentFilter: string;
-}
-
-interface RejectDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: (reason: string) => void;
-  complianceId?: number;  // Add this prop
 }
 
 interface BulkActionData {
@@ -75,6 +67,12 @@ interface ComplianceData {
   }[];
 }
 
+interface RejectDialogProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: (reason: string) => void;
+  currentRejectId: number | null;
+}
 
 const ConfirmDialog = ({ isOpen, onClose, onConfirm, title, message }) => {
   return (
@@ -86,27 +84,26 @@ const ConfirmDialog = ({ isOpen, onClose, onConfirm, title, message }) => {
       <h5 className="mb-4">{title}</h5>
       <p>{message}</p>
       <div className="mt-6 text-right">
-        <Button
-          size="sm"
-          className="mr-2"
-          onClick={onClose}
-        >
-          Cancel
-        </Button>
-        <Button
-          variant="solid"
-          size="sm"
-          onClick={onConfirm}
-        >
-          Confirm
-        </Button>
+        <Button size="sm" className="mr-2" onClick={onClose}>Cancel</Button>
+        <Button variant="solid" size="sm" onClick={onConfirm}>Confirm</Button>
       </div>
     </Dialog>
   );
 };
 
-const RejectDialog = ({ isOpen, onClose, onConfirm }) => {
+const RejectDialog: React.FC<RejectDialogProps> = ({ 
+  isOpen, 
+  onClose, 
+  onConfirm,
+  currentRejectId 
+}) => {
   const [reason, setReason] = useState('');
+
+  const handleConfirm = () => {
+    onConfirm(reason);
+    setReason('');
+    onClose();
+  };
 
   return (
     <Dialog
@@ -114,7 +111,7 @@ const RejectDialog = ({ isOpen, onClose, onConfirm }) => {
       onClose={onClose}
       width={400}
     >
-      <h5 className="mb-4">Reject Compliance</h5>
+      <h5 className="mb-4">{currentRejectId !== null ? 'Reject Compliance' : 'Bulk Reject Compliances'}</h5>
       <Input
         textArea
         value={reason}
@@ -125,28 +122,19 @@ const RejectDialog = ({ isOpen, onClose, onConfirm }) => {
         <Button
           size="sm"
           className="mr-2"
-          onClick={onClose}
+          onClick={() => {
+            setReason('');
+            onClose();
+          }}
         >
           Cancel
         </Button>
-        <Button
-          variant="solid"
-          size="sm"
-          onClick={onConfirm}
-        >
+        <Button variant="solid" size="sm" onClick={handleConfirm}>
           Confirm
         </Button>
       </div>
     </Dialog>
   );
-};
-
-
-
-const statusColor: Record<string, string> = {
-  Approved: 'bg-emerald-500',
-  Pending: 'bg-yellow-500',
-  Rejected: 'bg-red-500',
 };
 
 const StatusTable: React.FC<StatusTableProps> = ({
@@ -155,8 +143,9 @@ const StatusTable: React.FC<StatusTableProps> = ({
   onFilterChange,
   currentFilter,
 }) => {
-
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
   const [isProcessing, setIsProcessing] = useState(false);
   const [data, setData] = useState<ComplianceData[]>([]);
   const [filteredData, setFilteredData] = useState<ComplianceData[]>([]);
@@ -166,7 +155,6 @@ const StatusTable: React.FC<StatusTableProps> = ({
   const [currentRejectId, setCurrentRejectId] = useState<number | null>(null);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [data_status, setDataStatus] = useState(['pending']);
   const [updateCounter, setUpdateCounter] = useState(0);
@@ -174,11 +162,9 @@ const StatusTable: React.FC<StatusTableProps> = ({
     status: '',
     compliace_data_id: []
   });
-  
 
   const fetchStatusData = async () => {
     console.log('Fetching status data...');
-    
     setIsLoading(true);
     try {
       const response = await httpClient.get(endpoints.due.getAll(), {
@@ -189,7 +175,6 @@ const StatusTable: React.FC<StatusTableProps> = ({
       console.log('API Response:', response.data);
       setData(response.data);
       setFilteredData(response.data.data);
-      console.log("the data after filter is :", filteredData)
     } catch (error) {
       console.error('Error fetching status data:', error);
     } finally {
@@ -200,7 +185,6 @@ const StatusTable: React.FC<StatusTableProps> = ({
   const handleFilterChange = (filter: string) => {
     setDataStatus([filter.toLowerCase()]);
     fetchStatusData();
-    console.log('filtered data', filteredData)
   };
 
   useEffect(() => {
@@ -208,45 +192,12 @@ const StatusTable: React.FC<StatusTableProps> = ({
     fetchStatusData();
   }, [data_status, updateCounter]);
 
-  // useEffect(() => {
-  //   console.log('Initial component mount - Fetching data...');
-  //   fetchStatusData();
-  // }, [data_status]);
-
-  // useEffect(() => {
-  //   const filtered = currentFilter === 'ALL'
-  //     ? data
-  //     : data.filter(item => item.Status === currentFilter);
-  //   setFilteredData(filtered);
-  // }, [data, currentFilter]);
-
-  const handleStatusChange = (id: number, newStatus: string) => {
-    const updatedData = data.map((item) =>
-      item.id === id ? { ...item, status: newStatus } : item
-    );
-    setData(updatedData);
-    setFilteredData(updatedData);
-
-    toast.push(
-      <Notification
-        title="Status Updated"
-        type="success"
-      >
-        Compliance status updated to {newStatus}
-      </Notification>,
-      {
-        placement: 'top-end',
-      }
-    );
-  };
-
   const handleBulkApprove = async () => {
     const bulkData: BulkActionData = {
       status: 'approved',
       compliace_data_id: Array.from(selectedItems)
     };
     
-    console.log('Bulk Approve Data:', bulkData);
     setIsProcessing(true);
     
     try {
@@ -274,67 +225,102 @@ const StatusTable: React.FC<StatusTableProps> = ({
       setIsConfirmDialogOpen(false);
     }
   };
-  
-
-  const BulkDownload = () => {
-    toast.push(
-      <Notification
-        title="Downloaded Successfully"
-        type="success"
-      >
-        <p>All Compliances Downloaded Successfully</p>
-      </Notification>,
-      {
-        placement: 'top-end',
-      }
-    );
-  }
-
 
   const handleBulkReject = async (reason: string) => {
     if (!reason) {
       toast.push(
-        <Notification title="Bulk Reject Cancelled" type="warning">
+        <Notification title="Rejection Cancelled" type="warning">
           Rejection cancelled. No reason provided.
         </Notification>,
         { placement: 'top-end' }
       );
       return;
     }
-  
+
     const bulkData: BulkActionData = {
       status: 'rejected',
-      compliace_data_id: Array.from(selectedItems)
+      compliace_data_id: currentRejectId !== null ? [currentRejectId] : Array.from(selectedItems)
     };
     
-    console.log('Bulk Reject Data:', bulkData);
+    console.log('Reject Data:', bulkData);
     setIsProcessing(true);
     
     try {
-      await dispatch(approveRejectComplianceStatus(bulkData)).unwrap();
-      
-      toast.push(
-        <Notification title="Bulk Action Completed" type="success">
-          {selectedItems.size} items rejected successfully
-          <p>Reason: {reason}</p>
-        </Notification>,
-        { placement: 'top-end' }
-      );
-      setUpdateCounter(prev => prev + 1);
+      const res = await dispatch(approveRejectComplianceStatus(bulkData)).unwrap();
+
+      if(res) {
+        toast.push(
+          <Notification title="Status Updated" type="success">
+            {currentRejectId !== null ? 'Compliance' : `${selectedItems.size} items`} rejected successfully
+            <p>Reason: {reason}</p>
+          </Notification>,
+          { placement: 'top-end' }
+        );
+        setUpdateCounter(prev => prev + 1);
+      }
     } catch (error) {
-      console.error('Failed to reject compliances:', error);
+      console.error('Failed to reject compliance(s):', error);
       toast.push(
         <Notification title="Failed" type="danger">
-          Failed to reject compliances
+          Failed to reject compliance(s)
         </Notification>,
         { placement: 'top-end' }
       );
     } finally {
       setIsProcessing(false);
-      setSelectedItems(new Set());
-      setSelectedData({ status: '', compliace_data_id: [] });
+      if (currentRejectId === null) {
+        setSelectedItems(new Set());
+        setSelectedData({ status: '', compliace_data_id: [] });
+      }
       setIsRejectDialogOpen(false);
+      setCurrentRejectId(null);
     }
+  };
+
+  const handleSingleApprove = async (id: number) => {
+    const singleApproveData: BulkActionData = {
+      status: 'approved',
+      compliace_data_id: [id]
+    };
+    
+    setIsProcessing(true);
+    
+    try {
+      await dispatch(approveRejectComplianceStatus(singleApproveData)).unwrap();
+      
+      toast.push(
+        <Notification title="Status Updated" type="success">
+          Compliance status updated to approved
+        </Notification>,
+        { placement: 'top-end' }
+      );
+      
+      setUpdateCounter(prev => prev + 1);
+    } catch (error) {
+      console.error('Failed to approve compliance:', error);
+      toast.push(
+        <Notification title="Failed" type="danger">
+          Failed to approve compliance
+        </Notification>,
+        { placement: 'top-end' }
+      );
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleReject = (id: number) => {
+    setCurrentRejectId(id);
+    setIsRejectDialogOpen(true);
+  };
+
+  const BulkDownload = () => {
+    toast.push(
+      <Notification title="Downloaded Successfully" type="success">
+        <p>All Compliances Downloaded Successfully</p>
+      </Notification>,
+      { placement: 'top-end' }
+    );
   };
 
   const handleBulkSelection = (isSelectAll: boolean) => {
@@ -373,133 +359,30 @@ const StatusTable: React.FC<StatusTableProps> = ({
     }));
   };
 
-
-
-  const handleSingleApprove = async (id: number) => {
-    const singleApproveData: BulkActionData = {
-      status: 'approved',
-      compliace_data_id: [id]
-    };
-    
-    setIsProcessing(true);
-    
-    try {
-      await dispatch(approveRejectComplianceStatus(singleApproveData)).unwrap();
-      
-      toast.push(
-        <Notification title="Status Updated" type="success">
-          Compliance status updated to approved
-        </Notification>,
-        { placement: 'top-end' }
-      );
-      
-      setUpdateCounter(prev => prev + 1);
-      // Refresh the data after successful update
-      // fetchStatusData();
-    } catch (error) {
-      console.error('Failed to approve compliance:', error);
-      toast.push(
-        <Notification title="Failed" type="danger">
-          Failed to approve compliance
-        </Notification>,
-        { placement: 'top-end' }
-      );
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  const handleSingleReject = async (id: number, reason: string) => {
-    console.log("single bulk is called")
-    if (!reason) {
-      toast.push(
-        <Notification title="Reject Cancelled" type="warning">
-          Rejection cancelled. No reason provided.
-        </Notification>,
-        { placement: 'top-end' }
-      );
-      return;
-    }
-
-    const singleRejectData: BulkActionData = {
-      status: 'rejected',
-      compliace_data_id: [id]
-    };
-    console.log(singleRejectData)
-    
-    setIsProcessing(true);
-    
-    try {
-      await dispatch(approveRejectComplianceStatus(singleRejectData)).unwrap();
-      
-      toast.push(
-        <Notification title="Status Updated" type="success">
-          Compliance status updated to rejected
-          <p>Reason: {reason}</p>
-        </Notification>,
-        { placement: 'top-end' }
-      );
-      
-      setUpdateCounter(prev => prev + 1);
-      // Refresh the data after successful update
-      // fetchStatusData();
-    } catch (error) {
-      console.error('Failed to reject compliance:', error);
-      toast.push(
-        <Notification title="Failed" type="danger">
-          Failed to reject compliance
-        </Notification>,
-        { placement: 'top-end' }
-      );
-    } finally {
-      setIsProcessing(false);
-      setIsRejectDialogOpen(false);
-      setCurrentRejectId(null);
-    }
-  };
-
-  // Update the existing handlers to use the new functions
-  const handleReject = (id: number) => {
-    setCurrentRejectId(id);
-    setIsRejectDialogOpen(true);
-  };
-
-  const handleConfirmReject = (reason: string) => {
-    if (currentRejectId !== null) {
-      handleSingleReject(currentRejectId, reason);
-    }
-  };
-
-
   const columns: ColumnDef<ComplianceData>[] = useMemo(
     () => [
       {
         header: ({ table }) => (
-          filteredData.some((item) => item.data_status === 'pending')? (
+          filteredData.some((item) => item.data_status === 'pending') ? (
             <Checkbox
               checked={selectedItems.size === filteredData.length}
-              onChange={(checked: boolean) => handleBulkSelection(selectedItems.size!== filteredData.length)}
+              onChange={(checked: boolean) => handleBulkSelection(selectedItems.size !== filteredData.length)}
             />
           ) : (
-            <div /> // or <span /> or any other empty element, to maintain table structure
-          )),
+            <div />
+          )
+        ),
         id: 'select',
         cell: ({ row }) => (
-          row.original.data_status === 'pending'? (
+          row.original.data_status === 'pending' ? (
             <Checkbox
               checked={selectedItems.has(row.original.id)}
               onChange={(checked: boolean) => handleSingleSelection(row.original.id, checked)}
             />
           ) : (
-            <div /> // or <span /> or any other empty element, to maintain table structure
-          ))
-      },
-      {
-        header: 'ID',
-        accessorKey: 'ac_compliance_id',
-        cell: (props) => (
-          <div className="w-24 text-start">{props.getValue()}</div>
-        ),
+            <div />
+          )
+        )
       },
       {
         header: 'Legislation',
@@ -610,9 +493,11 @@ const StatusTable: React.FC<StatusTableProps> = ({
           );
         },
       },
+      // ... rest of the columns remain the same
     ],
-    [selectedItems, filteredData, handleStatusChange, handleReject, navigate]
+    [selectedItems, filteredData, handleBulkSelection, handleSingleSelection]
   );
+
   const [tableData, setTableData] = useState({
     total: data.length,
     pageIndex: 1,
@@ -640,22 +525,19 @@ const StatusTable: React.FC<StatusTableProps> = ({
   const handleDateRangeApply = (start: Date, end: Date) => {
     setStartDate(start);
     setEndDate(end);
-    // You can add filtering logic here based on the selected date range
-  }
+  };
 
   return (
     <div className="relative">
       <div className="flex items-center justify-between my-8">
         <div className="flex flex-row items-center gap-4">
-          {/* <StatusTableFilter onFilterChange={onFilterChange} currentFilter={currentFilter} /> */}
           <StatusTableFilter
-        onFilterChange={handleFilterChange}
-        currentFilter={data_status[0]}
-      />
+            onFilterChange={handleFilterChange}
+            currentFilter={data_status[0]}
+          />
         </div>
         <div className="flex gap-2">
-        <StatusTableSearch onSearch={onSearch} />
-
+          <StatusTableSearch onSearch={onSearch} />
           <CustomDateRangePicker onApply={handleDateRangeApply} />
           <Button
             size="sm"
@@ -669,7 +551,10 @@ const StatusTable: React.FC<StatusTableProps> = ({
           </Button>
           <Button
             size="sm"
-            onClick={() => setIsRejectDialogOpen(true)}
+            onClick={() => {
+              setCurrentRejectId(null);
+              setIsRejectDialogOpen(true);
+            }}
             disabled={selectedItems.size === 0}
             variant='solid'
             color='red-600'
@@ -706,14 +591,11 @@ const StatusTable: React.FC<StatusTableProps> = ({
         message={`Are you sure you want to approve ${selectedItems.size} selected items?`}
       />
       <RejectDialog
-        isOpen={isRejectDialogOpen}
-        onClose={() => setIsRejectDialogOpen(false)}
-        onConfirm={(reason) => {
-          if (currentRejectId !== null) {
-            handleSingleReject(currentRejectId, reason);
-          }
-        }}
-      />
+  isOpen={isRejectDialogOpen}
+  onClose={() => setIsRejectDialogOpen(false)}
+  onConfirm={handleBulkReject}
+  currentRejectId={currentRejectId}
+/>
     </div>
   );
 };
