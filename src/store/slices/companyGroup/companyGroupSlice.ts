@@ -130,7 +130,7 @@ export const fetchCompanyGroupById = createAsyncThunk(
           state.loading = false;
         //   state.companyGroups.push(action.payload);
         })
-        .addCase(fetchCompanyGroups.rejected, (state, action) => {
+        .addCase(createCompanyGroup.rejected, (state, action) => {
           state.loading = false;
           state.error = action.payload as string;
         })
@@ -146,7 +146,7 @@ export const fetchCompanyGroupById = createAsyncThunk(
         //     state.companyGroups[index] = action.payload;
         //   }
         })
-        .addCase(fetchCompanyGroups.rejected, (state, action) => {
+        .addCase(updateCompanyGroup.rejected, (state, action) => {
           state.loading = false;
           state.error = action.payload as string;
         })
@@ -159,7 +159,7 @@ export const fetchCompanyGroupById = createAsyncThunk(
           state.loading = false;
         //   state.companyGroups = state.companyGroups.filter((g) => g.id !== action.payload);
         })
-        .addCase(fetchCompanyGroups.rejected, (state, action) => {
+        .addCase(deleteCompanyGroup.rejected, (state, action) => {
           state.loading = false;
           state.error = action.payload as string;
         })
@@ -172,7 +172,7 @@ export const fetchCompanyGroupById = createAsyncThunk(
           state.loading = false;
           state.currentcompanyGroup = action.payload;
         })
-        .addCase(fetchCompanyGroups.rejected, (state, action) => {
+        .addCase(fetchCompanyGroupById.rejected, (state, action) => {
           state.loading = false;
           state.error = action.payload as string;
         })
