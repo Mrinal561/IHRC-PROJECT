@@ -138,7 +138,17 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
                         id: activeRowId.toString(),
                         data: updateData,
                     }),
-                ).unwrap()
+                )
+                .unwrap()
+                .catch((error:any)=>{
+                    error.map((v:string)=>{
+                        toast.push(
+                            <Notification title='error' type='danger'>
+                                    {v}
+                                </Notification>
+                        )
+                    })
+                })
 
                 toast.push(
                     <Notification title="Success" type="success">

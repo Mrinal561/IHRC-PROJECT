@@ -133,61 +133,22 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
     setSelectedStatus(value);
   }, []);
 
-  // const handleUpdateStatus = async () => {
-  //   if (!selectedCompliance || !selectedStatus) return;
 
-  //   const formData = new FormData()
-  //   formData.append('status', selectedStatus.value)
-  //   formData.append('remark', remark)
-  //   if (selectedFile) {
-  //       formData.append('document', selectedFile)
-  //   }
-  
-  //   try {
-  //     console.log(selectedFile);
-  //     // return ;
-  //     await dispatch(updateStatus({ id: selectedCompliance.id.toString(), data: formData })).unwrap();
-  //     // toast.success('Status updated successfully');
-  //     toast.push(
-  //                 <Notification title="success" type="success">
-  //                   Status Uploaded successfully
-  //                 </Notification>
-  //               );
-  //     setIsStatusDialogOpen(false)
-  //     onDialogClose();
-
-  //     if (onDataUpdate) {
-  //       onDataUpdate();
-  //     }
-
-
-
-  //   } catch (error) {
-  //     console.error('Error updating status:', error);
-  //     setIsStatusDialogOpen(false)
-  //     toast.push(
-  //       <Notification title="Error" type="danger">
-  //         error
-  //       </Notification>
-  //     );
-  //   }
-  // };
-  
   const handleUpdateStatus = async () => {
-    if (!selectedCompliance || !selectedStatus) {
-      toast.push(
-        <Notification title="Error" type="danger">
-          Please select a status and provide a remark.
-        </Notification>
-      );
-      return;
-    }
+    // if (!selectedCompliance || !selectedStatus) {
+    //   toast.push(
+    //     <Notification title="Error" type="danger">
+    //       Please select a status and provide a remark.
+    //     </Notification>
+    //   );
+    //   return;
+    // }
   
     const formData = new FormData();
     formData.append('status', selectedStatus.value);
     formData.append('remark', remark);
   
-    if (selectedCompliance.compliance_detail.proof_mandatory) {
+    if (selectedCompliance?.compliance_detail.proof_mandatory) {
       if (!selectedFile) {
         toast.push(
           <Notification title="Error" type="danger">
@@ -203,14 +164,27 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
   
     try {
       console.log(selectedFile);
-      await dispatch(updateStatus({ id: selectedCompliance.id.toString(), data: formData })).unwrap();
-      toast.push(
-        <Notification title="Success" type="success">
-          Status updated successfully.
-        </Notification>
-      );
-      setIsStatusDialogOpen(false);
-      onDialogClose();
+     const res = await dispatch(updateStatus({ id: selectedCompliance.id.toString(), data: formData }))
+      .unwrap()
+      .catch((error: any) => {
+                    error.map((v: string) =>
+                        toast.push(
+                            <Notification title="Error" type="danger">
+                                {v}
+                            </Notification>,
+                        ),
+                    )
+                })
+      if(res){
+        setIsStatusDialogOpen(false);
+        onDialogClose();
+        toast.push(
+          <Notification title="Success" type="success">
+            Status updated successfully.
+          </Notification>
+        );
+        
+      }
   
       if (onDataUpdate) {
         onDataUpdate();

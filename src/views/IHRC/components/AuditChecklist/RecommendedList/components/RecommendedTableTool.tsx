@@ -35,28 +35,6 @@ const AssignChecklistButton = ({
     const [isAssigning, setIsAssigning] = useState(false);
     const dispatch = useDispatch();
     
-    // const handleAssignClick = () => {
-    //     if (!companyGroupValue && !companyValue && !stateValue && !districtValue && !locationValue && !branchValue) {
-    //         toast.push(
-    //             <Notification title="Missing Information" type="danger">
-    //                 Please select the field by hierarchy (Company Group, Company, State, District, Location, or Branch)
-    //             </Notification>
-    //         );
-    //         return;
-    //     }
-        
-    //     if (selectedComplianceIds.length === 0) {
-    //         toast.push(
-    //             <Notification title="Empty" type="danger">
-    //                 Please select at least one compliance
-    //             </Notification>
-    //         );
-    //         return;
-    //     }
-    
-    //     setIsDialogOpen(true);
-    // };
-    
     const handleAssignClick = () => {
         // Check if at least one field is selected
         if (!companyGroupValue && !companyValue && !stateValue && !districtValue && !locationValue && !branchValue) {
@@ -139,7 +117,17 @@ const AssignChecklistButton = ({
         };
 
         try {
-            await dispatch(assignCompliancesToBranch(assignData)).unwrap();
+            await dispatch(assignCompliancesToBranch(assignData))
+            .unwrap()
+            .catch((error:any)=>{
+                error.map((v:string)=>{
+                    toast.push(
+                        <Notification title='error' type='danger'>
+                                {v}
+                            </Notification>
+                    )
+                })
+            })
             toast.push(
                 <Notification title="Success" type="success">
                     {selectedComplianceIds.length} compliance(s) assigned successfully

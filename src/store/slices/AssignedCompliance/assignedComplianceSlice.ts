@@ -53,6 +53,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { endpoints } from '@/api/endpoint';
 import httpClient from '@/api/http-client';
 import { ComplianceAssignmentData } from '@/@types/assignedCompliance';
+import { AxiosError } from 'axios';
 
 export type ApproverOwnerAssignedCompliances = {
     owner_id: number;
@@ -86,9 +87,14 @@ export const fetchAllComplianceAssignments = createAsyncThunk(
 
 export const updateApproverOwner = createAsyncThunk(
     'complianceAssignment/updateApproverOwner',
-    async ({ id, data }: { id: string; data: ApproverOwnerAssignedCompliances }) => {
-        const response = await httpClient.put(endpoints.assign.update(), data);
-        return response.data;
+    async ({ id, data }: { id: string; data: ApproverOwnerAssignedCompliances },{rejectWithValue}) => {
+        try{
+            const response = await httpClient.put(endpoints.assign.update(), data);
+            return response.data;
+        } catch(error:any) {
+            const err = error as AxiosError<any>
+            return rejectWithValue(err.response?.data.message)
+        }
     }
 );
 
