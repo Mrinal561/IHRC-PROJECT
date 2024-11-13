@@ -158,21 +158,95 @@ const UserAddForm = () => {
     }));
   };
 
+  
+  const formatErrorMessages = (errors: any): string => {
+    // If errors is an array, join them with line breaks
+    if (Array.isArray(errors)) {
+        return errors.join('\n');
+    }
+    // If errors is an object, extract all error messages
+    else if (typeof errors === 'object' && errors !== null) {
+        const messages: string[] = [];
+        Object.entries(errors).forEach(([key, value]) => {
+            if (Array.isArray(value)) {
+                messages.push(...value);
+            } else if (typeof value === 'string') {
+                messages.push(value);
+            }
+        });
+        return messages.join('\n');
+    }
+    // If it's a single string error
+    return String(errors);
+};
+
+
+  const showErrorNotification = (errors: any) => {
+    const formattedMessage = formatErrorMessages(errors);
+    
+    // Split the formatted message into individual error messages
+    const errorMessages = formattedMessage.split('\n').filter(Boolean); // Filter out empty strings
+    
+    toast.push(
+      <Notification title="Error" type="danger">
+        <div style={{ whiteSpace: 'pre-line' }}>
+          {errorMessages.length > 1? ( // Check if there are multiple error messages
+            <ul style={{ padding: 0, margin: 0, listStyle: 'disc inside' }}>
+              {errorMessages.map((message, index) => (
+                <li key={index} style={{ marginBottom: '0.5rem' }}>{message}</li>
+              ))}
+            </ul>
+          ) : (
+            <span>{formattedMessage}</span> // If only one error message, display as before
+          )}
+        </div>
+      </Notification>
+    );
+  };
+
+
+
   const handleAddUser = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Basic validation
-    if (!formData.group_id || !formData.first_name || !formData.email) {
-      showNotification('danger', 'Please fill in all required fields');
-      return;
-    }
+    // if (!formData.group_id || !formData.first_name || !formData.email || !formData.last_name ||!formData.joining_date || !formData.mobile || !formData.password || !formData.role_id) {
+    //   showNotification('danger', 'Please fill in all required fields');
+    //   return;
+    // }
 
     try {
-      const resultAction = await dispatch(createUser(formData)).unwrap();
-      navigate('/user-entity');
-      showNotification('success', 'User added successfully');
+      const resultAction = await dispatch(createUser(formData))
+      .unwrap()
+      .catch((error: any) => {
+        // Handle different error formats
+        if (error.response?.data?.message) {
+            // API error response
+            showErrorNotification(error.response.data.message);
+        } else if (error.message) {
+            // Regular error object
+            showErrorNotification(error.message);
+        } else if (Array.isArray(error)) {
+            // Array of error messages
+            showErrorNotification(error);
+        } else {
+            // Fallback error message
+            showErrorNotification('An unexpected error occurred. Please try again.');
+        }
+        throw error; // Re-throw to prevent navigation
+    });
+
+if (resultAction) {
+    navigate('/user-entity');
+    showNotification('success', 'User added successfully');
+}
+
+
+      
     } catch (error: any) {
-      showNotification('danger', error?.message || 'Failed to add user');
+      // showNotification('danger', error?.message || 'Failed to add user');
+      console.error('User creation error:', error);
+
     }
   };
 
@@ -195,7 +269,7 @@ const UserAddForm = () => {
       <form onSubmit={handleAddUser}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 my-8">
           <div className='flex flex-col gap-2'>
-            <p className='mb-2'>Select the company group</p>
+            <p className='mb-2'>Select the company group <span className="text-red-500">*</span></p>
             <OutlinedSelect
               label="Select The Company Group"
               options={companyGroups}
@@ -204,7 +278,7 @@ const UserAddForm = () => {
             />
           </div>
           <div className='flex flex-col gap-1'>
-            <p className="mb-2">First Name</p>
+            <p className="mb-2">First Name <span className="text-red-500">*</span></p>
             <OutlinedInput
               label="First Name"
               value={formData.first_name}
@@ -215,7 +289,7 @@ const UserAddForm = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 my-8">
           <div className='flex flex-col gap-1'>
-            <p className="mb-2">Last Name</p>
+            <p className="mb-2">Last Name <span className="text-red-500">*</span></p>
             <OutlinedInput
               label="Last Name"
               value={formData.last_name}
@@ -223,7 +297,7 @@ const UserAddForm = () => {
             />
           </div>
           <div className='flex flex-col gap-1'>
-            <p className="mb-2">Email</p>
+            <p className="mb-2">Email <span className="text-red-500">*</span></p>
             <OutlinedInput
               label="Email"
               value={formData.email}
@@ -234,7 +308,7 @@ const UserAddForm = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 my-8">
           <div className='flex flex-col gap-1'>
-            <p className="mb-2">Password</p>
+            <p className="mb-2">Password <span className="text-red-500">*</span></p>
             <OutlinedInput
               label="Password"
               value={formData.password}
@@ -242,7 +316,7 @@ const UserAddForm = () => {
             />
           </div>
           <div className='flex flex-col gap-1'>
-            <p className="mb-2">Job Role</p>
+            <p className="mb-2">Job Role <span className="text-red-500">*</span></p>
             <OutlinedSelect
               label="Job Role"
               options={userRole}
@@ -283,7 +357,7 @@ const UserAddForm = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 my-8">
 
         <div className='flex flex-col gap-1'>
-            <p className="mb-1">Date of Joining</p>
+            <p className="mb-1">Date of Joining <span className="text-red-500">*</span></p>
             <DatePicker
               size='sm'
               placeholder="Pick a date"
@@ -298,7 +372,7 @@ const UserAddForm = () => {
           </div>
           
           <div className='flex flex-col gap-1'>
-            <p className="mb-1">Mobile No</p>
+            <p className="mb-1">Mobile No <span className="text-red-500">*</span></p>
             <OutlinedInput
               label="Mobile no"
               value={formData.mobile}

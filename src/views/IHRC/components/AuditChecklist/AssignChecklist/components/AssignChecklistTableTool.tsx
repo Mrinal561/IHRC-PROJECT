@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button, Dialog, Notification, Input, toast } from '@/components/ui';
 import { HiPlusCircle } from 'react-icons/hi';
@@ -89,10 +90,8 @@ export const BulkSetOwnerApproverButton: React.FC<BulkSetOwnerApproverButtonProp
         owner_id: selectedOwnerOption?.value || null,
         approver_id: selectedApproverOption?.value || null,
         assigned_compliance_id: selectedIds,
-        // remark: remark.trim()
       };
- 
-      // console.log(updateData)
+
       const response = await httpClient.put(endpoints.assign.update(), updateData);
  
       if (response) {

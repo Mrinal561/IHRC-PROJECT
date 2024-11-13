@@ -3,6 +3,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 // import { httpClient } from '@/api/http-client'; // Assuming this is your http client
 import { endpoints } from '@/api/endpoint';
 import httpClient from "@/api/http-client";
+import { AxiosError } from 'axios';
 
 export type AssignCompliances = {
     group_id: number;
@@ -27,13 +28,15 @@ const initialState: ComplianceState = {
 
 export const assignCompliancesToBranch = createAsyncThunk(
     'compliance/assignCompliancesToBranch',
-    async (complianceData: AssignCompliances) => {
+    async (complianceData: AssignCompliances, {rejectWithValue}) => {
         
         try {
             console.log(complianceData)
             const { data } = await httpClient.post(endpoints.assign.create(), complianceData);
             return data;
-        } catch(error){
+        } catch(error:any){
+            const err = error as AxiosError<any>
+            return rejectWithValue(err.response?.data.message)
             console.log(error)
         }
     }

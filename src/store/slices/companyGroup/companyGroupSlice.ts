@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { endpoints } from "@/api/endpoint";
 import httpClient from "@/api/http-client";
 
@@ -26,61 +26,74 @@ const initialState: CompanyGroupState = {
 
 
 export const fetchCompanyGroups = createAsyncThunk(
-    'companyGroup/fetchCompanyGroups',
-    async (param: any) => {
+  'companyGroup/fetchCompanyGroups',
+  async (param: any, { rejectWithValue }) => {
+    try {
+      const { data } = await httpClient.get(endpoints.companyGroup.getAll(), {
+        params: param,
+      });
+      return data;
+    } catch (error: any) {
+      const err = error as AxiosError<any>
+      return rejectWithValue(err.response?.data?.message || 'Failed to fetch company groups');
+    }
+  }
+);
+  
+export const createCompanyGroup = createAsyncThunk(
+  'companyGroup/createCompanyGroup',
+  async (groupData: Omit<CompanyGroupData, 'id'>, { rejectWithValue }) => {
+    try {
+      const { data } = await httpClient.post(endpoints.companyGroup.create(), groupData);
+      return data;
+    } catch (error: any) {
+      const err = error as AxiosError<any>
+      return rejectWithValue(err.response?.data?.message || 'Failed to create company group');
+    }
+  }
+);
 
-        const { data } = await httpClient.get(endpoints.companyGroup.getAll(), {
-          params: param,
-        });
-        return data;
-      }
-  );
-  
-  export const createCompanyGroup = createAsyncThunk(
-    'companyGroup/createCompanyGroup',
-    async (groupData: Omit<CompanyGroupData, 'id'>) => {
-        const { data } = await httpClient.post(endpoints.companyGroup.create(), groupData);
-        return data;
-     
+
+export const updateCompanyGroup = createAsyncThunk(
+  'companyGroup/updateCompanyGroup',
+  async ({ id, data }: { id: string; data: Partial<CompanyGroupData> }, { rejectWithValue }) => {
+    try {
+      const response = await httpClient.put(endpoints.companyGroup.update(id), data);
+      return response.data;
+    } catch (error: any) {
+      const err = error as AxiosError<any>
+      return rejectWithValue(err.response?.data?.message || 'Failed to update company group');
     }
-  );
+  }
+);
   
-  export const updateCompanyGroup = createAsyncThunk(
-    'companyGroup/updateCompanyGroup',
-    async ({ id, data }: { id: string; data: Partial<CompanyGroupData> }, { rejectWithValue }) => {
-      try {
-        const response = await httpClient.put(endpoints.companyGroup.update(id), data);
-        return response.data;
-      } catch (error: any) {
-        return rejectWithValue(error.response?.data?.message || 'Failed to update company group');
-      }
+export const deleteCompanyGroup = createAsyncThunk(
+  'companyGroup/deleteCompanyGroup',
+  async (id: string, { rejectWithValue }) => {
+    try {
+      console.log(id)
+      await httpClient.delete(endpoints.companyGroup.delete(id));
+      return id;
+    } catch (error: any) {
+      const err = error as AxiosError<any>
+      return rejectWithValue(err.response?.data?.message || 'Failed to delete company group');
     }
-  );
+  }
+);
   
-  export const deleteCompanyGroup = createAsyncThunk(
-    'companyGroup/deleteCompanyGroup',
-    async (id: string, { rejectWithValue }) => {
-      try {
-        console.log(id)
-        await httpClient.delete(endpoints.companyGroup.delete(id));
-        return id;
-      } catch (error: any) {
-        return rejectWithValue(error.response?.data?.message || 'Failed to delete company group');
-      }
+export const fetchCompanyGroupById = createAsyncThunk(
+  'companyGroup/fetchCompanyGroupById',
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const { data } = await httpClient.get(endpoints.companyGroup.getById(id));
+      return data;
+    } catch (error: any) {
+      const err = error as AxiosError<any>
+      return rejectWithValue(err.response?.data?.message || 'Failed to fetch company group by ID');
     }
-  );
-  
-  export const fetchCompanyGroupById = createAsyncThunk(
-    'companyGroup/fetchCompanyGroupById',
-    async (id: string, { rejectWithValue }) => {
-      try {
-        const { data } = await httpClient.get(endpoints.companyGroup.getById(id));
-        return data;
-      } catch (error: any) {
-        return rejectWithValue(error.response?.data?.message || 'Failed to fetch company group');
-      }
-    }
-  );
+  }
+);
+
   
   const companyGroupSlice = createSlice({
     name: 'companyGroup',
@@ -162,7 +175,7 @@ export const fetchCompanyGroups = createAsyncThunk(
         .addCase(fetchCompanyGroupById.rejected, (state, action) => {
           state.loading = false;
           state.error = action.payload as string;
-        });
+        })
     },
   });
   

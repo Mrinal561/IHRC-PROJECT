@@ -131,23 +131,23 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
     console.log('Status changed to:', value);
     setSelectedStatus(value);
   }, []);
- 
- 
+
+
   const handleUpdateStatus = async () => {
-    if (!selectedCompliance || !selectedStatus) {
-      toast.push(
-        <Notification title="Error" type="danger">
-          Please select a status and provide a remark.
-        </Notification>
-      );
-      return;
-    }
- 
+    // if (!selectedCompliance || !selectedStatus) {
+    //   toast.push(
+    //     <Notification title="Error" type="danger">
+    //       Please select a status and provide a remark.
+    //     </Notification>
+    //   );
+    //   return;
+    // }
+  
     const formData = new FormData();
     formData.append('status', selectedStatus.value);
     formData.append('remark', remark);
- 
-    if (selectedCompliance.compliance_detail.proof_mandatory) {
+  
+    if (selectedCompliance?.compliance_detail.proof_mandatory) {
       if (!selectedFile) {
         toast.push(
           <Notification title="Error" type="danger">
@@ -163,15 +163,28 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
  
     try {
       console.log(selectedFile);
-      await dispatch(updateStatus({ id: selectedCompliance.id.toString(), data: formData })).unwrap();
-      toast.push(
-        <Notification title="Success" type="success">
-          Status updated successfully.
-        </Notification>
-      );
-      setIsStatusDialogOpen(false);
-      onDialogClose();
- 
+     const res = await dispatch(updateStatus({ id: selectedCompliance.id.toString(), data: formData }))
+      .unwrap()
+      .catch((error: any) => {
+                    error.map((v: string) =>
+                        toast.push(
+                            <Notification title="Error" type="danger">
+                                {v}
+                            </Notification>,
+                        ),
+                    )
+                })
+      if(res){
+        setIsStatusDialogOpen(false);
+        onDialogClose();
+        toast.push(
+          <Notification title="Success" type="success">
+            Status updated successfully.
+          </Notification>
+        );
+        
+      }
+  
       if (onDataUpdate) {
         onDataUpdate();
       }

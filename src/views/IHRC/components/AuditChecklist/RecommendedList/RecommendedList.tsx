@@ -38,32 +38,13 @@ const RecommendedList = () => {
     const [selectedDistrict, setSelectedDistrict] = useState<SelectOption | null>(null);
     const [selectedLocation, setSelectedLocation] = useState<SelectOption | null>(null);
 
-    // const fetchComplianceData = async (page = 1, pageSize = 10) => {
-    //     setIsLoading(true);
-    //     try {
-    //         const response = await httpClient.get(endpoints.complianceSuperadmin.getAll(), {
-    //             params: {
-    //                 page,
-    //                 pageSize
-    //             }
-    //         });
 
-    //         if (response?.data?.data) {
-    //             setComplianceData(response.data.data);
-    //         } else {
-    //             console.log('No data in API response or unexpected response structure');
-    //         }
-    //     } catch (error) {
-    //         console.error('Error fetching compliance data:', error);
-    //         toast.push(
-    //             <Notification type="danger" title="Error">
-    //                 Failed to fetch compliance data
-    //             </Notification>
-    //         );
-    //     } finally {
-    //         setIsLoading(false);
-    //     }
-    // };
+
+
+
+    const handleDataUpdate = (pageIndex: number, pageSize: number) => {
+        fetchComplianceData(pageIndex, pageSize); // Update fetch function to accept pagination params
+      };
 
     const fetchComplianceData = async (page = 1, pageSize = 10) => {
         setIsLoading(true);
@@ -183,6 +164,7 @@ const RecommendedList = () => {
                 onSelectedCompliancesChange={handleSelectedCompliancesChange}
                 onDataUpdate={fetchComplianceData}
                 setIstableLoading={setIstableLoading}
+                // onDataUpdate={handleDataUpdate}
             />
         </AdaptableCard>
     );

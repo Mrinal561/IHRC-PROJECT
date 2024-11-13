@@ -102,8 +102,6 @@ const userSlice = createSlice({
             .addCase(createUser.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
-                state.error = null;
-
             })
             // Update user
             .addCase(updateUser.pending, (state) => {

@@ -162,12 +162,14 @@ const BulkUploadButton = () => {
       const res =  await httpClient.get(endpoints.compliance.export(),
       {
         responseType: "blob",
+        params: {
+          'data_status[]': "due"},
       })
       const blob = new Blob([res.data], { type: "text/xlsx" });
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", "demo.xlsx");
+      link.setAttribute("download", "DueCompliances.xlsx");
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
