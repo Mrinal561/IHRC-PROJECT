@@ -319,35 +319,98 @@ const loadCompanies = async (groupId: string[] | number[]) => {
     }));
   }, [selectedLocation]);
 
+
+  const formatErrorMessages = (errors: any): string => {
+    // If errors is an array, join them with line breaks
+    if (Array.isArray(errors)) {
+        return errors.join('\n');
+    }
+    // If errors is an object, extract all error messages
+    else if (typeof errors === 'object' && errors !== null) {
+        const messages: string[] = [];
+        Object.entries(errors).forEach(([key, value]) => {
+            if (Array.isArray(value)) {
+                messages.push(...value);
+            } else if (typeof value === 'string') {
+                messages.push(value);
+            }
+        });
+        return messages.join('\n');
+    }
+    // If it's a single string error
+    return String(errors);
+};
+
+const showErrorNotification = (errors: any) => {
+    const formattedMessage = formatErrorMessages(errors);
+    
+    // Split the formatted message into individual error messages
+    const errorMessages = formattedMessage.split('\n').filter(Boolean); // Filter out empty strings
+    
+    toast.push(
+      <Notification title="Error" type="danger">
+        <div style={{ whiteSpace: 'pre-line' }}>
+          {errorMessages.length > 1? ( // Check if there are multiple error messages
+            <ul style={{ padding: 0, margin: 0, listStyle: 'disc inside' }}>
+              {errorMessages.map((message, index) => (
+                <li key={index} style={{ marginBottom: '0.5rem' }}>{message}</li>
+              ))}
+            </ul>
+          ) : (
+            <span>{formattedMessage}</span> // If only one error message, display as before
+          )}
+        </div>
+      </Notification>
+    );
+  };
+
+
+
   const handleAddBranch = async () => {
     console.log(formData);
 
     try {
-        const response = await dispatch(createBranch(formData)).unwrap();
-        // Only navigate and show success if we actually succeed
+        const response = await dispatch(createBranch(formData))
+        .unwrap()
+        .catch((error: any) => {
+            // Handle different error formats
+            if (error.response?.data?.message) {
+                // API error response
+                showErrorNotification(error.response.data.message);
+            } else if (error.message) {
+                // Regular error object
+                showErrorNotification(error.message);
+            } else if (Array.isArray(error)) {
+                // Array of error messages
+                showErrorNotification(error);
+            } else {
+                // Fallback error message
+                showErrorNotification('An unexpected error occurred. Please try again.');
+            }
+            throw error; // Re-throw to prevent navigation
+        });
+
+    if (response) {
         navigate('/branch');
-        openNotification('success', 'Branch added successfully');
+        toast.push(
+            <Notification title="Success" type="success">
+                Branch added successfully
+            </Notification>
+        );
+    }
       } catch (error: any) {
         console.error('Branch creation error:', error);
-        // Handle different types of errors
-        if (error.status === 400) {
-          openNotification('danger', error.data?.message || 'Invalid form data. Please check your inputs.');
-        } else if (error.status === 401) {
-          openNotification('danger', 'Unauthorized. Please login again.');
-        } else if (error.status === 500) {
-          openNotification('danger', 'Server error. Please try again later.');
-        } else {
-          openNotification('danger', error.message || 'Failed to create branch. Please try again.');
-        }
+       
+        //   openNotification('danger', error.message || 'Failed to create branch. Please try again.');
         // Don't navigate on error
       }
   };
 
-  if (isLoading) return <div>Loading location data...</div>;
+//   if (isLoading) return <div>Loading location data...</div>;
   if (error) return <div className="text-red-500">{error}</div>;
-//   if (!locationData || locationData.length === 0) {
-//     return <div>No location data available. Please check your data source.</div>;
-//   }
+// //   if (!locationData || locationData.length === 0) {
+// //     return <div>No location data available. Please check your data source.</div>;
+// //   }
 
 
   const handleDistrictChange = (districtName: string) => {
@@ -383,8 +446,8 @@ const loadCompanies = async (groupId: string[] | number[]) => {
           <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                   <div>
-                      <p className="mb-2">Company Group</p>
-                      <OutlinedSelect
+                  <p className="mb-2">Select Company Group <span className="text-red-500">*</span></p>
+                  <OutlinedSelect
                           label="Select Company Group"
                           options={companyGroups}
                           value={selectedCompanyGroup}
@@ -392,7 +455,7 @@ const loadCompanies = async (groupId: string[] | number[]) => {
                       />
                   </div>
                   <div>
-                      <p className="mb-2">Company Name</p>
+                      <p className="mb-2">Company Name <span className="text-red-500">*</span></p>
                       <OutlinedSelect
                           label="Select Company"
                           options={companies}
@@ -406,7 +469,7 @@ const loadCompanies = async (groupId: string[] | number[]) => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                   <div>
-                      <p className="mb-2">State</p>
+                      <p className="mb-2">State <span className="text-red-500">*</span></p>
                       <OutlinedSelect
                           label="Select State"                       
                           options={states}
@@ -438,7 +501,7 @@ const loadCompanies = async (groupId: string[] | number[]) => {
                 // districtId={selectedDistrict ? parseInt(selectedDistrict) : undefined}
                 />
                   <div>
-                      <p className="mb-2">Branch Name</p>
+                      <p className="mb-2">Branch Name <span className="text-red-500">*</span></p>
                       <OutlinedInput
                           label="Branch Name"
                           value={formData.name}
@@ -453,7 +516,7 @@ const loadCompanies = async (groupId: string[] | number[]) => {
               </div>
 
               <div>
-                  <p className="mb-2">Branch Address</p>
+                  <p className="mb-2">Branch Address <span className="text-red-500">*</span></p>
                   <OutlinedInput
                       label="Branch Address"
                       value={formData.address}
@@ -469,7 +532,7 @@ const loadCompanies = async (groupId: string[] | number[]) => {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                   <div>
-                      <p className="mb-2">Branch Opening Date</p>
+                      <p className="mb-2">Branch Opening Date <span className="text-red-500">*</span></p>
                       <DatePicker
                           size="sm"
                           placeholder="Pick a Date"
@@ -482,7 +545,7 @@ const loadCompanies = async (groupId: string[] | number[]) => {
                       />
                   </div>
                   <div>
-                      <p className="mb-2">Branch Head Count</p>
+                      <p className="mb-2">Branch Head Count <span className="text-red-500">*</span></p>
                       <OutlinedInput
                           label="Branch Head Count"
                           value={formData.head_count}
@@ -496,7 +559,7 @@ const loadCompanies = async (groupId: string[] | number[]) => {
                   </div>
 
                   <div>
-                      <p className="mb-2">Office Type</p>
+                      <p className="mb-2">Office Type <span className="text-red-500">*</span></p>
                       <OutlinedSelect
                           label="Select Office Type"
                           options={officeTypeOption}
@@ -512,7 +575,7 @@ const loadCompanies = async (groupId: string[] | number[]) => {
                       />
                   </div>
                   <div>
-                      <p className="mb-2">Branch Type</p>
+                      <p className="mb-2">Branch Type <span className="text-red-500">*</span></p>
                       <OutlinedSelect
                           label="Select Branch Type"
                           options={branchTypeOptions}
@@ -539,7 +602,7 @@ const loadCompanies = async (groupId: string[] | number[]) => {
                               <div>
                                   <p className="mb-2">
                                       S&E Registration Number
-                                  </p>
+                                      <span className="text-red-500">*</span></p>
                                   <OutlinedInput
                                       label="S&E Registration Number"
                                       value={formData.register_number}
@@ -552,7 +615,7 @@ const loadCompanies = async (groupId: string[] | number[]) => {
                                   />
                               </div>
                               <div>
-                                  <p className="mb-2">S&E Validity</p>
+                                  <p className="mb-2">S&E Validity <span className="text-red-500">*</span></p>
                                   <DatePicker
                                       size="sm"
                                       placeholder="Pick a Date"
@@ -569,10 +632,11 @@ const loadCompanies = async (groupId: string[] | number[]) => {
                                       <label>
                                           Please upload the S&E Registration
                                           certificate
-                                      </label>
+                                          <span className="text-red-500">*</span></label>
                                       <Input
                                           id="file-upload"
                                           type="file"
+                                          accept=".pdf"
                                           onChange={handleFileUpload}
                                       />
                                   </div>
@@ -590,7 +654,7 @@ const loadCompanies = async (groupId: string[] | number[]) => {
                               <div>
                                   <p className="mb-2">
                                       Lease / Rent Agreement Status
-                                  </p>
+                                      <span className="text-red-500">*</span></p>
                                   <OutlinedSelect
                                       label="Status"
                                       options={statusTypeOptions}
@@ -615,7 +679,7 @@ const loadCompanies = async (groupId: string[] | number[]) => {
                               <div>
                                   <p className="mb-2">
                                       Lease deed / Rent Agreement valid up to
-                                  </p>
+                                      <span className="text-red-500">*</span></p>
                                   <DatePicker
                                       size="sm"
                                       placeholder="Pick a Date"
@@ -631,10 +695,11 @@ const loadCompanies = async (groupId: string[] | number[]) => {
                                   <div className="flex flex-col gap-4">
                                       <label>
                                           Please upload Leaase deed copy
-                                      </label>
+                                          <span className="text-red-500">*</span></label>
                                       <Input
                                           id="file-upload"
                                           type="file"
+                                          accept=".pdf"
                                           onChange={handleFileUpload}
                                       />
                                   </div>
