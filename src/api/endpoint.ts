@@ -69,5 +69,8 @@ export const endpoints = {
     getAll: () => api('companyadmin/esisetup'),
     getById: (id: string) => api(`companyadmin/esisetup/${id}`),
     create: () => api('companyadmin/esisetup'),
+   },
+   pfSetup:{
+    create: () => api('/companyadmin/pfsetup'),
    }
 }
