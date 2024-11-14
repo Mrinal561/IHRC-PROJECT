@@ -69,6 +69,10 @@ export const endpoints = {
     getAll: () => api('companyadmin/esisetup'),
     getById: (id: string) => api(`companyadmin/esisetup/${id}`),
     create: () => api('companyadmin/esisetup'),
+    bulkUpload: () => api(`companyadmin/esisetup/esi-tracker`),
+    // download: () => api(`companyadmin/esisetup/esi-tracker/export`)
+    download: () => api(`upload/sample_files/esi-tracker.xlsx`)
+
    },
    pfSetup:{
     getAll:()=> api('companyadmin/pfsetup'),

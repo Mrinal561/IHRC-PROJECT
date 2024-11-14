@@ -1,159 +1,97 @@
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Button, Dialog, Tooltip, toast, Notification } from '@/components/ui';
 import { FiTrash } from 'react-icons/fi';
 import { MdEdit } from 'react-icons/md';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 import ESIEditedData from './ESIEditedData';
-
-export interface ESISetupData {
-    Company_Group_Name: string;
-    Company_Name: string;
-    esiCode: string;
-    esiCodeType: string;
-    esiCodeLocation: string;
-    esiRegistrationDate: string;
-    esiUserId?: string;
-    esiPassword?: string;
-    authorizedSignatory: string;
-    signatoryDesignation?: string;
-    signatoryMobile?: string;
-    signatoryEmail?: string;
-    esiRegistrationCertificate?: File | null;
-}
+import { EsiSetupData } from '@/@types/esiSetup';
+import { AppDispatch } from '@/store';
+import { useDispatch } from 'react-redux';
+import { fetchEsiSetup } from '@/store/slices/esiSetup/esiSetupSlice';
 
 interface ESISetupTableProps {
   // Add any props if needed
+  data: EsiSetupData[];
+  
 }
 
-const ESISetupTable: React.FC<ESISetupTableProps> = () => {
+const ESISetupTable = () => {
+  const dispatch = useDispatch<AppDispatch>();
+
   const [dialogIsOpen, setDialogIsOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<number | null>(null);
   const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
-  const [itemToEdit, setItemToEdit] = useState<ESISetupData | null>(null);
+  const [itemToEdit, setItemToEdit] = useState<EsiSetupData | null>(null);
+  const [esiSetupData, setEsiSetupData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [esiTableData, setEsiTableData] = useState([]);
 
-  const [data, setData] = useState<ESISetupData[]>([
-    {
-      Company_Group_Name: "IND Money",
-      Company_Name: "India Shelter Pvt Ltd",
-      esiCode: "ESI1234567890",
-      esiCodeType: "Main",
-      esiCodeLocation: "Delhi",
-      esiRegistrationDate: "",
-      esiUserId: "esiuser01",
-      esiPassword: "********",
-      authorizedSignatory: "Ajay Thakur",
-      signatoryDesignation: "HR Head",
-      signatoryMobile: "+91 9911223344",
-      signatoryEmail: "AjayThakur@example.com",
-    },
-    {
-      Company_Group_Name: "IND Money",
-      Company_Name: "India Shelter Pvt Ltd",
-      esiCode: "ESI0987654321",
-      esiCodeType: "Main",
-      esiCodeLocation: "Mumbai",
-      esiRegistrationDate: "",
-      esiUserId: "esiuser02",
-      esiPassword: "********",
-      authorizedSignatory: "Krishna Kumar Singh",
-      signatoryDesignation: "Finance Manager",
-      signatoryMobile: "+91 9922334455",
-      signatoryEmail: "Krishna@example.com",
-    },
-    {
-      Company_Group_Name: "IND Money",
-      Company_Name: "India Shelter Pvt Ltd",
-      esiCode: "ESI1122334455",
-      esiCodeType: "Main",
-      esiCodeLocation: "Bengaluru",
-      esiRegistrationDate: "",
-      esiUserId: "esiuser03",
-      esiPassword: "********",
-      authorizedSignatory: "Ajay Thakur",
-      signatoryDesignation: "Legal Advisor",
-      signatoryMobile: "+91 9933445566",
-      signatoryEmail: "AjayThakur@example.com",
-    }
-  ]);
+  useEffect(() => {
+    fetchEsiSetupData(1, 10);
+  }, []);
+
+  const fetchEsiSetupData = async (page: number, size: number) => {
+    const {payload: data} = await dispatch(fetchEsiSetup({page: page, page_size: size}));
+    setEsiTableData(data.data)
+    console.log(esiTableData);
+    
+    setTableData((prev) => ({
+      ...prev,
+      total: data?.paginate_data.totalResult,
+      pageIndex: data?.paginate_data.page,
+  }))
+  }
   
-  const columns: ColumnDef<ESISetupData>[] = useMemo(
+  const columns = useMemo(
     () => [
       {
         header: 'Company Group',
-        accessorKey: 'Company_Group_Name',
+        accessorKey: 'CompanyGroup.name',
         cell: (props) => (
           <div className="w-36 text-start">{props.getValue() as string}</div>
         ),
       },
       {
         header: 'Company',
-        accessorKey: 'Company_Name',
+        accessorKey: 'Company.name',
         cell: (props) => (
           <div className="w-36 text-start">{props.getValue() as string}</div>
         ),
       },
       {
         header: 'ESI Code Type',
-        accessorKey: 'esiCodeType',
+        accessorKey: 'code_Type',
         cell: (props) => (
           <div className="w-36 text-start">{props.getValue() as string}</div>
         ),
       },
       {
         header: 'ESI Code',
-        accessorKey: 'esiCode',
+        accessorKey: 'code',
         cell: (props) => (
           <div className="w-36 text-start">{props.getValue() as string}</div>
         ),
       },
       {
         header: 'ESI Code Location',
-        accessorKey: 'esiCodeLocation',
+        accessorKey: 'location',
         cell: (props) => (
           <div className="w-36 truncate">{props.getValue() as string}</div>
         ),
       },
       {
         header: 'ESI User ID',
-        accessorKey: 'esiUserId',
+        accessorKey: 'esi_user',
         cell: (props) => (
           <div className="w-32 flex items-center justify-center">{props.getValue() as string}</div>
         ),
       },
       {
         header: 'ESI User Password',
-        accessorKey: 'esiPassword',
+        accessorKey: 'password',
         cell: (props) => (
           <div className="w-40 flex items-center justify-center">{props.getValue() as string}</div>
-        ),
-      },
-      {
-        header: 'Authorized Signatory',
-        accessorKey: 'authorizedSignatory',
-        cell: (props) => (
-          <div className="w-48 truncate">{props.getValue() as string}</div>
-        ),
-      },
-      {
-        header: 'Designation',
-        accessorKey: 'signatoryDesignation',
-        cell: (props) => (
-          <div className="w-48 truncate">{props.getValue() as string}</div>
-        ),
-      },
-      {
-        header: 'Mobile',
-        accessorKey: 'signatoryMobile',
-        cell: (props) => (
-          <div className="w-48 truncate">{props.getValue() as string}</div>
-        ),
-      },
-      {
-        header: 'Email',
-        accessorKey: 'signatoryEmail',
-        cell: (props) => (
-          <div className="w-48 truncate">{props.getValue() as string}</div>
         ),
       },
       {
@@ -164,7 +102,7 @@ const ESISetupTable: React.FC<ESISetupTableProps> = () => {
             <Tooltip title="Edit">
               <Button
                 size="sm"
-                onClick={() => openEditDialog(row.original)}
+                // onClick={() => openEditDialog(row.original)}
                 icon={<MdEdit />}
                 className="text-blue-500"
               />
@@ -200,10 +138,10 @@ const ESISetupTable: React.FC<ESISetupTableProps> = () => {
     setDialogIsOpen(true);
   };
 
-  const openEditDialog = (item: ESISetupData) => {
-    setItemToEdit(item);
-    setEditDialogIsOpen(true);
-  };
+  // const openEditDialog = (item: ESISetupData) => {
+  //   setItemToEdit(item);
+  //   setEditDialogIsOpen(true);
+  // };
 
   const handleDialogClose = () => {
     setDialogIsOpen(false);
@@ -212,52 +150,71 @@ const ESISetupTable: React.FC<ESISetupTableProps> = () => {
     setItemToEdit(null);
   };
 
-  const handleDialogOk = () => {
-    if (itemToDelete !== null) {
-      const newData = [...data];
-      newData.splice(itemToDelete, 1);
-      setData(newData);
-      setDialogIsOpen(false);
-      setItemToDelete(null);
-      openNotification('danger', 'ESI Setup deleted successfully');
-    }
+  // const handleDialogOk = () => {
+  //   if (itemToDelete !== null) {
+  //     const newData = [...data];
+  //     newData.splice(itemToDelete, 1);
+  //     setData(newData);
+  //     setDialogIsOpen(false);
+  //     setItemToDelete(null);
+  //     openNotification('danger', 'ESI Setup deleted successfully');
+  //   }
+  // };
+
+  // const handleEditConfirm = () => {
+  //   const newData = [...data];
+  //   const index = newData.findIndex(item => item === itemToEdit);
+  //   if (index !== -1) {
+  //     setEditDialogIsOpen(false);
+  //     setItemToEdit(null);
+  //     openNotification('success', 'ESI Setup updated successfully');
+  //   }
+  // };
+
+  const [tableData, setTableData] = useState({
+    total: 0,
+    pageIndex: 1,
+    pageSize: 10,
+    query: '',
+    sort: { order: '', key: '' },
+  });
+
+  const onPaginationChange = (page: number) => {
+    setTableData(prev => ({ ...prev, pageIndex: page }));
+    fetchEsiSetupData(page, tableData.pageSize)
   };
 
-  const handleEditConfirm = () => {
-    const newData = [...data];
-    const index = newData.findIndex(item => item === itemToEdit);
-    if (index !== -1) {
-      setEditDialogIsOpen(false);
-      setItemToEdit(null);
-      openNotification('success', 'ESI Setup updated successfully');
-    }
+  const onSelectChange = (value: number) => {
+    setTableData((prev) => ({
+      ...prev,
+      pageSize: Number(value),
+      pageIndex: 1,
+  }))
+  fetchEsiSetupData(1, value)
   };
 
   return (
-    <div className="relative">
-      {data.length === 0 ? (
-        <div className="text-center py-8 text-gray-500">
-          No ESI setup data available
-        </div>
-      ) : (
+    <div className="w-full">
+ 
         <DataTable
           columns={columns}
-          data={data}
+          data={esiTableData}
           skeletonAvatarColumns={[0]}
           skeletonAvatarProps={{ className: 'rounded-md' }}
           loading={false}
           pagingData={{
-            total: data.length,
-            pageIndex: 1,
-            pageSize: 10,
+            total: tableData.total,
+            pageIndex: tableData.pageIndex,
+          pageSize: tableData.pageSize,
           }}
+          onPaginationChange={onPaginationChange}
+          onSelectChange={onSelectChange}
           stickyHeader={true}
           stickyFirstColumn={true}
           stickyLastColumn={true}
         />
-      )}
 
-      <Dialog
+      {/* <Dialog
         isOpen={dialogIsOpen}
         onClose={handleDialogClose}
         onRequestClose={handleDialogClose}
@@ -278,9 +235,9 @@ const ESISetupTable: React.FC<ESISetupTableProps> = () => {
             Delete
           </Button>
         </div>
-      </Dialog>
+      </Dialog> */}
 
-      <Dialog
+      {/* <Dialog
         isOpen={editDialogIsOpen}
         onClose={handleDialogClose}
         onRequestClose={handleDialogClose}
@@ -307,7 +264,7 @@ const ESISetupTable: React.FC<ESISetupTableProps> = () => {
             Confirm
           </Button>
         </div>
-      </Dialog>
+      </Dialog> */}
     </div>
   );
 };

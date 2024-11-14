@@ -50,7 +50,7 @@ interface LocationOption {
   district_id: number;
 }
 
-const ESISetupPanel: React.FC<ESISetupPanelProps> = ({ onClose, addESISetup }) => {
+const ESISetupPanel = ({ onClose, addESISetup, refreshData }) => {
   const dispatch = useDispatch<AppDispatch>();
   const [isLoading, setIsLoading] = useState(false);
   const [companyGroups, setCompanyGroups] = useState<SelectOption[]>([]);
@@ -407,9 +407,12 @@ useEffect(() => {
   
 
       const response = await httpClient.post(endpoints.esiSetup.create(), data);
+      if(response){
       addESISetup(response.data);
       onClose();
       showNotification('success', 'ESI Setup created successfully');
+      await refreshData();
+      }
     } catch (error: any) {
       console.error('Failed to create ESI Setup:', error);
       showNotification('danger', error.response?.data?.message || 'Failed to create ESI Setup');

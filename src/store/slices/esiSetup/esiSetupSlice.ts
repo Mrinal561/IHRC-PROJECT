@@ -19,10 +19,8 @@ const initialState: EsiSetupState = {
 
 export const fetchEsiSetup = createAsyncThunk(
     'esisetup/fetchEsiSetup',
-    async (param: any) => {
-        const { data } = await httpClient.get(endpoints.esiSetup.getAll(), {
-            params: param,
-        });
+    async () => {
+        const { data } = await httpClient.get(endpoints.esiSetup.getAll());
         return data;
     }
 );

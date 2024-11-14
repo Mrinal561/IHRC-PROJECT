@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import CustomDateRangePicker from './CustomDateRangePicker';
 import DatePickerRange from '@/components/ui/DatePicker/DatePickerRange';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
+import httpClient from '@/api/http-client';
+import { endpoints } from '@/api/endpoint';
 
 const documentPath = "../store/AllMappedESICompliancesDetails.xls";
 
@@ -17,6 +19,8 @@ const ESITrackerBulkUpload: React.FC<ESITrackerBulkUploadProps> = ({ onUploadCon
   const [remark, setRemark] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [currentGroup, setCurrentGroup] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
+
   const navigate = useNavigate();
   const groupOptions = [
     { value: '01', label: 'January 2024' },
@@ -37,9 +41,56 @@ const ESITrackerBulkUpload: React.FC<ESITrackerBulkUploadProps> = ({ onUploadCon
     setIsDialogOpen(true);
   };
 
-  const handleConfirm = () => {
-    setIsDialogOpen(false);
-    navigate('/uploadedesidetails')
+  const handleConfirm = async () => {
+    try {
+      setIsUploading(true);
+      
+      if (!file) {
+        toast.push(
+          <Notification title="Error" type="danger">
+            Please select a file to upload
+          </Notification>
+        );
+        return;
+      }
+  
+      const formData = new FormData();
+      formData.append('document', file);
+      formData.append('remark', remark);
+      
+      const res = await httpClient.post(
+        endpoints.esiSetup.bulkUpload(),
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+  
+      if (res) {
+        toast.push(
+          <Notification title="Success" type="success">
+            Upload successful!
+          </Notification>
+        );
+        
+        // Close dialog and reset state
+        handleCancel();
+        
+        // Refresh the table data
+      //   await refreshTable();
+      }
+    } catch (error) {
+      toast.push(
+        <Notification title="Error" type="danger">
+          Upload failed. Please try again.
+        </Notification>
+      );
+      console.error('Upload error:', error);
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const handleCancel = () => {
@@ -48,21 +99,28 @@ const ESITrackerBulkUpload: React.FC<ESITrackerBulkUploadProps> = ({ onUploadCon
     setFile(null);
   };
 
-  const handleDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    fetch(documentPath)
-      .then(response => response.blob())
-      .then(blob => {
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = url;
-        a.download = 'AllMappedESICompliancesDetails.xls';
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-      })
-      .catch(() => console.error('Download failed'));
+  const handleDownload = async () => {
+    try {
+      const res = await httpClient.get(endpoints.esiSetup.download(), {
+        responseType: "blob",
+      });
+      
+      const blob = new Blob([res.data], { type: "text/xlsx" });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "EsiTrackerData.xlsx");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error('Download error:', error);
+      toast.push(
+        <Notification title="Error" type="danger">
+          Failed to download template. Please try again.
+        </Notification>
+      );
+    }
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -122,7 +180,7 @@ const ESITrackerBulkUpload: React.FC<ESITrackerBulkUploadProps> = ({ onUploadCon
         </div>
         <div className="my-4 flex gap-2 items-center">
           {/* <p>Download ESI Upload Format</p> */}
-          <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
+          <a onClick={handleDownload} className="text-blue-600 hover:underline">
             <Button size="sm" icon={<HiDownload />}>Download Format</Button>
           </a>
         </div>
