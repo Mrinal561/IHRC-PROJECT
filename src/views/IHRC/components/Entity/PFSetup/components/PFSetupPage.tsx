@@ -255,7 +255,7 @@ const PFSetupPage: React.FC = () => {
                     </div>
                 </Notification>
             );
-            // navigate(-1);
+            navigate(-1);
         } catch (error) {
             console.error('Error submitting PF setup:', error);
             toast.push(
@@ -267,24 +267,6 @@ const PFSetupPage: React.FC = () => {
     };
 
 
-    // const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //     const file = e.target.files?.[0];
-    //     if (file) {
-    //       const reader = new FileReader();
-    //       reader.onload = () => {
-    //         const base64String = (reader.result as string).split(',')[1];
-    //         setFileBase64(base64String);
-    //         setPfSetupData(prev => ({
-    //           ...prev,
-    //           register_cerificate: base64String,
-    //           e_sign:,
-    //           dsc_document:
-
-    //         }));
-    //       };
-    //       reader.readAsDataURL(file);
-    //     }
-    //   };
 
 
     const loadCompanyGroups = async () => {
