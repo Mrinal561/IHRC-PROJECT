@@ -4,10 +4,13 @@ import base, { BaseState } from './slices/base'
 import locale, { LocaleState } from './slices/locale/localeSlice'
 import theme, { ThemeState } from './slices/theme/themeSlice'
 import RtkQueryService from '@/services/RtkQueryService'
-import login, {AuthenticationState} from './slices/login'
+import login, { AuthenticationState } from './slices/login'
 import company, { CompanyState } from './slices/company/companySlice'
-import companyGroup ,{ CompanyGroupState } from './slices/companyGroup/companyGroupSlice'
+import companyGroup, {
+    CompanyGroupState,
+} from './slices/companyGroup/companyGroupSlice'
 import user, { UserState } from './slices/userEntity/UserEntitySlice'
+
 import branch, { BranchState } from './slices/branch/branchSlice'
 import compliance, {ComplianceState} from './slices/compliance/complianceSlice'
 import assignedCompliance,{ ComplianceAssignmentState } from './slices/AssignedCompliance/assignedComplianceSlice';
@@ -20,13 +23,12 @@ import esisetup, { EsiSetupState } from './slices/esiSetup/esiSetupSlice'
 export type RootState = CombinedState<{
     auth: CombinedState<AuthState>
     base: CombinedState<BaseState>
-    login:CombinedState<AuthenticationState>
+    login: CombinedState<AuthenticationState>
     companyGroup: CompanyGroupState
     compliance: ComplianceState
     company: CompanyState
-    due: DueComplianceState
-    status:StatusState
     branch: BranchState
+    due: DueComplianceState
     user: UserState
     esiSetup: EsiSetupState
     locale: LocaleState
