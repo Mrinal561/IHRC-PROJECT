@@ -11,13 +11,25 @@ import { AppDispatch } from '@/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { BranchData } from '@/@types/branch';
 import { fetchBranches } from '@/store/slices/branch/branchSlice';
+import httpClient from '@/api/http-client';
+import { endpoints } from '@/api/endpoint';
 
 interface SelectOption {
     value: string;
     label: string;
 }
+interface BranchTableProps {
+    filterValues?: {
+      branchId?: string;
+      companyGroupId?: string;
+      companyId?: string;
+      stateId?: string;
+      districtId?: string;
+      locationId?: string;
+    };
+  }
 
-const BranchTable: React.FC = () => {
+  const BranchTable: React.FC<BranchTableProps> = ({ filterValues = {} }) => {
     const dispatch = useDispatch<AppDispatch>();
     const [data, setData] = useState<EntityData[]>(entityDataSet);
     const [dialogIsOpen, setDialogIsOpen] = useState(false);
@@ -279,7 +291,18 @@ const BranchTable: React.FC = () => {
     const fetchBranchData = async (page: number, size: number) => {
         setIsLoading(true);
         try{
-        const { payload: data } = await dispatch(fetchBranches({page: page, page_size: size}))
+        const { data } = await httpClient.get(endpoints.branch.getAll(),{
+            params: {
+              'branch_id[]': filterValues.branchId || undefined,
+              'group_id[0]': filterValues.companyGroupId || undefined,
+              'company_id[]': filterValues.companyId || undefined,
+              'state_id[]': filterValues.stateId || undefined,
+              'district_id[]': filterValues.districtId || undefined,
+              'location_id[]': filterValues.locationId || undefined,
+            }
+          })
+
+        
         setBranchTableData(data?.data);
         setTableData((prev) => ({
             ...prev,
@@ -301,7 +324,12 @@ const BranchTable: React.FC = () => {
 
     useEffect(() => {
         fetchBranchData(1, 10)
-    }, [])
+    }, [ filterValues.branchId,
+        filterValues.companyGroupId,
+        filterValues.companyId,
+        filterValues.stateId,
+        filterValues.districtId,
+        filterValues.locationId])
 
 
     const [tableData, setTableData] = useState({
