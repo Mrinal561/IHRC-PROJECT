@@ -73,5 +73,10 @@ export const endpoints = {
    pfSetup:{
     getAll:()=> api('companyadmin/pfsetup'),
     create: () => api('companyadmin/pfsetup'),
+   },
+   tracker:{ 
+    downloadFormat:() => api('upload/sample_files/pf-tracker.xlsx'),
+    pfUpload:() => api('companyadmin/pfsetup/pf-tracker'),
+    pfGetALl:() => api(`companyadmin/pfsetup/pf-tracker`)
    }
 }

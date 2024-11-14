@@ -1,9 +1,182 @@
 
+// import React, { useState } from 'react';
+// import { Button, Dialog, Input, Notification, toast} from '@/components/ui';
+// import OutlinedSelect from '@/components/ui/Outlined/Outlined';
+// import { HiDownload, HiUpload } from 'react-icons/hi';
+// import { useNavigate } from 'react-router-dom';
+// import httpClient from '@/api/http-client';
+// import { endpoints } from '@/api/endpoint';
+
+// const documentPath = "../store/AllMappedCompliancesDetails.xls";
+
+// interface PFTrackerBulkUploadProps {
+//   onUploadConfirm: () => void;
+// }
+
+// const PFTrackerBulkUpload: React.FC<PFTrackerBulkUploadProps> = ({ onUploadConfirm }) => {
+//   const [isDialogOpen, setIsDialogOpen] = useState(false);
+//   const [remark, setRemark] = useState('');
+//   const [file, setFile] = useState<File | null>(null);
+//   const [currentGroup, setCurrentGroup] = useState('');
+//   const navigate = useNavigate();
+
+//   const groupOptions = [
+//     { value: '01', label: 'January 2024' },
+//     { value: '02', label: 'February 2024' },
+//     { value: '03', label: 'March 2024' },
+//     { value: '04', label: 'April 2024' },
+//     { value: '05', label: 'May 2024' },
+//     { value: '06', label: 'June 2024' },
+//     { value: '07', label: 'July 2024' },
+//     { value: '08', label: 'August 2024' },
+//     { value: '09', label: 'September 2024' },
+//     { value: '10', label: 'October 2024' },
+//     { value: '11', label: 'November 2024' },
+//     { value: '12', label: 'December 2024' },
+//   ];
+
+//   const handleUploadClick = () => {
+//     setIsDialogOpen(true);
+//   };
+
+//   const handleConfirm = () => {
+//     setIsDialogOpen(false);
+//     navigate('/uploadedpfdetail');
+//   };
+
+//   const handleCancel = () => {
+//     setIsDialogOpen(false);
+//     setRemark('');
+//     setFile(null);
+//     setCurrentGroup('');
+//   };
+
+//   const handleDownload = async (e: React.MouseEvent<HTMLAnchorElement>) => {
+//     e.preventDefault();
+//     if (!currentGroup) {
+//       toast.push(<Notification type="warning" title="Please select a month before downloading" />, {
+//       });
+//       return;
+//     }
+  
+//     try {
+//       const res = await httpClient.get(endpoints.tracker.downloadFormat(), {
+//         responseType: "blob",
+//       });
+  
+//       const blob = new Blob([res.data], { type: "text/xlsx" });
+//       const url = window.URL.createObjectURL(blob);
+//       const link = document.createElement("a");
+//       link.href = url;
+//       link.setAttribute("download", `pftracker.xlsx`);
+//       document.body.appendChild(link);
+//       link.click();
+//       document.body.removeChild(link);
+//     } catch (error) {
+//       console.error('Download error:', error);
+//       toast.push(
+//         <Notification title="Error" type="danger">
+//           Failed to download template. Please try again.
+//         </Notification>
+//       );
+//     }
+//   };
+
+//   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+//     if (event.target.files) {
+//       setFile(event.target.files[0]);
+//     }
+//   };
+
+//   const handleChange = (setter: React.Dispatch<React.SetStateAction<string>>, field: string) => (
+//     selectedOption: { value: string; label: string } | null
+//   ) => {
+//     if (selectedOption) {
+//       setter(selectedOption.value);
+//     }
+//   };
+
+//   return (
+//     <>
+//       <Button 
+//         variant="solid" 
+//         size="sm" 
+//         icon={<HiUpload />} 
+//         onClick={handleUploadClick}
+//       >
+//         Upload PF
+//       </Button>
+
+//       <Dialog
+//         isOpen={isDialogOpen}
+//         onClose={handleCancel}
+//         width={450}
+//       >
+//         <h5 className="mb-4">Upload PF</h5>
+//         <div className='flex gap-3 w-full items-center'>
+//           <p className=''>Select Month:</p>
+//           <div className='w-40'>
+//           <OutlinedSelect
+//             label="Month"
+//             options={groupOptions}
+//             value={groupOptions.find((option) => option.value === currentGroup)}
+//             onChange={handleChange(setCurrentGroup, 'groupName')}
+//           />
+//           </div>
+//         </div>
+        
+//         <div className="flex flex-col gap-2 my-4">
+//           <p>Upload PF File:</p>
+//           <Input
+//             type="file"
+//             onChange={handleFileChange}
+//             className="mb-4"
+//           />
+//         </div>
+//         <div className="my-4 flex gap-2 items-center">
+//           {/* <p>Download PF Upload Format</p> */}
+//           <a onClick={handleDownload} className="text-blue-600 hover:underline">
+//             <Button size="sm" icon={<HiDownload />}>Download Format</Button>
+//           </a>
+//         </div>
+//         {/* <p>Please Enter the Remark:</p>
+//         <textarea
+//           className="w-full p-2 border rounded mb-2"
+//           rows={3}
+//           placeholder="Enter remark"
+//           value={remark}
+//           onChange={(e) => setRemark(e.target.value)}
+//         /> */}
+//         <div className="mt-6 text-right">
+//           <Button
+//             size="sm"
+//             className="mr-2"
+//             onClick={handleCancel}
+//           >
+//             Cancel
+//           </Button>
+//           <Button
+//             variant="solid"
+//             size="sm"
+//             onClick={handleConfirm}
+//           >
+//             Confirm
+//           </Button>
+//         </div>
+//       </Dialog>
+//     </>
+//   );
+// };
+
+// export default PFTrackerBulkUpload;
+
 import React, { useState } from 'react';
 import { Button, Dialog, Input, Notification, toast} from '@/components/ui';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 import { HiDownload, HiUpload } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
+import httpClient from '@/api/http-client';
+import { endpoints } from '@/api/endpoint';
 
 const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
@@ -13,63 +186,117 @@ interface PFTrackerBulkUploadProps {
 
 const PFTrackerBulkUpload: React.FC<PFTrackerBulkUploadProps> = ({ onUploadConfirm }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [remark, setRemark] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [currentGroup, setCurrentGroup] = useState('');
   const navigate = useNavigate();
 
   const groupOptions = [
-    { value: '01', label: 'January 2023' },
-    { value: '02', label: 'February 2023' },
-    { value: '03', label: 'March 2023' },
-    { value: '04', label: 'April 2023' },
-    { value: '05', label: 'May 2023' },
-    { value: '06', label: 'June 2023' },
-    { value: '07', label: 'July 2023' },
-    { value: '08', label: 'August 2023' },
-    { value: '09', label: 'September 2023' },
-    { value: '10', label: 'October 2023' },
-    { value: '11', label: 'November 2023' },
-    { value: '12', label: 'December 2023' },
+    { value: '2024-01', label: 'January 2024' },
+    { value: '2024-02', label: 'February 2024' },
+    { value: '2024-03', label: 'March 2024' },
+    { value: '2024-04', label: 'April 2024' },
+    { value: '2024-05', label: 'May 2024' },
+    { value: '2024-06', label: 'June 2024' },
+    { value: '2024-07', label: 'July 2024' },
+    { value: '2024-08', label: 'August 2024' },
+    { value: '2024-09', label: 'September 2024' },
+    { value: '2024-10', label: 'October 2024' },
+    { value: '2024-11', label: 'November 2024' },
+    { value: '2024-12', label: 'December 2024' },
   ];
 
   const handleUploadClick = () => {
     setIsDialogOpen(true);
   };
 
-  const handleConfirm = () => {
-    setIsDialogOpen(false);
-    navigate('/uploadedpfdetail');
+  const handleConfirm = async () => {
+    try {
+      if (!file || !currentGroup) {
+        toast.push(
+          <Notification title="Error" type="danger">
+            Please select a file and a month to upload
+          </Notification>
+        );
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('document', file);
+      formData.append('month', currentGroup);
+
+      console.log('FormData:', formData);
+
+      const res = await httpClient.post(
+        endpoints.tracker.pfUpload(),
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+      console.log(res)
+
+      if (res) {
+        toast.push(
+          <Notification title="Success" type="success">
+            Upload successful!
+          </Notification>
+        );
+
+        // Close dialog and reset state
+        handleCancel();
+
+        // Refresh the table data
+         onUploadConfirm();
+
+        navigate('/uploadedpfdetail');
+      }
+    } catch (error) {
+      toast.push(
+        <Notification title="Error" type="danger">
+          Upload failed. Please try again.
+        </Notification>
+      );
+      console.error('Upload error:', error);
+    }
   };
 
   const handleCancel = () => {
     setIsDialogOpen(false);
-    setRemark('');
     setFile(null);
     setCurrentGroup('');
   };
 
-  const handleDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleDownload = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     if (!currentGroup) {
       toast.push(<Notification type="warning" title="Please select a month before downloading" />, {
-        placement: 'top-center'
       });
       return;
     }
-    fetch(documentPath)
-      .then(response => response.blob())
-      .then(blob => {
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = url;
-        a.download = `AllMappedCompliancesDetails_${currentGroup}.xls`;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-      })
-      .catch(() => console.error('Download failed'));
+
+    try {
+      const res = await httpClient.get(endpoints.tracker.downloadFormat(), {
+        responseType: "blob",
+      });
+
+      const blob = new Blob([res.data], { type: "text/xlsx" });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `pftracker.xlsx`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error('Download error:', error);
+      toast.push(
+        <Notification title="Error" type="danger">
+          Failed to download template. Please try again.
+        </Notification>
+      );
+    }
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -124,19 +351,10 @@ const PFTrackerBulkUpload: React.FC<PFTrackerBulkUploadProps> = ({ onUploadConfi
           />
         </div>
         <div className="my-4 flex gap-2 items-center">
-          {/* <p>Download PF Upload Format</p> */}
-          <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
+          <a onClick={handleDownload} className="text-blue-600 hover:underline">
             <Button size="sm" icon={<HiDownload />}>Download Format</Button>
           </a>
         </div>
-        {/* <p>Please Enter the Remark:</p>
-        <textarea
-          className="w-full p-2 border rounded mb-2"
-          rows={3}
-          placeholder="Enter remark"
-          value={remark}
-          onChange={(e) => setRemark(e.target.value)}
-        /> */}
         <div className="mt-6 text-right">
           <Button
             size="sm"
