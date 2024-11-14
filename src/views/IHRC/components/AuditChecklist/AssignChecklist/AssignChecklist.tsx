@@ -9,6 +9,17 @@ import Company from '../../Home/components/Company'
 import { endpoints } from '@/api/endpoint'
 import httpClient from '@/api/http-client'
 
+interface SelectOption {
+    label: string;
+    value: string;
+}
+
+interface BranchOption {
+    label: string;
+    value: string;
+}
+
+
 const AssignChecklist = () => {
     const dispatch = useAppDispatch()
     const [isLoading, setIsLoading] = useState(false)
@@ -18,6 +29,15 @@ const AssignChecklist = () => {
         null,
     )
     const [selectedIds, setSelectedIds] = useState<number[]>([]) // New state for selected IDs
+
+    const [selectedCompanyGroup, setSelectedCompanyGroup] = useState<SelectOption | null>(null);
+    const [selectedCompany, setSelectedCompany] = useState<SelectOption | null>(null);
+    const [selectedState, setSelectedState] = useState<SelectOption | null>(null);
+    const [selectedDistrict, setSelectedDistrict] = useState<SelectOption | null>(null);
+    const [selectedLocation, setSelectedLocation] = useState<SelectOption | null>(null);
+
+
+
 
     // Add handler for selected IDs
     const handleSelectedIdsChange = (ids: number[]) => {
@@ -35,9 +55,14 @@ const AssignChecklist = () => {
         try {
             const response = await httpClient.get(endpoints.assign.getAll(), {
                 params: {
-                    page,
-                    pageSize,
-                    branchId: selectedBranch?.value,
+                    'page':page,
+                    'page_size':pageSize,
+                   'branch_id[]': selectedBranch?.value,
+                    'group_id[]': selectedCompanyGroup?.value,
+                    'company_id[]': selectedCompany?.value,
+                    'state_id[]': selectedState?.value,
+                    'district_id[]': selectedDistrict?.value,
+                    'location_id[]': selectedLocation?.value,
                 },
             })
 
@@ -52,10 +77,6 @@ const AssignChecklist = () => {
             }
         } catch (error) {
             console.error('Error fetching assigned data:', error)
-            console.error('Error details:', {
-                message: error.message,
-                stack: error.stack,
-            })
             toast.push(
                 <Notification type="danger" title="Error">
                     Failed to fetch assigned checklist data
@@ -78,15 +99,17 @@ const AssignChecklist = () => {
     }, []) // Initial fetch
 
     useEffect(() => {
-        console.log('selectedBranch changed - Current value:', selectedBranch)
-        if (selectedBranch) {
-            console.log('Fetching data for branch:', {
-                label: selectedBranch.label,
-                value: selectedBranch.value,
-            })
-            fetchAssignedData()
-        }
-    }, [selectedBranch]) // Refetch when branch changes
+        console.log('Filter changed - Fetching new data')
+        fetchAssignedData()
+        setTableKey((prevKey) => prevKey + 1) // Force table refresh
+    }, [
+        selectedBranch,
+        selectedCompanyGroup,
+        selectedCompany,
+        selectedState,
+        selectedDistrict,
+        selectedLocation
+    ])
 
     useEffect(() => {
         console.log('assignedData updated:', {
@@ -99,7 +122,6 @@ const AssignChecklist = () => {
     const handleBranchChange = (branch: BranchOption | null) => {
         console.log('Branch value received:', branch?.value)
         setSelectedBranch(branch)
-        setTableKey((prevKey) => prevKey + 1)
     }
     const refreshTable = () => {
         console.log('Refreshing table data...')
@@ -129,13 +151,12 @@ const AssignChecklist = () => {
             </div>
             <div className="mb-8">
                 <Company
-                    onBranchChange={(branch) => {
-                        console.log(
-                            'Company component callback triggered with branch:',
-                            branch,
-                        )
-                        handleBranchChange(branch)
-                    }}
+                   onBranchChange={(branch) => handleBranchChange(branch)}
+                   onCompanyGroupChange={setSelectedCompanyGroup}
+                   onCompanyChange={setSelectedCompany}
+                   onStateChange={setSelectedState}
+                   onDistrictChange={setSelectedDistrict}
+                   onLocationChange={setSelectedLocation}
                 />
             </div>
             <AssignChecklistTable

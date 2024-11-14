@@ -18,6 +18,14 @@ interface StatusTableProps {
   onSearch: (searchTerm: string) => void;
   onClearAll: () => void;
   currentFilter: string;
+  filterValues: {
+    branchId?: string;
+    companyGroupId?: string;
+    companyId?: string;
+    stateId?: string;
+    districtId?: string;
+    locationId?: string;
+  };
 }
 
 interface BulkActionData {
@@ -142,6 +150,7 @@ const StatusTable: React.FC<StatusTableProps> = ({
   onClearAll,
   onFilterChange,
   currentFilter,
+  filterValues,
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -169,7 +178,13 @@ const StatusTable: React.FC<StatusTableProps> = ({
     try {
       const response = await httpClient.get(endpoints.due.getAll(), {
         params: {
-          data_status
+          'branch_id[]': filterValues.branchId || undefined,
+          'group_id[0]': filterValues.companyGroupId || undefined,
+          'company_id[]': filterValues.companyId || undefined,
+          'state_id[]': filterValues.stateId || undefined,
+          'district_id[]': filterValues.districtId || undefined,
+          'location_id[]': filterValues.locationId || undefined,
+          'data_status[]': data_status,
         }
       });
       console.log('API Response:', response.data);
@@ -190,7 +205,14 @@ const StatusTable: React.FC<StatusTableProps> = ({
   useEffect(() => {
     console.log('Fetching data due to update or status change...');
     fetchStatusData();
-  }, [data_status, updateCounter]);
+  }, [data_status, updateCounter, 
+    filterValues.branchId, 
+    filterValues.companyGroupId, 
+    filterValues.companyId, 
+    filterValues.stateId, 
+    filterValues.districtId, 
+    filterValues.locationId
+]);
 
   const handleBulkApprove = async () => {
     const bulkData: BulkActionData = {
