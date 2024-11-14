@@ -15,22 +15,6 @@ import OutlinedSelect from '@/components/ui/Outlined'
 import DistrictAutosuggest from '../../Branch/components/DistrictAutoSuggest'
 import httpClient from '@/api/http-client'
 import { endpoints } from '@/api/endpoint'
-
-// export interface PFSetupData {
-//   group_id: number;
-//   company_id: number;
-//   Company_Group_Name: string;
-//   Company_Name: string;
-//   pfCode: string;
-//   pfCodeLocation: string;
-//   registrationDate?: Date | null;
-//   dscDate?: Date | null;
-//   esignStatus: string;
-//   pfUserId?: string;
-//   pfPassword?: string;
-//   authorizedSignatory: string[];
-//   pfRegistrationCertificate?: File | null;
-// }
 interface PFSetupData {
     group_id: number
     company_id: number
@@ -76,6 +60,12 @@ interface UserSignatory {
     esignStatus?: string
 }
 
+interface Location {
+    id: number
+    name: string
+    district_id: number
+}
+
 const PFSetupPage: React.FC = () => {
     const navigate = useNavigate()
     const location = useLocation()
@@ -90,6 +80,7 @@ const PFSetupPage: React.FC = () => {
     const [selectedStates, setSelectedStates] = useState<SelectOption | null>(
         null,
     )
+    const [selectedLocation, setSelectedLocation] = useState<SelectOption | null>(null)
     const [isLoading, setIsLoading] = useState(true)
     const [companyGroups, setCompanyGroups] = useState<SelectOption[]>([])
     const [selectedCompanyGroup, setSelectedCompanyGroup] =
@@ -101,7 +92,12 @@ const PFSetupPage: React.FC = () => {
     const [districts, setDistricts] = useState<SelectOption[]>([])
     const [selectedDistrict, setSelectedDistrict] =
         useState<SelectOption | null>(null)
+        const [locations, setLocations] = useState<SelectOption[]>([])
     const [users, setUsers] = useState<any[]>([])
+
+    const [selectedStateId, setSelectedStateId] = useState('')
+    const [selectedDistrictId, setSelectedDistrictId] = useState('')
+    const [selectedLocationId, setSelectedLocationId] = useState('')
 
     const [pfSetupData, setPfSetupData] = useState<PFSetupData>({
         group_id: 0,
@@ -110,7 +106,7 @@ const PFSetupPage: React.FC = () => {
         district_id: 0,
         location: '',
         pf_code: '',
-        register_date: null,
+        register_date: new Date(),
         register_certificate: '',
         signatory_data: [],
     })
@@ -329,40 +325,7 @@ const PFSetupPage: React.FC = () => {
     }, [selectedCompanyGroup])
 
     // Add this function after loadStates
-    const loadDistricts = async (stateId: string) => {
-        try {
-            const response = await httpClient.get(endpoints.common.district(), {
-                params: {
-                    state_id: stateId,
-                },
-            })
-
-            if (response.data) {
-                const formattedDistricts = response.data.map(
-                    (district: any) => ({
-                        label: district.name,
-                        value: String(district.id),
-                    }),
-                )
-
-                console.log(
-                    'Districts for state',
-                    stateId,
-                    ':',
-                    formattedDistricts,
-                )
-                setDistricts(formattedDistricts)
-            }
-        } catch (error) {
-            console.error('Failed to load districts:', error)
-            toast.push(
-                <Notification title="Error" type="danger">
-                    Failed to load districts
-                </Notification>,
-            )
-            setDistricts([])
-        }
-    }
+   
 
     const loadUsers = async () => {
         try {
@@ -408,25 +371,7 @@ const PFSetupPage: React.FC = () => {
     //     loadDistricts(option.value);
     //   }
     // };
-    const handleStateChange = (option: SelectOption | null) => {
-        setSelectedStates(option)
-        setPfSetupData((prev) => ({
-            ...prev,
-            state_id: option ? parseInt(option.value) : 0,
-        }))
-        if (option) {
-            loadDistricts(option.value)
-        }
-    }
-
-    // Add handleDistrictChange
-    const handleDistrictChange = (option: SelectOption | null) => {
-        setSelectedDistrict(option)
-        setPfSetupData((prev) => ({
-            ...prev,
-            district_id: option ? parseInt(option.value) : 0,
-        }))
-    }
+  
     // Update PF setup data when company is selected
     useEffect(() => {
         if (selectedCompany?.value) {
@@ -440,33 +385,135 @@ const PFSetupPage: React.FC = () => {
 
     const loadStates = async () => {
         try {
-            setIsLoading(true)
-            const response = await httpClient.get(endpoints.common.state())
-            console.log('API Response:', response) // Debug log
-
+            setIsLoading(true);
+            const response = await httpClient.get(endpoints.common.state());
+            
             if (response.data) {
                 const formattedStates = response.data.map((state: any) => ({
                     label: state.name,
-                    value: String(state.id),
-                }))
-
-                console.log('Formatted States:', formattedStates) // Debug log
-                setStates(formattedStates)
-            } else {
-                console.error('Invalid state data structure:', response.data)
-                // showNotification('danger', 'Invalid state data received');
+                    value: String(state.id)
+                }));
+                setStates(formattedStates);
             }
         } catch (error) {
-            console.error('Failed to load states:', error)
-            // showNotification('danger', 'Failed to load states');
+            console.error('Failed to load states:', error);
+            toast.push(
+                <Notification title="Error" type="danger">
+                    Failed to load states
+                </Notification>
+            );
         } finally {
-            setIsLoading(false)
+            setIsLoading(false);
         }
-    }
+    };
+
+
+
+  
+    const loadDistricts = async (stateId: string) => {
+        if (!stateId) return;
+        
+        try {
+            const response = await httpClient.get(endpoints.common.district(), {
+                params: { state_id: stateId }
+            });
+
+            if (response.data) {
+                const formattedDistricts = response.data.map((district: any) => ({
+                    label: district.name,
+                    value: String(district.id)
+                }));
+                setDistricts(formattedDistricts);
+            }
+        } catch (error) {
+            console.error('Failed to load districts:', error);
+            toast.push(
+                <Notification title="Error" type="danger">
+                    Failed to load districts
+                </Notification>
+            );
+            setDistricts([]);
+        }
+    };
+  
+
+    const loadLocations = async (districtId: string) => {
+        if (!districtId) return;
+        
+        try {
+            const response = await httpClient.get(endpoints.common.location(), {
+                params: { district_id: districtId }
+            });
+
+            if (response.data) {
+                const formattedLocations = response.data.map((location: any) => ({
+                    label: location.name,
+                    value: String(location.id)
+                }));
+                setLocations(formattedLocations);
+            }
+        } catch (error) {
+            console.error('Failed to load locations:', error);
+            toast.push(
+                <Notification title="Error" type="danger">
+                    Failed to load locations
+                </Notification>
+            );
+            setLocations([]);
+        }
+    };
+
+    const handleStateChange = (option: SelectOption | null) => {
+        setSelectedStates(option);
+        setSelectedDistrict(null); // Reset district selection
+        setSelectedLocation(null); // Reset location selection
+        setDistricts([]); // Clear districts
+        setLocations([]); // Clear locations
+        
+        if (option) {
+            loadDistricts(option.value);
+            setPfSetupData(prev => ({
+                ...prev,
+                state_id: parseInt(option.value),
+                district_id: 0,
+                location: ''
+            }));
+        }
+    };
+
+    // Add handleDistrictChange
+    const handleDistrictChange = (option: SelectOption | null) => {
+        setSelectedDistrict(option);
+        setSelectedLocation(null); // Reset location selection
+        setLocations([]); // Clear locations
+        
+        if (option) {
+            loadLocations(option.value);
+            setPfSetupData(prev => ({
+                ...prev,
+                district_id: parseInt(option.value),
+                location: ''
+            }));
+        }
+    };
+
+
+    const handleLocationChange = (option: SelectOption | null) => {
+        setSelectedLocation(option);
+        if (option) {
+            setPfSetupData(prev => ({
+                ...prev,
+                location: option.label
+            }));
+        }
+    };
+
 
     useEffect(() => {
         loadStates()
     }, [])
+
+
 
     const handleInputChange = (
         field: keyof PFSetupData,
@@ -625,12 +672,11 @@ const PFSetupPage: React.FC = () => {
                             handleInputChange('pf_code', value)
                         }
                     />
-                    <OutlinedInput
+                    <OutlinedSelect
                         label="PF Location"
-                        value={pfSetupData.location}
-                        onChange={(value: string) =>
-                            handleInputChange('location', value)
-                        }
+                        options={locations}
+                        value={selectedLocation}
+                        onChange={handleLocationChange}
                     />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -648,8 +694,8 @@ const PFSetupPage: React.FC = () => {
                         <OutlinedSelect
                             label="Select District"
                             options={districts}
-                            value={selectedDistrict}
-                            onChange={handleDistrictChange}
+                        value={selectedDistrict}
+                        onChange={handleDistrictChange}
                         />
                     </div>
                 </div>
