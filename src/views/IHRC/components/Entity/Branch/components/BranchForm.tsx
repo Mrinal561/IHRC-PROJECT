@@ -6,23 +6,37 @@ import { EntityData, entityDataSet, LocationData } from '../../../../store/dummy
 import OutlinedSelect from '@/components/ui/Outlined';
 import OutlinedInput from '@/components/ui/OutlinedInput';
 import LocationAutosuggest from './LocationAutosuggest';
+import { AppDispatch } from '@/store';
+import httpClient from '@/api/http-client';
+import { endpoints } from '@/api/endpoint';
+import { useDispatch } from 'react-redux';
+import DistrictAutosuggest from './DistrictAutoSuggest';
+import { createBranch } from '@/store/slices/branch/branchSlice';
+import { format } from 'date-fns';
+import { MdLabel } from 'react-icons/md';
 
-interface BranchData extends EntityData {
-  Branch: string;
-  Location: string;
-  BranchAddress: string;
-  BranchOpeningDate: string;
-  BranchHeadCount: string;
-  AuthorityName: string;
-  AuthorityAddress: string;
-  BranchType: string;
-  SERegistrationNumber: string;
-  SEValidity: String;
-  sandeRegistrationCertificate?: File | null;
-  remark: string;
-  mobile: string;
-  email: string;
-
+interface BranchFormData {
+  group_id: number;
+  company_id: number;
+  state_id: number;
+  district: string;
+  location: string;
+  name: string;
+  opening_date: string;
+  head_count: string;
+  address: string;
+  type: string;
+  office_type: string;
+  custom_data: {
+    remark: string;
+    status: string;
+    email?: string;
+    mobile?: string;
+  };
+  register_number: string;
+  status: string;
+  validity: string;
+  document?: string;
 }
 
 interface SelectOption {
@@ -30,329 +44,238 @@ interface SelectOption {
   label: string;
 }
 
-const indianStates: SelectOption[] = [
-  { value: 'AN', label: 'Andaman and Nicobar Islands' },
-  { value: 'AP', label: 'Andhra Pradesh' },
-  { value: 'AR', label: 'Arunachal Pradesh' },
-  { value: 'AS', label: 'Assam' },
-  { value: 'BR', label: 'Bihar' },
-  { value: 'CH', label: 'Chandigarh' },
-  { value: 'CT', label: 'Chhattisgarh' },
-  { value: 'DN', label: 'Dadra and Nagar Haveli' },
-  { value: 'DD', label: 'Daman and Diu' },
-  { value: 'DL', label: 'Delhi' },
-  { value: 'GA', label: 'Goa' },
-  { value: 'GJ', label: 'Gujarat' },
-  { value: 'HR', label: 'Haryana' },
-  { value: 'HP', label: 'Himachal Pradesh' },
-  { value: 'JK', label: 'Jammu and Kashmir' },
-  { value: 'JH', label: 'Jharkhand' },
-  { value: 'KA', label: 'Karnataka' },
-  { value: 'KL', label: 'Kerala' },
-  { value: 'LA', label: 'Ladakh' },
-  { value: 'LD', label: 'Lakshadweep' },
-  { value: 'MP', label: 'Madhya Pradesh' },
-  { value: 'MH', label: 'Maharashtra' },
-  { value: 'MN', label: 'Manipur' },
-  { value: 'ML', label: 'Meghalaya' },
-  { value: 'MZ', label: 'Mizoram' },
-  { value: 'NL', label: 'Nagaland' },
-  { value: 'OR', label: 'Odisha' },
-  { value: 'PY', label: 'Puducherry' },
-  { value: 'PB', label: 'Punjab' },
-  { value: 'RJ', label: 'Rajasthan' },
-  { value: 'SK', label: 'Sikkim' },
-  { value: 'TN', label: 'Tamil Nadu' },
-  { value: 'TG', label: 'Telangana' },
-  { value: 'TR', label: 'Tripura' },
-  { value: 'UP', label: 'Uttar Pradesh' },
-  { value: 'UT', label: 'Uttarakhand' },
-  { value: 'WB', label: 'West Bengal' }
-];
+interface District {
+    id: number;
+    name: string;
+  }
 
-const districtsByState: { [key: string]: SelectOption[] } = {
-  'Andhra Pradesh': [
-    { value: 'anantapur', label: 'Anantapur' },
-    { value: 'chittoor', label: 'Chittoor' },
-    { value: 'east_godavari', label: 'East Godavari' },
-    { value: 'guntur', label: 'Guntur' },
-    { value: 'krishna', label: 'Krishna' }
-  ],
-  'Arunachal Pradesh': [
-    { value: 'anjaw', label: 'Anjaw' },
-    { value: 'changlang', label: 'Changlang' },
-    { value: 'east_kameng', label: 'East Kameng' },
-    { value: 'east_siang', label: 'East Siang' },
-    { value: 'lohit', label: 'Lohit' }
-  ],
-  'Assam': [
-    { value: 'baksa', label: 'Baksa' },
-    { value: 'barpeta', label: 'Barpeta' },
-    { value: 'biswanath', label: 'Biswanath' },
-    { value: 'cachar', label: 'Cachar' },
-    { value: 'dhemaji', label: 'Dhemaji' }
-  ],
-  'Bihar': [
-    { value: 'araria', label: 'Araria' },
-    { value: 'aurangabad', label: 'Aurangabad' },
-    { value: 'banka', label: 'Banka' },
-    { value: 'begusarai', label: 'Begusarai' },
-    { value: 'bhagalpur', label: 'Bhagalpur' }
-  ],
-  'Chhattisgarh': [
-    { value: 'balod', label: 'Balod' },
-    { value: 'baloda_bazar', label: 'Baloda Bazar' },
-    { value: 'balrampur', label: 'Balrampur' },
-    { value: 'bastar', label: 'Bastar' },
-    { value: 'bemetara', label: 'Bemetara' }
-  ],
-  'Goa': [
-    { value: 'north_goa', label: 'North Goa' },
-    { value: 'south_goa', label: 'South Goa' }
-  ],
-  'Gujarat': [
-    { value: 'ahmedabad', label: 'Ahmedabad' },
-    { value: 'amreli', label: 'Amreli' },
-    { value: 'anand', label: 'Anand' },
-    { value: 'aravalli', label: 'Aravalli' },
-    { value: 'banaskantha', label: 'Banaskantha' }
-  ],
-  'Haryana': [
-    { value: 'ambala', label: 'Ambala' },
-    { value: 'bhiwani', label: 'Bhiwani' },
-    { value: 'charkhi_dadri', label: 'Charkhi Dadri' },
-    { value: 'faridabad', label: 'Faridabad' },
-    { value: 'fatehabad', label: 'Fatehabad' }
-  ],
-  'Himachal Pradesh': [
-    { value: 'bilaspur', label: 'Bilaspur' },
-    { value: 'chamba', label: 'Chamba' },
-    { value: 'hamirpur', label: 'Hamirpur' },
-    { value: 'kangra', label: 'Kangra' },
-    { value: 'kinnaur', label: 'Kinnaur' }
-  ],
-  'Jharkhand': [
-    { value: 'bokaro', label: 'Bokaro' },
-    { value: 'chatra', label: 'Chatra' },
-    { value: 'deoghar', label: 'Deoghar' },
-    { value: 'dhanbad', label: 'Dhanbad' },
-    { value: 'dumka', label: 'Dumka' }
-  ],
-  'Karnataka': [
-    { value: 'bagalkot', label: 'Bagalkot' },
-    { value: 'ballari', label: 'Ballari' },
-    { value: 'belagavi', label: 'Belagavi' },
-    { value: 'bengaluru_rural', label: 'Bengaluru Rural' },
-    { value: 'bengaluru_urban', label: 'Bengaluru Urban' }
-  ],
-  'Kerala': [
-    { value: 'alappuzha', label: 'Alappuzha' },
-    { value: 'ernakulam', label: 'Ernakulam' },
-    { value: 'idukki', label: 'Idukki' },
-    { value: 'kannur', label: 'Kannur' },
-    { value: 'kasaragod', label: 'Kasaragod' }
-  ],
-  'Madhya Pradesh': [
-    { value: 'agar_malwa', label: 'Agar Malwa' },
-    { value: 'alirajpur', label: 'Alirajpur' },
-    { value: 'anuppur', label: 'Anuppur' },
-    { value: 'ashoknagar', label: 'Ashoknagar' },
-    { value: 'balaghat', label: 'Balaghat' }
-  ],
-  'Maharashtra': [
-    { value: 'ahmednagar', label: 'Ahmednagar' },
-    { value: 'akola', label: 'Akola' },
-    { value: 'amravati', label: 'Amravati' },
-    { value: 'aurangabad', label: 'Aurangabad' },
-    { value: 'beed', label: 'Beed' }
-  ],
-  'Manipur': [
-    { value: 'bishnupur', label: 'Bishnupur' },
-    { value: 'chandel', label: 'Chandel' },
-    { value: 'churachandpur', label: 'Churachandpur' },
-    { value: 'imphal_east', label: 'Imphal East' },
-    { value: 'imphal_west', label: 'Imphal West' }
-  ],
-  'Meghalaya': [
-    { value: 'east_garo_hills', label: 'East Garo Hills' },
-    { value: 'east_jaintia_hills', label: 'East Jaintia Hills' },
-    { value: 'east_khasi_hills', label: 'East Khasi Hills' },
-    { value: 'north_garo_hills', label: 'North Garo Hills' },
-    { value: 'ri_bhoi', label: 'Ri Bhoi' }
-  ],
-  'Mizoram': [
-    { value: 'aizawl', label: 'Aizawl' },
-    { value: 'champhai', label: 'Champhai' },
-    { value: 'kolasib', label: 'Kolasib' },
-    { value: 'lawngtlai', label: 'Lawngtlai' },
-    { value: 'lunglei', label: 'Lunglei' }
-  ],
-  'Nagaland': [
-    { value: 'dimapur', label: 'Dimapur' },
-    { value: 'kiphire', label: 'Kiphire' },
-    { value: 'kohima', label: 'Kohima' },
-    { value: 'longleng', label: 'Longleng' },
-    { value: 'mokokchung', label: 'Mokokchung' }
-  ],
-  'Odisha': [
-    { value: 'angul', label: 'Angul' },
-    { value: 'balangir', label: 'Balangir' },
-    { value: 'balasore', label: 'Balasore' },
-    { value: 'bargarh', label: 'Bargarh' },
-    { value: 'bhadrak', label: 'Bhadrak' }
-  ],
-  'Punjab': [
-    { value: 'amritsar', label: 'Amritsar' },
-    { value: 'barnala', label: 'Barnala' },
-    { value: 'bathinda', label: 'Bathinda' },
-    { value: 'faridkot', label: 'Faridkot' },
-    { value: 'fatehgarh_sahib', label: 'Fatehgarh Sahib' }
-  ],
-  'Rajasthan': [
-    { value: 'ajmer', label: 'Ajmer' },
-    { value: 'alwar', label: 'Alwar' },
-    { value: 'banswara', label: 'Banswara' },
-    { value: 'baran', label: 'Baran' },
-    { value: 'barmer', label: 'Barmer' }
-  ],
-  'Sikkim': [
-    { value: 'east_sikkim', label: 'East Sikkim' },
-    { value: 'north_sikkim', label: 'North Sikkim' },
-    { value: 'south_sikkim', label: 'South Sikkim' },
-    { value: 'west_sikkim', label: 'West Sikkim' }
-  ],
-  'Tamil Nadu': [
-    { value: 'ariyalur', label: 'Ariyalur' },
-    { value: 'chennai', label: 'Chennai' },
-    { value: 'coimbatore', label: 'Coimbatore' },
-    { value: 'cuddalore', label: 'Cuddalore' },
-    { value: 'dharmapuri', label: 'Dharmapuri' }
-  ],
-  'Telangana': [
-    { value: 'adilabad', label: 'Adilabad' },
-    { value: 'bhadradri_kothagudem', label: 'Bhadradri Kothagudem' },
-    { value: 'hyderabad', label: 'Hyderabad' },
-    { value: 'jagtial', label: 'Jagtial' },
-    { value: 'jangaon', label: 'Jangaon' }
-  ],
-  'Tripura': [
-    { value: 'dhalai', label: 'Dhalai' },
-    { value: 'gomati', label: 'Gomati' },
-    { value: 'khowai', label: 'Khowai' },
-    { value: 'north_tripura', label: 'North Tripura' },
-    { value: 'sepahijala', label: 'Sepahijala' }
-  ],
-  'Uttar Pradesh': [
-    { value: 'agra', label: 'Agra' },
-    { value: 'aligarh', label: 'Aligarh' },
-    { value: 'allahabad', label: 'Allahabad' },
-    { value: 'ambedkar_nagar', label: 'Ambedkar Nagar' },
-    { value: 'amethi', label: 'Amethi' }
-  ],
-  'Uttarakhand': [
-    { value: 'almora', label: 'Almora' },
-    { value: 'bageshwar', label: 'Bageshwar' },
-    { value: 'chamoli', label: 'Chamoli' },
-    { value: 'champawat', label: 'Champawat' },
-    { value: 'dehradun', label: 'Dehradun' }
-  ],
-  'West Bengal': [
-    { value: 'alipurduar', label: 'Alipurduar' },
-    { value: 'bankura', label: 'Bankura' },
-    { value: 'birbhum', label: 'Birbhum' },
-    { value: 'cooch_behar', label: 'Cooch Behar' },
-    { value: 'dakshin_dinajpur', label: 'Dakshin Dinajpur' }
-  ],
-  'Andaman and Nicobar Islands': [
-    { value: 'nicobar', label: 'Nicobar' },
-    { value: 'north_and_middle_andaman', label: 'North and Middle Andaman' },
-    { value: 'south_andaman', label: 'South Andaman' }
-  ],
-  'Chandigarh': [
-    { value: 'chandigarh', label: 'Chandigarh' }
-  ],
-  'Dadra and Nagar Haveli and Daman and Diu': [
-    { value: 'dadra_and_nagar_haveli', label: 'Dadra and Nagar Haveli' },
-    { value: 'daman', label: 'Daman' },
-    { value: 'diu', label: 'Diu' }
-  ],
-  'Delhi': [
-    { value: 'central_delhi', label: 'Central Delhi' },
-    { value: 'east_delhi', label: 'East Delhi' },
-    { value: 'new_delhi', label: 'New Delhi' },
-    { value: 'north_delhi', label: 'North Delhi' },
-    { value: 'north_east_delhi', label: 'North East Delhi' }
-  ],
-  'Jammu and Kashmir': [
-    { value: 'anantnag', label: 'Anantnag' },
-    { value: 'bandipore', label: 'Bandipore' },
-    { value: 'baramulla', label: 'Baramulla' },
-    { value: 'budgam', label: 'Budgam' },
-    { value: 'doda', label: 'Doda' }
-  ],
-  'Ladakh': [
-    { value: 'kargil', label: 'Kargil' },
-    { value: 'leh', label: 'Leh' }
-  ],
-  'Lakshadweep': [
-    { value: 'lakshadweep', label: 'Lakshadweep' }
-  ],
-  'Puducherry': [
-    { value: 'karaikal', label: 'Karaikal' },
-    { value: 'mahe', label: 'Mahe' },
-    { value: 'puducherry', label: 'Puducherry' },
-    { value: 'yanam', label: 'Yanam' }
-  ]
-};
+
 
 const AddBranchForm: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const [locationData, setLocationData] = useState<EntityData[]>([]);
-  // const [locations, setLocations] = useState<LocationData[]>([]);
+//   const [locationData, setLocationData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [companyGroups, setCompanyGroups] = useState<SelectOption[]>([]);
+  const [selectedCompanyGroup, setSelectedCompanyGroup] = useState<SelectOption | null>(null);
+  const [companies, setCompanies] = useState<SelectOption[]>([]);
+  const [selectedCompany, setSelectedCompany] = useState<SelectOption | null>(null);
+const [states, setStates] = useState<SelectOption[]>([]);
+const [selectedStates, setSelectedStates] = useState<SelectOption | null>(null);
+const [selectedDistrict, setSelectedDistrict] = useState('');
+const [districtsData, setDistrictsData] = useState<District[]>([]);
+const [selectedDistrictId, setSelectedDistrictId] = useState<number | undefined>();
+const [selectedLocation, setSelectedLocation] = useState('');
+const [fileBase64, setFileBase64] = useState<string>('');
 
-  const [formData, setFormData] = useState<BranchData>({
-    Company_Group_Name: '',
-    Company_Name: '',
-    State: '',
-    District: '',
-    Location: '',
-    Branch: '',
-    BranchAddress: '',
-    BranchOpeningDate: '',
-    BranchHeadCount: '',
-    AuthorityName: '',
-    AuthorityAddress: '',
-    BranchType: '',
-    SERegistrationNumber: '',
-    SEValidity: '',
-    remark: '',
-    mobile: '',
-    email: ''
+
+
+  const [formData, setFormData] = useState<BranchFormData>({
+    group_id: 0,
+    company_id: selectedCompany?.value ? parseInt(selectedCompany.value) : 0,
+    state_id: selectedCompany?.value ? parseInt(selectedCompany.value) : 0,
+    district: selectedDistrict,
+    location: selectedLocation,
+    name: '',
+    opening_date: '',
+    head_count: '',
+    address: '',
+    type: '',
+    office_type: '',
+    custom_data: {
+      remark: '',
+      status: 'active',
+      email: '',
+      mobile: ''
+    },
+    register_number: '',
+    status: 'active',
+    validity: '',
+    document: ''
   });
 
+  const statusTypeOptions= [
+    {value: "active", label: 'Active'},
+    {value: "inactive", label: 'Inactive'},
+  ]
   const branchTypeOptions = [
     { value: 'rented', label: 'Rented' },
     { value: 'owned', label: 'Owned' },
   ];
 
-  useEffect(() => {
-    const loadLocationData = () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        setLocationData(entityDataSet);
-      } catch (err) {
-        console.error('Error loading location data:', err);
-        setError('Failed to load location data. Please try again later.');
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const officeTypeOption = [
+    { value: 'register_office', label: 'Register Office' },
+    { value: 'coorporate_office', label: 'Coorporate Office' },
+    { value: 'regional_office', label: 'Regional Office' },
+    { value: 'branch', label: 'Branch Office' },
+    // { value: 'others', label: 'Others' },
+    // { value: 'branch', label: 'Branch' },
+  ]
 
-    loadLocationData();
+
+  const showNotification = (type: 'success' | 'info' | 'danger' | 'warning', message: string) => {
+    toast.push(
+      <Notification
+        title={type.charAt(0).toUpperCase() + type.slice(1)}
+        type={type}
+      >
+        {message}
+      </Notification>
+    );
+  };
+
+  const loadStates = async () => {
+    try {
+      setIsLoading(true);
+      const response = await httpClient.get(endpoints.common.state());
+      
+      if (response.data) {
+        const formattedStates = response.data.map((state: any) => ({
+          label: state.name,
+          value: String(state.id)
+        }));
+        
+        console.log('Formatted States:', formattedStates); // Debug log
+        setStates(formattedStates);
+      } else {
+        console.error('Invalid state data structure:', response.data);
+        showNotification('danger', 'Invalid state data received');
+      }
+    } catch (error) {
+      console.error('Failed to load states:', error);
+      showNotification('danger', 'Failed to load states');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadStates();
   }, []);
+
+  // Handle state selection
+  const handleStateChange = (option: SelectOption | null) => {
+    setSelectedStates(option);
+    if (option) {
+      setFormData(prev => ({
+        ...prev,
+        state_id: parseInt(option.value),
+        // State: option.label,
+        // District: '' // Reset district when state changes
+      }));
+    }
+  };
+  
+
+
+
+
+useEffect(() => {
+    setFormData(prev => ({
+        ...prev,
+        group_id: selectedCompanyGroup?.value ? parseInt(selectedCompanyGroup.value) : 0
+    }));
+}, [selectedCompanyGroup]);
+
+
+
+
+const loadCompanyGroups = async () => {
+    try {
+        const { data } = await httpClient.get(endpoints.companyGroup.getAll(), {
+            params: { ignorePlatform: true },
+        });
+        setCompanyGroups(
+            data.data.map((v: any) => ({
+              label: v.name,
+              value: String(v.id),
+            }))
+          );
+    }
+    catch (error) {
+        console.error('Failed to load company groups:', error);
+        showNotification('danger', 'Failed to load company groups');
+      }
+}
+
+
+useEffect(() => {
+    loadCompanyGroups();
+  }, []);
+
+
+
+const loadCompanies = async (groupId: string[] | number[]) => {
+    try {
+        // setIsLoading(true);
+
+        const groupIdParam = [`${groupId}`];
+        // Modify the API call to include the group ID as a query parameter
+        const { data } = await httpClient.get(endpoints.company.getAll(), {
+            params: {
+                'group_id[]': groupIdParam // Add group_id as a query parameter
+            }
+        });
+
+        if (data?.data) {
+            // Filter companies based on group_id
+            const formattedCompanies = data.data.map((company: any) => ({
+                label: company.name,
+                value: String(company.id),
+            }));
+
+            if (formattedCompanies.length > 0) {
+                setCompanies(formattedCompanies);
+            } else {
+                showNotification('info', 'No companies found for this group');
+                setCompanies([]);
+            }
+        } else {
+            setCompanies([]);
+        }
+    } catch (error: any) {
+        console.error('Failed to load companies:', error);
+        showNotification(
+            'danger', 
+            error.response?.data?.message || 'Failed to load companies'
+        );
+        setCompanies([]);
+    } finally {
+        setIsLoading(false);
+    }
+  };
+
+  useEffect (() => {
+    if (selectedCompanyGroup?.value) {
+        setFormData(prev => ({
+            ...prev,
+            // Company_Group_Name: selectedCompanyGroup.label,
+            // Company_Name: '', // Reset company name when group changes
+            group_id: parseInt(selectedCompanyGroup.value),
+            // Company_Group_Name: selectedCompanyGroup.label
+          }));
+          
+          // Reset selected company
+          setSelectedCompany(null);
+          
+          // Load companies for the selected group
+          loadCompanies(selectedCompanyGroup.value);
+    }  else {
+        setCompanies([]); // Reset companies when no group is selected
+      }
+  }, [selectedCompanyGroup])
+
+
+  useEffect(() => {
+    if (selectedCompany?.value) {
+      setFormData(prev => ({
+        ...prev,
+        company_id: parseInt(selectedCompany.value),
+        // Company_Name: selectedCompany.label
+      }));
+    }
+  }, [selectedCompany]);
 
   const openNotification = (type: 'success' | 'info' | 'danger' | 'warning', message: string) => {
     toast.push(
@@ -365,26 +288,149 @@ const AddBranchForm: React.FC = () => {
     )
   }
 
-  const handleAddBranch = () => {
-    console.log(formData);
-    openNotification('success', 'Branch added successfully');
-    navigate(-1);
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64String = (reader.result as string).split(',')[1];
+        setFileBase64(base64String);
+        setFormData(prev => ({
+          ...prev,
+          document: base64String
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
-  if (isLoading) return <div>Loading location data...</div>;
+
+  useEffect(() => {
+    setFormData(prev => ({
+      ...prev,
+      district: selectedDistrict
+    }));
+  }, [selectedDistrict]);
+
+  // Update formData when location changes
+  useEffect(() => {
+    setFormData(prev => ({
+      ...prev,
+      location: selectedLocation
+    }));
+  }, [selectedLocation]);
+
+
+  const formatErrorMessages = (errors: any): string => {
+    // If errors is an array, join them with line breaks
+    if (Array.isArray(errors)) {
+        return errors.join('\n');
+    }
+    // If errors is an object, extract all error messages
+    else if (typeof errors === 'object' && errors !== null) {
+        const messages: string[] = [];
+        Object.entries(errors).forEach(([key, value]) => {
+            if (Array.isArray(value)) {
+                messages.push(...value);
+            } else if (typeof value === 'string') {
+                messages.push(value);
+            }
+        });
+        return messages.join('\n');
+    }
+    // If it's a single string error
+    return String(errors);
+};
+
+const showErrorNotification = (errors: any) => {
+    const formattedMessage = formatErrorMessages(errors);
+    
+    // Split the formatted message into individual error messages
+    const errorMessages = formattedMessage.split('\n').filter(Boolean); // Filter out empty strings
+    
+    toast.push(
+      <Notification title="Error" type="danger">
+        <div style={{ whiteSpace: 'pre-line' }}>
+          {errorMessages.length > 1? ( // Check if there are multiple error messages
+            <ul style={{ padding: 0, margin: 0, listStyle: 'disc inside' }}>
+              {errorMessages.map((message, index) => (
+                <li key={index} style={{ marginBottom: '0.5rem' }}>{message}</li>
+              ))}
+            </ul>
+          ) : (
+            <span>{formattedMessage}</span> // If only one error message, display as before
+          )}
+        </div>
+      </Notification>
+    );
+  };
+
+
+
+  const handleAddBranch = async () => {
+    console.log(formData);
+
+    try {
+        const response = await dispatch(createBranch(formData))
+        .unwrap()
+        .catch((error: any) => {
+            // Handle different error formats
+            if (error.response?.data?.message) {
+                // API error response
+                showErrorNotification(error.response.data.message);
+            } else if (error.message) {
+                // Regular error object
+                showErrorNotification(error.message);
+            } else if (Array.isArray(error)) {
+                // Array of error messages
+                showErrorNotification(error);
+            } else {
+                // Fallback error message
+                showErrorNotification('An unexpected error occurred. Please try again.');
+            }
+            throw error; // Re-throw to prevent navigation
+        });
+
+    if (response) {
+        navigate('/branch');
+        toast.push(
+            <Notification title="Success" type="success">
+                Branch added successfully
+            </Notification>
+        );
+    }
+      } catch (error: any) {
+        console.error('Branch creation error:', error);
+       
+        //   openNotification('danger', error.message || 'Failed to create branch. Please try again.');
+        // Don't navigate on error
+      }
+  };
+
+//   if (isLoading) return <div>Loading location data...</div>;
   if (error) return <div className="text-red-500">{error}</div>;
-  if (!locationData || locationData.length === 0) {
-    return <div>No location data available. Please check your data source.</div>;
-  }
+// //   if (!locationData || locationData.length === 0) {
+// //     return <div>No location data available. Please check your data source.</div>;
+// //   }
 
-  const companyGroupOptions = [...new Set(locationData.map(item => item.Company_Group_Name))].map(group => ({ value: group, label: group }));
-  const filteredCompanyNameOptions = [...new Set(locationData
-    .filter(item => item.Company_Group_Name === formData.Company_Group_Name)
-    .map(item => item.Company_Name))]
-    .map(name => ({ value: name, label: name }));
 
-  const districtOptions = formData.State ? (districtsByState[formData.State] || []) : [];
+  const handleDistrictChange = (districtName: string) => {
+    setSelectedDistrict(districtName);
+    // Find the district ID from the districtsData
+    const district = districtsData.find(d => d.name === districtName);
+    setSelectedDistrictId(district?.id);
+    setSelectedLocation(''); // Reset location when district changes
+  };
 
+//   useEffect(() => {
+//     setFormData(prev => ({
+//       ...prev,
+//       district: selectedDistrict,
+//       location: selectedLocation
+//     }));
+//   }, [selectedDistrict, selectedLocation]);
+  
+  
   return (
       <div className="p-2 bg-white rounded-lg">
           <div className="flex gap-2 items-center mb-3">
@@ -401,96 +447,69 @@ const AddBranchForm: React.FC = () => {
           <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                   <div>
-                      <p className="mb-2">Company Group</p>
-                      <OutlinedSelect
+                  <p className="mb-2">Select Company Group <span className="text-red-500">*</span></p>
+                  <OutlinedSelect
                           label="Select Company Group"
-                          options={companyGroupOptions}
-                          value={companyGroupOptions.find(
-                              (option) =>
-                                  option.value === formData.Company_Group_Name,
-                          )}
-                          onChange={(selectedOption: SelectOption | null) => {
-                              setFormData((prev) => ({
-                                  ...prev,
-                                  Company_Group_Name:
-                                      selectedOption?.value || '',
-                                  Company_Name: '',
-                              }))
-                          }}
+                          options={companyGroups}
+                          value={selectedCompanyGroup}
+                          onChange={setSelectedCompanyGroup}
                       />
                   </div>
                   <div>
-                      <p className="mb-2">Company Name</p>
+                      <p className="mb-2">Company Name <span className="text-red-500">*</span></p>
                       <OutlinedSelect
                           label="Select Company"
-                          options={filteredCompanyNameOptions}
-                          value={filteredCompanyNameOptions.find(
-                              (option) =>
-                                  option.value === formData.Company_Name,
-                          )}
-                          onChange={(selectedOption: SelectOption | null) => {
-                              setFormData((prev) => ({
-                                  ...prev,
-                                  Company_Name: selectedOption?.value || '',
-                              }))
+                          options={companies}
+                          value={selectedCompany}
+                          onChange={(option: SelectOption | null) => {
+                            setSelectedCompany(option);
                           }}
-                      />
+                          />
                   </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                   <div>
-                      <p className="mb-2">State</p>
+                      <p className="mb-2">State <span className="text-red-500">*</span></p>
                       <OutlinedSelect
-                          label="Select State"
-                          options={indianStates}
-                          value={indianStates.find(
-                              (option) => option.label === formData.State,
-                          )}
-                          onChange={(selectedOption: SelectOption | null) => {
-                              setFormData((prev) => ({
-                                  ...prev,
-                                  State: selectedOption?.label || '',
-                                  District: '',
-                              }))
-                          }}
+                          label="Select State"                       
+                          options={states}
+                          value={selectedStates}
+                          onChange={handleStateChange}
+                          
                       />
                   </div>
                   <div>
-                      <p className="mb-2">District</p>
-                      <OutlinedSelect
-                          label="Select District"
-                          options={districtOptions}
-                          value={districtOptions.find(
-                              (option) => option.label === formData.District,
-                          )}
-                          onChange={(selectedOption: SelectOption | null) => {
-                              setFormData((prev) => ({
-                                  ...prev,
-                                  District: selectedOption?.label || '',
-                              }))
-                          }}
+                     
+                      <DistrictAutosuggest 
+                      value={selectedDistrict}
+                      onChange={setSelectedDistrict}
+                      stateId={selectedStates?.value ? parseInt(selectedStates.value) : undefined}       
+                      onDistrictSelect={setSelectedDistrictId}
+
                       />
                   </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                  <LocationAutosuggest
-                      value={formData.Location}
-                      onChange={(value) => {
-                          setFormData((prev) => ({ ...prev, Location: value }))
-                      }}
-                      suggestions={locationData.map(item => item.Location).filter((location): location is string => location !== undefined)}
-                  />
+              <LocationAutosuggest
+                value={selectedLocation}
+                // onChange={setSelectedLocation} 
+                onChange={(value: string) => {
+                    setSelectedLocation(value);
+                  }}
+                districtId={selectedDistrictId}
+                // districtId={selectedDistrict ? parseInt(selectedDistrict) : undefined}
+                />
                   <div>
-                      <p className="mb-2">Branch Name</p>
+                      <p className="mb-2">Branch Name <span className="text-red-500">*</span></p>
                       <OutlinedInput
                           label="Branch Name"
-                          value={formData.Branch}
+                          value={formData.name}
                           onChange={(value: string) => {
                               setFormData((prev) => ({
                                   ...prev,
-                                  Branch: value,
+                                  name: value,
                               }))
                           }}
                       />
@@ -498,14 +517,14 @@ const AddBranchForm: React.FC = () => {
               </div>
 
               <div>
-                  <p className="mb-2">Branch Address</p>
+                  <p className="mb-2">Branch Address <span className="text-red-500">*</span></p>
                   <OutlinedInput
                       label="Branch Address"
-                      value={formData.BranchAddress}
+                      value={formData.address}
                       onChange={(value: string) => {
                           setFormData((prev) => ({
                               ...prev,
-                              BranchAddress: value,
+                              address: value,
                           }))
                       }}
                       textarea={true}
@@ -514,60 +533,191 @@ const AddBranchForm: React.FC = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                   <div>
-                      <p className="mb-2">Branch Opening Date</p>
+                      <p className="mb-2">Branch Opening Date <span className="text-red-500">*</span></p>
                       <DatePicker
                           size="sm"
                           placeholder="Pick a Date"
                           onChange={(date) => {
                               setFormData((prev) => ({
                                   ...prev,
-                                  BranchOpeningDate: date
-                                      ? date.toString()
-                                      : '',
+                                  opening_date: date ? format(date, 'yyyy-MM-dd') : '',
                               }))
                           }}
                       />
                   </div>
                   <div>
-                      <p className="mb-2">Branch Head Count</p>
+                      <p className="mb-2">Branch Head Count <span className="text-red-500">*</span></p>
                       <OutlinedInput
                           label="Branch Head Count"
-                          value={formData.BranchHeadCount}
+                          value={formData.head_count}
                           onChange={(value: string) => {
                               setFormData((prev) => ({
                                   ...prev,
-                                  BranchHeadCount: value,
+                                  head_count: value,
                               }))
                           }}
                       />
                   </div>
 
                   <div>
-                      <p className="mb-2">Branch Type</p>
+                      <p className="mb-2">Office Type <span className="text-red-500">*</span></p>
                       <OutlinedSelect
-                          label="Select Branch Type"
-                          options={branchTypeOptions}
-                          value={branchTypeOptions.find(
-                              (option) => option.value === formData.BranchType,
+                          label="Select Office Type"
+                          options={officeTypeOption}
+                          value={officeTypeOption.find(
+                              (option) => option.value === formData.office_type,
                           )}
                           onChange={(selectedOption: SelectOption | null) => {
                               setFormData((prev) => ({
                                   ...prev,
-                                  BranchType: selectedOption?.value || '',
+                                  office_type: selectedOption?.value || '',
+                              }))
+                          }}
+                      />
+                  </div>
+                  <div>
+                      <p className="mb-2">Branch Type <span className="text-red-500">*</span></p>
+                      <OutlinedSelect
+                          label="Select Branch Type"
+                          options={branchTypeOptions}
+                          value={branchTypeOptions.find(
+                              (option) => option.value === formData.type,
+                          )}
+                          onChange={(selectedOption: SelectOption | null) => {
+                              setFormData((prev) => ({
+                                  ...prev,
+                                  type: selectedOption?.value || '',
                               }))
                           }}
                       />
                   </div>
               </div>
 
-              <div className="border rounded-md py-4 p-2 mt-4">
+            
+
+              {formData.type === 'owned' && (
+                  <div className="border rounded-md py-4 p-2 mt-4">
+                      <div className="flex flex-col gap-8">
+                          <h4>S&E Setup</h4>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                              <div>
+                                  <p className="mb-2">
+                                      S&E Registration Number
+                                      <span className="text-red-500">*</span></p>
+                                  <OutlinedInput
+                                      label="S&E Registration Number"
+                                      value={formData.register_number}
+                                      onChange={(value: string) => {
+                                          setFormData((prev) => ({
+                                              ...prev,
+                                              register_number: value,
+                                          }))
+                                      }}
+                                  />
+                              </div>
+                              <div>
+                                  <p className="mb-2">S&E Validity <span className="text-red-500">*</span></p>
+                                  <DatePicker
+                                      size="sm"
+                                      placeholder="Pick a Date"
+                                      onChange={(date) => {
+                                          setFormData((prev) => ({
+                                              ...prev,
+                                              validity: date ? format(date, 'yyyy-MM-dd') : '',
+                                          }))
+                                      }}
+                                  />
+                              </div>
+                              <div>
+                                  <div className="flex flex-col gap-4">
+                                      <label>
+                                          Please upload the S&E Registration
+                                          certificate
+                                          <span className="text-red-500">*</span></label>
+                                      <Input
+                                          id="file-upload"
+                                          type="file"
+                                          accept=".pdf"
+                                          onChange={handleFileUpload}
+                                      />
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              )}
+
+              {formData.type === 'rented' && (
+                  <div className="border rounded-md py-4 p-2 mt-4">
+                      <div className="flex flex-col gap-8">
+                          <h4>Lease / Rent Setup</h4>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                              <div>
+                                  <p className="mb-2">
+                                      Lease / Rent Agreement Status
+                                      <span className="text-red-500">*</span></p>
+                                  <OutlinedSelect
+                                      label="Status"
+                                      options={statusTypeOptions}
+                                    //   value={formData.status}
+                                    value={statusTypeOptions.find(
+                                        (option) => option.value === formData.status,
+                                    )}
+                                    //   onChange={(value: string) => {
+                                    //       setFormData((prev) => ({
+                                    //           ...prev,
+                                    //           status: value,
+                                    //       }))
+                                    //   }}
+                                    onChange={(selectedOption: SelectOption | null) => {
+                                        setFormData((prev) => ({
+                                            ...prev,
+                                            status: selectedOption?.value || '',
+                                        }))
+                                    }}
+                                  />
+                              </div>
+                              <div>
+                                  <p className="mb-2">
+                                      Lease deed / Rent Agreement valid up to
+                                      <span className="text-red-500">*</span></p>
+                                  <DatePicker
+                                      size="sm"
+                                      placeholder="Pick a Date"
+                                      onChange={(date) => {
+                                          setFormData((prev) => ({
+                                              ...prev,
+                                              validity: date ? format(date, 'yyyy-MM-dd') : '',
+                                          }))
+                                      }}
+                                  />
+                              </div>
+                              <div>
+                                  <div className="flex flex-col gap-4">
+                                      <label>
+                                          Please upload Leaase deed copy
+                                          <span className="text-red-500">*</span></label>
+                                      <Input
+                                          id="file-upload"
+                                          type="file"
+                                          accept=".pdf"
+                                          onChange={handleFileUpload}
+                                      />
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              )}
+
+<div className="border rounded-md py-4 p-2 mt-4">
                   <div className="flex flex-col gap-4">
                       <h6>Custom Fields</h6>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                           <div className="w-full">
                               <OutlinedInput
                                   label="Remark"
-                                  value={formData.remark}
+                                  value={formData.custom_data.remark}
                                   onChange={(value: string) => {
                                       setFormData((prev) => ({
                                           ...prev,
@@ -579,7 +729,7 @@ const AddBranchForm: React.FC = () => {
                           <div className="w-full">
                               <OutlinedInput
                                   label="Email"
-                                  value={formData.email}
+                                  value={formData.custom_data.email}
                                   onChange={(value: string) => {
                                       setFormData((prev) => ({
                                           ...prev,
@@ -591,7 +741,7 @@ const AddBranchForm: React.FC = () => {
                           <div className="w-full">
                               <OutlinedInput
                                   label="Mobile"
-                                  value={formData.mobile}
+                                  value={formData.custom_data.mobile}
                                   onChange={(value: string) => {
                                       setFormData((prev) => ({
                                           ...prev,
@@ -603,123 +753,6 @@ const AddBranchForm: React.FC = () => {
                       </div>
                   </div>
               </div>
-
-              {formData.BranchType === 'owned' && (
-                  <div className="border rounded-md py-4 p-2 mt-4">
-                      <div className="flex flex-col gap-8">
-                          <h4>S&E Setup</h4>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                              <div>
-                                  <p className="mb-2">
-                                      S&E Registration Number
-                                  </p>
-                                  <OutlinedInput
-                                      label="S&E Registration Number"
-                                      value={formData.SERegistrationNumber}
-                                      onChange={(value: string) => {
-                                          setFormData((prev) => ({
-                                              ...prev,
-                                              SERegistrationNumber: value,
-                                          }))
-                                      }}
-                                  />
-                              </div>
-                              <div>
-                                  <p className="mb-2">S&E Validity</p>
-                                  <DatePicker
-                                      size="sm"
-                                      placeholder="Pick a Date"
-                                      onChange={(date) => {
-                                          setFormData((prev) => ({
-                                              ...prev,
-                                              SEValidity: date
-                                                  ? date.toString()
-                                                  : '',
-                                          }))
-                                      }}
-                                  />
-                              </div>
-                              <div>
-                                  <div className="flex flex-col gap-4">
-                                      <label>
-                                          Please upload the S&E Registration
-                                          certificate
-                                      </label>
-                                      <Input
-                                          id="file-upload"
-                                          type="file"
-                                          onChange={(
-                                              e: React.ChangeEvent<HTMLInputElement>,
-                                          ) => {
-                                              const file =
-                                                  e.target.files?.[0] || null
-                                          }}
-                                      />
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              )}
-
-              {formData.BranchType === 'rented' && (
-                  <div className="border rounded-md py-4 p-2 mt-4">
-                      <div className="flex flex-col gap-8">
-                          <h4>Lease / Rent Setup</h4>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                              <div>
-                                  <p className="mb-2">
-                                      Lease / Rent Agreement Status
-                                  </p>
-                                  <OutlinedInput
-                                      label="Status"
-                                      value={formData.SERegistrationNumber}
-                                      onChange={(value: string) => {
-                                          setFormData((prev) => ({
-                                              ...prev,
-                                              SERegistrationNumber: value,
-                                          }))
-                                      }}
-                                  />
-                              </div>
-                              <div>
-                                  <p className="mb-2">
-                                      Lease deed / Rent Agreement valid up to
-                                  </p>
-                                  <DatePicker
-                                      size="sm"
-                                      placeholder="Pick a Date"
-                                      onChange={(date) => {
-                                          setFormData((prev) => ({
-                                              ...prev,
-                                              SEValidity: date
-                                                  ? date.toString()
-                                                  : '',
-                                          }))
-                                      }}
-                                  />
-                              </div>
-                              <div>
-                                  <div className="flex flex-col gap-4">
-                                      <label>
-                                          Please upload Leaase deed copy
-                                      </label>
-                                      <Input
-                                          id="file-upload"
-                                          type="file"
-                                          onChange={(
-                                              e: React.ChangeEvent<HTMLInputElement>,
-                                          ) => {
-                                              const file =
-                                                  e.target.files?.[0] || null
-                                          }}
-                                      />
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              )}
 
               <div className="flex justify-end gap-2">
                   <Button
@@ -745,3 +778,4 @@ const AddBranchForm: React.FC = () => {
 };
 
 export default AddBranchForm;
+

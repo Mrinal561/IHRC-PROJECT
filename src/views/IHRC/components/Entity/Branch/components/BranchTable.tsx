@@ -7,6 +7,10 @@ import OutlinedInput from '@/components/ui/OutlinedInput/OutlinedInput';
 import OutlinedSelect from '@/components/ui/Outlined';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 import { EntityData, entityDataSet } from '../../../../store/dummyEntityData';
+import { AppDispatch } from '@/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { BranchData } from '@/@types/branch';
+import { fetchBranches } from '@/store/slices/branch/branchSlice';
 
 interface SelectOption {
     value: string;
@@ -14,6 +18,7 @@ interface SelectOption {
 }
 
 const BranchTable: React.FC = () => {
+    const dispatch = useDispatch<AppDispatch>();
     const [data, setData] = useState<EntityData[]>(entityDataSet);
     const [dialogIsOpen, setDialogIsOpen] = useState(false);
     const [itemToDelete, setItemToDelete] = useState<number | null>(null);
@@ -30,6 +35,12 @@ const BranchTable: React.FC = () => {
     const [stateOptions, setStateOptions] = useState<SelectOption[]>([]);
     const [districtOptions, setDistrictOptions] = useState<SelectOption[]>([]);
     const [locationOptions, setLocationOptions] = useState<SelectOption[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
+
+
+
+    const [branchTableData, setBranchTableData] = useState([]);
+
     
 
     useEffect(() => {
@@ -41,60 +52,60 @@ const BranchTable: React.FC = () => {
         setStateOptions(uniqueStates.map(state => ({ value: state!, label: state! })));
     }, [data]);
 
-    const columns: ColumnDef<EntityData>[] = useMemo(
+    const columns = useMemo(
         () => [
             {
                 header: 'Company Group',
-                accessorKey: 'Company_Group_Name',
+                accessorKey: 'CompanyGroup.name',
                 cell: (props) => (
                     <div className="w-52 truncate">{props.getValue() as string}</div>
                 ),
             },
             {
                 header: 'Company',
-                accessorKey: 'Company_Name',
+                accessorKey: 'Company.name',
                 cell: (props) => (
                     <div className="w-52 truncate">{props.getValue() as string}</div>
                 ),
             },
             {
                 header: 'State',
-                accessorKey: 'State',
+                accessorKey: 'State.name',
                 cell: (props) => (
                     <div className="w-52 truncate">{props.getValue() as string}</div>
                 ),
             },
             {
                 header: 'District',
-                accessorKey: 'District',
+                accessorKey: 'District.name',
                 cell: (props) => (
                     <div className="w-52 truncate">{props.getValue() as string}</div>
                 ),
             },
             {
                 header: 'Location',
-                accessorKey: 'Location',
+                accessorKey: 'Location.name',
                 cell: (props) => (
                     <div className="w-40 truncate">{props.getValue() as string}</div>
                 ),
             },
             {
                 header: 'Branch',
-                accessorKey: 'Branch',
+                accessorKey: 'name',
                 cell: (props) => (
                   <div className="w-40 truncate">{props.getValue() as string}</div>
                 ),
             },
             {
                 header: 'Branch Address',
-                accessorKey: 'BranchAddress',
+                accessorKey: 'address',
                 cell: (props) => (
                   <div className="w-40 truncate">{props.getValue() as string}</div>
                 ),
             },
             {
                 header: 'Branch Opening Date',
-                accessorKey: 'BranchOpeningDate',
+                accessorKey: 'opening_date',
                 cell: (props) => (
                   <div className="w-44 ">{props.getValue() as string}</div>
                 ),
@@ -107,7 +118,7 @@ const BranchTable: React.FC = () => {
                         <Tooltip title="Edit">
                             <Button
                                 size="sm"
-                                onClick={() => openEditDialog(row.index)}
+                                // onClick={() => openEditDialog(row.index)}
                                 icon={<MdEdit />}
                                 className="text-blue-500"
                             />
@@ -115,7 +126,7 @@ const BranchTable: React.FC = () => {
                         <Tooltip title="Delete">
                             <Button
                                 size="sm"
-                                onClick={() => openDeleteDialog(row.index)}
+                                // onClick={() => openDeleteDialog(row.index)}
                                 icon={<FiTrash />}
                                 className="text-red-500"
                             />
@@ -138,146 +149,179 @@ const BranchTable: React.FC = () => {
         )
     }
 
-    const openDeleteDialog = (index: number) => {
-        setItemToDelete(index);
-        setDialogIsOpen(true);
-    };
+    // const openDeleteDialog = (index: number) => {
+    //     setItemToDelete(index);
+    //     setDialogIsOpen(true);
+    // };
 
-    const openEditDialog = (index: number) => {
-        setItemToEdit(index);
-        const item = data[index];
-        setEditedBranch(item.Branch || '');
-        setSelectedCompanyGroup(item.Company_Group_Name ? { value: item.Company_Group_Name, label: item.Company_Group_Name } : null);
-        setSelectedCompany(item.Company_Name ? { value: item.Company_Name, label: item.Company_Name } : null);
-        setSelectedState(item.State ? { value: item.State, label: item.State } : null);
-        setSelectedDistrict(item.District ? { value: item.District, label: item.District } : null);
-        setSelectedLocation(item.Location ? { value: item.Location, label: item.Location } : null);
-        updateCompanyOptions(item.Company_Group_Name);
-        updateDistrictOptions(item.State);
-        updateLocationOptions(item.District);
-        setEditDialogIsOpen(true);
-    };
+    // const openEditDialog = (index: number) => {
+    //     setItemToEdit(index);
+    //     const item = data[index];
+    //     setEditedBranch(item.Branch || '');
+    //     setSelectedCompanyGroup(item.Company_Group_Name ? { value: item.Company_Group_Name, label: item.Company_Group_Name } : null);
+    //     setSelectedCompany(item.Company_Name ? { value: item.Company_Name, label: item.Company_Name } : null);
+    //     setSelectedState(item.State ? { value: item.State, label: item.State } : null);
+    //     setSelectedDistrict(item.District ? { value: item.District, label: item.District } : null);
+    //     setSelectedLocation(item.Location ? { value: item.Location, label: item.Location } : null);
+    //     updateCompanyOptions(item.Company_Group_Name);
+    //     updateDistrictOptions(item.State);
+    //     updateLocationOptions(item.District);
+    //     setEditDialogIsOpen(true);
+    // };
 
-    const handleDialogClose = () => {
-        setDialogIsOpen(false);
-        setEditDialogIsOpen(false);
-        setItemToDelete(null);
-        setItemToEdit(null);
-        setEditedBranch('');
-        setSelectedCompanyGroup(null);
-        setSelectedCompany(null);
-        setSelectedState(null);
-        setSelectedDistrict(null);
-        setSelectedLocation(null);
-    };
+    // const handleDialogClose = () => {
+    //     setDialogIsOpen(false);
+    //     setEditDialogIsOpen(false);
+    //     setItemToDelete(null);
+    //     setItemToEdit(null);
+    //     setEditedBranch('');
+    //     setSelectedCompanyGroup(null);
+    //     setSelectedCompany(null);
+    //     setSelectedState(null);
+    //     setSelectedDistrict(null);
+    //     setSelectedLocation(null);
+    // };
 
-    const handleDialogOk = () => {
-        if (itemToDelete !== null) {
-            const newData = [...data];
-            newData.splice(itemToDelete, 1);
-            setData(newData);
-            setDialogIsOpen(false);
-            setItemToDelete(null);
-            openNotification('danger', 'Branch deleted successfully');
-        }
-    };
+    // const handleDialogOk = () => {
+    //     if (itemToDelete !== null) {
+    //         const newData = [...data];
+    //         newData.splice(itemToDelete, 1);
+    //         setData(newData);
+    //         setDialogIsOpen(false);
+    //         setItemToDelete(null);
+    //         openNotification('danger', 'Branch deleted successfully');
+    //     }
+    // };
 
-    const handleEditConfirm = () => {
-        if (itemToEdit !== null && editedBranch.trim() && selectedCompanyGroup && selectedCompany && selectedState && selectedDistrict && selectedLocation) {
-            const newData = [...data];
-            newData[itemToEdit] = {
-                ...newData[itemToEdit],
-                Company_Group_Name: selectedCompanyGroup.value,
-                Company_Name: selectedCompany.value,
-                State: selectedState.value,
-                District: selectedDistrict.value,
-                Location: selectedLocation.value,
-                Branch: editedBranch.trim()
-            };
-            setData(newData);
-            setEditDialogIsOpen(false);
-            setItemToEdit(null);
-            setEditedBranch('');
-            setSelectedCompanyGroup(null);
-            setSelectedCompany(null);
-            setSelectedState(null);
-            setSelectedDistrict(null);
-            setSelectedLocation(null);
-            openNotification('success', 'Branch updated successfully');
-        } else {
-            openNotification('danger', 'Please fill in all fields before confirming.');
-        }
-    };
+    // const handleEditConfirm = () => {
+    //     if (itemToEdit !== null && editedBranch.trim() && selectedCompanyGroup && selectedCompany && selectedState && selectedDistrict && selectedLocation) {
+    //         const newData = [...data];
+    //         newData[itemToEdit] = {
+    //             ...newData[itemToEdit],
+    //             Company_Group_Name: selectedCompanyGroup.value,
+    //             Company_Name: selectedCompany.value,
+    //             State: selectedState.value,
+    //             District: selectedDistrict.value,
+    //             Location: selectedLocation.value,
+    //             Branch: editedBranch.trim()
+    //         };
+    //         setData(newData);
+    //         setEditDialogIsOpen(false);
+    //         setItemToEdit(null);
+    //         setEditedBranch('');
+    //         setSelectedCompanyGroup(null);
+    //         setSelectedCompany(null);
+    //         setSelectedState(null);
+    //         setSelectedDistrict(null);
+    //         setSelectedLocation(null);
+    //         openNotification('success', 'Branch updated successfully');
+    //     } else {
+    //         openNotification('danger', 'Please fill in all fields before confirming.');
+    //     }
+    // };
 
-    const updateCompanyOptions = (companyGroup: string | undefined) => {
-        if (companyGroup) {
-            const companiesForGroup = data
-                .filter(item => item.Company_Group_Name === companyGroup)
-                .map(item => item.Company_Name)
-                .filter((value, index, self) => value && self.indexOf(value) === index);
-            setCompanyOptions(companiesForGroup.map(company => ({ value: company!, label: company! })));
-        } else {
-            setCompanyOptions([]);
-        }
-    };
+    // const updateCompanyOptions = (companyGroup: string | undefined) => {
+    //     if (companyGroup) {
+    //         const companiesForGroup = data
+    //             .filter(item => item.Company_Group_Name === companyGroup)
+    //             .map(item => item.Company_Name)
+    //             .filter((value, index, self) => value && self.indexOf(value) === index);
+    //         setCompanyOptions(companiesForGroup.map(company => ({ value: company!, label: company! })));
+    //     } else {
+    //         setCompanyOptions([]);
+    //     }
+    // };
 
-    const updateDistrictOptions = (state: string | undefined) => {
-        if (state) {
-            const districtsForState = data
-                .filter(item => item.State === state)
-                .map(item => item.District)
-                .filter((value, index, self) => value && self.indexOf(value) === index);
-            setDistrictOptions(districtsForState.map(district => ({ value: district!, label: district! })));
-        } else {
-            setDistrictOptions([]);
-        }
-    };
+    // const updateDistrictOptions = (state: string | undefined) => {
+    //     if (state) {
+    //         const districtsForState = data
+    //             .filter(item => item.State === state)
+    //             .map(item => item.District)
+    //             .filter((value, index, self) => value && self.indexOf(value) === index);
+    //         setDistrictOptions(districtsForState.map(district => ({ value: district!, label: district! })));
+    //     } else {
+    //         setDistrictOptions([]);
+    //     }
+    // };
 
-    const updateLocationOptions = (district: string | undefined) => {
-        if (district) {
-            const locationsForDistrict = data
-                .filter(item => item.District === district)
-                .map(item => item.Location)
-                .filter((value, index, self) => value && self.indexOf(value) === index);
-            setLocationOptions(locationsForDistrict.map(location => ({ value: location!, label: location! })));
-        } else {
-            setLocationOptions([]);
-        }
-    };
+    // const updateLocationOptions = (district: string | undefined) => {
+    //     if (district) {
+    //         const locationsForDistrict = data
+    //             .filter(item => item.District === district)
+    //             .map(item => item.Location)
+    //             .filter((value, index, self) => value && self.indexOf(value) === index);
+    //         setLocationOptions(locationsForDistrict.map(location => ({ value: location!, label: location! })));
+    //     } else {
+    //         setLocationOptions([]);
+    //     }
+    // };
 
-    const handleCompanyGroupChange = (option: SelectOption | null) => {
-        setSelectedCompanyGroup(option);
-        setSelectedCompany(null);
-        updateCompanyOptions(option?.value);
-    };
+    // const handleCompanyGroupChange = (option: SelectOption | null) => {
+    //     setSelectedCompanyGroup(option);
+    //     setSelectedCompany(null);
+    //     updateCompanyOptions(option?.value);
+    // };
 
-    const handleStateChange = (option: SelectOption | null) => {
-        setSelectedState(option);
-        setSelectedDistrict(null);
-        setSelectedLocation(null);
-        updateDistrictOptions(option?.value);
-    };
+    // const handleStateChange = (option: SelectOption | null) => {
+    //     setSelectedState(option);
+    //     setSelectedDistrict(null);
+    //     setSelectedLocation(null);
+    //     updateDistrictOptions(option?.value);
+    // };
 
-    const handleDistrictChange = (option: SelectOption | null) => {
-        setSelectedDistrict(option);
-        setSelectedLocation(null);
-        updateLocationOptions(option?.value);
-    };
+    // const handleDistrictChange = (option: SelectOption | null) => {
+    //     setSelectedDistrict(option);
+    //     setSelectedLocation(null);
+    //     updateLocationOptions(option?.value);
+    // };
+
+ 
+    const fetchBranchData = async (page: number, size: number) => {
+        setIsLoading(true);
+        try{
+        const { payload: data } = await dispatch(fetchBranches({page: page, page_size: size}))
+        setBranchTableData(data?.data);
+        setTableData((prev) => ({
+            ...prev,
+            total: data?.paginate_data.totalResult,
+            pageIndex: data?.paginate_data.page,
+        }))
+    }
+    catch(error) {
+        console.error('Failed to fetch branch:', error);
+        toast.push(
+          <Notification title="Error" type="danger">
+            Failed to fetch Branch
+          </Notification>
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    useEffect(() => {
+        fetchBranchData(1, 10)
+    }, [])
+
 
     const [tableData, setTableData] = useState({
-        total: data.length,
+        total: 0,
         pageIndex: 1,
-        pageSize: 5,
+        pageSize: 10,
         query: '',
         sort: { order: '', key: '' },
     });
     
     const onPaginationChange = (page: number) => {
         setTableData(prev => ({ ...prev, pageIndex: page }));
-    };
+        fetchBranchData(page, tableData.pageSize)
+
+        };
     
     const onSelectChange = (value: number) => {
         setTableData(prev => ({ ...prev, pageSize: Number(value), pageIndex: 1 }));
+        fetchBranchData(1, value)
+
     };
 
     return (
@@ -289,12 +333,12 @@ const BranchTable: React.FC = () => {
             ) : (
                 <DataTable
                     columns={columns}
-                    data={data}
+                    data={branchTableData}
                     skeletonAvatarColumns={[0]}
                     skeletonAvatarProps={{ className: 'rounded-md' }}
-                    loading={false}
+                    loading={isLoading}
                     pagingData={{
-                        total: data.length,
+                        total: tableData.total,
                         pageIndex: tableData.pageIndex,
                         pageSize: tableData.pageSize,
                     }}
@@ -306,7 +350,7 @@ const BranchTable: React.FC = () => {
                 />
             )}
 
-            <Dialog
+            {/* <Dialog
                 isOpen={dialogIsOpen}
                 onClose={handleDialogClose}
                 onRequestClose={handleDialogClose}
@@ -398,7 +442,7 @@ const BranchTable: React.FC = () => {
                         Confirm
                     </Button>
                 </div>
-            </Dialog>
+            </Dialog> */}
         </div>
     )
 };

@@ -8,17 +8,18 @@ import OutlinedInput from '@/components/ui/OutlinedInput';
 import { AppDispatch } from '@/store';
 import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
-import { createUser } from '@/store/slices/userEntity/UserEntitySlice'// Make sure to import from your actual slice file
+import { createUser } from '@/store/slices/userEntity/UserEntitySlice'
+import { format } from 'date-fns';
 
 interface UserFormData {
   group_id: number;
   first_name: string;
   last_name: string;
   email: string;
+  password: string;
   mobile: string;
-  username: string;
-  joining_date: Date | string;
-  role: string;
+  joining_date: string;
+  role_id: number;
   aadhar_no: string;
   pan_card: string;
   auth_signatory: boolean;
@@ -37,16 +38,21 @@ const UserAddForm = () => {
   
   const [companyGroups, setCompanyGroups] = useState<SelectOption[]>([]);
   const [selectedCompanyGroup, setSelectedCompanyGroup] = useState<SelectOption | null>(null);
+
+  const [ userRole, setUserRole ] = useState<SelectOption[]>([]);
+  const [ selectedUserRole, setSelectedUserRole ] = useState<SelectOption | null>(null);
+  const [isAuthorizedSignatory, setIsAuthorizedSignatory] = useState(false);
+
   
   const [formData, setFormData] = useState<UserFormData>({
     group_id: 0,
     first_name: '',
     last_name: '',
     email: '',
+    password: '',
     mobile: '',
-    username: '',
-    joining_date: new Date(),
-    role: '',
+    joining_date: '',
+    role_id: 0,
     aadhar_no: '',
     pan_card: '',
     auth_signatory: false,
@@ -83,6 +89,35 @@ const UserAddForm = () => {
     loadCompanyGroups();
   }, []);
 
+
+  useEffect(() => {
+    setFormData(prev => ({
+      ...prev,
+      role_id: selectedUserRole?.value ? parseInt(selectedUserRole.value) : 0 
+    }))
+  }, [selectedUserRole])
+
+
+  const loadUserRoles = async () => {
+    try{
+      const { data } = await httpClient.get(endpoints.role.getAll());
+      setUserRole(
+        data.map((v: any) => ({ 
+          label: v.name, 
+          value: String(v.id)
+        }))
+      );      
+    }
+    catch(error){
+      console.error('Failed to load user roles:', error);
+      showNotification('danger', 'Failed to load user roles');
+    }
+  }
+
+  useEffect(() => {
+    loadUserRoles()
+  }, [])
+
   const showNotification = (type: 'success' | 'info' | 'danger' | 'warning', message: string) => {
     toast.push(
       <Notification
@@ -94,6 +129,28 @@ const UserAddForm = () => {
     );
   };
 
+  // const handleAuthSignatoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const isChecked = e.target.checked;
+  //   console.log('Auth Signatory Changed:', isChecked); // Debug log
+  //   setFormData(prev => ({
+  //     ...prev,
+  //     auth_signatory: isChecked
+  //   }));
+  // };
+
+
+  useEffect(() => {
+    setFormData(prev => ({
+      ...prev,
+      auth_signatory: isAuthorizedSignatory
+    }));
+  }, [isAuthorizedSignatory]);
+
+  const handleAuthSignatoryChange = (checked: boolean, e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('Auth Signatory Changed:', checked);
+    setIsAuthorizedSignatory(checked);
+  };
+
   const handleInputChange = (field: keyof UserFormData, value: string | boolean | number | Date) => {
     setFormData(prev => ({
       ...prev,
@@ -101,21 +158,95 @@ const UserAddForm = () => {
     }));
   };
 
+  
+  const formatErrorMessages = (errors: any): string => {
+    // If errors is an array, join them with line breaks
+    if (Array.isArray(errors)) {
+        return errors.join('\n');
+    }
+    // If errors is an object, extract all error messages
+    else if (typeof errors === 'object' && errors !== null) {
+        const messages: string[] = [];
+        Object.entries(errors).forEach(([key, value]) => {
+            if (Array.isArray(value)) {
+                messages.push(...value);
+            } else if (typeof value === 'string') {
+                messages.push(value);
+            }
+        });
+        return messages.join('\n');
+    }
+    // If it's a single string error
+    return String(errors);
+};
+
+
+  const showErrorNotification = (errors: any) => {
+    const formattedMessage = formatErrorMessages(errors);
+    
+    // Split the formatted message into individual error messages
+    const errorMessages = formattedMessage.split('\n').filter(Boolean); // Filter out empty strings
+    
+    toast.push(
+      <Notification title="Error" type="danger">
+        <div style={{ whiteSpace: 'pre-line' }}>
+          {errorMessages.length > 1? ( // Check if there are multiple error messages
+            <ul style={{ padding: 0, margin: 0, listStyle: 'disc inside' }}>
+              {errorMessages.map((message, index) => (
+                <li key={index} style={{ marginBottom: '0.5rem' }}>{message}</li>
+              ))}
+            </ul>
+          ) : (
+            <span>{formattedMessage}</span> // If only one error message, display as before
+          )}
+        </div>
+      </Notification>
+    );
+  };
+
+
+
   const handleAddUser = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Basic validation
-    if (!formData.group_id || !formData.first_name || !formData.email || !formData.username) {
-      showNotification('danger', 'Please fill in all required fields');
-      return;
-    }
+    // if (!formData.group_id || !formData.first_name || !formData.email || !formData.last_name ||!formData.joining_date || !formData.mobile || !formData.password || !formData.role_id) {
+    //   showNotification('danger', 'Please fill in all required fields');
+    //   return;
+    // }
 
     try {
-      const resultAction = await dispatch(createUser(formData)).unwrap();
-      navigate('/user-entity');
-      showNotification('success', 'User added successfully');
+      const resultAction = await dispatch(createUser(formData))
+      .unwrap()
+      .catch((error: any) => {
+        // Handle different error formats
+        if (error.response?.data?.message) {
+            // API error response
+            showErrorNotification(error.response.data.message);
+        } else if (error.message) {
+            // Regular error object
+            showErrorNotification(error.message);
+        } else if (Array.isArray(error)) {
+            // Array of error messages
+            showErrorNotification(error);
+        } else {
+            // Fallback error message
+            showErrorNotification('An unexpected error occurred. Please try again.');
+        }
+        throw error; // Re-throw to prevent navigation
+    });
+
+if (resultAction) {
+    navigate('/user-entity');
+    showNotification('success', 'User added successfully');
+}
+
+
+      
     } catch (error: any) {
-      showNotification('danger', error?.message || 'Failed to add user');
+      // showNotification('danger', error?.message || 'Failed to add user');
+      console.error('User creation error:', error);
+
     }
   };
 
@@ -138,7 +269,7 @@ const UserAddForm = () => {
       <form onSubmit={handleAddUser}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 my-8">
           <div className='flex flex-col gap-2'>
-            <label>Select the company group</label>
+            <p className='mb-2'>Select the company group <span className="text-red-500">*</span></p>
             <OutlinedSelect
               label="Select The Company Group"
               options={companyGroups}
@@ -146,8 +277,8 @@ const UserAddForm = () => {
               onChange={setSelectedCompanyGroup}
             />
           </div>
-          <div>
-            <p className="mb-2">First Name</p>
+          <div className='flex flex-col gap-1'>
+            <p className="mb-2">First Name <span className="text-red-500">*</span></p>
             <OutlinedInput
               label="First Name"
               value={formData.first_name}
@@ -157,16 +288,16 @@ const UserAddForm = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 my-8">
-          <div>
-            <p className="mb-2">Last Name</p>
+          <div className='flex flex-col gap-1'>
+            <p className="mb-2">Last Name <span className="text-red-500">*</span></p>
             <OutlinedInput
               label="Last Name"
               value={formData.last_name}
               onChange={(value) => handleInputChange('last_name', value)}
             />
           </div>
-          <div>
-            <p className="mb-2">Email</p>
+          <div className='flex flex-col gap-1'>
+            <p className="mb-2">Email <span className="text-red-500">*</span></p>
             <OutlinedInput
               label="Email"
               value={formData.email}
@@ -176,26 +307,30 @@ const UserAddForm = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 my-8">
-          <div>
-            <p className="mb-2">Username</p>
+          <div className='flex flex-col gap-1'>
+            <p className="mb-2">Password <span className="text-red-500">*</span></p>
             <OutlinedInput
-              label="Username"
-              value={formData.username}
-              onChange={(value) => handleInputChange('username', value)}
+              label="Password"
+              value={formData.password}
+              onChange={(value) => handleInputChange('password', value)}
             />
           </div>
-          <div>
-            <p className="mb-2">Job Role</p>
-            <OutlinedInput
+          <div className='flex flex-col gap-1'>
+            <p className="mb-2">Job Role <span className="text-red-500">*</span></p>
+            <OutlinedSelect
               label="Job Role"
-              value={formData.role}
-              onChange={(value) => handleInputChange('role', value)}
+              options={userRole}
+              value={selectedUserRole}
+              onChange={setSelectedUserRole}
             />
           </div>
+
+          
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 my-8">
-          <div>
+          
+        <div className='flex flex-col gap-1'>
             <p className="mb-1">Aadhar No (Optional)</p>
             <OutlinedInput
               label="Aadhar No"
@@ -203,19 +338,8 @@ const UserAddForm = () => {
               onChange={(value) => handleInputChange('aadhar_no', value)}
             />
           </div>
-          <div>
-            <p className="mb-1">Date of Joining</p>
-            <DatePicker
-              size='sm'
-              placeholder="Pick a date"
-              value={formData.joining_date}
-              onChange={handleDateChange}
-            />
-          </div>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 my-8">
-          <div>
+          <div className='flex flex-col gap-1'>
             <p className="mb-1">PAN (Optional)</p>
             <OutlinedInput
               label="PAN"
@@ -223,8 +347,32 @@ const UserAddForm = () => {
               onChange={(value) => handleInputChange('pan_card', value)}
             />
           </div>
-          <div>
-            <p className="mb-1">Mobile No</p>
+
+
+         
+
+         
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 my-8">
+
+        <div className='flex flex-col gap-1'>
+            <p className="mb-1">Date of Joining <span className="text-red-500">*</span></p>
+            <DatePicker
+              size='sm'
+              placeholder="Pick a date"
+              // value={formData.joining_date}
+              onChange={(date) => {
+                setFormData((prev) => ({
+                  ...prev,
+                  joining_date: date ? format(date, 'yyyy-MM-dd') : '',
+                }))
+              }}
+            />
+          </div>
+          
+          <div className='flex flex-col gap-1'>
+            <p className="mb-1">Mobile No <span className="text-red-500">*</span></p>
             <OutlinedInput
               label="Mobile no"
               value={formData.mobile}
@@ -237,9 +385,7 @@ const UserAddForm = () => {
           <div className="flex items-center">
             <Checkbox
               checked={formData.auth_signatory}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => 
-                handleInputChange('auth_signatory', e.target.checked)
-              }
+              onChange={handleAuthSignatoryChange}
             >
               User will be assigned as a <b>Authorised Signatory</b>
             </Checkbox>

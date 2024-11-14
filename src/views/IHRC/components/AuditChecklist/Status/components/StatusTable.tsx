@@ -8,17 +8,79 @@ import StatusTableSearch from './StatusTableSearch';
 import { useNavigate } from 'react-router-dom';
 import { HiDownload } from 'react-icons/hi';
 import CustomDateRangePicker from '../../../Home/components/CustomDateRangePicker';
-import { dummyData, ComplianceData } from '@/views/IHRC/store/dummyData';
-
+import httpClient from '@/api/http-client';
+import { endpoints } from '@/api/endpoint';
+import { useDispatch } from 'react-redux';
+import { approveRejectComplianceStatus } from '@/store/slices/approveRejected/approveRejectSlice';
+ 
 interface StatusTableProps {
   onFilterChange: (filter: string) => void;
   onSearch: (searchTerm: string) => void;
   onClearAll: () => void;
   currentFilter: string;
+  filterValues: {
+    branchId?: string;
+    companyGroupId?: string;
+    companyId?: string;
+    stateId?: string;
+    districtId?: string;
+    locationId?: string;
+  };
 }
 
+interface BulkActionData {
+  status: string;
+  compliace_data_id: number[];
+}
+ 
+interface ComplianceData {
+  id: number;
+  uuid: string;
+  ac_compliance_id: number;
+  proof_document: string;
+  status: string;
+  compliance_detail: {
+    header: string;
+    legislation: string;
+    description: string;
+  };
+  upload_date: string | null;
+  first_due_date: string | null;
+  due_date: string | null;
+  data_status: string;
+  uploaded_by: number;
+  approved_by: number | null;
+  created_by: number;
+  created_at: string;
+  updated_at: string;
+  UploadBy: {
+    id: number;
+    first_name: string;
+    last_name: string;
+    email: string;
+    mobile: string | null;
+  };
+  ApprovedBy: {
+    id: number;
+    first_name: string;
+    last_name: string;
+    email: string;
+    mobile: string | null;
+  } | null;
+  AssignedComplianceRemark: {
+    id: number;
+    compliance_data_id: number;
+    remark: string;
+    created_at: string;
+  }[];
+}
 
-
+interface RejectDialogProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: (reason: string) => void;
+  currentRejectId: number | null;
+}
 
 const ConfirmDialog = ({ isOpen, onClose, onConfirm, title, message }) => {
   return (
@@ -30,27 +92,26 @@ const ConfirmDialog = ({ isOpen, onClose, onConfirm, title, message }) => {
       <h5 className="mb-4">{title}</h5>
       <p>{message}</p>
       <div className="mt-6 text-right">
-        <Button
-          size="sm"
-          className="mr-2"
-          onClick={onClose}
-        >
-          Cancel
-        </Button>
-        <Button
-          variant="solid"
-          size="sm"
-          onClick={onConfirm}
-        >
-          Confirm
-        </Button>
+        <Button size="sm" className="mr-2" onClick={onClose}>Cancel</Button>
+        <Button variant="solid" size="sm" onClick={onConfirm}>Confirm</Button>
       </div>
     </Dialog>
   );
 };
 
-const RejectDialog = ({ isOpen, onClose, onConfirm }) => {
+const RejectDialog: React.FC<RejectDialogProps> = ({ 
+  isOpen, 
+  onClose, 
+  onConfirm,
+  currentRejectId 
+}) => {
   const [reason, setReason] = useState('');
+
+  const handleConfirm = () => {
+    onConfirm(reason);
+    setReason('');
+    onClose();
+  };
 
   return (
     <Dialog
@@ -58,7 +119,7 @@ const RejectDialog = ({ isOpen, onClose, onConfirm }) => {
       onClose={onClose}
       width={400}
     >
-      <h5 className="mb-4">Reject Compliance</h5>
+      <h5 className="mb-4">{currentRejectId !== null ? 'Reject Compliance' : 'Bulk Reject Compliances'}</h5>
       <Input
         textArea
         value={reason}
@@ -69,18 +130,14 @@ const RejectDialog = ({ isOpen, onClose, onConfirm }) => {
         <Button
           size="sm"
           className="mr-2"
-          onClick={onClose}
+          onClick={() => {
+            setReason('');
+            onClose();
+          }}
         >
           Cancel
         </Button>
-        <Button
-          variant="solid"
-          size="sm"
-          onClick={() => {
-            onConfirm(reason);
-            setReason('');
-          }}
-        >
+        <Button variant="solid" size="sm" onClick={handleConfirm}>
           Confirm
         </Button>
       </div>
@@ -88,221 +145,270 @@ const RejectDialog = ({ isOpen, onClose, onConfirm }) => {
   );
 };
 
-
-
-const statusColor: Record<string, string> = {
-  Approved: 'bg-emerald-500',
-  Pending: 'bg-yellow-500',
-  Rejected: 'bg-red-500',
-};
-
 const StatusTable: React.FC<StatusTableProps> = ({
   onSearch,
   onClearAll,
   onFilterChange,
   currentFilter,
+  filterValues,
 }) => {
-  const [data, setData] = useState(dummyData);
-  const [filteredData, setFilteredData] = useState(dummyData);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [data, setData] = useState<ComplianceData[]>([]);
+  const [filteredData, setFilteredData] = useState<ComplianceData[]>([]);
   const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
   const [isRejectDialogOpen, setIsRejectDialogOpen] = useState(false);
   const [currentRejectId, setCurrentRejectId] = useState<number | null>(null);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [data_status, setDataStatus] = useState(['pending']);
+  const [updateCounter, setUpdateCounter] = useState(0);
+  const [selectedData, setSelectedData] = useState<BulkActionData>({
+    status: '',
+    compliace_data_id: []
+  });
 
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const filtered = currentFilter === 'ALL'
-      ? data
-      : data.filter(item => item.Status === currentFilter);
-    setFilteredData(filtered);
-  }, [data, currentFilter]);
-
-  const handleStatusChange = (id: number, newStatus: string) => {
-    const updatedData = data.map((item) =>
-      item.Compliance_Instance_ID === id
-        ? { ...item, Status: newStatus }
-        : item
-    );
-    setData(updatedData);
-
-    toast.push(
-      <Notification
-        title="Status Updated"
-        type="success"
-      >
-        Compliance status updated to {newStatus}
-      </Notification>,
-      {
-        placement: 'top-end',
-      }
-    );
-  };
-
-  const handleBulkApprove = () => {
-    const updatedData = data.map((item) =>
-      selectedItems.has(item.Compliance_Instance_ID)
-        ? { ...item, Status: 'Approved' }
-        : item
-    );
-    setData(updatedData);
-    setSelectedItems(new Set());
-
-    toast.push(
-      <Notification
-        title="Bulk Action Completed"
-        type="success"
-      >
-        {selectedItems.size} items approved
-      </Notification>,
-      {
-        placement: 'top-end',
-      }
-    );
-    setIsConfirmDialogOpen(false);
-  };
-
-  const handleBulkReject = (reason: string) => {
-    if (reason.trim()) {
-      const updatedData = data.map((item) =>
-        selectedItems.has(item.Compliance_Instance_ID)
-          ? { ...item, Status: 'Rejected' }
-          : item
-      );
-      setData(updatedData);
-      setSelectedItems(new Set());
-
-      toast.push(
-        <Notification
-          title="Bulk Action Completed"
-          type="success"
-        >
-          {selectedItems.size} items rejected
-          <p>Reason: {reason}</p>
-        </Notification>,
-        {
-          placement: 'top-end',
+  const fetchStatusData = async () => {
+    console.log('Fetching status data...');
+    setIsLoading(true);
+    try {
+      const response = await httpClient.get(endpoints.due.getAll(), {
+        params: {
+          'branch_id[]': filterValues.branchId || undefined,
+          'group_id[0]': filterValues.companyGroupId || undefined,
+          'company_id[]': filterValues.companyId || undefined,
+          'state_id[]': filterValues.stateId || undefined,
+          'district_id[]': filterValues.districtId || undefined,
+          'location_id[]': filterValues.locationId || undefined,
+          'data_status[]': data_status,
         }
-      );
-    } else {
+      });
+      console.log('API Response:', response.data);
+      setData(response.data);
+      setFilteredData(response.data.data);
+    } catch (error) {
+      console.error('Error fetching status data:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+ 
+  const handleFilterChange = (filter: string) => {
+    setDataStatus([filter.toLowerCase()]);
+    fetchStatusData();
+  };
+ 
+  useEffect(() => {
+    console.log('Fetching data due to update or status change...');
+    fetchStatusData();
+  }, [data_status, updateCounter, 
+    filterValues.branchId, 
+    filterValues.companyGroupId, 
+    filterValues.companyId, 
+    filterValues.stateId, 
+    filterValues.districtId, 
+    filterValues.locationId
+]);
+
+  const handleBulkApprove = async () => {
+    const bulkData: BulkActionData = {
+      status: 'approved',
+      compliace_data_id: Array.from(selectedItems)
+    };
+    
+    setIsProcessing(true);
+   
+    try {
+      await dispatch(approveRejectComplianceStatus(bulkData)).unwrap();
+     
       toast.push(
-        <Notification
-          title="Bulk Reject Cancelled"
-          type="warning"
-        >
+        <Notification title="Bulk Action Completed" type="success">
+          {selectedItems.size} items approved successfully
+        </Notification>,
+        { placement: 'top-end' }
+      );
+      setUpdateCounter(prev => prev + 1);
+    } catch (error) {
+      console.error('Failed to approve compliances:', error);
+      toast.push(
+        <Notification title="Failed" type="danger">
+          Failed to approve compliances
+        </Notification>,
+        { placement: 'top-end' }
+      );
+    } finally {
+      setIsProcessing(false);
+      setSelectedItems(new Set());
+      setSelectedData({ status: '', compliace_data_id: [] });
+      setIsConfirmDialogOpen(false);
+    }
+  };
+
+  const handleBulkReject = async (reason: string) => {
+    if (!reason) {
+      toast.push(
+        <Notification title="Rejection Cancelled" type="warning">
           Rejection cancelled. No reason provided.
         </Notification>,
-        {
-          placement: 'top-end',
-        }
+        { placement: 'top-end' }
       );
+      return;
     }
-    setIsRejectDialogOpen(false);
+
+    const bulkData: BulkActionData = {
+      status: 'rejected',
+      compliace_data_id: currentRejectId !== null ? [currentRejectId] : Array.from(selectedItems)
+    };
+    
+    console.log('Reject Data:', bulkData);
+    setIsProcessing(true);
+    
+    try {
+      const res = await dispatch(approveRejectComplianceStatus(bulkData)).unwrap();
+
+      if(res) {
+        toast.push(
+          <Notification title="Status Updated" type="success">
+            {currentRejectId !== null ? 'Compliance' : `${selectedItems.size} items`} rejected successfully
+            <p>Reason: {reason}</p>
+          </Notification>,
+          { placement: 'top-end' }
+        );
+        setUpdateCounter(prev => prev + 1);
+      }
+    } catch (error) {
+      console.error('Failed to reject compliance(s):', error);
+      toast.push(
+        <Notification title="Failed" type="danger">
+          Failed to reject compliance(s)
+        </Notification>,
+        { placement: 'top-end' }
+      );
+    } finally {
+      setIsProcessing(false);
+      if (currentRejectId === null) {
+        setSelectedItems(new Set());
+        setSelectedData({ status: '', compliace_data_id: [] });
+      }
+      setIsRejectDialogOpen(false);
+      setCurrentRejectId(null);
+    }
   };
 
-  const BulkDownload = () => {
-    toast.push(
-      <Notification
-        title="Downloaded Successfully"
-        type="success"
-      >
-        <p>All Compliances Downloaded Successfully</p>
-      </Notification>,
-      {
-        placement: 'top-end',
-      }
-    );
-  }
+  const handleSingleApprove = async (id: number) => {
+    const singleApproveData: BulkActionData = {
+      status: 'approved',
+      compliace_data_id: [id]
+    };
+    
+    setIsProcessing(true);
+   
+    try {
+      await dispatch(approveRejectComplianceStatus(singleApproveData)).unwrap();
+      
+      toast.push(
+        <Notification title="Status Updated" type="success">
+          Compliance status updated to approved
+        </Notification>,
+        { placement: 'top-end' }
+      );
+      
+      setUpdateCounter(prev => prev + 1);
+    } catch (error) {
+      console.error('Failed to approve compliance:', error);
+      toast.push(
+        <Notification title="Failed" type="danger">
+          Failed to approve compliance
+        </Notification>,
+        { placement: 'top-end' }
+      );
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   const handleReject = (id: number) => {
     setCurrentRejectId(id);
     setIsRejectDialogOpen(true);
   };
 
-  const handleConfirmReject = (reason: string) => {
-    if (currentRejectId !== null) {
-      handleStatusChange(currentRejectId, 'Rejected');
-      toast.push(
-        <Notification
-          title="Compliance Rejected"
-          type="warning"
-        >
-          Compliance ID: {currentRejectId}
-          <p>Reason: {reason}</p>
-        </Notification>,
-        {
-          placement: 'top-end',
-        }
-      );
+  const BulkDownload = () => {
+    toast.push(
+      <Notification title="Downloaded Successfully" type="success">
+        <p>All Compliances Downloaded Successfully</p>
+      </Notification>,
+      { placement: 'top-end' }
+    );
+  };
+ 
+  const handleBulkSelection = (isSelectAll: boolean) => {
+    if (isSelectAll) {
+      const allIds = filteredData.map(item => item.id);
+      setSelectedItems(new Set(allIds));
+      setSelectedData(prev => ({
+        ...prev,
+        compliace_data_id: allIds
+      }));
+    } else {
+      setSelectedItems(new Set());
+      setSelectedData(prev => ({
+        ...prev,
+        compliace_data_id: []
+      }));
     }
-    setIsRejectDialogOpen(false);
-    setCurrentRejectId(null);
+  };
+ 
+  const handleSingleSelection = (id: number, checked: boolean) => {
+    setSelectedItems(prev => {
+      const newSet = new Set(prev);
+      if (checked) {
+        newSet.add(id);
+      } else {
+        newSet.delete(id);
+      }
+      return newSet;
+    });
+ 
+    setSelectedData(prev => ({
+      ...prev,
+      compliace_data_id: checked
+        ? [...prev.compliace_data_id, id]
+        : prev.compliace_data_id.filter(itemId => itemId !== id)
+    }));
   };
 
   const columns: ColumnDef<ComplianceData>[] = useMemo(
     () => [
       {
         header: ({ table }) => (
-          <Checkbox
-            checked={selectedItems.size === filteredData.length}
-            onChange={() => {
-              if (selectedItems.size === filteredData.length) {
-                setSelectedItems(new Set());
-              } else {
-                setSelectedItems(new Set(filteredData.map(item => item.Compliance_Instance_ID)));
-              }
-            }}
-          />
+          filteredData.some((item) => item.data_status === 'pending') ? (
+            <Checkbox
+              checked={selectedItems.size === filteredData.length}
+              onChange={(checked: boolean) => handleBulkSelection(selectedItems.size !== filteredData.length)}
+            />
+          ) : (
+            <div />
+          )
         ),
         id: 'select',
         cell: ({ row }) => (
-          <Checkbox
-            checked={selectedItems.has(row.original.Compliance_Instance_ID)}
-            onChange={() => {
-              setSelectedItems(prev => {
-                const newSet = new Set(prev);
-                if (newSet.has(row.original.Compliance_Instance_ID)) {
-                  newSet.delete(row.original.Compliance_Instance_ID);
-                } else {
-                  newSet.add(row.original.Compliance_Instance_ID);
-                }
-                return newSet;
-              });
-            }}
-          />
-        ),
-      },
-      {
-        header: 'Compliance ID',
-        accessorKey: 'Compliance_ID',
-        cell: (props) => (
-          <div className="w-24 text-start">{props.getValue()}</div>
-        ),
-      },
-      {
-        header: 'Compliance Instance ID',
-        accessorKey: 'Compliance_Instance_ID',
-        cell: (props) => (
-          <div className="w-20 text-start">{props.getValue()}</div>
-        ),
-      },
-      {
-        header: 'Location',
-        accessorKey: 'Location',
-        cell: (props) => {
-          const value = props.getValue() as string;
-          return (
-            <Tooltip title={value} placement="top">
-              <div className="w-24 truncate">{value}</div>
-            </Tooltip>
-          );
-        },
+          row.original.data_status === 'pending' ? (
+            <Checkbox
+              checked={selectedItems.has(row.original.id)}
+              onChange={(checked: boolean) => handleSingleSelection(row.original.id, checked)}
+            />
+          ) : (
+            <div />
+          )
+        )
       },
       {
         header: 'Legislation',
-        accessorKey: 'Legislation',
+        accessorKey: 'compliance_detail.legislation',
         cell: (props) => {
           const value = props.getValue() as string;
           return (
@@ -314,7 +420,19 @@ const StatusTable: React.FC<StatusTableProps> = ({
       },
       {
         header: 'Header',
-        accessorKey: 'Compliance_Header',
+        accessorKey: 'compliance_detail.header',
+        cell: (props) => {
+          const value = props.getValue() as string;
+          return (
+            <Tooltip title={value} placement="top">
+              <div className="w-24 truncate">{value}</div>
+            </Tooltip>
+          );
+        },
+      },
+      {
+        header: 'Description',
+        accessorKey: 'compliance_detail.description',
         cell: (props) => {
           const value = props.getValue() as string;
           return (
@@ -326,26 +444,28 @@ const StatusTable: React.FC<StatusTableProps> = ({
       },
       {
         header: 'Status',
-        accessorKey: 'Status',
+        accessorKey: 'data_status',
         cell: ({ row }) => {
-          const status = row.original.Status;
-          const rejectionRemark = row.original.Remark; // Assuming we add this field to our data structure
+          const status = row.original.data_status;
+          const rejectionRemark =
+            row.original.AssignedComplianceRemark &&
+            row.original.AssignedComplianceRemark.length > 0
+              ? row.original.AssignedComplianceRemark[0].remark
+              : null;
           return (
             <div className="flex items-center">
-              {/* <Badge className={statusColor[status]} /> */}
-              {status === 'Rejected' && rejectionRemark ? (
+              {status === 'rejected' && rejectionRemark ? (
                 <Tooltip title={`Rejection Reason: ${rejectionRemark}`} placement="top">
                   <span className="text-red-500 font-semibold truncate">{status}</span>
                 </Tooltip>
               ) : (
-                // <span className="ml-2 rtl:mr-2 capitalize">{status}</span>
                 <div className="w-24 font-semibold truncate">
-                {status === 'Pending' ? (
+                  {status === 'pending' ? (
                     <span className="text-yellow-500">{status}</span>
-                ) : (
+                  ) : (
                     <span className="text-green-500">{status}</span>
-                )}
-            </div>
+                  )}
+                </div>
               )}
             </div>
           );
@@ -355,14 +475,18 @@ const StatusTable: React.FC<StatusTableProps> = ({
         header: 'Actions',
         id: 'actions',
         cell: ({ row }) => {
-          const status = row.original.Status.toLowerCase();
+          const status = row.original.data_status;
           return (
             <div className="flex gap-2">
-               {(status === 'pending' || status === 'rejected' || status === 'approved') && (
+              {(status === 'pending' || status === 'rejected' || status === 'complied') && (
                 <Tooltip title="View Compliance Detail">
                   <Button
                     size="sm"
-                    onClick={() => navigate(`/app/IHRC/compliance-status-list-detail/${row.original.Compliance_Instance_ID}`, { state: row.original })}
+                    onClick={() =>
+                      navigate(`/app/IHRC/compliance-status-list-detail/${row.original.id}`, {
+                        state: row.original,
+                      })
+                    }
                     icon={<RiEyeLine />}
                   />
                 </Tooltip>
@@ -372,76 +496,70 @@ const StatusTable: React.FC<StatusTableProps> = ({
                   <Tooltip title="Approve Compliance">
                     <Button
                       size="sm"
-                      onClick={() => handleStatusChange(row.original.Compliance_Instance_ID, 'Approved')}
+                      onClick={() => handleSingleApprove(row.original.id)}
                       icon={<RiCheckLine />}
+                      disabled={isProcessing}
                     />
                   </Tooltip>
                   <Tooltip title="Reject Compliance">
                     <Button
                       size="sm"
-                      onClick={() => handleReject(row.original.Compliance_Instance_ID)}
+                      onClick={() => handleReject(row.original.id)}
                       icon={<RiCloseLine />}
+                      disabled={isProcessing}
                     />
                   </Tooltip>
                 </>
               )}
-             
-              {/* {(status === 'rejected') && (
-                <Tooltip title="Download Compliance Report">
-                  <Button
-                    size="sm"
-                    onClick={() => console.log('Download', row.original.Compliance_Instance_ID)}
-                    icon={<RiDownloadLine />}
-                  />
-                </Tooltip>
-              )} */}
             </div>
           );
         },
       },
+      // ... rest of the columns remain the same
     ],
-    [selectedItems, filteredData, handleStatusChange, handleReject, navigate]
+    [selectedItems, filteredData, handleBulkSelection, handleSingleSelection]
   );
 
   const [tableData, setTableData] = useState({
-    total: dummyData.length,
+    total: data.length,
     pageIndex: 1,
     pageSize: 10,
     query: '',
     sort: { order: '', key: '' },
   });
-
+ 
   const onPaginationChange = (page: number) => {
     setTableData(prev => ({ ...prev, pageIndex: page }));
   };
-
+ 
   const onSelectChange = (value: number) => {
     setTableData(prev => ({ ...prev, pageSize: Number(value), pageIndex: 1 }));
   };
-
+ 
   const onSort = (sort: OnSortParam) => {
     setTableData(prev => ({ ...prev, sort }));
   };
-
+ 
   useEffect(() => {
     setTableData(prev => ({ ...prev, total: filteredData.length }));
   }, [filteredData]);
-
+ 
   const handleDateRangeApply = (start: Date, end: Date) => {
     setStartDate(start);
     setEndDate(end);
-    // You can add filtering logic here based on the selected date range
-  }
+  };
 
   return (
     <div className="relative">
       <div className="flex items-center justify-between my-8">
         <div className="flex flex-row items-center gap-4">
-          <StatusTableFilter onFilterChange={onFilterChange} currentFilter={currentFilter} />
+          <StatusTableFilter
+            onFilterChange={handleFilterChange}
+            currentFilter={data_status[0]}
+          />
         </div>
         <div className="flex gap-2">
-        <StatusTableSearch onSearch={onSearch} />
-
+          <StatusTableSearch onSearch={onSearch} />
           <CustomDateRangePicker onApply={handleDateRangeApply} />
           <Button
             size="sm"
@@ -455,7 +573,10 @@ const StatusTable: React.FC<StatusTableProps> = ({
           </Button>
           <Button
             size="sm"
-            onClick={() => setIsRejectDialogOpen(true)}
+            onClick={() => {
+              setCurrentRejectId(null);
+              setIsRejectDialogOpen(true);
+            }}
             disabled={selectedItems.size === 0}
             variant='solid'
             color='red-600'
@@ -492,12 +613,13 @@ const StatusTable: React.FC<StatusTableProps> = ({
         message={`Are you sure you want to approve ${selectedItems.size} selected items?`}
       />
       <RejectDialog
-        isOpen={isRejectDialogOpen}
-        onClose={() => setIsRejectDialogOpen(false)}
-        onConfirm={handleConfirmReject}
-      />
+  isOpen={isRejectDialogOpen}
+  onClose={() => setIsRejectDialogOpen(false)}
+  onConfirm={handleBulkReject}
+  currentRejectId={currentRejectId}
+/>
     </div>
   );
 };
-
+ 
 export default StatusTable;
