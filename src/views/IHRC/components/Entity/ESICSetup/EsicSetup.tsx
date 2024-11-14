@@ -278,12 +278,12 @@ const CompanyESISetupPage: React.FC = () => {
     try {
       setIsLoading(true);
       const response = await httpClient.post(endpoints.esiSetup.create(), newESISetup);
-      showNotification('success', 'ESI Setup created successfully');
+      // showNotification('success', 'ESI Setup created successfully');
       await fetchESISetupData(); // Refresh the list
       setIsOpen(false);
     } catch (error: any) {
       console.error('Error adding ESI setup:', error);
-      showNotification('danger', error.response?.data?.message || 'Failed to create ESI setup');
+      // showNotification('danger', error.response?.data?.message || 'Failed to create ESI setup');
     } finally {
       setIsLoading(false);
     }

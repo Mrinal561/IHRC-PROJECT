@@ -7,9 +7,11 @@ export type EsiSetupData = {
     location: string;
     esi_user: string;
     password: string;
-    signatory_data: {
-        signatory_id: number;
-    };
+    signatory_data: [
+       {
+           signatory_id: number;
+       }
+    ],
     certificate?: string;
 }
 

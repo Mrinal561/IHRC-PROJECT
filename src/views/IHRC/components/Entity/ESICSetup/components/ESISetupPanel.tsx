@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Input, Notification, toast } from '@/components/ui';
+import { Button, Input, Notification, Select, toast } from '@/components/ui';
 import OutlinedSelect from '@/components/ui/Outlined';
 import OutlinedInput from '@/components/ui/OutlinedInput';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/store';
 import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
+import { ActionMeta, MultiValue } from 'react-select';
+import { UsersRound } from 'lucide-react';
 
 interface ESISetupPanelProps {
   onClose: () => void;
@@ -20,7 +22,16 @@ interface SelectOption {
 interface SignatoryOption {
   id: number;
   name: string;
+  first_name: string;
+  last_name: string;
 }
+
+interface UserSignatory {
+  id: number
+  name: string
+  esignStatus?: string
+}
+
 
 interface StateOption {
   id: number;
@@ -47,6 +58,10 @@ const ESISetupPanel: React.FC<ESISetupPanelProps> = ({ onClose, addESISetup }) =
   const [companies, setCompanies] = useState<SelectOption[]>([]);
   const [selectedCompany, setSelectedCompany] = useState<SelectOption | null>(null);
   const [signatories, setSignatories] = useState<SignatoryOption[]>([]);
+  const [selectedSignatories, setSelectedSignatories] = useState<
+  UserSignatory[]
+>([])
+
   const [fileBase64, setFileBase64] = useState<string>('');
 
   const [states, setStates] = useState<StateOption[]>([]);
@@ -58,7 +73,18 @@ const ESISetupPanel: React.FC<ESISetupPanelProps> = ({ onClose, addESISetup }) =
   const [selectedLocation, setSelectedLocation] = useState<SelectOption | null>(null)
   const [users, setUsers] = useState<any[]>([])
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    group_id: number;
+    company_id: number;
+    code_Type: string;
+    code: string;
+    district_id: number;
+    location: string;
+    esi_user: string;
+    password: string;
+    signatory_data: { signatory_id: number }[]; // Update this line
+    certificate: string;
+  }>({
     group_id: 0,
     company_id: 0,
     code_Type: '',
@@ -67,11 +93,10 @@ const ESISetupPanel: React.FC<ESISetupPanelProps> = ({ onClose, addESISetup }) =
     location: '',
     esi_user: '',
     password: '',
-    signatory_data: [{
-      signatory_id: 0
-    }],
+    signatory_data: [], // Initialize as an empty array
     certificate: ''
   });
+  
 
   const codeTypeOptions = [
     { value: 'main', label: 'Main' },
@@ -89,23 +114,38 @@ const ESISetupPanel: React.FC<ESISetupPanelProps> = ({ onClose, addESISetup }) =
     );
   };
 
+  const convertToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            const base64String = (reader.result as string).split(',')[1];
+            resolve(base64String);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+};
 
 
-  const loadUsers = async () => {
-    try {
-      const response = await httpClient.get(endpoints.user.getAll());
-      return response.data.data.filter((user: any) => user.auth_signatory);
-    } catch (error) {
-      console.error('Failed to fetch users:', error);
-      throw error;
-    }
-}
-
-// Add a useEffect to call loadUsers when component mounts
-useEffect(() => {
-    loadUsers()
-}, [])
-
+const handleRegistrationCertificateUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (file) {
+      try {
+          const base64String = await convertToBase64(file);
+          setFormData(prev => ({
+              ...prev,
+              register_certificate: base64String
+          }));
+      } catch (error) {
+          console.error('Error converting registration certificate to base64:', error);
+          toast.push(
+              <Notification title="Error" type="danger">
+                  Failed to process registration certificate
+              </Notification>
+          );
+      }
+  }
+};
 
 
 
@@ -290,10 +330,16 @@ useEffect(() => {
 
 
   // Load Signatories
-  const loadSignatories = async () => {
+  const loadUsers = async () => {
     try {
       const response = await httpClient.get(endpoints.user.getAll());
-      setSignatories(response.data.data.filter((user: any) => user.auth_signatory))
+      console.log('Users API Response:', response.data)
+      if(response.data){
+        const authorizedSignatories = response.data.data.filter(user => user.auth_signatory);
+        setUsers(authorizedSignatories)
+        console.log(authorizedSignatories);
+        
+      }
     } catch (error) {
       console.error('Failed to fetch users:', error);
       throw error;
@@ -301,7 +347,7 @@ useEffect(() => {
   };
 
   useEffect(() => {
-    loadSignatories();
+    loadUsers();
   }, []);
 
   // Handle company group change
@@ -349,7 +395,18 @@ useEffect(() => {
   const handleSubmit = async () => {
     try {
       setIsLoading(true);
-      const response = await httpClient.post(endpoints.esiSetup.create(), formData);
+
+      // const signatoriesWithIds = selectedSignatories.map((s) => ({
+      //   signatory_id: parseInt(s.value.split(" ")[0]),
+      // }));
+  
+      const data = {
+        ...formData,
+        signatory_data: formData.signatory_data,
+      };
+  
+
+      const response = await httpClient.post(endpoints.esiSetup.create(), data);
       addESISetup(response.data);
       onClose();
       showNotification('success', 'ESI Setup created successfully');
@@ -360,6 +417,35 @@ useEffect(() => {
       setIsLoading(false);
     }
   };
+
+  const handleSignatoryChange = (
+    newValue: MultiValue<{ value: string; label: string }>,
+    actionMeta: ActionMeta<{ value: string; label: string }>,
+) => {
+  const selectedUserIds = newValue
+  .map(option => parseInt(option.value))
+  .filter(id => !isNaN(id)); 
+
+
+    // Update signatory_data array
+    const newSignatoryData = selectedUserIds.map((id) => ({
+        signatory_id: id,
+    }))
+
+    setFormData((prev) => ({
+      ...prev,
+      signatory_data: newSignatoryData,
+  }))
+
+  
+    const newSelectedSignatories = selectedUserIds.map((id) => {
+      const user = users.find((u) => u.id === id);
+      return user ? user : { id, name: '' };
+    });
+    setSelectedSignatories(newSelectedSignatories);
+}
+
+  
 
   return (
    <div className="p-4">
@@ -476,12 +562,16 @@ useEffect(() => {
 
       <div className="mb-4">
         <p className="mb-2">Authorized Signatory</p>
-        <OutlinedSelect
-          label="Select Signatory"
-          options={signatories} 
-          value={undefined} 
-          onChange={undefined}          // value={selectedSignatory}
-        />
+
+<Select
+                            isMulti
+                            options={users.map(user => ({
+                              value: String(user.id),                           
+                              label: `${user.first_name} ${user.last_name}`,
+                            }))}
+                            onChange={handleSignatoryChange}
+
+                        />
       </div>
 
       <div className="mb-4">
