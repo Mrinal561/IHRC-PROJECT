@@ -5,31 +5,17 @@ import { MdEdit } from 'react-icons/md';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 import PFEditedData from './PFEditedData';
 import { IoPersonRemoveOutline } from 'react-icons/io5';
+import { PFData } from '@/@types/pfData';
+import dayjs from 'dayjs';
 
-export interface PFSetupData {
-  Company_Group_Name: string;
-  Company_Name: string;
-  pfCode: string;
-  pfCodeLocation: string;
-  registrationDate?: string;
-  pfUserId?: string;
-  pfPassword?: string;
-  authorizedSignatory: string;
-  signatoryDesignation?: string;
-  signatoryMobile?: string;
-  signatoryEmail?: string;
-  dscValidDate?: string;
-  esign?: string;
-  pfRegistrationCertificate?: File | null;
-}
 
 interface PFSetupTableProps {
-  data: PFSetupData[];
-  onDelete: (index: number) => void;
-  onEdit: (index: number, newData: Partial<PFSetupData>) => void;
+  data: PFData[];
+  // onDelete: (index: number) => void;
+  // onEdit: (index: number, newData: Partial<PFSetupData>) => void;
 }
 
-const PFSetupTable: React.FC<PFSetupTableProps> = () => {
+const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data }) => {
   const [dialogIsOpen, setDialogIsOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<number | null>(null);
   const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
@@ -41,145 +27,97 @@ const PFSetupTable: React.FC<PFSetupTableProps> = () => {
     setSuspendDialogIsOpen(true);
 };
 
-  const [data , setData] = useState<PFSetupData[]>([
-    {
-      Company_Group_Name: "IND Money",
-      Company_Name: "India shelter Pvt Ltd",
-      pfCode: "RJUDR0021857000",
-      pfCodeLocation: "UDAIPUR",
-      registrationDate: "2023-01-15",
-      pfUserId: "user123",
-      pfPassword: "********",
-      authorizedSignatory: "Amit",
-      signatoryDesignation: "HR Manager",
-      signatoryMobile: "+91 9556543210",
-      signatoryEmail: "Amit@example.com",
-      dscValidDate: "2025-01-15",
-      esign: "Yes",
-    },
-    {
-      Company_Group_Name: "IND Money",
-      Company_Name: "India shelter Pvt Ltd",
-      pfCode: "GNGGN2789109000",
-      pfCodeLocation: "UDAIPUR",
-      registrationDate: "2023-01-15",
-      pfUserId: "user1234",
-      pfPassword: "********",
-      authorizedSignatory: "Ajay Thakur",
-      signatoryDesignation: "CFO",
-      signatoryMobile: "+91 9877743210",
-      signatoryEmail: "Ajay@example.com",
-      dscValidDate: "2026-01-15",
-      esign: "Yes",
-    },
-    {
-      Company_Group_Name: "IND Money",
-      Company_Name: "India shelter Pvt Ltd",
-      pfCode: "GNGGN2789109000",
-      pfCodeLocation: "UDAIPUR",
-      registrationDate: "2023-01-15",
-      pfUserId: "user1234",
-      pfPassword: "********",
-      authorizedSignatory: "Krishna Kumar Singh",
-      signatoryDesignation: "SEO",
-      signatoryMobile: "+91 9878743210",
-      signatoryEmail: "Krishna@example.com",
-      dscValidDate: "2027-01-15",
-      esign: "Yes",
-    }
-    
-  ])
 
 
-  const columns: ColumnDef<PFSetupData>[] = useMemo(
+  const columns: ColumnDef<PFData>[] = useMemo(
     () => [
       {
         header: 'Company Group',
-        accessorKey: 'Company_Group_Name',
+        accessorKey: 'CompanyGroup.name',
         cell: (props) => (
           <div className="w-36 text-start">{props.getValue() as string}</div>
         ),
       },
       {
         header: 'Company',
-        accessorKey: 'Company_Name',
+        accessorKey: 'Company.name',
         cell: (props) => (
           <div className="w-36 text-start">{props.getValue() as string}</div>
         ),
       },
       {
         header: 'PF Code',
-        accessorKey: 'pfCode',
+        accessorKey: 'pf_code',
         cell: (props) => (
           <div className="w-36 text-start">{props.getValue() as string}</div>
         ),
       },
       {
         header: 'PF Code Location',
-        accessorKey: 'pfCodeLocation',
+        accessorKey: 'Location.name',
         cell: (props) => (
           <div className="w-36 truncate">{props.getValue() as string}</div>
         ),
       },
       {
         header: 'PF Registration Date',
-        accessorKey: 'registrationDate',
+        accessorKey: 'register_date',
         cell: (props) => (
-          <div className="w-44 flex items-center justify-center">{props.getValue() as string}</div>
+          <div className="w-44 flex items-center justify-center">{dayjs(props.getValue() as string).format('DD-MM-YYYY')}</div>
         ),
       },
       {
         header: 'PF User ID',
-        accessorKey: 'pfUserId',
+        accessorKey: 'id',
         cell: (props) => (
           <div className="w-32 flex items-center justify-center">{props.getValue() as string}</div>
         ),
       },
-      {
-        header: 'PF User Password',
-        accessorKey: 'pfPassword',
-        cell: (props) => (
-          <div className="w-40 flex items-center justify-center">{props.getValue() as string}</div>
-        ),
-      },
+      // {
+      //   header: 'PF User Password',
+      //   accessorKey: 'pfPassword',
+      //   cell: (props) => (
+      //     <div className="w-40 flex items-center justify-center">{props.getValue() as string}</div>
+      //   ),
+      // },
       {
         header: 'Authorized Signatory',
-        accessorKey: 'authorizedSignatory',
+        accessorKey: 'Signatory.first_name',
         cell: (props) => (
           <div className="w-48 truncate">{props.getValue() as string}</div>
         ),
       },
       {
         header: 'Designation',
-        accessorKey: 'signatoryDesignation',
+        accessorKey: 'Signatory.Role.name',
         cell: (props) => (
           <div className="w-48 truncate">{props.getValue() as string}</div>
         ),
       },
       {
         header: 'Mobile',
-        accessorKey: 'signatoryMobile',
+        accessorKey: 'Signatory.mobile',
         cell: (props) => (
           <div className="w-48 truncate">{props.getValue() as string}</div>
         ),
       },
       {
         header: 'Email',
-        accessorKey: 'signatoryEmail',
+        accessorKey: 'Signatory.email',
         cell: (props) => (
           <div className="w-48 truncate">{props.getValue() as string}</div>
         ),
       },
       {
         header: 'DSC Validity',
-        accessorKey: 'dscValidDate',
+        accessorKey: 'dsc_validity',
         cell: (props) => (
-          <div className="w-48 truncate">{props.getValue() as string}</div>
+          <div className="w-44 flex items-center justify-center">{dayjs(props.getValue() as string).format('DD-MM-YYYY')}</div>
         ),
       },
       {
         header: 'E Sign',
-        accessorKey: 'esign',
+        accessorKey: 'e_sign_status',
         cell: (props) => (
           <div className="w-48 truncate">{props.getValue() as string}</div>
         ),
