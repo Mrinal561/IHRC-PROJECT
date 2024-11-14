@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from 'react';
 import { Button, Input, Notification, toast } from '@/components/ui';
 import OutlinedSelect from '@/components/ui/Outlined';
@@ -24,6 +22,23 @@ interface SignatoryOption {
   name: string;
 }
 
+interface StateOption {
+  id: number;
+  name: string;
+}
+
+interface DistrictOption {
+  id: number;
+  name: string;
+  state_id: number;
+}
+
+interface LocationOption {
+  id: number;
+  name: string;
+  district_id: number;
+}
+
 const ESISetupPanel: React.FC<ESISetupPanelProps> = ({ onClose, addESISetup }) => {
   const dispatch = useDispatch<AppDispatch>();
   const [isLoading, setIsLoading] = useState(false);
@@ -33,6 +48,15 @@ const ESISetupPanel: React.FC<ESISetupPanelProps> = ({ onClose, addESISetup }) =
   const [selectedCompany, setSelectedCompany] = useState<SelectOption | null>(null);
   const [signatories, setSignatories] = useState<SignatoryOption[]>([]);
   const [fileBase64, setFileBase64] = useState<string>('');
+
+  const [states, setStates] = useState<StateOption[]>([]);
+  const [selectedStates, setSelectedStates] = useState<SelectOption | null>(null,)
+  const [districts, setDistricts] = useState<DistrictOption[]>([]);
+  const [selectedDistrict, setSelectedDistrict] =
+  useState<SelectOption | null>(null)
+  const [locations, setLocations] = useState<LocationOption[]>([]);
+  const [selectedLocation, setSelectedLocation] = useState<SelectOption | null>(null)
+  const [users, setUsers] = useState<any[]>([])
 
   const [formData, setFormData] = useState({
     group_id: 0,
@@ -64,6 +88,26 @@ const ESISetupPanel: React.FC<ESISetupPanelProps> = ({ onClose, addESISetup }) =
       </Notification>
     );
   };
+
+
+
+  const loadUsers = async () => {
+    try {
+      const response = await httpClient.get(endpoints.user.getAll());
+      return response.data.data.filter((user: any) => user.auth_signatory);
+    } catch (error) {
+      console.error('Failed to fetch users:', error);
+      throw error;
+    }
+}
+
+// Add a useEffect to call loadUsers when component mounts
+useEffect(() => {
+    loadUsers()
+}, [])
+
+
+
 
   // Load Company Groups
   const loadCompanyGroups = async () => {
@@ -115,14 +159,144 @@ const ESISetupPanel: React.FC<ESISetupPanelProps> = ({ onClose, addESISetup }) =
     }
   };
 
+  const loadStates = async () => {
+    try {
+        setIsLoading(true);
+        const response = await httpClient.get(endpoints.common.state());
+        
+        if (response.data) {
+            const formattedStates = response.data.map((state: any) => ({
+                label: state.name,
+                value: String(state.id)
+            }));
+            setStates(formattedStates);
+        }
+    } catch (error) {
+        console.error('Failed to load states:', error);
+        toast.push(
+            <Notification title="Error" type="danger">
+                Failed to load states
+            </Notification>
+        );
+    } finally {
+        setIsLoading(false);
+    }
+};
+
+
+const loadDistricts = async (stateId: string) => {
+  if (!stateId) return;
+  
+  try {
+      const response = await httpClient.get(endpoints.common.district(), {
+          params: { state_id: stateId }
+      });
+
+      if (response.data) {
+          const formattedDistricts = response.data.map((district: any) => ({
+              label: district.name,
+              value: String(district.id)
+          }));
+          setDistricts(formattedDistricts);
+      }
+  } catch (error) {
+      console.error('Failed to load districts:', error);
+      toast.push(
+          <Notification title="Error" type="danger">
+              Failed to load districts
+          </Notification>
+      );
+      setDistricts([]);
+  }
+};
+
+
+const loadLocations = async (districtId: string) => {
+  if (!districtId) return;
+  
+  try {
+      const response = await httpClient.get(endpoints.common.location(), {
+          params: { district_id: districtId }
+      });
+
+      if (response.data) {
+          const formattedLocations = response.data.map((location: any) => ({
+              label: location.name,
+              value: String(location.id)
+          }));
+          setLocations(formattedLocations);
+      }
+  } catch (error) {
+      console.error('Failed to load locations:', error);
+      toast.push(
+          <Notification title="Error" type="danger">
+              Failed to load locations
+          </Notification>
+      );
+      setLocations([]);
+  }
+};
+
+
+
+const handleStateChange = (option: SelectOption | null) => {
+  setSelectedStates(option);
+  setSelectedDistrict(null); // Reset district selection
+  setSelectedLocation(null); // Reset location selection
+  setDistricts([]); // Clear districts
+  setLocations([]); // Clear locations
+  
+  if (option) {
+      loadDistricts(option.value);
+      // setPfSetupData(prev => ({
+      //     ...prev,
+      //     state_id: parseInt(option.value),
+      //     district_id: 0,
+      //     location: ''
+      // }));
+  }
+};
+
+const handleDistrictChange = (option: SelectOption | null) => {
+  setSelectedDistrict(option);
+  setSelectedLocation(null); // Reset location selection
+  setLocations([]); // Clear locations
+  
+  if (option) {
+      loadLocations(option.value);
+      setFormData(prev => ({
+          ...prev,
+          district_id: parseInt(option.value),
+          location: ''
+      }));
+  }
+};
+
+const handleLocationChange = (option: SelectOption | null) => {
+  setSelectedLocation(option);
+  if (option) {
+      setFormData(prev => ({
+          ...prev,
+          location: option.label
+      }));
+  }
+};
+
+
+useEffect(() => {
+  loadStates()
+}, [])
+
+
+
   // Load Signatories
   const loadSignatories = async () => {
     try {
-      const { data } = await httpClient.get(endpoints.user.getAll());
-      setSignatories(data?.data);
+      const response = await httpClient.get(endpoints.user.getAll());
+      setSignatories(response.data.data.filter((user: any) => user.auth_signatory))
     } catch (error) {
-      console.error('Failed to load signatories:', error);
-      showNotification('danger', 'Failed to load signatories');
+      console.error('Failed to fetch users:', error);
+      throw error;
     }
   };
 
@@ -188,7 +362,7 @@ const ESISetupPanel: React.FC<ESISetupPanelProps> = ({ onClose, addESISetup }) =
   };
 
   return (
-    <div className="p-4">
+   <div className="p-4">
       <div className="grid grid-cols-2 gap-4 mb-4">
         <div>
           <p className="mb-2">Company Group</p>
@@ -210,65 +384,68 @@ const ESISetupPanel: React.FC<ESISetupPanelProps> = ({ onClose, addESISetup }) =
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 mb-4">
-        <div>
-          <p className="mb-2">Code Type</p>
-          <OutlinedSelect
-            label="Select Code Type"
-            options={codeTypeOptions}
-            value={codeTypeOptions.find(option => option.value === formData.code_Type)}
-            onChange={(option: SelectOption | null) => {
-              setFormData(prev => ({
-                ...prev,
-                code_Type: option?.value || ''
-              }));
-            }}
-          />
-        </div>
-        <div>
-          <p className="mb-2">ESI Code</p>
-          <OutlinedInput
-            label="ESI Code"
-            value={formData.code}
-            onChange={(value: string) => {
-              setFormData(prev => ({
-                ...prev,
-                code: value
-              }));
-            }}
-          />
-        </div>
-      <div className="grid grid-cols-1 gap-4 mb-4">
+
+      <div className='grid grid-cols-2 gap-4 mb-4'>
       <div>
-          <p className="mb-2">Location</p>
-          <OutlinedInput
-            label="Location"
-            value={formData.location}
-            onChange={(value: string) => {
-              setFormData(prev => ({
-                ...prev,
-                location: value
-              }));
-            }}
+           <p className="mb-2">Code Type</p>
+           <OutlinedSelect
+             label="Select Code Type"
+             options={codeTypeOptions}
+             value={codeTypeOptions.find(option => option.value === formData.code_Type)}
+             onChange={(option: SelectOption | null) => {
+               setFormData(prev => ({
+                 ...prev,
+                 code_Type: option?.value || ''
+               }));
+             }}
+           />
+         </div>
+         <div>
+           <p className="mb-2">ESI Code</p>
+           <OutlinedInput
+             label="ESI Code"
+             value={formData.code}
+             onChange={(value: string) => {
+               setFormData(prev => ({
+                 ...prev,
+                 code: value
+               }));
+             }}
+           />
+         </div>
+      </div>
+
+      <div className="grid grid-cols-3 gap-4 mb-4">
+        <div>
+          <p className="mb-2">State</p>
+          <OutlinedSelect
+            label="Select State"
+            options={states}
+            value={selectedStates}
+            onChange={handleStateChange}
           />
         </div>
         <div>
           <p className="mb-2">District</p>
-          <OutlinedInput
-              label="District" value={''} onChange={function (value: string): void {
-                throw new Error('Function not implemented.');
-              } }            // value={formData.district_id}
-            // onChange={(value: string) => {
-            //   setFormData(prev => ({
-            //     ...prev,
-            //     code: value
-            //   }));
-            // }}
+          <OutlinedSelect
+            label="Select District"
+            options={districts}
+            value={selectedDistrict}
+            onChange={handleDistrictChange}
+          />
+        </div>
+        <div>
+          <p className="mb-2">Location</p>
+          <OutlinedSelect
+            label="Select Location"
+            options={locations}
+            value={selectedLocation}
+            onChange={handleLocationChange}
           />
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 mb-4">
+      <div className="grid grid-cols-2 gap-4 mb-4">
         <div>
           <p className="mb-2">ESI User</p>
           <OutlinedInput
@@ -301,18 +478,10 @@ const ESISetupPanel: React.FC<ESISetupPanelProps> = ({ onClose, addESISetup }) =
         <p className="mb-2">Authorized Signatory</p>
         <OutlinedSelect
           label="Select Signatory"
-          options={signatories.map(sig => ({
-            label: sig.name,
-            value: String(sig.id)
-          }))}
-          onChange={(option: SelectOption | null) => {
-            setFormData(prev => ({
-              ...prev,
-              signatory_data: [{
-                signatory_id: option ? parseInt(option.value) : 0
-              }]
-            }));
-          } } value={undefined}        />
+          options={signatories} 
+          value={undefined} 
+          onChange={undefined}          // value={selectedSignatory}
+        />
       </div>
 
       <div className="mb-4">
@@ -341,7 +510,6 @@ const ESISetupPanel: React.FC<ESISetupPanelProps> = ({ onClose, addESISetup }) =
           Cancel
         </Button>
       </div>
-    </div>
     </div>
   );
 };
