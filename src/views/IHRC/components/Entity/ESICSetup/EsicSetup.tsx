@@ -132,11 +132,11 @@ const CompanyESISetupPage: React.FC = () => {
     } catch (error: any) {
       console.error('Error adding ESI setup:', error);
       // showNotification('danger', error.response?.data?.message || 'Failed to create ESI setup');
-      toast.push(
-        <Notification title="Error" type="danger">
-          Failed to create ESI setup
-        </Notification>
-      );
+      // toast.push(
+      //   <Notification title="Error" type="danger">
+      //     Failed to create ESI setup
+      //   </Notification>
+      // );
     } finally {
       setIsLoading(false);
     }
@@ -150,9 +150,9 @@ const CompanyESISetupPage: React.FC = () => {
   //   setKey(prev => prev + 1);
   // };
 
-  useEffect(() => {
-    refreshData();
-  }, [handleAddESISetup]);
+  // useEffect(() => {
+  //   refreshData();
+  // }, [handleAddESISetup]);
 
 
   return (
