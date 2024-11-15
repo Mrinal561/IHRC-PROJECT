@@ -153,6 +153,24 @@ const ESITrackerTable: React.FC = () => {
         setEditingData(null);
     };
 
+    
+    // useEffect(() => {
+    //     fetchEsiTrackerData(1, 10);
+    //   }, []);
+      
+    //   const fetchEsiTrackerData = async (page: number, size: number) => {
+    //     const {payload: data} = await dispatch(fetchEsiTracker({page: page, page_size: size}));
+    //     setEsiTrackerTableData(data.data)
+    //     console.log(esiTrackerTableData);
+        
+    //     setTableData((prev) => ({
+    //       ...prev,
+    //       total: data?.paginate_data.totalResult,
+    //       pageIndex: data?.paginate_data.page,
+    //     }))
+    //     // refreshData();
+    //   }
+
     const columns: ColumnDef<ESITrackerData>[] = useMemo(
         () => [
             {

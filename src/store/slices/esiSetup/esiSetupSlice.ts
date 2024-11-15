@@ -24,6 +24,13 @@ export const fetchEsiSetup = createAsyncThunk(
         return data;
     }
 );
+export const fetchEsiTracker = createAsyncThunk(
+    'esisetup/fetchEsiSetup',
+    async () => {
+        const { data } = await httpClient.get(endpoints.esiTracker.getAll());
+        return data;
+    }
+);
 
 export const createEsiSetup = createAsyncThunk(
     'esisetup/createEsiSetup',
@@ -94,7 +101,20 @@ const esiSetupSlice = createSlice({
             .addCase(fetchEsiSetupById.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
-            });
+            })
+            // // Fetch All ESI Tracker
+            // .addCase(fetchEsiTracker.pending, (state) => {
+            //     state.loading = true;
+            //     state.error = null;
+            // })
+            // .addCase(fetchEsiTracker.fulfilled, (state, action) => {
+            //     state.loading = false;
+            //     state.esisetup = action.payload;
+            // })
+            // .addCase(fetchEsiTracker.rejected, (state, action) => {
+            //     state.loading = false;
+            //     state.error = action.payload as string;
+            // })
     },
 });
 

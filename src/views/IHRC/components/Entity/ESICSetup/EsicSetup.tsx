@@ -91,7 +91,9 @@ const CompanyESISetupPage: React.FC = () => {
           company_name: actualCompanyName
         }
       });
-      setESISetupData(response.data.data);
+      if(response?.data.data){
+        setESISetupData(response.data.data);
+      }
     } catch (error: any) {
       console.error('Error fetching ESI setup data:', error);
       showNotification('danger', error.response?.data?.message || 'Failed to fetch ESI setup data');
@@ -116,12 +118,25 @@ const CompanyESISetupPage: React.FC = () => {
       setIsLoading(true);
       const response = await httpClient.post(endpoints.esiSetup.create(), newESISetup);
       // showNotification('success', 'ESI Setup created successfully');
-      await fetchESISetupData(); // Refresh the list
-      setIsOpen(false);
+      if(response){
+
+        setIsOpen(false);
+        toast.push(
+          <Notification title="Success" type="success">
+            ESI Setup created successfully
+          </Notification>
+        );
+        await fetchESISetupData(); // Refresh the list
+      }
       // refreshData();
     } catch (error: any) {
       console.error('Error adding ESI setup:', error);
       // showNotification('danger', error.response?.data?.message || 'Failed to create ESI setup');
+      toast.push(
+        <Notification title="Error" type="danger">
+          Failed to create ESI setup
+        </Notification>
+      );
     } finally {
       setIsLoading(false);
     }
@@ -170,6 +185,7 @@ const CompanyESISetupPage: React.FC = () => {
         // onDelete={handleDelete}
         // onEdit={handleEdit}
         // isLoading={isLoading}
+        // refreshData={fetchESISetupData}
       />
 
       <Dialog
@@ -183,8 +199,8 @@ const CompanyESISetupPage: React.FC = () => {
         <ESISetupPanel
           onClose={handleClose}
           addESISetup={handleAddESISetup}
-          refreshData={refreshData}
-        />
+          // refreshData={fetchESISetupData}
+          />
       </Dialog>
     </div>
   );

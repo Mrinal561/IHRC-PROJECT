@@ -36,7 +36,7 @@ const ESITrackerTool: React.FC = () => {
   return (
     <div>
       <div className="flex gap-3 items-center mb-4">
-        <ESITrackerFilter data={sampleData} onFilterChange={handleFilterChange} />
+        {/* <ESITrackerFilter data={sampleData} onFilterChange={handleFilterChange} /> */}
         <CustomDateRangePicker onApply={handleDateRangeApply} />
         <Button  
         variant="solid" 

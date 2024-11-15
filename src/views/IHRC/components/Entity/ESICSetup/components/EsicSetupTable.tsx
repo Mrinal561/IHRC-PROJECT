@@ -13,6 +13,8 @@ import { fetchEsiSetup } from '@/store/slices/esiSetup/esiSetupSlice';
 interface ESISetupTableProps {
   // Add any props if needed
   data: EsiSetupData[];
+  refreshData: () => Promise<void>;
+
   
 }
 
@@ -30,7 +32,7 @@ const ESISetupTable = () => {
   useEffect(() => {
     fetchEsiSetupData(1, 10);
   }, []);
-
+  
   const fetchEsiSetupData = async (page: number, size: number) => {
     const {payload: data} = await dispatch(fetchEsiSetup({page: page, page_size: size}));
     setEsiTableData(data.data)
@@ -40,7 +42,8 @@ const ESISetupTable = () => {
       ...prev,
       total: data?.paginate_data.totalResult,
       pageIndex: data?.paginate_data.page,
-  }))
+    }))
+    // refreshData();
   }
   
   const columns = useMemo(
