@@ -7,6 +7,7 @@ import EsiConfigDropdown from './ESIConfigDropDown';
 import { esiChallanData } from '@/@types/esiTracker';
 import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
+import dayjs from 'dayjs';
 const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
 
@@ -78,11 +79,14 @@ const [isLoading, setIsLoading] = useState(false);
     {
         header: 'Month',
         accessorKey: 'payroll_month',
-        cell: (props) => (
-            <div className="w-28 truncate">
-                {props.getValue() as string}
-            </div>
-        ),
+        cell: (props) => {
+            const date = new Date(props.getValue() as string);
+            return (
+              <div className="w-28 truncate">
+                {date.toLocaleString('default', { month: 'long', year: 'numeric' })}
+              </div>
+            );
+          }
     },
     {
         header: 'No. of Employees',
@@ -161,20 +165,12 @@ const [isLoading, setIsLoading] = useState(false);
     {
         header: 'Due Date',
         accessorKey: 'payment_due_date',
-        cell: (props) => (
-            <div className="w-28 truncate">
-                {props.getValue() as string}
-            </div>
-        ),
+        cell: (props) => <div className="w-28 truncate">{dayjs(props.getValue() as string).format('DD-MM-YYYY')}</div>,
     },
     {
         header: 'Date of Payment',
         accessorKey: 'payment_date',
-        cell: (props) => (
-            <div className="w-40 truncate">
-                {props.getValue() as string}
-            </div>
-        ),
+        cell: (props) => <div className="w-40 truncate">{dayjs(props.getValue() as string).format('DD-MM-YYYY')}</div>,
     },
     {
       header: 'Delay',

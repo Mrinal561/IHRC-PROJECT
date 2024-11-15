@@ -466,7 +466,7 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> = ({ dataSent, loading }) =>
                 {props.getValue() as string}
               </a>
             ) : (
-               'Not Yet Provided'
+               '--'
             )}
           </div>,
       },
@@ -480,7 +480,7 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> = ({ dataSent, loading }) =>
                 {props.getValue() as string}
               </a>
             ) : (
-               'Not Yet Provided'
+               '--'
             )}
           </div>,
       },
@@ -494,7 +494,7 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> = ({ dataSent, loading }) =>
                 {props.getValue() as string}
               </a>
             ) : (
-              'Not Yet Provided'
+              '--'
             )}
           </div>,
       },
