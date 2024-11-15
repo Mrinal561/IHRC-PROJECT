@@ -34,25 +34,33 @@ const Branch = () => {
   };
 
   return (
+
           <AdaptableCard className="h-full" bodyClass="h-full">
-            <div className="flex flex-col justify-between gap-8 mb-10">
-              <div className="mb-4 lg:mb-0">
-                <h3 className="text-2xl font-bold">Branch Manager</h3>
+          <div className="flex flex-col justify-between gap-8 mb-10">
+            <div className="mb-4 lg:mb-0">
+              <h3 className="text-2xl font-bold">Branch Manager</h3>
+            </div>
+            {/* Modified this div to be more flexible */}
+            <div className="mb-8 flex flex-col lg:flex-row gap-4 w-full">
+              {/* Wrap Company component in a div that grows to fill available space */}
+              <div className="flex-1 flex flex-wrap gap-4">
+                <Company
+                  onBranchChange={setSelectedBranch}
+                  onCompanyGroupChange={setSelectedCompanyGroup}
+                  onCompanyChange={setSelectedCompany}
+                  onStateChange={setSelectedState}
+                  onDistrictChange={setSelectedDistrict}
+                  onLocationChange={setSelectedLocation}
+                />
               </div>
-              <div>
-              {/* <BranchTool /> */}
-              <Company
-              onBranchChange={setSelectedBranch}
-              onCompanyGroupChange={setSelectedCompanyGroup}
-              onCompanyChange={setSelectedCompany}
-              onStateChange={setSelectedState}
-              onDistrictChange={setSelectedDistrict}
-              onLocationChange={setSelectedLocation}
-              />
+              {/* Add Branch button will maintain its size */}
+              <div className="flex-shrink-0">
+                <BranchTool />
               </div>
             </div>
-            <BranchTable  filterValues={filterValues}/>
-          </AdaptableCard>
+          </div>
+          <BranchTable filterValues={filterValues}/>
+        </AdaptableCard>
   );
 };
 
