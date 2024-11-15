@@ -69,16 +69,21 @@ export const endpoints = {
     getAll: () => api('companyadmin/esisetup'),
     getById: (id: string) => api(`companyadmin/esisetup/${id}`),
     create: () => api('companyadmin/esisetup'),
-    bulkUpload: () => api(`companyadmin/esisetup/esi-tracker`),
     // download: () => api(`companyadmin/esisetup/esi-tracker/export`)
-    download: () => api(`upload/sample_files/esi-tracker.xlsx`)
-
-   },
-   pfSetup:{
+    
+},
+pfSetup:{
     getAll:()=> api('companyadmin/pfsetup'),
     create: () => api('companyadmin/pfsetup'),
-   },
-   esiTracker: {
-    getAll: () => api(`companyadmin/esisetup/esi-tracker`)
+},
+tracker:{ 
+    downloadFormat:() => api('upload/sample_files/pf-tracker.xlsx'),
+    pfUpload:() => api('companyadmin/pfsetup/pf-tracker'),
+    pfGetALl:() => api(`companyadmin/pfsetup/pf-tracker`)
+},
+esiTracker: {
+    getAll: () => api(`companyadmin/esisetup/esi-tracker`),
+    bulkUpload: () => api(`companyadmin/esisetup/esi-tracker`),
+    download: () => api(`upload/sample_files/esi-tracker.xlsx`)
    }
 }
