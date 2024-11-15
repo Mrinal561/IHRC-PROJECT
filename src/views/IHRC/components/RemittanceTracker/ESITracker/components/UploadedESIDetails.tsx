@@ -18,7 +18,7 @@ interface UploadedESIDetailsProps {
 const UploadedESIDetails: React.FC<UploadedESIDetailsProps> = ({ onBack, loading }) => {
   const navigate = useNavigate();
   const [data, setData] = useState<esiChallanData[]>([]);
-
+const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     fetchEsiTrackerData();
@@ -26,11 +26,14 @@ const UploadedESIDetails: React.FC<UploadedESIDetailsProps> = ({ onBack, loading
 
   const fetchEsiTrackerData = async () => {
     try {
+        setIsLoading(true)
       const res = await httpClient.get(endpoints.esiTracker.getAll())
       console.log(res.data.data)
       setData(res.data.data);
     } catch (error) {
       console.error('Error fetching PF tracker data:', error);
+    } finally{
+        setIsLoading(false)
     }
   };
 
@@ -270,7 +273,7 @@ const UploadedESIDetails: React.FC<UploadedESIDetailsProps> = ({ onBack, loading
       <DataTable
         columns={columns}
         data={data}
-        loading={loading}
+        loading={isLoading}
         skeletonAvatarColumns={[0]}
         skeletonAvatarProps={{ className: 'rounded-md' }}
         stickyHeader={true}

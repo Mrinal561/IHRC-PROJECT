@@ -20,6 +20,7 @@ const ESITrackerBulkUpload: React.FC<ESITrackerBulkUploadProps> = ({ onUploadCon
   const [file, setFile] = useState<File | null>(null);
   const [currentGroup, setCurrentGroup] = useState('');
   const [isUploading, setIsUploading] = useState(false);
+  const [isloading, setIsloading] = useState(false);
 
 
   const navigate = useNavigate();
