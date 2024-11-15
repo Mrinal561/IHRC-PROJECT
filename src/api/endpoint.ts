@@ -79,6 +79,6 @@ export const endpoints = {
     create: () => api('companyadmin/pfsetup'),
    },
    esiTracker: {
-    getAll: () => api(`companyadmin/esisetup/esi-tracker`)
+    getAll: () => api(`companyadmin/esisetup/esi-tracker`),
    }
 }
