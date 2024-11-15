@@ -17,7 +17,7 @@ const BranchTool: React.FC = () => {
 
   return (
     <div className='flex gap-2 items-center w-full'>
-      <Company/>
+      {/* <Company/> */}
       {/* <div> */}
       {/* <Bu/> */}
       {/* </div> */}
