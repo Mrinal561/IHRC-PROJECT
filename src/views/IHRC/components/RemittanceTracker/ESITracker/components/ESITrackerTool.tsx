@@ -3,12 +3,13 @@ import ESITrackerFilter from './ESITrackerFilter';
 import ESITrackerTable from './ESITrackerTable';
 import ESITrackerBulkUpload from './ESITrackerBulkUpload';
 import UploadedESIDetails from './UploadedESIDetails';
-import { sampleData } from './ESITrackerTable';
+// import { sampleData } from './ESITrackerTable';
+import { dummyData } from '../../PFTracker/components/PFTrackerTable';
 import CustomDateRangePicker from './CustomDateRangePicker';
 import { Button } from '@/components/ui';
 import { HiDownload } from 'react-icons/hi';
 
-const ESITrackerTool: React.FC = () => {
+const ESITrackerTool: React.FC<{ onFilterChange: (filters: any) => void }> = ({ onFilterChange })  => {
   const [showUploadedDetails, setShowUploadedDetails] = useState(false);
   const [filters, setFilters] = useState({ groupName: '', companyName: '', esiCode: '' });
 
@@ -36,7 +37,7 @@ const ESITrackerTool: React.FC = () => {
   return (
     <div>
       <div className="flex gap-3 items-center mb-4">
-        {/* <ESITrackerFilter data={sampleData} onFilterChange={handleFilterChange} /> */}
+        <ESITrackerFilter data={dummyData} onFilterChange={handleFilterChange} />
         <CustomDateRangePicker onApply={handleDateRangeApply} />
         <Button  
         variant="solid" 

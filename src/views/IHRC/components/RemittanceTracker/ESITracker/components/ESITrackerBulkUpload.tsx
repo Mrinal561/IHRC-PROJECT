@@ -21,20 +21,21 @@ const ESITrackerBulkUpload: React.FC<ESITrackerBulkUploadProps> = ({ onUploadCon
   const [currentGroup, setCurrentGroup] = useState('');
   const [isUploading, setIsUploading] = useState(false);
 
+
   const navigate = useNavigate();
   const groupOptions = [
-    { value: '01', label: 'January 2024' },
-    { value: '02', label: 'February 2024' },
-    { value: '03', label: 'March 2024' },
-    { value: '04', label: 'April 2024' },
-    { value: '05', label: 'May 2024' },
-    { value: '06', label: 'June 2024' },
-    { value: '07', label: 'July 2024' },
-    { value: '08', label: 'August 2024' },
-    { value: '09', label: 'September 2024' },
-    { value: '10', label: 'October 2024' },
-    { value: '11', label: 'November 2024' },
-    { value: '12', label: 'December 2024' },
+    { value: '2024-01', label: 'January 2024' },
+    { value: '2024-02', label: 'February 2024' },
+    { value: '2024-03', label: 'March 2024' },
+    { value: '2024-04', label: 'April 2024' },
+    { value: '2024-05', label: 'May 2024' },
+    { value: '2024-06', label: 'June 2024' },
+    { value: '2024-07', label: 'July 2024' },
+    { value: '2024-08', label: 'August 2024' },
+    { value: '2024-09', label: 'September 2024' },
+    { value: '2024-10', label: 'October 2024' },
+    { value: '2024-11', label: 'November 2024' },
+    { value: '2024-12', label: 'December 2024' },
   ];
 
   const handleUploadClick = () => {
@@ -42,10 +43,8 @@ const ESITrackerBulkUpload: React.FC<ESITrackerBulkUploadProps> = ({ onUploadCon
   };
 
   const handleConfirm = async () => {
-    try {
-      setIsUploading(true);
-      
-      if (!file) {
+    try {      
+      if (!file || !currentGroup) {
         toast.push(
           <Notification title="Error" type="danger">
             Please select a file to upload
@@ -56,10 +55,13 @@ const ESITrackerBulkUpload: React.FC<ESITrackerBulkUploadProps> = ({ onUploadCon
   
       const formData = new FormData();
       formData.append('document', file);
-      formData.append('remark', remark);
+      formData.append('month', currentGroup);
+
+      console.log('FormData:', formData);
+
       
       const res = await httpClient.post(
-        endpoints.esiSetup.bulkUpload(),
+        endpoints.esiTracker.bulkUpload(),
         formData,
         {
           headers: {
@@ -77,6 +79,8 @@ const ESITrackerBulkUpload: React.FC<ESITrackerBulkUploadProps> = ({ onUploadCon
         
         // Close dialog and reset state
         handleCancel();
+        onUploadConfirm();
+
         
         // Refresh the table data
       //   await refreshTable();
@@ -99,9 +103,15 @@ const ESITrackerBulkUpload: React.FC<ESITrackerBulkUploadProps> = ({ onUploadCon
     setFile(null);
   };
 
-  const handleDownload = async () => {
+  const handleDownload = async (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    if (!currentGroup) {
+      toast.push(<Notification type="warning" title="Please select a month before downloading" />, {
+      });
+      return;
+    }
     try {
-      const res = await httpClient.get(endpoints.esiSetup.download(), {
+      const res = await httpClient.get(endpoints.esiTracker.download(), {
         responseType: "blob",
       });
       
