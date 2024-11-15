@@ -357,9 +357,10 @@ const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
 interface PfTrackerTableProps {
   dataSent: PfChallanData[];
+  loading: boolean;
 }
 
-const PFTrackerTable: React.FC<PfTrackerTableProps> = ({ dataSent }) => {
+const PFTrackerTable: React.FC<PfTrackerTableProps> = ({ dataSent, loading }) => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editingData, setEditingData] = useState<PfChallanData | null>(null);
 
@@ -561,6 +562,7 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> = ({ dataSent }) => {
       <DataTable
         columns={columns}
         data={dataSent} // Use the dataSent prop directly
+        loading={loading}
         skeletonAvatarColumns={[0]}
         skeletonAvatarProps={{ className: 'rounded-md' }}
         stickyHeader={true}

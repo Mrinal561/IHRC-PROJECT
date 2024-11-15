@@ -322,6 +322,7 @@ interface UploadedPFDetailsProps {
 const UploadedPFDetails: React.FC<UploadedPFDetailsProps> = ({ onBack }) => {
   const navigate = useNavigate();
   const [data, setData] = useState<PfChallanData[]>([]);
+  const [loading, setLoading] = useState(true);
 
 
   useEffect(() => {
@@ -330,11 +331,14 @@ const UploadedPFDetails: React.FC<UploadedPFDetailsProps> = ({ onBack }) => {
 
   const fetchPFTrackerData = async () => {
     try {
-      const res = await httpClient.get(endpoints.tracker.pfGetALl())
-      console.log(res.data.data)
+      setLoading(true);
+      const res = await httpClient.get(endpoints.tracker.pfGetALl());
+      console.log(res.data.data);
       setData(res.data.data);
     } catch (error) {
       console.error('Error fetching PF tracker data:', error);
+    } finally {
+      setLoading(false);
     }
   };
   const columns: ColumnDef<PFTrackerData>[] = useMemo(
@@ -485,6 +489,7 @@ const UploadedPFDetails: React.FC<UploadedPFDetailsProps> = ({ onBack }) => {
           </div>
         ),
       },
+      
       {
         header: 'Challan Document',
         accessorKey: 'challan_document',
@@ -566,6 +571,7 @@ const UploadedPFDetails: React.FC<UploadedPFDetailsProps> = ({ onBack }) => {
       <DataTable
         columns={columns}
         data={data}
+        loading={loading}
         skeletonAvatarColumns={[0]}
         skeletonAvatarProps={{ className: 'rounded-md' }}
         stickyHeader={true}
