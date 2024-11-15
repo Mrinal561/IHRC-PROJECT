@@ -44,7 +44,7 @@ const ESITracker = () => {
         </div>
         <ESITrackerTool onFilterChange={handleFilterChange} />
       </div>
-      <ESITrackerTable dataSent={data}                 loading={isLoading}
+      <ESITrackerTable dataSent={data}  loading={isLoading}
       />
     </AdaptableCard>
   )
