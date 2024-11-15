@@ -1,42 +1,3 @@
-
-import React, { useMemo, useState } from 'react';
-import { Button, Tooltip } from '@/components/ui';
-import { FiEdit, FiTrash } from 'react-icons/fi';
-import DataTable, { ColumnDef } from '@/components/shared/DataTable';
-import { MdEdit } from 'react-icons/md';
-import PFTrackerEditDialog from './PFTrackerEditDialog';
-import ConfigDropdown from './ConfigDropdown';
-
-
-const documentPath = "../store/AllMappedCompliancesDetails.xls";
-
-
-// Define the structure of your data
-export interface PFTrackerData {
-    companyName: string;
-    pfCode: string;
-    location: string;
-    month: string;
-    noOfEmployees: number;
-    wages: string;
-    epsWage: string;
-    totalChallanAmount: number;
-    totalAmountPaid: number;
-    difference: string;
-    reasonForDifference: string;
-    dueDate: string;
-    dateOfPayment: string;
-    delay: string;
-    delayReason: string;
-    typeOfChallan: string;
-    trrnNo: string;
-    crnNo: string;
-    ecr: string;
-    challan: string;
-    payment: string;
-}
-
-// Dummy data (replace with your actual data source)
 export const dummyData: PFTrackerData[] = [
     {
         companyName: 'India shelter PVT Ltd',
@@ -132,228 +93,490 @@ export const dummyData: PFTrackerData[] = [
     },
 ];
 
-const PFTrackerTable: React.FC = () => {
-    const [data, setData] = useState<PFTrackerData[]>(dummyData);
-    const [editDialogOpen, setEditDialogOpen] = useState(false);
-    const [editingData, setEditingData] = useState<PFTrackerData | null>(null);
+// import React, { useMemo, useState } from 'react';
+// import { Button, Tooltip } from '@/components/ui';
+// import { FiEdit, FiTrash } from 'react-icons/fi';
+// import DataTable, { ColumnDef } from '@/components/shared/DataTable';
+// import { MdEdit } from 'react-icons/md';
+// import PFTrackerEditDialog from './PFTrackerEditDialog';
+// import ConfigDropdown from './ConfigDropdown';
+// import { PfChallanData } from '@/@types/pfTracker';
 
-    const handleEdit = (row: PFTrackerData) => {
-        setEditingData(row);
-        setEditDialogOpen(true);
-    };
+
+// const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
 
-    const handleEditSubmit = (editedData: PFTrackerData) => {
-        setData((prevData) =>
-            prevData.map((item) =>
-                item === editingData ? editedData : item
-            )
-        );
-        setEditDialogOpen(false);
-        setEditingData(null);
-    };
-    const columns: ColumnDef<PFTrackerData>[] = useMemo(
-        () => [
-            {
-                header: 'Company',
-                accessorKey: 'companyName',
-                cell: (props) => <div className="w-52 truncate">{props.getValue() as string}</div>,
-            },
-            {
-                header: 'PF Code',
-                accessorKey: 'pfCode',
-                cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
-            },
-            {
-                header: 'Location',
-                accessorKey: 'location',
-                cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
-            },
-            {
-                header: 'Month',
-                accessorKey: 'month',
-                cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
-            },
-            {
-                header: 'No. of Employees',
-                accessorKey: 'noOfEmployees',
-                cell: (props) => <div className="w-40 truncate">{props.getValue() as number}</div>,
-            },
-            {
-                header: 'EPF Wages',
-                accessorKey: 'wages',
-                cell: (props) => <div className="w-28 truncate">₹{(props.getValue() as number).toLocaleString()}</div>,
-            },
-            {
-                header: 'EPS Wage',
-                accessorKey: 'epsWage',
-                cell: (props) => <div className="w-28 truncate">₹{(props.getValue() as number).toLocaleString()}</div>,
-            },
-            {
-                header: 'Total Challan Amount',
-                accessorKey: 'totalChallanAmount',
-                cell: (props) => <div className="w-52 truncate">₹{(props.getValue() as number).toLocaleString()}</div>,
-            },
-            {
-                header: 'Total Amount Paid',
-                accessorKey: 'totalAmountPaid',
-                cell: (props) => <div className="w-52 truncate">₹{(props.getValue() as number).toLocaleString()}</div>,
-            },
-            {
-                header: 'Difference',
-                accessorKey: 'difference',
-                cell: (props) => <div className="w-52 truncate">{(props.getValue() as number).toLocaleString()}</div>,
-            },
-            {
-                header: 'Reason For Difference',
-                accessorKey: 'reasonForDifference',
-                cell: (props) => <div className="w-52 truncate">{(props.getValue() as number).toLocaleString()}</div>,
-            },
-            {
-                header: 'Due Date',
-                accessorKey: 'dueDate',
-                cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
-            },
-            {
-                header: 'Date of Payment',
-                accessorKey: 'dateOfPayment',
-                cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
-            },
-            {
-                header: 'Delay',
-                accessorKey: 'delay',
-                cell: (props) => <div className="w-28 truncate">{props.getValue() as number}</div>,
-            },
-            {
-                header: 'Delay Reason',
-                accessorKey: 'delayReason',
-                cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
-            },
-            {
-                header: 'Type of Challan',
-                accessorKey: 'typeOfChallan',
-                cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
-            },
-            {
-                header: 'TRRN No',
-                accessorKey: 'trrnNo',
-                cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
-            },
-            {
-                header: 'CRN No',
-                accessorKey: 'crnNo',
-                cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
-            },
-            {
-                header: 'ECR',
-                accessorKey: 'ecr',
-                cell: (props) => 
-                <div className="w-40 truncate">
-                  <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
-                    {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
-                    {props.getValue() as string}
-                  </a>
-                </div>,
-              },
-              {
-                header: 'Challan',
-                accessorKey: 'challan',
-                cell: (props) => 
-                <div className="w-40 truncate">
-                  <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
-                    {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
-                    {props.getValue() as string}
-                  </a>
-                </div>,
-              },
-              {
-                header: 'Payment Receipt',
-                accessorKey: 'payment',
-                cell: (props) => 
-                <div className="w-40 truncate">
-                  <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
-                    {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
-                    {props.getValue() as string}
-                  </a>
-                </div>,
-              },
-              {
-                header: 'Upload Status',
-                id: 'uploadStatus',
-                cell: ({ row }) => {
-                    const { ecr, challan, payment } = row.original;
-                    const uploadedCount = [ecr, challan, payment].filter(Boolean).length;
-                    return <div className="w-32 truncate">{`${uploadedCount}/3`}</div>;
-                },
-            },
-            {
-                header: 'Actions',
-                id: 'actions',
-                cell: ({ row }) => (
-                    <div className="flex items-center gap-2">
-                        <Tooltip title="Edit">
-                            <Button
-                                size="sm"
-                                onClick={() => handleEdit(row.original)}
-                                icon={<MdEdit />}
-                            />
-                        </Tooltip>
-                        <Tooltip title="Delete">
-                            <Button
-                                size="sm"
-                                onClick={() => console.log('Delete', row.original)}
-                                icon={<FiTrash />}
-                                className="text-red-500"
-                            />
-                        </Tooltip>
-                        <ConfigDropdown companyName={undefined} companyGroupName={undefined}            />
-                    </div>
-                ),
-            },
-        ],
-        []
-    );
+// // Define the structure of your data
 
-    const handleDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
-        e.preventDefault();
-        // Implement the download functionality here
-        // For example, you could use the `fetch` API to download the file
-        fetch(documentPath)
-          .then(response => response.blob())
-          .then(blob => {
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = 'AllMappedCompliancesDetails.xls';
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-          })
-          .catch(() => console.error('Download failed'));
-      };
 
-    return (
-        <div className="relative">
-            <DataTable
-                columns={columns}
-                data={data}
-                skeletonAvatarColumns={[0]}
-                skeletonAvatarProps={{ className: 'rounded-md' }}
-                stickyHeader={true}
-                stickyFirstColumn={true}
-                stickyLastColumn={true}
-            />
-            {editingData && (
-                <PFTrackerEditDialog
-                    isOpen={editDialogOpen}
-                    onClose={() => setEditDialogOpen(false)}
-                    onSubmit={handleEditSubmit}
-                    data={editingData}
-                />
+// // Dummy data (replace with your actual data source)
+
+// interface PfTrackerTableProps{
+//     dataSent: PfChallanData[];
+// }
+
+// const PFTrackerTable: React.FC<PfTrackerTableProps>= ({dataSent}) => {
+//     const [data, setData] = useState<PfChallanData[]>([]);
+//     const [editDialogOpen, setEditDialogOpen] = useState(false);
+//     const [editingData, setEditingData] = useState<PFTrackerData | null>(null);
+
+//     const handleEdit = (row: PFTrackerData) => {
+//         setEditingData(row);
+//         setEditDialogOpen(true);
+//     };
+
+
+//     const handleEditSubmit = (editedData: PFTrackerData) => {
+//         setData((prevData) =>
+//             prevData.map((item) =>
+//                 item === editingData ? editedData : item
+//             )
+//         );
+//         setEditDialogOpen(false);
+//         setEditingData(null);
+//     };
+//     const columns: ColumnDef<PFTrackerData>[] = useMemo(
+//         () => [
+//             {
+//                 header: 'Company',
+//                 accessorKey: 'companyName',
+//                 cell: (props) => <div className="w-52 truncate">{props.getValue() as string}</div>,
+//             },
+//             {
+//                 header: 'PF Code',
+//                 accessorKey: 'pfCode',
+//                 cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
+//             },
+//             {
+//                 header: 'Location',
+//                 accessorKey: 'location',
+//                 cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
+//             },
+//             {
+//                 header: 'Month',
+//                 accessorKey: 'month',
+//                 cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
+//             },
+//             {
+//                 header: 'No. of Employees',
+//                 accessorKey: 'noOfEmployees',
+//                 cell: (props) => <div className="w-40 truncate">{props.getValue() as number}</div>,
+//             },
+//             {
+//                 header: 'EPF Wages',
+//                 accessorKey: 'wages',
+//                 cell: (props) => <div className="w-28 truncate">₹{(props.getValue() as number).toLocaleString()}</div>,
+//             },
+//             {
+//                 header: 'EPS Wage',
+//                 accessorKey: 'epsWage',
+//                 cell: (props) => <div className="w-28 truncate">₹{(props.getValue() as number).toLocaleString()}</div>,
+//             },
+//             {
+//                 header: 'Total Challan Amount',
+//                 accessorKey: 'totalChallanAmount',
+//                 cell: (props) => <div className="w-52 truncate">₹{(props.getValue() as number).toLocaleString()}</div>,
+//             },
+//             {
+//                 header: 'Total Amount Paid',
+//                 accessorKey: 'totalAmountPaid',
+//                 cell: (props) => <div className="w-52 truncate">₹{(props.getValue() as number).toLocaleString()}</div>,
+//             },
+//             {
+//                 header: 'Difference',
+//                 accessorKey: 'difference',
+//                 cell: (props) => <div className="w-52 truncate">{(props.getValue() as number).toLocaleString()}</div>,
+//             },
+//             {
+//                 header: 'Reason For Difference',
+//                 accessorKey: 'reasonForDifference',
+//                 cell: (props) => <div className="w-52 truncate">{(props.getValue() as number).toLocaleString()}</div>,
+//             },
+//             {
+//                 header: 'Due Date',
+//                 accessorKey: 'dueDate',
+//                 cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
+//             },
+//             {
+//                 header: 'Date of Payment',
+//                 accessorKey: 'dateOfPayment',
+//                 cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
+//             },
+//             {
+//                 header: 'Delay',
+//                 accessorKey: 'delay',
+//                 cell: (props) => <div className="w-28 truncate">{props.getValue() as number}</div>,
+//             },
+//             {
+//                 header: 'Delay Reason',
+//                 accessorKey: 'delayReason',
+//                 cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
+//             },
+//             {
+//                 header: 'Type of Challan',
+//                 accessorKey: 'typeOfChallan',
+//                 cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
+//             },
+//             {
+//                 header: 'TRRN No',
+//                 accessorKey: 'trrnNo',
+//                 cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
+//             },
+//             {
+//                 header: 'CRN No',
+//                 accessorKey: 'crnNo',
+//                 cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
+//             },
+//             {
+//                 header: 'ECR',
+//                 accessorKey: 'ecr',
+//                 cell: (props) => 
+//                 <div className="w-40 truncate">
+//                   <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
+//                     {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
+//                     {props.getValue() as string}
+//                   </a>
+//                 </div>,
+//               },
+//               {
+//                 header: 'Challan',
+//                 accessorKey: 'challan',
+//                 cell: (props) => 
+//                 <div className="w-40 truncate">
+//                   <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
+//                     {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
+//                     {props.getValue() as string}
+//                   </a>
+//                 </div>,
+//               },
+//               {
+//                 header: 'Payment Receipt',
+//                 accessorKey: 'payment',
+//                 cell: (props) => 
+//                 <div className="w-40 truncate">
+//                   <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
+//                     {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
+//                     {props.getValue() as string}
+//                   </a>
+//                 </div>,
+//               },
+//               {
+//                 header: 'Upload Status',
+//                 id: 'uploadStatus',
+//                 cell: ({ row }) => {
+//                     const { ecr, challan, payment } = row.original;
+//                     const uploadedCount = [ecr, challan, payment].filter(Boolean).length;
+//                     return <div className="w-32 truncate">{`${uploadedCount}/3`}</div>;
+//                 },
+//             },
+//             {
+//                 header: 'Actions',
+//                 id: 'actions',
+//                 cell: ({ row }) => (
+//                     <div className="flex items-center gap-2">
+//                         <Tooltip title="Edit">
+//                             <Button
+//                                 size="sm"
+//                                 onClick={() => handleEdit(row.original)}
+//                                 icon={<MdEdit />}
+//                             />
+//                         </Tooltip>
+//                         <Tooltip title="Delete">
+//                             <Button
+//                                 size="sm"
+//                                 onClick={() => console.log('Delete', row.original)}
+//                                 icon={<FiTrash />}
+//                                 className="text-red-500"
+//                             />
+//                         </Tooltip>
+//                         <ConfigDropdown companyName={undefined} companyGroupName={undefined}            />
+//                     </div>
+//                 ),
+//             },
+//         ],
+//         []
+//     );
+
+//     const handleDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
+//         e.preventDefault();
+//         // Implement the download functionality here
+//         // For example, you could use the `fetch` API to download the file
+//         fetch(documentPath)
+//           .then(response => response.blob())
+//           .then(blob => {
+//             const url = window.URL.createObjectURL(blob);
+//             const a = document.createElement('a');
+//             a.style.display = 'none';
+//             a.href = url;
+//             a.download = 'AllMappedCompliancesDetails.xls';
+//             document.body.appendChild(a);
+//             a.click();
+//             window.URL.revokeObjectURL(url);
+//           })
+//           .catch(() => console.error('Download failed'));
+//       };
+
+//     return (
+//         <div className="relative">
+//             <DataTable
+//                 columns={columns}
+//                 data={data}
+//                 skeletonAvatarColumns={[0]}
+//                 skeletonAvatarProps={{ className: 'rounded-md' }}
+//                 stickyHeader={true}
+//                 stickyFirstColumn={true}
+//                 stickyLastColumn={true}
+//             />
+//             {editingData && (
+//                 <PFTrackerEditDialog
+//                     isOpen={editDialogOpen}
+//                     onClose={() => setEditDialogOpen(false)}
+//                     onSubmit={handleEditSubmit}
+//                     data={editingData}
+//                 />
+//             )}
+//         </div>
+//     );
+// };
+
+// export default PFTrackerTable;
+
+
+
+import React, { useMemo, useState } from 'react';
+import { Button, Tooltip } from '@/components/ui';
+import { FiEdit, FiTrash } from 'react-icons/fi';
+import DataTable, { ColumnDef } from '@/components/shared/DataTable';
+import { MdEdit } from 'react-icons/md';
+import PFTrackerEditDialog from './PFTrackerEditDialog';
+import ConfigDropdown from './ConfigDropdown';
+import { PfChallanData } from '@/@types/pfTracker';
+import dayjs from 'dayjs';
+
+const documentPath = "../store/AllMappedCompliancesDetails.xls";
+
+interface PfTrackerTableProps {
+  dataSent: PfChallanData[];
+}
+
+const PFTrackerTable: React.FC<PfTrackerTableProps> = ({ dataSent }) => {
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editingData, setEditingData] = useState<PfChallanData | null>(null);
+
+  const handleEdit = (row: PfChallanData) => {
+    setEditingData(row);
+    setEditDialogOpen(true);
+  };
+
+  const handleEditSubmit = (editedData: PfChallanData) => {
+    // Update the dataSent array with the edited data (if needed)
+    // For now, just closing the dialog
+    setEditDialogOpen(false);
+    setEditingData(null);
+  };
+
+  const columns: ColumnDef<PfChallanData>[] = useMemo(
+    () => [
+        
+      {
+        header: 'Company',
+        accessorKey: 'PfSetup.Company.name', // Access nested property
+        cell: (props) => <div className="w-52 truncate">{props.getValue() as string}</div>,
+      },
+      {
+        header: 'PF Code',
+        accessorKey: 'PfSetup.pf_code',
+        cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
+      },
+      {
+        header: 'Location',
+        accessorKey: 'PfSetup.Location.name',
+        cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
+      },
+      {
+        header: 'Month',
+        accessorKey: 'payroll_month',
+        cell: (props) => {
+          const date = new Date(props.getValue() as string);
+          return (
+            <div className="w-28 truncate">
+              {date.toLocaleString('default', { month: 'long', year: 'numeric' })}
+            </div>
+          );
+        }
+      },
+      {
+        header: 'No. of Employees',
+        accessorKey: 'no_of_emp',
+        cell: (props) => <div className="w-40 truncate">{props.getValue() as number}</div>,
+      },
+      {
+        header: 'EPF Wages',
+        accessorKey: 'epf_wage',
+        cell: (props) => <div className="w-28 truncate">₹{(props.getValue() as number).toLocaleString()}</div>,
+      },
+      {
+        header: 'EPS Wage',
+        accessorKey: 'eps_wage',
+        cell: (props) => <div className="w-28 truncate">₹{(props.getValue() as number).toLocaleString()}</div>,
+      },
+      {
+        header: 'Total Challan Amount',
+        accessorKey: 'total_challan_amt',
+        cell: (props) => <div className="w-52 truncate">₹{(props.getValue() as number).toLocaleString()}</div>,
+      },
+      {
+        header: 'Total Amount Paid',
+        accessorKey: 'total_paid_amt',
+        cell: (props) => <div className="w-52 truncate">₹{(props.getValue() as number).toLocaleString()}</div>,
+      },
+      {
+        header: 'Difference',
+        accessorKey: 'difference_amt',
+        cell: (props) => <div className="w-52 truncate">{(props.getValue() as number).toLocaleString()}</div>,
+      },
+      {
+        header: 'Due Date',
+        accessorKey: 'payment_due_date',
+        cell: (props) => <div className="w-28 truncate">{dayjs(props.getValue() as string).format('DD-MM-YYYY')}</div>,
+      },
+      {
+        header: 'Date of Payment',
+        accessorKey: 'payment_date',
+        cell: (props) => <div className="w-40 truncate">{dayjs(props.getValue() as string).format('DD-MM-YYYY')}</div>,
+      },
+      {
+        header: 'TRRN No',
+        accessorKey: 'trrn_no',
+        cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
+      },
+      {
+        header: 'CRN No',
+        accessorKey: 'crn_no',
+        cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
+      },
+      {
+        header: 'ECR',
+        accessorKey: 'ecr_document',
+        cell: (props) => 
+          <div className="w-40 truncate">
+            {props.getValue()? (
+              <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
+                {props.getValue() as string}
+              </a>
+            ) : (
+               'Not Yet Provided'
             )}
-        </div>
-    );
+          </div>,
+      },
+      {
+        header: 'Challan',
+        accessorKey: 'challan_document',
+        cell: (props) => 
+          <div className="w-40 truncate">
+            {props.getValue()? (
+              <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
+                {props.getValue() as string}
+              </a>
+            ) : (
+               'Not Yet Provided'
+            )}
+          </div>,
+      },
+      {
+        header: 'Payment Receipt',
+        accessorKey: 'eceipt_document',
+        cell: (props) => 
+          <div className="w-40 truncate">
+            {props.getValue()? (
+              <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
+                {props.getValue() as string}
+              </a>
+            ) : (
+              'Not Yet Provided'
+            )}
+          </div>,
+      },
+      {
+        header: 'Upload Status',
+        id: 'uploadStatus',
+        cell: ({ row }) => {
+          const { ecr_document, challan_document, receipt_document } = row.original;
+          const uploadedCount = [ecr_document, challan_document, receipt_document].filter(Boolean).length;
+          return <div className="w-32 truncate">{`${uploadedCount}/3`}</div>;
+        },
+      },
+      {
+        header: 'Actions',
+        id: 'actions',
+        cell: ({ row }) => (
+          <div className="flex items-center gap-2">
+            <Tooltip title="Edit">
+              <Button
+                size="sm"
+                onClick={() => handleEdit(row.original)}
+                icon={<MdEdit />}
+              />
+            </Tooltip>
+            <Tooltip title="Delete">
+              <Button
+                size="sm"
+                onClick={() => console.log('Delete', row.original)}
+                icon={<FiTrash />}
+                className="text-red-500"
+              />
+            </Tooltip>
+            <ConfigDropdown 
+              companyName={row.original.PfSetup.Company.name} 
+              companyGroupName={row.original.PfSetup.CompanyGroup.name} 
+            />
+          </div>
+        ),
+      },
+    ],
+    []
+  );
+
+  const handleDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    // Implement the download functionality here
+    // For example, you could use the `fetch` API to download the file
+    fetch(documentPath)
+     .then(response => response.blob())
+     .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = 'AllMappedCompliancesDetails.xls';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+      })
+     .catch(() => console.error('Download failed'));
+  };
+
+  return (
+    <div className="relative">
+      <DataTable
+        columns={columns}
+        data={dataSent} // Use the dataSent prop directly
+        skeletonAvatarColumns={[0]}
+        skeletonAvatarProps={{ className: 'rounded-md' }}
+        stickyHeader={true}
+        stickyFirstColumn={true}
+        stickyLastColumn={true}
+      />
+      {editingData && (
+        <PFTrackerEditDialog
+          isOpen={editDialogOpen}
+          onClose={() => setEditDialogOpen(false)}
+          onSubmit={handleEditSubmit}
+          data={editingData}
+        />
+      )}
+    </div>
+  );
 };
 
 export default PFTrackerTable;
