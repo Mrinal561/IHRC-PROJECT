@@ -10,9 +10,10 @@ import { esiChallanData } from '@/@types/esiTracker';
 
 interface EsiTrackerTableProps {
     dataSent: PfChallanData[];
+    loading: boolean
   }
 
-const ESITrackerTable: React.FC<EsiTrackerTableProps> = ({ dataSent }) => {
+const ESITrackerTable: React.FC<EsiTrackerTableProps> = ({ dataSent, loading }) => {
     // const [data, setData] = useState<ESITrackerData[]>(sampleData);
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [editingData, setEditingData] = useState<PfChallanData | null>(null);
@@ -54,7 +55,7 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> = ({ dataSent }) => {
         () => [
             {
                 header: 'Company',
-                accessorKey: 'EsiSetup.company.name',
+                accessorKey: 'EsiSetup.Company.name',
                 cell: (props) => (
                     <div className="w-52 truncate">
                         {props.getValue() as string}
@@ -248,7 +249,7 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> = ({ dataSent }) => {
                 cell: ({ row }) => {
                     const { challan_document } = row.original;
                     const uploadedCount = [challan_document].filter(Boolean).length;
-                    return <div className="w-32 truncate">{`${uploadedCount}/3`}</div>;
+                    return <div className="w-32 truncate">{`${uploadedCount}/1`}</div>;
                 },
             },
             {
@@ -306,6 +307,7 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> = ({ dataSent }) => {
             <DataTable
                 columns={columns}
                 data={dataSent}
+                loading={loading}
                 skeletonAvatarColumns={[0]}
                 skeletonAvatarProps={{ className: 'rounded-md' }}
                 stickyHeader={true}

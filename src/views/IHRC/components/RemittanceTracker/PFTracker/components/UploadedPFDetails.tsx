@@ -162,6 +162,7 @@ const UploadedPFDetails: React.FC<UploadedPFDetailsProps> = ({ onBack }) => {
           </div>
         ),
       },
+      
       {
         header: 'Challan Document',
         accessorKey: 'challan_document',
@@ -216,6 +217,13 @@ const UploadedPFDetails: React.FC<UploadedPFDetailsProps> = ({ onBack }) => {
           </div>
         ),
       },
+      {
+        header: 'Actions',
+        id: 'actions',
+        cell: ({ row }) => (
+            <ConfigDropdown companyName={undefined} companyGroupName={undefined}            />
+        ),
+    },
     ],
     []
   );

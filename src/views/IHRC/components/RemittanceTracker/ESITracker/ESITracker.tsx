@@ -10,6 +10,8 @@ const ESITracker = () => {
   const [filters, setFilters] = useState({ groupName: '', companyName: '', pfCode: '' });
 
   const [data, setData] = useState<esiChallanData[]>([]);
+  const [isLoading, setIsLoading] = useState(false)
+
 
 
   useEffect(() => {
@@ -17,13 +19,17 @@ const ESITracker = () => {
   }, []);
 
   const fetchEsiTrackerData = async () => {
+    setIsLoading(true)
+
     try {
       const res = await httpClient.get(endpoints.esiTracker.getAll())
       console.log(res.data.data)
       setData(res.data.data);
     } catch (error) {
       console.error('Error fetching PF tracker data:', error);
-    }
+    } finally {
+      setIsLoading(false)
+  }
   };
 
   const handleFilterChange = (newFilters) => {
@@ -38,7 +44,8 @@ const ESITracker = () => {
         </div>
         <ESITrackerTool onFilterChange={handleFilterChange} />
       </div>
-      <ESITrackerTable dataSent={data}/>
+      <ESITrackerTable dataSent={data}                 loading={isLoading}
+      />
     </AdaptableCard>
   )
 }

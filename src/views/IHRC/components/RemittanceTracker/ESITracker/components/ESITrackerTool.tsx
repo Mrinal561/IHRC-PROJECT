@@ -12,9 +12,13 @@ import { HiDownload } from 'react-icons/hi';
 const ESITrackerTool: React.FC<{ onFilterChange: (filters: any) => void }> = ({ onFilterChange })  => {
   const [showUploadedDetails, setShowUploadedDetails] = useState(false);
   const [filters, setFilters] = useState({ groupName: '', companyName: '', esiCode: '' });
+  const [isLoading, setIsLoading] = useState(false)
+
 
   const handleUploadConfirm = () => {
     setShowUploadedDetails(true);
+    setIsLoading(true)
+
   };
 
   const handleBack = () => {
@@ -31,7 +35,8 @@ const ESITrackerTool: React.FC<{ onFilterChange: (filters: any) => void }> = ({ 
   };
 
   if (showUploadedDetails) {
-    return <UploadedESIDetails onBack={handleBack} />;
+    return <UploadedESIDetails onBack={handleBack}                 loading={isLoading}
+/>;
   }
 
   return (

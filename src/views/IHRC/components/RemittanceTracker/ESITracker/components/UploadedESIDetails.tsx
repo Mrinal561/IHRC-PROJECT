@@ -12,9 +12,10 @@ const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
 interface UploadedESIDetailsProps {
   onBack: () => void;
+  loading: boolean
 }
 
-const UploadedESIDetails: React.FC<UploadedESIDetailsProps> = ({ onBack }) => {
+const UploadedESIDetails: React.FC<UploadedESIDetailsProps> = ({ onBack, loading }) => {
   const navigate = useNavigate();
   const [data, setData] = useState<esiChallanData[]>([]);
 
@@ -37,7 +38,7 @@ const UploadedESIDetails: React.FC<UploadedESIDetailsProps> = ({ onBack }) => {
     () => [
       {
         header: 'Company',
-        accessorKey: 'EsiSetup.company.name',
+        accessorKey: 'EsiSetup.Company.name',
         cell: (props) => (
             <div className="w-52 truncate">
                 {props.getValue() as string}
@@ -269,6 +270,7 @@ const UploadedESIDetails: React.FC<UploadedESIDetailsProps> = ({ onBack }) => {
       <DataTable
         columns={columns}
         data={data}
+        loading={loading}
         skeletonAvatarColumns={[0]}
         skeletonAvatarProps={{ className: 'rounded-md' }}
         stickyHeader={true}

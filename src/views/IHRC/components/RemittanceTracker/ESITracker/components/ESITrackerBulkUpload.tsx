@@ -80,7 +80,7 @@ const ESITrackerBulkUpload: React.FC<ESITrackerBulkUploadProps> = ({ onUploadCon
         // Close dialog and reset state
         handleCancel();
         onUploadConfirm();
-
+        navigate('/uploadedesidetails')
         
         // Refresh the table data
       //   await refreshTable();
