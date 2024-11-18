@@ -278,9 +278,9 @@ if (resultAction) {
             />
           </div>
           <div className='flex flex-col gap-1'>
-            <p className="mb-2">First Name <span className="text-red-500">*</span></p>
+            <p className="mb-2">Name <span className="text-red-500">*</span></p>
             <OutlinedInput
-              label="First Name"
+              label="Name"
               value={formData.first_name}
               onChange={(value: string) => handleInputChange('first_name', value)}
             />
@@ -288,14 +288,14 @@ if (resultAction) {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 my-8">
-          <div className='flex flex-col gap-1'>
+          {/* <div className='flex flex-col gap-1'>
             <p className="mb-2">Last Name <span className="text-red-500">*</span></p>
             <OutlinedInput
               label="Last Name"
               value={formData.last_name}
               onChange={(value) => handleInputChange('last_name', value)}
             />
-          </div>
+          </div> */}
           <div className='flex flex-col gap-1'>
             <p className="mb-2">Email <span className="text-red-500">*</span></p>
             <OutlinedInput
@@ -304,9 +304,7 @@ if (resultAction) {
               onChange={(value) => handleInputChange('email', value)}
             />
           </div>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 my-8">
           <div className='flex flex-col gap-1'>
             <p className="mb-2">Password <span className="text-red-500">*</span></p>
             <OutlinedInput
@@ -315,10 +313,24 @@ if (resultAction) {
               onChange={(value) => handleInputChange('password', value)}
             />
           </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 my-8">
+         
+        <div className='flex flex-col gap-1'>
+            <p className="mb-1">Mobile No <span className="text-red-500">*</span></p>
+            <OutlinedInput
+              label="Mobile no"
+              value={formData.mobile}
+              onChange={(value) => handleInputChange('mobile', value)}
+            />
+          </div>
+
+
           <div className='flex flex-col gap-1'>
-            <p className="mb-2">Job Role <span className="text-red-500">*</span></p>
+            <p className="mb-2">Designation <span className="text-red-500">*</span></p>
             <OutlinedSelect
-              label="Job Role"
+              label="Designation"
               options={userRole}
               value={selectedUserRole}
               onChange={setSelectedUserRole}
@@ -371,14 +383,7 @@ if (resultAction) {
             />
           </div>
           
-          <div className='flex flex-col gap-1'>
-            <p className="mb-1">Mobile No <span className="text-red-500">*</span></p>
-            <OutlinedInput
-              label="Mobile no"
-              value={formData.mobile}
-              onChange={(value) => handleInputChange('mobile', value)}
-            />
-          </div>
+         
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 my-8">

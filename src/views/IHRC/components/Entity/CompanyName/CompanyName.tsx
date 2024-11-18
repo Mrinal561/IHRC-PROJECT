@@ -124,14 +124,17 @@ const CompanyName = () => {
 
     setDialogLoading(true);
     try {
-      await dispatch(createCompany(newCompany)).unwrap();
-      toast.push(
-        <Notification title="Success" type="success">
+     const response= await dispatch(createCompany(newCompany)).unwrap();
+
+     if(response){
+       onDialogClose();
+       toast.push(
+         <Notification title="Success" type="success">
           Company added successfully
         </Notification>
       );
-      onDialogClose();
       handleDataChange();
+    }
     } catch (error) {
       toast.push(
         <Notification title="Failed" type="danger">

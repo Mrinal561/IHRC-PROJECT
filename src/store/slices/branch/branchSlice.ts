@@ -63,7 +63,7 @@ export const fetchBranches = createAsyncThunk(
             return data;
         }
         catch (error: any) {
-        return rejectWithValue(error.response?.data?.message || 'Failed to create branch');
+        return rejectWithValue(error.response?.data?.message);
         }
     }
   );

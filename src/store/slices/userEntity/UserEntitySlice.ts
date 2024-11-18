@@ -4,6 +4,7 @@ import * as UserService from '@/services/UserEntityService';
 import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
 import { UserData } from '@/@types/userEntity';
+import { AxiosError } from 'axios';
 
 export interface UserState {
     users: UserData[];
@@ -40,26 +41,41 @@ export const createUser = createAsyncThunk(
             const { data } = await httpClient.post(endpoints.user.create(), userData);
             return data;
         } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || 'Failed to create user');
+            const err = error as AxiosError<any>
+
+            return rejectWithValue(err.response?.data?.message || 'Failed to create user');
         }
     }
 );
 
 export const updateUser = createAsyncThunk(
     'user/update',
-    async ({ id, data }: { id: string; data: Partial<UserData> }) => {
-            const response = await httpClient.put(endpoints.user.update(id), data);
-            return data ;
+    async ({ id, data }: { id: string; data: Partial<UserData> }, {rejectWithValue}) => {
+           try{
+               const response = await httpClient.put(endpoints.user.update(id), data);
+               return response.data ;
+           }
+           catch (error: any) {
+            const err = error as AxiosError<any>
+
+            return rejectWithValue(err.response?.data?.message || 'Failed to update user');
+           }
         
     }
 );
 
 export const deleteUser = createAsyncThunk(
     'user/delete',
-    async (id: string) => {
+    async (id: string, {rejectWithValue}) => {
+        try{
             await UserService.deleteUser(id);
             return id;
-       
+        } catch (error: any) {
+            const err = error as AxiosError<any>
+
+            return rejectWithValue(err.response?.data?.message || 'Failed to delete user');
+        }
+            
     }
 );
 

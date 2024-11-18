@@ -2008,6 +2008,7 @@ import { deleteCompany, fetchCompanies, updateCompany } from '@/store/slices/com
 import ConfigDropdown from './ConfigDropdown';
 import { endpoints } from '@/api/endpoint';
 import httpClient from '@/api/http-client';
+import { showErrorNotification } from '@/components/ui/ErrorMessage';
 
 interface CompanyData {
   id: number;
@@ -2236,19 +2237,41 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({
           : itemToEdit.group_id;
 
         if (editedName.trim() !== itemToEdit.name || groupId !== itemToEdit.group_id) {
-          await dispatch(updateCompany({
+         const response= await dispatch(updateCompany({
             id: itemToEdit.id,
             data: {
               name: editedName.trim(),
               group_id: groupId
             }
-          }));
-          showNotification('success', 'Company updated successfully');
+          })).catch((error: any) => {
+            // Handle different error formats
+            if (error.response?.data?.message) {
+                // API error response
+                showErrorNotification(error.response.data.message);
+            } else if (error.message) {
+                // Regular error object
+                showErrorNotification(error.message);
+            } else if (Array.isArray(error)) {
+                // Array of error messages
+                showErrorNotification(error);
+            } else {
+                // Fallback error message
+                showErrorNotification('An unexpected error occurred. Please try again.');
+            }
+            throw error; // Re-throw to prevent navigation
+        });
+
+        if(response){
+
+          
+          
+          onDataChange(); // Notify parent component
           
           // Fetch data for the current page
           await fetchCompanyData(tableData.pageIndex, tableData.pageSize);
           console.log("re rendering the table")
-          onDataChange(); // Notify parent component
+          showNotification('success', 'Company updated successfully');
+        }
         }
       } catch (error) {
         console.error(error);
@@ -2328,6 +2351,7 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({
         <h5 className="mb-4">Edit Company</h5>
         <div className="flex flex-col gap-5">
           <div>
+            <p className='mb-4'>Select Company Group <span className='text-red-500'>*</span></p>
             <OutlinedSelect
               label="Company Group"
               options={companyGroups}
@@ -2336,6 +2360,7 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({
             />
           </div>
           <div>
+          <p className='mb-4'>Enter Company Name <span className='text-red-500'>*</span></p>
             <OutlinedInput
               label="Company Name"
               value={editedName}

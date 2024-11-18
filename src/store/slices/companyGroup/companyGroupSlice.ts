@@ -73,10 +73,10 @@ export const deleteCompanyGroup = createAsyncThunk(
     try {
       console.log(id)
       await httpClient.delete(endpoints.companyGroup.delete(id));
-      return id;
+     return id;
     } catch (error: any) {
       const err = error as AxiosError<any>
-      return rejectWithValue(err.response?.data?.message || 'Failed to delete company group');
+      return rejectWithValue(err.response?.data?.message);
     }
   }
 );

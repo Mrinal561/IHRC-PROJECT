@@ -7,6 +7,7 @@ import { useDispatch } from 'react-redux'
 import {
     assignCompliancesToBranch,
 } from '@/store/slices/compliance/ComplianceApiSlice'
+import { showErrorNotification } from '@/components/ui/ErrorMessage'
  
 interface AssignChecklistButtonProps {
     selectedComplianceIds: number[];
@@ -115,31 +116,49 @@ const AssignChecklistButton = ({
         };
  
         try {
-            await dispatch(assignCompliancesToBranch(assignData))
+            const response = await dispatch(assignCompliancesToBranch(assignData))
             .unwrap()
-            .catch((error:any)=>{
-                error.map((v:string)=>{
-                    toast.push(
-                        <Notification title='error' type='danger'>
-                                {v}
-                            </Notification>
-                    )
-                })
-            })
-            toast.push(
-                <Notification title="Success" type="success">
+            .catch((error: any) => {
+                // Handle different error formats
+                if (error.response?.data?.message) {
+                    // API error response
+                    showErrorNotification(error.response.data.message);
+                } else if (error.message) {
+                    // Regular error object
+                    showErrorNotification(error.message);
+                } else if (Array.isArray(error)) {
+                    // Array of error messages
+                    showErrorNotification(error);
+                } else {
+                    // Fallback error message
+                    // showErrorNotification('An unexpected error occurred. Please try again.');
+                }
+                throw error; // Re-throw to prevent navigation
+            });
+
+            if(response) {
+                setIsDialogOpen(false);
+                toast.push(
+                    <Notification title="Success" type="success">
                     {selectedComplianceIds.length} compliance(s) assigned successfully
                 </Notification>
             );
-            onAssignSuccess?.(); // Notify parent of successful assignment
-            setIsDialogOpen(false);
-        } catch (error) {
+            onAssignSuccess?.(); // Notify parent of successful assignment       
+        }
+        } catch (error : any) {
             console.error('Failed to assign compliances:', error);
             toast.push(
                 <Notification title="Failed" type="danger">
-                    Failed to assign compliances
+                    {error}
                 </Notification>
             );
+            // if (error.response?.data?.message) {
+            //     showErrorNotification(error.response.data.message);
+            // } else if (error.message) {
+            //     showErrorNotification(error.message);
+            // } else {
+            //     showErrorNotification('An unexpected error occurred while deleting the user');
+            // }
         } finally {
             setIsAssigning(false);
         }

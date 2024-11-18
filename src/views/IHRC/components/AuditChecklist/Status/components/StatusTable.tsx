@@ -443,7 +443,7 @@ const StatusTable: React.FC<StatusTableProps> = ({
         },
       },
       {
-        header: 'Status',
+        header: 'Approval Status',
         accessorKey: 'data_status',
         cell: ({ row }) => {
           const status = row.original.data_status;

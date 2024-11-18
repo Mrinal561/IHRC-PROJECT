@@ -14,6 +14,7 @@ import DistrictAutosuggest from './DistrictAutoSuggest';
 import { createBranch } from '@/store/slices/branch/branchSlice';
 import { format } from 'date-fns';
 import { MdLabel } from 'react-icons/md';
+import { showErrorNotification } from '@/components/ui/ErrorMessage';
 
 interface BranchFormData {
   group_id: number;
@@ -109,7 +110,7 @@ const [fileBase64, setFileBase64] = useState<string>('');
     { value: 'coorporate_office', label: 'Coorporate Office' },
     { value: 'regional_office', label: 'Regional Office' },
     { value: 'branch', label: 'Branch Office' },
-    // { value: 'others', label: 'Others' },
+    { value: 'others', label: 'Others' },
     // { value: 'branch', label: 'Branch' },
   ]
 
@@ -321,50 +322,6 @@ const loadCompanies = async (groupId: string[] | number[]) => {
   }, [selectedLocation]);
 
 
-  const formatErrorMessages = (errors: any): string => {
-    // If errors is an array, join them with line breaks
-    if (Array.isArray(errors)) {
-        return errors.join('\n');
-    }
-    // If errors is an object, extract all error messages
-    else if (typeof errors === 'object' && errors !== null) {
-        const messages: string[] = [];
-        Object.entries(errors).forEach(([key, value]) => {
-            if (Array.isArray(value)) {
-                messages.push(...value);
-            } else if (typeof value === 'string') {
-                messages.push(value);
-            }
-        });
-        return messages.join('\n');
-    }
-    // If it's a single string error
-    return String(errors);
-};
-
-const showErrorNotification = (errors: any) => {
-    const formattedMessage = formatErrorMessages(errors);
-    
-    // Split the formatted message into individual error messages
-    const errorMessages = formattedMessage.split('\n').filter(Boolean); // Filter out empty strings
-    
-    toast.push(
-      <Notification title="Error" type="danger">
-        <div style={{ whiteSpace: 'pre-line' }}>
-          {errorMessages.length > 1? ( // Check if there are multiple error messages
-            <ul style={{ padding: 0, margin: 0, listStyle: 'disc inside' }}>
-              {errorMessages.map((message, index) => (
-                <li key={index} style={{ marginBottom: '0.5rem' }}>{message}</li>
-              ))}
-            </ul>
-          ) : (
-            <span>{formattedMessage}</span> // If only one error message, display as before
-          )}
-        </div>
-      </Notification>
-    );
-  };
-
 
 
   const handleAddBranch = async () => {
@@ -575,6 +532,23 @@ const showErrorNotification = (errors: any) => {
                           }}
                       />
                   </div>
+                  {formData.office_type === 'others' && (
+                    <div>
+                      <p className="mb-2">Office Type (Others) <span className="text-red-500">*</span></p>
+                      <OutlinedInput
+                label="Office Type (Others)" value={''} onChange={function (value: string): void {
+                  throw new Error('Function not implemented.');
+                } }                    
+                    //   value={formData.office_type_others}
+                    //   onChange={(value: string) => {
+                    //     setFormData((prev) => ({
+                    //         ...prev,
+                    //         office_type_others: value,
+                    //     }))
+                    // }}
+                      />
+                    </div>
+                  )}
                   <div>
                       <p className="mb-2">Branch Type <span className="text-red-500">*</span></p>
                       <OutlinedSelect
@@ -648,6 +622,8 @@ const showErrorNotification = (errors: any) => {
               )}
 
               {formData.type === 'rented' && (
+                <>
+               
                   <div className="border rounded-md py-4 p-2 mt-4">
                       <div className="flex flex-col gap-8">
                           <h4>Lease / Rent Setup</h4>
@@ -708,6 +684,58 @@ const showErrorNotification = (errors: any) => {
                           </div>
                       </div>
                   </div>
+
+                  <div className="border rounded-md py-4 p-2 mt-4">
+                      <div className="flex flex-col gap-8">
+                          <h4>S&E Setup</h4>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                              <div>
+                                  <p className="mb-2">
+                                      S&E Registration Number
+                                      <span className="text-red-500">*</span></p>
+                                  <OutlinedInput
+                                      label="S&E Registration Number"
+                                      value={formData.register_number}
+                                      onChange={(value: string) => {
+                                          setFormData((prev) => ({
+                                              ...prev,
+                                              register_number: value,
+                                          }))
+                                      }}
+                                  />
+                              </div>
+                              <div>
+                                  <p className="mb-2">S&E Validity <span className="text-red-500">*</span></p>
+                                  <DatePicker
+                                      size="sm"
+                                      placeholder="Pick a Date"
+                                      onChange={(date) => {
+                                          setFormData((prev) => ({
+                                              ...prev,
+                                              validity: date ? format(date, 'yyyy-MM-dd') : '',
+                                          }))
+                                      }}
+                                  />
+                              </div>
+                              <div>
+                                  <div className="flex flex-col gap-4">
+                                      <label>
+                                          Please upload the S&E Registration
+                                          certificate
+                                          <span className="text-red-500">*</span></label>
+                                      <Input
+                                          id="file-upload"
+                                          type="file"
+                                          accept=".pdf"
+                                          onChange={handleFileUpload}
+                                      />
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
+                </>
               )}
 
 <div className="border rounded-md py-4 p-2 mt-4">

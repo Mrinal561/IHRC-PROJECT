@@ -8,9 +8,12 @@ import CompanyTable from './components/CompanyTable';
 import { useAppDispatch } from '@/store';
 import { 
     fetchCompanyGroups, 
-    createCompanyGroup 
+    createCompanyGroup,
+    updateCompanyGroup,
+    deleteCompanyGroup
 } from '@/store/slices/companyGroup/companyGroupSlice';
 import { CompanyGroupData } from '@/store/slices/companyGroup/companyGroupSlice';
+import { showErrorNotification } from '@/components/ui/ErrorMessage';
 
 const CompanyGroup = () => {
     const dispatch = useAppDispatch();
@@ -40,8 +43,9 @@ const CompanyGroup = () => {
                     Failed to fetch company groups
                 </Notification>
             );
+        } finally {
+            setIsLoading(false);
         }
-        setIsLoading(false);
     };
 
     useEffect(() => {
@@ -49,6 +53,16 @@ const CompanyGroup = () => {
     }, []);
 
     const handleConfirm = async () => {
+        if (companyData.length > 0) {
+            toast.push(
+                <Notification title="Error" type="danger">
+                    Only one company group is allowed. Please delete the existing group first.
+                </Notification>
+            );
+            return;
+        }
+
+
         if (!newCompanyGroup.name.trim()) {
             toast.push(
                 <Notification title="Error" type="danger">
@@ -60,7 +74,24 @@ const CompanyGroup = () => {
 
         setDialogLoading(true);
         try {
-            const result = await dispatch(createCompanyGroup(newCompanyGroup)).unwrap();
+            const result = await dispatch(createCompanyGroup(newCompanyGroup)).unwrap()
+            .catch((error: any) => {
+                // Handle different error formats
+                if (error.response?.data?.message) {
+                    // API error response
+                    showErrorNotification(error.response.data.message);
+                } else if (error.message) {
+                    // Regular error object
+                    showErrorNotification(error.message);
+                } else if (Array.isArray(error)) {
+                    // Array of error messages
+                    showErrorNotification(error);
+                } else {
+                    // Fallback error message
+                    showErrorNotification('An unexpected error occurred. Please try again.');
+                }
+                throw error; // Re-throw to prevent navigation
+            });
             if (result) {
                 onDialogClose();
                 // Force table component to re-render
@@ -104,6 +135,7 @@ const CompanyGroup = () => {
                     onClick={() => setDialogIsOpen(true)} 
                     icon={<HiPlusCircle />} 
                     size="sm"
+                    disabled={companyData.length > 0}
                 >
                     Add Company Group
                 </Button>
@@ -157,3 +189,7 @@ const CompanyGroup = () => {
 };
 
 export default CompanyGroup;
+
+
+
+
