@@ -28,6 +28,7 @@ import {
 } from '@/store/slices/AssignedCompliance/assignedComplianceSlice'
 import { fetchUsers } from '@/store/slices/userEntity/UserEntitySlice'
 import { AppDispatch } from '@/store'
+import { showErrorNotification } from '@/components/ui/ErrorMessage'
 
 interface UserData {
     id: number
@@ -133,37 +134,46 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
 
             setIsUpdating(true)
             try {
-                await dispatch(
+              const response =  await dispatch(
                     updateApproverOwner({
                         id: activeRowId.toString(),
                         data: updateData,
                     }),
-                )
-                .unwrap()
-                .catch((error:any)=>{
-                    error.map((v:string)=>{
-                        toast.push(
-                            <Notification title='error' type='danger'>
-                                    {v}
-                                </Notification>
-                        )
-                    })
-                })
+                ).unwrap()
+                .catch((error: any) => {
+                 // Handle different error formats
+                 if (error.response?.data?.message) {
+                     // API error response
+                     showErrorNotification(error.response.data.message);
+                 } else if (error.message) {
+                     // Regular error object
+                     showErrorNotification(error.message);
+                 } else if (Array.isArray(error)) {
+                     // Array of error messages
+                     showErrorNotification(error);
+                 } else {
+                     // Fallback error message
+                     showErrorNotification('An unexpected error occurred. Please try again.');
+                 }
+                 throw error; // Re-throw to prevent navigation
+             });
 
-                toast.push(
-                    <Notification title="Success" type="success">
+             if(response) {
+                 setIsEditDialogOpen(false)
+                 toast.push(
+                     <Notification title="Success" type="success">
                         Owner and Approver updated successfully
                     </Notification>,
                 )
-                setIsEditDialogOpen(false)
                 setSelectedOwnerOption(null)
                 setSelectedApproverOption(null)
                 refreshTable()
-            } catch (error) {
+            }
+            } catch (error : any) {
                 console.log(error)
                 toast.push(
                     <Notification title="Error" type="danger">
-                        Failed to update owner and approver
+                        {error}
                     </Notification>,
                 )
                 console.error('Error updating owner/approver:', error)
