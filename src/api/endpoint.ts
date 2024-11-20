@@ -85,5 +85,9 @@ esiTracker: {
     getAll: () => api(`companyadmin/esisetup/esi-tracker`),
     bulkUpload: () => api(`companyadmin/esisetup/esi-tracker`),
     download: () => api(`upload/sample_files/esi-tracker.xlsx`)
+   },
+   pfiwtracker:{
+    download:()=> api('upload/sample_files/pfiw-tracker.xlsx'),
+    bulkupload:()=> api('/companyadmin/pfsetup/pfiw-tracker'),
    }
 }

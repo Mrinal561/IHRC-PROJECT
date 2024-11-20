@@ -20,7 +20,7 @@ interface PFSetupData {
     group_id: number
     company_id: number
     state_id: number
-    district_id: number
+    district: string
     location: string
     pf_code: string
     register_date: Date
@@ -38,10 +38,8 @@ interface PFSetupPageProps {
 
 interface SignatoryData {
     signatory_id: number
-    dsc_validity: string
     e_sign: string
     e_sign_status: string
-    dsc_document: string
 }
 
 interface Signatory {
@@ -107,7 +105,7 @@ const PFSetupPage: React.FC = () => {
         group_id: 0,
         company_id: 0,
         state_id: 0,
-        district_id: 0,
+        district: '',
         location: '',
         pf_code: '',
         register_date: new Date(),
@@ -191,6 +189,8 @@ const PFSetupPage: React.FC = () => {
 
     // Handle submit with base64 files
     const handleSubmit = async () => {
+
+        console.log(pfSetupData)
         // Validate required fields
         if (
             !pfSetupData.pf_code ||
@@ -215,7 +215,7 @@ const PFSetupPage: React.FC = () => {
             console.log('Submitting PF Setup with base64 files:', formData)
 
             // Example API call (uncomment and modify as needed)
-            // const response = await httpClient.post(endpoints.pfSetup.create(), formData);
+            const response = await httpClient.post(endpoints.pfSetup.create(), formData);
 
             toast.push(
                 <Notification title="Success" type="success">
@@ -695,25 +695,37 @@ const PFSetupPage: React.FC = () => {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                     <div>
-                        <DistrictAutosuggest
-                            value={selectedDistrict}
-                            onChange={setSelectedDistrict}
-                            stateId={
-                                selectedStates?.value
-                                    ? parseInt(selectedStates.value)
-                                    : undefined
-                            }
-                            onDistrictSelect={setSelectedDistrictId}
-                        />
+                    <DistrictAutosuggest
+                        value={selectedDistrict}
+                        onChange={(value: string) => {
+                            console.log(value);
+                            setSelectedDistrict(value);
+                            // Update the pfSetupData with the district
+                            setPfSetupData(prev => ({
+                                ...prev,
+                                district: value
+                            }));
+                        }}
+                        stateId={selectedStates?.value ? parseInt(selectedStates.value) : undefined}
+                        onDistrictSelect={(districtId) => {
+                            setSelectedDistrictId(districtId);
+                        }}
+                    />
                     </div>
                     <div>
-                        <LocationAutosuggest
-                            value={selectedLocation}
-                            onChange={(value: string) => {
-                                setSelectedLocation(value)
-                            }}
-                            districtId={selectedDistrictId}
-                        />
+                    <LocationAutosuggest
+                        value={selectedLocation}
+                        onChange={(value: string) => {
+                            console.log(value);
+                            setSelectedLocation(value);
+                            // Update the pfSetupData with the location
+                            setPfSetupData(prev => ({
+                                ...prev,
+                                location: value
+                            }));
+                        }}
+                        districtId={selectedDistrictId}
+                    />
                     </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-4">
@@ -725,7 +737,7 @@ const PFSetupPage: React.FC = () => {
                             onChange={(value: string) => {
                                 setPfSetupData((prev) => ({
                                     ...prev,
-                                    esi_user: value,
+                                    user: value,
                                 }))
                             }}
                         />

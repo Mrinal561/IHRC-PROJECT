@@ -226,62 +226,6 @@ const handleRegistrationCertificateUpload = async (e: React.ChangeEvent<HTMLInpu
     }
 };
 
-
-// const loadDistricts = async (stateId: string) => {
-//   if (!stateId) return;
-  
-//   try {
-//       const response = await httpClient.get(endpoints.common.district(), {
-//           params: { state_id: stateId }
-//       });
-
-//       if (response.data) {
-//           const formattedDistricts = response.data.map((district: any) => ({
-//               label: district.name,
-//               value: String(district.id)
-//           }));
-//           setDistricts(formattedDistricts);
-//       }
-//   } catch (error) {
-//       console.error('Failed to load districts:', error);
-//       toast.push(
-//           <Notification title="Error" type="danger">
-//               Failed to load districts
-//           </Notification>
-//       );
-//       setDistricts([]);
-//   }
-// };
-
-
-// const loadLocations = async (districtId: string) => {
-//   if (!districtId) return;
-  
-//   try {
-//       const response = await httpClient.get(endpoints.common.location(), {
-//           params: { district_id: districtId }
-//       });
-
-//       if (response.data) {
-//           const formattedLocations = response.data.map((location: any) => ({
-//               label: location.name,
-//               value: String(location.id)
-//           }));
-//           setLocations(formattedLocations);
-//       }
-//   } catch (error) {
-//       console.error('Failed to load locations:', error);
-//       toast.push(
-//           <Notification title="Error" type="danger">
-//               Failed to load locations
-//           </Notification>
-//       );
-//       setLocations([]);
-//   }
-// };
-
-
-
 const handleStateChange = (option: SelectOption | null) => {
   setSelectedStates(option);
   setSelectedDistrict(''); // Reset district selection
@@ -299,32 +243,6 @@ const handleStateChange = (option: SelectOption | null) => {
       // }));
   }
 };
-
-// const handleDistrictChange = (option: SelectOption | null) => {
-//   setSelectedDistrict(option);
-//   setSelectedLocation(null); // Reset location selection
-//   setLocations([]); // Clear locations
-  
-//   if (option) {
-//       loadLocations(option.value);
-//       setFormData(prev => ({
-//           ...prev,
-//           district_id: parseInt(option.value),
-//           location: ''
-//       }));
-//   }
-// };
-
-// const handleLocationChange = (option: SelectOption | null) => {
-//   setSelectedLocation(option);
-//   if (option) {
-//       setFormData(prev => ({
-//           ...prev,
-//           location: option.label
-//       }));
-//   }
-// };
-
 
 useEffect(() => {
   loadStates()
