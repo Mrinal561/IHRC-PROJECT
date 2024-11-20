@@ -1,5 +1,5 @@
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ColumnDef } from '@/components/shared/DataTable';
 import DataTable from '@/components/shared/DataTable';
 import { Button, Tooltip, Dialog, Input, toast, Notification, Badge } from '@/components/ui';
@@ -7,145 +7,150 @@ import { FaDownload } from 'react-icons/fa6';
 import { HiDownload, HiOutlineEye } from 'react-icons/hi';
 import { RiEyeLine } from 'react-icons/ri';
 import { Navigate, useNavigate } from 'react-router-dom';
+import httpClient from '@/api/http-client';
+import { endpoints } from '@/api/endpoint';
 
 // Define the structure of our data
-export interface HistoryComplianceDataRow {
-  Compliance_Instance_ID: number;
-  Compliance_ID: number;
-  Compliance_Header: string;
-  Due_Date: string;
-  Owner_Name: string;
-  Approver_Name: string;
-  Category: string;
-  Status: string;
-  Legislation:string;
-  Location:string;
-  Compliance_Categorization: string;
-  Compliance_Description: string;
-  Compliance_Applicability: string;
-  Compliance_Clause: string;
-  Compliance_Type: string;
-  Compliance_Frequency: string;
-  Criticality: string;
-  Proof:string;
-  Remark:string;
-  Bare_Act_Text:string;
+interface ComplianceData {
+  id: number;
+    uuid: string;
+    legislation: string;
+    category: string;
+    penalty_type: string;
+    default_due_date: {
+        first_date: string; // in "YYYY-MM-DD" format
+        last_date: string;  // in "YYYY-MM-DD" format
+    };
+    scheduled_frequency: string;
+    proof_mandatory: boolean;
+    header: string;
+    description: string;
+    penalty_description: string;
+    applicability: string;
+    bare_act_text: string;
+    type: string;
+    clause: string;
+    frequency: string;
+    statutory_auth: string;
+    approval_required: boolean;
+    criticality: string;
+    assign:boolean;
 }
 
-// Sample data for the table
-const initialData: HistoryComplianceDataRow[] = [
-  {
-    Compliance_Instance_ID: 1001,
-    Compliance_ID: 3236,
-    Compliance_Header: 'Renewal of Registration',
-    Due_Date: '09-10-2024',
-    Owner_Name: 'Admin',
-    Approver_Name: 'Shivesh Verma',
-    Legislation: "Bihar Shops and Establishments Act 1953 and Bihar Shops Establishments Rules 1955/ Bihar/ IR",
-    Location: "HMVL - Office - Muzaffarpur - sadtpur - HR/ Muzaffarpur/ Bihar/ Office",
-    Category: 'Legal',
-    Status: 'Complied',
-    Compliance_Description: "This compliance involves renewing the annual license required for operating a shop or establishment under the Maharashtra Shops and Establishments Act.",
-    Compliance_Applicability: "All registered shops and establishments operating in Maharashtra.",
-    Compliance_Clause: "Section 15 of the Maharashtra Shops and Establishments Act, 1948",
-    Compliance_Type: "Renewal",
-    Compliance_Frequency: "Annual",
-    Compliance_Categorization: "Licensing",
-    Criticality:"High",
-    Proof: "Renewal receipt number 456789",
-    Remark: "Renewal completed on time without any issues.",
-    Bare_Act_Text: "Report any changes in employment status or wages to the Labour Department within seven days of occurrence, along with a fee of five rupees for each report.",
-  },
-  {
-    Compliance_Instance_ID: 1002,
-    Compliance_ID: 4501,
-    Compliance_Header: 'Annual Renewal of License',
-    Due_Date: '01-10-2024',
-    Owner_Name: 'HR',
-    Approver_Name: 'Shivesh Verma',
-    Category: 'HR',
-    Status: 'Complied',
-    Legislation: "Delhi Factories Act 1948 and Delhi Factories Rules 1950/ Delhi/ IR",
-    Location: "HMVL - Office - Arrah - Ramana Pakri Road - HR/ Arrah/ Bihar/ Office",
-    Compliance_Description: "This compliance involves renewing the annual license required for operating a shop or establishment under the Maharashtra Shops and Establishments Act.",
-    Compliance_Applicability: "All registered shops and establishments operating in Maharashtra.",
-    Compliance_Clause: "Section 15 of the Maharashtra Shops and Establishments Act, 1948",
-    Compliance_Type: "Renewal",
-    Compliance_Frequency: "Annual",
-    Compliance_Categorization: "Licensing",
-    Proof: "Renewal receipt number 456789",
-    Remark: "Renewal completed on time without any issues.",
-    Bare_Act_Text: "Report any changes in employment status or wages to the Labour Department within seven days of occurrence, along with a fee of five rupees for each report.",
-    Criticality:"High"
-  },
-  {
-    Compliance_Instance_ID: 1003,
-    Compliance_ID: 5602,
-    Compliance_Header: 'Monthly Compliance Report',
-    Due_Date: '09-05-2024',
-    Owner_Name: 'Finance',
-    Approver_Name: 'Shivesh Verma',
-    Category: 'Finance',
-    Status: 'Complied',
-    Legislation: "Karnataka Shops and Commercial Establishments Act 1961 and Karnataka Shops Rules 1963/ Karnataka/ IR",
-        Location: "HMVL - Office - Aurangabad - Priyavrat Path - HR/ Aurangabad/ Bihar/ Office",
+// // Sample data for the table
+// const initialData: HistoryComplianceDataRow[] = [
+//   {
+//     Compliance_Instance_ID: 1001,
+//     Compliance_ID: 3236,
+//     Compliance_Header: 'Renewal of Registration',
+//     Due_Date: '09-10-2024',
+//     Owner_Name: 'Admin',
+//     Approver_Name: 'Shivesh Verma',
+//     Legislation: "Bihar Shops and Establishments Act 1953 and Bihar Shops Establishments Rules 1955/ Bihar/ IR",
+//     Location: "HMVL - Office - Muzaffarpur - sadtpur - HR/ Muzaffarpur/ Bihar/ Office",
+//     Category: 'Legal',
+//     Status: 'Complied',
+//     Compliance_Description: "This compliance involves renewing the annual license required for operating a shop or establishment under the Maharashtra Shops and Establishments Act.",
+//     Compliance_Applicability: "All registered shops and establishments operating in Maharashtra.",
+//     Compliance_Clause: "Section 15 of the Maharashtra Shops and Establishments Act, 1948",
+//     Compliance_Type: "Renewal",
+//     Compliance_Frequency: "Annual",
+//     Compliance_Categorization: "Licensing",
+//     Criticality:"High",
+//     Proof: "Renewal receipt number 456789",
+//     Remark: "Renewal completed on time without any issues.",
+//     Bare_Act_Text: "Report any changes in employment status or wages to the Labour Department within seven days of occurrence, along with a fee of five rupees for each report.",
+//   },
+//   {
+//     Compliance_Instance_ID: 1002,
+//     Compliance_ID: 4501,
+//     Compliance_Header: 'Annual Renewal of License',
+//     Due_Date: '01-10-2024',
+//     Owner_Name: 'HR',
+//     Approver_Name: 'Shivesh Verma',
+//     Category: 'HR',
+//     Status: 'Complied',
+//     Legislation: "Delhi Factories Act 1948 and Delhi Factories Rules 1950/ Delhi/ IR",
+//     Location: "HMVL - Office - Arrah - Ramana Pakri Road - HR/ Arrah/ Bihar/ Office",
+//     Compliance_Description: "This compliance involves renewing the annual license required for operating a shop or establishment under the Maharashtra Shops and Establishments Act.",
+//     Compliance_Applicability: "All registered shops and establishments operating in Maharashtra.",
+//     Compliance_Clause: "Section 15 of the Maharashtra Shops and Establishments Act, 1948",
+//     Compliance_Type: "Renewal",
+//     Compliance_Frequency: "Annual",
+//     Compliance_Categorization: "Licensing",
+//     Proof: "Renewal receipt number 456789",
+//     Remark: "Renewal completed on time without any issues.",
+//     Bare_Act_Text: "Report any changes in employment status or wages to the Labour Department within seven days of occurrence, along with a fee of five rupees for each report.",
+//     Criticality:"High"
+//   },
+//   {
+//     Compliance_Instance_ID: 1003,
+//     Compliance_ID: 5602,
+//     Compliance_Header: 'Monthly Compliance Report',
+//     Due_Date: '09-05-2024',
+//     Owner_Name: 'Finance',
+//     Approver_Name: 'Shivesh Verma',
+//     Category: 'Finance',
+//     Status: 'Complied',
+//     Legislation: "Karnataka Shops and Commercial Establishments Act 1961 and Karnataka Shops Rules 1963/ Karnataka/ IR",
+//         Location: "HMVL - Office - Aurangabad - Priyavrat Path - HR/ Aurangabad/ Bihar/ Office",
 
-    Compliance_Description: "This compliance involves renewing the annual license required for operating a shop or establishment under the Maharashtra Shops and Establishments Act.",
-    Compliance_Applicability: "All registered shops and establishments operating in Maharashtra.",
-    Compliance_Clause: "Section 15 of the Maharashtra Shops and Establishments Act, 1948",
-    Compliance_Type: "Renewal",
-    Compliance_Frequency: "Annual",
-    Compliance_Categorization: "Licensing",
-    Proof: "Renewal receipt number 456789",
-    Remark: "Renewal completed on time without any issues.",
-    Bare_Act_Text: "Report any changes in employment status or wages to the Labour Department within seven days of occurrence, along with a fee of five rupees for each report.",
-    Criticality:"High"
-  },
-  {
-    Compliance_Instance_ID: 1004,
-    Compliance_ID: 6789,
-    Compliance_Header: 'Quarterly Wage Report',
-    Due_Date: '10-05-2024',
-    Owner_Name: 'Ravi Shankar Singh',
-    Approver_Name: 'Shivesh Verma',
-    Category: 'HR',
-    Status: 'Complied',
-    Legislation: "Maharashtra Shops and Establishments Act 1948 and Maharashtra Shops Rules 1954/ Maharashtra/ IR",
-        Location: "HMVL - Office - Begusarai - Kachhari Road - HR/ Begusarai/ Bihar/ Office",
-    Compliance_Description: "This compliance involves renewing the annual license required for operating a shop or establishment under the Maharashtra Shops and Establishments Act.",
-    Compliance_Applicability: "All registered shops and establishments operating in Maharashtra.",
-    Compliance_Clause: "Section 15 of the Maharashtra Shops and Establishments Act, 1948",
-    Compliance_Type: "Renewal",
-    Compliance_Frequency: "Annual",
-    Compliance_Categorization: "Licensing",
-    Proof: "Renewal receipt number 456789",
-    Remark: "Renewal completed on time without any issues.",
-    Bare_Act_Text: "Report any changes in employment status or wages to the Labour Department within seven days of occurrence, along with a fee of five rupees for each report.",
-    Criticality:"High"
-  },
-  {
-    Compliance_Instance_ID: 1005,
-    Compliance_ID: 7890,
-    Compliance_Header: 'Renewal of Trade License',
-    Due_Date: '08-01-2024',
-    Owner_Name: 'HR',
-    Approver_Name: 'Shivesh Verma',
-    Category: 'Legal',
-    Status: 'Complied',
-    Legislation: "Tamil Nadu Shops and Establishments Act 1947 and Tamil Nadu Shops Rules 1959/ Tamil Nadu/ IR",
-    Location: "HMVL - Office - Samastipur - ShivSagar Plazza -HR / Samastipur/ Bihar/ Office",
-    Compliance_Description: "This compliance involves renewing the annual license required for operating a shop or establishment under the Maharashtra Shops and Establishments Act.",
-    Compliance_Applicability: "All registered shops and establishments operating in Maharashtra.",
-    Compliance_Clause: "Section 15 of the Maharashtra Shops and Establishments Act, 1948",
-    Compliance_Type: "Renewal",
-    Compliance_Frequency: "Annual",
-    Compliance_Categorization: "Licensing",
-    Proof: "Renewal receipt number 456789",
-    Remark: "Renewal completed on time without any issues.",
-    Bare_Act_Text: "Report any changes in employment status or wages to the Labour Department within seven days of occurrence, along with a fee of five rupees for each report.",
-    Criticality:"High"
-  }
-];
+//     Compliance_Description: "This compliance involves renewing the annual license required for operating a shop or establishment under the Maharashtra Shops and Establishments Act.",
+//     Compliance_Applicability: "All registered shops and establishments operating in Maharashtra.",
+//     Compliance_Clause: "Section 15 of the Maharashtra Shops and Establishments Act, 1948",
+//     Compliance_Type: "Renewal",
+//     Compliance_Frequency: "Annual",
+//     Compliance_Categorization: "Licensing",
+//     Proof: "Renewal receipt number 456789",
+//     Remark: "Renewal completed on time without any issues.",
+//     Bare_Act_Text: "Report any changes in employment status or wages to the Labour Department within seven days of occurrence, along with a fee of five rupees for each report.",
+//     Criticality:"High"
+//   },
+//   {
+//     Compliance_Instance_ID: 1004,
+//     Compliance_ID: 6789,
+//     Compliance_Header: 'Quarterly Wage Report',
+//     Due_Date: '10-05-2024',
+//     Owner_Name: 'Ravi Shankar Singh',
+//     Approver_Name: 'Shivesh Verma',
+//     Category: 'HR',
+//     Status: 'Complied',
+//     Legislation: "Maharashtra Shops and Establishments Act 1948 and Maharashtra Shops Rules 1954/ Maharashtra/ IR",
+//         Location: "HMVL - Office - Begusarai - Kachhari Road - HR/ Begusarai/ Bihar/ Office",
+//     Compliance_Description: "This compliance involves renewing the annual license required for operating a shop or establishment under the Maharashtra Shops and Establishments Act.",
+//     Compliance_Applicability: "All registered shops and establishments operating in Maharashtra.",
+//     Compliance_Clause: "Section 15 of the Maharashtra Shops and Establishments Act, 1948",
+//     Compliance_Type: "Renewal",
+//     Compliance_Frequency: "Annual",
+//     Compliance_Categorization: "Licensing",
+//     Proof: "Renewal receipt number 456789",
+//     Remark: "Renewal completed on time without any issues.",
+//     Bare_Act_Text: "Report any changes in employment status or wages to the Labour Department within seven days of occurrence, along with a fee of five rupees for each report.",
+//     Criticality:"High"
+//   },
+//   {
+//     Compliance_Instance_ID: 1005,
+//     Compliance_ID: 7890,
+//     Compliance_Header: 'Renewal of Trade License',
+//     Due_Date: '08-01-2024',
+//     Owner_Name: 'HR',
+//     Approver_Name: 'Shivesh Verma',
+//     Category: 'Legal',
+//     Status: 'Complied',
+//     Legislation: "Tamil Nadu Shops and Establishments Act 1947 and Tamil Nadu Shops Rules 1959/ Tamil Nadu/ IR",
+//     Location: "HMVL - Office - Samastipur - ShivSagar Plazza -HR / Samastipur/ Bihar/ Office",
+//     Compliance_Description: "This compliance involves renewing the annual license required for operating a shop or establishment under the Maharashtra Shops and Establishments Act.",
+//     Compliance_Applicability: "All registered shops and establishments operating in Maharashtra.",
+//     Compliance_Clause: "Section 15 of the Maharashtra Shops and Establishments Act, 1948",
+//     Compliance_Type: "Renewal",
+//     Compliance_Frequency: "Annual",
+//     Compliance_Categorization: "Licensing",
+//     Proof: "Renewal receipt number 456789",
+//     Remark: "Renewal completed on time without any issues.",
+//     Bare_Act_Text: "Report any changes in employment status or wages to the Labour Department within seven days of occurrence, along with a fee of five rupees for each report.",
+//     Criticality:"High"
+//   }
+// ];
 
 const DownloadHistoryButton = () => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -190,29 +195,64 @@ const DownloadHistoryButton = () => {
 
 const HistoryPageTable: React.FC = () => {
   const navigate = useNavigate();
-  // State for the table data
-  const [data] = useState<HistoryComplianceDataRow[]>(initialData);
+  const [data, setData] = useState<ComplianceData[]>([]);
+  const [filteredData, setFilteredData] = useState<ComplianceData[]>([]);
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+
+  const fetchHistoryData = async () => {
+    setIsLoading(true);
+    try {
+      const response = await httpClient.get(endpoints.due.getAll(), {
+        params: {
+          'data_status[]': ['approved']
+        }
+      });
+      setData(response.data);
+      setFilteredData(response.data.data);
+    } catch (error) {
+      console.error('Error fetching history data:', error);
+      toast.push(
+        <Notification title="Error" type="danger">
+          Failed to fetch history data
+        </Notification>,
+        { placement: 'top-end' }
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+
+  useEffect(() => {
+    fetchHistoryData();
+  }, [])
+
+
+
  
-  const columns: ColumnDef<HistoryComplianceDataRow>[] = useMemo(
+  const columns = useMemo(
     () => [
       {
         header: 'Instance ID',
-        accessorKey: 'Compliance_Instance_ID',
+        accessorKey: 'record_id',
         cell: (props) => (
-          <div className="w-16 text-start">{props.getValue()}</div>
+          <div className="w-40 text-start">{props.getValue()}</div>
         ),
       },
-      {
-        header: 'Compliance ID',
-        accessorKey: 'Compliance_ID',
-        cell: (props) => (
-          <div className="w-24 text-start">{props.getValue()}</div>
-        ),
-      },
+      // {
+      //   header: 'Compliance ID',
+      //   accessorKey: 'Compliance_ID',
+      //   cell: (props) => (
+      //     <div className="w-24 text-start">{props.getValue()}</div>
+      //   ),
+      // },
      
       {
         header: 'Legislation',
-        accessorKey: 'Legislation',
+        accessorKey: 'legislation',
         cell: (props) => {
           const value = props.getValue() as string;
           return (
@@ -224,14 +264,14 @@ const HistoryPageTable: React.FC = () => {
       },
       {
         header: 'Location',
-        accessorKey: 'Location',
+        accessorKey: 'location',
         cell: (props) => (
           <div className="w-24 text-start truncate">{props.getValue()}</div>
         ),
       },
       {
         header: 'Header',
-        accessorKey: 'Compliance_Header',
+        accessorKey: 'header',
         cell: (props) => {
           const value = props.getValue() as string;
           return (
@@ -241,13 +281,13 @@ const HistoryPageTable: React.FC = () => {
           );
         },
       },
-      {
-        header: 'Completion Date',
-        accessorKey: 'Due_Date',
-        cell: ({ getValue }) => {
-          return <div className="w-26 flex items-center justify-center">{getValue<string>()}</div>;
-        },
-      },
+      // {
+      //   header: 'Completion Date',
+      //   accessorKey: 'Due_Date',
+      //   cell: ({ getValue }) => {
+      //     return <div className="w-26 flex items-center justify-center">{getValue<string>()}</div>;
+      //   },
+      // },
       {
         header: 'Compliance Status',
         accessorKey: 'Status',
@@ -296,7 +336,7 @@ const HistoryPageTable: React.FC = () => {
 
   // State for table pagination and sorting
   const [tableData, setTableData] = useState({
-    total: initialData.length,
+    total: data.length,
     pageIndex: 1,
     pageSize: 10,
     query: '',
@@ -321,7 +361,7 @@ const HistoryPageTable: React.FC = () => {
         data={data}
         skeletonAvatarColumns={[0]}
         skeletonAvatarProps={{ className: 'rounded-md' }}
-        loading={false}
+        loading={isLoading}
         pagingData={{
           total: tableData.total,
           pageIndex: tableData.pageIndex,
@@ -330,8 +370,8 @@ const HistoryPageTable: React.FC = () => {
         onPaginationChange={onPaginationChange}
         onSelectChange={onSelectChange}
         stickyHeader={true}
-          stickyFirstColumn={true}
-          stickyLastColumn={true}
+        stickyLastColumn={true}
+        stickyFirstColumn={true}
       />
 
       

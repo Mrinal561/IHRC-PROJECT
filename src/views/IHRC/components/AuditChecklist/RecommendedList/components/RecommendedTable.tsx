@@ -12,6 +12,7 @@ import {
 } from '@/store/slices/compliance/ComplianceApiSlice'
 import { Loading } from '@/components/shared'
 import { type } from '../../../../../../components/ui/ScrollBar/index';
+import { showErrorNotification } from '@/components/ui/ErrorMessage'
 
 interface ComplianceData {
     id: number
@@ -154,28 +155,39 @@ const ViewDetailsButton = ({
         console.log(assignData);
  
         try {
-            await dispatch(assignCompliancesToBranch(assignData))
-            .catch((error:any)=>{
-                error.map((v:string)=>{
-                    toast.push(
-                        <Notification title='error' type='danger'>
-                                {v}
-                            </Notification>
-                    )
-                })
-            })
-            onAssignSuccess(compliance.id);
-            toast.push(
-                <Notification title="Success" type="success">
+           const response = await dispatch(assignCompliancesToBranch(assignData)).unwrap()
+           .catch((error: any) => {
+            // Handle different error formats
+            if (error.response?.data?.message) {
+                // API error response
+                showErrorNotification(error.response.data.message);
+            } else if (error.message) {
+                // Regular error object
+                showErrorNotification(error.message);
+            } else if (Array.isArray(error)) {
+                // Array of error messages
+                showErrorNotification(error);
+            } else {
+                // Fallback error message
+                showErrorNotification('An unexpected error occurred. Please try again.');
+            }
+            throw error; // Re-throw to prevent navigation
+        });
+            if(response){
+
+                onAssignSuccess(compliance.id);
+                toast.push(
+                    <Notification title="Success" type="success">
                     Assigned Successfully
                 </Notification>
             );
-            setIstableLoading(true)
-        } catch (error) {
+        }
+            // setIstableLoading(true)
+        } catch (error : any) {
             console.error('Failed to assign compliance:', error);
             toast.push(
                 <Notification title="Failed" type="danger">
-                    Not Assigned
+                    {error}
                 </Notification>
             );
         }
