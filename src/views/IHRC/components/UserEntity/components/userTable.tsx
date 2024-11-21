@@ -50,14 +50,14 @@ const UserTable: React.FC = () => {
             },
             {
                 header: 'First Name',
-                accessorKey: 'first_name',
+                accessorKey: 'name',
                 cell: (props) => <div className="w-32 truncate">{props.getValue() as string}</div>,
             },
-            {
-                header: 'Last Name',
-                accessorKey: 'last_name',
-                cell: (props) => <div className="w-32 truncate">{props.getValue() as string}</div>,
-            },
+            // {
+            //     header: 'Last Name',
+            //     accessorKey: 'last_name',
+            //     cell: (props) => <div className="w-32 truncate">{props.getValue() as string}</div>,
+            // },
             {
                 header: 'Email',
                 accessorKey: 'email',
