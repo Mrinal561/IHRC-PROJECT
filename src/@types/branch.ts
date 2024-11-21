@@ -10,6 +10,7 @@ export type BranchData = {
     address: string;
     type: string;
     office_type: string;
+    other_office: string;
     custom_data: {
       remark: string;
       status: string;
@@ -18,8 +19,11 @@ export type BranchData = {
     };
     register_number: string;
     status: string;
-    validity: string;
-    document?: string;
+    se_validity: string;
+    lease_validity: string;
+    document_validity_type: string;
+    se_document: string;
+    lease_document: string;
 }
 
 

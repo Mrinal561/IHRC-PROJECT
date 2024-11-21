@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { dummyData } from './PTECTrackerTable';
+// import { dummyData } from './PTECTrackerTable';
 import UploadedPTDetails from './UploadedPTECDetails';
 import PTRCTrackerFilter from './PTECTrackerFilter';
 import PTRCTrackerBulkUpload from './PTECTrackerBulkUpload.js';
@@ -21,7 +21,7 @@ const PTECTrackerTool: React.FC<{ onFilterChange: (filters: any) => void }> = ({
     setShowUploadedDetails(false);
   };
 
-  const handleFilterChange = (newFilters) => {
+  const handleFilterChange = (newFilters: any) => {
     setFilters(newFilters);
     // You can apply the filters to your data here or pass them to PFTrackerTable
   };
@@ -29,15 +29,15 @@ const PTECTrackerTool: React.FC<{ onFilterChange: (filters: any) => void }> = ({
   if (showUploadedDetails) {
     return <UploadedPTDetails onBack={handleBack} />;
   }
-  const handleDateRangeApply = (start: Date, end: Date) => {
-    setStartDate(start);
-    setEndDate(end);
-  };
+  // const handleDateRangeApply = (start: Date, end: Date) => {
+  //   setStartDate(start);
+  //   setEndDate(end);
+  // };
   return (
     <div>
       <div className="flex gap-3 items-center mb-4">
-        <PTRCTrackerFilter data={dummyData} onFilterChange={onFilterChange} />
-        <CustomDateRangePicker onApply={handleDateRangeApply} />
+        {/* <PTRCTrackerFilter data={dummyData} onFilterChange={onFilterChange} /> */}
+        {/* <CustomDateRangePicker onApply={handleDateRangeApply} /> */}
         <Button  
         variant="solid" 
         size="sm" 

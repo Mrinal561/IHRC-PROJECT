@@ -177,47 +177,7 @@ const PFSetupPage: React.FC = () => {
         }
     };
 
-    // Handle submit with base64 files
-    // const handleSubmit = async () => {
-    //     // Validate required fields
-    //     if (!pfSetupData.pf_code || !pfSetupData.location || pfSetupData.signatory_data.length === 0) {
-    //         toast.push(
-    //             <Notification title="Error" type="danger">
-    //                 Please fill in all required fields
-    //             </Notification>
-    //         );
-    //         return;
-    //     }
 
-    //     const formData = {
-    //         ...pfSetupData,
-    //         register_date: pfSetupData.register_date?.toISOString() || '',
-    //     };
-
-    //     try {
-    //         // Here you would send the formData to your API
-    //         console.log('Submitting PF Setup with base64 files:', formData);
-            
-    //         // Example API call (uncomment and modify as needed)
-    //         // const response = await httpClient.post(endpoints.pfSetup.create(), formData);
-            
-    //         toast.push(
-    //             <Notification title="Success" type="success">
-    //                 <div className="flex items-center">
-    //                     <span>PF Setup successfully created</span>
-    //                 </div>
-    //             </Notification>
-    //         );
-    //         // navigate(-1);
-    //     } catch (error) {
-    //         console.error('Error submitting PF setup:', error);
-    //         toast.push(
-    //             <Notification title="Error" type="danger">
-    //                 Failed to create PF Setup
-    //             </Notification>
-    //         );
-    //     }
-    // };
 
     const handleSubmit = async () => {
         // Validate required fields
@@ -384,20 +344,6 @@ const PFSetupPage: React.FC = () => {
         loadUsers()
     }, []) // Empty dependency array means this runs once when component mounts
 
-    // ... rest of your component code ...
-    // const handleDistrictChange = (option: SelectOption | null) => {
-    //   setSelectedDistrict(option);
-    //   // You can add additional logic here if needed when district changes
-    // };
-
-    // // Modify your handleStateChange function to load districts
-    // const handleStateChange = (option: SelectOption | null) => {
-    //   setSelectedStates(option);
-    //   if (option) {
-    //     // Load districts when state is selected
-    //     loadDistricts(option.value);
-    //   }
-    // };
   
     // Update PF setup data when company is selected
     useEffect(() => {

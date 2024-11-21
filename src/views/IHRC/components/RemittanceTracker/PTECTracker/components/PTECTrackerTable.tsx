@@ -5,100 +5,18 @@ import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 import { MdEdit } from 'react-icons/md';
 import PTTrackerEditDialog from './PTECTrackerEditDialog';
 import ConfigDropdown from './ConfigDropdown';
+import { PTTrackerData } from '@/@types/PTTracker';
 const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
-// Define the structure of your data
-export interface PTTrackerData {
-  companyName: string;
-  state: string;
-  ptEcLocation: string;
-  ptEcNumber: string;
-  dateOfEnrolment: string;
-  ptEcEnrolmentAddress: string;
-  remittanceMode: string;
-  frequency: string;
-  period: string;
-  totalAmountAsPerChallan: number;
-  totalAmountPaid: number;
-  dueDate: string;
-  dateOfPayment: string;
-  delay: string;
-  delayReason:string;
-  receiptNo: number;
-  challan: string;
-  payment: string;
-  ret:string;
+
+interface PTTrackerTableProps {
+  dataSent: PTTrackerData[];
+  loading: boolean
+
 }
 
-// Dummy data (replace with your actual data source)
-export const dummyData: PTTrackerData[] = [
-  {
-    companyName: 'India Shelter',
-    state: 'Karnataka',
-    ptEcLocation: 'Bangalore',
-    ptEcNumber: 'PEC010513005484',
-    dateOfEnrolment: '2018-08-29',
-    ptEcEnrolmentAddress: 'SY NO 250 1 OLD MADRAS ROAD NH 4 ABOVE AXIS BANK HOSKOTE TOWN BANGALORE, PIN:562114',
-    remittanceMode: 'Online',
-    frequency: 'Yearly',
-    period: 'Jul-2024',
-    totalAmountAsPerChallan: 50000,
-    totalAmountPaid: 50000,
-    dueDate: '2024-08-15',
-    dateOfPayment: '2024-08-10',
-    delay: '',
-    delayReason: '',
-    receiptNo: 987654,
-    challan: 'Challan_IndiaShelter_Jul2024.pdf',
-    payment: 'Payment_IndiaShelter_Jul2024.pdf',
-    ret: 'Return_IndiaShelter_Jul2024.pdf'
-  },
-  {
-    companyName: 'GreenEnergy Solutions',
-    state: 'Maharashtra',
-    ptEcLocation: 'Mumbai',
-    ptEcNumber: 'PTEC789012',
-    dateOfEnrolment: '2022-11-30',
-    ptEcEnrolmentAddress: '456 Green Building, Andheri, Mumbai 400069',
-    remittanceMode: 'Offline',
-    frequency: 'Yearly',
-    period: 'Q2-2024',
-    totalAmountAsPerChallan: 150000,
-    totalAmountPaid: 145000,
-    dueDate: '2024-07-31',
-    dateOfPayment: '2024-08-05',
-    delay: '5 days',
-    delayReason: 'Bank holiday',
-    receiptNo: 456789,
-    challan: 'Challan_GreenEnergy_Q22024.pdf',
-    payment: 'Payment_GreenEnergy_Q22024.pdf',
-    ret: ''
-  },
-  {
-    companyName: 'AutoParts Manufacturing',
-    state: 'Tamil Nadu',
-    ptEcLocation: 'Chennai',
-    ptEcNumber: 'PTEC345678',
-    dateOfEnrolment: '2023-03-01',
-    ptEcEnrolmentAddress: '789 Industrial Area, Ambattur, Chennai 600053',
-    remittanceMode: 'Online',
-    frequency: 'Yearly',
-    period: 'Aug-2024',
-    totalAmountAsPerChallan: 75000,
-    totalAmountPaid: 75000,
-    dueDate: '2024-09-15',
-    dateOfPayment: '2024-09-14',
-    delay: '',
-    delayReason: '',
-    receiptNo: 234567,
-    challan: 'Challan_AutoParts_Aug2024.pdf',
-    payment: 'Payment_AutoParts_Aug2024.pdf',
-    ret: 'Return_AutoParts_Aug2024.pdf'
-  }
-];
-
-const PTECTrackerTable: React.FC = () => {
-  const [data, setData] = useState<PTTrackerData[]>(dummyData);
+const PTECTrackerTable: React.FC<PTTrackerTableProps> = ({dataSent, loading }) => {
+  const [data, setData] = useState<PTTrackerData[]>();
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editingData, setEditingData] = useState<PTTrackerData | null>(null);
   const [visiblePasswords, setVisiblePasswords] = useState<{ [key: string]: boolean }>({});
@@ -111,18 +29,18 @@ const PTECTrackerTable: React.FC = () => {
 
 
 const handleEditSubmit = (editedData: PTTrackerData) => {
-    setData((prevData) =>
-        prevData.map((item) =>
-            item === editingData ? editedData : item
-        )
-    );
+    // setData((prevData) =>
+    //     prevData.map((item) =>
+    //         item === editingData ? editedData : item
+    //     )
+    // );
     setEditDialogOpen(false);
     setEditingData(null);
 };
 const columns: ColumnDef<PTTrackerData>[] = [
   {
     header: 'Company',
-    accessorKey: 'companyName',
+    accessorKey: 'PTSetup.company.name',
     cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
   },
   {
@@ -132,12 +50,12 @@ const columns: ColumnDef<PTTrackerData>[] = [
   },
   {
     header: 'PT EC Location',
-    accessorKey: 'ptEcLocation',
+    accessorKey: 'pt_ec_location',
     cell: (props) => <div className="w-36 truncate">{props.getValue() as string}</div>,
   },
   {
     header: 'PT EC Number',
-    accessorKey: 'ptEcNumber',
+    accessorKey: 'pt_ec_number',
     cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
   },
   {
@@ -240,15 +158,15 @@ const columns: ColumnDef<PTTrackerData>[] = [
       </div>
     ),
   },
-  {
-    header: 'Upload Status',
-    id: 'uploadStatus',
-    cell: ({ row }) => {
-      const { challan, payment, ret } = row.original;
-      const uploadedCount = [challan, payment, ret].filter(Boolean).length;
-      return <div className="w-32 truncate">{`${uploadedCount}/3`}</div>;
-    },
-  },
+  // {
+  //   header: 'Upload Status',
+  //   id: 'uploadStatus',
+  //   cell: ({ row }) => {
+  //     const { challan, payment, ret } = row.original;
+  //     const uploadedCount = [challan, payment, ret].filter(Boolean).length;
+  //     return <div className="w-32 truncate">{`${uploadedCount}/3`}</div>;
+  //   },
+  // },
   {
     header: 'Actions',
     id: 'actions',
@@ -296,21 +214,22 @@ const columns: ColumnDef<PTTrackerData>[] = [
     <div className="relative">
       <DataTable
         columns={columns}
-        data={data}
+        data={dataSent}
         skeletonAvatarColumns={[0]}
+        loading={loading}
         skeletonAvatarProps={{ className: 'rounded-md' }}
         stickyHeader={true}
         stickyFirstColumn={true}
         stickyLastColumn={true}
       />
-      {editingData && (
+      {/* {editingData && (
         <PTTrackerEditDialog
           isOpen={editDialogOpen}
           onClose={() => setEditDialogOpen(false)}
           onSubmit={handleEditSubmit}
           data={editingData}
         />
-      )}
+      )} */}
     </div>
   );
 };
