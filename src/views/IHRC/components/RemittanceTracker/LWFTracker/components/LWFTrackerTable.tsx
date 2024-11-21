@@ -518,7 +518,7 @@ import { FiEdit, FiFile, FiTrash } from 'react-icons/fi';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 import { MdEdit } from 'react-icons/md';
 import LWFTrackerEditDialog from './LWFTrackerEditDialog';
-import ConfigDropdown from './ConfigDropdown';
+import ConfigDropdown from './ConfigDropDown'
 import dayjs from 'dayjs';
 
 export interface Company {
