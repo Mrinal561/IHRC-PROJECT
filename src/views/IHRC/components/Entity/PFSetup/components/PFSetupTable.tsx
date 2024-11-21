@@ -82,7 +82,7 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data }) => {
       // },
       {
         header: 'Authorized Signatory',
-        accessorKey: 'Signatory.first_name',
+        accessorKey: 'Signatory.name',
         cell: (props) => (
           <div className="w-48 truncate">{props.getValue() as string}</div>
         ),

@@ -163,9 +163,9 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
                     throw error; // Re-throw to prevent navigation
                 });
 
-                if (result.payload) {
+                if (result) {
+                    onDataChange();
                     showSuccessNotification('Company group updated successfully');
-                    onDataChange(tableData.pageIndex, tableData.pageSize);
                 } 
             } catch (error) {
                 console.error('Error updating company group:', error);
