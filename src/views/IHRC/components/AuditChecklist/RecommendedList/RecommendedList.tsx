@@ -123,6 +123,73 @@ const RecommendedList = () => {
         fetchComplianceData();
     };
 
+
+    const filterComplianceData = (data: ComplianceData[]) => {
+        // Filter logic for compliance data
+        return data.filter(item => {
+            // Always include central compliances (scope is 'central')
+            if (item.scope.toLowerCase() === 'central') {
+                return true;
+            }
+
+            // If no state is selected, show all data
+            if (!selectedState) {
+                return true;
+            }
+
+            // Check if the compliance is applicable to the selected state
+            // This assumes the state is mentioned in the compliance data
+            const stateIdString = selectedState.value;
+            
+            // Check if the compliance's state_id matches the selected state
+            // Or if the state is mentioned in the applicability
+            return item.state_id === parseInt(stateIdString) || 
+                   (item.applicablility && 
+                    item.applicablility.toLowerCase().includes(selectedState.label.toLowerCase()));
+        });
+    };
+
+    useEffect(() => {
+        // Modify the existing fetchComplianceData to use filtering
+        const fetchFilteredComplianceData = async (page = 1, pageSize = 10) => {
+            setIsLoading(true);
+            try {
+                const response = await httpClient.get(endpoints.complianceSuperadmin.getAll(), {
+                    params: {
+                        page,
+                        pageSize
+                    }
+                });
+
+                if (response?.data?.data) {
+                    // First, filter out unassigned items
+                    const unassignedData = response.data.data.filter(
+                        (item: ComplianceData) => item.assign === false
+                    );
+
+                    // Then apply additional filtering based on state and central compliances
+                    const filteredData = filterComplianceData(unassignedData);
+                    
+                    setComplianceData(filteredData);
+                    setIstableLoading(false);
+                } else {
+                    console.log('No data in API response or unexpected response structure');
+                }
+            } catch (error) {
+                console.error('Error fetching compliance data:', error);
+                toast.push(
+                    <Notification type="danger" title="Error">
+                        Failed to fetch compliance data
+                    </Notification>
+                );
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchFilteredComplianceData();
+    }, [selectedState, selectedCompanyGroup, selectedCompany]);
+
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
             <div className="flex flex-row items-center justify-between mb-10">

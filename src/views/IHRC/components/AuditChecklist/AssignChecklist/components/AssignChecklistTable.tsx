@@ -25,6 +25,7 @@ import {
     selectUpdateSuccess,
     resetUpdateStatus,
     selectUpdateError,
+    ApproverOwnerAssignedCompliances,
 } from '@/store/slices/AssignedCompliance/assignedComplianceSlice'
 import { fetchUsers } from '@/store/slices/userEntity/UserEntitySlice'
 import { AppDispatch } from '@/store'
@@ -65,9 +66,9 @@ interface MasterCompliance {
 
 interface Owner {
     id: number
-    first_name: string
+    name: string
     email: string
-    last_name: string
+    // last_name: string
 }
 interface SelectOption {
     value: string
@@ -119,16 +120,31 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
     const [selectedApproverOption, setSelectedApproverOption] =
         useState<any>(null)
     const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set())
+    const [selectedScheduledFrequency, setSelectedScheduledFrequency] = useState<any>(null)
+    const [dueDate, setDueDate] = useState<Date | null>(null)
+
+
+
+    const scheduledOptions: SelectOption[] = [
+        { value: 'monthly', label: 'Monthly' },
+        { value: 'yearly', label: 'Yearly' },
+    ]
+
+
+
 
     const handleEditSave = async () => {
         if (
             activeRowId &&
-            (selectedOwnerOption !== null || selectedApproverOption !== null)
+            (selectedOwnerOption !== null || selectedApproverOption !== null) &&
+            selectedScheduledFrequency !== null 
         ) {
             const updateData: ApproverOwnerAssignedCompliances = {
+                assigned_compliance_id: [activeRowId],
                 owner_id: selectedOwnerOption?.value || 0,
                 approver_id: selectedApproverOption?.value || 0,
-                assigned_compliance_id: [activeRowId], // Pass the active row ID in an array as expected by the type
+                scheduled_frequency: selectedScheduledFrequency?.value || '',
+                // due_date: dueDate.toISOString().split('T')[0], // Format date as YYYY-MM-DD
             }
             console.log('INSIDE TABLE', updateData)
 
@@ -167,6 +183,7 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
                 )
                 setSelectedOwnerOption(null)
                 setSelectedApproverOption(null)
+                setSelectedScheduledFrequency(null)
                 refreshTable()
             }
             } catch (error : any) {
@@ -209,7 +226,7 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
 
             if (response?.data?.data && Array.isArray(response.data.data)) {
                 const mappedOptions = response.data.data.map((user: any) => ({
-                    label: `${user.first_name} ${user.last_name}`,
+                    label: user.name,
                     value: user.id,
                 }))
 
@@ -271,15 +288,27 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
             id: row.id,
             owner_id: row.owner_id,
             approver_id: row.approver_id,
+            
         })
 
         // Set the initial selected options based on existing data
         const ownerOption = userOptions.find(
-            (option) => option.value === row.owner_id,
+            (option) => option.value === row.owner_id
         )
         const approverOption = userOptions.find(
             (option) => option.value === row.approver_id,
         )
+
+        // const initialScheduledFrequency = scheduledOptions.find(
+        //     (option) => option.value === row.scheduled_frequency
+        // )
+        // setSelectedScheduledFrequency(initialScheduledFrequency || null)
+
+        // // Set initial due date if available
+        // const initialDueDate = row.due_date ? new Date(row.due_date) : null
+        // setDueDate(initialDueDate)
+
+        setIsEditDialogOpen(true)
 
         setSelectedOwnerOption(ownerOption || null)
         setSelectedApproverOption(approverOption || null)
@@ -391,17 +420,17 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
                 header: 'Owner',
                 accessorFn: (row) =>
                     row.Owner
-                        ? `${row.Owner.first_name} ${row.Owner.last_name}`
+                        ? row.Owner.name
                         : null,
                 cell: ({ getValue }) => (
-                    <div className="w-32">{getValue() || '--'}</div>
+                    <div className="w-32">{getValue<string>() || '--'}</div>
                 ),
             },
             {
                 header: 'Approver',
                 accessorFn: (row) =>
                     row.Approver
-                        ? `${row.Approver.first_name} ${row.Approver.last_name}`
+                        ? row.Approver.name
                         : null,
                 cell: ({ getValue }) => (
                     <div className="w-36">
@@ -420,7 +449,7 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
                                 onClick={() =>
                                     navigate(
                                         `/app/IHRC/assign-list-detail/${row.original.mst_compliance_id}`,
-                                        { state: row.original },
+                                        { state: row.original.MasterCompliance },
                                     )
                                 }
                                 icon={<RiEyeLine />}
@@ -441,7 +470,7 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
                         >
                             <Button
                                 size="sm"
-                                onClick={() => handleBellClick(row.original)}
+                                // onClick={() => handleBellClick(row.original)}
                                 icon={<HiBellAlert />}
                                 className="hover:bg-transparent text-red-500"
                             />
@@ -517,6 +546,18 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
                             options={userOptions}
                             value={selectedApproverOption}
                             onChange={handleApproverChange}
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block mb-2">Scheduled Frequency</label>
+                        <OutlinedSelect
+                            label="Select Scheduled Frequency"
+                            options={scheduledOptions}
+                            value={selectedScheduledFrequency}
+                            onChange={(selectedOption: SelectOption | null) => {
+                                setSelectedScheduledFrequency(selectedOption)
+                            }}
                         />
                     </div>
                 </div>
