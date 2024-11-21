@@ -290,6 +290,7 @@ const RecommendedTable = ({
             onSelectedCompliancesChange(Array.from(newSet));
             return newSet;
         });
+        setIstableLoading(true);
     };
  
     const handleTableRerender = () => {
