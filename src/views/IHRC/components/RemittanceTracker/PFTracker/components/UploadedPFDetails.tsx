@@ -1,12 +1,12 @@
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Tooltip } from '@/components/ui';
 import { HiArrowLeft } from 'react-icons/hi';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 import { useNavigate } from 'react-router-dom';
 import { PFTrackerData } from './PFTrackerTable'; // Import the PFTrackerData interface
 import { MdEdit } from 'react-icons/md';
-import { FiTrash } from 'react-icons/fi';
+import { FiFile, FiTrash } from 'react-icons/fi';
 import ConfigDropdown from './ConfigDropdown';
 import { PfChallanData } from '@/@types/pfTracker';
 import httpClient from '@/api/http-client';
@@ -27,11 +27,9 @@ const UploadedPFDetails: React.FC<UploadedPFDetailsProps> = ({ onBack }) => {
   const [loading, setLoading] = useState(true);
 
 
-  useEffect(() => {
-    fetchPFTrackerData();
-  }, []);
 
-  const fetchPFTrackerData = async () => {
+
+  const fetchPFTrackerData =  useCallback(async () => {
     try {
       setLoading(true);
       const res = await httpClient.get(endpoints.tracker.pfGetALl());
@@ -42,7 +40,11 @@ const UploadedPFDetails: React.FC<UploadedPFDetailsProps> = ({ onBack }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+  
+    useEffect(() => {
+    fetchPFTrackerData();
+  }, [fetchPFTrackerData]);
   const columns: ColumnDef<PFTrackerData>[] = useMemo(
     () => [
       {
@@ -169,64 +171,113 @@ const UploadedPFDetails: React.FC<UploadedPFDetailsProps> = ({ onBack }) => {
       },
       {
         header: 'Uploaded By',
-        accessorKey: 'UploadBy.first_name',
+        accessorKey: 'UploadBy.name',
         cell: (props) => (
           <div className="w-40 truncate">
-            {`${props.row.original.UploadBy?.first_name} ${props.row.original.UploadBy?.last_name}`}
+            {`${props.row.original.UploadBy?.name}`}
           </div>
         ),
       },
-      {
-        header: 'ECR Document',
-        accessorKey: 'ecr_document',
-        cell: (props) => (
-          <div className="w-40 truncate">
-            {props.getValue() ? (
-              <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
-                {props.getValue() as string}
-              </a>
-            ) : (
-               '--'
-            )}
-          </div>
-        ),
-      },
-      
-      {
-        header: 'Challan Document',
-        accessorKey: 'challan_document',
-        cell: (props) => (
-          <div className="w-40 truncate">
-            {props.getValue() ? (
-              <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
-                {props.getValue() as string}
-              </a>
-            ) : (
-               '--'
-            )}
-          </div>
-        ),
-      },
-      {
-        header: 'Receipt Document',
-        accessorKey: 'receipt_document',
-        cell: (props) => (
-          <div className="w-40 truncate">
-            {props.getValue() ? (
-              <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
-                {props.getValue() as string}
-              </a>
-            ) : (
-               '--'
-            )}
-          </div>
-        ),
-      },
+     {
+  header: 'Challan',
+  accessorKey: 'challan_document',
+  cell: (props) => {
+    const challanDocument = props.getValue() as string | null;
+    
+    const handleChallanDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
+      e.preventDefault();
+      if (challanDocument) {
+        const fullPath = `${import.meta.env.VITE_API_GATEWAY}/${challanDocument}`;
+        window.open(fullPath, '_blank');
+      }
+    };
+
+    return (
+      <div className="w-40 flex items-center">
+        {challanDocument ? (
+          <a 
+            href="#" 
+            onClick={handleChallanDownload} 
+            className="text-blue-600 hover:text-blue-800 transition-colors"
+          >
+            <FiFile className="w-5 h-5" />
+          </a>
+        ) : (
+          '--'
+        )}
+      </div>
+    );
+  },
+},
+{
+  header: 'ECR',
+  accessorKey: 'ecr_document',
+  cell: (props) => {
+    const ecrDocument = props.getValue() as string | null;
+    
+    const handleEcrDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
+      e.preventDefault();
+      if (ecrDocument) {
+        const fullPath = `${import.meta.env.VITE_API_GATEWAY}/${ecrDocument}`;
+        window.open(fullPath, '_blank');
+      }
+    };
+
+    return (
+      <div className="w-40 flex items-center">
+        {ecrDocument ? (
+          <a 
+            href="#" 
+            onClick={handleEcrDownload} 
+            className="text-blue-600 hover:text-blue-800 transition-colors"
+          >
+            <FiFile className="w-5 h-5" />
+          </a>
+        ) : (
+          '--'
+        )}
+      </div>
+    );
+  },
+},
+{
+  header: 'Payment Receipt',
+  accessorKey: 'receipt_document',
+  cell: (props) => {
+    const paymentReceiptDocument = props.getValue() as string | null;
+    
+    const handlePaymentReceiptDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
+      e.preventDefault();
+      if (paymentReceiptDocument) {
+        const fullPath = `${import.meta.env.VITE_API_GATEWAY}/${paymentReceiptDocument}`;
+        window.open(fullPath, '_blank');
+      }
+    };
+
+    return (
+      <div className="w-40 flex items-center">
+        {paymentReceiptDocument ? (
+          <a 
+            href="#" 
+            onClick={handlePaymentReceiptDownload} 
+            className="text-blue-600 hover:text-blue-800 transition-colors"
+          >
+            <FiFile className="w-5 h-5" />
+          </a>
+        ) : (
+          '--'
+        )}
+      </div>
+    );
+  },
+},
       {
         header: 'Actions',
         id: 'actions',
         cell: ({ row }) => (
-            <ConfigDropdown companyName={undefined} companyGroupName={undefined}            />
+          <ConfigDropdown companyName={row.original.PfSetup.Company.name} companyGroupName={row.original.PfSetup.CompanyGroup.name}
+          trackerId={row.original.id}  
+            onRefresh={fetchPFTrackerData}/>
         ),
     },
     ],

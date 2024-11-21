@@ -8,8 +8,10 @@ import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
 import { ActionMeta, MultiValue } from 'react-select';
 import { UsersRound } from 'lucide-react';
-import DistrictAutosuggest from '../../Branch/components/DistrictAutoSuggest';
+import DistrictAutosuggest from './DistrictAutoSuggest';
 import LocationAutosuggest from '../../Branch/components/LocationAutosuggest';
+import { createEsiSetup } from '@/store/slices/esiSetup/esiSetupSlice';
+import { showErrorNotification } from '@/components/ui/ErrorMessage';
 
 interface ESISetupPanelProps {
   onClose: () => void;
@@ -71,7 +73,10 @@ const ESISetupPanel = ({ onClose, addESISetup }) => {
   const [states, setStates] = useState<StateOption[]>([]);
   const [selectedStates, setSelectedStates] = useState<SelectOption | null>(null,)
   const [districts, setDistricts] = useState<DistrictOption[]>([]);
-  const [selectedDistrict, setSelectedDistrict] = useState('');
+  const [selectedDistrict, setSelectedDistrict] = useState<{ id: number | null; name: string }>({
+    id: null,
+    name: ''
+  });
   const [locations, setLocations] = useState<LocationOption[]>([]);
   const [selectedLocation, setSelectedLocation] = useState('')
   const [users, setUsers] = useState<any[]>([])
@@ -327,7 +332,26 @@ useEffect(() => {
       };
   
 
-      const response = await httpClient.post(endpoints.esiSetup.create(), data);
+      const response = await dispatch(createEsiSetup(data))
+      .unwrap()
+      .catch((error: any) => {
+        // Handle different error formats
+        if (error.response?.data?.message) {
+            // API error response
+            console.log('inside error')
+            showErrorNotification(error.response.data.message);
+        } else if (error.message) {
+            // Regular error object
+            showErrorNotification(error.message);
+        } else if (Array.isArray(error)) {
+            // Array of error messages
+            showErrorNotification(error);
+        } else {
+            // Fallback error message
+            showErrorNotification('An unexpected error occurred. Please try again.');
+        }
+        throw error; // Re-throw to prevent navigation
+    });
       if(response){
       addESISetup(response.data);
       onClose();
@@ -336,7 +360,7 @@ useEffect(() => {
       }
     } catch (error: any) {
       console.error('Failed to create ESI Setup:', error);
-      showNotification('danger', error.response?.data?.message || 'Failed to create ESI Setup');
+      // showNotification('danger', error.response?.data?.message || 'Failed to create ESI Setup');
     } finally {
       setIsLoading(false);
     }
@@ -436,21 +460,31 @@ useEffect(() => {
           />
         </div>
         <div>
-          <DistrictAutosuggest 
-             value={selectedDistrict}
-             onChange={setSelectedDistrict}
-             stateId={selectedStates?.value ? parseInt(selectedStates.value) : undefined}       
-             onDistrictSelect={setSelectedDistrictId}
-             />
+        <DistrictAutosuggest 
+        value={selectedDistrict}
+        onChange={(district) => {
+          setSelectedDistrict(district);
+          setFormData(prev => ({
+            ...prev,
+            district_id: district.id || 0
+          }));
+        }}
+        stateId={selectedStates?.value ? parseInt(selectedStates.value) : undefined}
+        onDistrictSelect={(id) => setSelectedDistrictId(id)}  // Add this prop
+      />
         </div>
         <div>
         <LocationAutosuggest
-         value={selectedLocation}
-         onChange={(value: string) => {
-             setSelectedLocation(value);
-         }}
-         districtId={selectedDistrictId}
-         />
+          value={selectedLocation}
+          onChange={(location: string) => {
+            setSelectedLocation(location);
+            setFormData(prev => ({ // Update formData with selected location
+            ...prev,
+              location: location
+            }));
+          }}
+          districtId={selectedDistrictId}
+        />
         </div>
       </div>
 
@@ -490,7 +524,7 @@ useEffect(() => {
                             isMulti
                             options={users.map(user => ({
                               value: String(user.id),                           
-                              label: `${user.first_name} ${user.last_name}`,
+                              label: `${user.name}`,
                             }))}
                             onChange={handleSignatoryChange}
 

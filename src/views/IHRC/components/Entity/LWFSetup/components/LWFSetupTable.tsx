@@ -404,6 +404,7 @@ import { MdEdit } from 'react-icons/md';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 import LWFEditedData from './LWFEditedData';
 import { IoPersonRemoveOutline } from 'react-icons/io5';
+import dayjs from 'dayjs';
 
 export interface LWFSetupData {
     Company_Group_Name: string;
@@ -430,14 +431,14 @@ interface LWFSetupTableProps {
     data: LWFSetupData[];
     // onDelete?: (index: number) => void;
     // onEdit?: (index: number, newData: LWFSetupData) => void;
-    // onSuspend?: (index: number) => void;
+    onSuspend?: (index: number) => void;
 }
 
 const LWFSetupTable: React.FC<LWFSetupTableProps> = ({ 
     data,
     // onDelete,
     // onEdit,
-    // onSuspend 
+    onSuspend 
 }) => {
     const [dialogIsOpen, setDialogIsOpen] = useState(false);
     const [itemToDelete, setItemToDelete] = useState<number | null>(null);
@@ -465,98 +466,98 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
         () => [
             {
                 header: 'Company Group',
-                accessorKey: 'Company_Group_Name',
+                accessorKey: 'CompanyGroup.name',
                 cell: (props) => (
                     <div className="w-36 text-start">{props.getValue() as string}</div>
                 ),
             },
             {
                 header: 'Company',
-                accessorKey: 'Company_Name',
+                accessorKey: 'Company.name',
                 cell: (props) => (
                     <div className="w-36 text-start">{props.getValue() as string}</div>
                 ),
             },
             {
                 header: 'LWF State',
-                accessorKey: 'lwfState',
+                accessorKey: 'Location.District.State.name',
                 cell: (props) => (
                     <div className="w-36 text-start">{props.getValue() as string}</div>
                 ),
             },
             {
                 header: 'LWF Location',
-                accessorKey: 'lwfLocation',
+                accessorKey: 'Location.name',
                 cell: (props) => (
                     <div className="w-36 text-start">{props.getValue() as string}</div>
                 ),
             },
-            {
-                header: 'LWF Frequency',
-                accessorKey: 'lwfFrequency',
-                cell: (props) => (
-                    <div className="w-36 text-start">{props.getValue() as string}</div>
-                ),
-            },
+            // {
+            //     header: 'LWF Frequency',
+            //     accessorKey: 'lwfFrequency',
+            //     cell: (props) => (
+            //         <div className="w-36 text-start">{props.getValue() as string}</div>
+            //     ),
+            // },
             {
                 header: 'LWF Registration Number',
-                accessorKey: 'lwfRegistrationNumber',
+                accessorKey: 'register_number',
                 cell: (props) => (
                     <div className="w-36 truncate">{props.getValue() as string}</div>
                 ),
             },
             {
                 header: 'LWF Registration Date',
-                accessorKey: 'lwfRegistrationDate',
+                accessorKey: 'register_date',
                 cell: (props) => (
-                    <div className="w-32 flex items-center justify-center">{props.getValue() as string}</div>
+                    <div className="w-32 flex items-center justify-center">{dayjs(props.getValue() as string).format('DD-MM-YYYY')}</div>
                 ),
             },
             {
                 header: 'Remmitance Mode',
-                accessorKey: 'lwfRemmitanceMode',
+                accessorKey: 'remmit_mode',
                 cell: (props) => (
                     <div className="w-40 flex items-center justify-center">{props.getValue() as string}</div>
                 ),
             },
             {
                 header: 'User ID',
-                accessorKey: 'lwfUserId',
+                accessorKey: 'username',
                 cell: (props) => (
                     <div className="w-48 truncate">{props.getValue() as string}</div>
                 ),
             },
             {
                 header: 'Password',
-                accessorKey: 'lwfPassword',
+                accessorKey: 'password',
                 cell: (props) => (
                     <div className="w-48 truncate">{props.getValue() as string}</div>
                 ),
             },
             {
                 header: 'Authorised Signatory',
-                accessorKey: 'authorizedSignatory',
+                accessorKey: 'Signatory.name',
                 cell: (props) => (
                     <div className="w-48 truncate">{props.getValue() as string}</div>
                 ),
             },
             {
                 header: 'Designation',
-                accessorKey: 'signatoryDesignation',
+                accessorKey: 'Signatory.Role.name',
                 cell: (props) => (
                     <div className="w-48 truncate">{props.getValue() as string}</div>
                 ),
             },
             {
                 header: 'Mobile',
-                accessorKey: 'signatoryMobile',
+                accessorKey: 'Signatory.mobile',
                 cell: (props) => (
                     <div className="w-48 truncate">{props.getValue() as string}</div>
                 ),
             },
             {
                 header: 'Email',
-                accessorKey: 'signatoryEmail',
+                accessorKey: 'Signatory.email',
                 cell: (props) => (
                     <div className="w-48 truncate">{props.getValue() as string}</div>
                 ),

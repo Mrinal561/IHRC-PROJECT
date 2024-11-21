@@ -254,7 +254,7 @@ export const dummyData: PFIWTrackerData[] = [
 
 import React, { useMemo, useState } from 'react';
 import { Button, Tooltip } from '@/components/ui';
-import { FiEdit, FiTrash } from 'react-icons/fi';
+import { FiEdit, FiFile, FiTrash } from 'react-icons/fi';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 import { MdEdit } from 'react-icons/md';
 import PFIWTrackerEditDialog from './PFIWTrackerEditDialog';
@@ -299,9 +299,10 @@ export interface PFIWTrackerData {
 interface PFIWTrackerTableProps {
   dataSent: PfiwChallanData[];
   loading?: boolean;
+  onRefresh?: () => void;
 }
 
-const PFIWTrackerTable: React.FC<PFIWTrackerTableProps> = ({ dataSent, loading = false }) => {
+const PFIWTrackerTable: React.FC<PFIWTrackerTableProps> = ({ dataSent, loading = false , onRefresh}) => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editingData, setEditingData] = useState<PFIWTrackerData | null>(null);
 
@@ -401,21 +402,39 @@ const PFIWTrackerTable: React.FC<PFIWTrackerTableProps> = ({ dataSent, loading =
           );
         },
       },
-      {
-        header: 'Challan',
-        accessorKey: 'challan_document',
-        cell: (props) => (
-          <div className="w-40 truncate">
-            {props.getValue() ? (
-              <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
-                {props.getValue() as string}
-              </a>
-            ) : (
-              '--'
-            )}
-          </div>
-        ),
-      },
+
+{
+  header: 'Challan',
+  accessorKey: 'challan_document',
+  cell: (props) => {
+    const challanDocument = props.getValue() as string | null;
+    
+    const handleChallanDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
+      e.preventDefault();
+      if (challanDocument) {
+        const fullPath = `${import.meta.env.VITE_API_GATEWAY}/${challanDocument}`;
+        window.open(fullPath, '_blank');
+      }
+    };
+
+    return (
+      <div className="w-40 flex items-center">
+        {challanDocument ? (
+          <a 
+            href="#" 
+            onClick={handleChallanDownload} 
+            className="text-blue-600 hover:text-blue-800 transition-colors"
+          >
+            <FiFile className="w-5 h-5" />
+             {/* <span className="truncate">View File</span> */}
+          </a>
+        ) : (
+          '--'
+        )}
+      </div>
+    );
+  },
+},
       {
         header: 'Upload Status',
         id: 'uploadStatus',
@@ -448,12 +467,14 @@ const PFIWTrackerTable: React.FC<PFIWTrackerTableProps> = ({ dataSent, loading =
             <ConfigDropdown 
               companyName={row.original.PfSetup.Company.name} 
               companyGroupName={row.original.PfSetup.CompanyGroup.name} 
+              trackerId={row.original.id}  
+              onRefresh={onRefresh}
             />
           </div>
         ),
       },
     ],
-    []
+    [onRefresh]
   );
 
   return (

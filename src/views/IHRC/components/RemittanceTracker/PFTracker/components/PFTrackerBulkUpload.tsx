@@ -7,6 +7,9 @@ import { HiDownload, HiUpload } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
+import { useDispatch } from 'react-redux';
+import { createPfTracker } from '@/store/slices/pfSetup/pfTrackerSlice';
+import { showErrorNotification } from '@/components/ui/ErrorMessage';
 
 const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
@@ -15,6 +18,7 @@ interface PFTrackerBulkUploadProps {
 }
 
 const PFTrackerBulkUpload: React.FC<PFTrackerBulkUploadProps> = ({ onUploadConfirm }) => {
+  const dispatch = useDispatch();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [currentGroup, setCurrentGroup] = useState('');
@@ -56,16 +60,25 @@ const PFTrackerBulkUpload: React.FC<PFTrackerBulkUploadProps> = ({ onUploadConfi
 
       console.log('FormData:', formData);
 
-      const res = await httpClient.post(
-        endpoints.tracker.pfUpload(),
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
+      const res = await dispatch(createPfTracker(formData))
+      .unwrap()
+      .catch((error: any) => {
+        // Handle different error formats
+        if (error.response?.data?.message) {
+            // API error response
+            showErrorNotification(error.response.data.message);
+        } else if (error.message) {
+            // Regular error object
+            showErrorNotification(error.message);
+        } else if (Array.isArray(error)) {
+            // Array of error messages
+            showErrorNotification(error);
+        } else {
+            // Fallback error message
+            showErrorNotification('An unexpected error occurred. Please try again.');
         }
-      );
-      console.log(res)
+        throw error; // Re-throw to prevent navigation
+    });
 
       if (res) {
         toast.push(
@@ -83,11 +96,11 @@ const PFTrackerBulkUpload: React.FC<PFTrackerBulkUploadProps> = ({ onUploadConfi
         navigate('/uploadedpfdetail');
       }
     } catch (error) {
-      toast.push(
-        <Notification title="Error" type="danger">
-          Upload failed. Please try again.
-        </Notification>
-      );
+      // toast.push(
+      //   // <Notification title="Error" type="danger">
+      //   //   Upload failed. Please try again.
+      //   // </Notification>
+      // );
       console.error('Upload error:', error);
     }
   };

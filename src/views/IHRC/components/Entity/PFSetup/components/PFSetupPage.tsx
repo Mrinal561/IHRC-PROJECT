@@ -16,6 +16,11 @@ import DistrictAutosuggest from '../../Branch/components/DistrictAutoSuggest'
 import httpClient from '@/api/http-client'
 import { endpoints } from '@/api/endpoint'
 import LocationAutosuggest from '../../Branch/components/LocationAutosuggest'
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from '@/store'
+import { createEsiSetup } from '@/services/EsiSetupService'
+import { createPF } from '@/store/slices/pfSetup/pfSlice'
+import { showErrorNotification } from '@/components/ui/ErrorMessage'
 interface PFSetupData {
     group_id: number
     company_id: number
@@ -23,7 +28,7 @@ interface PFSetupData {
     district: string
     location: string
     pf_code: string
-    register_date: Date
+    register_date: Date | null
     register_certificate: string
     signatory_data: SignatoryData[]
     user: string
@@ -68,10 +73,12 @@ interface Location {
 }
 
 const PFSetupPage: React.FC = () => {
+    
     const navigate = useNavigate()
     const location = useLocation()
     const companyData = location.state?.companyData
     const [fileBase64, setFileBase64] = useState<string>('')
+    const dispatch = useDispatch<AppDispatch>()
 
     const [selectedSignatories, setSelectedSignatories] = useState<
         UserSignatory[]
@@ -108,7 +115,7 @@ const PFSetupPage: React.FC = () => {
         district: '',
         location: '',
         pf_code: '',
-        register_date: new Date(),
+        register_date: null,
         register_certificate: '',
         signatory_data: [],
         user: '',
@@ -192,18 +199,18 @@ const PFSetupPage: React.FC = () => {
 
         console.log(pfSetupData)
         // Validate required fields
-        if (
-            !pfSetupData.pf_code ||
-            !pfSetupData.location ||
-            pfSetupData.signatory_data.length === 0
-        ) {
-            toast.push(
-                <Notification title="Error" type="danger">
-                    Please fill in all required fields
-                </Notification>,
-            )
-            return
-        }
+        // if (
+        //     !pfSetupData.pf_code ||
+        //     !pfSetupData.location ||
+        //     pfSetupData.signatory_data.length === 0
+        // ) {
+        //     toast.push(
+        //         <Notification title="Error" type="danger">
+        //             Please fill in all required fields
+        //         </Notification>,
+        //     )
+        //     return
+        // }
 
         const formData = {
             ...pfSetupData,
@@ -215,23 +222,43 @@ const PFSetupPage: React.FC = () => {
             console.log('Submitting PF Setup with base64 files:', formData)
 
             // Example API call (uncomment and modify as needed)
-            const response = await httpClient.post(endpoints.pfSetup.create(), formData);
-
-            toast.push(
-                <Notification title="Success" type="success">
-                    <div className="flex items-center">
-                        <span>PF Setup successfully created</span>
-                    </div>
-                </Notification>,
-            )
-            // navigate(-1);
-        } catch (error) {
+            const response = await dispatch(createPF(formData))
+            .unwrap()
+            .catch((error: any) => {
+                // Handle different error formats
+                if (error.response?.data?.message) {
+                    // API error response
+                    showErrorNotification(error.response.data.message);
+                } else if (error.message) {
+                    // Regular error object
+                    showErrorNotification(error.message);
+                } else if (Array.isArray(error)) {
+                    // Array of error messages
+                    showErrorNotification(error);
+                } else {
+                    // Fallback error message
+                    showErrorNotification('An unexpected error occurred. Please try again.');
+                }
+                throw error; // Re-throw to prevent navigation
+            });
+            if(response){
+                toast.push(
+                    <Notification title="Success" type="success">
+                        <div className="flex items-center">
+                            <span>PF Setup successfully created</span>
+                        </div>
+                    </Notification>,
+                )
+                navigate(-1);
+            }
+           
+        } catch (error:any) {
             console.error('Error submitting PF setup:', error)
-            toast.push(
-                <Notification title="Error" type="danger">
-                    Failed to create PF Setup
-                </Notification>,
-            )
+            // toast.push(
+            //     <Notification title="Error" type="danger">
+            //         {error}
+            //     </Notification>,
+            // )
         }
     }
 
@@ -347,7 +374,7 @@ const PFSetupPage: React.FC = () => {
                 // Format the users data to only include name and id
                 const formattedUsers = response.data.data.map((user: any) => ({
                     id: user.id,
-                    name: `${user.first_name} ${user.last_name}`,
+                    name: `${user.name}`,
                 }))
 
                 setUsers(formattedUsers)

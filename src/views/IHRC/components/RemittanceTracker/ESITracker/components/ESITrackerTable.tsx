@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Button, Tooltip } from '@/components/ui';
-import { FiEdit, FiTrash } from 'react-icons/fi';
+import { FiEdit, FiFile, FiTrash } from 'react-icons/fi';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 import { MdEdit } from 'react-icons/md';
 import ESITrackerEditDialog from './ESITrackerEditDialog';
@@ -12,9 +12,10 @@ import dayjs from 'dayjs';
 interface EsiTrackerTableProps {
     dataSent: PfChallanData[];
     loading: boolean
+  onRefresh?: () => void;
   }
 
-const ESITrackerTable: React.FC<EsiTrackerTableProps> = ({ dataSent, loading }) => {
+const ESITrackerTable: React.FC<EsiTrackerTableProps> = ({ dataSent, loading ,onRefresh}) => {
     // const [data, setData] = useState<ESITrackerData[]>(sampleData);
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [editingData, setEditingData] = useState<PfChallanData | null>(null);
@@ -228,16 +229,37 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> = ({ dataSent, loading }) 
                 ),
             },
             {
-                header: 'Challan',
-                accessorKey: 'challan_document',
-                cell: (props) => 
-                <div className="w-40 truncate">
-                  <a onClick={handleDownload} className="text-blue-600 hover:underline">
-                    {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
-                    {props.getValue() as string}
-                  </a>
-                </div>,
-              },
+  header: 'Challan',
+  accessorKey: 'challan_document',
+  cell: (props) => {
+    const challanDocument = props.getValue() as string | null;
+    
+    const handleChallanDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
+      e.preventDefault();
+      if (challanDocument) {
+        const fullPath = `${import.meta.env.VITE_API_GATEWAY}/${challanDocument}`;
+        window.open(fullPath, '_blank');
+      }
+    };
+
+    return (
+      <div className="w-40 flex items-center">
+        {challanDocument ? (
+          <a 
+            href="#" 
+            onClick={handleChallanDownload} 
+            className="text-blue-600 hover:text-blue-800 transition-colors"
+          >
+            <FiFile className="w-5 h-5" />
+             {/* <span className="truncate">View File</span> */}
+          </a>
+        ) : (
+          '--'
+        )}
+      </div>
+    );
+  },
+},
           
               {
                 header: 'Upload Status',
@@ -270,7 +292,10 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> = ({ dataSent, loading }) 
                                 className="text-red-500"
                             />
                         </Tooltip>
-                        <ESIConfigDropdown companyName={undefined} companyGroupName={undefined}            />
+                        <ESIConfigDropdown  companyName={row.original.EsiSetup.Company.name} 
+              companyGroupName={row.original.EsiSetup.CompanyGroup.name} 
+              trackerId={row.original.id}  
+              onRefresh={onRefresh}           />
                     </div>
                 ),
             },

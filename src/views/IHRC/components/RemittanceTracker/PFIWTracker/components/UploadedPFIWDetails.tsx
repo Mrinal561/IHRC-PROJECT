@@ -176,7 +176,7 @@
 
 
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Tooltip } from '@/components/ui';
 import { HiArrowLeft } from 'react-icons/hi';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
@@ -185,6 +185,7 @@ import ConfigDropdown from './ConfigDropdown';
 import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
 import dayjs from 'dayjs';
+import { FiFile } from 'react-icons/fi';
 
 const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
@@ -211,7 +212,7 @@ interface PfiwChallanData {
   challan_document: string;
   status: string;
   UploadBy: {
-    first_name: string;
+    name: string;
     last_name: string;
   };
 }
@@ -225,21 +226,21 @@ const UploadedPFIWDetails: React.FC<UploadedPFIWDetailsProps> = ({ onBack }) => 
   const [data, setData] = useState<PfiwChallanData[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchPFIWTrackerData();
-  }, []);
-
-  const fetchPFIWTrackerData = async () => {
+  const fetchPFIWTrackerData = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await httpClient.get(endpoints.tracker.pfiwGetAll());
+      const res = await httpClient.get(endpoints.pfiwtracker.pfiwGetAll());
       setData(res.data.data);
     } catch (error) {
       console.error('Error fetching PFIW tracker data:', error);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchPFIWTrackerData();
+  }, [fetchPFIWTrackerData]);
 
   const columns: ColumnDef<PfiwChallanData>[] = useMemo(
     () => [
@@ -298,20 +299,37 @@ const UploadedPFIWDetails: React.FC<UploadedPFIWDetailsProps> = ({ onBack }) => 
         }
       },
       {
-        header: 'Challan Document',
-        accessorKey: 'challan_document',
-        cell: (props) => (
-          <div className="w-40 truncate">
-            {props.getValue() ? (
-              <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
-                {props.getValue() as string}
-              </a>
-            ) : (
-              '--'
-            )}
-          </div>
-        ),
-      },
+  header: 'Challan',
+  accessorKey: 'challan_document',
+  cell: (props) => {
+    const challanDocument = props.getValue() as string | null;
+    
+    const handleChallanDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
+      e.preventDefault();
+      if (challanDocument) {
+        const fullPath = `${import.meta.env.VITE_API_GATEWAY}/${challanDocument}`;
+        window.open(fullPath, '_blank');
+      }
+    };
+
+    return (
+      <div className="w-40 flex items-center">
+        {challanDocument ? (
+          <a 
+            href="#" 
+            onClick={handleChallanDownload} 
+            className="text-blue-600 hover:text-blue-800 transition-colors"
+          >
+            <FiFile className="w-5 h-5" />
+             {/* <span className="truncate">View File</span> */}
+          </a>
+        ) : (
+          '--'
+        )}
+      </div>
+    );
+  },
+},
       {
         header: 'Status',
         accessorKey: 'status',
@@ -319,10 +337,10 @@ const UploadedPFIWDetails: React.FC<UploadedPFIWDetailsProps> = ({ onBack }) => 
       },
       {
         header: 'Uploaded By',
-        accessorKey: 'UploadBy.first_name',
+        accessorKey: 'UploadBy.name',
         cell: (props) => (
           <div className="w-40 truncate">
-            {`${props.row.original.UploadBy?.first_name} ${props.row.original.UploadBy?.last_name}`}
+            {`${props.row.original.UploadBy?.name}`}
           </div>
         ),
       },
@@ -333,6 +351,8 @@ const UploadedPFIWDetails: React.FC<UploadedPFIWDetailsProps> = ({ onBack }) => 
           <ConfigDropdown 
             companyName={row.original.PfSetup.Company.name} 
             companyGroupName={row.original.PfSetup.CompanyGroup.name} 
+            trackerId={row.original.id}  
+            onRefresh={fetchPFIWTrackerData}
           />
         ),
       },

@@ -93,259 +93,10 @@ export const dummyData: PFTrackerData[] = [
     },
 ];
 
-// import React, { useMemo, useState } from 'react';
-// import { Button, Tooltip } from '@/components/ui';
-// import { FiEdit, FiTrash } from 'react-icons/fi';
-// import DataTable, { ColumnDef } from '@/components/shared/DataTable';
-// import { MdEdit } from 'react-icons/md';
-// import PFTrackerEditDialog from './PFTrackerEditDialog';
-// import ConfigDropdown from './ConfigDropdown';
-// import { PfChallanData } from '@/@types/pfTracker';
-
-
-// const documentPath = "../store/AllMappedCompliancesDetails.xls";
-
-
-// // Define the structure of your data
-
-
-// // Dummy data (replace with your actual data source)
-
-// interface PfTrackerTableProps{
-//     dataSent: PfChallanData[];
-// }
-
-// const PFTrackerTable: React.FC<PfTrackerTableProps>= ({dataSent}) => {
-//     const [data, setData] = useState<PfChallanData[]>([]);
-//     const [editDialogOpen, setEditDialogOpen] = useState(false);
-//     const [editingData, setEditingData] = useState<PFTrackerData | null>(null);
-
-//     const handleEdit = (row: PFTrackerData) => {
-//         setEditingData(row);
-//         setEditDialogOpen(true);
-//     };
-
-
-//     const handleEditSubmit = (editedData: PFTrackerData) => {
-//         setData((prevData) =>
-//             prevData.map((item) =>
-//                 item === editingData ? editedData : item
-//             )
-//         );
-//         setEditDialogOpen(false);
-//         setEditingData(null);
-//     };
-//     const columns: ColumnDef<PFTrackerData>[] = useMemo(
-//         () => [
-//             {
-//                 header: 'Company',
-//                 accessorKey: 'companyName',
-//                 cell: (props) => <div className="w-52 truncate">{props.getValue() as string}</div>,
-//             },
-//             {
-//                 header: 'PF Code',
-//                 accessorKey: 'pfCode',
-//                 cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
-//             },
-//             {
-//                 header: 'Location',
-//                 accessorKey: 'location',
-//                 cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
-//             },
-//             {
-//                 header: 'Month',
-//                 accessorKey: 'month',
-//                 cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
-//             },
-//             {
-//                 header: 'No. of Employees',
-//                 accessorKey: 'noOfEmployees',
-//                 cell: (props) => <div className="w-40 truncate">{props.getValue() as number}</div>,
-//             },
-//             {
-//                 header: 'EPF Wages',
-//                 accessorKey: 'wages',
-//                 cell: (props) => <div className="w-28 truncate">₹{(props.getValue() as number).toLocaleString()}</div>,
-//             },
-//             {
-//                 header: 'EPS Wage',
-//                 accessorKey: 'epsWage',
-//                 cell: (props) => <div className="w-28 truncate">₹{(props.getValue() as number).toLocaleString()}</div>,
-//             },
-//             {
-//                 header: 'Total Challan Amount',
-//                 accessorKey: 'totalChallanAmount',
-//                 cell: (props) => <div className="w-52 truncate">₹{(props.getValue() as number).toLocaleString()}</div>,
-//             },
-//             {
-//                 header: 'Total Amount Paid',
-//                 accessorKey: 'totalAmountPaid',
-//                 cell: (props) => <div className="w-52 truncate">₹{(props.getValue() as number).toLocaleString()}</div>,
-//             },
-//             {
-//                 header: 'Difference',
-//                 accessorKey: 'difference',
-//                 cell: (props) => <div className="w-52 truncate">{(props.getValue() as number).toLocaleString()}</div>,
-//             },
-//             {
-//                 header: 'Reason For Difference',
-//                 accessorKey: 'reasonForDifference',
-//                 cell: (props) => <div className="w-52 truncate">{(props.getValue() as number).toLocaleString()}</div>,
-//             },
-//             {
-//                 header: 'Due Date',
-//                 accessorKey: 'dueDate',
-//                 cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
-//             },
-//             {
-//                 header: 'Date of Payment',
-//                 accessorKey: 'dateOfPayment',
-//                 cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
-//             },
-//             {
-//                 header: 'Delay',
-//                 accessorKey: 'delay',
-//                 cell: (props) => <div className="w-28 truncate">{props.getValue() as number}</div>,
-//             },
-//             {
-//                 header: 'Delay Reason',
-//                 accessorKey: 'delayReason',
-//                 cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
-//             },
-//             {
-//                 header: 'Type of Challan',
-//                 accessorKey: 'typeOfChallan',
-//                 cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
-//             },
-//             {
-//                 header: 'TRRN No',
-//                 accessorKey: 'trrnNo',
-//                 cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
-//             },
-//             {
-//                 header: 'CRN No',
-//                 accessorKey: 'crnNo',
-//                 cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
-//             },
-//             {
-//                 header: 'ECR',
-//                 accessorKey: 'ecr',
-//                 cell: (props) => 
-//                 <div className="w-40 truncate">
-//                   <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
-//                     {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
-//                     {props.getValue() as string}
-//                   </a>
-//                 </div>,
-//               },
-//               {
-//                 header: 'Challan',
-//                 accessorKey: 'challan',
-//                 cell: (props) => 
-//                 <div className="w-40 truncate">
-//                   <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
-//                     {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
-//                     {props.getValue() as string}
-//                   </a>
-//                 </div>,
-//               },
-//               {
-//                 header: 'Payment Receipt',
-//                 accessorKey: 'payment',
-//                 cell: (props) => 
-//                 <div className="w-40 truncate">
-//                   <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
-//                     {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
-//                     {props.getValue() as string}
-//                   </a>
-//                 </div>,
-//               },
-//               {
-//                 header: 'Upload Status',
-//                 id: 'uploadStatus',
-//                 cell: ({ row }) => {
-//                     const { ecr, challan, payment } = row.original;
-//                     const uploadedCount = [ecr, challan, payment].filter(Boolean).length;
-//                     return <div className="w-32 truncate">{`${uploadedCount}/3`}</div>;
-//                 },
-//             },
-//             {
-//                 header: 'Actions',
-//                 id: 'actions',
-//                 cell: ({ row }) => (
-//                     <div className="flex items-center gap-2">
-//                         <Tooltip title="Edit">
-//                             <Button
-//                                 size="sm"
-//                                 onClick={() => handleEdit(row.original)}
-//                                 icon={<MdEdit />}
-//                             />
-//                         </Tooltip>
-//                         <Tooltip title="Delete">
-//                             <Button
-//                                 size="sm"
-//                                 onClick={() => console.log('Delete', row.original)}
-//                                 icon={<FiTrash />}
-//                                 className="text-red-500"
-//                             />
-//                         </Tooltip>
-//                         <ConfigDropdown companyName={undefined} companyGroupName={undefined}            />
-//                     </div>
-//                 ),
-//             },
-//         ],
-//         []
-//     );
-
-//     const handleDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
-//         e.preventDefault();
-//         // Implement the download functionality here
-//         // For example, you could use the `fetch` API to download the file
-//         fetch(documentPath)
-//           .then(response => response.blob())
-//           .then(blob => {
-//             const url = window.URL.createObjectURL(blob);
-//             const a = document.createElement('a');
-//             a.style.display = 'none';
-//             a.href = url;
-//             a.download = 'AllMappedCompliancesDetails.xls';
-//             document.body.appendChild(a);
-//             a.click();
-//             window.URL.revokeObjectURL(url);
-//           })
-//           .catch(() => console.error('Download failed'));
-//       };
-
-//     return (
-//         <div className="relative">
-//             <DataTable
-//                 columns={columns}
-//                 data={data}
-//                 skeletonAvatarColumns={[0]}
-//                 skeletonAvatarProps={{ className: 'rounded-md' }}
-//                 stickyHeader={true}
-//                 stickyFirstColumn={true}
-//                 stickyLastColumn={true}
-//             />
-//             {editingData && (
-//                 <PFTrackerEditDialog
-//                     isOpen={editDialogOpen}
-//                     onClose={() => setEditDialogOpen(false)}
-//                     onSubmit={handleEditSubmit}
-//                     data={editingData}
-//                 />
-//             )}
-//         </div>
-//     );
-// };
-
-// export default PFTrackerTable;
-
-
 
 import React, { useMemo, useState } from 'react';
 import { Button, Tooltip } from '@/components/ui';
-import { FiEdit, FiTrash } from 'react-icons/fi';
+import { FiEdit, FiFile, FiTrash } from 'react-icons/fi';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 import { MdEdit } from 'react-icons/md';
 import PFTrackerEditDialog from './PFTrackerEditDialog';
@@ -358,9 +109,10 @@ const documentPath = "../store/AllMappedCompliancesDetails.xls";
 interface PfTrackerTableProps {
   dataSent: PfChallanData[];
   loading: boolean;
+  onRefresh?: () => void;
 }
 
-const PFTrackerTable: React.FC<PfTrackerTableProps> = ({ dataSent, loading }) => {
+const PFTrackerTable: React.FC<PfTrackerTableProps> = ({ dataSent, loading , onRefresh}) => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editingData, setEditingData] = useState<PfChallanData | null>(null);
 
@@ -457,47 +209,98 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> = ({ dataSent, loading }) =>
         cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
       },
       {
-        header: 'ECR',
-        accessorKey: 'ecr_document',
-        cell: (props) => 
-          <div className="w-40 truncate">
-            {props.getValue()? (
-              <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
-                {props.getValue() as string}
-              </a>
-            ) : (
-               '--'
-            )}
-          </div>,
-      },
-      {
-        header: 'Challan',
-        accessorKey: 'challan_document',
-        cell: (props) => 
-          <div className="w-40 truncate">
-            {props.getValue()? (
-              <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
-                {props.getValue() as string}
-              </a>
-            ) : (
-               '--'
-            )}
-          </div>,
-      },
-      {
-        header: 'Payment Receipt',
-        accessorKey: 'eceipt_document',
-        cell: (props) => 
-          <div className="w-40 truncate">
-            {props.getValue()? (
-              <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
-                {props.getValue() as string}
-              </a>
-            ) : (
-              '--'
-            )}
-          </div>,
-      },
+  header: 'Challan',
+  accessorKey: 'challan_document',
+  cell: (props) => {
+    const challanDocument = props.getValue() as string | null;
+    
+    const handleChallanDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
+      e.preventDefault();
+      if (challanDocument) {
+        const fullPath = `${import.meta.env.VITE_API_GATEWAY}/${challanDocument}`;
+        window.open(fullPath, '_blank');
+      }
+    };
+
+    return (
+      <div className="w-40 flex items-center">
+        {challanDocument ? (
+          <a 
+            href="#" 
+            onClick={handleChallanDownload} 
+            className="text-blue-600 hover:text-blue-800 transition-colors"
+          >
+            <FiFile className="w-5 h-5" />
+          </a>
+        ) : (
+          '--'
+        )}
+      </div>
+    );
+  },
+},
+{
+  header: 'ECR',
+  accessorKey: 'ecr_document',
+  cell: (props) => {
+    const ecrDocument = props.getValue() as string | null;
+    
+    const handleEcrDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
+      e.preventDefault();
+      if (ecrDocument) {
+        const fullPath = `${import.meta.env.VITE_API_GATEWAY}/${ecrDocument}`;
+        window.open(fullPath, '_blank');
+      }
+    };
+
+    return (
+      <div className="w-40 flex items-center">
+        {ecrDocument ? (
+          <a 
+            href="#" 
+            onClick={handleEcrDownload} 
+            className="text-blue-600 hover:text-blue-800 transition-colors"
+          >
+            <FiFile className="w-5 h-5" />
+          </a>
+        ) : (
+          '--'
+        )}
+      </div>
+    );
+  },
+},
+{
+  header: 'Payment Receipt',
+  accessorKey: 'receipt_document',
+  cell: (props) => {
+    const paymentReceiptDocument = props.getValue() as string | null;
+    
+    const handlePaymentReceiptDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
+      e.preventDefault();
+      if (paymentReceiptDocument) {
+        const fullPath = `${import.meta.env.VITE_API_GATEWAY}/${paymentReceiptDocument}`;
+        window.open(fullPath, '_blank');
+      }
+    };
+
+    return (
+      <div className="w-40 flex items-center">
+        {paymentReceiptDocument ? (
+          <a 
+            href="#" 
+            onClick={handlePaymentReceiptDownload} 
+            className="text-blue-600 hover:text-blue-800 transition-colors"
+          >
+            <FiFile className="w-5 h-5" />
+          </a>
+        ) : (
+          '--'
+        )}
+      </div>
+    );
+  },
+},
       {
         header: 'Upload Status',
         id: 'uploadStatus',
@@ -530,12 +333,14 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> = ({ dataSent, loading }) =>
             <ConfigDropdown 
               companyName={row.original.PfSetup.Company.name} 
               companyGroupName={row.original.PfSetup.CompanyGroup.name} 
+              trackerId={row.original.id} 
+              onRefresh={onRefresh}
             />
           </div>
         ),
       },
     ],
-    []
+    [onRefresh]
   );
 
   const handleDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {

@@ -78,7 +78,7 @@ const ESISetupTable = () => {
       },
       {
         header: 'ESI Code Location',
-        accessorKey: 'location',
+        accessorKey: 'Location.name',
         cell: (props) => (
           <div className="w-36 truncate">{props.getValue() as string}</div>
         ),

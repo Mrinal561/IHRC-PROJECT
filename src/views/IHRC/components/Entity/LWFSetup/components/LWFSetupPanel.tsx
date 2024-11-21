@@ -318,7 +318,8 @@ import { toast } from '@/components/ui/toast';
 import { Notification } from '@/components/ui/notification';
 import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
-import DistrictAutosuggest from '../../Branch/components/DistrictAutoSuggest';
+// import DistrictAutosuggest from '../../Branch/components/DistrictAutoSuggest';
+import DistrictAutosuggest from '../../ESICSetup/components/DistrictAutoSuggest';
 import LocationAutosuggest from '../../Branch/components/LocationAutosuggest';
 
 interface LWFSetupPanelProps {
@@ -329,6 +330,11 @@ interface LWFSetupPanelProps {
 interface SelectOption {
   value: string;
   label: string;
+}
+
+interface DistrictValue {
+  id: number | null;
+  name: string;
 }
 
 interface StateOption extends SelectOption {}
@@ -355,8 +361,11 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
   const [states, setStates] = useState<StateOption[]>([]);
   const [selectedStates, setSelectedStates] = useState<SelectOption | null>(null);
   const [districts, setDistricts] = useState<DistrictOption[]>([]);
-  const [selectedDistrict, setSelectedDistrict] = useState('');
-  const [selectedDistrictId, setSelectedDistrictId] = useState<number | undefined>();
+  const [selectedDistrict, setSelectedDistrict] = useState<DistrictValue>({
+    id: null,
+    name: ''
+  });
+  const [selectedDistrictId, setSelectedDistrictId] = useState<number | null>(null);
   const [locations, setLocations] = useState<LocationOption[]>([]);
   const [selectedLocation, setSelectedLocation] = useState('');
   const [fileBase64, setFileBase64] = useState<string>('');
@@ -367,10 +376,10 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
     state_id: number;
     district_id: number;
     location: string;
-    registration_number: string;
-    registration_date: Date | null;
-    remittance_mode: string;
-    user_id: string;
+    register_number: string;
+    register_date: Date | null;
+    remmit_mode: string;
+    username: string;
     password: string;
     signatory_data: { signatory_id: number }[];
     certificate: string;
@@ -380,10 +389,10 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
     state_id: 0,
     district_id: 0,
     location: '',
-    registration_number: '',
-    registration_date: null,
-    remittance_mode: '',
-    user_id: '',
+    register_number: '',
+    register_date: null,
+    remmit_mode: '',
+    username: '',
     password: '',
     signatory_data: [],
     certificate: ''
@@ -543,7 +552,7 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
 
   const handleStateChange = (option: SelectOption | null) => {
     setSelectedStates(option);
-    setSelectedDistrict('');
+    setSelectedDistrict({ id: null, name: '' });
     setSelectedLocation('');
     setDistricts([]);
     setLocations([]);
@@ -582,20 +591,20 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
 
   const handleSubmit = async () => {
     console.log(formData);
-    // try {
-    //   setIsLoading(true);
-    //   const response = await httpClient.post(endpoints.lwfSetup.create(), formData);
-    //   if(response){
-    //     addLWFSetup(response.data);
-    //     onClose();
-    //     showNotification('success', 'LWF Setup created successfully');
-    //   }
-    // } catch (error: any) {
-    //   console.error('Failed to create LWF Setup:', error);
-    //   showNotification('danger', error.response?.data?.message || 'Failed to create LWF Setup');
-    // } finally {
-    //   setIsLoading(false);
-    // }
+    try {
+      setIsLoading(true);
+      const response = await httpClient.post(endpoints.lwfSetup.create(), formData);
+      if(response){
+        addLWFSetup(response.data);
+        onClose();
+        showNotification('success', 'LWF Setup created successfully');
+      }
+    } catch (error: any) {
+      console.error('Failed to create LWF Setup:', error);
+      showNotification('danger', error.response?.data?.message || 'Failed to create LWF Setup');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -632,12 +641,18 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
           />
         </div>
         <div>
-          <DistrictAutosuggest 
-            value={selectedDistrict}
-            onChange={setSelectedDistrict}
-            stateId={selectedStates?.value ? parseInt(selectedStates.value) : undefined}       
-            onDistrictSelect={setSelectedDistrictId}
-          />
+        <DistrictAutosuggest 
+        value={selectedDistrict}
+        onChange={(district) => {
+          setSelectedDistrict(district);
+          setFormData(prev => ({
+            ...prev,
+            district_id: district.id || 0
+          }));
+        }}
+        stateId={selectedStates?.value ? parseInt(selectedStates.value) : undefined}
+        onDistrictSelect={(id) => setSelectedDistrictId(id)}  // Add this prop
+      />
         </div>
         <div>
           <LocationAutosuggest
@@ -659,11 +674,11 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
           <p className="mb-2">LWF   Registration Number</p>
           <OutlinedInput
             label="Registration Number"
-            value={formData.registration_number}
+            value={formData.register_number}
             onChange={(value: string) => {
               setFormData(prev => ({
                 ...prev,
-                registration_number: value
+                register_number: value
               }));
             }}
           />
@@ -673,11 +688,11 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
           <DatePicker
           size='sm'
         placeholder="Registration Date"
-        value={formData.registration_date}
+        value={formData.register_date}
         onChange={(date: Date | null) => {
           setFormData(prev => ({
             ...prev,
-            registration_date: date
+            register_date: date
           }));
         }}
       />
@@ -687,11 +702,11 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
           <OutlinedSelect
             label="Select Mode"
             options={remittanceModeOptions}
-            value={remittanceModeOptions.find(option => option.value === formData.remittance_mode)}
+            value={remittanceModeOptions.find(option => option.value === formData.remmit_mode)}
             onChange={(option: SelectOption | null) => {
               setFormData(prev => ({
                 ...prev,
-                remittance_mode: option?.value || ''
+                remmit_mode: option?.value || ''
               }));
             }}
           />
@@ -703,11 +718,11 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
           <p className="mb-2">User ID</p>
           <OutlinedInput
             label="User ID"
-            value={formData.user_id}
+            value={formData.username}
             onChange={(value: string) => {
               setFormData(prev => ({
                 ...prev,
-                user_id: value
+                username: value
               }));
             }}
           />
@@ -733,7 +748,7 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
           isMulti
           options={users.map(user => ({
             value: String(user.id),                           
-            label: `${user.first_name} ${user.last_name}`,
+            label: `${user.name}`,
           }))}
           onChange={handleSignatoryChange}
         />
