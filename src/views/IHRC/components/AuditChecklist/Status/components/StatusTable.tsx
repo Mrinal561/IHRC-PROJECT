@@ -483,7 +483,7 @@ const StatusTable: React.FC<StatusTableProps> = ({
                   <Button
                     size="sm"
                     onClick={() =>
-                      navigate(`/app/IHRC/compliance-status-list-detail/${row.original.id}`, {
+                      navigate(`/app/IHRC/compliance-status-list-detail/${row.original.uuid}`, {
                         state: row.original,
                       })
                     }
