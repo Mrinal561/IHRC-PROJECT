@@ -116,18 +116,10 @@ const CompanyESISetupPage: React.FC = () => {
   const handleAddESISetup = async (newESISetup: ESISetupData) => {
     try {
       setIsLoading(true);
-      const response = await httpClient.post(endpoints.esiSetup.create(), newESISetup);
+      // const response = await httpClient.post(endpoints.esiSetup.create(), newESISetup);
       // showNotification('success', 'ESI Setup created successfully');
-      if(response){
-
-        setIsOpen(false);
-        toast.push(
-          <Notification title="Success" type="success">
-            ESI Setup created successfully
-          </Notification>
-        );
-        await fetchESISetupData(); // Refresh the list
-      }
+    
+         fetchESISetupData(); // Refresh the list
       // refreshData();
     } catch (error: any) {
       console.error('Error adding ESI setup:', error);
@@ -144,6 +136,19 @@ const CompanyESISetupPage: React.FC = () => {
   const handleClose = () => {
     setIsOpen(false);
   };
+//   const handleAddESISetup = async (newESISetup: ESISetupData) => {
+//  try {
+//    setIsLoading(true);
+//    setIsOpen(false);
+//     fetchESISetupData(); 
+//    showNotification('success', 'ESI Setup created successfully');
+//  } catch (error: any) {
+//    console.error('Error adding ESI setup:', error);
+//    showNotification('danger', error.response?.data?.message || 'Failed to create ESI setup');
+//  } finally {
+//    setIsLoading(false);
+//  }
+// };
 
   // const [key, setKey] = useState(0);
   // const refreshData = () => {
@@ -181,10 +186,10 @@ const CompanyESISetupPage: React.FC = () => {
       </div>
 
       <ESISetupTable
-        // data={esiSetupData}
+        data={esiSetupData}
         // onDelete={handleDelete}
         // onEdit={handleEdit}
-        // isLoading={isLoading}
+        isLoading={isLoading}
         // refreshData={fetchESISetupData}
       />
 
@@ -199,7 +204,7 @@ const CompanyESISetupPage: React.FC = () => {
         <ESISetupPanel
           onClose={handleClose}
           addESISetup={handleAddESISetup}
-          // refreshData={fetchESISetupData}
+          refreshData={fetchESISetupData}
           />
       </Dialog>
     </div>
