@@ -7,6 +7,10 @@ import DatePickerRange from '@/components/ui/DatePicker/DatePickerRange';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
+import { createPfIwTracker } from '@/store/slices/pfSetup/pfIwTrackerSlice';
+import { showErrorNotification } from '@/components/ui/ErrorMessage';
+import { createEsiTracker } from '@/store/slices/esiSetup/esiTrackerSlice';
+import { useDispatch } from 'react-redux';
 
 const documentPath = "../store/AllMappedESICompliancesDetails.xls";
 
@@ -21,6 +25,8 @@ const ESITrackerBulkUpload: React.FC<ESITrackerBulkUploadProps> = ({ onUploadCon
   const [currentGroup, setCurrentGroup] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const [isloading, setIsloading] = useState(false);
+  
+  const dispatch = useDispatch();
 
 
   const navigate = useNavigate();
@@ -61,16 +67,25 @@ const ESITrackerBulkUpload: React.FC<ESITrackerBulkUploadProps> = ({ onUploadCon
       console.log('FormData:', formData);
 
       
-      const res = await httpClient.post(
-        endpoints.esiTracker.bulkUpload(),
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
+      const res = await dispatch(createEsiTracker(formData))
+      .unwrap()
+      .catch((error: any) => {
+        // Handle different error formats
+        if (error.response?.data?.message) {
+            // API error response
+            showErrorNotification(error.response.data.message);
+        } else if (error.message) {
+            // Regular error object
+            showErrorNotification(error.message);
+        } else if (Array.isArray(error)) {
+            // Array of error messages
+            showErrorNotification(error);
+        } else {
+            // Fallback error message
+            showErrorNotification('An unexpected error occurred. Please try again.');
         }
-      );
-  
+        throw error; // Re-throw to prevent navigation
+    });
       if (res) {
         toast.push(
           <Notification title="Success" type="success">
@@ -87,11 +102,11 @@ const ESITrackerBulkUpload: React.FC<ESITrackerBulkUploadProps> = ({ onUploadCon
       //   await refreshTable();
       }
     } catch (error) {
-      toast.push(
-        <Notification title="Error" type="danger">
-          Upload failed. Please try again.
-        </Notification>
-      );
+      // toast.push(
+      //   <Notification title="Error" type="danger">
+      //     Upload failed. Please try again.
+      //   </Notification>
+      // );
       console.error('Upload error:', error);
     } finally {
       setIsUploading(false);

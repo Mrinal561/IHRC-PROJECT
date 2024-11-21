@@ -1,22 +1,39 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { Button, Tooltip, Dialog, Input, toast, Notification } from '@/components/ui';
 import { FiSettings, FiUpload } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import { HiUpload } from 'react-icons/hi';
+import httpClient from '@/api/http-client';
+import { endpoints } from '@/api/endpoint';
 
-const ESIConfigDropdown = ({ companyName, companyGroupName }) => {
+interface ConfigDropdownProps {
+  companyName?: string;
+  companyGroupName?: string;
+  trackerId: any; // New prop to pass the tracker ID
+  onRefresh?: () => void;
+}
+
+const ESIConfigDropdown: React.FC<ConfigDropdownProps> = ({
+  companyName,
+  companyGroupName,
+  trackerId,
+  onRefresh
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const buttonRef = useRef(null);
   const dropdownRef = useRef(null);
+  const fileInputRef = useRef<HTMLInputElement>(null); // Added
   const navigate = useNavigate();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (buttonRef.current && !buttonRef.current.contains(event.target) &&
-          dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      if (buttonRef.current &&!buttonRef.current.contains(event.target) &&
+          dropdownRef.current &&!dropdownRef.current.contains(event.target)) {
         setIsOpen(false);
       }
     };
@@ -33,13 +50,60 @@ const ESIConfigDropdown = ({ companyName, companyGroupName }) => {
     setIsOpen(false);
   };
 
-  const handleFileUpload = (event) => {
-    const file = event.target.files[0];
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => { // New
+    const file = event.target.files?.[0];
     if (file) {
-      console.log(`Uploading ${file.name} for ${selectedOption}`);
-      // Here you would typically handle the file upload to your server
+      setSelectedFile(file);
     }
-    setIsDialogOpen(false);
+  };
+
+  const handleFileUpload = async () => { // Updated
+    if (!selectedFile) {
+      toast.push(
+        <Notification title="Error" type="danger">
+          Please select a file to upload
+        </Notification>
+      );
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append('document', selectedFile);
+      // formData.append('type', "challan");
+      console.log(formData)
+      await httpClient.put(
+          endpoints.esiTracker.uploadDocs(trackerId), // Ensure correct endpoint
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          }
+        );
+
+      toast.push(
+        <Notification title="Success" type="success">
+          {selectedOption} document uploaded successfully
+        </Notification>
+      );
+      if (onRefresh) {
+        onRefresh();
+      }
+
+      setIsDialogOpen(false);
+      setSelectedFile(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''; // Clear file input
+      }
+    } catch (error) {
+      toast.push(
+        <Notification title="Error" type="danger">
+          Failed to upload document
+        </Notification>
+      );
+      console.error('Upload error:', error);
+    }
   };
 
   const options = [
@@ -68,14 +132,14 @@ const ESIConfigDropdown = ({ companyName, companyGroupName }) => {
     };
   }, [isOpen]);
 
-  const openNotification = (type: 'success' | 'info' | 'danger' | 'warning', message: string) => {
+  const openNotification = (type: 'uccess' | 'info' | 'danger' | 'warning', message: string) => {
     toast.push(
-        <Notification
-            title={type.charAt(0).toUpperCase() + type.slice(1)}
-            type={type}
-        >
-            {message}
-        </Notification>
+      <Notification
+        title={type.charAt(0).toUpperCase() + type.slice(1)}
+        type={type}
+      >
+        {message}
+      </Notification>
     )
   }
 
@@ -116,8 +180,9 @@ const ESIConfigDropdown = ({ companyName, companyGroupName }) => {
         <div className='mb-4'>Upload {selectedOption} receipt</div>
         <div className="flex flex-col gap-2">
           <Input
+            ref={fileInputRef} // Added
             type="file"
-            onChange={handleFileUpload}
+            onChange={handleFileChange} // Updated
             className="mb-4"
           />
         </div>
@@ -132,7 +197,8 @@ const ESIConfigDropdown = ({ companyName, companyGroupName }) => {
           <Button
             variant="solid"
             size="sm"
-            onClick={handleConfirm}
+            onClick={handleFileUpload}
+            disabled={!selectedFile} // Added
           >
             Confirm
           </Button>

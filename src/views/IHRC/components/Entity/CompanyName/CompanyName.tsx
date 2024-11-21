@@ -1,9 +1,7 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button, Dialog, Notification, toast } from '@/components/ui';
 import { HiPlusCircle } from 'react-icons/hi';
 import OutlinedInput from '@/components/ui/OutlinedInput';
-import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 import AdaptableCard from '@/components/shared/AdaptableCard';
 import CompanyNameTable from './components/CompanyNameTable';
 import Filter from './components/Filter';
@@ -12,11 +10,6 @@ import { fetchCompanies, createCompany } from '@/store/slices/company/companySli
 import { CompanyData } from '@/@types/company';
 import { endpoints } from '@/api/endpoint';
 import httpClient from '@/api/http-client';
-
-interface SelectOption {
-  value: string;
-  label: string;
-}
 
 interface NewCompany {
   name: string;
@@ -33,8 +26,7 @@ const CompanyName = () => {
   
   // Company creation states
   const [companyName, setCompanyName] = useState('');
-  const [selectedCompanyGroup, setSelectedCompanyGroup] = useState<SelectOption | null>(null);
-  const [companyGroups, setCompanyGroups] = useState([]);
+  const [companyGroup, setCompanyGroup] = useState({ id: 0, name: '' });
   const [newCompany, setNewCompany] = useState<NewCompany>({
     name: '',
     group_id: 0
@@ -45,34 +37,37 @@ const CompanyName = () => {
     setNewCompany(prev => ({
       ...prev,
       name: companyName,
-      group_id: selectedCompanyGroup?.value ? parseInt(selectedCompanyGroup.value) : 0
+      group_id: companyGroup.id
     }));
-  }, [companyName, selectedCompanyGroup]);
+  }, [companyName, companyGroup]);
 
-  // Load company groups
-  const loadCompanyGroups = async () => {
+  // Load default company group
+  const loadDefaultCompanyGroup = async () => {
     try {
       const { data } = await httpClient.get(endpoints.companyGroup.getAll(), {
         params: { ignorePlatform: true },
       });
-      setCompanyGroups(
-        data.data.map((v: any) => ({
-          label: v.name,
-          value: String(v.id),
-        }))
-      );
+      
+      // Assuming we want the first company group as default
+      if (data.data && data.data.length > 0) {
+        const defaultGroup = data.data[0];
+        setCompanyGroup({
+          id: defaultGroup.id,
+          name: defaultGroup.name
+        });
+      }
     } catch (error) {
-      console.error('Failed to load company groups:', error);
+      console.error('Failed to load default company group:', error);
       toast.push(
         <Notification title="Error" type="danger">
-          Failed to load company groups
+          Failed to load company group
         </Notification>
       );
     }
   };
 
   useEffect(() => {
-    loadCompanyGroups();
+    loadDefaultCompanyGroup();
   }, []);
 
   const fetchCompanyDataTable = async (page = 1, pageSize = 10) => {
@@ -124,14 +119,17 @@ const CompanyName = () => {
 
     setDialogLoading(true);
     try {
-      await dispatch(createCompany(newCompany)).unwrap();
-      toast.push(
-        <Notification title="Success" type="success">
-          Company added successfully
-        </Notification>
-      );
-      onDialogClose();
-      handleDataChange();
+      const response = await dispatch(createCompany(newCompany)).unwrap();
+
+      if(response) {
+        onDialogClose();
+        toast.push(
+          <Notification title="Success" type="success">
+            Company added successfully
+          </Notification>
+        );
+        handleDataChange();
+      }
     } catch (error) {
       toast.push(
         <Notification title="Failed" type="danger">
@@ -146,8 +144,6 @@ const CompanyName = () => {
   const onDialogClose = () => {
     setIsOpen(false);
     setCompanyName('');
-    setSelectedCompanyGroup(null);
-    setNewCompany({ name: '', group_id: 0 });
   };
 
   return (
@@ -183,16 +179,16 @@ const CompanyName = () => {
       >
         <h5 className="mb-4">Add Company</h5>
         <div className="mb-4 flex flex-col gap-3">
-          <label>Select the company group</label>
-          <OutlinedSelect
+          <label>Company Group</label>
+          <OutlinedInput
             label="Company Group"
-            options={companyGroups}
-            value={selectedCompanyGroup}
-            onChange={setSelectedCompanyGroup}
+            value={companyGroup.name} onChange={function (value: string): void {
+              throw new Error('Function not implemented.');
+            } }            // disabled
           />
         </div>
         <div className="mb-4 flex flex-col gap-3">
-          <label>Enter company name</label>
+          <label>Enter company name <span className='text-red-500'>*</span></label>
           <OutlinedInput
             label="Company"
             value={companyName}

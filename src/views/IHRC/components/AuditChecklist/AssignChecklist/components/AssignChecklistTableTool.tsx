@@ -14,6 +14,10 @@ interface SelectOption {
   value: number;
   label: string;
 }
+interface SelectOptionOwner {
+  value: string;
+  label: string;
+}
  
 interface BulkSetOwnerApproverButtonProps {
   selectedIds: number[];
@@ -31,6 +35,12 @@ export const BulkSetOwnerApproverButton: React.FC<BulkSetOwnerApproverButtonProp
   const [selectedOwnerOption, setSelectedOwnerOption] = useState<SelectOption | null>(null);
   const [selectedApproverOption, setSelectedApproverOption] = useState<SelectOption | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [selectedScheduledFrequency, setSelectedScheduledFrequency] = useState<any>(null)
+
+  const scheduledOptions: SelectOptionOwner[] = [
+    { value: 'monthly', label: 'Monthly' },
+    { value: 'yearly', label: 'Yearly' },
+]
  
   useEffect(() => {
     fetchUsersData();
@@ -42,7 +52,7 @@ export const BulkSetOwnerApproverButton: React.FC<BulkSetOwnerApproverButtonProp
      
       if (response?.data?.data && Array.isArray(response.data.data)) {
         const mappedOptions = response.data.data.map((user: any) => ({
-          label: `${user.first_name} ${user.last_name}`,
+          label: user.name,
           value: user.id // Ensure value is string
         }));
        
@@ -90,6 +100,8 @@ export const BulkSetOwnerApproverButton: React.FC<BulkSetOwnerApproverButtonProp
         owner_id: selectedOwnerOption?.value || null,
         approver_id: selectedApproverOption?.value || null,
         assigned_compliance_id: selectedIds,
+        scheduled_frequency: selectedScheduledFrequency?.value || '',
+
       };
 
       const response = await httpClient.put(endpoints.assign.update(), updateData);
@@ -172,6 +184,18 @@ export const BulkSetOwnerApproverButton: React.FC<BulkSetOwnerApproverButtonProp
               onChange={handleApproverChange}
             />
           </div>
+
+          <div>
+                        <label className="block mb-2">Scheduled Frequency</label>
+                        <OutlinedSelect
+                            label="Select Scheduled Frequency"
+                            options={scheduledOptions}
+                            value={selectedScheduledFrequency}
+                            onChange={(selectedOption: SelectOption | null) => {
+                                setSelectedScheduledFrequency(selectedOption)
+                            }}
+                        />
+                    </div>
  
           {/* <div>
             <label className="block mb-2">Remark</label>

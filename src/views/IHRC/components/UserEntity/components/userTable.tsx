@@ -17,22 +17,26 @@ import {
 import { AppDispatch } from '@/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { UserData } from "@/@types/userEntity";
+import { showErrorNotification } from '@/components/ui/ErrorMessage';
 
 
 const UserTable: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
     const [isLoading, setIsLoading] = useState(false);
-    const users = useSelector(selectUsers);
-    const loading = useSelector(selectLoading);
-    const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
-    const [dialogState, setDialogState] = useState({
-        delete: false,
-        edit: false,
-        suspend: false,
-        disable: false
-    });
-
     const [userTableData, setUserTableData] = useState([]);
+    // const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
+    // const [dialogState, setDialogState] = useState({
+    //     delete: false,
+    //     edit: false,
+    //     suspend: false,
+    //     disable: false
+    // });
+    const [dialogIsOpen, setDialogIsOpen] = useState(false);
+    const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState<UserData | null>(null);
+    const [itemToEdit, setItemToEdit] = useState<UserData | null>(null);
+    const [editedUserData, setEditedUserData] = useState<Partial<UserData>>({});
+
 
 
     const columns = useMemo(
@@ -104,7 +108,7 @@ const UserTable: React.FC = () => {
                         <Tooltip title="Edit User Details">
                             <Button
                                 size="sm"
-                                // onClick={() => openEditDialog(row.original)}
+                                onClick={() => openEditDialog(row.original)}
                                 icon={<MdEdit />}
                                 className="text-blue-500"
                             />
@@ -128,7 +132,7 @@ const UserTable: React.FC = () => {
                         <Tooltip title="Delete User">
                             <Button
                                 size="sm"
-                                // onClick={() => openDeleteDialog(row.original)}
+                                onClick={() => openDeleteDialog(row.original)}
                                 icon={<FiTrash />}
                                 className="text-red-500"
                             />
@@ -151,10 +155,70 @@ const UserTable: React.FC = () => {
         )
     }
 
-    // const openDeleteDialog = (index: number) => {
-    //     setItemToDelete(index);
-    //     setDialogIsOpen(true);
+    const handleDeleteConfirm = async () => {
+        if (itemToDelete?.id) {
+            try {
+                const response = await dispatch(deleteUser(itemToDelete.id)).unwrap();
+                
+                if (response) {
+                    handleDialogClose();
+                    
+                    const newTotal = tableData.total - 1;
+                    const lastPage = Math.ceil(newTotal / tableData.pageSize);
+                    const newPageIndex = tableData.pageIndex > lastPage ? lastPage : tableData.pageIndex;
+                    
+                    fetchUserData(newPageIndex, tableData.pageSize);
+                    toast.push(
+                        <Notification title="Success" type="success">
+                            User deleted successfully
+                        </Notification>
+                    );
+                }
+            } catch (error: any) {
+                if (error.response?.data?.message) {
+                    showErrorNotification(error.response.data.message);
+                } else if (error.message) {
+                    showErrorNotification(error.message);
+                } else {
+                    showErrorNotification('An unexpected error occurred while deleting the user');
+                }
+            }
+        }
+    };
+
+    // const handleEditConfirm = async () => {
+    //     if (itemToEdit?.id) {
+    //         try {
+    //             const response = await dispatch(updateUser({
+    //                 id: itemToEdit.id,
+    //                 data: editedUserData
+    //             })).unwrap();
+
+    //             if (response) {
+    //                 handleDialogClose();
+    //                 toast.push(
+    //                     <Notification title="Success" type="success">
+    //                         User Edited successfully
+    //                     </Notification>
+    //                 );
+    //                 fetchUserData(tableData.pageIndex, tableData.pageSize);
+    //             }
+    //         } catch (error: any) {
+    //             if (error.response?.data?.message) {
+    //                 showErrorNotification(error.response.data.message);
+    //             } else if (error.message) {
+    //                 showErrorNotification(error.message);
+    //             } else {
+    //                 showErrorNotification('An unexpected error occurred while updating the user');
+    //             }
+    //         }
+    //     }
     // };
+
+    const openDeleteDialog = (user: UserData) => {
+        setItemToDelete(user);
+        setDialogIsOpen(true);
+    };
     // const openSuspendDialog = (index: number) => {
     //     setSuspendDialogIsOpen(true);
     // };
@@ -162,21 +226,22 @@ const UserTable: React.FC = () => {
     //     setDisableDialogIsOpen(true);
     // };
 
-    // const openEditDialog = (index: number) => {
-    //     setItemToEdit(index);
-    //     setEditedUser(data[index]);
-    //     setEditDialogIsOpen(true);
-    // };
+    const openEditDialog = (user: UserData) => {
+        setItemToEdit(user);
+        setEditedUserData(user);
+        setEditDialogIsOpen(true);
+    };
 
-    // const handleDialogClose = () => {
-    //     setDialogIsOpen(false);
-    //     setEditDialogIsOpen(false);
-    //     setItemToDelete(null);
-    //     setItemToEdit(null);
-    //     setEditedUser({});
-    //     setSuspendDialogIsOpen(false);
-    //     setDisableDialogIsOpen(false);
-    // };
+
+
+    const handleDialogClose = () => {
+        setDialogIsOpen(false);
+        setEditDialogIsOpen(false);
+        setItemToDelete(null);
+        setItemToEdit(null);
+        setEditedUserData({});
+    };
+
 
     // const handleDialogOk = () => {
     //     if (itemToDelete !== null) {
@@ -187,7 +252,7 @@ const UserTable: React.FC = () => {
     //         setItemToDelete(null);
     //         openNotification('danger', 'User deleted successfully');
     //     }
-    // };
+    // }
     // const suspendConfirm = () => {
     //     setSuspendDialogIsOpen(false)
     //     openNotification('success', 'User suspended successfully');
@@ -209,35 +274,56 @@ const UserTable: React.FC = () => {
     //     }
     // };
 
+    useEffect(() => {
+        fetchUserData(1, 10)
+    },[])
 
     const fetchUserData = async (page: number, size: number) => {
         setIsLoading(true);
         try{
 
-            const { payload: data } = await dispatch(fetchUsers({page: page, page_size: size}))
-            setUserTableData(data?.data);
-            setTableData((prev) => ({
-                ...prev,
-                total: data?.paginate_data.totalResult,
-                pageIndex: data?.paginate_data.page,
-            }))
+            const { payload: data } = await dispatch(fetchUsers({page: page, page_size: size}));
+        //     .unwrap()
+        //     .catch((error: any) => {
+        //       // Handle different error formats
+        //       if (error.data?.data?.message) {
+        //           // API error response
+        //           showErrorNotification(error.data.data.message);
+        //       } else if (error.message) {
+        //           // Regular error object
+        //           showErrorNotification(error.message);
+        //       } else if (Array.isArray(error)) {
+        //           // Array of error messages
+        //           showErrorNotification(error);
+        //       } else {
+        //           // Fallback error message
+        //           showErrorNotification('An unexpected error occurred. Please try again.');
+        //       }
+        //       throw error; // Re-throw to prevent navigation
+        //   });
+          if(data?.data){
+              setUserTableData(data.data);
+              setTableData((prev) => ({
+                  ...prev,
+                  total: data.paginate_data.totalResult,
+                  pageIndex: data.paginate_data.page,
+                }))
+            }
         }
         catch(error) {
             console.error('Failed to fetch users:', error);
-            toast.push(
-              <Notification title="Error" type="danger">
-                Failed to fetch Users
-              </Notification>
-            );
+            // toast.push(
+            //   <Notification title="Error" type="danger">
+            //     Failed to fetch Users
+            //   </Notification>
+            // );
           } finally {
             setIsLoading(false);
           }
         }
     
 
-        useEffect(() => {
-            fetchUserData(1, 10)
-        },[])
+       
 
 
     const [tableData, setTableData] = useState({
@@ -280,14 +366,15 @@ const UserTable: React.FC = () => {
                 />
             
 
-            {/* <Dialog
+             <Dialog
                 isOpen={dialogIsOpen}
                 onClose={handleDialogClose}
                 onRequestClose={handleDialogClose}
             >
                 <h5 className="mb-4">Confirm Deleting User</h5>
                 <p>
-                    Are you sure you want to delete this user? This action cannot be undone.
+                Are you sure you want to delete the user "{itemToDelete?.first_name} {itemToDelete?.last_name}"? 
+                This action cannot be undone.
                 </p>
                 <div className="text-right mt-6">
                     <Button
@@ -297,11 +384,54 @@ const UserTable: React.FC = () => {
                     >
                         Cancel
                     </Button>
-                    <Button variant="solid" onClick={handleDialogOk}>
-                        Delete
+                    <Button variant="solid" onClick={handleDeleteConfirm}>
+                        Confirm
                     </Button>
                 </div>
             </Dialog>
+
+            {/* <Dialog
+                isOpen={editDialogIsOpen}
+                onClose={handleDialogClose}
+                onRequestClose={handleDialogClose}
+            >
+                <h5 className="mb-4">Edit User Details</h5>
+                <div className="grid grid-cols-2 gap-4">
+                    <OutlinedInput
+                        label="First Name"
+                        value={editedUserData.first_name || ''}
+                        onChange={(value) => setEditedUserData(prev => ({ ...prev, first_name: value }))}
+                    />
+                    <OutlinedInput
+                        label="Last Name"
+                        value={editedUserData.last_name || ''}
+                        onChange={(value) => setEditedUserData(prev => ({ ...prev, last_name: value }))}
+                    />
+                    <OutlinedInput
+                        label="Email"
+                        value={editedUserData.email || ''}
+                        onChange={(value) => setEditedUserData(prev => ({ ...prev, email: value }))}
+                    />
+                    <OutlinedInput
+                        label="Mobile"
+                        value={editedUserData.mobile || ''}
+                        onChange={(value) => setEditedUserData(prev => ({ ...prev, mobile: value }))}
+                    />
+                </div>
+                <div className="text-right mt-6">
+                    <Button
+                        className="ltr:mr-2 rtl:ml-2"
+                        variant="plain"
+                        onClick={handleDialogClose}
+                    >
+                        Cancel
+                    </Button>
+                    <Button variant="solid" onClick={handleEditConfirm}>
+                        Save Changes
+                    </Button>
+                </div>
+            </Dialog> */}
+            {/*
             <Dialog
                 isOpen={disableDialogIsOpen}
                 onClose={handleDialogClose}
@@ -375,7 +505,8 @@ const UserTable: React.FC = () => {
                         Confirm
                     </Button>
                 </div>
-            </Dialog> */}
+            </Dialog> 
+            */}
         </div>
     );
 };

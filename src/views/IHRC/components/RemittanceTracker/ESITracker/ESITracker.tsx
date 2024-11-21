@@ -1,7 +1,7 @@
 import  AdaptableCard  from '@/components/shared/AdaptableCard'
 import ESITrackerTable from './components/ESITrackerTable';
 import ESITrackerTool from './components/ESITrackerTool';
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { esiChallanData } from '@/@types/esiTracker';
 import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
@@ -14,11 +14,9 @@ const ESITracker = () => {
 
 
 
-  useEffect(() => {
-    fetchEsiTrackerData();
-  }, []);
 
-  const fetchEsiTrackerData = async () => {
+
+  const fetchEsiTrackerData =  useCallback(async () => {
     setIsLoading(true)
 
     try {
@@ -30,7 +28,10 @@ const ESITracker = () => {
     } finally {
       setIsLoading(false)
   }
-  };
+  }, []);
+    useEffect(() => {
+    fetchEsiTrackerData();
+  }, [fetchEsiTrackerData]);
 
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters);
@@ -44,7 +45,7 @@ const ESITracker = () => {
         </div>
         <ESITrackerTool onFilterChange={handleFilterChange} />
       </div>
-      <ESITrackerTable dataSent={data}  loading={isLoading}
+      <ESITrackerTable dataSent={data}  loading={isLoading} onRefresh={fetchEsiTrackerData}
       />
     </AdaptableCard>
   )

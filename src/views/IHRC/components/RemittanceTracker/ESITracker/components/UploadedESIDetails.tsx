@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Tooltip } from '@/components/ui';
 import { HiArrowLeft } from 'react-icons/hi';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
@@ -8,6 +8,7 @@ import { esiChallanData } from '@/@types/esiTracker';
 import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
 import dayjs from 'dayjs';
+import { FiFile } from 'react-icons/fi';
 const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
 
@@ -21,11 +22,8 @@ const UploadedESIDetails: React.FC<UploadedESIDetailsProps> = ({ onBack, loading
   const [data, setData] = useState<esiChallanData[]>([]);
 const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    fetchEsiTrackerData();
-  }, []);
 
-  const fetchEsiTrackerData = async () => {
+  const fetchEsiTrackerData = useCallback(async () => {
     try {
         setIsLoading(true)
       const res = await httpClient.get(endpoints.esiTracker.getAll())
@@ -36,7 +34,11 @@ const [isLoading, setIsLoading] = useState(false);
     } finally{
         setIsLoading(false)
     }
-  };
+  }, []);
+      useEffect(() => {
+    fetchEsiTrackerData();
+  }, [fetchEsiTrackerData]);
+
 
   const columns: ColumnDef<esiChallanData>[] = useMemo(
     () => [
@@ -208,23 +210,47 @@ const [isLoading, setIsLoading] = useState(false);
             </div>
         ),
     },
-    {
-        header: 'Challan',
-        accessorKey: 'challan_document',
-        cell: (props) => 
-        <div className="w-40 truncate">
-          <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
-            {/* <Button size="xs" icon={<HiDownload />}>Download</Button> */}
-            {props.getValue() as string}
+         {
+  header: 'Challan',
+  accessorKey: 'challan_document',
+  cell: (props) => {
+    const challanDocument = props.getValue() as string | null;
+    
+    const handleChallanDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
+      e.preventDefault();
+      if (challanDocument) {
+        const fullPath = `${import.meta.env.VITE_API_GATEWAY}/${challanDocument}`;
+        window.open(fullPath, '_blank');
+      }
+    };
+
+    return (
+      <div className="w-40 flex items-center">
+        {challanDocument ? (
+          <a 
+            href="#" 
+            onClick={handleChallanDownload} 
+            className="text-blue-600 hover:text-blue-800 transition-colors"
+          >
+            <FiFile className="w-5 h-5" />
+             {/* <span className="truncate">View File</span> */}
           </a>
-        </div>,
-      },
+        ) : (
+          '--'
+        )}
+      </div>
+    );
+  },
+},
      
       {
         header: 'Actions',
         id: 'actions',
         cell: ({ row }) => (
-            <EsiConfigDropdown companyName={undefined} companyGroupName={undefined} />
+            <EsiConfigDropdown companyName={row.original.EsiSetup.Company.name} 
+            companyGroupName={row.original.EsiSetup.CompanyGroup.name} 
+            trackerId={row.original.id}  
+            onRefresh={fetchEsiTrackerData} />
         ),
       },
     ],

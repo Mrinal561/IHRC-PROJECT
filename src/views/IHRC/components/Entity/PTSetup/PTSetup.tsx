@@ -4,7 +4,7 @@ import { Button, Dialog, Notification, toast } from '@/components/ui';
 import { HiArrowLeft, HiPlusCircle } from 'react-icons/hi';
 import { setPanelExpand, useAppDispatch } from '@/store';
 import PTSetupPanel from './components/PTSetupPanel';
-import PTSetupTable from './components/PTSetupTable';
+import PTSetupTable, { PTSetupData } from './components/PTSetupTable';
 
 export interface PTSetupData {
   Company_Group_Name: string;
@@ -120,6 +120,10 @@ const PTSetup: React.FC = () => {
     setIsOpen(false);
   };
 
+  const handleAddPTSetup = () => {
+    navigate(`/add-pt-setup`);
+  };
+
   return (
     <div className="">
       <div className="flex justify-between items-center mb-6">
@@ -138,16 +142,17 @@ const PTSetup: React.FC = () => {
           variant="solid"
           size="sm"
           icon={<HiPlusCircle />}
-          onClick={() => {
-            setIsOpen(true);
-          }}
+          onClick={handleAddPTSetup}
         >
           Add PT Setup
         </Button>
       </div>
 
-      <PTSetupTable
-        // data={PTSetupData}
+      <PTSetupTable data={[]} onDelete={function (index: number): void {
+        throw new Error('Function not implemented.');
+      } } onEdit={function (index: number, newData: Partial<PTSetupData>): void {
+        throw new Error('Function not implemented.');
+      } }        // data={PTSetupData}
         // onDelete={handleDelete}
         // onEdit={handleEdit}
       />
@@ -161,12 +166,12 @@ const PTSetup: React.FC = () => {
       >
         <h4 className="mb-4">Add PT Setup</h4>
         
-        <PTSetupPanel
+        {/* <PTSetupPanel
           addPFSetup={handleAddPFSetup}
           onClose={() => setIsOpen(false)}
           companyGroupName={companyData?.Company_Group_Name || ''}
           companyName={companyData?.Company_Name || ''}
-        />
+        /> */}
       </Dialog>
     </div>
   );

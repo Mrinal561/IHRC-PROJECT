@@ -1,13 +1,39 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import AdaptableCard from '@/components/shared/AdaptableCard';
 import PTECTrackerTool from './components/PTECTrackerTool';
 import PTECTrackerTable from './components/PTECTrackerTable';
+import { PTTrackerData } from '@/@types/PTTracker';
+import httpClient from '@/api/http-client';
+import { endpoints } from '@/api/endpoint';
 
 const PTECTracker = () => {
   const [filters, setFilters] = useState({ groupName: '', companyName: '', pfCode: '' });
+  const [data, setData] = useState<PTTrackerData[]>([]);
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleFilterChange = (newFilters) => {
+
+
+  const handleFilterChange = (newFilters: any) => {
     setFilters(newFilters);
+  };
+
+
+  useEffect(() => {
+    fetchPTTrackerData();
+  }, []);
+
+  const fetchPTTrackerData = async () => {
+    setIsLoading(true)
+
+    try {
+      const res = await httpClient.get(endpoints.ptTracker.getAll())
+      console.log(res.data.data)
+      setData(res.data.data);
+    } catch (error) {
+      console.error('Error fetching PT tracker data:', error);
+    } finally {
+      setIsLoading(false)
+  }
   };
 
 
@@ -19,7 +45,7 @@ const PTECTracker = () => {
         </div>
         <PTECTrackerTool onFilterChange={handleFilterChange} />
       </div>
-      <PTECTrackerTable filters={filters} />
+      <PTECTrackerTable dataSent={data}  loading={isLoading}/>
     </AdaptableCard>
   );
 };

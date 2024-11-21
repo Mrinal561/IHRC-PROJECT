@@ -12,33 +12,36 @@ import {
 } from '@/store/slices/compliance/ComplianceApiSlice'
 import { Loading } from '@/components/shared'
 import { type } from '../../../../../../components/ui/ScrollBar/index';
-
+import { showErrorNotification } from '@/components/ui/ErrorMessage'
+ 
 interface ComplianceData {
-    id: number
-    uuid: string
-    legislation: string
-    category: string
-    penalty_type: string
-    default_due_date: {
-        first_date: string
-        last_date: string
-    }
-    scheduled_frequency: string
-    proof_mandatory: boolean
-    header: string
-    description: string
-    penalty_description: string
-    applicablility: string
-    bare_act_text: string
-    type: string
-    caluse: string
-    frequency: string
-    statutory_auth: string
-    approval_required: boolean
-    criticality: string
-    created_type: string
-    created_at: string
-    updated_at: string
+    id: string;
+        uuid: string;
+        legislation: string,
+        category: string,
+        header: string,
+        description: string,
+        penalty_description: string,
+        applicablility: string,
+        bare_act_text: string,
+        caluse: string,
+        type: string,
+        frequency: string,
+        scope: string,
+        state_id: number,        
+        statutory_auth: string,
+        approval_required: boolean,
+        criticality: string,
+        penalty_type: string,
+        default_due_date: {
+            first_date: string,
+            second_date: string,
+            third_date: string,
+            last_date: string,
+        },
+        proof_mandatory: boolean,
+        created_type: string,
+        created_at: string,
 }
  
 interface RecommendedTableContentProps {
@@ -51,6 +54,7 @@ interface RecommendedTableContentProps {
     stateValue?: string
     districtValue?: string
     locationValue?: string
+    setIstableLoading: boolean
     onSelectedCompliancesChange: (selectedIds: number[]) => void
 }
  
@@ -154,28 +158,39 @@ const ViewDetailsButton = ({
         console.log(assignData);
  
         try {
-            await dispatch(assignCompliancesToBranch(assignData))
-            .catch((error:any)=>{
-                error.map((v:string)=>{
-                    toast.push(
-                        <Notification title='error' type='danger'>
-                                {v}
-                            </Notification>
-                    )
-                })
-            })
-            onAssignSuccess(compliance.id);
-            toast.push(
-                <Notification title="Success" type="success">
+           const response = await dispatch(assignCompliancesToBranch(assignData)).unwrap()
+           .catch((error: any) => {
+            // Handle different error formats
+            if (error.response?.data?.message) {
+                // API error response
+                showErrorNotification(error.response.data.message);
+            } else if (error.message) {
+                // Regular error object
+                showErrorNotification(error.message);
+            } else if (Array.isArray(error)) {
+                // Array of error messages
+                showErrorNotification(error);
+            } else {
+                // Fallback error message
+                showErrorNotification('An unexpected error occurred. Please try again.');
+            }
+            throw error; // Re-throw to prevent navigation
+        });
+            if(response){
+ 
+                onAssignSuccess(compliance.id);
+                toast.push(
+                    <Notification title="Success" type="success">
                     Assigned Successfully
                 </Notification>
             );
-            setIstableLoading(true)
-        } catch (error) {
+        }
+            // setIstableLoading(true)
+        } catch (error : any) {
             console.error('Failed to assign compliance:', error);
             toast.push(
                 <Notification title="Failed" type="danger">
-                    Not Assigned
+                    {error}
                 </Notification>
             );
         }
@@ -315,6 +330,15 @@ const RecommendedTable = ({
                 ),
             },
             {
+                header: 'Scope',
+                accessorKey: 'scope',
+                cell: (props) => (
+                  <Tooltip title={props.getValue()} placement="top">
+                    <div className="w-24 truncate uppercase">{props.getValue()}</div>
+                  </Tooltip>
+                ),
+              },
+            {
                 header: 'Legislation',
                 accessorKey: 'legislation',
                 cell: (props) => {
@@ -421,17 +445,17 @@ const RecommendedTable = ({
         setTableData(prev => ({...prev, pageIndex: page }));
         fetchDataWithPagination(); // New function to fetch data with updated pagination
       };
-    
+   
       const onSelectChange = (value: number) => {
         setTableData(prev => ({...prev, pageSize: Number(value), pageIndex: 1 }));
         fetchDataWithPagination(); // New function to fetch data with updated pagination
       };
-    
+   
       const fetchDataWithPagination = () => {
         // onDataUpdate(tableData.pageIndex, tableData.pageSize); // Callback to RecommendedList
         setIstableLoading(true);
       };
-
+ 
     return (
         <div className="w-full overflow-x-auto">
             <DataTable

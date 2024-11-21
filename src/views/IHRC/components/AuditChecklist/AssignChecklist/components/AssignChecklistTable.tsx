@@ -25,9 +25,11 @@ import {
     selectUpdateSuccess,
     resetUpdateStatus,
     selectUpdateError,
+    ApproverOwnerAssignedCompliances,
 } from '@/store/slices/AssignedCompliance/assignedComplianceSlice'
 import { fetchUsers } from '@/store/slices/userEntity/UserEntitySlice'
 import { AppDispatch } from '@/store'
+import { showErrorNotification } from '@/components/ui/ErrorMessage'
 
 interface UserData {
     id: number
@@ -64,9 +66,9 @@ interface MasterCompliance {
 
 interface Owner {
     id: number
-    first_name: string
+    name: string
     email: string
-    last_name: string
+    // last_name: string
 }
 interface SelectOption {
     value: string
@@ -118,52 +120,77 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
     const [selectedApproverOption, setSelectedApproverOption] =
         useState<any>(null)
     const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set())
+    const [selectedScheduledFrequency, setSelectedScheduledFrequency] = useState<any>(null)
+    const [dueDate, setDueDate] = useState<Date | null>(null)
+
+
+
+    const scheduledOptions: SelectOption[] = [
+        { value: 'monthly', label: 'Monthly' },
+        { value: 'yearly', label: 'Yearly' },
+    ]
+
+
+
 
     const handleEditSave = async () => {
         if (
             activeRowId &&
-            (selectedOwnerOption !== null || selectedApproverOption !== null)
+            (selectedOwnerOption !== null || selectedApproverOption !== null) &&
+            selectedScheduledFrequency !== null 
         ) {
             const updateData: ApproverOwnerAssignedCompliances = {
+                assigned_compliance_id: [activeRowId],
                 owner_id: selectedOwnerOption?.value || 0,
                 approver_id: selectedApproverOption?.value || 0,
-                assigned_compliance_id: [activeRowId], // Pass the active row ID in an array as expected by the type
+                scheduled_frequency: selectedScheduledFrequency?.value || '',
+                // due_date: dueDate.toISOString().split('T')[0], // Format date as YYYY-MM-DD
             }
             console.log('INSIDE TABLE', updateData)
 
             setIsUpdating(true)
             try {
-                await dispatch(
+              const response =  await dispatch(
                     updateApproverOwner({
                         id: activeRowId.toString(),
                         data: updateData,
                     }),
-                )
-                .unwrap()
-                .catch((error:any)=>{
-                    error.map((v:string)=>{
-                        toast.push(
-                            <Notification title='error' type='danger'>
-                                    {v}
-                                </Notification>
-                        )
-                    })
-                })
+                ).unwrap()
+                .catch((error: any) => {
+                 // Handle different error formats
+                 if (error.response?.data?.message) {
+                     // API error response
+                     showErrorNotification(error.response.data.message);
+                 } else if (error.message) {
+                     // Regular error object
+                     showErrorNotification(error.message);
+                 } else if (Array.isArray(error)) {
+                     // Array of error messages
+                     showErrorNotification(error);
+                 } else {
+                     // Fallback error message
+                     showErrorNotification('An unexpected error occurred. Please try again.');
+                 }
+                 throw error; // Re-throw to prevent navigation
+             });
 
-                toast.push(
-                    <Notification title="Success" type="success">
+             if(response) {
+                 setIsEditDialogOpen(false)
+                 toast.push(
+                     <Notification title="Success" type="success">
                         Owner and Approver updated successfully
                     </Notification>,
                 )
-                setIsEditDialogOpen(false)
                 setSelectedOwnerOption(null)
                 setSelectedApproverOption(null)
+                setSelectedScheduledFrequency(null)
                 refreshTable()
-            } catch (error) {
+            }
+            } catch (error : any) {
                 console.log(error)
                 toast.push(
                     <Notification title="Error" type="danger">
-                        Failed to update owner and approver
+                        {error}
                     </Notification>,
                 )
                 console.error('Error updating owner/approver:', error)
@@ -199,7 +226,7 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
 
             if (response?.data?.data && Array.isArray(response.data.data)) {
                 const mappedOptions = response.data.data.map((user: any) => ({
-                    label: `${user.first_name} ${user.last_name}`,
+                    label: user.name,
                     value: user.id,
                 }))
 
@@ -261,15 +288,27 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
             id: row.id,
             owner_id: row.owner_id,
             approver_id: row.approver_id,
+            
         })
 
         // Set the initial selected options based on existing data
         const ownerOption = userOptions.find(
-            (option) => option.value === row.owner_id,
+            (option) => option.value === row.owner_id
         )
         const approverOption = userOptions.find(
             (option) => option.value === row.approver_id,
         )
+
+        // const initialScheduledFrequency = scheduledOptions.find(
+        //     (option) => option.value === row.scheduled_frequency
+        // )
+        // setSelectedScheduledFrequency(initialScheduledFrequency || null)
+
+        // // Set initial due date if available
+        // const initialDueDate = row.due_date ? new Date(row.due_date) : null
+        // setDueDate(initialDueDate)
+
+        setIsEditDialogOpen(true)
 
         setSelectedOwnerOption(ownerOption || null)
         setSelectedApproverOption(approverOption || null)
@@ -381,17 +420,17 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
                 header: 'Owner',
                 accessorFn: (row) =>
                     row.Owner
-                        ? `${row.Owner.first_name} ${row.Owner.last_name}`
+                        ? row.Owner.name
                         : null,
                 cell: ({ getValue }) => (
-                    <div className="w-32">{getValue() || '--'}</div>
+                    <div className="w-32">{getValue<string>() || '--'}</div>
                 ),
             },
             {
                 header: 'Approver',
                 accessorFn: (row) =>
                     row.Approver
-                        ? `${row.Approver.first_name} ${row.Approver.last_name}`
+                        ? row.Approver.name
                         : null,
                 cell: ({ getValue }) => (
                     <div className="w-36">
@@ -410,7 +449,7 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
                                 onClick={() =>
                                     navigate(
                                         `/app/IHRC/assign-list-detail/${row.original.mst_compliance_id}`,
-                                        { state: row.original },
+                                        { state: row.original.MasterCompliance },
                                     )
                                 }
                                 icon={<RiEyeLine />}
@@ -431,7 +470,7 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
                         >
                             <Button
                                 size="sm"
-                                onClick={() => handleBellClick(row.original)}
+                                // onClick={() => handleBellClick(row.original)}
                                 icon={<HiBellAlert />}
                                 className="hover:bg-transparent text-red-500"
                             />
@@ -507,6 +546,18 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
                             options={userOptions}
                             value={selectedApproverOption}
                             onChange={handleApproverChange}
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block mb-2">Scheduled Frequency</label>
+                        <OutlinedSelect
+                            label="Select Scheduled Frequency"
+                            options={scheduledOptions}
+                            value={selectedScheduledFrequency}
+                            onChange={(selectedOption: SelectOption | null) => {
+                                setSelectedScheduledFrequency(selectedOption)
+                            }}
                         />
                     </div>
                 </div>

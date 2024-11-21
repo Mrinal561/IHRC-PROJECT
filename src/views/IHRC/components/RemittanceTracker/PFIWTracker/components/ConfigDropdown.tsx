@@ -1,16 +1,36 @@
+
+
+
 import React, { useState, useRef, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { Button, Tooltip, Dialog, Input, toast, Notification } from '@/components/ui';
 import { FiSettings, FiUpload } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import { HiUpload } from 'react-icons/hi';
+import axios from 'axios'; // Assuming you're using axios for API calls
+import httpClient from '@/api/http-client';
+import { endpoints } from '@/api/endpoint';
 
-const ConfigDropdown = ({ companyName, companyGroupName }) => {
+interface ConfigDropdownProps {
+  companyName?: string;
+  companyGroupName?: string;
+  trackerId: any; // New prop to pass the tracker ID
+  onRefresh?: () => void;
+}
+
+const ConfigDropdown: React.FC<ConfigDropdownProps> = ({ 
+  companyName, 
+  companyGroupName, 
+  trackerId,
+  onRefresh
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const buttonRef = useRef(null);
   const dropdownRef = useRef(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,23 +47,82 @@ const ConfigDropdown = ({ companyName, companyGroupName }) => {
     };
   }, []);
 
-  const handleOptionClick = (option) => {
+  const handleOptionClick = (option: string) => {
     setSelectedOption(option);
     setIsDialogOpen(true);
     setIsOpen(false);
   };
 
-  const handleFileUpload = (event) => {
-    const file = event.target.files[0];
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
     if (file) {
-      console.log(`Uploading ${file.name} for ${selectedOption}`);
-      // Here you would typically handle the file upload to your server
+      setSelectedFile(file);
     }
+  };
+
+  const handleFileUpload = async () => {
+    if (!selectedFile) {
+      toast.push(
+        <Notification title="Error" type="danger">
+          Please select a file to upload
+        </Notification>
+      );
+      return;
+    }
+
+    try {
+      // Create FormData to send both file and tracker ID
+      const formData = new FormData();
+      formData.append('document', selectedFile);
+      formData.append('type', "challan");
+      console.log(formData)
+      // Example API call - replace with your actual API endpoint
+    await httpClient.put(
+        endpoints.pfiwtracker.challanupload(trackerId), 
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+      );
+
+      // Success notification
+      toast.push(
+        <Notification title="Success" type="success">
+          {selectedOption} document uploaded successfully
+        </Notification>
+      );
+       if (onRefresh) {
+        onRefresh();
+      }
+
+      // Reset states
+      setIsDialogOpen(false);
+      setSelectedFile(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''; // Clear file input
+      }
+    } catch (error) {
+      // Error notification
+      toast.push(
+        <Notification title="Error" type="danger">
+          Failed to upload document
+        </Notification>
+      );
+      console.error('Upload error:', error);
+    }
+  };
+
+  const handleCancel = () => {
     setIsDialogOpen(false);
+    setSelectedFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''; // Clear file input
+    }
   };
 
   const options = [
-    
     { key: 'Challan', label: 'Challan' },
   ];
 
@@ -68,26 +147,6 @@ const ConfigDropdown = ({ companyName, companyGroupName }) => {
       window.removeEventListener('resize', updateDropdownPosition);
     };
   }, [isOpen]);
-
-  const openNotification = (type: 'success' | 'info' | 'danger' | 'warning', message: string) => {
-    toast.push(
-      <Notification
-        title={type.charAt(0).toUpperCase() + type.slice(1)}
-        type={type}
-      >
-        {message}
-      </Notification>
-    )
-  }
-
-  const handleConfirm = () => {
-    setIsDialogOpen(false);
-    openNotification('success', 'PFIW document uploaded successfully');
-  };
-
-  const handleCancel = () => {
-    setIsDialogOpen(false);
-  };
 
   return (
     <>
@@ -117,8 +176,9 @@ const ConfigDropdown = ({ companyName, companyGroupName }) => {
         <div className='mb-4'>Upload {selectedOption} document</div>
         <div className="flex flex-col gap-2">
           <Input
+            ref={fileInputRef}
             type="file"
-            onChange={handleFileUpload}
+            onChange={handleFileChange}
             className="mb-4"
           />
         </div>
@@ -133,7 +193,8 @@ const ConfigDropdown = ({ companyName, companyGroupName }) => {
           <Button
             variant="solid"
             size="sm"
-            onClick={handleConfirm}
+            onClick={handleFileUpload}
+            disabled={!selectedFile}
           >
             Confirm
           </Button>

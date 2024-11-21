@@ -55,21 +55,17 @@ export const fetchBranches = createAsyncThunk(
   export const createBranch = createAsyncThunk(
     'branch/createBranch',
     async (branchData: BranchData, { rejectWithValue }) => {
-        try {
-            const { data } = await httpClient.post(
-                endpoints.branch.create(),
-                branchData,
-            )
-            return data
-        } catch (error: any) {
-            return rejectWithValue(
-                error.response?.data?.message || 'Failed to create branch',
-            )
+        try{
+            const { data } = await httpClient.post(endpoints.branch.create(), branchData);
+            return data;
         }
-    },
-)
-
-export const updateBranch = createAsyncThunk(
+        catch (error: any) {
+        return rejectWithValue(error.response?.data?.message);
+        }
+    }
+  );
+  
+  export const updateBranch = createAsyncThunk(
     'branch/updateBranch',
     async ({ id, data }: { id: string; data: BranchData }) => {
         const response = await httpClient.put(endpoints.branch.update(id), data)

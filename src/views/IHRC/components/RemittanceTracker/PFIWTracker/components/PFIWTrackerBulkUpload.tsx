@@ -1,10 +1,15 @@
+
+
 import React, { useState } from 'react';
 import { Button, Dialog, Input, Notification, toast } from '@/components/ui';
 import { HiDownload, HiUpload } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
-
-const documentPath = "../store/AllMappedPFIWCompliancesDetails.xls";
+import httpClient from '@/api/http-client';
+import { endpoints } from '@/api/endpoint';
+import { createPfIwTracker } from '@/store/slices/pfSetup/pfIwTrackerSlice';
+import { useDispatch } from 'react-redux';
+import { showErrorNotification } from '@/components/ui/ErrorMessage';
 
 interface PFIWTrackerBulkUploadProps {
   onUploadConfirm: () => void;
@@ -12,55 +17,128 @@ interface PFIWTrackerBulkUploadProps {
 
 const PFIWTrackerBulkUpload: React.FC<PFIWTrackerBulkUploadProps> = ({ onUploadConfirm }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [remark, setRemark] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [currentGroup, setCurrentGroup] = useState('');
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const groupOptions = [
-    { value: '01', label: 'January 2023' },
-    { value: '02', label: 'February 2023' },
-    { value: '03', label: 'March 2023' },
-    { value: '04', label: 'April 2023' },
-    { value: '05', label: 'May 2023' },
-    { value: '06', label: 'June 2023' },
-    { value: '07', label: 'July 2023' },
-    { value: '08', label: 'August 2023' },
-    { value: '09', label: 'September 2023' },
-    { value: '10', label: 'October 2023' },
-    { value: '11', label: 'November 2023' },
-    { value: '12', label: 'December 2023' },
+    { value: '2024-01', label: 'January 2024' },
+    { value: '2024-02', label: 'February 2024' },
+    { value: '2024-03', label: 'March 2024' },
+    { value: '2024-04', label: 'April 2024' },
+    { value: '2024-05', label: 'May 2024' },
+    { value: '2024-06', label: 'June 2024' },
+    { value: '2024-07', label: 'July 2024' },
+    { value: '2024-08', label: 'August 2024' },
+    { value: '2024-09', label: 'September 2024' },
+    { value: '2024-10', label: 'October 2024' },
+    { value: '2024-11', label: 'November 2024' },
+    { value: '2024-12', label: 'December 2024' },
   ];
+
   const handleUploadClick = () => {
     setIsDialogOpen(true);
   };
 
-  const handleConfirm = () => {
-    setIsDialogOpen(false);
-    navigate('/uploadedpfiwdetail');
-    onUploadConfirm();
+  const handleConfirm = async () => {
+    try {
+      if (!file || !currentGroup) {
+        toast.push(
+          <Notification title="Error" type="danger">
+            Please select a file and a month to upload
+          </Notification>
+        );
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('document', file);
+      formData.append('month', currentGroup);
+
+      console.log('FormData:', formData);
+
+      const res = await dispatch(createPfIwTracker(formData))
+      .unwrap()
+      .catch((error: any) => {
+        // Handle different error formats
+        if (error.response?.data?.message) {
+            // API error response
+            showErrorNotification(error.response.data.message);
+        } else if (error.message) {
+            // Regular error object
+            showErrorNotification(error.message);
+        } else if (Array.isArray(error)) {
+            // Array of error messages
+            showErrorNotification(error);
+        } else {
+            // Fallback error message
+            showErrorNotification('An unexpected error occurred. Please try again.');
+        }
+        throw error; // Re-throw to prevent navigation
+    });
+
+      if (res) {
+        toast.push(
+          <Notification title="Success" type="success">
+            Upload successful!
+          </Notification>
+        );
+
+        // Close dialog and reset state
+        handleCancel();
+
+        // Refresh the table data
+        onUploadConfirm();
+
+        navigate('/uploadedpfiwdetail');
+      }
+    } catch (error) {
+      // toast.push(
+      //   <Notification title="Error" type="danger">
+      //     Upload failed. Please try again.
+      //   </Notification>
+      // );
+      console.error('Upload error:', error);
+    }
   };
 
   const handleCancel = () => {
     setIsDialogOpen(false);
-    setRemark('');
     setFile(null);
+    setCurrentGroup('');
   };
 
-  const handleDownload = (e: React.MouseEvent) => {
+  const handleDownload = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    fetch(documentPath)
-      .then(response => response.blob())
-      .then(blob => {
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = url;
-        a.download = 'AllMappedPFIWCompliancesDetails.xls';
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-      })
-      .catch(() => console.error('Download failed'));
+    if (!currentGroup) {
+      toast.push(
+        <Notification type="warning" title="Please select a month before downloading" />
+      );
+      return;
+    }
+
+    try {
+      const res = await httpClient.get(endpoints.pfiwtracker.download(), {
+        responseType: "blob",
+      });
+
+      const blob = new Blob([res.data], { type: "text/xlsx" });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `pfiwtracker.xlsx`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error('Download error:', error);
+      toast.push(
+        <Notification title="Error" type="danger">
+          Failed to download template. Please try again.
+        </Notification>
+      );
+    }
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,6 +146,7 @@ const PFIWTrackerBulkUpload: React.FC<PFIWTrackerBulkUploadProps> = ({ onUploadC
       setFile(event.target.files[0]);
     }
   };
+
   const handleChange = (setter: React.Dispatch<React.SetStateAction<string>>, field: string) => (
     selectedOption: { value: string; label: string } | null
   ) => {
@@ -76,35 +155,36 @@ const PFIWTrackerBulkUpload: React.FC<PFIWTrackerBulkUploadProps> = ({ onUploadC
     }
   };
 
-
   return (
     <>
-      <Button
-      size='sm'
-        variant="solid"
-        icon={<HiUpload />}
+      <Button 
+        variant="solid" 
+        size="sm" 
+        icon={<HiUpload />} 
         onClick={handleUploadClick}
       >
         Upload PF IW
       </Button>
+
       <Dialog
         isOpen={isDialogOpen}
         onClose={handleCancel}
         width={450}
       >
         <h5 className="mb-4">Upload PF IW</h5>
-        <div className='flex gap-3 w-full items-center mb-4'>
+        <div className='flex gap-3 w-full items-center'>
           <p className=''>Select Month:</p>
           <div className='w-40'>
-          <OutlinedSelect
-            label="Month"
-            options={groupOptions}
-            value={groupOptions.find((option) => option.value === currentGroup)}
-            onChange={handleChange(setCurrentGroup, 'groupName')}
-          />
+            <OutlinedSelect
+              label="Month"
+              options={groupOptions}
+              value={groupOptions.find((option) => option.value === currentGroup)}
+              onChange={handleChange(setCurrentGroup, 'groupName')}
+            />
           </div>
         </div>
-        <div className="flex flex-col gap-2">
+        
+        <div className="flex flex-col gap-2 my-4">
           <p>Upload PF IW File:</p>
           <Input
             type="file"
@@ -113,7 +193,7 @@ const PFIWTrackerBulkUpload: React.FC<PFIWTrackerBulkUploadProps> = ({ onUploadC
           />
         </div>
         <div className="my-4 flex gap-2 items-center">
-          <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
+          <a onClick={handleDownload} className="text-blue-600 hover:underline">
             <Button size="sm" icon={<HiDownload />}>Download Format</Button>
           </a>
         </div>

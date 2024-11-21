@@ -5,6 +5,7 @@ import CustomDateRangePicker from './CustomDateRangePicker';
 import { endpoints } from '@/api/endpoint';
 import httpClient from '@/api/http-client';
 import { Notification, toast } from '@/components/ui';
+import OutlinedInput from '@/components/ui/OutlinedInput';
 
 interface SelectOption {
   value: string;
@@ -41,6 +42,8 @@ const Company: React.FC<CompanyProps> = ({
   const [selectedLocation, setSelectedLocation] = useState<SelectOption | null>(null);
   const [selectedBranch, setSelectedBranch] = useState<BranchOption | null>(null);
 
+  const [companyGroupName, setCompanyGroupName] = useState('');
+  const [companyGroupId, setCompanyGroupId] = useState('');
 
   const [companyGroups, setCompanyGroups] = useState<SelectOption[]>([]);
   const [companies, setCompanies] = useState<SelectOption[]>([]);
@@ -67,21 +70,46 @@ const Company: React.FC<CompanyProps> = ({
 
   // Load Company Groups
   const loadCompanyGroups = async () => {
+    // try {
+    //   const { data } = await httpClient.get(endpoints.companyGroup.getAll(), {
+    //     params: { ignorePlatform: true },
+    //   });
+    //   setCompanyGroups(
+    //     data.data.map((v: any) => ({
+    //       label: v.name,
+    //       value: String(v.id),
+    //     }))
+    //   );
+    //   console.log('company group id ' + data.id);
+      
+    // } catch (error) {
+    //   console.error('Failed to load company groups:', error);
+    //   showNotification('danger', 'Failed to load company groups');
+    // }
+
     try {
       const { data } = await httpClient.get(endpoints.companyGroup.getAll(), {
         params: { ignorePlatform: true },
       });
-      setCompanyGroups(
-        data.data.map((v: any) => ({
-          label: v.name,
-          value: String(v.id),
-        }))
-      );
-      console.log('company group id ' + data.id);
       
+      if (data.data && data.data.length > 0) {
+        const defaultGroup = data.data[0];
+        setCompanyGroupName(defaultGroup.name);
+        setCompanyGroupId(String(defaultGroup.id));
+        
+        // Trigger loading companies with the default group
+        loadCompanies(String(defaultGroup.id));
+        
+        // Notify parent component if needed
+        onCompanyGroupChange?.({ value: String(defaultGroup.id), label: defaultGroup.name });
+      } else {
+        showNotification('warning', 'No company group found');
+      }
     } catch (error) {
-      console.error('Failed to load company groups:', error);
-      showNotification('danger', 'Failed to load company groups');
+      console.error('Failed to load company group:', error);
+      showNotification('danger', 'Failed to load company group');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -91,7 +119,7 @@ const Company: React.FC<CompanyProps> = ({
       const groupIdParam = [groupId];
       const { data } = await httpClient.get(endpoints.company.getAll(), {
         params: {
-          'group_id[]': groupIdParam
+          'group_id[]': [groupId]
         }
       });
       console.log(data.data);
@@ -375,11 +403,18 @@ const Company: React.FC<CompanyProps> = ({
   return (
     <div className="w-full flex items-center gap-3">
       <div className="flex-1 min-w-[140px]">
-        <OutlinedSelect
+        {/* <OutlinedSelect
           label="Company Group"
           options={companyGroups}
           value={selectedCompanyGroup}
           onChange={handleCompanyGroupChange}
+        /> */}
+        <OutlinedInput
+          label="Company Group"
+          value={companyGroupName} onChange={function (value: string): void {
+            throw new Error('Function not implemented.');
+          } }          // readOnly
+          // disabled
         />
       </div>
 
@@ -440,3 +475,4 @@ const Company: React.FC<CompanyProps> = ({
 };
 
 export default Company;
+

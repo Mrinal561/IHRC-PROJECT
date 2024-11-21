@@ -39,7 +39,7 @@ export const createEsiSetup = createAsyncThunk(
             const { data } = await httpClient.post(endpoints.esiSetup.create(), esiData);
             return data;
         } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || 'Failed to create ESI setup');
+            return rejectWithValue(error.response?.data?.message);
         }
     }
 );

@@ -14,7 +14,7 @@ interface Location {
 interface LocationAutosuggestProps {
   value: string;
   onChange: (value: string) => void;
-  districtId?: number;
+  districtId?: number | null;
   label?: string;
   placeholder?: string;
 }
