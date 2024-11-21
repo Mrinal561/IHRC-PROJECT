@@ -73,7 +73,7 @@ export const deleteUser = createAsyncThunk(
         } catch (error: any) {
             const err = error as AxiosError<any>
 
-            return rejectWithValue(err.response?.data?.message || 'Failed to delete user');
+            return rejectWithValue(err.response?.data?.message);
         }
             
     }

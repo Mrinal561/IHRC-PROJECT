@@ -18,6 +18,7 @@ import { AppDispatch } from '@/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { UserData } from "@/@types/userEntity";
 import { showErrorNotification } from '@/components/ui/ErrorMessage';
+import dayjs from 'dayjs';
 
 
 const UserTable: React.FC = () => {
@@ -91,7 +92,7 @@ const UserTable: React.FC = () => {
             {
                 header: 'Date of Joining',
                 accessorKey: 'joining_date',
-                cell: (props) => <div className="w-32 truncate">{props.getValue() as string}</div>,
+                cell: (props) => <div className="w-32 truncate">{dayjs(props.getValue() as string).format('DD-MM-YYYY')}</div>,
             },
             {
                 header: 'Actions',
@@ -373,7 +374,7 @@ const UserTable: React.FC = () => {
             >
                 <h5 className="mb-4">Confirm Deleting User</h5>
                 <p>
-                Are you sure you want to delete the user "{itemToDelete?.first_name} {itemToDelete?.last_name}"? 
+                Are you sure you want to delete the user "{itemToDelete?.name}"? 
                 This action cannot be undone.
                 </p>
                 <div className="text-right mt-6">
