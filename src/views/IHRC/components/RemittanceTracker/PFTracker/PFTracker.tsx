@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import AdaptableCard from '@/components/shared/AdaptableCard';
 import PFTrackerTool from './components/PFTrackerTool';
 import PFTrackerTable from './components/PFTrackerTable';
@@ -20,7 +20,7 @@ const PFTracker: React.FC = () => {
     fetchPFTrackerData();
   }, []);
 
-  const fetchPFTrackerData = async () => {
+  const fetchPFTrackerData = useCallback(async () => {
     setIsLoading(true)
     try {
       const res = await httpClient.get(endpoints.tracker.pfGetALl())
@@ -29,10 +29,13 @@ const PFTracker: React.FC = () => {
     } catch (error) {
       console.error('Error fetching PF tracker data:', error);
     }
-    finally{
+    finally {
       setIsLoading(false)
     }
-  };
+  }, []);
+    useEffect(() => {
+    fetchPFTrackerData();
+  }, [fetchPFTrackerData]);
 
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters);
@@ -47,7 +50,7 @@ const PFTracker: React.FC = () => {
         </div>
         <PFTrackerTool onFilterChange={handleFilterChange}  />
       </div>
-      <PFTrackerTable loading={isLoading} dataSent={data} />
+      <PFTrackerTable loading={isLoading} dataSent={data} onRefresh={ fetchPFTrackerData} />
     </AdaptableCard>
   );
 };

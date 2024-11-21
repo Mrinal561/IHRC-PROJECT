@@ -8,6 +8,10 @@ import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
 import { ActionMeta, MultiValue } from 'react-select';
 import { UsersRound } from 'lucide-react';
+import DistrictAutosuggest from './DistrictAutoSuggest';
+import LocationAutosuggest from '../../Branch/components/LocationAutosuggest';
+import { createEsiSetup } from '@/store/slices/esiSetup/esiSetupSlice';
+import { showErrorNotification } from '@/components/ui/ErrorMessage';
 
 interface ESISetupPanelProps {
   onClose: () => void;
@@ -64,14 +68,17 @@ const ESISetupPanel = ({ onClose, addESISetup }) => {
 >([])
 
   const [fileBase64, setFileBase64] = useState<string>('');
+  const [selectedDistrictId, setSelectedDistrictId] =  useState<number | undefined>();
 
   const [states, setStates] = useState<StateOption[]>([]);
   const [selectedStates, setSelectedStates] = useState<SelectOption | null>(null,)
   const [districts, setDistricts] = useState<DistrictOption[]>([]);
-  const [selectedDistrict, setSelectedDistrict] =
-  useState<SelectOption | null>(null)
+  const [selectedDistrict, setSelectedDistrict] = useState<{ id: number | null; name: string }>({
+    id: null,
+    name: ''
+  });
   const [locations, setLocations] = useState<LocationOption[]>([]);
-  const [selectedLocation, setSelectedLocation] = useState<SelectOption | null>(null)
+  const [selectedLocation, setSelectedLocation] = useState('')
   const [users, setUsers] = useState<any[]>([])
 
   const [formData, setFormData] = useState<{
@@ -224,71 +231,15 @@ const handleRegistrationCertificateUpload = async (e: React.ChangeEvent<HTMLInpu
     }
 };
 
-
-const loadDistricts = async (stateId: string) => {
-  if (!stateId) return;
-  
-  try {
-      const response = await httpClient.get(endpoints.common.district(), {
-          params: { state_id: stateId }
-      });
-
-      if (response.data) {
-          const formattedDistricts = response.data.map((district: any) => ({
-              label: district.name,
-              value: String(district.id)
-          }));
-          setDistricts(formattedDistricts);
-      }
-  } catch (error) {
-      console.error('Failed to load districts:', error);
-      toast.push(
-          <Notification title="Error" type="danger">
-              Failed to load districts
-          </Notification>
-      );
-      setDistricts([]);
-  }
-};
-
-
-const loadLocations = async (districtId: string) => {
-  if (!districtId) return;
-  
-  try {
-      const response = await httpClient.get(endpoints.common.location(), {
-          params: { district_id: districtId }
-      });
-
-      if (response.data) {
-          const formattedLocations = response.data.map((location: any) => ({
-              label: location.name,
-              value: String(location.id)
-          }));
-          setLocations(formattedLocations);
-      }
-  } catch (error) {
-      console.error('Failed to load locations:', error);
-      toast.push(
-          <Notification title="Error" type="danger">
-              Failed to load locations
-          </Notification>
-      );
-      setLocations([]);
-  }
-};
-
-
-
 const handleStateChange = (option: SelectOption | null) => {
   setSelectedStates(option);
-  setSelectedDistrict(null); // Reset district selection
-  setSelectedLocation(null); // Reset location selection
+  setSelectedDistrict(''); // Reset district selection
+  setSelectedLocation(''); // Reset location selection
   setDistricts([]); // Clear districts
   setLocations([]); // Clear locations
   
   if (option) {
-      loadDistricts(option.value);
+      // loadDistricts(option.value);
       // setPfSetupData(prev => ({
       //     ...prev,
       //     state_id: parseInt(option.value),
@@ -297,32 +248,6 @@ const handleStateChange = (option: SelectOption | null) => {
       // }));
   }
 };
-
-const handleDistrictChange = (option: SelectOption | null) => {
-  setSelectedDistrict(option);
-  setSelectedLocation(null); // Reset location selection
-  setLocations([]); // Clear locations
-  
-  if (option) {
-      loadLocations(option.value);
-      setFormData(prev => ({
-          ...prev,
-          district_id: parseInt(option.value),
-          location: ''
-      }));
-  }
-};
-
-const handleLocationChange = (option: SelectOption | null) => {
-  setSelectedLocation(option);
-  if (option) {
-      setFormData(prev => ({
-          ...prev,
-          location: option.label
-      }));
-  }
-};
-
 
 useEffect(() => {
   loadStates()
@@ -407,7 +332,26 @@ useEffect(() => {
       };
   
 
-      const response = await httpClient.post(endpoints.esiSetup.create(), data);
+      const response = await dispatch(createEsiSetup(data))
+      .unwrap()
+      .catch((error: any) => {
+        // Handle different error formats
+        if (error.response?.data?.message) {
+            // API error response
+            console.log('inside error')
+            showErrorNotification(error.response.data.message);
+        } else if (error.message) {
+            // Regular error object
+            showErrorNotification(error.message);
+        } else if (Array.isArray(error)) {
+            // Array of error messages
+            showErrorNotification(error);
+        } else {
+            // Fallback error message
+            showErrorNotification('An unexpected error occurred. Please try again.');
+        }
+        throw error; // Re-throw to prevent navigation
+    });
       if(response){
       addESISetup(response.data);
       onClose();
@@ -416,7 +360,7 @@ useEffect(() => {
       }
     } catch (error: any) {
       console.error('Failed to create ESI Setup:', error);
-      showNotification('danger', error.response?.data?.message || 'Failed to create ESI Setup');
+      // showNotification('danger', error.response?.data?.message || 'Failed to create ESI Setup');
     } finally {
       setIsLoading(false);
     }
@@ -516,22 +460,31 @@ useEffect(() => {
           />
         </div>
         <div>
-          <p className="mb-2">District</p>
-          <OutlinedSelect
-            label="Select District"
-            options={districts}
-            value={selectedDistrict}
-            onChange={handleDistrictChange}
-          />
+        <DistrictAutosuggest 
+        value={selectedDistrict}
+        onChange={(district) => {
+          setSelectedDistrict(district);
+          setFormData(prev => ({
+            ...prev,
+            district_id: district.id || 0
+          }));
+        }}
+        stateId={selectedStates?.value ? parseInt(selectedStates.value) : undefined}
+        onDistrictSelect={(id) => setSelectedDistrictId(id)}  // Add this prop
+      />
         </div>
         <div>
-          <p className="mb-2">Location</p>
-          <OutlinedSelect
-            label="Select Location"
-            options={locations}
-            value={selectedLocation}
-            onChange={handleLocationChange}
-          />
+        <LocationAutosuggest
+          value={selectedLocation}
+          onChange={(location: string) => {
+            setSelectedLocation(location);
+            setFormData(prev => ({ // Update formData with selected location
+            ...prev,
+              location: location
+            }));
+          }}
+          districtId={selectedDistrictId}
+        />
         </div>
       </div>
 
@@ -571,7 +524,7 @@ useEffect(() => {
                             isMulti
                             options={users.map(user => ({
                               value: String(user.id),                           
-                              label: `${user.first_name} ${user.last_name}`,
+                              label: `${user.name}`,
                             }))}
                             onChange={handleSignatoryChange}
 

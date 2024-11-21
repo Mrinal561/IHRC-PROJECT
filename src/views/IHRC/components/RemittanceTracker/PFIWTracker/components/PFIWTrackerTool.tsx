@@ -13,7 +13,9 @@ import CustomDateRangePicker from './CustomDateRangePicker';
 const PFIWTrackerTool: React.FC<{ onFilterChange: (filters: any) => void }> = ({ onFilterChange }) => {
   const [showUploadedDetails, setShowUploadedDetails] = useState(false);
   const [filters, setFilters] = useState({ entityName: '', pfCode: '', location: '' });
-
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  
   const handleUploadConfirm = () => {
     setShowUploadedDetails(true);
   };

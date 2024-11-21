@@ -14,9 +14,10 @@ import assignedCompliance,{ ComplianceAssignmentState } from './slices/AssignedC
 import dueCompliance, { DueComplianceState } from './slices/dueCompliance/dueComplianceSlice'
 import status,{ StatusState } from './slices/dueCompliance/statusUpdateSlice'
 import esisetup, { EsiSetupState } from './slices/esiSetup/esiSetupSlice'
-
-
-
+import pfsetup,{ PFState } from './slices/pfSetup/pfSlice'
+import pfiwsetup, { PfIwTrackerState } from './slices/pfSetup/pfIwTrackerSlice'
+import esitrackersetup, { EsiTrackerState } from './slices/esiSetup/esiTrackerSlice'
+import lwftrackersetup, { LwfTrackerState } from './slices/lwfSetup/lwfTrackerSlice'
 export type RootState = CombinedState<{
     auth: CombinedState<AuthState>
     base: CombinedState<BaseState>
@@ -29,6 +30,10 @@ export type RootState = CombinedState<{
     branch: BranchState
     user: UserState
     esiSetup: EsiSetupState
+    pfSetup: PFState
+    esiTrackerSetup: EsiTrackerState
+    lwfTrackerSetup: LwfTrackerState
+    pfiwSetup: PfIwTrackerState
     locale: LocaleState
     theme: ThemeState
     assigedCompliance: ComplianceAssignmentState
@@ -55,6 +60,10 @@ const staticReducers = {
     dueCompliance,
     status,
     esisetup,
+    pfsetup,
+    pfiwsetup,
+    esitrackersetup,
+    lwftrackersetup,
     [RtkQueryService.reducerPath]: RtkQueryService.reducer,
 }
 
