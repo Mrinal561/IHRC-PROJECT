@@ -33,7 +33,7 @@ const DueCompliance = () => {
             } else {
                 console.log('No data in API response or unexpected response structure');
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error fetching due compliance data:', error);
             console.error('Error details:', {
                 message: error.message,

@@ -513,7 +513,7 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
                         pageIndex: 1,
                     }))
                 }
-                onSort={(sort) => setTableData((prev) => ({ ...prev, sort }))}
+                // onSort={(sort) => setTableData((prev) => ({ ...prev, sort }))}
                 stickyHeader={true}
                 stickyFirstColumn={true}
                 stickyLastColumn={true}

@@ -13,6 +13,8 @@ import { BranchData } from '@/@types/branch';
 import { fetchBranches } from '@/store/slices/branch/branchSlice';
 import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
+import dayjs from 'dayjs';
+
 
 interface SelectOption {
     value: string;
@@ -119,7 +121,7 @@ interface BranchTableProps {
                 header: 'Branch Opening Date',
                 accessorKey: 'opening_date',
                 cell: (props) => (
-                  <div className="w-44 ">{props.getValue() as string}</div>
+                  <div className="w-44 ">{dayjs(props.getValue() as string).format('DD-MM-YYYY')}</div>
                 ),
             },
             {

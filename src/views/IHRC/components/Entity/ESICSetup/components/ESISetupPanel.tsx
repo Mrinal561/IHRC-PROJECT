@@ -16,7 +16,7 @@ import { showErrorNotification } from '@/components/ui/ErrorMessage';
 interface ESISetupPanelProps {
   onClose: () => void;
   addESISetup: (data: any) => void;
-  // refreshData: () => Promise<void>;
+  refreshData: () => Promise<void>;
 }
 
 interface SelectOption {
@@ -55,7 +55,7 @@ interface LocationOption {
   district_id: number;
 }
 
-const ESISetupPanel = ({ onClose, addESISetup }) => {
+const ESISetupPanel = ({ onClose, addESISetup , refreshData}) => {
   const dispatch = useDispatch<AppDispatch>();
   const [isLoading, setIsLoading] = useState(false);
   const [companyGroups, setCompanyGroups] = useState<SelectOption[]>([]);
@@ -356,7 +356,10 @@ useEffect(() => {
       addESISetup(response.data);
       onClose();
       showNotification('success', 'ESI Setup created successfully');
-      // await refreshData();
+        // await refreshData();
+         if (refreshData) {
+          await refreshData();
+        }
       }
     } catch (error: any) {
       console.error('Failed to create ESI Setup:', error);
