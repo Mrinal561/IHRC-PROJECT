@@ -342,6 +342,12 @@ export const protectedRoutes = [
         component: lazy(() => import('@/views/IHRC/components/Entity/PFSetup/components/PFSetupPage')),
         authority: [],
     },
+    {
+        key: 'ptSetup.adddetail',
+        path: '/add-pt-setup',
+        component: lazy(() => import('@/views/IHRC/components/Entity/PTSetup/components/PTSetupPage')),
+        authority: [],
+    },
 
     {
         key: 'register.collapse.item1',

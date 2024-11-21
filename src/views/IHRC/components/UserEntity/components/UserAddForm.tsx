@@ -13,8 +13,8 @@ import { format } from 'date-fns';
 
 interface UserFormData {
   group_id: number;
-  first_name: string;
-  last_name: string;
+  name: string;
+  // last_name: string;
   email: string;
   password: string;
   mobile: string;
@@ -46,8 +46,7 @@ const UserAddForm = () => {
   
   const [formData, setFormData] = useState<UserFormData>({
     group_id: 0,
-    first_name: '',
-    last_name: '',
+    name: '',
     email: '',
     password: '',
     mobile: '',
@@ -281,8 +280,8 @@ if (resultAction) {
             <p className="mb-2">Name <span className="text-red-500">*</span></p>
             <OutlinedInput
               label="Name"
-              value={formData.first_name}
-              onChange={(value: string) => handleInputChange('first_name', value)}
+              value={formData.name}
+              onChange={(value: string) => handleInputChange('name', value)}
             />
           </div>
         </div>

@@ -31,7 +31,7 @@ const CompanyNameTool: React.FC<CompanyToolProps> = ({ onDataChange }) => {
   const [companyName, setCompanyName] = useState('');
   const [selectedCompanyGroup, setSelectedCompanyGroup] = useState<SelectOption | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [companyGroups, setCompanyGroups] = useState([]);
+  const [companyGroups, setCompanyGroups] = useState('');
   const [newCompany, setNewCompany] = useState<NewCompany>({
     name: '',
     group_id: 0
@@ -118,12 +118,13 @@ const CompanyNameTool: React.FC<CompanyToolProps> = ({ onDataChange }) => {
       >
         <h5 className="mb-4">Add Company</h5>
         <div className="mb-4 flex flex-col gap-3">
-          <label>Select the company group</label>
-          <OutlinedSelect
+          <label>company group</label>
+          <OutlinedInput
             label="Company Group"
-            options={companyGroups}
-            value={selectedCompanyGroup}
-            onChange={setSelectedCompanyGroup}
+            // options={companyGroups}
+            value={companyGroups} onChange={function (value: string): void {
+              throw new Error('Function not implemented.');
+            } }            // onChange={setSelectedCompanyGroup}
           />
         </div>
         <div className="mb-4 flex flex-col gap-3">

@@ -76,6 +76,11 @@ pfSetup:{
     getAll:()=> api('companyadmin/pfsetup'),
     create: () => api('companyadmin/pfsetup'),
 },
+ptSetup: {
+    getAll: () => api('companyadmin/ptsetup'),
+    create: () => api('companyadmin/ptsetup'),
+    getById: (id: string) => api(`companyadmin/ptsetup/${id}`)
+},
 tracker:{ 
     downloadFormat:() => api('upload/sample_files/pf-tracker.xlsx'),
     pfUpload:() => api('companyadmin/pfsetup/pf-tracker'),
@@ -87,6 +92,16 @@ esiTracker: {
     bulkUpload: () => api(`companyadmin/esisetup/esi-tracker`),
     download: () => api(`upload/sample_files/esi-tracker.xlsx`),
      uploadDocs:(id:any)=> api(`companyadmin/esisetup/esi-tracker/challan/${id}`)
+   },
+// ptTracker: {
+//     getAll: () => api(`companyadmin/esisetup/esi-tracker`),
+//     bulkUpload: () => api(`companyadmin/esisetup/esi-tracker`),
+//     download: () => api(`upload/sample_files/esi-tracker.xlsx`)
+//    },
+ptTracker: {
+    getAll: () => api(`companyadmin/esisetup/esi-tracker`),
+    bulkUpload: () => api(`companyadmin/esisetup/esi-tracker`),
+    download: () => api(`upload/sample_files/esi-tracker.xlsx`),
    },
    pfiwtracker:{
     download:()=> api('upload/sample_files/pfiw-tracker.xlsx'),
