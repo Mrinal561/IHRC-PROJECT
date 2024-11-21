@@ -38,46 +38,46 @@ import { ComplianceData } from '@/@types/compliance';
 // }
 
 
-// const DownloadHistoryButton = () => {
-//     const [isDialogOpen, setIsDialogOpen] = useState(false);
-//   const navigate = useNavigate();
+const DownloadHistoryButton = () => {
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const navigate = useNavigate();
   
-//     const handleAssignClick = () => {
-//         setIsDialogOpen(true);
-//     };
+    const handleAssignClick = () => {
+        setIsDialogOpen(true);
+    };
   
-//     const handleConfirm = () => {
-//         setIsDialogOpen(false);
-//         toast.push(
-//           <Notification
-//             title="Success"
-//             type="success"
-//           >
-//             Compliance Report downloaded successfully!
-//           </Notification>,
-//           {
-//             placement: 'top-end',
-//           }
-//         );
-//       };
+    const handleConfirm = () => {
+        setIsDialogOpen(false);
+        toast.push(
+          <Notification
+            title="Success"
+            type="success"
+          >
+            Compliance Report downloaded successfully!
+          </Notification>,
+          {
+            placement: 'top-end',
+          }
+        );
+      };
   
-//     const handleCancel = () => {
-//         setIsDialogOpen(false);
-//     };
-//     const value="Download"
+    const handleCancel = () => {
+        setIsDialogOpen(false);
+    };
+    const value="Download"
   
-//     return (
-//         <>
-//          <Tooltip title="View Details">
-//                   <Button
-//                     size="sm"
-//                     onClick={() => navigate(`/app/IHRC/compliance-status-list-detail/${row.original.Compliance_Id}`, { state: row.original })}
-//                     icon={<RiEyeLine />}
-//                   />
-//                 </Tooltip>
-//         </>
-//     );
-//   };
+    return (
+        <>
+         <Tooltip title="View Details">
+                  <Button
+                    size="sm"
+                    onClick={() => navigate(`/app/IHRC/compliance-status-list-detail/${row.original.Compliance_Id}`, { state: row.original })}
+                    icon={<RiEyeLine />}
+                  />
+                </Tooltip>
+        </>
+    );
+  };
 
 const HistoryPageTable: React.FC = () => {
   const navigate = useNavigate();
@@ -213,8 +213,7 @@ const HistoryPageTable: React.FC = () => {
           <Tooltip title="View Compliance Detail">
                   <Button
                     size="sm"
-                    onClick={() => navigate(`/app/IHRC/history-list-detail/${row.original.uuid}`, 
-                      { state: row.original })}
+                    onClick={() => navigate(`/app/IHRC/history-list-detail/$  {row.original.Compliance_ID}`, { state: row.original })}
                     icon={<RiEyeLine />}
                   />
                 </Tooltip>

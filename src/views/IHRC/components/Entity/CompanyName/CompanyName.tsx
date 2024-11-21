@@ -182,12 +182,13 @@ const CompanyName = () => {
           <label>Company Group</label>
           <OutlinedInput
             label="Company Group"
-            value={companyGroup.name}
-            // disabled
+            value={companyGroup.name} onChange={function (value: string): void {
+              throw new Error('Function not implemented.');
+            } }            // disabled
           />
         </div>
         <div className="mb-4 flex flex-col gap-3">
-          <label>Enter company name</label>
+          <label>Enter company name <span className='text-red-500'>*</span></label>
           <OutlinedInput
             label="Company"
             value={companyName}
