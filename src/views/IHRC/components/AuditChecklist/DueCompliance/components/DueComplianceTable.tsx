@@ -301,14 +301,14 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
         id: 'actions',
         cell: ({ row }) => (
           <div className="flex space-x-2">
-            <Tooltip title="View Details" placement="top">
+            {/* <Tooltip title="View Details" placement="top">
               <Button
                 size="sm"
                 onClick={() => onViewDetail?.(row.original)}
                 icon={<RiEyeLine />}
                 className="hover:bg-transparent"
               />
-            </Tooltip>
+            </Tooltip> */}
             <Tooltip title="Update Status" placement="top">
               <Button
                 size="sm"

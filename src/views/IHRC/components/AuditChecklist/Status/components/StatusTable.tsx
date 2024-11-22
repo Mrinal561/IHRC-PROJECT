@@ -488,9 +488,12 @@ const StatusTable: React.FC<StatusTableProps> = ({
                     size="sm"
                     onClick={() =>
                       navigate(`/app/IHRC/compliance-status-list-detail/${row.original.uuid}`, {
-                        state: row.original,
-                      })
-                    }
+                        state: {
+                          ...row.original,
+                          complianceDetail: row.original.compliance_detail,
+                          remarks: row.original.AssignedComplianceRemark
+                        }
+                      })}
                     icon={<RiEyeLine />}
                   />
                 </Tooltip>
