@@ -15,6 +15,7 @@ interface SelectOption {
 const Status: React.FC = () => {
   const [currentFilter, setCurrentFilter] = useState('Pending');
   const [searchTerm, setSearchTerm] = useState('');
+  const [updateCounter, setUpdateCounter] = useState(0);
   const [selectedBranch, setSelectedBranch] = useState<SelectOption | null>(null);
   const [selectedCompanyGroup, setSelectedCompanyGroup] = useState<SelectOption | null>(null);
   const [selectedCompany, setSelectedCompany] = useState<SelectOption | null>(null);
@@ -39,6 +40,9 @@ const Status: React.FC = () => {
     setSelectedState(null);
     setSelectedDistrict(null);
     setSelectedLocation(null);
+  };
+    const handleStatusUpdate = () => {
+    setUpdateCounter(prev => prev + 1);
   };
 
   const filterValues = {
@@ -68,7 +72,9 @@ const Status: React.FC = () => {
       onLocationChange={setSelectedLocation}/>
       </div>
       <div>
-        <StatusCard />
+        <StatusCard
+          updateCounter={updateCounter}
+          filterValues={filterValues}/>
       </div>
       <div>
         <StatusTable
@@ -77,6 +83,7 @@ const Status: React.FC = () => {
           onClearAll={handleClearAll}
           currentFilter={currentFilter}
           filterValues={filterValues}
+           onStatusUpdate={handleStatusUpdate}
         />
       </div>
     </div>
