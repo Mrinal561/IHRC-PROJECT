@@ -26,6 +26,7 @@ interface StatusTableProps {
     districtId?: string;
     locationId?: string;
   };
+   onStatusUpdate: () => void;
 }
 
 interface BulkActionData {
@@ -151,6 +152,7 @@ const StatusTable: React.FC<StatusTableProps> = ({
   onFilterChange,
   currentFilter,
   filterValues,
+   onStatusUpdate,
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -231,6 +233,7 @@ const StatusTable: React.FC<StatusTableProps> = ({
         </Notification>,
         { placement: 'top-end' }
       );
+       onStatusUpdate();
       setUpdateCounter(prev => prev + 1);
     } catch (error) {
       console.error('Failed to approve compliances:', error);
@@ -278,6 +281,7 @@ const StatusTable: React.FC<StatusTableProps> = ({
           </Notification>,
           { placement: 'top-end' }
         );
+         onStatusUpdate();
         setUpdateCounter(prev => prev + 1);
       }
     } catch (error) {
@@ -316,7 +320,7 @@ const StatusTable: React.FC<StatusTableProps> = ({
         </Notification>,
         { placement: 'top-end' }
       );
-      
+       onStatusUpdate();
       setUpdateCounter(prev => prev + 1);
     } catch (error) {
       console.error('Failed to approve compliance:', error);

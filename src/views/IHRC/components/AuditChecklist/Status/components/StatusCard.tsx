@@ -41,7 +41,7 @@ const StatisticCard = ({ icon, avatarClass, label, value, loading }: any) => {
     )
 }
 
-const StatusCard = () => {
+const StatusCard = ({ updateCounter, filterValues }) => {
     // You might want to replace this with actual loading state
     const [loading, setLoading] = useState(false);
   const [complianceData, setComplianceData] = useState({
@@ -60,10 +60,10 @@ const StatusCard = () => {
     )
       console.log(response.data)
       if (response?.data?.data) {
-        const totalCount = response.data.data.length;
         const pendingCount = response.data.data.filter(item => item.data_status === 'pending').length;
         const approvedCount = response.data.data.filter(item => item.data_status === 'approved').length;
         const rejectedCount = response.data.data.filter(item => item.data_status === 'rejected').length;
+        const totalCount = pendingCount + approvedCount + rejectedCount;
         
         setComplianceData({
           total: totalCount,
@@ -82,7 +82,7 @@ const StatusCard = () => {
 
   useEffect(() => {
     fetchAndSetComplianceData();
-  }, []); // Empty dependency array means this runs once on mount
+  }, [updateCounter, filterValues]); // Empty dependency array means this runs once on mount
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
