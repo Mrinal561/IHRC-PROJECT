@@ -9,7 +9,7 @@ import { RiEyeLine } from 'react-icons/ri';
 import { Navigate, useNavigate } from 'react-router-dom';
 import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
-import { ComplianceData } from '@/@types/compliance';
+// import { ComplianceData } from '@/@types/compliance';
 // Define the structure of our data
 // interface ComplianceData {
 //   id: number;
@@ -37,6 +37,27 @@ import { ComplianceData } from '@/@types/compliance';
 //     assign:boolean;
 // }
 
+interface ComplianceData {
+  id: number;
+  uuid: string;
+  record_id: string;
+  proof_document: string | null;
+  status: string;
+  data_status: string;
+  compliance_detail: {
+    id: number;
+    legislation: string;
+    header: string;
+    description: string;
+    category: string;
+    criticality: string;
+  };
+  AssignedComplianceRemark: Array<{
+    id: number;
+    remark: string;
+    created_at: string;
+  }>;
+}
 
 const DownloadHistoryButton = () => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -97,7 +118,7 @@ const HistoryPageTable: React.FC = () => {
         }
       });
       console.log('API Response:', response);
-      const fetchedData = response.data?.data || response.data || [];
+      const fetchedData = response.data?.data || [];
 
       setData(fetchedData);
       setFilteredData(fetchedData);
@@ -151,13 +172,13 @@ const HistoryPageTable: React.FC = () => {
           );
         },
       },
-      {
-        header: 'Location',
-        accessorKey: 'compliance_detail.location',
-        cell: (props) => (
-          <div className="w-24 text-start truncate">{props.getValue()}</div>
-        ),
-      },
+      // {
+      //   header: 'Location',
+      //   accessorKey: 'compliance_detail.location',
+      //   cell: (props) => (
+      //     <div className="w-24 text-start truncate">{props.getValue()}</div>
+      //   ),
+      // },
       {
         header: 'Header',
         accessorKey: 'compliance_detail.header',
@@ -213,7 +234,16 @@ const HistoryPageTable: React.FC = () => {
           <Tooltip title="View Compliance Detail">
                   <Button
                     size="sm"
-                    onClick={() => navigate(`/app/IHRC/history-list-detail/$  {row.original.Compliance_ID}`, { state: row.original })}
+                    onClick={() => {
+                      // Ensure we're passing the full data object as state
+                      navigate(`/app/IHRC/history-list-detail/${row.original.uuid}`, {
+                        state: {
+                          ...row.original,
+                          complianceDetail: row.original.compliance_detail,
+                          remarks: row.original.AssignedComplianceRemark
+                        }
+                      });
+                    }}
                     icon={<RiEyeLine />}
                   />
                 </Tooltip>
