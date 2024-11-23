@@ -26,7 +26,7 @@ const PTECTracker = () => {
     setIsLoading(true)
 
     try {
-      const res = await httpClient.get(endpoints.ptTracker.getAll())
+      const res = await httpClient.get(endpoints.ptec.getAll())
       console.log(res.data.data)
       setData(res.data.data);
     } catch (error) {

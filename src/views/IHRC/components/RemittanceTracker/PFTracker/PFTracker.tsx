@@ -13,19 +13,32 @@ const PFTracker: React.FC = () => {
   const [filters, setFilters] = useState({ groupName: '', companyName: '', pfCode: '' });
   const [data, setData] = useState<PfChallanData[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+const [pagination, setPagination] = useState({
+    total: 0,
+    pageIndex: 1,
+    pageSize: 10
+  });
 
 
+  // useEffect(() => {
+  //   fetchPFTrackerData();
+  // }, []);
 
-  useEffect(() => {
-    fetchPFTrackerData();
-  }, []);
-
-  const fetchPFTrackerData = useCallback(async () => {
+  const fetchPFTrackerData = useCallback(async(page: number, pageSize: number)  => {
     setIsLoading(true)
-    try {
-      const res = await httpClient.get(endpoints.tracker.pfGetALl())
+     try {
+      const res = await httpClient.get(endpoints.tracker.pfGetALl(), {
+        params: {
+          page,
+          page_size: pageSize
+        }
+      });
       console.log(res.data.data)
-      setData(res.data.data);
+       setData(res.data.data);
+       setPagination(prev => ({
+        ...prev,
+        total: res.data.total || res.data.data.length
+      }));
     } catch (error) {
       console.error('Error fetching PF tracker data:', error);
     }
@@ -34,13 +47,24 @@ const PFTracker: React.FC = () => {
     }
   }, []);
     useEffect(() => {
-    fetchPFTrackerData();
-  }, [fetchPFTrackerData]);
+    fetchPFTrackerData(pagination.pageIndex, pagination.pageSize);
+  }, [fetchPFTrackerData, pagination.pageIndex, pagination.pageSize]);
 
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters);
   };
 
+   const handlePaginationChange = (page: number) => {
+    setPagination(prev => ({ ...prev, pageIndex: page }));
+  };
+
+  const handlePageSizeChange = (newPageSize: number) => {
+    setPagination(prev => ({
+      ...prev,
+      pageSize: newPageSize,
+      pageIndex: 1 // Reset to first page when changing page size
+    }));
+  };
 
   return (
     <AdaptableCard className="h-full" bodyClass="h-full">
@@ -50,7 +74,14 @@ const PFTracker: React.FC = () => {
         </div>
         <PFTrackerTool onFilterChange={handleFilterChange}  />
       </div>
-      <PFTrackerTable loading={isLoading} dataSent={data} onRefresh={ fetchPFTrackerData} />
+      <PFTrackerTable
+        loading={isLoading}
+        dataSent={data}
+        onRefresh={() => fetchPFTrackerData(pagination.pageIndex, pagination.pageSize)}
+        pagination={pagination}
+        onPaginationChange={handlePaginationChange}
+        onPageSizeChange={handlePageSizeChange}
+      />
     </AdaptableCard>
   );
 };
