@@ -12,10 +12,24 @@ import dayjs from 'dayjs';
 interface EsiTrackerTableProps {
     dataSent: PfChallanData[];
     loading: boolean
-  onRefresh?: () => void;
+    onRefresh?: () => void;
+     pagination: {
+    total: number;
+    pageIndex: number;
+    pageSize: number;
+  };
+  onPaginationChange: (page: number) => void;
+  onPageSizeChange: (pageSize: number) => void;
   }
 
-const ESITrackerTable: React.FC<EsiTrackerTableProps> = ({ dataSent, loading ,onRefresh}) => {
+const ESITrackerTable: React.FC<EsiTrackerTableProps> =({ 
+  dataSent, 
+  loading = false, 
+  onRefresh,
+  pagination,
+  onPaginationChange,
+  onPageSizeChange
+}) => {
     // const [data, setData] = useState<ESITrackerData[]>(sampleData);
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [editingData, setEditingData] = useState<PfChallanData | null>(null);
@@ -334,6 +348,13 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> = ({ dataSent, loading ,on
                 stickyHeader={true}
                 stickyFirstColumn={true}
                 stickyLastColumn={true}
+                 pagingData={{
+    total: pagination.total,
+    pageIndex: pagination.pageIndex,
+    pageSize: pagination.pageSize,
+  }}
+  onPaginationChange={onPaginationChange}
+  onSelectChange={onPageSizeChange}
             />
             {editingData && (
                 <ESITrackerEditDialog

@@ -300,9 +300,23 @@ interface PFIWTrackerTableProps {
   dataSent: PfiwChallanData[];
   loading?: boolean;
   onRefresh?: () => void;
+   pagination: {
+    total: number;
+    pageIndex: number;
+    pageSize: number;
+  };
+  onPaginationChange: (page: number) => void;
+  onPageSizeChange: (pageSize: number) => void;
 }
 
-const PFIWTrackerTable: React.FC<PFIWTrackerTableProps> = ({ dataSent, loading = false , onRefresh}) => {
+const PFIWTrackerTable: React.FC<PFIWTrackerTableProps> =({ 
+  dataSent, 
+  loading = false, 
+  onRefresh,
+  pagination,
+  onPaginationChange,
+  onPageSizeChange
+}) => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editingData, setEditingData] = useState<PFIWTrackerData | null>(null);
 
@@ -315,6 +329,9 @@ const PFIWTrackerTable: React.FC<PFIWTrackerTableProps> = ({ dataSent, loading =
     // Handle the update logic here
     setEditDialogOpen(false);
     setEditingData(null);
+    if (onRefresh) {
+    onRefresh();
+  }
   };
 
   const handleDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -488,6 +505,13 @@ const PFIWTrackerTable: React.FC<PFIWTrackerTableProps> = ({ dataSent, loading =
         stickyHeader={true}
         stickyFirstColumn={true}
         stickyLastColumn={true}
+        pagingData={{
+    total: pagination.total,
+    pageIndex: pagination.pageIndex,
+    pageSize: pagination.pageSize,
+  }}
+  onPaginationChange={onPaginationChange}
+  onSelectChange={onPageSizeChange}
       />
       {editingData && (
         <PFIWTrackerEditDialog

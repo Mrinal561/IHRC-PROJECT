@@ -575,12 +575,22 @@ interface LWFTrackerTableProps {
   dataSent: LWFTrackerData[];
   loading?: boolean;
   onRefresh?: () => void;
+    pagination: {
+    total: number;
+    pageIndex: number;
+    pageSize: number;
+  };
+  onPaginationChange: (page: number) => void;
+  onPageSizeChange: (pageSize: number) => void;
 }
 
 const LWFTrackerTable: React.FC<LWFTrackerTableProps> = ({ 
   dataSent, 
   loading = false, 
-  onRefresh 
+  onRefresh,
+   pagination,
+  onPaginationChange,
+  onPageSizeChange
 }) => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editingData, setEditingData] = useState<LWFTrackerData | null>(null);
@@ -772,6 +782,13 @@ const LWFTrackerTable: React.FC<LWFTrackerTableProps> = ({
         stickyHeader={true}
         stickyFirstColumn={true}
         stickyLastColumn={true}
+         pagingData={{
+    total: pagination.total,
+    pageIndex: pagination.pageIndex,
+    pageSize: pagination.pageSize,
+  }}
+  onPaginationChange={onPaginationChange}
+  onSelectChange={onPageSizeChange}
       />
       {editingData && (
         <LWFTrackerEditDialog
