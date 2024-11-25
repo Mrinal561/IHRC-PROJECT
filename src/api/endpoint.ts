@@ -85,19 +85,23 @@ tracker:{
     downloadFormat:() => api('upload/sample_files/pf-tracker.xlsx'),
     pfUpload:() => api('companyadmin/pfsetup/pf-tracker'),
     pfGetALl: () => api(`companyadmin/pfsetup/pf-tracker`),
-    uploadDocs:(id:any)=> api(`companyadmin/pfsetup/pf-tracker/document/${id}`)
+    uploadDocs: (id: any) => api(`companyadmin/pfsetup/pf-tracker/document/${id}`),
+    downloadALl:()=> api('/companyadmin/pfsetup/pf-tracker/export')
 },
 esiTracker: {
     getAll: () => api(`companyadmin/esisetup/esi-tracker`),
     bulkUpload: () => api(`companyadmin/esisetup/esi-tracker`),
     download: () => api(`upload/sample_files/esi-tracker.xlsx`),
-     uploadDocs:(id:any)=> api(`companyadmin/esisetup/esi-tracker/challan/${id}`)
+    uploadDocs: (id: any) => api(`companyadmin/esisetup/esi-tracker/challan/${id}`),
+     downloadAll:()=> api('/companyadmin/esisetup/esi-tracker/export')
     },
     ptrc: {
         download: () => api('upload/sample_files/ptrc-tracker.xlsx'),
         bulkUpload: () => api('/companyadmin/ptsetup/ptrc-tracker'),
         getAll: () => api('/companyadmin/ptsetup/ptrc-tracker'),
-        uploadDocs:(id:any)=> api(`/companyadmin/ptsetup/ptrc-tracker/document/${id}`)
+        uploadDocs: (id: any) => api(`/companyadmin/ptsetup/ptrc-tracker/document/${id}`),
+         downloadAll:()=> api('/companyadmin/ptsetup/ptrc-tracker/export')
+        
    },
 // ptTracker: {
 //     getAll: () => api(`companyadmin/esisetup/esi-tracker`),
@@ -113,14 +117,17 @@ ptTracker: {
          download: () => api('upload/sample_files/ptec-tracker.xlsx'),
         bulkUpload: () => api('/companyadmin/ptsetup/ptec-tracker'),
         getAll: () => api('/companyadmin/ptsetup/ptec-tracker'),
-          uploadDocs:(id:any)=> api(`/companyadmin/ptsetup/ptec-tracker/document/${id}`)
+        uploadDocs: (id: any) => api(`/companyadmin/ptsetup/ptec-tracker/document/${id}`),
+          
+         downloadAll:()=> api('/companyadmin/ptsetup/ptec-tracker/export')
        
    },
    pfiwtracker:{
     download:()=> api('upload/sample_files/pfiw-tracker.xlsx'),
     bulkupload:()=> api('/companyadmin/pfsetup/pfiw-tracker'),
        pfiwGetAll: () => api('/companyadmin/pfsetup/pfiw-tracker'),
-    challanupload:(id:any)=> api(`/companyadmin/pfsetup/pfiw-tracker/document/${id}`)
+    challanupload:(id:any)=> api(`/companyadmin/pfsetup/pfiw-tracker/document/${id}`),
+    downloadALl:()=> api('/companyadmin/pfsetup/pfiw-tracker/export')
     },
     lwftracker: {
        download:()=> api('upload/sample_files/lwf-tracker.xlsx'),
