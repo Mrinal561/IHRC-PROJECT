@@ -4,6 +4,8 @@ import LWFTrackerBulkUpload from './LWFTrackerBulkUpload'
 import CustomDateRangePicker from './CustomDateRangePicker';
 import { Button } from '@/components/ui';
 import { HiDownload } from 'react-icons/hi';
+import httpClient from '@/api/http-client';
+import { endpoints } from '@/api/endpoint';
 
 const LWFTrackerTool = () => {
   const [showUploadedDetails, setShowUploadedDetails] = useState(false);
@@ -19,6 +21,27 @@ const LWFTrackerTool = () => {
     setEndDate(end);
   };
 
+  
+  const handleDownload = async () => {
+    try {
+      const res = await httpClient.get(endpoints.pfiwtracker.downloadALl(), {
+        responseType: 'blob'
+      })
+      
+      const blob = new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', 'LWFData.xlsx')
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(url) // Clean up the URL object
+    } catch (error) {
+      console.error('Error downloading LWF data:', error)
+      // Here you might want to show an error notification to the user
+    }
+  }
 
 
   return (
@@ -29,7 +52,8 @@ const LWFTrackerTool = () => {
         <Button  
         variant="solid" 
         size="sm" 
-        icon={<HiDownload />}>Download LWF Data</Button>
+          icon={<HiDownload />}
+        onClick={handleDownload}>Download LWF Data</Button>
         <LWFTrackerBulkUpload onUploadConfirm={handleUploadConfirm} />
       </div>
     </div>

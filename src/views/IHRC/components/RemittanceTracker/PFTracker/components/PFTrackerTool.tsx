@@ -7,6 +7,8 @@ import { dummyData } from './PFTrackerTable';
 import { Button } from '@/components/ui';
 import { HiDownload } from 'react-icons/hi';
 import CustomDateRangePicker from './CustomDateRangePicker';
+import httpClient from '@/api/http-client';
+import { endpoints } from '@/api/endpoint';
 
 const PFTrackerTool: React.FC<{ onFilterChange: (filters: any) => void }> = ({ onFilterChange }) => {
   const [showUploadedDetails, setShowUploadedDetails] = useState(false);
@@ -37,6 +39,27 @@ const PFTrackerTool: React.FC<{ onFilterChange: (filters: any) => void }> = ({ o
     setEndDate(end);
   };
 
+
+    const handleDownload = async () => {
+    try {
+      const res = await httpClient.get(endpoints.tracker.downloadALl(), {
+        responseType: 'blob'
+      })
+      
+      const blob = new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', 'PFData.xlsx')
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(url) // Clean up the URL object
+    } catch (error) {
+      console.error('Error downloading LWF data:', error)
+      // Here you might want to show an error notification to the user
+    }
+  }
   return (
     <div>
       <div className="flex gap-4 items-center mb-4 w-full">
@@ -45,7 +68,8 @@ const PFTrackerTool: React.FC<{ onFilterChange: (filters: any) => void }> = ({ o
         <Button  
         variant="solid" 
         size="sm" 
-        icon={<HiDownload />}>Download PF Data</Button>
+          icon={<HiDownload />}
+         onClick={handleDownload}>Download PF Data</Button>
         <PFTrackerBulkUpload onUploadConfirm={handleUploadConfirm} />
       </div>
     </div>
