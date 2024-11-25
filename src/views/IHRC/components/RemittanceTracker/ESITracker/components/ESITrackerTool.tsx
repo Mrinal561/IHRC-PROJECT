@@ -44,7 +44,7 @@ const ESITrackerTool: React.FC<{ onFilterChange: (filters: any) => void }> = ({ 
 
      const handleDownload = async () => {
     try {
-      const res = await httpClient.get(endpoints.pfiwtracker.downloadALl(), {
+      const res = await httpClient.get(endpoints.esiTracker.downloadAll(), {
         responseType: 'blob'
       })
       
