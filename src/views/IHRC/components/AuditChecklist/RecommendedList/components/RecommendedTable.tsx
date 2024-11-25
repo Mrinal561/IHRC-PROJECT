@@ -240,7 +240,7 @@ const RecommendedTable = ({
     const [tableData, setTableData] = useState({
         total: 0,
         pageIndex: 1,
-        pageSize: 5,
+        pageSize: 10,
         query: '',
         sort: { order: '', key: '' },
     })
@@ -454,7 +454,7 @@ const RecommendedTable = ({
    
       const fetchDataWithPagination = () => {
         // onDataUpdate(tableData.pageIndex, tableData.pageSize); // Callback to RecommendedList
-        setIstableLoading(true);
+        // setIstableLoading(true);
       };
  
     return (
