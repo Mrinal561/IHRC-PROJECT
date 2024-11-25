@@ -96,7 +96,8 @@ esiTracker: {
     ptrc: {
         download: () => api('upload/sample_files/ptrc-tracker.xlsx'),
         bulkUpload: () => api('/companyadmin/ptsetup/ptrc-tracker'),
-        getAll:()=> api('/companyadmin/ptsetup/ptrc-tracker')
+        getAll: () => api('/companyadmin/ptsetup/ptrc-tracker'),
+        uploadDocs:(id:any)=> api(`/companyadmin/ptsetup/ptrc-tracker/document/${id}`)
    },
 // ptTracker: {
 //     getAll: () => api(`companyadmin/esisetup/esi-tracker`),
@@ -111,7 +112,8 @@ ptTracker: {
     ptec: {
          download: () => api('upload/sample_files/ptec-tracker.xlsx'),
         bulkUpload: () => api('/companyadmin/ptsetup/ptec-tracker'),
-        getAll:()=> api('/companyadmin/ptsetup/ptec-tracker')
+        getAll: () => api('/companyadmin/ptsetup/ptec-tracker'),
+          uploadDocs:(id:any)=> api(`/companyadmin/ptsetup/ptec-tracker/document/${id}`)
        
    },
    pfiwtracker:{

@@ -37,7 +37,7 @@
 
 //   const handleConfirm = () => {
 //     setIsDialogOpen(false);
-//     navigate('/uploadedptrcdetail')
+    // navigate('/uploadedptrcdetail')
 //   };
 
 //   const handleCancel = () => {

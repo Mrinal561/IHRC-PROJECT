@@ -88,7 +88,8 @@ const PTECTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({ onUploadCon
         // Close dialog and reset state
         handleCancel();
         onUploadConfirm();
-        navigate('/uploadedesidetails')
+        // navigate('/uploadedesidetails')
+         navigate('/uploadedptecdetail')
         
         // Refresh the table data
       //   await refreshTable();
