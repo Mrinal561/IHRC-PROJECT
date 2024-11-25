@@ -27,7 +27,7 @@ export type PTTrackerData = {
         email: string;
         mobile: string | null;
     };
-    PTSetup: {
+    PtSetup: {
         // pf_code: string;
         CompanyGroup: {
             id: number;

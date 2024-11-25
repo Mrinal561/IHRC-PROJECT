@@ -306,12 +306,12 @@ export const protectedRoutes = [
         component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/PTRCTracker/components/UploadedPTRCDetails')),
         authority: [],
     },
-    {
-        key: 'ptrctracker.uploadeddetail',
-        path: '/uploadedptrcdetail',
-        component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/PTRCTracker/components/UploadedPTRCDetails')),
-        authority: [],
-    },
+    // {
+    //     key: 'ptrctracker.uploadeddetail',
+    //     path: '/uploadedptrcdetail',
+    //     component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/PTRCTracker/components/UploadedPTRCDetails')),
+    //     authority: [],
+    // },
     {
         key: 'ptectracker.uploadeddetail',
         path: '/uploadedptecdetail',
