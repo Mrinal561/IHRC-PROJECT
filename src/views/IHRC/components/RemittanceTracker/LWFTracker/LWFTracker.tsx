@@ -30,13 +30,28 @@ const LWFTracker: React.FC = () => {
   const [filters, setFilters] = useState({ groupName: '', companyName: '', lwfCode: '' });
   const [data, setData] = useState<LWFTrackerData[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+      const [pagination, setPagination] = useState({
+    total: 0,
+    pageIndex: 1,
+    pageSize: 10,
+  });
 
-  const fetchLWFTrackerData = useCallback(async () => {
+
+  const fetchLWFTrackerData = useCallback(async (page: number, pageSize: number) => {
     setIsLoading(true);
     try {
-      const res = await httpClient.get(endpoints.lwftracker.lwfGetAll());
+      const res = await httpClient.get(endpoints.lwftracker.lwfGetAll(), {
+          params: {
+            page,
+            page_size: pageSize,
+          },
+        });
       console.log(res.data.data);
       setData(res.data.data);
+       setPagination((prev) => ({
+          ...prev,
+          total: res.data.paginate_data.totalResults,
+        }));
     } catch (error) {
       console.error('Error fetching LWF tracker data:', error);
       // Optionally, you could add error state or toast notification here
@@ -46,11 +61,22 @@ const LWFTracker: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    fetchLWFTrackerData();
-  }, [fetchLWFTrackerData]);
+    fetchLWFTrackerData(pagination.pageIndex, pagination.pageSize);
+  }, [fetchLWFTrackerData,pagination.pageIndex, pagination.pageSize]);
 
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters);
+  };
+    const handlePaginationChange = (page: number) => {
+    setPagination((prev) => ({ ...prev, pageIndex: page }));
+  };
+
+  const handlePageSizeChange = (newPageSize: number) => {
+    setPagination((prev) => ({
+      ...prev,
+      pageSize: newPageSize,
+      pageIndex: 1, // Reset to first page when changing page size
+    }));
   };
 
   return (
@@ -64,7 +90,10 @@ const LWFTracker: React.FC = () => {
       <LWFTrackerTable 
         loading={isLoading} 
         dataSent={data} 
-        onRefresh={fetchLWFTrackerData} 
+        onRefresh={() => fetchLWFTrackerData(pagination.pageIndex, pagination.pageSize)}
+       pagination={pagination}
+        onPaginationChange={handlePaginationChange}
+        onPageSizeChange={handlePageSizeChange}
       />
     </AdaptableCard>
   );

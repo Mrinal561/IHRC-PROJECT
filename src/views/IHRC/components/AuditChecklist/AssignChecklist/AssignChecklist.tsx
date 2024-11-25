@@ -87,6 +87,8 @@ const AssignChecklist = () => {
         }
     }
 
+    
+
     const refreshTableAndReset = () => {
         fetchAssignedData()
         setSelectedIds([]) // Reset selected IDs

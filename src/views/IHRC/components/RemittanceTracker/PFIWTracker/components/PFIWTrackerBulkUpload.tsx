@@ -111,12 +111,12 @@ const PFIWTrackerBulkUpload: React.FC<PFIWTrackerBulkUploadProps> = ({ onUploadC
 
   const handleDownload = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    if (!currentGroup) {
-      toast.push(
-        <Notification type="warning" title="Please select a month before downloading" />
-      );
-      return;
-    }
+    // if (!currentGroup) {
+    //   toast.push(
+    //     <Notification type="warning" title="Please select a month before downloading" />
+    //   );
+    //   return;
+    // }
 
     try {
       const res = await httpClient.get(endpoints.pfiwtracker.download(), {

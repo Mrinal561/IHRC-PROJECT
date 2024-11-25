@@ -6,6 +6,8 @@ import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
 import OutlinedSelect from '@/components/ui/Outlined';
 import { showErrorNotification } from '@/components/ui/ErrorMessage';
+import { useDispatch } from 'react-redux';
+import { createPtecTracker } from '@/store/slices/ptSetup/ptecTrackerSlice';
 
 const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
@@ -17,7 +19,7 @@ const PTECTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({ onUploadCon
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentGroup, setCurrentGroup] = useState('');
   const [isUploading, setIsUploading] = useState(false);
-
+ const dispatch = useDispatch();
   const [remark, setRemark] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const navigate = useNavigate();
@@ -59,15 +61,22 @@ const PTECTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({ onUploadCon
       console.log('FormData:', formData);
 
       
-      const res = await httpClient.post(
-        endpoints.esiTracker.bulkUpload(),
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      );
+       setIsUploading(true);
+      
+      const res = await dispatch(createPtecTracker(formData))
+        .unwrap()
+        .catch((error: any) => {
+          if (error.response?.data?.message) {
+            showErrorNotification(error.response.data.message);
+          } else if (error.message) {
+            showErrorNotification(error.message);
+          } else if (Array.isArray(error)) {
+            showErrorNotification(error);
+          } else {
+            showErrorNotification('An unexpected error occurred. Please try again.');
+          }
+          throw error;
+        });
   
       if (res) {
         toast.push(
@@ -79,7 +88,8 @@ const PTECTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({ onUploadCon
         // Close dialog and reset state
         handleCancel();
         onUploadConfirm();
-        navigate('/uploadedesidetails')
+        // navigate('/uploadedesidetails')
+         navigate('/uploadedptecdetail')
         
         // Refresh the table data
       //   await refreshTable();
@@ -110,7 +120,7 @@ const PTECTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({ onUploadCon
       return;
     }
     try {
-      const res = await httpClient.get(endpoints.esiTracker.download(), {
+      const res = await httpClient.get(endpoints.ptec.download(), {
         responseType: "blob",
       });
       
@@ -118,7 +128,7 @@ const PTECTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({ onUploadCon
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", "EsiTrackerData.xlsx");
+      link.setAttribute("download", "PTECTracker.xlsx");
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
