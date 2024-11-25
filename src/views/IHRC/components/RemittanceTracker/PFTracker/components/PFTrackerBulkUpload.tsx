@@ -113,11 +113,11 @@ const PFTrackerBulkUpload: React.FC<PFTrackerBulkUploadProps> = ({ onUploadConfi
 
   const handleDownload = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    if (!currentGroup) {
-      toast.push(<Notification type="warning" title="Please select a month before downloading" />, {
-      });
-      return;
-    }
+    // if (!currentGroup) {
+    //   toast.push(<Notification type="warning" title="Please select a month before downloading" />, {
+    //   });
+    //   return;
+    // }
 
     try {
       const res = await httpClient.get(endpoints.tracker.downloadFormat(), {

@@ -73,7 +73,6 @@ interface Location {
 }
 
 const PFSetupPage: React.FC = () => {
-    
     const navigate = useNavigate()
     const location = useLocation()
     const companyData = location.state?.companyData
@@ -196,22 +195,7 @@ const PFSetupPage: React.FC = () => {
 
     // Handle submit with base64 files
     const handleSubmit = async () => {
-
         console.log(pfSetupData)
-        // Validate required fields
-        // if (
-        //     !pfSetupData.pf_code ||
-        //     !pfSetupData.location ||
-        //     pfSetupData.signatory_data.length === 0
-        // ) {
-        //     toast.push(
-        //         <Notification title="Error" type="danger">
-        //             Please fill in all required fields
-        //         </Notification>,
-        //     )
-        //     return
-        // }
-
         const formData = {
             ...pfSetupData,
             register_date: pfSetupData.register_date?.toISOString() || '',
@@ -223,25 +207,27 @@ const PFSetupPage: React.FC = () => {
 
             // Example API call (uncomment and modify as needed)
             const response = await dispatch(createPF(formData))
-            .unwrap()
-            .catch((error: any) => {
-                // Handle different error formats
-                if (error.response?.data?.message) {
-                    // API error response
-                    showErrorNotification(error.response.data.message);
-                } else if (error.message) {
-                    // Regular error object
-                    showErrorNotification(error.message);
-                } else if (Array.isArray(error)) {
-                    // Array of error messages
-                    showErrorNotification(error);
-                } else {
-                    // Fallback error message
-                    showErrorNotification('An unexpected error occurred. Please try again.');
-                }
-                throw error; // Re-throw to prevent navigation
-            });
-            if(response){
+                .unwrap()
+                .catch((error: any) => {
+                    // Handle different error formats
+                    if (error.response?.data?.message) {
+                        // API error response
+                        showErrorNotification(error.response.data.message)
+                    } else if (error.message) {
+                        // Regular error object
+                        showErrorNotification(error.message)
+                    } else if (Array.isArray(error)) {
+                        // Array of error messages
+                        showErrorNotification(error)
+                    } else {
+                        // Fallback error message
+                        showErrorNotification(
+                            'An unexpected error occurred. Please try again.',
+                        )
+                    }
+                    throw error // Re-throw to prevent navigation
+                })
+            if (response) {
                 toast.push(
                     <Notification title="Success" type="success">
                         <div className="flex items-center">
@@ -249,10 +235,9 @@ const PFSetupPage: React.FC = () => {
                         </div>
                     </Notification>,
                 )
-                navigate(-1);
+                navigate(-1)
             }
-           
-        } catch (error:any) {
+        } catch (error: any) {
             console.error('Error submitting PF setup:', error)
             // toast.push(
             //     <Notification title="Error" type="danger">
@@ -261,25 +246,6 @@ const PFSetupPage: React.FC = () => {
             // )
         }
     }
-
-    // const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //     const file = e.target.files?.[0];
-    //     if (file) {
-    //       const reader = new FileReader();
-    //       reader.onload = () => {
-    //         const base64String = (reader.result as string).split(',')[1];
-    //         setFileBase64(base64String);
-    //         setPfSetupData(prev => ({
-    //           ...prev,
-    //           register_cerificate: base64String,
-    //           e_sign:,
-    //           dsc_document:
-
-    //         }));
-    //       };
-    //       reader.readAsDataURL(file);
-    //     }
-    //   };
 
     const loadCompanyGroups = async () => {
         try {
@@ -395,22 +361,6 @@ const PFSetupPage: React.FC = () => {
         loadUsers()
     }, []) // Empty dependency array means this runs once when component mounts
 
-    // ... rest of your component code ...
-    // const handleDistrictChange = (option: SelectOption | null) => {
-    //   setSelectedDistrict(option);
-    //   // You can add additional logic here if needed when district changes
-    // };
-
-    // // Modify your handleStateChange function to load districts
-    // const handleStateChange = (option: SelectOption | null) => {
-    //   setSelectedStates(option);
-    //   if (option) {
-    //     // Load districts when state is selected
-    //     loadDistricts(option.value);
-    //   }
-    // };
-
-    // Update PF setup data when company is selected
     useEffect(() => {
         if (selectedCompany?.value) {
             setPfSetupData((prev) => ({
@@ -445,58 +395,6 @@ const PFSetupPage: React.FC = () => {
         }
     }
 
-    // const loadDistricts = async (stateId: string) => {
-    //     if (!stateId) return;
-
-    //     try {
-    //         const response = await httpClient.get(endpoints.common.district(), {
-    //             params: { state_id: stateId }
-    //         });
-
-    //         if (response.data) {
-    //             const formattedDistricts = response.data.map((district: any) => ({
-    //                 label: district.name,
-    //                 value: String(district.id)
-    //             }));
-    //             setDistricts(formattedDistricts);
-    //         }
-    //     } catch (error) {
-    //         console.error('Failed to load districts:', error);
-    //         toast.push(
-    //             <Notification title="Error" type="danger">
-    //                 Failed to load districts
-    //             </Notification>
-    //         );
-    //         setDistricts([]);
-    //     }
-    // };
-
-    // const loadLocations = async (districtId: string) => {
-    //     if (!districtId) return;
-
-    //     try {
-    //         const response = await httpClient.get(endpoints.common.location(), {
-    //             params: { district_id: districtId }
-    //         });
-
-    //         if (response.data) {
-    //             const formattedLocations = response.data.map((location: any) => ({
-    //                 label: location.name,
-    //                 value: String(location.id)
-    //             }));
-    //             setLocations(formattedLocations);
-    //         }
-    //     } catch (error) {
-    //         console.error('Failed to load locations:', error);
-    //         toast.push(
-    //             <Notification title="Error" type="danger">
-    //                 Failed to load locations
-    //             </Notification>
-    //         );
-    //         setLocations([]);
-    //     }
-    // };
-
     const handleStateChange = (option: SelectOption | null) => {
         setSelectedStates(option)
         setSelectedDistrict('') // Reset district selection
@@ -515,32 +413,6 @@ const PFSetupPage: React.FC = () => {
         }
     }
 
-    // Add handleDistrictChange
-    // const handleDistrictChange = (option: SelectOption | null) => {
-    //     setSelectedDistrict(option);
-    //     setSelectedLocation(null); // Reset location selection
-    //     setLocations([]); // Clear locations
-
-    //     if (option) {
-    //         loadLocations(option.value);
-    //         setPfSetupData(prev => ({
-    //             ...prev,
-    //             district_id: parseInt(option.value),
-    //             location: ''
-    //         }));
-    //     }
-    // };
-
-    // const handleLocationChange = (option: SelectOption | null) => {
-    //     setSelectedLocation(option);
-    //     if (option) {
-    //         setPfSetupData(prev => ({
-    //             ...prev,
-    //             location: option.label
-    //         }));
-    //     }
-    // };
-
     useEffect(() => {
         loadStates()
     }, [])
@@ -551,19 +423,6 @@ const PFSetupPage: React.FC = () => {
     ) => {
         setPfSetupData((prev) => ({ ...prev, [field]: value }))
     }
-
-    //   const handleSignatoryChange = (
-    //     newValue: MultiValue<{ value: string; label: string }>,
-    //     actionMeta: ActionMeta<{ value: string; label: string }>
-    // ) => {
-    //     const selectedUserIds = newValue.map(option => option.value);
-    //     handleInputChange('authorizedSignatory', selectedUserIds);
-
-    //     const newSelectedSignatories = selectedUserIds.map(id => {
-    //         return users.find(user => String(user.id) === id) || { id: parseInt(id), name: '' };
-    //     });
-    //     setSelectedSignatories(newSelectedSignatories);
-    // };
 
     const handleSignatoryChange = (
         newValue: MultiValue<{ value: string; label: string }>,
@@ -601,28 +460,6 @@ const PFSetupPage: React.FC = () => {
             }),
         )
     }
-
-    // const handleFileUpload = (
-    //     signatoryId: number,
-    //     fileType: 'dsc' | 'e_sign',
-    //     file: File | null,
-    // ) => {
-    //     setPfSetupData((prev) => ({
-    //         ...prev,
-    //         signatory_data: prev.signatory_data.map((sig) => {
-    //             if (sig.signatory_id === signatoryId) {
-    //                 return {
-    //                     ...sig,
-    //                     [fileType === 'dsc' ? 'dsc_document' : 'e_sign']: file
-    //                         ? file.name
-    //                         : '',
-    //                 }
-    //             }
-    //             return sig
-    //         }),
-    //     }))
-    // }
-
     const handleDscValidityChange = (signatoryId: number, date: string) => {
         setPfSetupData((prev) => ({
             ...prev,
@@ -637,28 +474,6 @@ const PFSetupPage: React.FC = () => {
             }),
         }))
     }
-
-    // const handleSubmit = () => {
-    //     const formData = {
-    //         ...pfSetupData,
-    //         register_date: pfSetupData.register_date || '',
-    //         location: pfSetupData.location || '',
-    //         pf_code: pfSetupData.pf_code || '',
-    //         register_certificate: pfSetupData.register_certificate || '',
-    //     }
-
-    //     console.log('Submitting PF Setup:', formData)
-
-    //     // Your existing submit logic...
-    //     toast.push(
-    //         <Notification title="Success" type="success">
-    //             <div className="flex items-center">
-    //                 <span>PF Setup successfully created</span>
-    //             </div>
-    //         </Notification>,
-    //     )
-    //     // navigate(-1);
-    // }
 
     const handleCancel = () => {
         navigate(-1)
@@ -679,29 +494,29 @@ const PFSetupPage: React.FC = () => {
             <div className="space-y-6">
                 <div className="grid grid-cols-2 gap-4 mb-4">
                     <div>
-                    <p className="mb-2"> Company</p>
-                    <OutlinedSelect
-                        label="Select Company Group"
-                        options={companyGroups}
-                        value={selectedCompanyGroup}
-                        onChange={setSelectedCompanyGroup}
-                    />
+                        <p className="mb-2"> Company</p>
+                        <OutlinedSelect
+                            label="Select Company Group"
+                            options={companyGroups}
+                            value={selectedCompanyGroup}
+                            onChange={setSelectedCompanyGroup}
+                        />
                     </div>
                     <div>
-                    <p className="mb-2"> Company</p>
-                    <OutlinedSelect
-                        label="Select Company"
-                        options={companies}
-                        value={selectedCompany}
-                        onChange={(option: SelectOption | null) => {
-                            setSelectedCompany(option)
-                        }}
-                    />
+                        <p className="mb-2"> Company</p>
+                        <OutlinedSelect
+                            label="Select Company"
+                            options={companies}
+                            value={selectedCompany}
+                            onChange={(option: SelectOption | null) => {
+                                setSelectedCompany(option)
+                            }}
+                        />
                     </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                     <div>
-                    <p className="mb-2"> PF code</p>
+                        <p className="mb-2"> PF code</p>
                         <OutlinedInput
                             label="PF Code"
                             value={pfSetupData.pf_code}
@@ -711,7 +526,7 @@ const PFSetupPage: React.FC = () => {
                         />
                     </div>
                     <div>
-                    <p className="mb-2"> State</p>
+                        <p className="mb-2"> State</p>
                         <OutlinedSelect
                             label="Select State"
                             options={states}
@@ -722,37 +537,41 @@ const PFSetupPage: React.FC = () => {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                     <div>
-                    <DistrictAutosuggest
-                        value={selectedDistrict}
-                        onChange={(value: string) => {
-                            console.log(value);
-                            setSelectedDistrict(value);
-                            // Update the pfSetupData with the district
-                            setPfSetupData(prev => ({
-                                ...prev,
-                                district: value
-                            }));
-                        }}
-                        stateId={selectedStates?.value ? parseInt(selectedStates.value) : undefined}
-                        onDistrictSelect={(districtId) => {
-                            setSelectedDistrictId(districtId);
-                        }}
-                    />
+                        <DistrictAutosuggest
+                            value={selectedDistrict}
+                            onChange={(value: string) => {
+                                console.log(value)
+                                setSelectedDistrict(value)
+                                // Update the pfSetupData with the district
+                                setPfSetupData((prev) => ({
+                                    ...prev,
+                                    district: value,
+                                }))
+                            }}
+                            stateId={
+                                selectedStates?.value
+                                    ? parseInt(selectedStates.value)
+                                    : undefined
+                            }
+                            onDistrictSelect={(districtId) => {
+                                setSelectedDistrictId(districtId)
+                            }}
+                        />
                     </div>
                     <div>
-                    <LocationAutosuggest
-                        value={selectedLocation}
-                        onChange={(value: string) => {
-                            console.log(value);
-                            setSelectedLocation(value);
-                            // Update the pfSetupData with the location
-                            setPfSetupData(prev => ({
-                                ...prev,
-                                location: value
-                            }));
-                        }}
-                        districtId={selectedDistrictId}
-                    />
+                        <LocationAutosuggest
+                            value={selectedLocation}
+                            onChange={(value: string) => {
+                                console.log(value)
+                                setSelectedLocation(value)
+                                // Update the pfSetupData with the location
+                                setPfSetupData((prev) => ({
+                                    ...prev,
+                                    location: value,
+                                }))
+                            }}
+                            districtId={selectedDistrictId}
+                        />
                     </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-4">
@@ -853,7 +672,7 @@ const PFSetupPage: React.FC = () => {
                                                 DSC Valid Upto{' '}
                                             </label>
                                             <DatePicker
-                                                size='sm'
+                                                size="sm"
                                                 placeholder="Pick a Date"
                                                 onChange={(
                                                     date: Date | null,

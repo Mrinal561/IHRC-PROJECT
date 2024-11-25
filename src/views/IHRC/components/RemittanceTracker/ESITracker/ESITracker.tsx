@@ -11,18 +11,31 @@ const ESITracker = () => {
 
   const [data, setData] = useState<esiChallanData[]>([]);
   const [isLoading, setIsLoading] = useState(false)
+    const [pagination, setPagination] = useState({
+    total: 0,
+    pageIndex: 1,
+    pageSize: 10,
+  });
 
 
 
 
-
-  const fetchEsiTrackerData =  useCallback(async () => {
+  const fetchEsiTrackerData =  useCallback(async (page: number, pageSize: number) => {
     setIsLoading(true)
 
     try {
-      const res = await httpClient.get(endpoints.esiTracker.getAll())
+      const res = await httpClient.get(endpoints.esiTracker.getAll(), {
+          params: {
+            page,
+            page_size: pageSize,
+          },
+        });
       console.log(res.data.data)
       setData(res.data.data);
+        setPagination((prev) => ({
+          ...prev,
+          total: res.data.paginate_data.totalResults,
+        }));
     } catch (error) {
       console.error('Error fetching PF tracker data:', error);
     } finally {
@@ -30,11 +43,22 @@ const ESITracker = () => {
   }
   }, []);
     useEffect(() => {
-    fetchEsiTrackerData();
-  }, [fetchEsiTrackerData]);
+    fetchEsiTrackerData(pagination.pageIndex, pagination.pageSize);
+  }, [fetchEsiTrackerData, pagination.pageIndex, pagination.pageSize]);
 
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters);
+  };
+  const handlePaginationChange = (page: number) => {
+    setPagination((prev) => ({ ...prev, pageIndex: page }));
+  };
+
+  const handlePageSizeChange = (newPageSize: number) => {
+    setPagination((prev) => ({
+      ...prev,
+      pageSize: newPageSize,
+      pageIndex: 1, // Reset to first page when changing page size
+    }));
   };
 
   return (
@@ -45,7 +69,11 @@ const ESITracker = () => {
         </div>
         <ESITrackerTool onFilterChange={handleFilterChange} />
       </div>
-      <ESITrackerTable dataSent={data}  loading={isLoading} onRefresh={fetchEsiTrackerData}
+      <ESITrackerTable dataSent={data} loading={isLoading}
+        onRefresh={()=>fetchEsiTrackerData(pagination.pageIndex, pagination.pageSize)}
+         pagination={pagination}
+        onPaginationChange={handlePaginationChange}
+        onPageSizeChange={handlePageSizeChange}
       />
     </AdaptableCard>
   )

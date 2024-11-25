@@ -94,7 +94,7 @@ export const dummyData: PFTrackerData[] = [
 ];
 
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Button, Tooltip } from '@/components/ui';
 import { FiEdit, FiFile, FiTrash } from 'react-icons/fi';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
@@ -110,11 +110,42 @@ interface PfTrackerTableProps {
   dataSent: PfChallanData[];
   loading: boolean;
   onRefresh?: () => void;
+   pagination: {
+    total: number;
+    pageIndex: number;
+    pageSize: number;
+  };
+  onPaginationChange: (page: number) => void;
+  onPageSizeChange: (pageSize: number) => void;
 }
 
-const PFTrackerTable: React.FC<PfTrackerTableProps> = ({ dataSent, loading , onRefresh}) => {
+const PFTrackerTable: React.FC<PfTrackerTableProps> =({ 
+  dataSent, 
+  loading, 
+  onRefresh,
+  pagination,
+  onPaginationChange,
+  onPageSizeChange
+}) => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editingData, setEditingData] = useState<PfChallanData | null>(null);
+  const [pfTrackerData, setPfTrackerData] = useState<PfChallanData[]>([]);
+
+
+  // useEffect(() => {
+  //   if (dataSent) {
+  //     const startIndex = (tableData.pageIndex - 1) * tableData.pageSize;
+  //     const endIndex = startIndex + tableData.pageSize;
+  //     const paginatedData = dataSent.slice(startIndex, endIndex);
+      
+  //     setPfTrackerData(paginatedData);
+  //     setTableData(prev => ({
+  //       ...prev,
+  //       total: dataSent.length
+  //     }));
+  //   }
+  // }, [dataSent, tableData.pageIndex, tableData.pageSize]);
+
 
   const handleEdit = (row: PfChallanData) => {
     setEditingData(row);
@@ -126,7 +157,21 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> = ({ dataSent, loading , onR
     // For now, just closing the dialog
     setEditDialogOpen(false);
     setEditingData(null);
+     if (onRefresh) {
+      onRefresh();
+    }
   };
+// const onPaginationChange = (page: number) => {
+//     setTableData(prev => ({ ...prev, pageIndex: page }));
+//   };
+
+  // const onSelectChange = (value: number) => {
+  //   setTableData(prev => ({
+  //     ...prev,
+  //     pageSize: Number(value),
+  //     pageIndex: 1,
+  //   }));
+  // };
 
   const columns: ColumnDef<PfChallanData>[] = useMemo(
     () => [
@@ -373,6 +418,14 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> = ({ dataSent, loading , onR
         stickyHeader={true}
         stickyFirstColumn={true}
         stickyLastColumn={true}
+          pagingData={{
+          total: pagination.total,
+          pageIndex: pagination.pageIndex,
+          pageSize: pagination.pageSize,
+        }}
+        // Pass the pagination handlers
+        onPaginationChange={onPaginationChange}
+        onSelectChange={onPageSizeChange}
       />
       {editingData && (
         <PFTrackerEditDialog

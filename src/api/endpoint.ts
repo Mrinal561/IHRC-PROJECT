@@ -92,6 +92,11 @@ esiTracker: {
     bulkUpload: () => api(`companyadmin/esisetup/esi-tracker`),
     download: () => api(`upload/sample_files/esi-tracker.xlsx`),
      uploadDocs:(id:any)=> api(`companyadmin/esisetup/esi-tracker/challan/${id}`)
+    },
+    ptrc: {
+        download: () => api('upload/sample_files/ptrc-tracker.xlsx'),
+        bulkUpload: () => api('/companyadmin/ptsetup/ptrc-tracker'),
+        getAll:()=> api('/companyadmin/ptsetup/ptrc-tracker')
    },
 // ptTracker: {
 //     getAll: () => api(`companyadmin/esisetup/esi-tracker`),
@@ -102,6 +107,12 @@ ptTracker: {
     getAll: () => api(`companyadmin/esisetup/esi-tracker`),
     bulkUpload: () => api(`companyadmin/esisetup/esi-tracker`),
     download: () => api(`upload/sample_files/esi-tracker.xlsx`),
+    },
+    ptec: {
+         download: () => api('upload/sample_files/ptec-tracker.xlsx'),
+        bulkUpload: () => api('/companyadmin/ptsetup/ptec-tracker'),
+        getAll:()=> api('/companyadmin/ptsetup/ptec-tracker')
+       
    },
    pfiwtracker:{
     download:()=> api('upload/sample_files/pfiw-tracker.xlsx'),
