@@ -9,6 +9,8 @@ import UploadedPFIWDetails from './UploadedPFIWDetails';
 import { HiDownload } from 'react-icons/hi';
 import { Button } from '@/components/ui';
 import CustomDateRangePicker from './CustomDateRangePicker';
+import httpClient from '@/api/http-client';
+import { endpoints } from '@/api/endpoint';
 
 const PFIWTrackerTool: React.FC<{ onFilterChange: (filters: any) => void }> = ({ onFilterChange }) => {
   const [showUploadedDetails, setShowUploadedDetails] = useState(false);
@@ -38,6 +40,27 @@ const PFIWTrackerTool: React.FC<{ onFilterChange: (filters: any) => void }> = ({
       setEndDate(end);
     };
   
+    const handleDownload = async () => {
+    try {
+      const res = await httpClient.get(endpoints.pfiwtracker.downloadALl(), {
+        responseType: 'blob'
+      })
+      
+      const blob = new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', 'PFIWData.xlsx')
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(url) // Clean up the URL object
+    } catch (error) {
+      console.error('Error downloading LWF data:', error)
+      // Here you might want to show an error notification to the user
+    }
+  }
+
 
 
 
@@ -49,7 +72,8 @@ const PFIWTrackerTool: React.FC<{ onFilterChange: (filters: any) => void }> = ({
         <Button  
         variant="solid" 
         size="sm" 
-        icon={<HiDownload />}>Download PF IW Data</Button>
+          icon={<HiDownload />}
+        onClick={handleDownload}>Download PF IW Data</Button>
         <PFIWTrackerBulkUpload onUploadConfirm={handleUploadConfirm} />
       </div>
     </div>
