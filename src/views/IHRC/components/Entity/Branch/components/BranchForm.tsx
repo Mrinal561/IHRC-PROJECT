@@ -109,7 +109,7 @@ const [fileBase64, setFileBase64] = useState<string>('');
       mobile: ''
     },
     register_number: '',
-    status: 'active',
+    status: 'Active',
     se_document: '',
     lease_document: '',
     document_validity_type: 'fixed',
@@ -890,12 +890,12 @@ const loadCompanies = async (groupId: string[] | number[]) => {
       <div className="flex flex-col gap-8">
         <div className='flex justify-between'>
           <h4>Lease / Rent Setup</h4>
-          {renderDocumentValidityRadio(
+          {/* {renderDocumentValidityRadio(
             leaseValidityType, 
             setLeaseValidityType, 
             handleLeaseValidityChange,
             'Lease Validity Type'
-          )}
+          )} */}
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           <div>
