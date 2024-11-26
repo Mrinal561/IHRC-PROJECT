@@ -781,109 +781,6 @@ const loadCompanies = async (groupId: string[] | number[]) => {
       
               )}
 
-              {/* {formData.type === 'rented' && (
-                <>
-               
-                  <div className="border rounded-md py-4 p-2 mt-4">
-                      <div className="flex flex-col gap-8">
-                          <h4>Lease / Rent Setup</h4>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                              <div>
-                                  <p className="mb-2">
-                                      Lease / Rent Agreement Status
-                                      <span className="text-red-500">*</span></p>
-                                
-                                  <OutlinedInput
-                                          label="Status"
-                                          value={formData.status} onChange={function (value: string): void {
-                                              throw new Error('Function not implemented.');
-                                          } }                    // readOnly
-                  />
-                              </div>
-                              <div>
-                                  <p className="mb-2">
-                                      Lease deed / Rent Agreement valid up to
-                                      <span className="text-red-500">*</span></p>
-                                  <DatePicker
-                                      size="sm"
-                                      placeholder="Pick a Date"
-                                   
-                                                        onChange={handleLeaseValidityChange}
-
-                                  />
-                              </div>
-                              <div>
-                                  <div className="flex flex-col gap-4">
-                                      <label>
-                                          Please upload Leaase deed copy
-                                          <span className="text-red-500">*</span></label>
-                                      <Input
-                                          id="file-upload"
-                                          type="file"
-                                          accept=".pdf"
-                                          onChange={handleLeaseDocumentUpload}
-                                      />
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-
-                  <div className="border rounded-md py-4 p-2 mt-4">
-                      <div className="flex flex-col gap-8">
-                          <h4>S&E Setup</h4>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                              <div>
-                                  <p className="mb-2">
-                                      S&E Registration Number
-                                      <span className="text-red-500">*</span></p>
-                                  <OutlinedInput
-                                      label="S&E Registration Number"
-                                      value={formData.register_number}
-                                      onChange={(value: string) => {
-                                          setFormData((prev) => ({
-                                              ...prev,
-                                              register_number: value,
-                                          }))
-                                      }}
-                                  />
-                              </div>
-                              <div>
-                                  <p className="mb-2">S&E Validity <span className="text-red-500">*</span></p>
-                                  <DatePicker
-                                      size="sm"
-                                      placeholder="Pick a Date"
-                                      onChange={(date) => {
-                                          setFormData((prev) => ({
-                                              ...prev,
-                                              se_validity: date ? format(date, 'yyyy-MM-dd') : '',
-                                          }))
-                                      }}
-                                  />
-                              </div>
-                              <div>
-                                  <div className="flex flex-col gap-4">
-                                      <label>
-                                          Please upload the S&E Registration
-                                          certificate
-                                          <span className="text-red-500">*</span></label>
-                                      <Input
-                                          id="file-upload"
-                                          type="file"
-                                          accept=".pdf"
-                                          onChange={handleSeDocumentUpload}
-                                      />
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-
-                </>
-              )} */}
-
-
-
 {formData.type === 'rented' && (
   <>
     <div className="border rounded-md py-4 p-2 mt-4">
@@ -985,15 +882,17 @@ const loadCompanies = async (groupId: string[] | number[]) => {
             </div>
           )}
           <div>
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-2">
               <label>
                 Please upload the S&E Registration certificate
                 <span className="text-red-500">*</span>
               </label>
               <Input
                 id="file-upload"
+                size='sm'
                 type="file"
                 accept=".pdf"
+                className='py-[5px]'
                 onChange={handleSeDocumentUpload}
               />
             </div>

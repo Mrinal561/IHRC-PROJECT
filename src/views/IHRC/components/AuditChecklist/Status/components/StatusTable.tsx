@@ -12,7 +12,12 @@ import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
 import { useDispatch } from 'react-redux';
 import { approveRejectComplianceStatus } from '@/store/slices/approveRejected/approveRejectSlice';
- 
+import loadingAnimation from '@/assets/lotties/system-regular-716-spinner-three-dots-loop-scale.json'
+import Lottie from 'lottie-react';
+import { HiOutlineViewGrid } from 'react-icons/hi'
+
+
+
 interface StatusTableProps {
   onFilterChange: (filter: string) => void;
   onSearch: (searchTerm: string) => void;
@@ -556,6 +561,29 @@ const StatusTable: React.FC<StatusTableProps> = ({
     setEndDate(end);
   };
 
+  if (isLoading) {
+    console.log("Loading....................");
+    
+    return (
+        <div className="flex flex-col items-center justify-center h-96 text-gray-500  rounded-xl">
+            <div className="w-28 h-28">
+                <Lottie 
+                    animationData={loadingAnimation} 
+                    loop 
+                    className="w-24 h-24"
+                />
+            </div>
+            <p className="text-lg font-semibold">
+                Loading Data...
+            </p>
+
+        </div>
+    );
+}
+
+
+
+
   return (
     <div className="relative">
       <div className="flex items-center justify-between my-8">
@@ -594,12 +622,21 @@ const StatusTable: React.FC<StatusTableProps> = ({
           <Button size='sm' icon={<HiDownload />} variant='solid' onClick={BulkDownload}>Download</Button>
         </div>
       </div>
+
+      {filteredData.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-56 text-gray-500 border rounded-xl">
+                <HiOutlineViewGrid className="w-12 h-12 mb-4 text-gray-300" />
+                <p className="text-center">
+        No Data Available
+                </p>
+      </div>
+            ) : (
       <DataTable
         columns={columns}
         data={filteredData}
         skeletonAvatarColumns={[0]}
         skeletonAvatarProps={{ className: 'rounded-md' }}
-        loading={false}
+        loading={isLoading}
         pagingData={{
           total: tableData.total,
           pageIndex: tableData.pageIndex,
@@ -612,6 +649,7 @@ const StatusTable: React.FC<StatusTableProps> = ({
           stickyFirstColumn={true}
           stickyLastColumn={true}
       />
+            )}
       <ConfirmDialog
         isOpen={isConfirmDialogOpen}
         onClose={() => setIsConfirmDialogOpen(false)}

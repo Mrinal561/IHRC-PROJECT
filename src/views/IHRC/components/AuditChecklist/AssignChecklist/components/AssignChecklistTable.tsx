@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { ColumnDef, OnSortParam } from '@/components/shared/DataTable'
 import DataTable from '@/components/shared/DataTable'
-import {Button,Calendar,Dialog,Tooltip,Input,toast,Notification,Checkbox,} from '@/components/ui'
+import {Button,Calendar,Dialog,Tooltip,Input,toast,Notification,Checkbox, DatePicker,} from '@/components/ui'
 import { HiBellAlert } from 'react-icons/hi2'
 import { MdEdit } from 'react-icons/md'
 import { RiEyeLine } from 'react-icons/ri'
@@ -21,6 +21,10 @@ import {
 import { fetchUsers } from '@/store/slices/userEntity/UserEntitySlice'
 import { AppDispatch } from '@/store'
 import { showErrorNotification } from '@/components/ui/ErrorMessage'
+import OutlinedInput from '@/components/ui/OutlinedInput'
+import loadingAnimation from '@/assets/lotties/system-regular-716-spinner-three-dots-loop-scale.json'
+import Lottie from 'lottie-react';
+import { HiOutlineViewGrid } from 'react-icons/hi'
 
 interface UserData {
     id: number
@@ -49,6 +53,7 @@ interface MasterCompliance {
     header: string
     criticality: string
     description: string
+    scheduled_frequency?: string
     default_due_date: {
         first_date: string
         last_date: string
@@ -113,7 +118,8 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
     const [selectedApproverOption, setSelectedApproverOption] =
         useState<any>(null)
     const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set())
-    const [selectedScheduledFrequency, setSelectedScheduledFrequency] = useState<any>(null)
+    const [selectedScheduledFrequency, setSelectedScheduledFrequency] = useState<SelectOption | null>(null)
+    const [selectedCustomizedFrequency, setSelectedCustomizedFrequency] = useState<SelectOption | null>(null)
     const [dueDate, setDueDate] = useState<Date | null>(null)
     const [firstDate, setFirstDate] = useState<Date | null>(null)
     const [secondDate, setSecondDate] = useState<Date | null>(null)
@@ -125,7 +131,11 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
     const scheduledOptions: SelectOption[] = [
         { value: 'monthly', label: 'Monthly' },
         { value: 'yearly', label: 'Yearly' },
+        { value: 'half_yearly', label: 'Half Yearly' },
+        { value: 'quarterly', label: 'Quarterly' }
     ]
+
+  
 
     const customizedFrequencyOptions: SelectOption[] = [
         { value: 'monthly', label: 'Monthly' },
@@ -134,6 +144,68 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
         { value: 'quarterly', label: 'Quarterly' }
     ]
 
+
+    // State to manage date field states
+    const [dateFieldsState, setDateFieldsState] = useState({
+        isFirstDateEnabled: true,
+        isSecondDateEnabled: false,
+        isThirdDateEnabled: false,
+        isLastDateEnabled: false
+    })
+
+    // Function to handle frequency changes
+    const handleCustomizedFrequencyChange = (selectedOption: SelectOption | null) => {
+        setSelectedScheduledFrequency(selectedOption)
+
+        // Reset date states
+        setFirstDate(null)
+        setSecondDate(null)
+        setThirdDate(null)
+        setLastDate(null)
+
+        // Update date field states based on selected frequency
+        switch(selectedOption?.value) {
+            case 'monthly':
+                setDateFieldsState({
+                    isFirstDateEnabled: true,
+                    isSecondDateEnabled: false,
+                    isThirdDateEnabled: false,
+                    isLastDateEnabled: false
+                })
+                break
+            case 'yearly':
+                setDateFieldsState({
+                    isFirstDateEnabled: true,
+                    isSecondDateEnabled: false,
+                    isThirdDateEnabled: false,
+                    isLastDateEnabled: false
+                })
+                break
+            case 'half_yearly':
+                setDateFieldsState({
+                    isFirstDateEnabled: true,
+                    isSecondDateEnabled: false,
+                    isThirdDateEnabled: false,
+                    isLastDateEnabled: true
+                })
+                break
+            case 'quarterly':
+                setDateFieldsState({
+                    isFirstDateEnabled: true,
+                    isSecondDateEnabled: true,
+                    isThirdDateEnabled: true,
+                    isLastDateEnabled: true
+                })
+                break
+            default:
+                setDateFieldsState({
+                    isFirstDateEnabled: false,
+                    isSecondDateEnabled: false,
+                    isThirdDateEnabled: false,
+                    isLastDateEnabled: false
+                })
+        }
+    }
 
 
 
@@ -296,6 +368,7 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
             id: row.id,
             owner_id: row.owner_id,
             approver_id: row.approver_id,
+            MasterCompliance: row.MasterCompliance,
             
         })
 
@@ -306,19 +379,14 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
         const approverOption = userOptions.find(
             (option) => option.value === row.approver_id,
         )
+        const initialScheduledFrequency = scheduledOptions.find(
+            (option) => option.value === row.MasterCompliance.scheduled_frequency
+        )
 
-        // const initialFrequency = customizedFrequencyOptions.find(
-        //     (option) => option.value === row.MasterCompliance.
-        // )
+        console.log("testing frequency ............" + initialScheduledFrequency);
+        
 
-        // const initialScheduledFrequency = scheduledOptions.find(
-        //     (option) => option.value === row.scheduled_frequency
-        // )
-        // setSelectedScheduledFrequency(initialScheduledFrequency || null)
-
-        // // Set initial due date if available
-        // const initialDueDate = row.due_date ? new Date(row.due_date) : null
-        // setDueDate(initialDueDate)
+        setSelectedScheduledFrequency(initialScheduledFrequency || null)
 
         setIsEditDialogOpen(true)
         setFirstDate(null)
@@ -337,6 +405,8 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
         setSelectedOwnerOption(null)
         setSelectedApproverOption(null)
     }
+
+    
 
     const columns: ColumnDef<ComplianceData>[] = useMemo(
         () => [
@@ -506,8 +576,42 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
         sort: { order: '', key: '' },
     })
 
+
+    if (loading) {
+        console.log("Loading....................");
+        
+        return (
+            <div className="flex flex-col items-center justify-center h-96 text-gray-500  rounded-xl">
+                <div className="w-28 h-28">
+                    <Lottie 
+                        animationData={loadingAnimation} 
+                        loop 
+                        className="w-24 h-24"
+                    />
+                </div>
+                <p className="text-lg font-semibold">
+                    Loading Data...
+                </p>
+
+            </div>
+        );
+    }
+
+
+    
+
+   
+
     return (
         <div className="relative">
+            {data.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-96 text-gray-500 border rounded-xl">
+                <HiOutlineViewGrid className="w-12 h-12 mb-4 text-gray-300" />
+                <p className="text-center">
+        No Data Available
+                </p>
+      </div>
+            ) : (
             <DataTable
                 columns={columns}
                 data={data}
@@ -535,48 +639,109 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
                 stickyLastColumn={true}
                 selectable={true}
             />
+            )}
             <Dialog
                 isOpen={isEditDialogOpen}
                 onClose={handleDialogClose}
                 onRequestClose={handleDialogClose}
-                className="max-w-md p-4"
+                className="p-4"
+                width={700}
             >
                 <h5 className="mb-2 text-lg font-semibold">
-                    Compliance Instance ID:{' '}
-                    <span className="text-indigo-600">{editData.MasterCompliance?.uuid}</span>
+                    Set Owner & Approver 
+                    {/* <span className="text-indigo-600">{editData.MasterCompliance?.uuid}</span> */}
                 </h5>
                 <div className="space-y-6">
-                    <div>
+                    <div className='flex gap-4 w-full'>
+                    <div className='w-full flex flex-col gap-2'>
                         <label className="block mb-2">Set Owner Name</label>
                         <OutlinedSelect
                             label="Set Owner Name"
                             options={userOptions}
                             value={selectedOwnerOption}
                             onChange={handleOwnerChange}
+                            
                         />
                     </div>
-                    <div>
+                    <div className='w-full flex flex-col gap-2'>
                         <label className="block mb-2">Set Approver Name</label>
                         <OutlinedSelect
                             label="Set Approver Name"
                             options={userOptions}
                             value={selectedApproverOption}
                             onChange={handleApproverChange}
-                        />
+                            />
+                    </div>
+                  </div>
+
+                  <div className='flex gap-4 w-full'>
+
+                    <div className='w-full'>
+                        <label className="block mb-2">Scheduled Frequency</label>
+                            <OutlinedInput
+                                label='Scheduled Frequency'
+                                value={editData.MasterCompliance?.scheduled_frequency || 'Not Set'}
+                                onChange={function (value: string): void {
+                                    throw new Error('Function not implemented.')
+                                } }                            />
                     </div>
 
-                    <div>
-                        <label className="block mb-2">Scheduled Frequency</label>
+                    <div className='w-full'>
+                        <label className="block mb-2">Customized Frequency</label>
                         <OutlinedSelect
-                            label="Select Scheduled Frequency"
-                            options={scheduledOptions}
-                            value={selectedScheduledFrequency}
-                            onChange={(selectedOption: SelectOption | null) => {
-                                setSelectedScheduledFrequency(selectedOption)
-                            }}
-                        />
+                                label="Select Customized Frequency"
+                                options={customizedFrequencyOptions}
+                                value={selectedCustomizedFrequency}
+                                onChange={handleCustomizedFrequencyChange}
+                            />
                     </div>
                 </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <p className="mb-2">First Due Date</p>
+                <DatePicker
+                    size='sm'
+                    placeholder="Select first due date"
+                    value={firstDate}
+                    onChange={(date: Date | null) => setFirstDate(date)}
+                    disabled={!dateFieldsState.isFirstDateEnabled}
+                />
+            </div>
+            <div>
+                <p className="mb-2">Second Due Date</p>
+                <DatePicker
+                    size='sm'
+                    placeholder="Select second due date"
+                    value={secondDate}
+                    onChange={(date: Date | null) => setSecondDate(date)}
+                    disabled={!dateFieldsState.isSecondDateEnabled}
+                />
+            </div>
+            <div>
+                <p className="mb-2">Third Due Date</p>
+                <DatePicker
+                    size='sm'
+                    placeholder="Select third due date"
+                    value={thirdDate}
+                    onChange={(date: Date | null) => setThirdDate(date)}
+                    disabled={!dateFieldsState.isThirdDateEnabled}
+                />
+            </div>
+            <div>
+                <p className="mb-2">Last Due Date</p>
+                <DatePicker
+                    size='sm'
+                    placeholder="Select last due date"
+                    value={lastDate}
+                    onChange={(date: Date | null) => setLastDate(date)}
+                    disabled={!dateFieldsState.isLastDateEnabled}
+                />
+            </div>
+        </div>
+                </div>
+
+                
                 <div className="mt-6 text-right">
                     <Button
                         variant="solid"
@@ -584,7 +749,7 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
                         loading={isUpdating}
                         disabled={isUpdating}
                     >
-                        {isUpdating ? 'Saving...' : 'Save Changes'}
+                        {isUpdating ? 'Saving...' : 'Confirm'}
                     </Button>
                 </div>
             </Dialog>
@@ -619,6 +784,7 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
                 </div>
             </Dialog>
         </div>
+                            
     )
 }
 
