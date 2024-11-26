@@ -39,7 +39,8 @@ interface BranchFormData {
   register_number: string;
   status: string;
 //   validity: string;
-  document?: string;se_document: string | null;
+  document?: string;
+  se_document: string | null;
   lease_document: string | null;
   document_validity_type: string;
   se_validity?: string;
@@ -127,7 +128,7 @@ const [fileBase64, setFileBase64] = useState<string>('');
 
   const statusTypeOptions= [
     {value: "active", label: 'Active'},
-    {value: "inactive", label: 'Inactive'},
+    {value: "expired", label: 'Expired'},
   ]
   const branchTypeOptions = [
     { value: 'rented', label: 'Rented' },
@@ -148,27 +149,6 @@ const [fileBase64, setFileBase64] = useState<string>('');
     { value: 'lifetime', label: 'Lifetime' }
   ];
 
-const handleLeaseValidityChange = (date: Date | null) => {
-    if (date) {
-      const formattedDate = format(date, 'yyyy-MM-dd');
-      const status = isPast(date) ? 'inactive' : 'active';
-      
-      setFormData((prev) => ({
-        ...prev,
-        lease_validity: formattedDate,
-        status: status
-      }));
-      setLeaseValidityDate(date)
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        lease_validity: '',
-        status: 'active',
-        document_validity_type: 'fixed'
-      }));
-      setLeaseValidityDate(null)
-    }
-  };
 
   const handleSeValidityChange = (date: Date | null) => {
     console.log('Current seValidityType:', seValidityType);
@@ -176,7 +156,7 @@ const handleLeaseValidityChange = (date: Date | null) => {
     if (seValidityType === 'fixed') {
       if (date) {
         const formattedDate = format(date, 'yyyy-MM-dd');
-        const status = isPast(date) ? 'inactive' : 'active';
+        const status = isPast(date) ? 'Expired' : 'Active';
         
         setFormData((prev) => ({
           ...prev,
@@ -216,14 +196,46 @@ const handleLeaseValidityChange = (date: Date | null) => {
   };
 
 
+  const handleLeaseValidityChange = (date: Date | null) => {
+    if (leaseValidityType === 'fixed') {
+      if (date) {
+        const formattedDate = format(date, 'yyyy-MM-dd');
+        const status = isPast(date) ? 'Expired' : 'Active';
+        
+        setFormData((prev) => ({
+          ...prev,
+          lease_validity: formattedDate,
+          status: status
+        }));
+        setLeaseValidityDate(date);
+      } else {
+        setFormData((prev) => ({
+          ...prev,
+          lease_validity: '',
+          status: 'active'
+        }));
+        setLeaseValidityDate(null);
+      }
+    } else {
+      // Lifetime option
+      setFormData((prev) => {
+        const { lease_validity, ...rest } = prev;
+        return rest;
+      });
+      setLeaseValidityDate(null);
+    }
+  };
+
+
   const renderDocumentValidityRadio = (
     validityType: 'fixed' | 'lifetime', 
     setValidityType: React.Dispatch<React.SetStateAction<'fixed' | 'lifetime'>>,
-    onDateChange: (date: Date | null) => void
+    onDateChange: (date: Date | null) => void,
+    label: string
   ) => (
     <div className="space-y-2">
       <div className="flex items-center space-x-4">
-        <p>S&E Validity Type</p>
+        <p>{label}</p>
         {documentValidityOptions.map((option) => (
           <label key={option.value} className="flex items-center space-x-2">
             <input
@@ -237,33 +249,13 @@ const handleLeaseValidityChange = (date: Date | null) => {
                   onDateChange(null);
                 }
               }}
-              
               className="form-radio"
-            //   onChange={(selectedOption: SelectOption | null) => {
-            //     setFormData((prev) => ({
-            //         ...prev,
-            //         office_type: selectedOption?.value || '',
-            //     }))
-
-            // onChange={(option.value: string) => {
-            //     setFormData((prev) => ({
-            //         ...prev,
-            //         register_number: value,
-            //     }))
-            // }}
+           
             />
             <span>{option.label}</span>
           </label>
         ))}
       </div>
-      
-      {/* {validityType === 'fixed' && (
-        <DatePicker
-          size="sm"
-          placeholder="Pick a Date"
-          onChange={onDateChange}
-        />
-      )} */}
     </div>
   );
 
@@ -527,16 +519,11 @@ const loadCompanies = async (groupId: string[] | number[]) => {
       } catch (error: any) {
         console.error('Branch creation error:', error);
        
-        //   openNotification('danger', error.message || 'Failed to create branch. Please try again.');
-        // Don't navigate on error
+      
       }
   };
 
-//   if (isLoading) return <div>Loading location data...</div>;
   if (error) return <div className="text-red-500">{error}</div>;
-// //   if (!locationData || locationData.length === 0) {
-// //     return <div>No location data available. Please check your data source.</div>;
-// //   }
 
 
   const handleDistrictChange = (districtName: string) => {
@@ -547,15 +534,7 @@ const loadCompanies = async (groupId: string[] | number[]) => {
     setSelectedLocation(''); // Reset location when district changes
   };
 
-//   useEffect(() => {
-//     setFormData(prev => ({
-//       ...prev,
-//       district: selectedDistrict,
-//       location: selectedLocation
-//     }));
-//   }, [selectedDistrict, selectedLocation]);
-  
-  
+
   return (
       <div className="p-2 bg-white rounded-lg">
           <div className="flex gap-2 items-center mb-3">
@@ -712,13 +691,6 @@ const loadCompanies = async (groupId: string[] | number[]) => {
                         other_office: value
                     }))
                 }}            
-                    //   value={formData.office_type_others}
-                    //   onChange={(value: string) => {
-                    //     setFormData((prev) => ({
-                    //         ...prev,
-                    //         office_type_others: value,
-                    //     }))
-                    // }}
                       />
                     </div>
                   )}
@@ -750,7 +722,8 @@ const loadCompanies = async (groupId: string[] | number[]) => {
                           {renderDocumentValidityRadio(
                                       seValidityType, 
                                       setSeValidityType, 
-                                      handleSeValidityChange
+                                      handleSeValidityChange,
+                                      'S&E Validity Type'
                                     )}
                         </div>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -783,9 +756,7 @@ const loadCompanies = async (groupId: string[] | number[]) => {
                                           }))
                                       }}
                                       />
-                                  {/* <p className="mb-2">S&E Validity Type <span className="text-red-500">*</span>
-                                 
-                                 </p> */}
+                                  
                               </div>
                                  )}
                               <div>
@@ -807,19 +778,10 @@ const loadCompanies = async (groupId: string[] | number[]) => {
                           </div>
                       </div>
                   </div>
-        //         <SESetup
-        //     seRegistrationNumber={seRegistrationNumber}
-        //     seValidityType={seValidityType}
-        //     seValidityDate={seValidityDate}
-        //     seDocumentFile={seDocument}
-        //     onSeRegistrationNumberChange={(value: string) => setSeRegistrationNumber(value)}
-        //     onSeValidityTypeChange={setSeValidityType}
-        //     onSeValidityDateChange={handleSeValidityChange}
-        //     onSeDocumentUpload={handleSeDocumentUpload}
-        //   />
+      
               )}
 
-              {formData.type === 'rented' && (
+              {/* {formData.type === 'rented' && (
                 <>
                
                   <div className="border rounded-md py-4 p-2 mt-4">
@@ -830,26 +792,7 @@ const loadCompanies = async (groupId: string[] | number[]) => {
                                   <p className="mb-2">
                                       Lease / Rent Agreement Status
                                       <span className="text-red-500">*</span></p>
-                                  {/* <OutlinedSelect
-                                      label="Status"
-                                      options={statusTypeOptions}
-                                    //   value={formData.status}
-                                    value={statusTypeOptions.find(
-                                        (option) => option.value === formData.status,
-                                    )}
-                                    //   onChange={(value: string) => {
-                                    //       setFormData((prev) => ({
-                                    //           ...prev,
-                                    //           status: value,
-                                    //       }))
-                                    //   }}
-                                    onChange={(selectedOption: SelectOption | null) => {
-                                        setFormData((prev) => ({
-                                            ...prev,
-                                            status: selectedOption?.value || '',
-                                        }))
-                                    }}
-                                  /> */}
+                                
                                   <OutlinedInput
                                           label="Status"
                                           value={formData.status} onChange={function (value: string): void {
@@ -864,12 +807,7 @@ const loadCompanies = async (groupId: string[] | number[]) => {
                                   <DatePicker
                                       size="sm"
                                       placeholder="Pick a Date"
-                                    //   onChange={(date) => {
-                                    //       setFormData((prev) => ({
-                                    //           ...prev,
-                                    //           validity: date ? format(date, 'yyyy-MM-dd') : '',
-                                    //       }))
-                                    //   }}
+                                   
                                                         onChange={handleLeaseValidityChange}
 
                                   />
@@ -942,7 +880,129 @@ const loadCompanies = async (groupId: string[] | number[]) => {
                   </div>
 
                 </>
-              )}
+              )} */}
+
+
+
+{formData.type === 'rented' && (
+  <>
+    <div className="border rounded-md py-4 p-2 mt-4">
+      <div className="flex flex-col gap-8">
+        <div className='flex justify-between'>
+          <h4>Lease / Rent Setup</h4>
+          {renderDocumentValidityRadio(
+            leaseValidityType, 
+            setLeaseValidityType, 
+            handleLeaseValidityChange,
+            'Lease Validity Type'
+          )}
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+          <div>
+            <p className="mb-2">
+              Lease deed / Rent Agreement Status
+              <span className="text-red-500">*</span>
+            </p>
+            <OutlinedInput
+                      label="Status"
+                      value={formData.status} onChange={function (value: string): void {
+                        throw new Error('Function not implemented.');
+                      } }            />
+          </div>
+          {leaseValidityType === 'fixed' && (
+            <div>
+              <p className="mb-2">
+                Lease deed / Rent Agreement valid up to
+                <span className="text-red-500">*</span>
+              </p>
+              <DatePicker
+                size="sm"
+                placeholder="Pick a Date"
+                onChange={handleLeaseValidityChange}
+              />
+            </div>
+          )}
+          <div>
+            <div className="flex flex-col gap-4">
+              <label>
+                Please upload Lease deed copy
+                <span className="text-red-500">*</span>
+              </label>
+              <Input
+                id="file-upload"
+                type="file"
+                accept=".pdf"
+                onChange={handleLeaseDocumentUpload}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {/* S&E Setup section */}
+    <div className="border rounded-md py-4 p-2 mt-4">
+      <div className="flex flex-col gap-8">
+        <div className='flex justify-between'>
+          <h4>S&E Setup</h4>
+          {renderDocumentValidityRadio(
+            seValidityType, 
+            setSeValidityType, 
+            handleSeValidityChange,
+            'S&E Validity Type'
+          )}
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+          <div>
+            <p className="mb-2">
+              S&E Registration Number
+              <span className="text-red-500">*</span>
+            </p>
+            <OutlinedInput
+              label="S&E Registration Number"
+              value={formData.register_number}
+              onChange={(value: string) => {
+                setFormData((prev) => ({
+                  ...prev,
+                  register_number: value,
+                }))
+              }}
+            />
+          </div>
+          {seValidityType === 'fixed' && (
+            <div>
+              <p className="mb-2">S&E Validity <span className="text-red-500">*</span></p>
+              <DatePicker
+                size="sm"
+                placeholder="Pick a Date"
+                onChange={(date) => {
+                  setFormData((prev) => ({
+                    ...prev,
+                    se_validity: date ? format(date, 'yyyy-MM-dd') : '',
+                  }))
+                }}
+              />
+            </div>
+          )}
+          <div>
+            <div className="flex flex-col gap-4">
+              <label>
+                Please upload the S&E Registration certificate
+                <span className="text-red-500">*</span>
+              </label>
+              <Input
+                id="file-upload"
+                type="file"
+                accept=".pdf"
+                onChange={handleSeDocumentUpload}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </>
+)}
 
 <div className="border rounded-md py-4 p-2 mt-4">
                   <div className="flex flex-col gap-4">

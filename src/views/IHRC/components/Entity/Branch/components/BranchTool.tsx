@@ -18,9 +18,9 @@ const BranchTool: React.FC = () => {
   return (
     <div className='flex gap-2 items-center w-full'>
       {/* <Company/> */}
-      {/* <div> */}
-      {/* <Bu/> */}
-      {/* </div> */}
+      <div>
+      <Bu/>
+      </div>
       <Button variant="solid" onClick={handleAddBranch} icon={<HiPlusCircle />} size="sm">
         Add Branch
       </Button>

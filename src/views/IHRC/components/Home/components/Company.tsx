@@ -70,22 +70,6 @@ const Company: React.FC<CompanyProps> = ({
 
   // Load Company Groups
   const loadCompanyGroups = async () => {
-    // try {
-    //   const { data } = await httpClient.get(endpoints.companyGroup.getAll(), {
-    //     params: { ignorePlatform: true },
-    //   });
-    //   setCompanyGroups(
-    //     data.data.map((v: any) => ({
-    //       label: v.name,
-    //       value: String(v.id),
-    //     }))
-    //   );
-    //   console.log('company group id ' + data.id);
-      
-    // } catch (error) {
-    //   console.error('Failed to load company groups:', error);
-    //   showNotification('danger', 'Failed to load company groups');
-    // }
 
     try {
       const { data } = await httpClient.get(endpoints.companyGroup.getAll(), {
@@ -380,6 +364,8 @@ const Company: React.FC<CompanyProps> = ({
   };
 
   const handleStateChange = (value: SelectOption | null) => {
+    if (value?.value === selectedState?.value) return;
+
     setSelectedState(value);
     onStateChange?.(value);
   };
@@ -411,10 +397,8 @@ const Company: React.FC<CompanyProps> = ({
         /> */}
         <OutlinedInput
           label="Company Group"
-          value={companyGroupName} onChange={function (value: string): void {
-            throw new Error('Function not implemented.');
-          } }          // readOnly
-          // disabled
+          value={companyGroupName} 
+          onChange={() => {}}
         />
       </div>
 

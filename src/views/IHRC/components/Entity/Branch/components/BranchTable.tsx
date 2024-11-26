@@ -14,7 +14,10 @@ import { fetchBranches } from '@/store/slices/branch/branchSlice';
 import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
 import dayjs from 'dayjs';
-
+import { HiOutlineViewGrid } from 'react-icons/hi';
+// import {lo}
+import loadingAnimation from '@/assets/lotties/system-regular-716-spinner-three-dots-loop-scale.json'
+import Lottie from 'lottie-react';
 
 interface SelectOption {
     value: string;
@@ -304,7 +307,7 @@ interface BranchTableProps {
             }
           })
 
-        
+        // set(data?.data)
         setBranchTableData(data?.data);
         setTableData((prev) => ({
             ...prev,
@@ -354,12 +357,33 @@ interface BranchTableProps {
 
     };
 
+    if (isLoading) {
+        return (
+            <div className="flex flex-col items-center justify-center h-96 text-gray-500  rounded-xl">
+                <div className="w-28 h-28">
+                    <Lottie 
+                        animationData={loadingAnimation} 
+                        loop 
+                        className="w-24 h-24"
+                    />
+                </div>
+                <p className="text-lg font-semibold">
+                    Loading Data...
+                </p>
+
+            </div>
+        );
+    }
+
     return (
         <div className="relative">
-            {data.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
-                    No data available
-                </div>
+             {branchTableData.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-96 text-gray-500 border rounded-xl">
+                <HiOutlineViewGrid className="w-12 h-12 mb-4 text-gray-300" />
+                <p className="text-center">
+        No Data Available
+                </p>
+      </div>
             ) : (
                 <DataTable
                     columns={columns}

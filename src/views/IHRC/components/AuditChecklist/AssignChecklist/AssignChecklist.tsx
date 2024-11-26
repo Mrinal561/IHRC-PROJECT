@@ -28,7 +28,7 @@ const AssignChecklist = () => {
     const [selectedBranch, setSelectedBranch] = useState<BranchOption | null>(
         null,
     )
-    const [selectedIds, setSelectedIds] = useState<number[]>([]) // New state for selected IDs
+    const [selectedIds, setSelectedIds] = useState<number[]>([]) 
 
     const [selectedCompanyGroup, setSelectedCompanyGroup] = useState<SelectOption | null>(null);
     const [selectedCompany, setSelectedCompany] = useState<SelectOption | null>(null);
@@ -39,19 +39,17 @@ const AssignChecklist = () => {
 
 
 
-    // Add handler for selected IDs
     const handleSelectedIdsChange = (ids: number[]) => {
         console.log('Selected IDs:', ids)
         setSelectedIds(ids)
-        // You can now use these IDs in any way needed, for example:
         console.log('selectedIdsForApiCall are:', { selectedIds: ids })
     }
 
     const fetchAssignedData = async (page = 1, pageSize = 10) => {
         console.log('Fetching assigned checklist data...')
         console.log('Current selectedBranch:', selectedBranch)
-
         setIsLoading(true)
+        
         try {
             const response = await httpClient.get(endpoints.assign.getAll(), {
                 params: {
@@ -91,19 +89,19 @@ const AssignChecklist = () => {
 
     const refreshTableAndReset = () => {
         fetchAssignedData()
-        setSelectedIds([]) // Reset selected IDs
-        setTableKey((prevKey) => prevKey + 1) // Force table refresh
+        setSelectedIds([]) 
+        setTableKey((prevKey) => prevKey + 1) 
     }
 
     useEffect(() => {
         console.log('Initial component mount - Fetching data...')
         fetchAssignedData()
-    }, []) // Initial fetch
+    }, [])
 
     useEffect(() => {
         console.log('Filter changed - Fetching new data')
         fetchAssignedData()
-        setTableKey((prevKey) => prevKey + 1) // Force table refresh
+        setTableKey((prevKey) => prevKey + 1) 
     }, [
         selectedBranch,
         selectedCompanyGroup,

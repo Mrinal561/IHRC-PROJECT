@@ -36,9 +36,12 @@ const Branch = () => {
   return (
 
           <AdaptableCard className="h-full" bodyClass="h-full">
-          <div className="flex flex-col justify-between gap-8 mb-10">
-            <div className="mb-4 lg:mb-0">
+          <div className="flex flex-col justify-between gap-8 mb-2">
+            <div className="mb-4 lg:mb-0 flex justify-between">
               <h3 className="text-2xl font-bold">Branch Manager</h3>
+              <div className="flex-shrink-0">
+                <BranchTool />
+              </div>
             </div>
             {/* Modified this div to be more flexible */}
             <div className="mb-8 flex flex-col lg:flex-row gap-4 w-full">
@@ -54,9 +57,7 @@ const Branch = () => {
                 />
               </div>
               {/* Add Branch button will maintain its size */}
-              <div className="flex-shrink-0">
-                <BranchTool />
-              </div>
+              
             </div>
           </div>
           <BranchTable filterValues={filterValues}/>

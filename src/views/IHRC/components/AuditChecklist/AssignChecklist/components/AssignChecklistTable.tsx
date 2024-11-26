@@ -1,16 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { ColumnDef, OnSortParam } from '@/components/shared/DataTable'
 import DataTable from '@/components/shared/DataTable'
-import {
-    Button,
-    Calendar,
-    Dialog,
-    Tooltip,
-    Input,
-    toast,
-    Notification,
-    Checkbox,
-} from '@/components/ui'
+import {Button,Calendar,Dialog,Tooltip,Input,toast,Notification,Checkbox,} from '@/components/ui'
 import { HiBellAlert } from 'react-icons/hi2'
 import { MdEdit } from 'react-icons/md'
 import { RiEyeLine } from 'react-icons/ri'
@@ -104,6 +95,8 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
     onSelectedIdsChange,
     selectedId,
 }) => {
+    console.log(data);
+    
     const navigate = useNavigate()
     const dispatch = useDispatch<AppDispatch>()
     const [activeRowId, setActiveRowId] = useState<number | null>(null)
@@ -122,6 +115,10 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
     const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set())
     const [selectedScheduledFrequency, setSelectedScheduledFrequency] = useState<any>(null)
     const [dueDate, setDueDate] = useState<Date | null>(null)
+    const [firstDate, setFirstDate] = useState<Date | null>(null)
+    const [secondDate, setSecondDate] = useState<Date | null>(null)
+    const [thirdDate, setThirdDate] = useState<Date | null>(null)
+    const [lastDate, setLastDate] = useState<Date | null>(null)
 
 
 
@@ -129,6 +126,14 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
         { value: 'monthly', label: 'Monthly' },
         { value: 'yearly', label: 'Yearly' },
     ]
+
+    const customizedFrequencyOptions: SelectOption[] = [
+        { value: 'monthly', label: 'Monthly' },
+        { value: 'yearly', label: 'Yearly' },
+        { value: 'half_yearly', label: 'Half Yearly' },
+        { value: 'quarterly', label: 'Quarterly' }
+    ]
+
 
 
 
@@ -205,6 +210,9 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
             )
         }
     }
+
+
+    
     const handleOwnerChange = (value: any) => {
         setSelectedOwnerOption(value)
     }
@@ -213,7 +221,7 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
         setSelectedApproverOption(value)
     }
     useEffect(() => {
-        setSelectedItems(new Set(selectedId))
+        setSelectedItems(new Set(selectedId || []))
     }, [selectedId])
     useEffect(() => {
         fetchUsersData()
@@ -299,6 +307,10 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
             (option) => option.value === row.approver_id,
         )
 
+        // const initialFrequency = customizedFrequencyOptions.find(
+        //     (option) => option.value === row.MasterCompliance.
+        // )
+
         // const initialScheduledFrequency = scheduledOptions.find(
         //     (option) => option.value === row.scheduled_frequency
         // )
@@ -309,6 +321,10 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
         // setDueDate(initialDueDate)
 
         setIsEditDialogOpen(true)
+        setFirstDate(null)
+        setSecondDate(null)
+        setThirdDate(null)
+        setLastDate(null)
 
         setSelectedOwnerOption(ownerOption || null)
         setSelectedApproverOption(approverOption || null)
@@ -527,7 +543,7 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
             >
                 <h5 className="mb-2 text-lg font-semibold">
                     Compliance Instance ID:{' '}
-                    <span className="text-indigo-600">{editData.id}</span>
+                    <span className="text-indigo-600">{editData.MasterCompliance?.uuid}</span>
                 </h5>
                 <div className="space-y-6">
                     <div>
