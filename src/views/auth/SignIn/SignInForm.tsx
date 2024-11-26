@@ -25,25 +25,25 @@ import { useState } from 'react'
 import { REDIRECT_URL_KEY } from '@/constants/app.constant'
 import useQuery from '@/utils/hooks/useQuery'
 import appConfig from '@/configs/app.config'
- 
+
 interface SignInFormProps extends CommonProps {
     disableSubmit?: boolean
     forgotPasswordUrl?: string
     signUpUrl?: string
 }
- 
+
 type SignInFormSchema = {
     userName: string
     password: string
     // rememberMe: boolean
 }
- 
+
 const validationSchema = Yup.object().shape({
     userName: Yup.string().required('Please enter your user name'),
     password: Yup.string().required('Please enter your password'),
     rememberMe: Yup.bool(),
 })
- 
+
 const SignInForm = (props: SignInFormProps) => {
     const {
         disableSubmit = false,
@@ -51,15 +51,15 @@ const SignInForm = (props: SignInFormProps) => {
         forgotPasswordUrl = '/forgot-password',
         signUpUrl = '/sign-up',
     } = props
- 
+
     const [message, setMessage] = useTimeOutMessage()
     const query = useQuery()
- 
+
     const { LogIn } = useAuth()
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
     const [loading, setLoading] = useState(false)
- 
+
     const onSignIn = async (values: SignInFormSchema) => {
         setLoading(true)
         try {
@@ -69,11 +69,11 @@ const SignInForm = (props: SignInFormProps) => {
                 password: values.password,
             })
             console.log('API call succeeded:', data) // Check if this logs
- 
+
             console.log(data)
- 
+
             Cookies.set('token', data.access_token, { path: '/' })
- 
+
             dispatch(fetchAuthUser()).then(({ payload }) => {
                 if (payload) {
                     dispatch(setIsAuthenticated(true))
@@ -111,7 +111,7 @@ const SignInForm = (props: SignInFormProps) => {
                     // showErrorNotification()
                 }
             })
- 
+
             setLoading(false)
         } catch (error) {
             const err = error as AxiosError
@@ -135,10 +135,10 @@ const SignInForm = (props: SignInFormProps) => {
                 )
             }
         }
- 
+
         setLoading(false)
     }
- 
+
     return (
         <div className={className}>
             {message && (
@@ -222,5 +222,5 @@ const SignInForm = (props: SignInFormProps) => {
         </div>
     )
 }
- 
+
 export default SignInForm

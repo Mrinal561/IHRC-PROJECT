@@ -1,15 +1,15 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 // import { SLICE_BASE_NAME } from './constants'
-import { AuthUser } from '@/interface/interface'
+import { AuthUser } from '@/interface/interfaces'
 import httpClient from '@/api/http-client'
 import { endpoints } from '@/api/endpoint'
- 
+
 export type LoginState = {
     loading: boolean
     user?: AuthUser
     authenticated: boolean
 }
- 
+
 const initialState: LoginState = {
     loading: true,
     authenticated: false,
@@ -21,7 +21,7 @@ export const fetchAuthUser = createAsyncThunk(
         return data
     },
 )
- 
+
 const loginSlice = createSlice({
     name: `auth`,
     initialState,
@@ -32,7 +32,7 @@ const loginSlice = createSlice({
         ) => {
             state.authenticated = action.payload
         },
- 
+
         setLoginUser(
             state,
             action: PayloadAction<LoginState['user'] | undefined>,
@@ -58,6 +58,6 @@ const loginSlice = createSlice({
             })
     },
 })
- 
+
 export const { setLoginUser, setIsAuthenticated } = loginSlice.actions
 export default loginSlice.reducer

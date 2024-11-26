@@ -3,18 +3,18 @@ import Avatar from '@/components/ui/Avatar'
 import Logo from '@/components/template/Logo'
 import { APP_NAME } from '@/constants/app.constant'
 import type { CommonProps } from '@/@types/common'
- 
+
 interface SideProps extends CommonProps {
     content?: React.ReactNode
 }
- 
+
 const Side = ({ children, content, ...rest }: SideProps) => {
     return (
         <div className="grid lg:grid-cols-3 h-full">
             <div
                 className="bg-no-repeat bg-cover py-6 px-16 flex-col justify-between hidden lg:flex"
                 style={{
-                    backgroundImage: `url('/img/others/auth-side-bg.jpg')`,
+                    backgroundImage: `url('/ihrc/img/others/auth-side-bg.jpg')`,
                 }}
             >
                 <Logo mode="dark" />
@@ -54,5 +54,5 @@ const Side = ({ children, content, ...rest }: SideProps) => {
         </div>
     )
 }
- 
+
 export default Side
