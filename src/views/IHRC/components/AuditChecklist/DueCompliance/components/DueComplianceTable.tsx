@@ -9,6 +9,12 @@ import OutlinedSelect from '@/components/ui/Outlined';
 import { updateStatus } from '@/store/slices/dueCompliance/statusUpdateSlice';
 import { useDispatch } from 'react-redux';
 import { StatusRequest } from '@/@types/status';
+import loadingAnimation from '@/assets/lotties/system-regular-716-spinner-three-dots-loop-scale.json'
+import Lottie from 'lottie-react';
+import { HiOutlineViewGrid } from 'react-icons/hi'
+
+
+
 export type DueComplianceDetailData = {
   id: number;
   uuid: string;
@@ -89,7 +95,7 @@ interface ComplianceDetailTableProps {
  
 const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
   data,
-  loading = false,
+  loading,
   onViewDetail,
   onUpdateStatus,
   onDownloadProof,
@@ -341,15 +347,44 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
   const handlePageSizeChange = (pageSize: number) => {
     setTableData(prev => ({ ...prev, pageSize: Number(pageSize), pageIndex: 1 }));
   };
+
+  if (loading) {
+    console.log("Loading....................");
+    
+    return (
+        <div className="flex flex-col items-center justify-center h-96 text-gray-500  rounded-xl">
+            <div className="w-28 h-28">
+                <Lottie 
+                    animationData={loadingAnimation} 
+                    loop 
+                    className="w-24 h-24"
+                />
+            </div>
+            <p className="text-lg font-semibold">
+                Loading Data...
+            </p>
+
+        </div>
+    );
+}
+
  
   return (
     <div className="relative">
+       {data.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-96 text-gray-500 border rounded-xl">
+                <HiOutlineViewGrid className="w-12 h-12 mb-4 text-gray-300" />
+                <p className="text-center">
+        No Data Available
+                </p>
+      </div>
+            ) : (
       <DataTable
         columns={columns}
         data={data}
         skeletonAvatarColumns={[0]}
         skeletonAvatarProps={{ className: 'rounded-md' }}
-        loading={isLoading}
+        loading={loading}
         pagingData={{
           total: tableData.total,
           pageIndex: tableData.pageIndex,
@@ -361,7 +396,7 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
         stickyFirstColumn={true}
         stickyLastColumn={true}
       />
- 
+      )}
 <Dialog
         isOpen={isStatusDialogOpen}
         onClose={() => setIsStatusDialogOpen(false)}

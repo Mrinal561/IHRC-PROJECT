@@ -39,7 +39,8 @@ const OutlinedSelect = ({ label, options, value, onChange, isMulti = false }) =>
         options={options}
         onFocus={handleFocus}
         onBlur={handleBlur}
-        className="w-full border-none bg-transparent"
+        className="w-full border-none bg-ql-transparent"
+        size='sm'
         styles={{
           control: (provided) => ({
             ...provided,

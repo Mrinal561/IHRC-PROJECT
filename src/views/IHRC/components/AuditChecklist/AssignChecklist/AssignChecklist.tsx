@@ -135,6 +135,8 @@ const AssignChecklist = () => {
         dataLength: assignedData.length,
     })
 
+    
+
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
             <div className="flex flex-row items-center justify-between mb-10">
