@@ -243,7 +243,7 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> =({
                 ),
             },
             {
-  header: 'Challan',
+  header: 'ESIC challan cum payment receipt',
   accessorKey: 'challan_document',
   cell: (props) => {
     const challanDocument = props.getValue() as string | null;

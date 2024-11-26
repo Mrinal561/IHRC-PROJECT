@@ -421,7 +421,7 @@ const PFIWTrackerTable: React.FC<PFIWTrackerTableProps> =({
       },
 
 {
-  header: 'Challan',
+  header: 'IW return',
   accessorKey: 'challan_document',
   cell: (props) => {
     const challanDocument = props.getValue() as string | null;

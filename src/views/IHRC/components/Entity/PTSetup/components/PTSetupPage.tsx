@@ -697,7 +697,7 @@ const PTSetupPage = () => {
                 {/* Registration Details */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                        <p className="mb-2">Registration Number</p>
+                        <p className="mb-2">PT RC Registration Number</p>
                        <OutlinedInput
                         label="Registration Number"
                         value={ptSetupData.register_number}
@@ -708,7 +708,7 @@ const PTSetupPage = () => {
                     />
                     </div>
                     <div>
-                        <p className="mb-2">Enrollment Number</p>
+                        <p className="mb-2">PT EC Enrollment Number</p>
                         <OutlinedInput
                         label="Enrollment Number"
                         value={ptSetupData.enroll_number}
@@ -805,22 +805,22 @@ const PTSetupPage = () => {
                 {/* Certificates */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <p className="mb-2">EC Certificate</p>
-                        <Input
-                            type="file"
-                            onChange={(e) => {
-                                const file = e.target.files?.[0]
-                                if (file) handleCertificateUpload('ec', file)
-                            }}
-                        />
-                    </div>
-                    <div>
                         <p className="mb-2">RC Certificate</p>
                         <Input
                             type="file"
                             onChange={(e) => {
                                 const file = e.target.files?.[0]
                                 if (file) handleCertificateUpload('rc', file)
+                            }}
+                        />
+                    </div>
+                     <div>
+                        <p className="mb-2">EC Certificate</p>
+                        <Input
+                            type="file"
+                            onChange={(e) => {
+                                const file = e.target.files?.[0]
+                                if (file) handleCertificateUpload('ec', file)
                             }}
                         />
                     </div>
