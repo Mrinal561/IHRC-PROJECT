@@ -1,12 +1,3 @@
-// export type AssignedComplianceData = {
-//     branch_id: number;
-//     compliance_id: number[];
-// }
-
-// export type AssignedComplianceResponseData = {
-
-// }
-
 export type BranchData = {
     group_id: number;
     company_id: number;
