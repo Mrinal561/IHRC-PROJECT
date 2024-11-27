@@ -130,9 +130,10 @@ ptTracker: {
     downloadALl:()=> api('/companyadmin/pfsetup/pfiw-tracker/export')
     },
     lwftracker: {
+        downlaodAll:()=> api(`/companyadmin/lwfsetup/lwf-tracker/export`),
        download:()=> api('upload/sample_files/lwf-tracker.xlsx'),
     bulkupload:()=> api('/companyadmin/lwfsetup/lwf-tracker'),
-        lwfGetAll: () => api('/companyadmin/lwfsetup/lwf-tracker'),
+        lwfGetAll: () => api('companyadmin/lwfsetup/lwf-tracker'),
     upload:(id:any)=> api(`/companyadmin/lwfsetup/lwf-tracker/payment-receipt/${id}`)
    },
    lwfSetup:{
