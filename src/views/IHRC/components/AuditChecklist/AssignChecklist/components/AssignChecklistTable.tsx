@@ -89,7 +89,14 @@ interface AssignChecklistTableProps {
     tableKey?: number
     refreshTable: () => void
     onSelectedIdsChange: (selectedIds: number[]) => void
-    selectedId?: number[]
+    selectedId?: number[];
+    pagination: {
+    total: number;
+    pageIndex: number;
+    pageSize: number;
+  };
+  onPaginationChange: (page: number) => void;
+  onPageSizeChange: (pageSize: number) => void;
 }
 
 const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
@@ -99,6 +106,9 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
     refreshTable,
     onSelectedIdsChange,
     selectedId,
+      pagination,
+  onPaginationChange,
+  onPageSizeChange,
 }) => {
     console.log(data);
     
@@ -707,21 +717,29 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
                 skeletonAvatarColumns={[0]}
                 skeletonAvatarProps={{ className: 'rounded-md' }}
                 loading={loading}
-                pagingData={{
-                    total: tableData.total,
-                    pageIndex: tableData.pageIndex,
-                    pageSize: tableData.pageSize,
-                }}
-                onPaginationChange={(page) =>
-                    setTableData((prev) => ({ ...prev, pageIndex: page }))
-                }
-                onSelectChange={(value) =>
-                    setTableData((prev) => ({
-                        ...prev,
-                        pageSize: Number(value),
-                        pageIndex: 1,
-                    }))
-                }
+                // pagingData={{
+                //     total: tableData.total,
+                //     pageIndex: tableData.pageIndex,
+                //     pageSize: tableData.pageSize,
+                // }}
+                // onPaginationChange={(page) =>
+                //     setTableData((prev) => ({ ...prev, pageIndex: page }))
+                // }
+                // onSelectChange={(value) =>
+                //     setTableData((prev) => ({
+                //         ...prev,
+                //         pageSize: Number(value),
+                //         pageIndex: 1,
+                //     }))
+                        // }
+                         pagingData={{
+            total: pagination.total,
+            pageIndex: pagination.pageIndex,
+            pageSize: pagination.pageSize,
+          }}
+          // Pass the pagination handlers
+          onPaginationChange={onPaginationChange}
+          onSelectChange={onPageSizeChange}
                 // onSort={(sort) => setTableData((prev) => ({ ...prev, sort }))}
                 stickyHeader={true}
                 stickyFirstColumn={true}

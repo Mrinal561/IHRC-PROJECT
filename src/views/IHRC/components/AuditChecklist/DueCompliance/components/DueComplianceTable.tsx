@@ -91,6 +91,13 @@ interface ComplianceDetailTableProps {
   onUpdateStatus?: (id: number, status: DueComplianceDetailData['status']) => void;
   onDownloadProof?: (documentUrl: string) => void;
   onDataUpdate?: () => void;
+   pagination: {
+    total: number;
+    pageIndex: number;
+    pageSize: number;
+  };
+  onPaginationChange: (page: number) => void;
+  onPageSizeChange: (pageSize: number) => void;
 }
  
 const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
@@ -99,7 +106,10 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
   onViewDetail,
   onUpdateStatus,
   onDownloadProof,
-  onDataUpdate
+  onDataUpdate,
+  pagination,
+  onPaginationChange,
+  onPageSizeChange,
 }) => {
   const [tableData, setTableData] = useState({
     total: data.length,
@@ -386,12 +396,13 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
         skeletonAvatarProps={{ className: 'rounded-md' }}
         loading={loading}
         pagingData={{
-          total: tableData.total,
-          pageIndex: tableData.pageIndex,
-          pageSize: tableData.pageSize,
-        }}
-        onPaginationChange={handlePageChange}
-        onSelectChange={handlePageSizeChange}
+            total: pagination.total,
+            pageIndex: pagination.pageIndex,
+            pageSize: pagination.pageSize,
+          }}
+          // Pass the pagination handlers
+          onPaginationChange={onPaginationChange}
+          onSelectChange={onPageSizeChange}
         stickyHeader={true}
         stickyFirstColumn={true}
         stickyLastColumn={true}

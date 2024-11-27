@@ -1,6 +1,6 @@
 
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { toast } from '@/components/ui';
 import { Notification } from '@/components/ui';
 import AdaptableCard from '@/components/shared/AdaptableCard';
@@ -12,8 +12,12 @@ import httpClient from '@/api/http-client';
 const DueCompliance = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [data, setData] = useState([]);
-
-    const fetchDueComplianceData = async (page = 1, pageSize = 10) => {
+      const [pagination, setPagination] = useState({
+    total: 0,
+    pageIndex: 1,
+    pageSize: 10,
+  });
+    const fetchDueComplianceData = useCallback(async (page: number = 1, pageSize: number = 10) => {
         console.log('Fetching due compliance data...');
         
         setIsLoading(true);
@@ -21,8 +25,8 @@ const DueCompliance = () => {
             const response = await httpClient.get(endpoints.due.getAll(), {
                 params: {
                     page,
-                    pageSize, 
-                    'data_status[]': ['due']                   
+                    pageSize:pageSize,
+                    'data_status[]': ['due']
                 }
             });
 
@@ -30,6 +34,7 @@ const DueCompliance = () => {
                 console.log('API Response:', response.data);
                 console.log('Due compliance data received:', response.data.data);
                 setData(response.data.data);
+                 setPagination((prev) => ({...prev, total: response.data.paginate_data.totalResults }));
             } else {
                 console.log('No data in API response or unexpected response structure');
             }
@@ -47,12 +52,12 @@ const DueCompliance = () => {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, []);
 
     useEffect(() => {
         console.log('Initial component mount - Fetching data...');
-        fetchDueComplianceData();
-    }, []);
+        fetchDueComplianceData(pagination.pageIndex, pagination.pageSize);
+    }, [fetchDueComplianceData, pagination.pageIndex, pagination.pageSize]);
 
     const handleUploadAll = (selectedComplianceIds, remark) => {
         console.log(`Uploading ${selectedComplianceIds.length} compliances with remark: ${remark}`);
@@ -68,6 +73,13 @@ const DueCompliance = () => {
         console.log(`Updating status for compliance ${complianceId} to ${newStatus}`);
         // Implement API call for status update
     };
+      const handlePaginationChange = (page: number) => {
+    setPagination((prev) => ({...prev, pageIndex: page }));
+  };
+
+  const handlePageSizeChange = (newPageSize: number) => {
+    setPagination((prev) => ({...prev, pageSize: newPageSize, pageIndex: 1 }));
+  };
 
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
@@ -86,6 +98,9 @@ const DueCompliance = () => {
                 onUploadSingle={handleUploadSingle} 
                 onUpdateStatus={handleUpdateStatus} 
                 onDataUpdate={fetchDueComplianceData}
+                 pagination={pagination}
+        onPaginationChange={handlePaginationChange}
+        onPageSizeChange={handlePageSizeChange}
             />
         </AdaptableCard>
     );
