@@ -208,61 +208,151 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
     }
 
 
+    const handleCancel = () => {
+        setIsEditDialogOpen(false);
+    };
 
+    // const handleEditSave = async () => {
+    //     if (
+    //         activeRowId &&
+    //         (selectedOwnerOption !== null || selectedApproverOption !== null) &&
+    //         selectedScheduledFrequency !== null 
+    //     ) {
+    //         const updateData: ApproverOwnerAssignedCompliances = {
+    //             assigned_compliance_id: [activeRowId],
+    //             owner_id: selectedOwnerOption?.value || 0,
+    //             approver_id: selectedApproverOption?.value || 0,
+    //             scheduled_frequency: selectedScheduledFrequency?.value || '',
+    //             due_date: dueDate? dueDate.toISOString().split('T')[0] : '', // Format date as YYYY-MM-DD
+    //         }
+    //         console.log('INSIDE TABLE', updateData)
 
+    //         setIsUpdating(true)
+    //         try {
+    //           const response =  await dispatch(
+    //                 updateApproverOwner({
+    //                     id: activeRowId.toString(),
+    //                     data: updateData,
+    //                 }),
+    //             ).unwrap()
+    //             .catch((error: any) => {
+    //              // Handle different error formats
+    //              if (error.response?.data?.message) {
+    //                  // API error response
+    //                  showErrorNotification(error.response.data.message);
+    //              } else if (error.message) {
+    //                  // Regular error object
+    //                  showErrorNotification(error.message);
+    //              } else if (Array.isArray(error)) {
+    //                  // Array of error messages
+    //                  showErrorNotification(error);
+    //              } else {
+    //                  // Fallback error message
+    //                  showErrorNotification('An unexpected error occurred. Please try again.');
+    //              }
+    //              throw error; // Re-throw to prevent navigation
+    //          });
+
+    //          if(response) {
+    //              setIsEditDialogOpen(false)
+    //              toast.push(
+    //                  <Notification title="Success" type="success">
+    //                     Owner and Approver updated successfully
+    //                 </Notification>,
+    //             )
+    //             setSelectedOwnerOption(null)
+    //             setSelectedApproverOption(null)
+    //             setSelectedScheduledFrequency(null)
+    //             refreshTable()
+    //         }
+    //         } catch (error : any) {
+    //             console.log(error)
+    //             toast.push(
+    //                 <Notification title="Error" type="danger">
+    //                     {error}
+    //                 </Notification>,
+    //             )
+    //             console.error('Error updating owner/approver:', error)
+    //         } finally {
+    //             setIsUpdating(false)
+    //         }
+    //     } else {
+    //         toast.push(
+    //             <Notification title="Warning" type="warning">
+    //                 Please select an owner or approver
+    //             </Notification>,
+    //         )
+    //     }
+    // }
     const handleEditSave = async () => {
+        // Determine the appropriate due date based on frequency
+        let selectedDueDate: Date | null = null;
+    
+        switch(selectedScheduledFrequency?.value) {
+            case 'monthly':
+                selectedDueDate = firstDate;
+                break;
+            case 'yearly':
+                selectedDueDate = firstDate;
+                break;
+            case 'half_yearly':
+                selectedDueDate = lastDate;
+                break;
+            case 'quarterly':
+                selectedDueDate = lastDate;
+                break;
+            default:
+                selectedDueDate = dueDate;
+        }
+    
         if (
             activeRowId &&
             (selectedOwnerOption !== null || selectedApproverOption !== null) &&
-            selectedScheduledFrequency !== null 
+            selectedScheduledFrequency !== null &&
+            selectedDueDate // Ensure a date is selected
         ) {
             const updateData: ApproverOwnerAssignedCompliances = {
                 assigned_compliance_id: [activeRowId],
                 owner_id: selectedOwnerOption?.value || 0,
                 approver_id: selectedApproverOption?.value || 0,
                 scheduled_frequency: selectedScheduledFrequency?.value || '',
-                // due_date: dueDate.toISOString().split('T')[0], // Format date as YYYY-MM-DD
+                due_date: selectedDueDate.toISOString().split('T')[0], // Format date as YYYY-MM-DD
             }
-            console.log('INSIDE TABLE', updateData)
-
+    
             setIsUpdating(true)
             try {
-              const response =  await dispatch(
+                const response = await dispatch(
                     updateApproverOwner({
                         id: activeRowId.toString(),
                         data: updateData,
                     }),
                 ).unwrap()
                 .catch((error: any) => {
-                 // Handle different error formats
-                 if (error.response?.data?.message) {
-                     // API error response
-                     showErrorNotification(error.response.data.message);
-                 } else if (error.message) {
-                     // Regular error object
-                     showErrorNotification(error.message);
-                 } else if (Array.isArray(error)) {
-                     // Array of error messages
-                     showErrorNotification(error);
-                 } else {
-                     // Fallback error message
-                     showErrorNotification('An unexpected error occurred. Please try again.');
-                 }
-                 throw error; // Re-throw to prevent navigation
-             });
-
-             if(response) {
-                 setIsEditDialogOpen(false)
-                 toast.push(
-                     <Notification title="Success" type="success">
-                        Owner and Approver updated successfully
-                    </Notification>,
-                )
-                setSelectedOwnerOption(null)
-                setSelectedApproverOption(null)
-                setSelectedScheduledFrequency(null)
-                refreshTable()
-            }
+                    // Error handling remains the same
+                    if (error.response?.data?.message) {
+                        showErrorNotification(error.response.data.message);
+                    } else if (error.message) {
+                        showErrorNotification(error.message);
+                    } else if (Array.isArray(error)) {
+                        showErrorNotification(error);
+                    } else {
+                        showErrorNotification('An unexpected error occurred. Please try again.');
+                    }
+                    throw error;
+                });
+    
+                if(response) {
+                    setIsEditDialogOpen(false)
+                    toast.push(
+                        <Notification title="Success" type="success">
+                            Owner and Approver updated successfully
+                        </Notification>,
+                    )
+                    setSelectedOwnerOption(null)
+                    setSelectedApproverOption(null)
+                    setSelectedScheduledFrequency(null)
+                    refreshTable()
+                }
             } catch (error : any) {
                 console.log(error)
                 toast.push(
@@ -277,12 +367,11 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
         } else {
             toast.push(
                 <Notification title="Warning" type="warning">
-                    Please select an owner or approver
+                    Please select an owner, approver, and due date
                 </Notification>,
             )
         }
     }
-
 
     
     const handleOwnerChange = (value: any) => {
@@ -703,7 +792,7 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
                 <DatePicker
                     size='sm'
                     placeholder="Select first due date"
-                    value={firstDate}
+                    value={dueDate}
                     onChange={(date: Date | null) => setFirstDate(date)}
                     disabled={!dateFieldsState.isFirstDateEnabled}
                 />
@@ -743,6 +832,13 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
 
                 
                 <div className="mt-6 text-right">
+                <Button
+                        className="mr-2"
+                        onClick={handleCancel}
+                        
+                    >
+                        Cancel
+                    </Button>
                     <Button
                         variant="solid"
                         onClick={handleEditSave}
