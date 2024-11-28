@@ -259,15 +259,15 @@ const PTECTrackerTable: React.FC<PTTrackerTableProps> = ({
           );
         },
       },
-      // {
-      //   header: 'Upload Status',
-      //   id: 'uploadStatus',
-      //   cell: ({ row }) => {
-      //     const { challan, payment, ret } = row.original;
-      //     const uploadedCount = [challan, payment, ret].filter(Boolean).length;
-      //     return <div className="w-32 truncate">{`${uploadedCount}/3`}</div>;
-      //   },
-      // },
+      {
+        header: 'Upload Status',
+        id: 'uploadStatus',
+        cell: ({ row }) => {
+          const { payment_document, pt_return_document } = row.original;
+          const uploadedCount = [payment_document, pt_return_document].filter(Boolean).length;
+          return <div className="w-32 truncate">{`${uploadedCount}/2`}</div>;
+        },
+      },
       {
         header: 'Actions',
         id: 'actions',
