@@ -10,6 +10,9 @@ import PTTrackerEditDialog from './PTECTrackerEditDialog';
 import ConfigDropdown from './ConfigDropdown';
 import { PTTrackerData } from '@/@types/PTTracker';
 import dayjs from 'dayjs';
+import loadingAnimation from '@/assets/lotties/system-regular-716-spinner-three-dots-loop-scale.json'
+import Lottie from 'lottie-react';
+import { HiOutlineViewGrid } from 'react-icons/hi';
 
 const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
@@ -298,25 +301,54 @@ const PTECTrackerTable: React.FC<PTTrackerTableProps> = ({
     [onRefresh]
   );
 
+ if (loading) {
+        console.log("Loading....................");
+        
+        return (
+            <div className="flex flex-col items-center justify-center h-96 text-gray-500  rounded-xl">
+                <div className="w-28 h-28">
+                    <Lottie 
+                        animationData={loadingAnimation} 
+                        loop 
+                        className="w-24 h-24"
+                    />
+                </div>
+                <p className="text-lg font-semibold">
+                    Loading Data...
+                </p>
+
+            </div>
+        );
+    }
+
   return (
     <div className="relative">
-      <DataTable
-        columns={columns}
-        data={dataSent}
-        loading={loading}
-        skeletonAvatarColumns={[0]}
-        skeletonAvatarProps={{ className: 'rounded-md' }}
-        stickyHeader={true}
-        stickyFirstColumn={true}
-        stickyLastColumn={true}
-        pagingData={{
-          total: pagination.total,
-          pageIndex: pagination.pageIndex,
-          pageSize: pagination.pageSize,
-        }}
-        onPaginationChange={onPaginationChange}
-        onSelectChange={onPageSizeChange}
-      />
+      {dataSent.length === 0 ? (
+        <div className="flex flex-col items-center justify-center h-96 text-gray-500 border rounded-xl">
+          <HiOutlineViewGrid className="w-12 h-12 mb-4 text-gray-300" />
+          <p className="text-center">
+            No Data Available
+          </p>
+        </div>
+      ) : (
+        <DataTable
+          columns={columns}
+          data={dataSent}
+          loading={loading}
+          skeletonAvatarColumns={[0]}
+          skeletonAvatarProps={{ className: 'rounded-md' }}
+          stickyHeader={true}
+          stickyFirstColumn={true}
+          stickyLastColumn={true}
+          pagingData={{
+            total: pagination.total,
+            pageIndex: pagination.pageIndex,
+            pageSize: pagination.pageSize,
+          }}
+          onPaginationChange={onPaginationChange}
+          onSelectChange={onPageSizeChange}
+        />
+      )}
       {editingData && (
         <PTTrackerEditDialog
           isOpen={editDialogOpen}

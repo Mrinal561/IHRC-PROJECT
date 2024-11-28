@@ -65,8 +65,10 @@ import { endpoints } from '@/api/endpoint'
 const PTRCTracker: React.FC = () => {
     const [filters, setFilters] = useState({
         groupName: '',
+        groupId: '',
         companyName: '',
-        pfCode: '',
+        companyId: '',
+        ptCode: '',
     })
     const [data, setData] = useState<PTTrackerData[]>([])
     const [isLoading, setIsLoading] = useState(false)
@@ -80,11 +82,17 @@ const PTRCTracker: React.FC = () => {
         async (page: number, pageSize: number) => {
             setIsLoading(true)
             try {
-                const res = await httpClient.get(endpoints.ptrc.getAll(), {
-                    params: {
+                    const params: any = {
                         page,
                         page_size: pageSize,
-                    },
+                        'group_id[]': filters.groupId,
+                        'company_id[]': filters.companyId,
+                    }
+                    if (filters.ptCode) {
+                        params['pt_code[]'] = filters.ptCode;
+                    }
+                const res = await httpClient.get(endpoints.ptrc.getAll(), {
+                    params
                 })
                 setData(res.data.data)
                 setPagination((prev) => ({
@@ -97,15 +105,19 @@ const PTRCTracker: React.FC = () => {
                 setIsLoading(false)
             }
         },
-        [],
+        [filters.groupId, filters.companyId, filters.ptCode],
     )
 
     useEffect(() => {
         fetchPtrcTrackerData(pagination.pageIndex, pagination.pageSize)
-    }, [fetchPtrcTrackerData, pagination.pageIndex, pagination.pageSize])
+    }, [fetchPtrcTrackerData, pagination.pageIndex, pagination.pageSize,filters.groupId, filters.companyId])
 
     const handleFilterChange = (newFilters: any) => {
         setFilters(newFilters)
+        setPagination((prev) => ({
+            ...prev,
+            pageIndex: 1,
+        }))
     }
 
     const handlePaginationChange = (page: number) => {
