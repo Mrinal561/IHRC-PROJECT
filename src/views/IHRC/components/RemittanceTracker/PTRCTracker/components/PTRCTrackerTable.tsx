@@ -672,8 +672,8 @@ const PTRCTrackerTable: React.FC<PTTrackerTableProps> = ({
         header: 'Upload Status',
         id: 'uploadStatus',
         cell: ({ row }) => {
-          const { payment, ret } = row.original;
-          const uploadedCount = [payment, ret].filter(Boolean).length;
+          const { ptrc_document, ptrc_return_document } = row.original;
+          const uploadedCount = [ptrc_document, ptrc_return_document].filter(Boolean).length;
           return <div className="w-32 truncate">{`${uploadedCount}/2`}</div>;
         },
       },
