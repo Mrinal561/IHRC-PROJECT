@@ -59,7 +59,7 @@ export type ApproverOwnerAssignedCompliances = {
     owner_id: number;
     approver_id: number;
     scheduled_frequency: string;
-    // due_date: string;
+    due_date: string;
     assigned_compliance_id: number[]; 
 }
 

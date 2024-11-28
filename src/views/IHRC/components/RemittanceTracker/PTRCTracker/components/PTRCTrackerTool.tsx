@@ -1,19 +1,110 @@
+// import React, { useState } from 'react';
+// import { dummyData } from './PTRCTrackerTable';
+// import UploadedPTDetails from './UploadedPTRCDetails';
+// import PTRCTrackerFilter from './PTRCTrackerFilter';
+// import PTRCTrackerBulkUpload from './PTRCTrackerBulkUpload.js';
+// import CustomDateRangePicker from '../../PFTracker/components/CustomDateRangePicker';
+// import { Button } from '@/components/ui';
+// import { HiDownload } from 'react-icons/hi';
+// import httpClient from '@/api/http-client';
+// import { endpoints } from '@/api/endpoint';
+
+
+// const PTRCTrackerTool: React.FC<{ onFilterChange: (filters: any) => void }> = ({ onFilterChange }) => {
+//   const [showUploadedDetails, setShowUploadedDetails] = useState(false);
+//   const [filters, setFilters] = useState({ groupName: '', companyName: '', pfCode: '' });
+
+
+//   const handleUploadConfirm = () => {
+//     setShowUploadedDetails(true);
+//   };
+
+//   const handleBack = () => {
+//     setShowUploadedDetails(false);
+//   };
+
+//   const handleFilterChange = (newFilters) => {
+//     setFilters(newFilters);
+//     // You can apply the filters to your data here or pass them to PFTrackerTable
+//   };
+
+//   if (showUploadedDetails) {
+//     return <UploadedPTDetails onBack={handleBack} />;
+//   }
+//   const handleDateRangeApply = (start: Date, end: Date) => {
+//     setStartDate(start);
+//     setEndDate(end);
+//   };
+
+//        const handleDownload = async () => {
+//     try {
+//       const res = await httpClient.get(endpoints.ptrc.downloadAll(), {
+//         responseType: 'blob'
+//       })
+      
+//       const blob = new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+//       const url = window.URL.createObjectURL(blob)
+//       const link = document.createElement('a')
+//       link.href = url
+//       link.setAttribute('download', 'PTRCData.xlsx')
+//       document.body.appendChild(link)
+//       link.click()
+//       document.body.removeChild(link)
+//       window.URL.revokeObjectURL(url) // Clean up the URL object
+//     } catch (error) {
+//       console.error('Error downloading LWF data:', error)
+//       // Here you might want to show an error notification to the user
+//     }
+//   }
+
+//   return (
+//     <div>
+//       <div className="flex gap-3 items-center mb-4">
+//         <PTRCTrackerFilter data={dummyData} onFilterChange={onFilterChange} />
+//         <CustomDateRangePicker onApply={handleDateRangeApply} />
+//         <Button
+//         variant="solid"
+//         size="sm"
+//           icon={<HiDownload />}
+//         onClick={handleDownload}>Download PT RC Data</Button>
+//         <PTRCTrackerBulkUpload onUploadConfirm={handleUploadConfirm} />
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default PTRCTrackerTool;
+
+
 import React, { useState } from 'react';
-import { dummyData } from './PTRCTrackerTable';
 import UploadedPTDetails from './UploadedPTRCDetails';
 import PTRCTrackerFilter from './PTRCTrackerFilter';
-import PTRCTrackerBulkUpload from './PTRCTrackerBulkUpload.js';
+import PTRCTrackerBulkUpload from './PTRCTrackerBulkUpload';
 import CustomDateRangePicker from '../../PFTracker/components/CustomDateRangePicker';
 import { Button } from '@/components/ui';
 import { HiDownload } from 'react-icons/hi';
 import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
 
-
-const PTRCTrackerTool: React.FC<{ onFilterChange: (filters: any) => void }> = ({ onFilterChange }) => {
+const PTRCTrackerTool: React.FC<{ 
+  onFilterChange: (filters: { 
+    groupName: string; 
+    groupId: string;
+    companyName: string; 
+    companyId: string;
+    ptCode: string 
+  }) => void 
+}> = ({ onFilterChange }) => {
   const [showUploadedDetails, setShowUploadedDetails] = useState(false);
-  const [filters, setFilters] = useState({ groupName: '', companyName: '', pfCode: '' });
-
+  const [filters, setFilters] = useState({ 
+    groupName: '', 
+    groupId: '',
+    companyName: '', 
+    companyId: '',
+    ptCode: '' 
+  });
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
 
   const handleUploadConfirm = () => {
     setShowUploadedDetails(true);
@@ -23,50 +114,62 @@ const PTRCTrackerTool: React.FC<{ onFilterChange: (filters: any) => void }> = ({
     setShowUploadedDetails(false);
   };
 
-  const handleFilterChange = (newFilters) => {
+  const handleFilterChange = (newFilters: { 
+    groupName: string; 
+    groupId: string;
+    companyName: string; 
+    companyId: string;
+    ptCode: string 
+  }) => {
     setFilters(newFilters);
-    // You can apply the filters to your data here or pass them to PFTrackerTable
+    onFilterChange(newFilters);
   };
 
   if (showUploadedDetails) {
     return <UploadedPTDetails onBack={handleBack} />;
   }
+
   const handleDateRangeApply = (start: Date, end: Date) => {
     setStartDate(start);
     setEndDate(end);
   };
 
-       const handleDownload = async () => {
+  const handleDownload = async () => {
     try {
       const res = await httpClient.get(endpoints.ptrc.downloadAll(), {
         responseType: 'blob'
-      })
+      });
       
-      const blob = new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
-      const url = window.URL.createObjectURL(blob)
-      const link = document.createElement('a')
-      link.href = url
-      link.setAttribute('download', 'PTRCData.xlsx')
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-      window.URL.revokeObjectURL(url) // Clean up the URL object
+      const blob = new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'PTRCData.xlsx');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url); // Clean up the URL object
     } catch (error) {
-      console.error('Error downloading LWF data:', error)
+      console.error('Error downloading PTRC data:', error);
       // Here you might want to show an error notification to the user
     }
-  }
+  };
 
   return (
     <div>
-      <div className="flex gap-3 items-center mb-4">
-        <PTRCTrackerFilter data={dummyData} onFilterChange={onFilterChange} />
+      <div className="flex gap-4 items-center mb-4 w-full">
+        <PTRCTrackerFilter 
+          onFilterChange={handleFilterChange} 
+        />
         <CustomDateRangePicker onApply={handleDateRangeApply} />
         <Button  
-        variant="solid" 
-        size="sm" 
+          variant="solid" 
+          size="sm" 
           icon={<HiDownload />}
-        onClick={handleDownload}>Download PT RC Data</Button>
+          onClick={handleDownload}
+        >
+          Download PT RC Data
+        </Button>
         <PTRCTrackerBulkUpload onUploadConfirm={handleUploadConfirm} />
       </div>
     </div>

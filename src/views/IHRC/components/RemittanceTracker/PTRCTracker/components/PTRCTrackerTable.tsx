@@ -39,153 +39,153 @@
 // }
 
 // // Dummy data (replace with your actual data source)
-export const dummyData: PTTrackerData[] = [
-  {
-    companyName: 'India Shelter',
-    state: 'Gujarat',
-    ptRCDistrict: 'Ahmedabad',
-    ptRCLocation: 'Navrangpura',
-    stateLocation: 'GUJARAT',
-    locationAddress: '123 Main St, Navrangpura, Ahmedabad, Gujarat 380009',
-    ptRC: 'PRC010512001831',
-    userId: 'sakshamhrservices',
-    password: 'Tonk@304001',
-    frequency: 'Monthly',
-    remittanceMode: 'Online',
-    month: 'Jul-24',
-    noOfEmployees: 34,
-    wages: 660066,
-    pt: 2024,
-    totalAmountPaid: 660000,
-    differenceInAmount: 66,
-    differenceReason: 'Rounding error',
-    receiptNo: '1275383',
-    dueDate: '15-Aug-24',
-    dateOfPayment: '20-Aug-24',
-    remarks: 'Paid with delay due to technical issues',
-    delay: "5 Days",
-    delayReason: "Server Error",
-    challan: 'Challan_IndiaShelter_Jul2024.pdf',
-    payment: 'Payment_IndiaShelter_Jul2024.pdf',
-    ret: 'Return_IndiaShelter_Jul2024.pdf'
-  },
-  {
-    companyName: 'Tech Solutions',
-    state: 'Maharashtra',
-    ptRCDistrict: 'Mumbai Suburban',
-    ptRCLocation: 'Andheri',
-    stateLocation: 'MAHARASHTRA',
-    locationAddress: '456 Tech Park, Andheri East, Mumbai 400093',
-    ptRC: 'PRC020613002942',
-    userId: 'techsolutionshr',
-    password: 'Mumbai@2024',
-    frequency: 'Half Yearly',
-    remittanceMode: 'Online',
-    month: 'Jun-24',
-    noOfEmployees: 120,
-    wages: 3500000,
-    pt: 7500,
-    totalAmountPaid: 7500,
-    differenceInAmount: 0,
-    differenceReason: '',
-    receiptNo: '2468101',
-    dueDate: '30-Jun-24',
-    dateOfPayment: '28-Jun-24',
-    remarks: 'Paid on time',
-    delay: "",
-    delayReason: "",
-    challan: 'Challan_TechSolution_Jun2024.pdf',
-    payment: 'Payment_TechSolution_Jun2024.pdf',
-    ret: 'Return_TechSolution_Jun2024.pdf'
-  },
-  {
-    companyName: 'Green Energy Ltd',
-    state: 'Tamil Nadu',
-    ptRCDistrict: 'Chennai',
-    ptRCLocation: 'Anna Nagar',
-    stateLocation: 'TAMIL NADU',
-    locationAddress: '789 Eco Building, Anna Nagar, Chennai 600040',
-    ptRC: 'PRC030714003053',
-    userId: 'greenenergytax',
-    password: 'Chennai@2024',
-    frequency: 'Monthly',
-    remittanceMode: 'Offline',
-    month: 'Aug-24',
-    noOfEmployees: 67,
-    wages: 1200000,
-    pt: 3500,
-    totalAmountPaid: 3400,
-    differenceInAmount: 100,
-    differenceReason: 'Calculation error',
-    receiptNo: '3579246',
-    dueDate: '15-Sep-24',
-    dateOfPayment: '14-Sep-24',
-    remarks: 'Difference to be adjusted next month',
-    delay: "",
-    delayReason: "",
-    challan: 'Challan_Green_Energy_Ltd__Aug2024.pdf',
-    payment: 'Payment_Green_Energy_Ltd__Aug2024.pdf',
-    ret: ''
-  },
-  {
-    companyName: 'Innovate Systems',
-    state: 'Karnataka',
-    ptRCDistrict: 'Bengaluru Urban',
-    ptRCLocation: 'Whitefield',
-    stateLocation: 'KARNATAKA',
-    locationAddress: '101 Tech Valley, Whitefield, Bengaluru 560066',
-    ptRC: 'PRC040815004164',
-    userId: 'innovatesyshr',
-    password: 'Bangalore@2024',
-    frequency: 'Monthly',
-    remittanceMode: 'Online',
-    month: 'Sep-24',
-    noOfEmployees: 89,
-    wages: 2800000,
-    pt: 6000,
-    totalAmountPaid: 6000,
-    differenceInAmount: 0,
-    differenceReason: '',
-    receiptNo: '4681012',
-    dueDate: '15-Oct-24',
-    dateOfPayment: '10-Oct-24',
-    remarks: 'Paid early',
-    delay: "",
-    delayReason: "",
-    challan: 'Challan_Innovate_Systems_Sep2024.pdf',
-    payment: 'Payment_Innovate_Systems_Sep2024.pdf',
-    ret: 'Return_Innovate_Systems_Sep2024.pdf'
-  },
-  {
-    companyName: 'Global Logistics',
-    state: 'West Bengal',
-    ptRCDistrict: 'Kolkata',
-    ptRCLocation: 'Howrah',
-    stateLocation: 'WEST BENGAL',
-    locationAddress: '222 Port Road, Howrah, Kolkata 711101',
-    ptRC: 'PRC050916005275',
-    userId: 'globallogisticsfinance',
-    password: 'Kolkata@2024',
-    frequency: 'Half Yearly',
-    remittanceMode: 'Online',
-    month: 'Oct-24',
-    noOfEmployees: 145,
-    wages: 4000000,
-    pt: 9000,
-    totalAmountPaid: 8800,
-    differenceInAmount: 200,
-    differenceReason: 'New joinees not included',
-    receiptNo: '5792468',
-    dueDate: '31-Oct-24',
-    dateOfPayment: '05-Nov-24',
-    remarks: 'Paid with delay, difference to be paid separately',
-    delay: "5 Days",
-    delayReason: "Administrative delay",
-    challan: 'Challan_Global_Logistics_Oct2024.pdf',
-    payment: '',
-    ret: 'Return_Global_Logistics_Oct2024.pdf'
-  }
-];
+// export const dummyData: PTTrackerData[] = [
+//   {
+//     companyName: 'India Shelter',
+//     state: 'Gujarat',
+//     ptRCDistrict: 'Ahmedabad',
+//     ptRCLocation: 'Navrangpura',
+//     stateLocation: 'GUJARAT',
+//     locationAddress: '123 Main St, Navrangpura, Ahmedabad, Gujarat 380009',
+//     ptRC: 'PRC010512001831',
+//     userId: 'sakshamhrservices',
+//     password: 'Tonk@304001',
+//     frequency: 'Monthly',
+//     remittanceMode: 'Online',
+//     month: 'Jul-24',
+//     noOfEmployees: 34,
+//     wages: 660066,
+//     pt: 2024,
+//     totalAmountPaid: 660000,
+//     differenceInAmount: 66,
+//     differenceReason: 'Rounding error',
+//     receiptNo: '1275383',
+//     dueDate: '15-Aug-24',
+//     dateOfPayment: '20-Aug-24',
+//     remarks: 'Paid with delay due to technical issues',
+//     delay: "5 Days",
+//     delayReason: "Server Error",
+//     challan: 'Challan_IndiaShelter_Jul2024.pdf',
+//     payment: 'Payment_IndiaShelter_Jul2024.pdf',
+//     ret: 'Return_IndiaShelter_Jul2024.pdf'
+//   },
+//   {
+//     companyName: 'Tech Solutions',
+//     state: 'Maharashtra',
+//     ptRCDistrict: 'Mumbai Suburban',
+//     ptRCLocation: 'Andheri',
+//     stateLocation: 'MAHARASHTRA',
+//     locationAddress: '456 Tech Park, Andheri East, Mumbai 400093',
+//     ptRC: 'PRC020613002942',
+//     userId: 'techsolutionshr',
+//     password: 'Mumbai@2024',
+//     frequency: 'Half Yearly',
+//     remittanceMode: 'Online',
+//     month: 'Jun-24',
+//     noOfEmployees: 120,
+//     wages: 3500000,
+//     pt: 7500,
+//     totalAmountPaid: 7500,
+//     differenceInAmount: 0,
+//     differenceReason: '',
+//     receiptNo: '2468101',
+//     dueDate: '30-Jun-24',
+//     dateOfPayment: '28-Jun-24',
+//     remarks: 'Paid on time',
+//     delay: "",
+//     delayReason: "",
+//     challan: 'Challan_TechSolution_Jun2024.pdf',
+//     payment: 'Payment_TechSolution_Jun2024.pdf',
+//     ret: 'Return_TechSolution_Jun2024.pdf'
+//   },
+//   {
+//     companyName: 'Green Energy Ltd',
+//     state: 'Tamil Nadu',
+//     ptRCDistrict: 'Chennai',
+//     ptRCLocation: 'Anna Nagar',
+//     stateLocation: 'TAMIL NADU',
+//     locationAddress: '789 Eco Building, Anna Nagar, Chennai 600040',
+//     ptRC: 'PRC030714003053',
+//     userId: 'greenenergytax',
+//     password: 'Chennai@2024',
+//     frequency: 'Monthly',
+//     remittanceMode: 'Offline',
+//     month: 'Aug-24',
+//     noOfEmployees: 67,
+//     wages: 1200000,
+//     pt: 3500,
+//     totalAmountPaid: 3400,
+//     differenceInAmount: 100,
+//     differenceReason: 'Calculation error',
+//     receiptNo: '3579246',
+//     dueDate: '15-Sep-24',
+//     dateOfPayment: '14-Sep-24',
+//     remarks: 'Difference to be adjusted next month',
+//     delay: "",
+//     delayReason: "",
+//     challan: 'Challan_Green_Energy_Ltd__Aug2024.pdf',
+//     payment: 'Payment_Green_Energy_Ltd__Aug2024.pdf',
+//     ret: ''
+//   },
+//   {
+//     companyName: 'Innovate Systems',
+//     state: 'Karnataka',
+//     ptRCDistrict: 'Bengaluru Urban',
+//     ptRCLocation: 'Whitefield',
+//     stateLocation: 'KARNATAKA',
+//     locationAddress: '101 Tech Valley, Whitefield, Bengaluru 560066',
+//     ptRC: 'PRC040815004164',
+//     userId: 'innovatesyshr',
+//     password: 'Bangalore@2024',
+//     frequency: 'Monthly',
+//     remittanceMode: 'Online',
+//     month: 'Sep-24',
+//     noOfEmployees: 89,
+//     wages: 2800000,
+//     pt: 6000,
+//     totalAmountPaid: 6000,
+//     differenceInAmount: 0,
+//     differenceReason: '',
+//     receiptNo: '4681012',
+//     dueDate: '15-Oct-24',
+//     dateOfPayment: '10-Oct-24',
+//     remarks: 'Paid early',
+//     delay: "",
+//     delayReason: "",
+//     challan: 'Challan_Innovate_Systems_Sep2024.pdf',
+//     payment: 'Payment_Innovate_Systems_Sep2024.pdf',
+//     ret: 'Return_Innovate_Systems_Sep2024.pdf'
+//   },
+//   {
+//     companyName: 'Global Logistics',
+//     state: 'West Bengal',
+//     ptRCDistrict: 'Kolkata',
+//     ptRCLocation: 'Howrah',
+//     stateLocation: 'WEST BENGAL',
+//     locationAddress: '222 Port Road, Howrah, Kolkata 711101',
+//     ptRC: 'PRC050916005275',
+//     userId: 'globallogisticsfinance',
+//     password: 'Kolkata@2024',
+//     frequency: 'Half Yearly',
+//     remittanceMode: 'Online',
+//     month: 'Oct-24',
+//     noOfEmployees: 145,
+//     wages: 4000000,
+//     pt: 9000,
+//     totalAmountPaid: 8800,
+//     differenceInAmount: 200,
+//     differenceReason: 'New joinees not included',
+//     receiptNo: '5792468',
+//     dueDate: '31-Oct-24',
+//     dateOfPayment: '05-Nov-24',
+//     remarks: 'Paid with delay, difference to be paid separately',
+//     delay: "5 Days",
+//     delayReason: "Administrative delay",
+//     challan: 'Challan_Global_Logistics_Oct2024.pdf',
+//     payment: '',
+//     ret: 'Return_Global_Logistics_Oct2024.pdf'
+//   }
+// ];
 
 // const PTRCTrackerTable: React.FC = () => {
 //   const [data, setData] = useState<PTTrackerData[]>(dummyData);
@@ -442,6 +442,9 @@ import PTTrackerEditDialog from './PTRCTrackerEditDialog';
 import ConfigDropdown from './ConfigDropdown';
 import { PTTrackerData } from '@/@types/PTTracker';
 import dayjs from 'dayjs';
+import loadingAnimation from '@/assets/lotties/system-regular-716-spinner-three-dots-loop-scale.json'
+import Lottie from 'lottie-react';
+import { HiOutlineViewGrid } from 'react-icons/hi';
 
 interface PTTrackerTableProps {
   dataSent: PTTrackerData[];
@@ -706,26 +709,54 @@ const PTRCTrackerTable: React.FC<PTTrackerTableProps> = ({
     ],
     [onRefresh]
   );
+ if (loading) {
+        console.log("Loading....................");
+        
+        return (
+            <div className="flex flex-col items-center justify-center h-96 text-gray-500  rounded-xl">
+                <div className="w-28 h-28">
+                    <Lottie 
+                        animationData={loadingAnimation} 
+                        loop 
+                        className="w-24 h-24"
+                    />
+                </div>
+                <p className="text-lg font-semibold">
+                    Loading Data...
+                </p>
+
+            </div>
+        );
+    }
 
   return (
     <div className="relative">
-      <DataTable
-        columns={columns}
-        data={dataSent}
-        loading={loading}
-        skeletonAvatarColumns={[0]}
-        skeletonAvatarProps={{ className: 'rounded-md' }}
-        stickyHeader={true}
-        stickyFirstColumn={true}
-        stickyLastColumn={true}
-        pagingData={{
-          total: pagination.total,
-          pageIndex: pagination.pageIndex,
-          pageSize: pagination.pageSize,
-        }}
-        onPaginationChange={onPaginationChange}
-        onSelectChange={onPageSizeChange}
-      />
+      {dataSent.length === 0 ? (
+        <div className="flex flex-col items-center justify-center h-96 text-gray-500 border rounded-xl">
+          <HiOutlineViewGrid className="w-12 h-12 mb-4 text-gray-300" />
+          <p className="text-center">
+            No Data Available
+          </p>
+        </div>
+      ) : (
+        <DataTable
+          columns={columns}
+          data={dataSent}
+          loading={loading}
+          skeletonAvatarColumns={[0]}
+          skeletonAvatarProps={{ className: 'rounded-md' }}
+          stickyHeader={true}
+          stickyFirstColumn={true}
+          stickyLastColumn={true}
+          pagingData={{
+            total: pagination.total,
+            pageIndex: pagination.pageIndex,
+            pageSize: pagination.pageSize,
+          }}
+          onPaginationChange={onPaginationChange}
+          onSelectChange={onPageSizeChange}
+        />
+      )}
       {editingData && (
         <PTTrackerEditDialog
           isOpen={editDialogOpen}
