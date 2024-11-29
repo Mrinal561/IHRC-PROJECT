@@ -10,6 +10,7 @@ import httpClient from '@/api/http-client';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/store';
 import { createCompany } from '@/store/slices/company/companySlice';
+import Bu from './Bu';
 
 interface CompanyToolProps {
   onDataChange: () => void;
@@ -103,6 +104,7 @@ const CompanyNameTool: React.FC<CompanyToolProps> = ({ onDataChange }) => {
   return (
     <div className="flex gap-3 items-center">
       <Filter />
+      <Bu />
       <Button
         size="sm"
         icon={<HiPlusCircle />}

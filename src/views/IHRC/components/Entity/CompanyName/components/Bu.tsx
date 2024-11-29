@@ -6,7 +6,7 @@ import { endpoints } from '@/api/endpoint';
 
 const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
-const Bu = () => {
+const Bu = ({isLoading}) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [remark, setRemark] = useState('');
   const [file, setFile] = useState(null);
@@ -35,7 +35,7 @@ const Bu = () => {
       formData.append('remark', remark);
       
       const res = await httpClient.post(
-        endpoints.branch.bulkCreate(),
+        endpoints.company.bulkCreate(),
         formData,
         {
           headers: {
@@ -55,7 +55,7 @@ const Bu = () => {
         handleCancel();
         
         // Refresh the table data
-        // await refreshTable();
+        // await isLoading();
       }
     } catch (error) {
       toast.push(
@@ -80,7 +80,7 @@ const Bu = () => {
 
   const handleDownload = async () => {
     try {
-      const res = await httpClient.get(endpoints.branch.downloadFormat(), {
+      const res = await httpClient.get(endpoints.company.downloadFormat(), {
         responseType: "blob",
       });
       
@@ -88,7 +88,7 @@ const Bu = () => {
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", "Branch.xlsx");
+      link.setAttribute("download", "Company.xlsx");
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);

@@ -10,6 +10,7 @@ import { fetchCompanies, createCompany } from '@/store/slices/company/companySli
 import { CompanyData } from '@/@types/company';
 import { endpoints } from '@/api/endpoint';
 import httpClient from '@/api/http-client';
+import Bu from './components/Bu';
 
 interface NewCompany {
   name: string;
@@ -154,6 +155,7 @@ const CompanyName = () => {
         </div>
         <div className="flex gap-3 items-center">
           <Filter />
+          <Bu isLoading={isLoading}/>
           <Button
             size="sm"
             icon={<HiPlusCircle />}
