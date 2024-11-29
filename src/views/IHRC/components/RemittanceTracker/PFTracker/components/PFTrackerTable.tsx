@@ -194,12 +194,12 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> =({
         cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
       },
       {
-        header: 'Month',
+        header: 'Payroll Month',
         accessorKey: 'payroll_month',
         cell: (props) => {
           const date = new Date(props.getValue() as string);
           return (
-            <div className="w-28 truncate">
+            <div className="w-32 truncate">
               {date.toLocaleString('default', { month: 'long', year: 'numeric' })}
             </div>
           );

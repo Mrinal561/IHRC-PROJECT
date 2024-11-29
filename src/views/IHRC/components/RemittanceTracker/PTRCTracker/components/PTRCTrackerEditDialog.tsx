@@ -79,7 +79,7 @@ const PTRCTrackerEditDialog: React.FC<PTTrackerEditDialogProps> = ({
             <label>No. of Employees</label>
             <OutlinedInput
               label="No. of Employees"
-              value={editedData.noOfEmployees.toString()}
+              value={editedData.noOfEmployees }
               onChange={(value) => handleChange('noOfEmployees', parseInt(value, 10))}
             />
           </div>
@@ -98,7 +98,7 @@ const PTRCTrackerEditDialog: React.FC<PTTrackerEditDialogProps> = ({
             <label>Wages</label>
             <OutlinedInput
               label="Wages"
-              value={editedData.wages.toString()}
+              value={editedData.wages }
               onChange={(value) => handleChange('wages', parseFloat(value))}
             />
           </div>
@@ -106,7 +106,7 @@ const PTRCTrackerEditDialog: React.FC<PTTrackerEditDialogProps> = ({
             <label>Total Amount Paid</label>
             <OutlinedInput
               label="Total Amount Paid"
-              value={editedData.totalAmountPaid.toString()}
+              value={editedData.totalAmountPaid }
               onChange={(value) => handleChange('totalAmountPaid', parseFloat(value))}
             />
           </div>
@@ -114,7 +114,7 @@ const PTRCTrackerEditDialog: React.FC<PTTrackerEditDialogProps> = ({
             <label>Difference in Amount</label>
             <OutlinedInput
               label="Difference in Amount"
-              value={editedData.differenceInAmount.toString()}
+              value={editedData.differenceInAmount }
               onChange={(value) => handleChange('differenceInAmount', parseFloat(value))}
             />
           </div>

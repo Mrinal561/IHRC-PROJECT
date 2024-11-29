@@ -362,11 +362,15 @@ interface PTSetupData {
     mobile: string    // Changed from mobile_no to mobile and type to string
     ec_certificate: string
     rc_certificate: string
+    ptec_frequency: string
+   ptrc_frequency: string
 }
 
 interface SelectOption {
     value: string
     label: string
+    ptec_frequency?: string
+    ptrc_frequency?: string
 }
 
 const PTSetupPage = () => {
@@ -390,7 +394,9 @@ const PTSetupPage = () => {
         email: '',
         mobile: '',
         ec_certificate: '',
-        rc_certificate: ''
+        rc_certificate: '',
+         ptec_frequency: '',
+        ptrc_frequency: ''
     })
 
     // State for select options
@@ -467,40 +473,113 @@ const PTSetupPage = () => {
     }
 
     // Load states
-    const loadStates = async () => {
-        try {
-            const response = await httpClient.get(endpoints.common.state())
-            if (response.data) {
-                const formattedStates = response.data.map((state: any) => ({
+//     const loadStates = async () => {
+//         try {
+//             const response = await httpClient.get(endpoints.common.state())
+//             if (response.data) {
+//                 const formattedStates = response.data.map((state: any) => ({
+//                     label: state.name,
+//                     value: String(state.id)
+//                 }))
+//                 setStates(formattedStates)
+//             }
+//         } catch (error) {
+//             console.error('Failed to load states:', error)
+//             toast.push(
+//                 <Notification title="Error" type="danger">
+//                     Failed to load states
+//                 </Notification>
+//             )
+//         }
+    //   }
+    
+//     const loadStates = async () => {
+//     try {
+//         const response = await httpClient.get(endpoints.common.state())
+//         if (response.data) {
+//             const formattedStates = response.data
+//                 .filter((state: any) => state.ptrc_active && state.ptec_active)
+//                 .map((state: any) => ({
+//                     label: state.name,
+//                     value: String(state.id)
+//                 }))
+//             setStates(formattedStates)
+//             // console.log("states",states)
+//         }
+//     } catch (error) {
+//         console.error('Failed to load states:', error)
+//         toast.push(
+//             <Notification title="Error" type="danger">
+//                 Failed to load states
+//             </Notification>
+//         )
+//     }
+    // }
+    
+const loadStates = async () => {
+    try {
+        const response = await httpClient.get(endpoints.common.state())
+        if (response.data) {
+            const formattedStates = response.data
+                .filter((state: any) => state.ptrc_active && state.ptec_active)
+                .map((state: any) => ({
                     label: state.name,
-                    value: String(state.id)
+                    value: String(state.id),
+                    // Preserve additional state details
+                    ptec_frequency: state.ptec_frequency,
+                    ptrc_frequency: state.ptrc_frequency
                 }))
-                setStates(formattedStates)
-            }
-        } catch (error) {
-            console.error('Failed to load states:', error)
-            toast.push(
-                <Notification title="Error" type="danger">
-                    Failed to load states
-                </Notification>
-            )
+            setStates(formattedStates)
         }
-  }
-  const handleStateChange = (option: SelectOption | null) => {
-        setSelectedState(option);
-        setSelectedDistrict({ id: null, name: '' }); // Reset district selection
-        setSelectedLocation(''); // Reset location selection
+    } catch (error) {
+        console.error('Failed to load states:', error)
+        toast.push(
+            <Notification title="Error" type="danger">
+                Failed to load states
+            </Notification>
+        )
+    }
+}
+
+//   const handleStateChange = (option: SelectOption | null) => {
+//         setSelectedState(option);
+//         setSelectedDistrict({ id: null, name: '' }); // Reset district selection
+//         setSelectedLocation(''); // Reset location selection
         
-        if (option) {
-            setPtSetupData(prev => ({
-                ...prev,
-                state_id: parseInt(option.value),
-                district: '', // Reset district in form data
-                location: ''
-            }));
-        }
-    };
+//         if (option) {
+//             setPtSetupData(prev => ({
+//                 ...prev,
+//                 state_id: parseInt(option.value),
+//                 district: '', // Reset district in form data
+//                 location: ''
+//             }));
+//         }
+//     };
   
+    
+    const handleStateChange = (option: SelectOption | null) => {
+    setSelectedState(option);
+    setSelectedDistrict({ id: null, name: '' }); // Reset district selection
+    setSelectedLocation(''); // Reset location selection
+    
+    if (option) {
+        // Find the state details from the existing states array
+        const selectedStateDetails = states.find(
+            state => state.value === option.value
+        );
+
+        setPtSetupData(prev => ({
+            ...prev,
+            state_id: parseInt(option.value),
+            district: '', 
+            location: '',
+            ptec_frequency: selectedStateDetails?.ptec_frequency || '',
+            ptrc_frequency: selectedStateDetails?.ptrc_frequency || ''
+        }));
+    }
+};
+    
+    
       const handleDistrictSelect = (district: { id: number | null; name: string }) => {
         setSelectedDistrict(district);
         setPtSetupData(prev => ({
@@ -731,7 +810,28 @@ const PTSetupPage = () => {
                         />
                     </div>
                 </div>
-
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+        <p className="mb-2">PTEC Frequency</p>
+        <OutlinedInput
+            label="PTEC Frequency"
+            value={ptSetupData.ptec_frequency || '--'}
+             onChange={function (value: string): void {
+                                    throw new Error('Function not implemented.')
+                                } }  
+        />
+    </div>
+    <div>
+        <p className="mb-2">PTRC Frequency</p>
+        <OutlinedInput
+            label="PTRC Frequency"
+            value={ptSetupData.ptrc_frequency || '--'}
+             onChange={function (value: string): void {
+                                    throw new Error('Function not implemented.')
+                                } }  
+        />
+    </div>
+</div>
                 {/* User Details */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>

@@ -372,16 +372,16 @@ const PFIWTrackerTable: React.FC<PFIWTrackerTableProps> =({
         cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
       },
       {
-        header: 'Month',
-        accessorKey: 'month',
+        header: 'Payroll month',
+        accessorKey: 'payroll_month',
         cell: (props) => {
-          const date = dayjs(props.getValue() as string);
+          const date = new Date(props.getValue() as string);
           return (
-            <div className="w-28 truncate">
-              {date.format('MMM-YY')}
+            <div className="w-32 truncate">
+              {date.toLocaleString('default', { month: 'long', year: 'numeric' })}
             </div>
           );
-        },
+        }
       },
       {
         header: 'Due Date',
