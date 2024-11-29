@@ -8,7 +8,15 @@ import Bu from './Bu';
 import Filter from './Filter';
 import Company from '../../../Home/components/Company';
 
-const BranchTool: React.FC = () => {
+
+interface BranchToolProps {
+  onTableRefresh?: () => void;
+}
+
+
+
+
+const BranchTool: React.FC<BranchToolProps> = ({ onTableRefresh }) => {
   const navigate = useNavigate();
 
   const handleAddBranch = () => {
@@ -19,7 +27,7 @@ const BranchTool: React.FC = () => {
     <div className='flex gap-2 items-center w-full'>
       {/* <Company/> */}
       <div>
-      <Bu/>
+      <Bu onUploadSuccess={onTableRefresh} />
       </div>
       <Button variant="solid" onClick={handleAddBranch} icon={<HiPlusCircle />} size="sm">
         Add Branch

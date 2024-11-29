@@ -147,6 +147,9 @@ const CompanyName = () => {
     setCompanyName('');
   };
 
+
+  
+
   return (
     <AdaptableCard className="h-full" bodyClass="h-full">
       <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-10">
@@ -155,7 +158,7 @@ const CompanyName = () => {
         </div>
         <div className="flex gap-3 items-center">
           <Filter />
-          <Bu isLoading={isLoading}/>
+          <Bu onUploadSuccess={handleDataChange} />
           <Button
             size="sm"
             icon={<HiPlusCircle />}

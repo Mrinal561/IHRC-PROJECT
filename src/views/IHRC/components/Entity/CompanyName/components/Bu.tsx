@@ -6,7 +6,15 @@ import { endpoints } from '@/api/endpoint';
 
 const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
-const Bu = ({isLoading}) => {
+
+
+interface BuProps {
+  onUploadSuccess?: () => void;
+}
+
+
+
+const Bu: React.FC<BuProps> = ({ onUploadSuccess }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [remark, setRemark] = useState('');
   const [file, setFile] = useState(null);
@@ -56,6 +64,10 @@ const Bu = ({isLoading}) => {
         
         // Refresh the table data
         // await isLoading();
+
+        if (onUploadSuccess) {
+          onUploadSuccess();
+        }
       }
     } catch (error) {
       toast.push(

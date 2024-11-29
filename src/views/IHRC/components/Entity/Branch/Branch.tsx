@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import AdaptableCard from '@/components/shared/AdaptableCard';
 import BranchTool from './components/BranchTool';
 import { EntityData } from '@/views/IHRC/store/dummyEntityData';
@@ -24,6 +24,22 @@ const Branch = () => {
   const [selectedDistrict, setSelectedDistrict] = useState<SelectOption | null>(null);
   const [selectedLocation, setSelectedLocation] = useState<SelectOption | null>(null);
 
+
+  const tableRefreshRef = useRef<(() => void) | null>(null);
+
+  // Method to set the refresh function
+  const setTableRefresh = useCallback((refreshFn: () => void) => {
+    tableRefreshRef.current = refreshFn;
+  }, []);
+
+  // Method to trigger table refresh
+  const handleTableRefresh = () => {
+    if (tableRefreshRef.current) {
+      tableRefreshRef.current();
+    }
+  };
+
+  
   const filterValues = {
     branchId: selectedBranch?.value,
     companyGroupId: selectedCompanyGroup?.value,
@@ -40,7 +56,7 @@ const Branch = () => {
             <div className="mb-4 lg:mb-0 flex justify-between">
               <h3 className="text-2xl font-bold">Branch Manager</h3>
               <div className="flex-shrink-0">
-                <BranchTool />
+              <BranchTool onTableRefresh={handleTableRefresh} />
               </div>
             </div>
             {/* Modified this div to be more flexible */}
@@ -60,7 +76,11 @@ const Branch = () => {
               
             </div>
           </div>
-          <BranchTable filterValues={filterValues}/>
+          {/* <BranchTable filterValues={filterValues}/> */}
+          <BranchTable 
+        filterValues={filterValues} 
+        onRefreshMethodAvailable={setTableRefresh} 
+      />
         </AdaptableCard>
   );
 };

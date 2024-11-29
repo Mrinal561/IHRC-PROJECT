@@ -32,10 +32,15 @@ interface BranchTableProps {
       districtId?: string;
       locationId?: string;
     };
+
+    onRefreshMethodAvailable?: (refreshFn: () => void) => void;
+
   }
 
-  const BranchTable: React.FC<BranchTableProps> = ({ filterValues = {} }) => {
-    const dispatch = useDispatch<AppDispatch>();
+  const BranchTable: React.FC<BranchTableProps> = ({ 
+    filterValues = {}, 
+    onRefreshMethodAvailable 
+}) => {    const dispatch = useDispatch<AppDispatch>();
     const [data, setData] = useState<EntityData[]>(entityDataSet);
     const [dialogIsOpen, setDialogIsOpen] = useState(false);
     const [itemToDelete, setItemToDelete] = useState<number | null>(null);
@@ -293,7 +298,7 @@ interface BranchTableProps {
     // };
 
  
-    const fetchBranchData = async (page: number, size: number) => {
+    const fetchBranchData = async (page: 1, size: 10) => {
         setIsLoading(true);
         try{
         const { data } = await httpClient.get(endpoints.branch.getAll(),{
@@ -327,8 +332,15 @@ interface BranchTableProps {
       }
     }
 
+    // useEffect(() => {
+    //     if (onRefreshMethodAvailable) {
+    //         onRefreshMethodAvailable(fetchBranchData(1, 10));
+    //     }
+    // }, [onRefreshMethodAvailable, fetchBranchData]);
+
     useEffect(() => {
         fetchBranchData(1, 10)
+        
     }, [ filterValues.branchId,
         filterValues.companyGroupId,
         filterValues.companyId,

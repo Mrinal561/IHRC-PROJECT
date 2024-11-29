@@ -4,9 +4,11 @@ import { HiDownload, HiUpload } from 'react-icons/hi';
 import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
 
-const documentPath = "../store/AllMappedCompliancesDetails.xls";
+interface BuProps {
+  onUploadSuccess?: () => void;
+}
 
-const Bu = () => {
+const Bu: React.FC<BuProps> = ({ onUploadSuccess }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [remark, setRemark] = useState('');
   const [file, setFile] = useState(null);
@@ -56,6 +58,10 @@ const Bu = () => {
         
         // Refresh the table data
         // await refreshTable();
+
+        if (onUploadSuccess) {
+          onUploadSuccess();
+        }
       }
     } catch (error) {
       toast.push(
