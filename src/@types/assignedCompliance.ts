@@ -5,6 +5,8 @@ export type ComplianceAssignmentData = {
     owner_id: number | null;
     approver_id: number | null;
     status: boolean;
+    due_date: string;
+    customized_frequency: string;
     created_by: number;
     created_at: string; // ISO date format string
     updated_at: string; // ISO date format string

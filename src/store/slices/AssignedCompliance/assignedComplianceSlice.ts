@@ -61,6 +61,7 @@ export type ApproverOwnerAssignedCompliances = {
     scheduled_frequency: string;
     due_date: string;
     assigned_compliance_id: number[]; 
+    customized_frequency: string;
 }
 
 export interface ComplianceAssignmentState {
@@ -87,15 +88,20 @@ export const fetchAllComplianceAssignments = createAsyncThunk(
     }
 );
 
+
 export const updateApproverOwner = createAsyncThunk(
     'complianceAssignment/updateApproverOwner',
-    async ({ id, data }: { id: string; data: ApproverOwnerAssignedCompliances },{rejectWithValue}) => {
-        try{
+    async ({ id, data }: { id: string; data: ApproverOwnerAssignedCompliances }, { rejectWithValue }) => {
+        try {
+            console.log('Update Payload:', data);
             const response = await httpClient.put(endpoints.assign.update(), data);
+            console.log("Full API Response:", response);
             return response.data;
-        } catch(error:any) {
+        } catch (error: any) {
+            console.error('Full Error Object:', error);
+            console.error('Error Response:', error.response);
             const err = error as AxiosError<any>
-            return rejectWithValue(err.response?.data.message)
+            return rejectWithValue(err.response?.data.message || error.message)
         }
     }
 );

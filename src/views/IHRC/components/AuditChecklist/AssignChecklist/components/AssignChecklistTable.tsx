@@ -81,6 +81,8 @@ interface ComplianceData {
     MasterCompliance: MasterCompliance
     Owner: Owner | null
     Approver: Owner | null
+    customized_frequency: string
+    due_date: string
 }
 
 interface AssignChecklistTableProps {
@@ -165,7 +167,7 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
 
     // Function to handle frequency changes
     const handleCustomizedFrequencyChange = (selectedOption: SelectOption | null) => {
-        setSelectedScheduledFrequency(selectedOption)
+        setSelectedCustomizedFrequency(selectedOption)
 
         // Reset date states
         setFirstDate(null)
@@ -224,25 +226,24 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
 
     const handleEditSave = async () => {
         // Determine the appropriate due date based on frequency
-        let selectedDueDate: Date | null = null;
+        let selectedDueDate: string | null = null;
     
-        switch(selectedScheduledFrequency?.value) {
+        switch(selectedCustomizedFrequency?.value) {
             case 'monthly':
-                selectedDueDate = firstDate;
+                selectedDueDate = firstDate?.toISOString().split('T')[0] || null;
                 break;
             case 'yearly':
-                selectedDueDate = firstDate;
+                selectedDueDate = firstDate?.toISOString().split('T')[0] || null;
                 break;
             case 'half_yearly':
-                selectedDueDate = lastDate;
+                selectedDueDate = lastDate?.toISOString().split('T')[0] || null;
                 break;
             case 'quarterly':
-                selectedDueDate = lastDate;
+                selectedDueDate = lastDate?.toISOString().split('T')[0] || null;
                 break;
             default:
-                selectedDueDate = dueDate;
+                selectedDueDate = null;
         }
-    
         if (
             activeRowId &&
             (selectedOwnerOption !== null || selectedApproverOption !== null) &&
@@ -254,7 +255,8 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
                 owner_id: selectedOwnerOption?.value || 0,
                 approver_id: selectedApproverOption?.value || 0,
                 scheduled_frequency: selectedScheduledFrequency?.value || '',
-                due_date: selectedDueDate.toISOString().split('T')[0], // Format date as YYYY-MM-DD
+                due_date: selectedDueDate,
+                customized_frequency: selectedCustomizedFrequency?. value || '',
             }
     
             setIsUpdating(true)
@@ -289,6 +291,7 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
                     setSelectedOwnerOption(null)
                     setSelectedApproverOption(null)
                     setSelectedScheduledFrequency(null)
+                    setSelectedCustomizedFrequency(null)
                     refreshTable()
                 }
             } catch (error : any) {
@@ -519,12 +522,27 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
             {
                 header: 'Due Date',
                 accessorFn: (row) =>
-                    row.MasterCompliance.default_due_date.last_date,
+                    row.MasterCompliance.default_due_date.first_date,
                 cell: ({ getValue }) => {
                     const date = getValue<string>()
                     return (
                         <div className="w-20">
                             {new Date(date).toLocaleDateString()}
+                        </div>
+                    )
+                },
+            },
+            {
+                header: 'Customized Due Date',
+                accessorKey: 'due_date',
+                cell: (props) => {
+                    const value = props.getValue<string | null>()
+
+                    return (
+                        <div className="w-52">
+                            <div className="w-52">
+    {value ? new Date(value).toLocaleDateString() : '--'}
+</div>
                         </div>
                     )
                 },
