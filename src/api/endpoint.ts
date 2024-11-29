@@ -22,6 +22,8 @@ export const endpoints = {
         create: () => api('companyadmin/company'),
         update: (id: string) => api(`companyadmin/company/${id}`),
         delete: (id: string) => api(`companyadmin/company/${id}`),
+        downloadFormat: () => api(`upload/sample_files/company.xlsx`),
+        bulkCreate: () => api(`/companyadmin/company/bulk-upload`)
     },
     common:{
             getAll: ()=> api('/company-group'),
@@ -55,6 +57,8 @@ export const endpoints = {
         create: () => api('companyadmin/branch'),
         update: (id: string) =>  api(`companyadmin/branch/${id}`),
         delete: (id: string) => api(`companyadmin/branch/${id}`),
+        downloadFormat: () => api(`upload/sample_files/branch.xlsx`),
+        bulkCreate: () => api(`/companyadmin/branch/bulk-upload`)
     },
     role: {
         getAll: () => api('companyadmin/role'),
