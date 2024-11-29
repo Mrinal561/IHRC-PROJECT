@@ -109,12 +109,12 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> =({
                 ),
             },
             {
-                header: 'Month',
+                header: 'Payroll month',
                 accessorKey: 'payroll_month',
                 cell: (props) => {
                     const date = new Date(props.getValue() as string);
                     return (
-                      <div className="w-28 truncate">
+                      <div className="w-32 truncate">
                         {date.toLocaleString('default', { month: 'long', year: 'numeric' })}
                       </div>
                     );
