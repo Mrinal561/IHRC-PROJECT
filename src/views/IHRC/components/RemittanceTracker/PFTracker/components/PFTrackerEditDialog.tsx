@@ -121,7 +121,7 @@ const challanTypeOptions = [
           <div className='w-[219px]'>
           <OutlinedInput
           label="Total Challan Amount"
-          value={editedData.totalChallanAmount.toString()}
+          value={editedData.totalChallanAmount}
           onChange={(value) => handleChange('totalChallanAmount', parseFloat(value))}
         />
             </div>
@@ -180,7 +180,7 @@ const challanTypeOptions = [
             <div className='w-full'>
             <OutlinedInput
           label="No. of Employees"
-          value={editedData.noOfEmployees.toString()}
+          value={editedData.noOfEmployees}
           onChange={(value) => handleChange('noOfEmployees', parseInt(value, 10))}
           />
                 </div>

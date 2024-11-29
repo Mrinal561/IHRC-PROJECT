@@ -75,6 +75,18 @@ const PTECTrackerTable: React.FC<PTTrackerTableProps> = ({
         accessorKey: 'PtSetup.enroll_number',
         cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
       },
+      {
+        header: 'Payroll month',
+        accessorKey: 'period',
+       cell: (props) => {
+                    const date = new Date(props.getValue() as string);
+                    return (
+                      <div className="w-32 truncate">
+                        {date.toLocaleString('default', { month: 'long', year: 'numeric' })}
+                      </div>
+                    );
+                  }
+      },
       // {
       //   header: 'Date of Enrolment',
       //   accessorKey: 'dateOfEnrolment',

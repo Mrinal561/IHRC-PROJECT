@@ -73,7 +73,7 @@ const ESITrackerEditDialog: React.FC<ESITrackerEditDialogProps> = ({
             <div className='w-full'>
               <OutlinedInput
                 label="No. of Employees"
-                value={editedData.noOfEmployees.toString()}
+                value={editedData.noOfEmployees }
                 onChange={(value) => handleChange('noOfEmployees', parseInt(value, 10))}
               />
             </div>
@@ -128,7 +128,7 @@ const ESITrackerEditDialog: React.FC<ESITrackerEditDialogProps> = ({
             <div className='w-[219px]'>
               <OutlinedInput
                 label="ESI Gross Wages"
-                value={editedData.esiGrossWages.toString()}
+                value={editedData.esiGrossWages }
                 onChange={(value) => handleChange('esiGrossWages', parseFloat(value))}
               />
             </div>
@@ -138,7 +138,7 @@ const ESITrackerEditDialog: React.FC<ESITrackerEditDialogProps> = ({
             <div className='w-[219px]'>
               <OutlinedInput
                 label="EE ESI"
-                value={editedData.eeESI.toString()}
+                value={editedData.eeESI }
                 onChange={(value) => handleChange('eeESI', parseFloat(value))}
               />
             </div>
@@ -148,7 +148,7 @@ const ESITrackerEditDialog: React.FC<ESITrackerEditDialogProps> = ({
             <div className='w-[219px]'>
               <OutlinedInput
                 label="Total Amount As per Challan"
-                value={editedData.erESI.toString()}
+                value={editedData.erESI }
                 onChange={(value) => handleChange('erESI', parseFloat(value))}
               />
             </div>
@@ -175,7 +175,7 @@ const ESITrackerEditDialog: React.FC<ESITrackerEditDialogProps> = ({
             <div className='w-full'>
               <OutlinedInput
                 label="Difference In Amount"
-                value={editedData.differenceInAmount.toString()}
+                value={editedData.differenceInAmount }
                 onChange={(value) => handleChange('differenceInAmount', parseFloat(value))}
               />
             </div>
@@ -185,7 +185,7 @@ const ESITrackerEditDialog: React.FC<ESITrackerEditDialogProps> = ({
             <div className='w-[219px]'>
               <OutlinedInput
                 label="Total Amount As per Challan"
-                value={editedData.totalAmountAsPerChallan.toString()}
+                value={editedData.totalAmountAsPerChallan }
                 onChange={(value) => handleChange('totalAmountAsPerChallan', parseFloat(value))}
               />
             </div>

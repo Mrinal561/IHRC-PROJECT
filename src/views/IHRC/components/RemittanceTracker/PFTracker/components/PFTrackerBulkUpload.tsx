@@ -174,7 +174,7 @@ const PFTrackerBulkUpload: React.FC<PFTrackerBulkUploadProps> = ({ onUploadConfi
       >
         <h5 className="mb-4">Upload PF</h5>
         <div className='flex gap-3 w-full items-center'>
-          <p className=''>Select Month:</p>
+          <p className=''>Select Payroll Month:</p>
           <div className='w-40'>
           <OutlinedSelect
             label="Month"

@@ -185,7 +185,7 @@ const ESITrackerBulkUpload: React.FC<ESITrackerBulkUploadProps> = ({ onUploadCon
       >
         <h5 className="mb-4">Upload ESI</h5>
         <div className='flex gap-3 w-full items-center mb-4'>
-          <p className=''>Select Month:</p>
+          <p className=''>Select Payroll Month:</p>
           <div className='w-40'>
           <OutlinedSelect
             label="Month"
