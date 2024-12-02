@@ -498,10 +498,13 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
       const response = await httpClient.get(endpoints.common.state());
       
       if (response.data) {
-        const formattedStates = response.data.map((state: any) => ({
-          label: state.name,
-          value: String(state.id)
-        }));
+        const formattedStates = response.data .filter((state: any) => state.lwf_active)
+                .map((state: any) => ({
+                    label: state.name,
+                    value: String(state.id),
+                    // Preserve additional state details
+                    lwf_active: state.lwf_active
+                }))
         setStates(formattedStates);
       }
     } catch (error) {

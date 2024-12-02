@@ -340,6 +340,7 @@ const RecommendedList = () => {
 
     const handleSelectedCompliancesChange = (selectedIds: number[]) => {
         setSelectedComplianceIds(selectedIds);
+        console.log(selectedComplianceIds)
     };
 
     const handleAssignSuccess = () => {

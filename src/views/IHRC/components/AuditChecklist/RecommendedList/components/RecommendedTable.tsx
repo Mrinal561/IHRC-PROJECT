@@ -71,7 +71,8 @@ const ViewDetailsButton = ({
     districtValue,
     onAssignSuccess,
     // onTableRerender,
-    setIstableLoading
+    setIstableLoading,
+    clearCheckboxes
 }: {
     compliance: ComplianceData;
     branchValue?: string;
@@ -83,6 +84,7 @@ const ViewDetailsButton = ({
     onAssignSuccess: (complianceId: number) => void;
     // onTableRerender: () => void;
     setIstableLoading: () => void
+    clearCheckboxes: () => void;
 }) => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -182,6 +184,7 @@ const ViewDetailsButton = ({
             if(response){
  
                 onAssignSuccess(compliance.id);
+                  clearCheckboxes(); 
                 toast.push(
                     <Notification title="Success" type="success">
                     Assigned Successfully
@@ -249,6 +252,8 @@ const RecommendedTable = ({
     })
  
     useEffect(() => {
+        setSelectedItems(new Set());
+        onSelectedCompliancesChange([]);
         setInitialLoadComplete(true)
         setTableData(prev => ({
             ...prev,
@@ -256,6 +261,11 @@ const RecommendedTable = ({
         }))
     }, [data])
  
+
+        const clearCheckboxes = () => {
+        setSelectedItems(new Set());
+        onSelectedCompliancesChange([]);
+    };
     const isAllSelected = useMemo(() => {
         if (data.length === 0) return false;
         return selectedItems.size === data.length;
@@ -437,6 +447,7 @@ const RecommendedTable = ({
                             onAssignSuccess={handleAssignSuccess}
                             // onTableRerender={IstableLoading}
                             setIstableLoading={setIstableLoading}
+                            clearCheckboxes={clearCheckboxes} 
                         />
                     </div>
                 ),
