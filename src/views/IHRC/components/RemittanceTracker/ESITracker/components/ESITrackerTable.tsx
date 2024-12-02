@@ -16,6 +16,7 @@ interface EsiTrackerTableProps {
     dataSent: PfChallanData[];
     loading: boolean
     onRefresh?: () => void;
+  companyName: string;
      pagination: {
     total: number;
     pageIndex: number;
@@ -31,7 +32,8 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> =({
   onRefresh,
   pagination,
   onPaginationChange,
-  onPageSizeChange
+    onPageSizeChange,
+  companyName
 }) => {
     // const [data, setData] = useState<ESITrackerData[]>(sampleData);
     const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -362,14 +364,21 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> =({
 
     return (
         <div className="relative">
-            {dataSent.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-96 text-gray-500 border rounded-xl">
-                    <HiOutlineViewGrid className="w-12 h-12 mb-4 text-gray-300" />
-                    <p className="text-center">
-                        No Data Available
-                    </p>
-                </div>
-            ) : (
+              {!companyName ? (
+        <div className="flex flex-col items-center justify-center h-96 text-gray-500 border rounded-xl">
+          <HiOutlineViewGrid className="w-12 h-12 mb-4 text-gray-300" />
+          <p className="text-center">
+            Please select a company first to view data
+          </p>
+        </div>
+      ) : dataSent.length === 0 ? (
+        <div className="flex flex-col items-center justify-center h-96 text-gray-500 border rounded-xl">
+          <HiOutlineViewGrid className="w-12 h-12 mb-4 text-gray-300" />
+          <p className="text-center">
+            No data available for {companyName}
+          </p>
+        </div>
+      ) : (
                 <DataTable
                     columns={columns}
                     data={dataSent}

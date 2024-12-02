@@ -373,6 +373,7 @@ const ESITracker: React.FC = () => {
             <ESITrackerTable
                 loading={isLoading}
                 dataSent={data}
+                companyName={filters.companyName} 
                 onRefresh={refreshEsiTrackerData}
                 pagination={pagination}
                 onPaginationChange={handlePaginationChange}

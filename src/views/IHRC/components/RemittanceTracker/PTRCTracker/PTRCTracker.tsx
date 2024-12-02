@@ -143,6 +143,7 @@ const PTRCTracker: React.FC = () => {
             <PTRCTrackerTable
                 dataSent={data}
                 loading={isLoading}
+                companyName={filters.companyName} 
                 onRefresh={() =>
                     fetchPtrcTrackerData(
                         pagination.pageIndex,

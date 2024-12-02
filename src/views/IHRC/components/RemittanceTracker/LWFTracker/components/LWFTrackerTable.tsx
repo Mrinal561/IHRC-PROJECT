@@ -577,6 +577,7 @@ export interface LWFTrackerData {
 interface LWFTrackerTableProps {
   dataSent: LWFTrackerData[];
   loading?: boolean;
+  companyName: string;
   onRefresh?: () => void;
     pagination: {
     total: number;
@@ -593,7 +594,8 @@ const LWFTrackerTable: React.FC<LWFTrackerTableProps> = ({
   onRefresh,
    pagination,
   onPaginationChange,
-  onPageSizeChange
+  onPageSizeChange,
+  companyName
 }) => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editingData, setEditingData] = useState<LWFTrackerData | null>(null);
@@ -800,11 +802,18 @@ if (loading) {
 
   return (
     <div className="relative">
-      {dataSent.length === 0 ? (
+      {!companyName ? (
         <div className="flex flex-col items-center justify-center h-96 text-gray-500 border rounded-xl">
           <HiOutlineViewGrid className="w-12 h-12 mb-4 text-gray-300" />
           <p className="text-center">
-            No Data Available
+            Please select a company first to view data
+          </p>
+        </div>
+      ) : dataSent.length === 0 ? (
+        <div className="flex flex-col items-center justify-center h-96 text-gray-500 border rounded-xl">
+          <HiOutlineViewGrid className="w-12 h-12 mb-4 text-gray-300" />
+          <p className="text-center">
+            No data available for {companyName}
           </p>
         </div>
       ) : (
