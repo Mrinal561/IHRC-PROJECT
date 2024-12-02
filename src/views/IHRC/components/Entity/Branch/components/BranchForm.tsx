@@ -86,7 +86,7 @@ const [fileBase64, setFileBase64] = useState<string>('');
   const [leaseValidityType, setLeaseValidityType] = useState<'fixed' | 'lifetime'>('fixed');
   const [leaseValidityDate, setLeaseValidityDate] = useState<Date | null>(null);
   const [leaseDocument, setLeaseDocument] = useState<File | null>(null);
-
+const [seRegistrationNumberExists, setSeRegistrationNumberExists] = useState('no');
 
 
   const [formData, setFormData] = useState<BranchFormData>({
@@ -134,9 +134,8 @@ const [fileBase64, setFileBase64] = useState<string>('');
     { value: 'rented', label: 'Rented' },
     { value: 'owned', label: 'Owned' },
   ];
-
   const officeTypeOption = [
-    { value: 'register_office', label: 'Register Office' },
+    { value: 'register_offie', label: 'Register Office' },
     { value: 'coorporate_office', label: 'Coorporate Office' },
     { value: 'regional_office', label: 'Regional Office' },
     { value: 'branch', label: 'Branch Office' },
@@ -149,6 +148,7 @@ const [fileBase64, setFileBase64] = useState<string>('');
     { value: 'lifetime', label: 'Lifetime' }
   ];
 
+  
 
   const handleSeValidityChange = (date: Date | null) => {
     console.log('Current seValidityType:', seValidityType);
@@ -714,7 +714,7 @@ const loadCompanies = async (groupId: string[] | number[]) => {
 
             
 
-              {formData.type === 'owned' && (
+              {/* {formData.type === 'owned' && (
                   <div className="border rounded-md py-4 p-2 mt-4">
                       <div className="flex flex-col gap-8">
                         <div className='flex justify-between'>
@@ -779,7 +779,93 @@ const loadCompanies = async (groupId: string[] | number[]) => {
                       </div>
                   </div>
       
-              )}
+              )} */}
+        
+        {formData.type === 'owned' && (
+  <div className="border rounded-md py-4 p-2 mt-4">
+    <div className="flex flex-col gap-8">
+      <div className='flex justify-between'>
+        <h4>S&E Setup</h4>
+        {renderDocumentValidityRadio(
+          seValidityType, 
+          setSeValidityType, 
+          handleSeValidityChange,
+          'S&E Validity Type'
+        )}
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+        {/* {seValidityType === 'fixed' && ( */}
+          <div>
+            <p className="mb-2">Does S&E Registration Number already exist?</p>
+            <OutlinedSelect
+              label="Existence of S&E Registration Number"
+              options={[
+                { value: 'yes', label: 'Yes' },
+                { value: 'no', label: 'No' },
+              ]}
+              value={seRegistrationNumberExists === 'yes' ? { value: 'yes', label: 'Yes' } : { value: 'no', label: 'No' }}
+              onChange={(selectedOption: SelectOption | null) => {
+                setSeRegistrationNumberExists(selectedOption?.value || 'no');
+              }}
+            />
+          </div>
+        {/* )} */}
+        
+        {seRegistrationNumberExists === 'yes' && (
+          <div>
+            <p className="mb-2">
+              S&E Registration Number
+              <span className="text-red-500">*</span>
+            </p>
+            <OutlinedInput
+              label="S&E Registration Number"
+              value={formData.register_number}
+              onChange={(value: string) => {
+                setFormData((prev) => ({
+                  ...prev,
+                  register_number: value,
+                }))
+              }}
+            />
+          </div>
+        )}
+        
+        {seValidityType === 'fixed' && (
+          <div>
+            <p className="mb-2">S&E Validity <span className="text-red-500">*</span></p>
+            <DatePicker
+              size="sm"
+              placeholder="Pick a Date"
+              onChange={(date) => {
+                setFormData((prev) => ({
+                  ...prev,
+                  se_validity: date ? format(date, 'yyyy-MM-dd') : '',
+                }))
+              }}
+            />
+          </div>
+        )}
+        
+        <div>
+          <div className="flex flex-col gap-2">
+            <label>
+              Please upload the S&E Registration certificate
+              <span className="text-red-500">*</span>
+            </label>
+            <Input
+              id="file-upload"
+              size='sm'
+              type="file"
+              accept=".pdf"
+              className='py-[5px]'
+              onChange={handleSeDocumentUpload}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
 
 {formData.type === 'rented' && (
   <>
@@ -849,7 +935,22 @@ const loadCompanies = async (groupId: string[] | number[]) => {
             'S&E Validity Type'
           )}
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                   <div>
+            <p className="mb-2">Does S&E Registration Number already exist?</p>
+            <OutlinedSelect
+              label="Existence of S&E Registration Number"
+              options={[
+                { value: 'yes', label: 'Yes' },
+                { value: 'no', label: 'No' },
+              ]}
+              value={seRegistrationNumberExists === 'yes' ? { value: 'yes', label: 'Yes' } : { value: 'no', label: 'No' }}
+              onChange={(selectedOption: SelectOption | null) => {
+                setSeRegistrationNumberExists(selectedOption?.value || 'no');
+              }}
+            />
+                  </div>
+                   {seRegistrationNumberExists === 'yes' && (
           <div>
             <p className="mb-2">
               S&E Registration Number
@@ -865,7 +966,9 @@ const loadCompanies = async (groupId: string[] | number[]) => {
                 }))
               }}
             />
-          </div>
+                    </div>
+                  )}
+                  
           {seValidityType === 'fixed' && (
             <div>
               <p className="mb-2">S&E Validity <span className="text-red-500">*</span></p>
