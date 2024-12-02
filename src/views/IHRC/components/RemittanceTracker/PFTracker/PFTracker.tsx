@@ -192,6 +192,7 @@ const fetchPFTrackerData = useCallback(
             <PFTrackerTable
                 loading={isLoading}
                 dataSent={data}
+                companyName={filters.companyName} 
                 onRefresh={() =>
                     fetchPFTrackerData(
                         pagination.pageIndex,
