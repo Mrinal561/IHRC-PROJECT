@@ -182,6 +182,7 @@ const PFIWTracker: React.FC = () => {
       <PFIWTrackerTable
         loading={isLoading}
                 dataSent={data}
+                code={filters.pfCode}
          companyName={filters.companyName} 
         onRefresh={() => fetchPFIWTrackerData(pagination.pageIndex, pagination.pageSize)}
         pagination={pagination}

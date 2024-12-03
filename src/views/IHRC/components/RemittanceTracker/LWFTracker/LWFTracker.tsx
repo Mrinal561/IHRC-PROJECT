@@ -206,6 +206,7 @@ const LWFTracker: React.FC = () => {
                 loading={isLoading}
                 dataSent={data}
                 companyName={filters.companyName} 
+                 code={filters.lwfCode}
                 onRefresh={() => fetchLWFTrackerData(pagination.pageIndex, pagination.pageSize)}
                 pagination={pagination}
                 onPaginationChange={handlePaginationChange}

@@ -303,6 +303,7 @@ interface PFIWTrackerTableProps {
   dataSent: PfiwChallanData[];
   loading?: boolean;
   onRefresh?: () => void;
+  code: string;
   companyName: string;
    pagination: {
     total: number;
@@ -320,7 +321,8 @@ const PFIWTrackerTable: React.FC<PFIWTrackerTableProps> =({
   pagination,
   onPaginationChange,
   onPageSizeChange,
-  companyName
+  companyName,
+  code
 }) => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editingData, setEditingData] = useState<PFIWTrackerData | null>(null);
@@ -531,7 +533,10 @@ const PFIWTrackerTable: React.FC<PFIWTrackerTableProps> =({
         <div className="flex flex-col items-center justify-center h-96 text-gray-500 border rounded-xl">
           <HiOutlineViewGrid className="w-12 h-12 mb-4 text-gray-300" />
           <p className="text-center">
-            No data available for {companyName}
+             {code 
+                ? `No data available for ${companyName} and PF code ${code}`
+                : `No data available for ${companyName}`
+            }
           </p>
         </div>
       ) : (
