@@ -36,7 +36,7 @@ interface BranchFormData {
     email?: string;
     mobile?: string;
   };
-  register_number: string;
+  register_number?: string;
   status: string;
 //   validity: string;
   document?: string;
@@ -108,7 +108,7 @@ const [seRegistrationNumberExists, setSeRegistrationNumberExists] = useState('no
       email: '',
       mobile: ''
     },
-    register_number: '',
+    // register_number: '',
     status: 'Active',
     se_document: '',
     lease_document: '',
@@ -135,7 +135,7 @@ const [seRegistrationNumberExists, setSeRegistrationNumberExists] = useState('no
     { value: 'owned', label: 'Owned' },
   ];
   const officeTypeOption = [
-    { value: 'register_offie', label: 'Register Office' },
+    { value: 'register_office', label: 'Register Office' },
     { value: 'coorporate_office', label: 'Coorporate Office' },
     { value: 'regional_office', label: 'Regional Office' },
     { value: 'branch', label: 'Branch Office' },
@@ -711,75 +711,6 @@ const loadCompanies = async (groupId: string[] | number[]) => {
                       />
                   </div>
               </div>
-
-            
-
-              {/* {formData.type === 'owned' && (
-                  <div className="border rounded-md py-4 p-2 mt-4">
-                      <div className="flex flex-col gap-8">
-                        <div className='flex justify-between'>
-                          <h4>S&E Setup</h4>
-                          {renderDocumentValidityRadio(
-                                      seValidityType, 
-                                      setSeValidityType, 
-                                      handleSeValidityChange,
-                                      'S&E Validity Type'
-                                    )}
-                        </div>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                              <div>
-                                  <p className="mb-2">
-                                      S&E Registration Number
-                                      <span className="text-red-500">*</span></p>
-                                  <OutlinedInput
-                                      label="S&E Registration Number"
-                                      value={formData.register_number}
-                                      onChange={(value: string) => {
-                                          setFormData((prev) => ({
-                                              ...prev,
-                                              register_number: value,
-                                          }))
-                                      }}
-                                  />
-                              </div>
-                              {seValidityType === 'fixed' && (
-
-                                  <div>
-                                  <p className="mb-2">S&E Validity <span className="text-red-500">*</span></p>
-                                  <DatePicker
-                                      size="sm"
-                                      placeholder="Pick a Date"
-                                      onChange={(date) => {
-                                          setFormData((prev) => ({
-                                              ...prev,
-                                              se_validity: date ? format(date, 'yyyy-MM-dd') : '',
-                                          }))
-                                      }}
-                                      />
-                                  
-                              </div>
-                                 )}
-                              <div>
-                                  <div className="flex flex-col gap-2">
-                                      <label>
-                                          Please upload the S&E Registration
-                                          certificate
-                                          <span className="text-red-500">*</span></label>
-                                      <Input
-                                          id="file-upload"
-                                          size='sm'
-                                          type="file"
-                                          accept=".pdf"
-                                          className='py-[5px]'
-                                          onChange={handleSeDocumentUpload}
-                                      />
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-      
-              )} */}
         
         {formData.type === 'owned' && (
   <div className="border rounded-md py-4 p-2 mt-4">
@@ -804,12 +735,21 @@ const loadCompanies = async (groupId: string[] | number[]) => {
                 { value: 'no', label: 'No' },
               ]}
               value={seRegistrationNumberExists === 'yes' ? { value: 'yes', label: 'Yes' } : { value: 'no', label: 'No' }}
-              onChange={(selectedOption: SelectOption | null) => {
-                setSeRegistrationNumberExists(selectedOption?.value || 'no');
-              }}
+             onChange={(selectedOption: SelectOption | null) => {
+    const newExistenceValue = selectedOption?.value || 'no';
+    setSeRegistrationNumberExists(newExistenceValue);
+    
+    // If 'no' is selected, remove register_number from formData
+    setFormData((prev) => {
+      const { register_number, ...rest } = prev;
+      return newExistenceValue === 'yes' 
+        ? { ...rest, register_number: '' } 
+        : rest;
+    });
+  }}
             />
           </div>
-        {/* )} */}
+         {/* )}  */}
         
         {seRegistrationNumberExists === 'yes' && (
           <div>
@@ -817,16 +757,16 @@ const loadCompanies = async (groupId: string[] | number[]) => {
               S&E Registration Number
               <span className="text-red-500">*</span>
             </p>
-            <OutlinedInput
-              label="S&E Registration Number"
-              value={formData.register_number}
-              onChange={(value: string) => {
-                setFormData((prev) => ({
-                  ...prev,
-                  register_number: value,
-                }))
-              }}
-            />
+           <OutlinedInput
+      label="S&E Registration Number"
+      value={formData.register_number || ''}
+      onChange={(value: string) => {
+        setFormData((prev) => ({
+          ...prev,
+          register_number: value,
+        }))
+      }}
+    />
           </div>
         )}
         
@@ -946,8 +886,17 @@ const loadCompanies = async (groupId: string[] | number[]) => {
               ]}
               value={seRegistrationNumberExists === 'yes' ? { value: 'yes', label: 'Yes' } : { value: 'no', label: 'No' }}
               onChange={(selectedOption: SelectOption | null) => {
-                setSeRegistrationNumberExists(selectedOption?.value || 'no');
-              }}
+    const newExistenceValue = selectedOption?.value || 'no';
+    setSeRegistrationNumberExists(newExistenceValue);
+    
+    // If 'no' is selected, remove register_number from formData
+    setFormData((prev) => {
+      const { register_number, ...rest } = prev;
+      return newExistenceValue === 'yes' 
+        ? { ...rest, register_number: '' } 
+        : rest;
+    });
+  }}
             />
                   </div>
                    {seRegistrationNumberExists === 'yes' && (
@@ -958,7 +907,7 @@ const loadCompanies = async (groupId: string[] | number[]) => {
             </p>
             <OutlinedInput
               label="S&E Registration Number"
-              value={formData.register_number}
+           value={formData.register_number || ''}
               onChange={(value: string) => {
                 setFormData((prev) => ({
                   ...prev,

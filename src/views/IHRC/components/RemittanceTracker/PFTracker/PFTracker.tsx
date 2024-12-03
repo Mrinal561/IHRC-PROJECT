@@ -193,6 +193,7 @@ const fetchPFTrackerData = useCallback(
                 loading={isLoading}
                 dataSent={data}
                 companyName={filters.companyName} 
+                code = {filters.pfCode}
                 onRefresh={() =>
                     fetchPFTrackerData(
                         pagination.pageIndex,
