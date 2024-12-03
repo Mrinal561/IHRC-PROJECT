@@ -37,6 +37,7 @@ interface StatusTableProps {
 interface BulkActionData {
   status: string;
   compliace_data_id: number[];
+  remark?: string;
 }
  
 interface ComplianceData {
@@ -224,7 +225,8 @@ const StatusTable: React.FC<StatusTableProps> = ({
   const handleBulkApprove = async () => {
     const bulkData: BulkActionData = {
       status: 'approved',
-      compliace_data_id: Array.from(selectedItems)
+      compliace_data_id: Array.from(selectedItems),
+      remark:'Approved'
     };
     
     setIsProcessing(true);
@@ -269,7 +271,8 @@ const StatusTable: React.FC<StatusTableProps> = ({
 
     const bulkData: BulkActionData = {
       status: 'rejected',
-      compliace_data_id: currentRejectId !== null ? [currentRejectId] : Array.from(selectedItems)
+      compliace_data_id: currentRejectId !== null ? [currentRejectId] : Array.from(selectedItems),
+      remark: reason
     };
     
     console.log('Reject Data:', bulkData);
@@ -311,7 +314,8 @@ const StatusTable: React.FC<StatusTableProps> = ({
   const handleSingleApprove = async (id: number) => {
     const singleApproveData: BulkActionData = {
       status: 'approved',
-      compliace_data_id: [id]
+      compliace_data_id: [id],
+      remark:'Approved'
     };
     
     setIsProcessing(true);
@@ -463,7 +467,7 @@ const StatusTable: React.FC<StatusTableProps> = ({
               : null;
           return (
             <div className="flex items-center">
-              {status === 'rejected' && rejectionRemark ? (
+              {status === 'rejected' || rejectionRemark ? (
                 <Tooltip title={`Rejection Reason: ${rejectionRemark}`} placement="top">
                   <span className="text-red-500 font-semibold truncate">{status}</span>
                 </Tooltip>
