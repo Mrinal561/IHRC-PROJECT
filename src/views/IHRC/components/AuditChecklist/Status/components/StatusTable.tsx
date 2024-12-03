@@ -467,7 +467,7 @@ const StatusTable: React.FC<StatusTableProps> = ({
               : null;
           return (
             <div className="flex items-center">
-              {status === 'rejected' || rejectionRemark ? (
+              {status === 'rejected'? (
                 <Tooltip title={`Rejection Reason: ${rejectionRemark}`} placement="top">
                   <span className="text-red-500 font-semibold truncate">{status}</span>
                 </Tooltip>
