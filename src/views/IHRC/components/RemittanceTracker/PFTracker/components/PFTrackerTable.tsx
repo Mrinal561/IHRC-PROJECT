@@ -112,6 +112,7 @@ interface PfTrackerTableProps {
   dataSent: PfChallanData[];
   loading: boolean;
   onRefresh?: () => void;
+  code: string;
   companyName: string;
    pagination: {
     total: number;
@@ -129,7 +130,8 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> =({
   pagination,
   onPaginationChange,
   onPageSizeChange,
-  companyName
+  companyName, 
+  code
 }) => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editingData, setEditingData] = useState<PfChallanData | null>(null);
@@ -443,7 +445,10 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> =({
         <div className="flex flex-col items-center justify-center h-96 text-gray-500 border rounded-xl">
           <HiOutlineViewGrid className="w-12 h-12 mb-4 text-gray-300" />
           <p className="text-center">
-            No data available for {companyName}
+                {code 
+                ? `No data available for ${companyName} and PF code ${code}`
+                : `No data available for ${companyName}`
+            }
           </p>
         </div>
       ) : (

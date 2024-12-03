@@ -146,6 +146,7 @@ const PTECTracker: React.FC = () => {
                 dataSent={data}
                 loading={isLoading}
                 companyName={filters.companyName} 
+                code={filters.ptCode}
                 onRefresh={() =>
                     fetchPTTrackerData(
                         pagination.pageIndex,
