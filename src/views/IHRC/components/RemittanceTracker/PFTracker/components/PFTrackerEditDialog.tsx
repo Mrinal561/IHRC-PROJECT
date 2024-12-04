@@ -281,6 +281,7 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
 
   const fetchTrackerData = async () => {
     try {
+      // console.log(trackerId)
       setLoading(true);
       const response = await dispatch((fetchTrackerById(trackerId)))
             .unwrap()

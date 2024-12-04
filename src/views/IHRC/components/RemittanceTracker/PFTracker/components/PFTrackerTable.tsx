@@ -95,7 +95,7 @@ export const dummyData: PFTrackerData[] = [
 
 
 // import React, { useEffect, useMemo, useState } from 'react';
-// import { Button, Dialog, Tooltip } from '@/components/ui';
+// import { Button, Tooltip } from '@/components/ui';
 // import { FiEdit, FiFile, FiTrash } from 'react-icons/fi';
 // import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 // import { MdEdit } from 'react-icons/md';
@@ -368,7 +368,7 @@ export const dummyData: PFTrackerData[] = [
 //             <Tooltip title="Edit">
 //               <Button
 //                 size="sm"
-//                 onClick={() => handleDeleteConfirmation(row.original.id)}
+//                 onClick={() => handleEdit(row.original.id)}
 //                 icon={<MdEdit />}
 //               />
 //             </Tooltip>
@@ -479,44 +479,11 @@ export const dummyData: PFTrackerData[] = [
 
 //         />
 //       )}
-
-//        <Dialog
-//         isOpen={deleteConfirmOpen}
-//         onClose={() => setDeleteConfirmOpen(false)}
-//       >
-//         <div className="p-6">
-//           <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>
-//           <p className="mb-6">Are you sure you want to delete this PF Tracker entry?</p>
-          
-//           {deleteError && (
-//             <div className="text-red-500 mb-4">
-//               Error: {deleteError}
-//             </div>
-//           )}
-          
-//           <div className="flex justify-end space-x-2">
-//             <Button
-//               onClick={() => setDeleteConfirmOpen(false)}
-//               variant="plain"
-//             >
-//               Cancel
-//             </Button>
-//             <Button
-//               onClick={confirmDelete}
-//               variant="solid"
-//               color="red"
-//             >
-//               Delete
-//             </Button>
-//           </div>
-//         </div>
-//       </Dialog>
 //     </div>
 //   );
 // };
 
 // export default PFTrackerTable;
-
 
 
 
@@ -785,7 +752,7 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> =({
             <Tooltip title="Edit">
               <Button
                 size="sm"
-                onClick={() => handleDeleteConfirmation(row.original.id)}
+                onClick={() => handleEdit(row.original.id)}
                 icon={<MdEdit />}
               />
             </Tooltip>
