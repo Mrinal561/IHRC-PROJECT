@@ -752,7 +752,7 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> =({
             <Tooltip title="Edit">
               <Button
                 size="sm"
-                onClick={() => handleEdit(row.original.id)}
+                onClick={() => handleEdit(row.original)}
                 icon={<MdEdit />}
               />
             </Tooltip>
