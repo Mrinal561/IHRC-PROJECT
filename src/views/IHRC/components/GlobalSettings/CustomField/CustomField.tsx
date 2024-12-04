@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Card, Dialog } from '@/components/ui';
-import { HiPlusCircle } from 'react-icons/hi';
+import { HiOutlineViewGrid, HiPlusCircle } from 'react-icons/hi';
 import { AdaptableCard } from '@/components/shared';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 import { useNavigate } from 'react-router-dom';
@@ -41,7 +41,7 @@ const CustomField = () => {
 
 
   return (
-    <div className="">
+    <>
         <div className='mb-6 flex justify-between items-center'>
 
      <h3 className="text-2xl font-bold">Custom Fields</h3>
@@ -56,7 +56,7 @@ const CustomField = () => {
     </Button>
         </div>
 
-    <div className="mt-6 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+    {/* <div className="mt-6 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
       {modules.map((module) => (
         <Card bordered className='shadow-lg' key={module.value}>   
               <div className='flex flex-col gap-4 py-6 px-2'>
@@ -74,7 +74,14 @@ const CustomField = () => {
               </div>
           </Card>
       ))}
-    </div>
+    </div> */}
+
+<div className="flex flex-col items-center justify-center h-full text-gray-500 border rounded-xl">
+                <HiOutlineViewGrid className="w-12 h-12 mb-4 text-gray-300" />
+                <p className="text-center">
+        Still in Development Phase
+                </p>
+      </div>
 
     <Dialog
       isOpen={isModuleDialogOpen}
@@ -100,7 +107,7 @@ const CustomField = () => {
         </Button>
       </div>
     </Dialog>
-  </div>
+  </>
   )
 }
 

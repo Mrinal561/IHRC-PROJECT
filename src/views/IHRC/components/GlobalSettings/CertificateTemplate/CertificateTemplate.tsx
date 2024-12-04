@@ -2,6 +2,7 @@ import React from 'react'
 import AdaptableCard from '@/components/shared/AdaptableCard'
 import CertificateFilter from './CertificateFilter'
 import UploadDownload from './UploadDownload'
+import { HiOutlineViewGrid } from 'react-icons/hi'
 const CertificateTemplate = () => {
   return (
     <AdaptableCard className="h-full" bodyClass="h-full">
@@ -13,7 +14,13 @@ const CertificateTemplate = () => {
               {/* <CustomChecklistTool /> */}
               <CertificateFilter/>
     </div>
-    <UploadDownload/>
+    {/* <UploadDownload/> */}
+    <div className="flex flex-col items-center justify-center h-[90%] text-gray-500 border rounded-xl">
+                <HiOutlineViewGrid className="w-12 h-12 mb-4 text-gray-300" />
+                <p className="text-center">
+        Still in Development Phase
+                </p>
+      </div>
 </AdaptableCard>
   )
 }

@@ -83,21 +83,27 @@ pfSetup:{
 ptSetup: {
     getAll: () => api('companyadmin/ptsetup'),
     create: () => api('companyadmin/ptsetup'),
-    getById: (id: string) => api(`companyadmin/ptsetup/${id}`)
+    getById: (id: any) => api(`companyadmin/ptsetup/${id}`)
 },
 tracker:{ 
     downloadFormat:() => api('upload/sample_files/pf-tracker.xlsx'),
     pfUpload:() => api('companyadmin/pfsetup/pf-tracker'),
     pfGetALl: () => api(`companyadmin/pfsetup/pf-tracker`),
     uploadDocs: (id: any) => api(`companyadmin/pfsetup/pf-tracker/document/${id}`),
-    downloadALl:()=> api('/companyadmin/pfsetup/pf-tracker/export')
+    downloadALl: () => api('/companyadmin/pfsetup/pf-tracker/export'),
+    getById: (id: any) => api(`companyadmin/pfsetup/pf-tracker/${id}`),
+    delete: (id: string) => api(`companyadmin/pfsetup/pf-delete/${id}`),
 },
 esiTracker: {
     getAll: () => api(`companyadmin/esisetup/esi-tracker`),
     bulkUpload: () => api(`companyadmin/esisetup/esi-tracker`),
     download: () => api(`upload/sample_files/esi-tracker.xlsx`),
     uploadDocs: (id: any) => api(`companyadmin/esisetup/esi-tracker/challan/${id}`),
-     downloadAll:()=> api('/companyadmin/esisetup/esi-tracker/export')
+     downloadAll:()=> api('/companyadmin/esisetup/esi-tracker/export'),
+     getById: (id: any) => api(`companyadmin/esisetup/esi-tracker/${id}`),
+     delete: (id: string) => api(`companyadmin/esisetup/esi-delete/${id}`),
+
+
     },
     ptrc: {
         download: () => api('upload/sample_files/ptrc-tracker.xlsx'),
@@ -131,7 +137,9 @@ ptTracker: {
     bulkupload:()=> api('/companyadmin/pfsetup/pfiw-tracker'),
        pfiwGetAll: () => api('/companyadmin/pfsetup/pfiw-tracker'),
     challanupload:(id:any)=> api(`/companyadmin/pfsetup/pfiw-tracker/document/${id}`),
-    downloadALl:()=> api('/companyadmin/pfsetup/pfiw-tracker/export')
+       downloadALl: () => api('/companyadmin/pfsetup/pfiw-tracker/export'),
+    delete: (id: any) => api(`companyadmin/pfsetup/pfiw-delete/${id}`),
+    getById: (id: any) => api(`companyadmin/pfsetup/pfiw-tracker/${id}`)
     },
     lwftracker: {
         downlaodAll:()=> api(`/companyadmin/lwfsetup/lwf-tracker/export`),

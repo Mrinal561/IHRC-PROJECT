@@ -2,36 +2,110 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, Button, DatePicker, toast, Notification } from '@/components/ui';
 import OutlinedInput from '@/components/ui/OutlinedInput';
-import { ESITrackerData } from './ESITrackerTable';
+import httpClient from '@/api/http-client';
+import { endpoints } from '@/api/endpoint';
 import OutlinedSelect from '@/components/ui/Outlined';
+import { showErrorNotification } from '@/components/ui/ErrorMessage';
+import { useDispatch } from 'react-redux';
+import { fetchTrackerById } from '@/store/slices/esitracker/esitrackerSlice';
+
+
+interface ESIChallanData {
+  id: number;
+  no_of_emp?: number;
+  gross_wage?: number;
+  employee_esi?: number;
+  employer_esi?: number;
+  total_esi?: number;
+  challan_amt?: number;
+  // payroll_month?: string;
+  payment_date?: string;
+  challan_no?: number;
+  challan_type?: string;
+}
 
 interface ESITrackerEditDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (editedData: ESITrackerData) => void;
-  data: ESITrackerData;
+  onSubmit: (editedData: ESIChallanData) => void;
+  trackerId: number;
 }
 
 const ESITrackerEditDialog: React.FC<ESITrackerEditDialogProps> = ({
   isOpen,
   onClose,
   onSubmit,
-  data,
+  trackerId,
 }) => {
-  const [editedData, setEditedData] = useState<ESITrackerData>(data);
+  const [editedData, setEditedData] = useState<ESIChallanData>({
+    id: trackerId,
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const dispatch = useDispatch();
+
+  // useEffect(() => {
+  //   setEditedData(data);
+  // }, [data]);
+
 
   useEffect(() => {
-    setEditedData(data);
-  }, [data]);
+    if (isOpen && trackerId) {
+      fetchTrackerData();
+    }
+  }, [isOpen, trackerId]);
 
-  const handleChange = (field: keyof ESITrackerData, value: string | number) => {
+
+  const fetchTrackerData = async () => {
+    try {
+      // console.log(trackerId)
+      setLoading(true);
+      const response = await dispatch((fetchTrackerById(trackerId)))
+            .unwrap()
+            .catch((error: any) => {
+                // Handle different error formats
+                if (error.response?.data?.message) {
+                    // API error response
+                    showErrorNotification(error.response.data.message);
+                } else if (error.message) {
+                    // Regular error object
+                    showErrorNotification(error.message);
+                } else if (Array.isArray(error)) {
+                    // Array of error messages
+                    showErrorNotification(error);
+                } else {
+                    // Fallback error message
+                    // showErrorNotification('An unexpected error occurred. Please try again.');
+                }
+                throw error; // Re-throw to prevent navigation
+            });
+      console.log(response)
+        setEditedData(response);
+        console.log(editedData)
+        setLoading(false);
+    } catch (err) {
+      console.error('Error fetching tracker data:', err);
+      setError('Failed to load tracker details');
+      setLoading(false);
+      openNotification('danger', 'Failed to load tracker details');
+    }
+  };
+
+  const handleChange = (field: keyof ESIChallanData, value: string | number) => {
     setEditedData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = () => {
-    onSubmit(editedData);
-    onClose();
-    openNotification('success', 'ESI Tracker edited successfully');
+  const handleSubmit = async () => {
+    try {
+      // You might want to add an API call to update the data here
+      console.log(editedData)
+      // onSubmit(editedData);
+      onClose();
+      openNotification('success', 'PF Tracker edited successfully');
+    } catch (err) {
+      console.error('Error submitting tracker data:', err);
+      openNotification('danger', 'Failed to save changes');
+    }
   };
   
   const handleDateChange = (field: 'dueDate' | 'amountPaidOn' | 'month', date: Date | null) => {
@@ -56,13 +130,29 @@ const ESITrackerEditDialog: React.FC<ESITrackerEditDialogProps> = ({
     { value: 'Supplementary Challan', label: 'Supplementary Challan' },
   ];
 
+  if (error) {
+    return (
+      <Dialog
+        isOpen={isOpen}
+        onClose={onClose}
+        onRequestClose={onClose}
+        width={800}
+        height={600}
+      >
+        <div className="flex justify-center items-center h-full">
+          <p className="text-red-500">{error}</p>
+        </div>
+      </Dialog>
+    );
+  }
+
   return (
     <Dialog
       isOpen={isOpen}
       onClose={onClose}
       onRequestClose={onClose}
       width={800}
-      height={600}
+      height={450}
     >
       <h5 className="mb-4">Edit ESI Tracker Detail</h5>
       
@@ -73,8 +163,8 @@ const ESITrackerEditDialog: React.FC<ESITrackerEditDialogProps> = ({
             <div className='w-full'>
               <OutlinedInput
                 label="No. of Employees"
-                value={editedData.noOfEmployees }
-                onChange={(value) => handleChange('noOfEmployees', parseInt(value, 10))}
+                value={editedData.no_of_emp?.toString() || ''}
+                onChange={(value) => handleChange('no_of_emp', parseInt(value, 10))}
               />
             </div>
           </div>
@@ -83,15 +173,15 @@ const ESITrackerEditDialog: React.FC<ESITrackerEditDialogProps> = ({
             <div className='w-full'>
               <OutlinedInput
                 label="Challan No"
-                value={editedData.challanNo}
-                onChange={(value) => handleChange('challanNo', value)}
+                value={editedData.challan_no?.toString() || ''}
+                onChange={(value) => handleChange('challan_no', value)}
               />
             </div>
           </div>
         </div>
 
         <div className='flex gap-8 items-center'>
-          <div className='flex flex-col gap-2'>
+          {/* <div className='flex flex-col gap-2'>
             <label>Select Month</label>
             <div className='w-[219px]'>
               <DatePicker
@@ -100,8 +190,8 @@ const ESITrackerEditDialog: React.FC<ESITrackerEditDialogProps> = ({
                 onChange={(date) => handleDateChange('month', date)}
               />
             </div>
-          </div>
-          <div className='flex flex-col gap-2'>
+          </div> */}
+          {/* <div className='flex flex-col gap-2'>
             <label>Select Due Date</label>
             <div className='w-[219px]'>
               <DatePicker
@@ -110,16 +200,28 @@ const ESITrackerEditDialog: React.FC<ESITrackerEditDialogProps> = ({
                 onChange={(date) => handleDateChange('dueDate', date)}
               />
             </div>
-          </div>
+          </div> */}
           <div className='flex flex-col gap-2'>
             <label>Select Date of Payment</label>
             <div className='w-[219px]'>
               <DatePicker
                 placeholder="Amount Paid On"
-                value={new Date(editedData.amountPaidOn)}
-                onChange={(date) => handleDateChange('amountPaidOn', date)}
+                value={editedData.payment_date ? new Date(editedData.payment_date) : undefined}
+                onChange={(date) => handleDateChange('payment_date', date)}
               />
             </div>
+          </div>
+          <div className='flex flex-col gap-2 w-full'>
+            <label>Select Type of Challan</label>
+            <div className='w-full'>
+              <OutlinedSelect
+                label="Type of Challan"
+                options={challanTypeOptions}
+                value={editedData.challan_type || ''}
+                onChange={(option) => handleChange('challan_type', option?.value || '')}
+              />
+            </div>
+           
           </div>
         </div>
         <div className="flex gap-8 items-center">
@@ -128,8 +230,8 @@ const ESITrackerEditDialog: React.FC<ESITrackerEditDialogProps> = ({
             <div className='w-[219px]'>
               <OutlinedInput
                 label="ESI Gross Wages"
-                value={editedData.esiGrossWages }
-                onChange={(value) => handleChange('esiGrossWages', parseFloat(value))}
+                value={editedData.gross_wage?.toString() || ''}
+                onChange={(value) => handleChange('gross_wage', parseFloat(value))}
               />
             </div>
           </div>
@@ -138,8 +240,8 @@ const ESITrackerEditDialog: React.FC<ESITrackerEditDialogProps> = ({
             <div className='w-[219px]'>
               <OutlinedInput
                 label="EE ESI"
-                value={editedData.eeESI }
-                onChange={(value) => handleChange('eeESI', parseFloat(value))}
+                value={editedData.employee_esi?.toString() || ''}
+                onChange={(value) => handleChange('employee_esi', parseFloat(value))}
               />
             </div>
           </div>
@@ -148,8 +250,8 @@ const ESITrackerEditDialog: React.FC<ESITrackerEditDialogProps> = ({
             <div className='w-[219px]'>
               <OutlinedInput
                 label="Total Amount As per Challan"
-                value={editedData.erESI }
-                onChange={(value) => handleChange('erESI', parseFloat(value))}
+                value={editedData.challan_amt?.toString() || ''}
+                onChange={(value) => handleChange('challan_amt', parseFloat(value))}
               />
             </div>
           </div>
@@ -157,63 +259,6 @@ const ESITrackerEditDialog: React.FC<ESITrackerEditDialogProps> = ({
 
         
 
-        <div className='flex gap-4 items-center'>
-          <div className='flex flex-col gap-2 w-full'>
-            <label>Select Type of Challan</label>
-            <div className='w-full'>
-              <OutlinedSelect
-                label="Type of Challan"
-                options={challanTypeOptions}
-                value={challanTypeOptions.find(option => option.value === editedData.typeOfChallan)}
-                onChange={(option) => handleChange('typeOfChallan', option?.value || '')}
-              />
-            </div>
-           
-          </div>
-          <div className='flex flex-col gap-2 w-full'>
-            <label>Difference In Amount</label>
-            <div className='w-full'>
-              <OutlinedInput
-                label="Difference In Amount"
-                value={editedData.differenceInAmount }
-                onChange={(value) => handleChange('differenceInAmount', parseFloat(value))}
-              />
-            </div>
-          </div>
-          <div className='flex flex-col gap-2 w-full'>
-          <label>Enter Total Amount</label>
-            <div className='w-[219px]'>
-              <OutlinedInput
-                label="Total Amount As per Challan"
-                value={editedData.totalAmountAsPerChallan }
-                onChange={(value) => handleChange('totalAmountAsPerChallan', parseFloat(value))}
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className='flex gap-4 items-center'>
-          <div className='flex flex-col gap-2 w-full'>
-            <label>Enter Delay</label>
-            <div className='w-full'>
-              <OutlinedInput
-                label="Delay"
-                value={editedData.delay}
-                onChange={(value) => handleChange('delay', value)}
-              />
-            </div>
-          </div>
-          <div className='flex flex-col gap-2 w-full'>
-            <label>Enter Delay Reason</label>
-            <div className='w-full'>
-              <OutlinedInput
-                label="Delay Reason"
-                value={editedData.delayReason}
-                onChange={(value) => handleChange('delayReason', value)}
-              />
-            </div>
-          </div>
-        </div>
       </div>
       <div className="flex justify-end mt-6">
         <Button variant="plain" onClick={onClose} className="mr-2">
