@@ -1,0 +1,98 @@
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { PfChallanData } from '@/@types/pfTracker'; // Adjust the import path as needed
+import { endpoints } from "@/api/endpoint";
+import httpClient from "@/api/http-client";
+
+export interface TrackerState {
+    currentTracker: PfChallanData | null;
+    loading: boolean;
+    error: string | null;
+    isDeleted: boolean;
+}
+
+const initialState: TrackerState = {
+    currentTracker: null,
+    loading: false,
+    error: null,
+    isDeleted: false,
+};
+
+export const fetchTrackerById = createAsyncThunk(
+    'tracker/fetchTrackerById',
+    async (trackerId: string, { rejectWithValue }) => {
+        try {
+            const { data } = await httpClient.get(endpoints.tracker.getById(trackerId));
+            return data;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || 'Failed to fetch tracker');
+        }
+    }
+);
+
+export const deleteTracker = createAsyncThunk(
+    'tracker/deleteTracker',
+    async (trackerId: string, { rejectWithValue }) => {
+        try {
+            const { data } = await httpClient.delete(endpoints.tracker.delete(trackerId));
+            return data;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || 'Failed to delete tracker');
+        }
+    }
+);
+
+const trackerSlice = createSlice({
+    name: 'tracker',
+    initialState,
+    reducers: {
+        clearCurrentTracker: (state) => {
+            state.currentTracker = null;
+        },
+        clearError: (state) => {
+            state.error = null;
+        },
+        resetDeleteStatus: (state) => {
+            state.isDeleted = false;
+        }
+    },
+    extraReducers: (builder) => {
+        builder
+            // Fetch Tracker Cases
+            .addCase(fetchTrackerById.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchTrackerById.fulfilled, (state, action) => {
+                state.loading = false;
+                state.currentTracker = action.payload;
+            })
+            .addCase(fetchTrackerById.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+            })
+            
+            // Delete Tracker Cases
+            .addCase(deleteTracker.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+                state.isDeleted = false;
+            })
+            .addCase(deleteTracker.fulfilled, (state) => {
+                state.loading = false;
+                state.currentTracker = null;
+                state.isDeleted = true;
+            })
+            .addCase(deleteTracker.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+                state.isDeleted = false;
+            });
+    },
+});
+
+export const { 
+    clearCurrentTracker, 
+    clearError, 
+    resetDeleteStatus 
+} = trackerSlice.actions;
+export default trackerSlice.reducer;

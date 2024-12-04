@@ -83,14 +83,16 @@ pfSetup:{
 ptSetup: {
     getAll: () => api('companyadmin/ptsetup'),
     create: () => api('companyadmin/ptsetup'),
-    getById: (id: string) => api(`companyadmin/ptsetup/${id}`)
+    getById: (id: any) => api(`companyadmin/ptsetup/${id}`)
 },
 tracker:{ 
     downloadFormat:() => api('upload/sample_files/pf-tracker.xlsx'),
     pfUpload:() => api('companyadmin/pfsetup/pf-tracker'),
     pfGetALl: () => api(`companyadmin/pfsetup/pf-tracker`),
     uploadDocs: (id: any) => api(`companyadmin/pfsetup/pf-tracker/document/${id}`),
-    downloadALl:()=> api('/companyadmin/pfsetup/pf-tracker/export')
+    downloadALl: () => api('/companyadmin/pfsetup/pf-tracker/export'),
+    getById: (id: any) => api(`companyadmin/pfsetup/pf-tracker/${id}`),
+    delete: (id: string) => api(`companyadmin/pfsetup/pf-delete/${id}`),
 },
 esiTracker: {
     getAll: () => api(`companyadmin/esisetup/esi-tracker`),
