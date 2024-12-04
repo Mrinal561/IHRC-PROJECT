@@ -99,7 +99,11 @@ esiTracker: {
     bulkUpload: () => api(`companyadmin/esisetup/esi-tracker`),
     download: () => api(`upload/sample_files/esi-tracker.xlsx`),
     uploadDocs: (id: any) => api(`companyadmin/esisetup/esi-tracker/challan/${id}`),
-     downloadAll:()=> api('/companyadmin/esisetup/esi-tracker/export')
+     downloadAll:()=> api('/companyadmin/esisetup/esi-tracker/export'),
+     getById: (id: any) => api(`companyadmin/esisetup/esi-tracker/${id}`),
+     delete: (id: string) => api(`companyadmin/esisetup/esi-delete/${id}`),
+
+
     },
     ptrc: {
         download: () => api('upload/sample_files/ptrc-tracker.xlsx'),

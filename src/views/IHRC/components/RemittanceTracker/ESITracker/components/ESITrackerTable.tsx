@@ -1,19 +1,20 @@
 import React, { useMemo, useState } from 'react';
-import { Button, Tooltip } from '@/components/ui';
+import { Button, Dialog, Tooltip } from '@/components/ui';
 import { FiEdit, FiFile, FiTrash } from 'react-icons/fi';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 import { MdEdit } from 'react-icons/md';
 import ESITrackerEditDialog from './ESITrackerEditDialog';
 import ESIConfigDropdown from './ESIConfigDropDown'
-import { PfChallanData } from '@/@types/pfTracker';
 import { esiChallanData } from '@/@types/esiTracker';
 import dayjs from 'dayjs';
 import { HiOutlineViewGrid } from 'react-icons/hi';
 import loadingAnimation from '@/assets/lotties/system-regular-716-spinner-three-dots-loop-scale.json'
+import { deleteTracker } from '@/store/slices/esitracker/esitrackerSlice';
 import Lottie from 'lottie-react';
+import { useDispatch } from 'react-redux';
 
 interface EsiTrackerTableProps {
-    dataSent: PfChallanData[];
+    dataSent: esiChallanData[];
     loading: boolean
     onRefresh?: () => void;
     companyName: string;
@@ -38,41 +39,44 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> =({
   code
 }) => {
     // const [data, setData] = useState<ESITrackerData[]>(sampleData);
-    const [editDialogOpen, setEditDialogOpen] = useState(false);
-    const [editingData, setEditingData] = useState<PfChallanData | null>(null);
+    const dispatch = useDispatch();
 
-    const handleEdit = (row: PfChallanData) => {
+    const [editDialogOpen, setEditDialogOpen] = useState(false);
+    const [editingData, setEditingData] = useState<esiChallanData | null>(null);
+    const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+    const [trackerToDelete, setTrackerToDelete] = useState<string | null>(null);
+  
+    const handleEdit = (row: esiChallanData) => {
         setEditingData(row);
         setEditDialogOpen(true);
     };
 
-    const handleEditSubmit = (editedData: PfChallanData) => {
-        // setData((prevData) =>
-        //     prevData.map((item) =>
-        //         item === editingData ? editedData : item
-        //     )
-        // );
+    const handleDeleteConfirmation = (trackerId: string) => {
+        setTrackerToDelete(trackerId);
+        setDeleteConfirmOpen(true);
+      };
+
+      const confirmDelete = () => {
+        if (trackerToDelete) {
+          dispatch(deleteTracker(trackerToDelete));
+          setDeleteConfirmOpen(false);
+          if (onRefresh) {
+            onRefresh();
+          }
+        }
+      };
+      
+    
+
+    const handleEditSubmit = (editedData: esiChallanData) => {
         setEditDialogOpen(false);
         setEditingData(null);
+        if (onRefresh) {
+            onRefresh();
+          }
     };
 
-    
-    // useEffect(() => {
-    //     fetchEsiTrackerData(1, 10);
-    //   }, []);
-      
-    //   const fetchEsiTrackerData = async (page: number, size: number) => {
-    //     const {payload: data} = await dispatch(fetchEsiTracker({page: page, page_size: size}));
-    //     setEsiTrackerTableData(data.data)
-    //     console.log(esiTrackerTableData);
-        
-    //     setTableData((prev) => ({
-    //       ...prev,
-    //       total: data?.paginate_data.totalResult,
-    //       pageIndex: data?.paginate_data.page,
-    //     }))
-    //     // refreshData();
-    //   }
+
 
     const columns: ColumnDef<esiChallanData>[] = useMemo(
         () => [
@@ -306,9 +310,8 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> =({
                         <Tooltip title="Delete">
                             <Button
                                 size="sm"
-                                onClick={() =>
-                                    console.log('Delete', row.original)
-                                }
+                                onClick={() => handleDeleteConfirmation(row.original.id)}
+
                                 icon={<FiTrash />}
                                 className="text-red-500"
                             />
@@ -321,7 +324,7 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> =({
                 ),
             },
         ],
-        [],
+        [onRefresh]
     )
     const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
@@ -407,9 +410,34 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> =({
                     isOpen={editDialogOpen}
                     onClose={() => setEditDialogOpen(false)}
                     onSubmit={handleEditSubmit}
-                    data={editingData}
+                    trackerId={editingData.id}
                 />
             )}
+             <Dialog
+        isOpen={deleteConfirmOpen}
+        onClose={() => setDeleteConfirmOpen(false)}
+      >
+        <div className="p-2">
+          <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>
+          <p className="mb-6">Are you sure you want to delete this ESI Tracker entry?</p>
+          
+          <div className="flex justify-end space-x-2">
+            <Button 
+              onClick={() => setDeleteConfirmOpen(false)}
+              variant="plain"
+            >
+              Cancel
+            </Button>
+            <Button 
+              onClick={confirmDelete}
+              variant="solid"
+              color="blue"
+            >
+              Delete
+            </Button>
+          </div>
+        </div>
+      </Dialog>
         </div>
     )
 };

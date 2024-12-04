@@ -21,8 +21,8 @@ import lwftrackersetup, { LwfTrackerState } from './slices/lwfSetup/lwfTrackerSl
 import ptsetup, { ptsetupState } from './slices/ptSetup/ptSetupSlice'
 import ptrctracker,{ PtrcTrackerState } from './slices/ptSetup/ptrcTrackerSlice';
 import pftracker,{ TrackerState } from './slices/pftracker/pfTrackerSlice'
- 
- 
+import esitracker, { ESITrackersState } from './slices/esitracker/esitrackerSlice'
+
 export type RootState = CombinedState<{
     auth: CombinedState<AuthState>
     base: CombinedState<BaseState>
@@ -42,6 +42,7 @@ export type RootState = CombinedState<{
     lwfTrackerSetup: LwfTrackerState
     pfiwSetup: PfIwTrackerState
     pftracker: TrackerState
+    esitracker: ESITrackersState
     locale: LocaleState
     theme: ThemeState
     assigedCompliance: ComplianceAssignmentState
@@ -75,6 +76,7 @@ const staticReducers = {
     lwftrackersetup,
     ptrctracker,
     pftracker,
+    esitracker,
     [RtkQueryService.reducerPath]: RtkQueryService.reducer,
 }
  
