@@ -158,7 +158,7 @@ const PFTrackerTool: React.FC<{
     <div>
       <div className="flex gap-4 items-center mb-4 w-full">
         <PFTrackerFilter 
-          data={dummyData} 
+          // data={dummyData} 
           onFilterChange={handleFilterChange} 
         />
         <CustomDateRangePicker onApply={handleDateRangeApply} />
