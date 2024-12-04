@@ -137,7 +137,9 @@ ptTracker: {
     bulkupload:()=> api('/companyadmin/pfsetup/pfiw-tracker'),
        pfiwGetAll: () => api('/companyadmin/pfsetup/pfiw-tracker'),
     challanupload:(id:any)=> api(`/companyadmin/pfsetup/pfiw-tracker/document/${id}`),
-    downloadALl:()=> api('/companyadmin/pfsetup/pfiw-tracker/export')
+       downloadALl: () => api('/companyadmin/pfsetup/pfiw-tracker/export'),
+    delete: (id: any) => api(`companyadmin/pfsetup/pfiw-delete/${id}`),
+    getById: (id: any) => api(`companyadmin/pfsetup/pfiw-tracker/${id}`)
     },
     lwftracker: {
         downlaodAll:()=> api(`/companyadmin/lwfsetup/lwf-tracker/export`),
