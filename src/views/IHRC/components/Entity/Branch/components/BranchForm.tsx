@@ -841,7 +841,7 @@ const AddBranchForm: React.FC = () => {
                     <div className="flex flex-col gap-2">
                         <label>
                             {seRegistrationNumberExists === 'applied'
-                                ? 'Please upload the S&E Registration application document'
+                                ? 'Please upload the S&E  acknowledgment copy'
                                 : 'Please upload the S&E Registration certificate'}
                             <span className="text-red-500">*</span>
                         </label>
@@ -1014,7 +1014,7 @@ const AddBranchForm: React.FC = () => {
                         <div className="flex flex-col gap-2">
                             <label>
                                 {seRegistrationNumberExists === 'applied'
-                                   ? 'Please upload the S&E Registration application document'
+                                   ? 'Please upload the S&E  acknowledgment copy'
                                     : 'Please upload the S&E Registration certificate'}
                                 <span className="text-red-500">*</span>
                             </label>
