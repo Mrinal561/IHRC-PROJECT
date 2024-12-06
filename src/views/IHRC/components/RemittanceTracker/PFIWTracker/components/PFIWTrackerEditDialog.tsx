@@ -281,7 +281,7 @@ const PFIWTrackerEditDialog: React.FC<PFIWTrackerEditDialogProps> = ({
       
       <div className="p-4 space-y-4">
         <div className='flex gap-4 items-center'>
-           <div className='flex flex-col gap-2 w-full'>
+           {/* <div className='flex flex-col gap-2 w-full'>
             <label>Select Month</label>
             <div className='w-full'>
               <DatePicker
@@ -290,7 +290,7 @@ const PFIWTrackerEditDialog: React.FC<PFIWTrackerEditDialogProps> = ({
                 onChange={(date) => handleDateChange('payroll_month', date)}
               />
             </div>
-          </div>
+          </div> */}
           {/* <div className='flex flex-col gap-2 w-full'>
             <label>Due Date</label>
             <DatePicker
@@ -313,14 +313,14 @@ const PFIWTrackerEditDialog: React.FC<PFIWTrackerEditDialogProps> = ({
         </div>
 
         <div className='flex gap-4 items-center'>
-          <div className='flex flex-col gap-2 w-full'>
+          {/* <div className='flex flex-col gap-2 w-full'>
             <label>Delay</label>
             <OutlinedInput
               label="Delay"
               value={editedData.delay_in_days?.toString() || ''}
               onChange={(value) => handleChange('delay_in_days', value)}
             />
-          </div>
+          </div> */}
           <div className='flex flex-col gap-2 w-full'>
             <label>Delay Reason</label>
             <OutlinedInput

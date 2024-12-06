@@ -110,8 +110,9 @@ esiTracker: {
         bulkUpload: () => api('/companyadmin/ptsetup/ptrc-tracker'),
         getAll: () => api('/companyadmin/ptsetup/ptrc-tracker'),
         uploadDocs: (id: any) => api(`/companyadmin/ptsetup/ptrc-tracker/document/${id}`),
-         downloadAll:()=> api('/companyadmin/ptsetup/ptrc-tracker/export')
-        
+         downloadAll:()=> api('/companyadmin/ptsetup/ptrc-tracker/export'),
+         delete: (id: any) => api(`companyadmin/ptsetup/ptrc-delete/${id}`),
+         getById: (id: any) => api(`companyadmin/ptsetup/ptrc-tracker/${id}`)
    },
 // ptTracker: {
 //     getAll: () => api(`companyadmin/esisetup/esi-tracker`),
@@ -128,8 +129,9 @@ ptTracker: {
         bulkUpload: () => api('/companyadmin/ptsetup/ptec-tracker'),
         getAll: () => api('/companyadmin/ptsetup/ptec-tracker'),
         uploadDocs: (id: any) => api(`/companyadmin/ptsetup/ptec-tracker/document/${id}`),
-          
-         downloadAll:()=> api('/companyadmin/ptsetup/ptec-tracker/export')
+        downloadAll: () => api('/companyadmin/ptsetup/ptec-tracker/export'),
+          delete: (id: any) => api(`companyadmin/ptsetup/ptec-delete/${id}`),
+    getById: (id: any) => api(`companyadmin/ptsetup/ptec-tracker/${id}`)
        
    },
    pfiwtracker:{
@@ -146,7 +148,9 @@ ptTracker: {
        download:()=> api('upload/sample_files/lwf-tracker.xlsx'),
     bulkupload:()=> api('/companyadmin/lwfsetup/lwf-tracker'),
         lwfGetAll: () => api('companyadmin/lwfsetup/lwf-tracker'),
-    upload:(id:any)=> api(`/companyadmin/lwfsetup/lwf-tracker/payment-receipt/${id}`)
+        upload: (id: any) => api(`/companyadmin/lwfsetup/lwf-tracker/payment-receipt/${id}`),
+        getById: (id: any) => api(`companyadmin/lwfsetup/lwf-tracker/${id}`),
+    delete: (id: any) => api(`companyadmin/lwfsetup/lwf-delete/${id}`),
    },
    lwfSetup:{
     getAll:()=> api('/companyadmin/lwfsetup'),

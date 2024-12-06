@@ -21,7 +21,6 @@ const CompanyPFSetupPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [pfSetupData, setPfSetupData] = useState<PFData[]>([]);
-
   // const actualCompanyName = location.state?.companyName || decodeURIComponent(companyName || '').replace(/-/g, ' ');
   // const actualCompanyGroupName = locationState?.companyGroupName || '';
 

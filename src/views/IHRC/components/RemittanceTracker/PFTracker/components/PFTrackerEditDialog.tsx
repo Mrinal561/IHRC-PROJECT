@@ -1,6 +1,4 @@
 
-
-
 import React, { useState, useEffect } from 'react';
 import { Dialog, Button, DatePicker, toast, Notification } from '@/components/ui';
 import OutlinedInput from '@/components/ui/OutlinedInput';
@@ -228,7 +226,7 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
         </div>
 
         <div className='flex gap-8 items-center'>
-          <div className='flex flex-col gap-2 w-full'>
+          {/* <div className='flex flex-col gap-2 w-full'>
             <label>Select Month</label>
             <div className='w-full'>
               <DatePicker
@@ -237,7 +235,7 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
                 onChange={(date) => handleDateChange('month', date)}
               />
             </div>
-          </div>
+          </div> */}
           <div className='flex flex-col gap-2 w-full'>
             <label>Select Date of Payment</label>
             <div className='w-full'>
@@ -275,7 +273,7 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
         </div>
 
         <div className='flex gap-4 items-center'>
-          <div className='flex flex-col gap-2 w-full'>
+          {/* <div className='flex flex-col gap-2 w-full'>
             <label>Enter Delay</label>
             <div className='w-full'>
               <OutlinedInput
@@ -284,7 +282,7 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
                 onChange={(value) => handleChange('delay_in_days', value)}
               />
             </div>
-          </div>
+          </div> */}
 
           <div className='flex flex-col gap-2 w-full'>
             <label>Enter Delay Reason</label>
