@@ -202,10 +202,20 @@ const PTSetupPage: React.FC = () => {
   const location = useLocation();
   const [ptSetupData, setPTSetupData] = useState<PTSetupData[]>([]);
   const dispatch = useDispatch();
+    const locationState = location.state as { 
+    companyName?: string; 
+    companyGroupName?: string; 
+    companyId?: string; 
+  };
+  const actualCompanyId = locationState?.companyId;
   
   const fetchPTSetupData = async () => {
     try {
-      const response = await await httpClient.get(endpoints.ptSetup.getAll());
+      const response = await await httpClient.get(endpoints.ptSetup.getAll(), {
+        params: {
+          'company_id[]' : actualCompanyId,
+        }
+      });
       console.log('Fetched PT Setup data:', response.data.data);
       setPTSetupData(response.data.data);
     } catch (error) {
