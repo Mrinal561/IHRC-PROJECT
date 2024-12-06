@@ -411,6 +411,7 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> =({
                     onClose={() => setEditDialogOpen(false)}
                     onSubmit={handleEditSubmit}
                     trackerId={editingData.id}
+                    onRefresh={onRefresh}
                 />
             )}
              <Dialog
