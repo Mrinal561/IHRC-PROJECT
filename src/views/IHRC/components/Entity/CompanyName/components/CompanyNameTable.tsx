@@ -159,8 +159,9 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({
               />
             </Tooltip>
             <ConfigDropdown
-              companyName={row.original.name}
+              companyName={row.original.name} 
               companyGroupName={row.original.company_group_name}
+              companyId={row.original.id}
             />
           </div>
         ),

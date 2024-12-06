@@ -306,7 +306,7 @@ const LWFTrackerEditDialog: React.FC<LWFTrackerEditDialogProps> = ({
         </div>
 
         <div className="flex gap-4 items-center">
-          <div className='flex flex-col gap-2 w-full'>
+          {/* <div className='flex flex-col gap-2 w-full'>
             <label>Delay</label>
             <div className='w-full'>
               <OutlinedInput
@@ -315,7 +315,7 @@ const LWFTrackerEditDialog: React.FC<LWFTrackerEditDialogProps> = ({
                 onChange={(value) => handleChange('delay_in_days', value)}
               />
             </div>
-          </div>
+          </div> */}
           <div className='flex flex-col gap-2 w-full'>
             <label>Enter Delay Reason</label>
             <div className='w-full'>
