@@ -490,6 +490,7 @@ const PTECTrackerEditDialog: React.FC<PTTrackerEditDialogProps> = ({
           Save Changes
         </Button>
       </div>
+      </div>
     </Dialog>
   );
 };
