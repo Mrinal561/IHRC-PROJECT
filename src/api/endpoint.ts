@@ -110,8 +110,9 @@ esiTracker: {
         bulkUpload: () => api('/companyadmin/ptsetup/ptrc-tracker'),
         getAll: () => api('/companyadmin/ptsetup/ptrc-tracker'),
         uploadDocs: (id: any) => api(`/companyadmin/ptsetup/ptrc-tracker/document/${id}`),
-         downloadAll:()=> api('/companyadmin/ptsetup/ptrc-tracker/export')
-        
+         downloadAll:()=> api('/companyadmin/ptsetup/ptrc-tracker/export'),
+         delete: (id: any) => api(`companyadmin/ptsetup/ptrc-delete/${id}`),
+         getById: (id: any) => api(`companyadmin/ptsetup/ptrc-tracker/${id}`)
    },
 // ptTracker: {
 //     getAll: () => api(`companyadmin/esisetup/esi-tracker`),

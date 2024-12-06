@@ -4,38 +4,97 @@ import React, { useState, useEffect } from 'react';
 import { Dialog, Button, DatePicker, toast, Notification } from '@/components/ui';
 import OutlinedInput from '@/components/ui/OutlinedInput';
 import OutlinedSelect from '@/components/ui/Outlined';
-import { PTTrackerData } from './PTRCTrackerTable';
+import { fetchPtrcTrackerById } from '@/store/slices/ptSetup/ptrcTrackerSlice';
+import { useDispatch } from 'react-redux';
+import { showErrorNotification } from '@/components/ui/ErrorMessage';
 
-interface PTTrackerEditDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSubmit: (editedData: PTTrackerData) => void;
-  data: PTTrackerData;
+
+
+
+interface PTRCTrackerData {
+  id: number;
+  no_of_emp?: number;
+  gross_salary: number;
+  total_paid_amt?: number;
+  payment_due_date?: string;
+  delay_reason?: string;
+  differenceInAmount?: number;
 }
 
-const PTRCTrackerEditDialog: React.FC<PTTrackerEditDialogProps> = ({
+
+interface PTRCTrackerEditDialogProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: (editedData: PTRCTrackerData) => void;
+  trackerId: number;
+}
+
+const PTRCTrackerEditDialog: React.FC<PTRCTrackerEditDialogProps> = ({
   isOpen,
   onClose,
   onSubmit,
-  data,
+  trackerId,
 }) => {
-  const [editedData, setEditedData] = useState<PTTrackerData>(data);
+  const [editedData, setEditedData] = useState<PTRCTrackerData>({
+    id: trackerId,
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const dispatch = useDispatch();
+
 
   useEffect(() => {
-    setEditedData(data);
-  }, [data]);
+    if (isOpen && trackerId) {
+      fetchTrackerData();
+    }
+  }, [isOpen, trackerId]);
 
-  const handleChange = (field: keyof PTTrackerData, value: string | number) => {
+  const fetchTrackerData = async () => {
+    try {
+      setLoading(true);
+      const response = await dispatch(fetchPtrcTrackerById(trackerId))
+        .unwrap()
+        .catch((error: any) => {
+          if (error.response?.data?.message) {
+            showErrorNotification(error.response.data.message);
+          } else if (error.message) {
+            showErrorNotification(error.message);
+          } else if (Array.isArray(error)) {
+            showErrorNotification(error);
+          }
+          throw error;
+        });
+
+      setEditedData(response);
+      console.log(editedData);
+      
+      setLoading(false);
+    } catch (err) {
+      console.error('Error fetching tracker data:', err);
+      setError('Failed to load tracker details');
+      setLoading(false);
+      openNotification('danger', 'Failed to load tracker details');
+    }
+  };
+
+
+  const handleChange = (field: keyof PTRCTrackerData, value: string | number) => {
     setEditedData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = () => {
-    onSubmit(editedData);
-    onClose();
-    openNotification('success', 'PT RC Tracker edited successfully');
+  const handleSubmit = async () => {
+    try {
+      console.log(editedData);
+      onSubmit(editedData);
+      onClose();
+      openNotification('success', 'PT EC Tracker edited successfully');
+    } catch (err) {
+      console.error('Error submitting tracker data:', err);
+      openNotification('danger', 'Failed to save changes');
+    }
   };
   
-  const handleDateChange = (field: 'dueDate' | 'dateOfPayment' | 'month', date: Date | null) => {
+  const handleDateChange = (field: 'dueDate' | 'dateOfPayment' | 'month' | 'payment_due_date', date: Date | null) => {
     if (date) {
       handleChange(field, date.toISOString().split('T')[0]);
     }
@@ -69,7 +128,7 @@ const PTRCTrackerEditDialog: React.FC<PTTrackerEditDialogProps> = ({
       onClose={onClose}
       onRequestClose={onClose}
       width={800}
-      height={600}
+      height={420}
     >
       <h5 className="mb-4">Edit PT RC Tracker Detail</h5>
 
@@ -79,119 +138,65 @@ const PTRCTrackerEditDialog: React.FC<PTTrackerEditDialogProps> = ({
             <label>No. of Employees</label>
             <OutlinedInput
               label="No. of Employees"
-              value={editedData.noOfEmployees }
-              onChange={(value) => handleChange('noOfEmployees', parseInt(value, 10))}
+              value={editedData.no_of_emp?.toString() || '' }
+              onChange={(value) => handleChange('no_of_emp', parseInt(value, 10))}
             />
           </div>
           <div className='flex flex-col gap-2 w-full'>
-            <label>Receipt No/Ack no</label>
+            <label>Gross Salary</label>
             <OutlinedInput
-              label="Receipt No"
-              value={editedData.receiptNo}
-              onChange={(value) => handleChange('receiptNo', value)}
+              label="Gross Salary"
+              value={editedData.gross_salary?.toString() || '' }
+              onChange={(value) => handleChange('gross_salary', value)}
             />
           </div>
         </div>
 
         <div className='flex gap-4 items-center'>
-          <div className='flex flex-col gap-2 w-full'>
-            <label>Wages</label>
-            <OutlinedInput
-              label="Wages"
-              value={editedData.wages }
-              onChange={(value) => handleChange('wages', parseFloat(value))}
-            />
-          </div>
+         
           <div className='flex flex-col gap-2 w-full'>
             <label>Total Amount Paid</label>
             <OutlinedInput
               label="Total Amount Paid"
-              value={editedData.totalAmountPaid }
-              onChange={(value) => handleChange('totalAmountPaid', parseFloat(value))}
-            />
-          </div>
-          <div className='flex flex-col gap-2 w-full'>
-            <label>Difference in Amount</label>
-            <OutlinedInput
-              label="Difference in Amount"
-              value={editedData.differenceInAmount }
-              onChange={(value) => handleChange('differenceInAmount', parseFloat(value))}
-            />
-          </div>
-        </div>
-
-        <div className='flex gap-4 items-center'>
-          <div className='flex flex-col gap-2 w-full'>
-            <label>Month</label>
-            <DatePicker
-              placeholder="Month"
-              value={new Date(editedData.month)}
-              onChange={(date) => handleDateChange('month', date)}
-            />
-          </div>
-          <div className='flex flex-col gap-2 w-full'>
-            <label>Due Date</label>
-            <DatePicker
-              placeholder="Due Date"
-              value={new Date(editedData.dueDate)}
-              onChange={(date) => handleDateChange('dueDate', date)}
+              value={editedData.total_paid_amt?.toString() || ''  }
+              onChange={(value) => handleChange('total_paid_amt', parseFloat(value))}
             />
           </div>
           <div className='flex flex-col gap-2 w-full'>
             <label>Date of Payment</label>
             <DatePicker
+            size='sm'
               placeholder="Date of Payment"
-              value={new Date(editedData.dateOfPayment)}
-              onChange={(date) => handleDateChange('dateOfPayment', date)}
-            />
-          </div>
-        </div>
-
-        <div className='flex gap-4 items-center'>
-          <div className='flex flex-col gap-2 w-full'>
-            <label>Frequency</label>
-            <OutlinedSelect
-              label="Frequency"
-              options={frequencyOptions}
-              value={frequencyOptions.find(option => option.value === editedData.frequency)}
-              onChange={(option) => handleChange('frequency', option?.value || '')}
-            />
-          </div>
-          <div className='flex flex-col gap-2 w-full'>
-            <label>Remittance Mode</label>
-            <OutlinedSelect
-              label="Remittance Mode"
-              options={remittanceModeOptions}
-              value={remittanceModeOptions.find(option => option.value === editedData.remittanceMode)}
-              onChange={(option) => handleChange('remittanceMode', option?.value || '')}
-            />
-          </div>
-          {/* <div className='flex flex-col gap-2 w-full'>
-            <label>Remarks</label>
-            <OutlinedInput
-              label="Remarks"
-              value={editedData.remarks}
-              onChange={(value) => handleChange('remarks', value)}
-            />
-          </div> */}
-        </div>
-
-        <div className='flex gap-4 items-center'>
-          <div className='flex flex-col gap-2 w-full'>
-            <label>Delay</label>
-            <OutlinedInput
-              label="Delay"
-              value={editedData.delay}
-              onChange={(value) => handleChange('delay', value)}
+              value={editedData.payment_due_date ? new Date(editedData.payment_due_date) : undefined}
+              onChange={(date) => handleDateChange('payment_due_date', date)}
             />
           </div>
           <div className='flex flex-col gap-2 w-full'>
             <label>Delay Reason</label>
             <OutlinedInput
               label="Delay Reason"
-              value={editedData.delayReason}
-              onChange={(value) => handleChange('delayReason', value)}
+              value={editedData.delay_reason?.toString() || ''  }
+              onChange={(value) => handleChange('delay_reason', value)}
             />
+          </div>
+        </div>
+
+        <div className='flex gap-4 items-center'>
+        <div className='flex flex-col gap-2 w-full'>
+            <label>Difference Amount Reason</label>
+            <OutlinedInput
+              label="Reason"
+              value={editedData.differenceInAmount?.toString() || ''  }
+              onChange={(value) => handleChange('differenceInAmount', value)}
+            />
+          </div>
+        <div className='flex flex-col gap-2 w-full'>
+            {/* <label>Difference Amount Reason</label>
+            <OutlinedInput
+              label="Reason"
+              value={editedData.differenceInAmount?.toString() || ''  }
+              onChange={(value) => handleChange('differenceInAmount', value)}
+            /> */}
           </div>
         </div>
       </div>
@@ -201,7 +206,7 @@ const PTRCTrackerEditDialog: React.FC<PTTrackerEditDialogProps> = ({
           Cancel
         </Button>
         <Button variant="solid" onClick={handleSubmit}>
-          Save Changes
+          Confirm
         </Button>
       </div>
     </Dialog>
