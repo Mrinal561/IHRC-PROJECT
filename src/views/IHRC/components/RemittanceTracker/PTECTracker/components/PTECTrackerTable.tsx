@@ -381,6 +381,7 @@ const PTECTrackerTable: React.FC<PTTrackerTableProps> = ({
           onClose={() => setEditDialogOpen(false)}
           onSubmit={handleEditSubmit}
           data={editingData}
+          trackerId={editingData.id}
         />
       )}
     </div>
