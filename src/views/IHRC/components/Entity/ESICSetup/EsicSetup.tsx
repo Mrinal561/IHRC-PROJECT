@@ -26,7 +26,8 @@ export interface ESISetupData {
 
 interface LocationState {
     companyName?: string;
-    companyGroupName?: string;
+  companyGroupName?: string;
+  companyId?: string;
 }
 
 const CompanyESISetupPage: React.FC = () => {
@@ -41,7 +42,8 @@ const CompanyESISetupPage: React.FC = () => {
   const locationState = location.state as LocationState;
   const [esiSetups, setEsiSetups] = useState([]);
   const [loading, setLoading] = useState(false);
-
+   const actualCompanyId = locationState?.companyId;
+  
   // Function to fetch ESI setups and refresh table data
   const refreshData = async () => {
     setLoading(true);
@@ -88,7 +90,7 @@ const CompanyESISetupPage: React.FC = () => {
       setIsLoading(true);
       const response = await httpClient.get(endpoints.esiSetup.getAll(), {
         params: {
-          company_name: actualCompanyName
+           'company_id[]' : actualCompanyId,
         }
       });
       if(response?.data.data){

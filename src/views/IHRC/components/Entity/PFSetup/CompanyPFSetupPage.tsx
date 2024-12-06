@@ -23,10 +23,21 @@ const CompanyPFSetupPage: React.FC = () => {
   const [pfSetupData, setPfSetupData] = useState<PFData[]>([]);
   // const actualCompanyName = location.state?.companyName || decodeURIComponent(companyName || '').replace(/-/g, ' ');
   // const actualCompanyGroupName = locationState?.companyGroupName || '';
+  const locationState = location.state as { 
+    companyName?: string; 
+    companyGroupName?: string; 
+    companyId?: string; // Add companyId to the type
+  };
+  const actualCompanyId = locationState?.companyId;
 
   const fetchPFSetupData = async () => {
     try {
-      const response = await httpClient.get(endpoints.pfSetup.getAll());
+      console.log(actualCompanyId)
+      const response = await httpClient.get(endpoints.pfSetup.getAll(), {
+        params: {
+          'company_id[]' : actualCompanyId,
+        }
+      });
       console.log('Fetched PF Setup data:', response.data.data);
       setPfSetupData(response.data.data);
     } catch (error) {

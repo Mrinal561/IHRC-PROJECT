@@ -21,10 +21,20 @@ const LWFSetupPage: React.FC = () => {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [lwfSetupData, setLWFSetupData] = useState<LWFSetupData[]>([]);
+  const locationState = location.state as { 
+    companyName?: string; 
+    companyGroupName?: string; 
+    companyId?: string; // Add companyId to the type
+  };
+  const actualCompanyId = locationState?.companyId;
 
   const fetchLWFSetupData = async () => {
     try {
-      const response = await httpClient.get(endpoints.lwfSetup.getAll());
+      const response = await httpClient.get(endpoints.lwfSetup.getAll(), {
+        params: {
+          'company_id[]' : actualCompanyId,
+        }
+      });
       console.log('Fetched LWF Setup data:', response.data.data);
       setLWFSetupData(response.data.data);
     } catch (error) {

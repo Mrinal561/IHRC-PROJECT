@@ -41,7 +41,7 @@ interface BranchFormData {
         mobile?: string
     }
     register_number?: string
-    status: string
+    lease_status: string
     //   validity: string;
     document?: string
     se_document: string | null
@@ -49,6 +49,7 @@ interface BranchFormData {
     document_validity_type: string
     se_validity?: string
     lease_validity?: string
+    se_status?: string
 }
 
 interface SelectOption {
@@ -126,12 +127,13 @@ const AddBranchForm: React.FC = () => {
             mobile: '',
         },
         // register_number: '',
-        status: 'Active',
+        lease_status: 'Active',
         se_document: '',
         lease_document: '',
         document_validity_type: 'fixed',
         se_validity: '',
         lease_validity: '',
+        se_status: '',
     })
 
     useEffect(() => {
@@ -217,14 +219,14 @@ const AddBranchForm: React.FC = () => {
                 setFormData((prev) => ({
                     ...prev,
                     lease_validity: formattedDate,
-                    status: status,
+                    lease_status: status,
                 }))
                 setLeaseValidityDate(date)
             } else {
                 setFormData((prev) => ({
                     ...prev,
                     lease_validity: '',
-                    status: 'active',
+                    lease_status: 'active',
                 }))
                 setLeaseValidityDate(null)
             }
@@ -504,40 +506,40 @@ const AddBranchForm: React.FC = () => {
     const handleAddBranch = async () => {
         console.log(formData)
 
-        try {
-            const response = await dispatch(createBranch(formData))
-                .unwrap()
-                .catch((error: any) => {
-                    // Handle different error formats
-                    if (error.response?.data?.message) {
-                        // API error response
-                        showErrorNotification(error.response.data.message)
-                    } else if (error.message) {
-                        // Regular error object
-                        showErrorNotification(error.message)
-                    } else if (Array.isArray(error)) {
-                        // Array of error messages
-                        showErrorNotification(error)
-                    } else {
-                        // Fallback error message
-                        showErrorNotification(
-                            'An unexpected error occurred. Please try again.',
-                        )
-                    }
-                    throw error // Re-throw to prevent navigation
-                })
+        // try {
+        //     const response = await dispatch(createBranch(formData))
+        //         .unwrap()
+        //         .catch((error: any) => {
+        //             // Handle different error formats
+        //             if (error.response?.data?.message) {
+        //                 // API error response
+        //                 showErrorNotification(error.response.data.message)
+        //             } else if (error.message) {
+        //                 // Regular error object
+        //                 showErrorNotification(error.message)
+        //             } else if (Array.isArray(error)) {
+        //                 // Array of error messages
+        //                 showErrorNotification(error)
+        //             } else {
+        //                 // Fallback error message
+        //                 showErrorNotification(
+        //                     'An unexpected error occurred. Please try again.',
+        //                 )
+        //             }
+        //             throw error // Re-throw to prevent navigation
+        //         })
 
-            if (response) {
-                navigate('/branch')
-                toast.push(
-                    <Notification title="Success" type="success">
-                        Branch added successfully
-                    </Notification>,
-                )
-            }
-        } catch (error: any) {
-            console.error('Branch creation error:', error)
-        }
+        //     if (response) {
+        //         navigate('/branch')
+        //         toast.push(
+        //             <Notification title="Success" type="success">
+        //                 Branch added successfully
+        //             </Notification>,
+        //         )
+        //     }
+        // } catch (error: any) {
+        //     console.error('Branch creation error:', error)
+        // }
     }
 
     if (error) return <div className="text-red-500">{error}</div>
@@ -789,10 +791,14 @@ const AddBranchForm: React.FC = () => {
                             setSeRegistrationNumberExists(newStatus);
                             
                             setFormData((prev) => {
-                                const { register_number, se_validity, ...rest } = prev;
-                                return newStatus === 'applied'
-                                    ? rest
-                                    : { ...rest, register_number: '', se_validity: '' };
+                                const { register_number, se_validity, se_status, ...rest } = prev;
+                                return {
+                                    ...rest,
+                                    se_status: newStatus, // Add se_status here
+                                    ...(newStatus === 'applied' 
+                                        ? {} 
+                                        : { register_number: '', se_validity: '' })
+                                };
                             });
                         }}
                     />
@@ -882,15 +888,14 @@ const AddBranchForm: React.FC = () => {
                         </p>
                         <OutlinedInput
                             label="Status"
-                            value={formData.status}
-                            onChange={function (
-                                value: string,
-                            ): void {
-                                throw new Error(
-                                    'Function not implemented.',
-                                )
+                            value={formData.lease_status}
+                            onChange={(value: string) => {
+                                setFormData(prevData => ({
+                                    ...prevData,
+                                    lease_status: value
+                                }))
                             }}
-                        />
+                         />
                     </div>
                     {leaseValidityType === 'fixed' && (
                         <div>
@@ -957,17 +962,21 @@ const AddBranchForm: React.FC = () => {
                                        ? { value: 'expired', label: 'Expired' }
                                         : { value: 'applied', label: 'Applied For' }
                             }
-                            onChange={(selectedOption: any) => {
-                                const newStatus = selectedOption?.value || 'applied';
-                                setSeRegistrationNumberExists(newStatus);
-
-                                setFormData((prev) => {
-                                    const { register_number, se_validity,...rest } = prev;
-                                    return newStatus === 'applied'
-                                       ? rest
-                                        : {...rest, register_number: '', se_validity: '' };
-                                });
-                            }}
+                           onChange={(selectedOption:any) => {
+                            const newStatus = selectedOption?.value || 'applied';
+                            setSeRegistrationNumberExists(newStatus);
+                            
+                            setFormData((prev) => {
+                                const { register_number, se_validity, se_status, ...rest } = prev;
+                                return {
+                                    ...rest,
+                                    se_status: newStatus, // Add se_status here
+                                    ...(newStatus === 'applied' 
+                                        ? {} 
+                                        : { register_number: '', se_validity: '' })
+                                };
+                            });
+                        }}
                         />
                     </div>
 
