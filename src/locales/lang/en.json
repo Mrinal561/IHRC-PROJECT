@@ -29,8 +29,8 @@
             "collapse": {
                 "entitySetup": {
                     "collapse": {
-                        "collapse": "Entity Setup",
-                        "item1": "Company Group",
+                        "collapse": "Group Company Setup",
+                        "item1": "Entity",
                         "item2": "Company",
                         "item3": "State",
                         "item4": "District",
