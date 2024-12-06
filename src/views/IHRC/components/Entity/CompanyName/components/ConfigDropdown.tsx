@@ -5,11 +5,25 @@ import { FiSettings } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import { APP_PREFIX_PATH } from '@/constants/route.constant';
 
-const ConfigDropdown = ({ companyName, companyGroupName }) => {
+interface ConfigDropdownProps {
+  companyName: string;
+  companyGroupName?: string;
+  companyId: string;
+}
+
+const ConfigDropdown: React.FC<ConfigDropdownProps> = ({ 
+  companyName, 
+  companyGroupName, 
+  companyId 
+}) =>{
   const [isOpen, setIsOpen] = useState(false);
   const buttonRef = useRef(null);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
+
+
+  console.log('ConfigDropdown Props:', { companyName, companyGroupName, companyId });
+  
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -27,7 +41,7 @@ const ConfigDropdown = ({ companyName, companyGroupName }) => {
 
   const handleSetupClick = (setupType) => {
     const urlSafeCompanyName = encodeURIComponent(companyName.replace(/\s+/g, '-').toLowerCase());
-    navigate(`${APP_PREFIX_PATH}/IHRC/${setupType.toLowerCase()}-setup/${urlSafeCompanyName}`, { state: { companyName, companyGroupName } });
+    navigate(`${APP_PREFIX_PATH}/IHRC/${setupType.toLowerCase()}-setup/${urlSafeCompanyName}`, { state: { companyName, companyGroupName,  companyId } });
     setIsOpen(false);
   };
 

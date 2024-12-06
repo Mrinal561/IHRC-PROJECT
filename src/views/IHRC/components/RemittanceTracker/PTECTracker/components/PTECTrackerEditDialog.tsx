@@ -464,13 +464,13 @@ const PTECTrackerEditDialog: React.FC<PTTrackerEditDialogProps> = ({
 
         <div className="flex gap-4 items-center">
           <div className="flex flex-col gap-2 w-full">
-            <label>Delay</label>
+            {/* <label>Delay</label>
             <OutlinedInput
               label="Delay"
               value={editedData.delay_in_days || ''}
               onChange={(value) => handleChange('delay_in_days', value)}
             />
-          </div>
+          </div> */}
           <div className="flex flex-col gap-2 w-full">
             <label>Delay Reason</label>
             <OutlinedInput

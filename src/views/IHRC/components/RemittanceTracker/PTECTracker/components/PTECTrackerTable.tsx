@@ -2,7 +2,7 @@
 
 
 import React, { useMemo, useState } from 'react';
-import { Button, Tooltip } from '@/components/ui';
+import { Button, Dialog, Tooltip } from '@/components/ui';
 import { FiEdit, FiFile, FiTrash } from 'react-icons/fi';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 import { MdEdit } from 'react-icons/md';
@@ -13,6 +13,8 @@ import dayjs from 'dayjs';
 import loadingAnimation from '@/assets/lotties/system-regular-716-spinner-three-dots-loop-scale.json'
 import Lottie from 'lottie-react';
 import { HiOutlineViewGrid } from 'react-icons/hi';
+import { useDispatch } from 'react-redux';
+import { deletePtecTracker } from '@/store/slices/ptSetup/ptecTrackerSlice';
 
 const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
@@ -41,9 +43,26 @@ const PTECTrackerTable: React.FC<PTTrackerTableProps> = ({
   companyName,
   code
 }) => {
+   const dispatch = useDispatch();
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editingData, setEditingData] = useState<PTTrackerData | null>(null);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [trackerToDelete, setTrackerToDelete] = useState<string | null>(null);
 
+    const handleDeleteConfirmation = (trackerId: string) => {
+    setTrackerToDelete(trackerId);
+    setDeleteConfirmOpen(true);
+  };
+
+  const confirmDelete = () => {
+    if (trackerToDelete) {
+      dispatch(deletePtecTracker(trackerToDelete));
+      setDeleteConfirmOpen(false);
+      if (onRefresh) {
+        onRefresh();
+      }
+    }
+  };
   const handleEdit = (row: PTTrackerData) => {
     setEditingData(row);
     setEditDialogOpen(true);
@@ -299,7 +318,7 @@ const PTECTrackerTable: React.FC<PTTrackerTableProps> = ({
             <Tooltip title="Delete">
               <Button
                 size="sm"
-                onClick={() => console.log('Delete', row.original)}
+                onClick={() => handleDeleteConfirmation(row.original.id)}
                 icon={<FiTrash />}
                 className="text-red-500"
               />
@@ -384,6 +403,32 @@ const PTECTrackerTable: React.FC<PTTrackerTableProps> = ({
           trackerId={editingData.id}
         />
       )}
+
+       <Dialog
+        isOpen={deleteConfirmOpen}
+        onClose={() => setDeleteConfirmOpen(false)}
+      >
+        <div className="p-2">
+          <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>
+          <p className="mb-6">Are you sure you want to delete this PTEC Tracker entry?</p>
+          
+          <div className="flex justify-end space-x-2">
+            <Button 
+              onClick={() => setDeleteConfirmOpen(false)}
+              variant="plain"
+            >
+              Cancel
+            </Button>
+            <Button 
+              onClick={confirmDelete}
+              variant="solid"
+              color="blue"
+            >
+              Delete
+            </Button>
+          </div>
+        </div>
+      </Dialog>
     </div>
   );
 };
