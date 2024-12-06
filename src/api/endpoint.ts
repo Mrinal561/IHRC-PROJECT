@@ -101,7 +101,8 @@ esiTracker: {
     uploadDocs: (id: any) => api(`companyadmin/esisetup/esi-tracker/challan/${id}`),
      downloadAll:()=> api('/companyadmin/esisetup/esi-tracker/export'),
      getById: (id: any) => api(`companyadmin/esisetup/esi-tracker/${id}`),
-     delete: (id: string) => api(`companyadmin/esisetup/esi-delete/${id}`),
+    delete: (id: string) => api(`companyadmin/esisetup/esi-delete/${id}`),
+     update:(id:any)=> api(`/companyadmin/esisetup/esi-tracker/${id}`)
 
 
     },
