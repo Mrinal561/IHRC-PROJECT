@@ -22,8 +22,6 @@ import ptsetup, { ptsetupState } from './slices/ptSetup/ptSetupSlice'
 import ptrctracker,{ PtrcTrackerState } from './slices/ptSetup/ptrcTrackerSlice';
 import pftracker,{ TrackerState } from './slices/pftracker/pfTrackerSlice'
 import lwfid, { LwfTrackerId } from './slices/lwfTracker/lwfTracker';
-
- 
 import esitracker, { ESITrackersState } from './slices/esitracker/esitrackerSlice'
 
 export type RootState = CombinedState<{
