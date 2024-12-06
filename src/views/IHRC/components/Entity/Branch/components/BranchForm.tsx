@@ -41,7 +41,7 @@ interface BranchFormData {
         mobile?: string
     }
     register_number?: string
-    status: string
+    lease_status: string
     //   validity: string;
     document?: string
     se_document: string | null
@@ -49,6 +49,7 @@ interface BranchFormData {
     document_validity_type: string
     se_validity?: string
     lease_validity?: string
+    se_status?: string
 }
 
 interface SelectOption {
@@ -126,12 +127,13 @@ const AddBranchForm: React.FC = () => {
             mobile: '',
         },
         // register_number: '',
-        status: 'Active',
+        lease_status: '',
         se_document: '',
         lease_document: '',
         document_validity_type: 'fixed',
         se_validity: '',
         lease_validity: '',
+        se_status: '',
     })
 
     useEffect(() => {
@@ -172,7 +174,7 @@ const AddBranchForm: React.FC = () => {
         if (seValidityType === 'fixed') {
             if (date) {
                 const formattedDate = format(date, 'yyyy-MM-dd')
-                const status = isPast(date) ? 'Expired' : 'Active'
+                const status = isPast(date) ? 'inactive' : 'active'
 
                 setFormData((prev) => ({
                     ...prev,
@@ -212,19 +214,21 @@ const AddBranchForm: React.FC = () => {
         if (leaseValidityType === 'fixed') {
             if (date) {
                 const formattedDate = format(date, 'yyyy-MM-dd')
-                const status = isPast(date) ? 'Expired' : 'Active'
+                const status = isPast(date) ? 'inactive' : 'active'
+                const displayStatus = isPast(date) ? 'Expired' : 'Active'
+
 
                 setFormData((prev) => ({
-                    ...prev,
-                    lease_validity: formattedDate,
-                    status: status,
-                }))
+                ...prev,
+                lease_validity: formattedDate,
+                lease_status: status, // This will be 'inactive' or 'active' for backend
+            }))
                 setLeaseValidityDate(date)
             } else {
                 setFormData((prev) => ({
                     ...prev,
                     lease_validity: '',
-                    status: 'active',
+                    lease_status: 'active',
                 }))
                 setLeaseValidityDate(null)
             }
@@ -789,10 +793,14 @@ const AddBranchForm: React.FC = () => {
                             setSeRegistrationNumberExists(newStatus);
                             
                             setFormData((prev) => {
-                                const { register_number, se_validity, ...rest } = prev;
-                                return newStatus === 'applied'
-                                    ? rest
-                                    : { ...rest, register_number: '', se_validity: '' };
+                                const { register_number, se_validity, se_status, ...rest } = prev;
+                                return {
+                                    ...rest,
+                                    se_status: newStatus, // Add se_status here
+                                    ...(newStatus === 'applied' 
+                                        ? {} 
+                                        : { register_number: '', se_validity: '' })
+                                };
                             });
                         }}
                     />
@@ -882,15 +890,18 @@ const AddBranchForm: React.FC = () => {
                         </p>
                         <OutlinedInput
                             label="Status"
-                            value={formData.status}
-                            onChange={function (
-                                value: string,
-                            ): void {
-                                throw new Error(
-                                    'Function not implemented.',
-                                )
+                            value={
+                                formData.lease_status === 'inactive' 
+                                    ? 'Expired' 
+                                    : 'Active'
+                            }
+                            onChange={(value: string) => {
+                                setFormData(prevData => ({
+                                    ...prevData,
+                                    lease_status: value.toLowerCase() === 'expired' ? 'inactive' : 'active'
+                                }))
                             }}
-                        />
+                         />
                     </div>
                     {leaseValidityType === 'fixed' && (
                         <div>
@@ -957,17 +968,21 @@ const AddBranchForm: React.FC = () => {
                                        ? { value: 'expired', label: 'Expired' }
                                         : { value: 'applied', label: 'Applied For' }
                             }
-                            onChange={(selectedOption: any) => {
-                                const newStatus = selectedOption?.value || 'applied';
-                                setSeRegistrationNumberExists(newStatus);
-
-                                setFormData((prev) => {
-                                    const { register_number, se_validity,...rest } = prev;
-                                    return newStatus === 'applied'
-                                       ? rest
-                                        : {...rest, register_number: '', se_validity: '' };
-                                });
-                            }}
+                           onChange={(selectedOption:any) => {
+                            const newStatus = selectedOption?.value || 'applied';
+                            setSeRegistrationNumberExists(newStatus);
+                            
+                            setFormData((prev) => {
+                                const { register_number, se_validity, se_status, ...rest } = prev;
+                                return {
+                                    ...rest,
+                                    se_status: newStatus, // Add se_status here
+                                    ...(newStatus === 'applied' 
+                                        ? {} 
+                                        : { register_number: '', se_validity: '' })
+                                };
+                            });
+                        }}
                         />
                     </div>
 

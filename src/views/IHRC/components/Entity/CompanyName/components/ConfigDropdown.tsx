@@ -22,7 +22,7 @@ const ConfigDropdown: React.FC<ConfigDropdownProps> = ({
   const navigate = useNavigate();
 
 
-  console.log('ConfigDropdown Props:', { companyName, companyGroupName, companyId });
+  // console.log('ConfigDropdown Props:', { companyName, companyGroupName, companyId });
   
 
   useEffect(() => {
