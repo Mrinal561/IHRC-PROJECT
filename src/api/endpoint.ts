@@ -128,8 +128,9 @@ ptTracker: {
         bulkUpload: () => api('/companyadmin/ptsetup/ptec-tracker'),
         getAll: () => api('/companyadmin/ptsetup/ptec-tracker'),
         uploadDocs: (id: any) => api(`/companyadmin/ptsetup/ptec-tracker/document/${id}`),
-          
-         downloadAll:()=> api('/companyadmin/ptsetup/ptec-tracker/export')
+        downloadAll: () => api('/companyadmin/ptsetup/ptec-tracker/export'),
+          delete: (id: any) => api(`companyadmin/ptsetup/ptec-delete/${id}`),
+    getById: (id: any) => api(`companyadmin/ptsetup/ptec-tracker/${id}`)
        
    },
    pfiwtracker:{
