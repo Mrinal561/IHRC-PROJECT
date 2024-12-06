@@ -127,7 +127,7 @@ const AddBranchForm: React.FC = () => {
             mobile: '',
         },
         // register_number: '',
-        lease_status: 'Active',
+        lease_status: '',
         se_document: '',
         lease_document: '',
         document_validity_type: 'fixed',
@@ -174,7 +174,7 @@ const AddBranchForm: React.FC = () => {
         if (seValidityType === 'fixed') {
             if (date) {
                 const formattedDate = format(date, 'yyyy-MM-dd')
-                const status = isPast(date) ? 'Expired' : 'Active'
+                const status = isPast(date) ? 'inactive' : 'active'
 
                 setFormData((prev) => ({
                     ...prev,
@@ -214,13 +214,15 @@ const AddBranchForm: React.FC = () => {
         if (leaseValidityType === 'fixed') {
             if (date) {
                 const formattedDate = format(date, 'yyyy-MM-dd')
-                const status = isPast(date) ? 'Expired' : 'Active'
+                const status = isPast(date) ? 'inactive' : 'active'
+                const displayStatus = isPast(date) ? 'Expired' : 'Active'
+
 
                 setFormData((prev) => ({
-                    ...prev,
-                    lease_validity: formattedDate,
-                    lease_status: status,
-                }))
+                ...prev,
+                lease_validity: formattedDate,
+                lease_status: status, // This will be 'inactive' or 'active' for backend
+            }))
                 setLeaseValidityDate(date)
             } else {
                 setFormData((prev) => ({
@@ -506,40 +508,40 @@ const AddBranchForm: React.FC = () => {
     const handleAddBranch = async () => {
         console.log(formData)
 
-        // try {
-        //     const response = await dispatch(createBranch(formData))
-        //         .unwrap()
-        //         .catch((error: any) => {
-        //             // Handle different error formats
-        //             if (error.response?.data?.message) {
-        //                 // API error response
-        //                 showErrorNotification(error.response.data.message)
-        //             } else if (error.message) {
-        //                 // Regular error object
-        //                 showErrorNotification(error.message)
-        //             } else if (Array.isArray(error)) {
-        //                 // Array of error messages
-        //                 showErrorNotification(error)
-        //             } else {
-        //                 // Fallback error message
-        //                 showErrorNotification(
-        //                     'An unexpected error occurred. Please try again.',
-        //                 )
-        //             }
-        //             throw error // Re-throw to prevent navigation
-        //         })
+        try {
+            const response = await dispatch(createBranch(formData))
+                .unwrap()
+                .catch((error: any) => {
+                    // Handle different error formats
+                    if (error.response?.data?.message) {
+                        // API error response
+                        showErrorNotification(error.response.data.message)
+                    } else if (error.message) {
+                        // Regular error object
+                        showErrorNotification(error.message)
+                    } else if (Array.isArray(error)) {
+                        // Array of error messages
+                        showErrorNotification(error)
+                    } else {
+                        // Fallback error message
+                        showErrorNotification(
+                            'An unexpected error occurred. Please try again.',
+                        )
+                    }
+                    throw error // Re-throw to prevent navigation
+                })
 
-        //     if (response) {
-        //         navigate('/branch')
-        //         toast.push(
-        //             <Notification title="Success" type="success">
-        //                 Branch added successfully
-        //             </Notification>,
-        //         )
-        //     }
-        // } catch (error: any) {
-        //     console.error('Branch creation error:', error)
-        // }
+            if (response) {
+                navigate('/branch')
+                toast.push(
+                    <Notification title="Success" type="success">
+                        Branch added successfully
+                    </Notification>,
+                )
+            }
+        } catch (error: any) {
+            console.error('Branch creation error:', error)
+        }
     }
 
     if (error) return <div className="text-red-500">{error}</div>
@@ -888,11 +890,15 @@ const AddBranchForm: React.FC = () => {
                         </p>
                         <OutlinedInput
                             label="Status"
-                            value={formData.lease_status}
+                            value={
+                                formData.lease_status === 'inactive' 
+                                    ? 'Expired' 
+                                    : 'Active'
+                            }
                             onChange={(value: string) => {
                                 setFormData(prevData => ({
                                     ...prevData,
-                                    lease_status: value
+                                    lease_status: value.toLowerCase() === 'expired' ? 'inactive' : 'active'
                                 }))
                             }}
                          />
