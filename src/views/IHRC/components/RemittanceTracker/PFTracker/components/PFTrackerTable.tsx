@@ -277,14 +277,14 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> =({
                 className="text-red-500"
               />
             </Tooltip>
-             {/* <Tooltip title="Request to Admin">
+             <Tooltip title="Request to Admin">
               <Button
                 size="sm"
                 onClick={() => console.log(row.index)}
                 icon={<FaUserShield />}
                 className="text-blue-500"
               />
-            </Tooltip> */}
+            </Tooltip>
             <ConfigDropdown 
               companyName={row.original.PfSetup.Company.name} 
               companyGroupName={row.original.PfSetup.CompanyGroup.name} 

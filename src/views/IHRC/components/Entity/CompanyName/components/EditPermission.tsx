@@ -628,13 +628,13 @@ const EditPermission = () => {
                 icon={<RiCheckLine />}
               />
             </Tooltip>
-            <Tooltip title="Reject">
+            {/* <Tooltip title="Reject">
               <Button
                 size="sm"
                 onClick={() => handleReject(row.index)}
                 icon={<RiCloseLine />}
               />
-            </Tooltip>
+            </Tooltip> */}
           </div>
         ),
       },
@@ -694,7 +694,7 @@ const EditPermission = () => {
               onChange={handleFilterChange}
             />
           </div>
-          <Button
+          {/* <Button
             size="sm"
             variant="solid"
           >
@@ -705,7 +705,7 @@ const EditPermission = () => {
             variant="solid"
           >
             Bulk Reject
-          </Button>
+          </Button> */}
         </div>
       </div>
       <DataTable
