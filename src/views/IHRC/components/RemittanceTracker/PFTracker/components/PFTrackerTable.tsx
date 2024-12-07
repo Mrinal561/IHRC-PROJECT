@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Button, Dialog, Tooltip } from '@/components/ui';
 import { FiEdit, FiFile, FiTrash } from 'react-icons/fi';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
-import { MdEdit } from 'react-icons/md';
+import { MdAdminPanelSettings, MdEdit } from 'react-icons/md';
 import PFTrackerEditDialog from './PFTrackerEditDialog';
 import ConfigDropdown from './ConfigDropdown';
 import { PfChallanData } from '@/@types/pfTracker';
@@ -12,6 +12,8 @@ import loadingAnimation from '@/assets/lotties/system-regular-716-spinner-three-
 import Lottie from 'lottie-react';
 import { useDispatch } from 'react-redux';
 import { deleteTracker } from '@/store/slices/pftracker/pfTrackerSlice';
+import { VscGitPullRequestGoToChanges } from 'react-icons/vsc';
+import { FaUserShield } from 'react-icons/fa';
 const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
 interface PfTrackerTableProps {
@@ -275,6 +277,14 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> =({
                 className="text-red-500"
               />
             </Tooltip>
+             {/* <Tooltip title="Request to Admin">
+              <Button
+                size="sm"
+                onClick={() => console.log(row.index)}
+                icon={<FaUserShield />}
+                className="text-blue-500"
+              />
+            </Tooltip> */}
             <ConfigDropdown 
               companyName={row.original.PfSetup.Company.name} 
               companyGroupName={row.original.PfSetup.CompanyGroup.name} 
@@ -345,6 +355,7 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> =({
           onClose={() => setEditDialogOpen(false)}
           onSubmit={handleEditSubmit}
           trackerId={editingData.id}
+          onRefresh={onRefresh}
         />
       )}
 
