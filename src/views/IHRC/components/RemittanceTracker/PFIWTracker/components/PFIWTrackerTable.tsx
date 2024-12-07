@@ -428,6 +428,15 @@ const confirmDelete = () => {
         ),
       },
       {
+        header: 'Submission Date',
+        accessorKey: 'submit_date',
+        cell: (props) => (
+          <div className="w-40 truncate">
+            {dayjs(props.getValue() as string).format('DD-MM-YYYY')}
+          </div>
+        ),
+      },
+      {
         header: 'Delay',
         accessorKey: 'delay_days',
         cell: (props) => (
@@ -587,6 +596,7 @@ const confirmDelete = () => {
           onSubmit={handleEditSubmit}
           trackerid={editingData.id}
           data={editingData}
+          onRefresh={onRefresh}
         />
       )}
        <Dialog

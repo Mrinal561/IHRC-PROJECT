@@ -50,6 +50,12 @@ export const protectedRoutes = [
       component: lazy(() => import('@/views/IHRC/components/AuditChecklist/Status/components/ViewDetails')),
       authority: [],
     },
+     {
+      key: 'editPermission.complianceItem',
+      path:  `${APP_PREFIX_PATH}/Edit-permission`,
+      component: lazy(() => import('@/views/IHRC/components/Entity/CompanyName/components/EditPermission')),
+      authority: [],
+    },
     {
         key: 'branchInputDetail.item',
         path: `/add-branch`,

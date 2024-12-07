@@ -136,7 +136,7 @@ import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
 import { showErrorNotification } from '@/components/ui/ErrorMessage';
 import { useDispatch } from 'react-redux';
-import { fetchPfiwTrackerById } from '@/store/slices/pftracker/pfTrackerSlice';
+import { fetchPfiwTrackerById, updatePfiwTracker } from '@/store/slices/pftracker/pfTrackerSlice';
 
 
 interface PfChallanData {
@@ -162,6 +162,7 @@ interface PFIWTrackerEditDialogProps {
   onClose: () => void;
   onSubmit: (editedData: PfChallanData) => void;
   trackerid: number;
+   onRefresh: () => void;
 }
 
 const PFIWTrackerEditDialog: React.FC<PFIWTrackerEditDialogProps> = ({
@@ -169,6 +170,7 @@ const PFIWTrackerEditDialog: React.FC<PFIWTrackerEditDialogProps> = ({
   onClose,
   onSubmit,
   trackerid,
+  onRefresh
 }) => {
   const [editedData, setEditedData] = useState<PfChallanData>({
     id:trackerid
@@ -223,13 +225,33 @@ const PFIWTrackerEditDialog: React.FC<PFIWTrackerEditDialogProps> = ({
     }
   };
 
-  const handleSubmit = () => {
-    onSubmit(editedData);
-    onClose();
-    openNotification('success', 'PFIW Tracker edited successfully');
+  const handleSubmit = async () => {
+  try {
+      // Create updateData object (matching the original updateTracker data expectation)
+      const updateData = {
+        submit_date: editedData.submit_date,
+        delay_reason: editedData.delay_reason || '',
+        payroll_month: editedData.payroll_month,
+      
+      };
+
+      // Dispatch updateTracker with id and updateData
+      const resultAction =  await dispatch(updatePfiwTracker({
+        id: trackerid,
+        data: updateData
+      }));
+
+      onClose();
+      openNotification('success', 'ESI Tracker edited successfully');
+      if (onRefresh) {
+        onRefresh();
+      }
+    } catch (err) {
+      console.error('Error submitting tracker data:', err);
+    }
   };
 
-  const openNotification = (type: 'uccess' | 'info' | 'danger' | 'warning', message: string) => {
+  const openNotification = (type: 'success' | 'info' | 'danger' | 'warning', message: string) => {
     toast.push(
       <Notification
         title={type.charAt(0).toUpperCase() + type.slice(1)}
@@ -337,7 +359,7 @@ const PFIWTrackerEditDialog: React.FC<PFIWTrackerEditDialogProps> = ({
           Cancel
         </Button>
         <Button variant="solid" onClick={handleSubmit}>
-          Save Changes
+          Confirm
         </Button>
       </div>
     </Dialog>
