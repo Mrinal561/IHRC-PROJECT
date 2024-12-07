@@ -93,6 +93,7 @@ tracker:{
     downloadALl: () => api('/companyadmin/pfsetup/pf-tracker/export'),
     getById: (id: any) => api(`companyadmin/pfsetup/pf-tracker/${id}`),
     delete: (id: string) => api(`companyadmin/pfsetup/pf-delete/${id}`),
+    update:(id:any)=> api(`/companyadmin/pfsetup/pf-tracker/${id}`)
 },
 esiTracker: {
     getAll: () => api(`companyadmin/esisetup/esi-tracker`),
@@ -142,7 +143,8 @@ ptTracker: {
     challanupload:(id:any)=> api(`/companyadmin/pfsetup/pfiw-tracker/document/${id}`),
        downloadALl: () => api('/companyadmin/pfsetup/pfiw-tracker/export'),
     delete: (id: any) => api(`companyadmin/pfsetup/pfiw-delete/${id}`),
-    getById: (id: any) => api(`companyadmin/pfsetup/pfiw-tracker/${id}`)
+       getById: (id: any) => api(`companyadmin/pfsetup/pfiw-tracker/${id}`),
+    update:(id:any)=> api(`/companyadmin/pfsetup/pfiw-tracker/${id}`)
     },
     lwftracker: {
         downlaodAll:()=> api(`/companyadmin/lwfsetup/lwf-tracker/export`),

@@ -111,7 +111,7 @@ const CompanyNameTool: React.FC<CompanyToolProps> = ({ onDataChange }) => {
         onClick={() => setIsOpen(true)}
         variant="solid"
       >
-        Add Company
+        AddsCompany
       </Button>
       <Dialog
         isOpen={dialogIsOpen}
