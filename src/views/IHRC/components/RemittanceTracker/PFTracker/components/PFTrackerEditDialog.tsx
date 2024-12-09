@@ -122,7 +122,7 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
     }));
 
     onClose();
-    openNotification('success', 'ESI Tracker edited successfully');
+    openNotification('success', 'PF Tracker edited successfully');
      if (onRefresh) {
       onRefresh();
     }

@@ -35,6 +35,35 @@ export const createLwfTracker = createAsyncThunk(
         }
     }
 );
+export const fetchLwfById = createAsyncThunk(
+    'lwf/fetchLwfById',
+    async (id: string, { rejectWithValue }) => {
+        try {
+            const { data } = await httpClient.get(endpoints.lwfSetup.getById(id));
+            return data;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || 'Failed to fetch LWF data');
+        }
+    }
+);
+
+export const updateLwf = createAsyncThunk(
+    'lwfsetup/updateLwfTracker',
+    async ({ id, data }: { id: string; data: Partial<LwfTrackerCreate> }, { rejectWithValue }) => {
+        try {
+            const response = await httpClient.put(endpoints.lwfSetup.update(id), data, {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || 'Failed to update LWF tracker');
+        }
+    }
+);
+
+
 
 const LwfTrackerSlice = createSlice({
     name: 'lwfTracker',
@@ -50,6 +79,30 @@ const LwfTrackerSlice = createSlice({
                 state.loading = false;
             })
             .addCase(createLwfTracker.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+            })
+        .addCase(fetchLwfById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        })
+        .addCase(fetchLwfById.fulfilled, (state, action) => {
+            state.loading = false;
+            // Add any specific state updates you need based on the fetched data
+            // For example: state.currentLwf = action.payload;
+        })
+        .addCase(fetchLwfById.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload as string;
+        })
+        .addCase(updateLwf.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(updateLwf.fulfilled, (state) => {
+                state.loading = false;
+            })
+            .addCase(updateLwf.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
             });

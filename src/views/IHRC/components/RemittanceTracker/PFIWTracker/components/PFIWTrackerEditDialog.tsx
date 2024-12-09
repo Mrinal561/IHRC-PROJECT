@@ -242,7 +242,7 @@ const PFIWTrackerEditDialog: React.FC<PFIWTrackerEditDialogProps> = ({
       }));
 
       onClose();
-      openNotification('success', 'ESI Tracker edited successfully');
+      openNotification('success', 'PFIW Tracker edited successfully');
       if (onRefresh) {
         onRefresh();
       }

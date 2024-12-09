@@ -11,17 +11,19 @@ import dayjs from 'dayjs';
 
 interface PFSetupTableProps {
   data: PFData[];
+  onRefresh?: () => void;
   // onDelete: (index: number) => void;
   // onEdit: (index: number, newData: Partial<PFSetupData>) => void;
 }
 
-const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data }) => {
+const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh }) => {
   const [dialogIsOpen, setDialogIsOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<number | null>(null);
   const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
   const [itemToEdit, setItemToEdit] = useState<number | null>(null);
   const [editedData, setEditedData] = useState<Partial<PFSetupData>>({});
   const [suspendDialogIsOpen, setSuspendDialogIsOpen] = useState(false);
+  const [editingId, setEditingId] = useState<number | null>(null);
 
   const openSuspendDialog = (index: number) => {
     setSuspendDialogIsOpen(true);
@@ -173,9 +175,10 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data }) => {
     setDialogIsOpen(true);
   };
 
-  const openEditDialog = (item: PFSetupData) => {
-    setItemToEdit(item);
+  const openEditDialog = (item: PFData) => {
+    // setItemToEdit(item);
     // setEditedData(data[index]);
+    setEditingId(item.id);
     setEditDialogIsOpen(true);
   };
 
@@ -265,16 +268,18 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data }) => {
         onClose={handleDialogClose}
         onRequestClose={handleDialogClose}
         width={800}
-        height={570}
+        height={320}
       >
         <h5 className="mb-4">Edit PF Setup</h5>
         {/* Add your edit form fields here */}
         <PFEditedData
+          onRefresh={onRefresh}
+          id={editingId}
         initialData={itemToEdit}
         onClose={handleDialogClose}
         onSubmit={handleEditConfirm} />
         <div className="text-right mt-6">
-          <Button
+          {/* <Button
             className="ltr:mr-2 rtl:ml-2"
             variant="plain"
             onClick={handleDialogClose}
@@ -283,7 +288,7 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data }) => {
           </Button>
           <Button variant="solid" onClick={handleEditConfirm}>
             Confirm
-          </Button>
+          </Button> */}
         </div>
       </Dialog>
     </div>

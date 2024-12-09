@@ -13,6 +13,7 @@ import { format } from 'date-fns';
 
 interface UserFormData {
   group_id: number;
+  company_id: number;
   name: string;
   // last_name: string;
   email: string;
@@ -38,7 +39,8 @@ const UserAddForm = () => {
   
   const [companyGroups, setCompanyGroups] = useState<SelectOption[]>([]);
   const [selectedCompanyGroup, setSelectedCompanyGroup] = useState<SelectOption | null>(null);
-
+  const [companies, setCompanies] = useState<SelectOption[]>([]);
+  const [selectedCompany, setSelectedCompany] = useState<SelectOption | null>(null);
   const [ userRole, setUserRole ] = useState<SelectOption[]>([]);
   const [ selectedUserRole, setSelectedUserRole ] = useState<SelectOption | null>(null);
   const [isAuthorizedSignatory, setIsAuthorizedSignatory] = useState(false);
@@ -46,6 +48,7 @@ const UserAddForm = () => {
   
   const [formData, setFormData] = useState<UserFormData>({
     group_id: 0,
+    company_id: 0,
     name: '',
     email: '',
     password: '',
@@ -87,6 +90,58 @@ const UserAddForm = () => {
   useEffect(() => {
     loadCompanyGroups();
   }, []);
+
+ const loadCompanies = async (groupId: string[] | number[]) => {
+  try {
+    const groupIdParam = [`${groupId}`]
+    const { data } = await httpClient.get(endpoints.company.getAll(), {
+      params: {
+        'group_id[]': groupIdParam, // Add group_id as a query parameter
+      },
+    });
+    if (data?.data) {
+       const formattedCompanies = data.data.map((company: any) => ({
+         label: company.name,
+         value: String(company.id),
+       }));
+
+       if (formattedCompanies.length > 0) {
+         setCompanies(formattedCompanies);
+       } else {
+         showNotification(
+           'info',
+           'No companies found for this group',
+         );
+         setCompanies([]);
+       }
+     } else {
+       setCompanies([]);
+    }
+   } catch (error: any) {
+     console.error('Failed to load companies:', error);
+     showNotification(
+       'danger',
+       error.response?.data?.message || 'Failed to load companies',
+     );
+     setCompanies([]);
+   }
+  };
+  
+   useEffect(() => {
+   setFormData(prev => ({
+    ...prev,
+     company_id: selectedCompany?.value? parseInt(selectedCompany.value) : 0
+   }));
+ }, [selectedCompany]);
+    
+  
+  useEffect(() => {
+   if (selectedCompanyGroup?.value) {
+     loadCompanies(selectedCompanyGroup.value);
+   } else {
+     setCompanies([]); // Reset companies when no group is selected
+   }
+ }, [selectedCompanyGroup]);
 
 
   useEffect(() => {
@@ -276,7 +331,21 @@ if (resultAction) {
               onChange={setSelectedCompanyGroup}
             />
           </div>
-          <div className='flex flex-col gap-1'>
+          <div className='flex flex-col gap-2'>
+            <p className='mb-2'>Select the company<span className="text-red-500">*</span></p>
+            <OutlinedSelect
+                            label="Select Company"
+                            options={companies}
+                            value={selectedCompany}
+                            onChange={(option: SelectOption | null) => {
+                                setSelectedCompany(option)
+                            }}
+                        />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 my-8">
+           <div className='flex flex-col gap-1'>
             <p className="mb-2">Name <span className="text-red-500">*</span></p>
             <OutlinedInput
               label="Name"
@@ -284,9 +353,20 @@ if (resultAction) {
               onChange={(value: string) => handleInputChange('name', value)}
             />
           </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 my-8">
+          <div className='flex flex-col gap-1'>
+            <p className="mb-2">Date of Joining <span className="text-red-500">*</span></p>
+            <DatePicker
+              size='sm'
+              placeholder="Pick a date"
+              // value={formData.joining_date}
+              onChange={(date) => {
+                setFormData((prev) => ({
+                  ...prev,
+                  joining_date: date ? format(date, 'yyyy-MM-dd') : '',
+                }))
+              }}
+            />
+          </div>
           {/* <div className='flex flex-col gap-1'>
             <p className="mb-2">Last Name <span className="text-red-500">*</span></p>
             <OutlinedInput
@@ -367,20 +447,7 @@ if (resultAction) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 my-8">
 
-        <div className='flex flex-col gap-1'>
-            <p className="mb-1">Date of Joining <span className="text-red-500">*</span></p>
-            <DatePicker
-              size='sm'
-              placeholder="Pick a date"
-              // value={formData.joining_date}
-              onChange={(date) => {
-                setFormData((prev) => ({
-                  ...prev,
-                  joining_date: date ? format(date, 'yyyy-MM-dd') : '',
-                }))
-              }}
-            />
-          </div>
+        
           
          
         </div>

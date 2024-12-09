@@ -117,39 +117,6 @@ const ESITrackerEditDialog: React.FC<ESITrackerEditDialogProps> = ({
     setEditedData((prev) => ({ ...prev, [field]: value }));
   };
   
-// const handleSubmit = async () => {
-//     try {
-//       // Create formData with all the specified fields
-//       const formData: ESITrackerFormData = {
-//         // id: trackerId,
-//         no_of_emp: editedData.no_of_emp,
-//         gross_wage: editedData.gross_wage,
-//         employee_esi: editedData.employee_esi,
-//         employer_esi: editedData.employer_esi,
-//         total_esi: editedData.total_esi,
-//         challan_amt: editedData.challan_amt,
-//         payment_date: editedData.payment_date,
-//         challan_no: editedData.challan_no,
-//         delay_reason: editedData.delay_reason,
-//         difference_reason: editedData.difference_reason,
-//         challan_type: 'main',
-//         payroll_month: editedData.payroll_month
-//       };
-
-//       // Log the formData
-//       console.log('Form Data to Submit:', formData);
-
-//       // Optional: If you want to submit the formData
-//       // onSubmit(formData);
-
-//       onClose();
-//       openNotification('success', 'ESI Tracker edited successfully');
-//     } catch (err) {
-//       console.error('Error submitting tracker data:', err);
-//       openNotification('danger', 'Failed to save changes');
-//     }
-//   };
-  
   
 const handleSubmit = async () => {
   try {
@@ -258,26 +225,6 @@ const handleSubmit = async () => {
         </div>
 
         <div className='flex gap-8 items-center'>
-          {/* <div className='flex flex-col gap-2'>
-            <label>Select Month</label>
-            <div className='w-[219px]'>
-              <DatePicker
-                placeholder="Month"
-                value={new Date(editedData.month)}
-                onChange={(date) => handleDateChange('month', date)}
-              />
-            </div>
-          </div> */}
-          {/* <div className='flex flex-col gap-2'>
-            <label>Select Due Date</label>
-            <div className='w-[219px]'>
-              <DatePicker
-                placeholder="Due Date"
-                value={new Date(editedData.dueDate)}
-                onChange={(date) => handleDateChange('dueDate', date)}
-              />
-            </div>
-          </div> */}
           <div className='flex flex-col gap-2'>
             <label>Select Date of Payment</label>
             <div className='w-[219px]'>

@@ -22,6 +22,7 @@ interface PFSetupSidePanelProps {
   companyGroupName: string;
   companyName: string;
   pfSetupData?: PFSetupData;
+  onRefresh?: () => void;
 }
 
 interface SelectOption {
@@ -43,6 +44,7 @@ const PFSetupSidePanel: React.FC<PFSetupSidePanelProps> = ({
   onClose,
   companyGroupName,
   companyName,
+  onRefresh
 }) => {
   const [pfSetupData, setPfSetupData] = useState<PFSetupData>({
     Company_Group_Name: companyGroupName,

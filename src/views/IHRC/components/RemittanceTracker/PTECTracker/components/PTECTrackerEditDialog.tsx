@@ -218,7 +218,7 @@ import OutlinedInput from '@/components/ui/OutlinedInput';
 import OutlinedSelect from '@/components/ui/Outlined';
 import { showErrorNotification } from '@/components/ui/ErrorMessage';
 import { useDispatch } from 'react-redux';
-import { fetchPtecTrackerById } from '@/store/slices/ptSetup/ptecTrackerSlice';
+import { fetchPtecTrackerById, updatePtecTracker } from '@/store/slices/ptSetup/ptecTrackerSlice';
 
 interface PTTrackerData {
   id: number;
@@ -234,6 +234,7 @@ interface PTTrackerData {
   remittanceMode?: string;
   delay_in_days?: string;
   delay_reason?: string;
+  payment_date?: string;
 }
 
 interface PTTrackerEditDialogProps {
@@ -241,6 +242,7 @@ interface PTTrackerEditDialogProps {
   onClose: () => void;
   onSubmit: (editedData: PTTrackerData) => void;
   trackerId: number;
+    onRefresh: () => void;
 }
 
 const PTECTrackerEditDialog: React.FC<PTTrackerEditDialogProps> = ({
@@ -248,6 +250,7 @@ const PTECTrackerEditDialog: React.FC<PTTrackerEditDialogProps> = ({
   onClose,
   onSubmit,
   trackerId,
+  onRefresh
 }) => {
   const [editedData, setEditedData] = useState<PTTrackerData>({
     id: trackerId,
@@ -294,14 +297,30 @@ const PTECTrackerEditDialog: React.FC<PTTrackerEditDialogProps> = ({
 
   const handleSubmit = async () => {
     try {
-      console.log(editedData);
-      onSubmit(editedData);
-      onClose();
-      openNotification('success', 'PT EC Tracker edited successfully');
-    } catch (err) {
-      console.error('Error submitting tracker data:', err);
-      openNotification('danger', 'Failed to save changes');
+    // Create updateData object (matching the original updateTracker data expectation)
+    const updateData = {
+      payment_date: editedData.payment_date || '',
+      delay_reason: editedData.delay_reason || '',
+      receipt_no: editedData.receipt_no,
+      total_paid_amt: editedData.total_paid_amt,
+      total_challan_amt: editedData.total_challan_amt,
+    };
+
+    // Dispatch updateTracker with id and updateData
+    const resultAction = await dispatch(updatePtecTracker({
+      id: trackerId, 
+      data: updateData // Note: data, not formData
+    }));
+
+    onClose();
+    openNotification('success', 'PTEC Tracker edited successfully');
+     if (onRefresh) {
+      onRefresh();
     }
+  } catch (err) {
+    console.error('Error submitting tracker data:', err);
+    openNotification('danger', 'Failed to save changes');
+  }
   };
   
   const handleDateChange = (field: 'month' | 'dueDate' | 'payment_due_date', date: Date | null) => {
@@ -354,7 +373,7 @@ const PTECTrackerEditDialog: React.FC<PTTrackerEditDialogProps> = ({
       onClose={onClose}
       onRequestClose={onClose}
       width={800}
-      height={450}
+      height={420}
     >
       <h5 className="mb-4">Edit PT EC Tracker Detail</h5>
 
@@ -381,8 +400,8 @@ const PTECTrackerEditDialog: React.FC<PTTrackerEditDialogProps> = ({
             <DatePicker
               size='sm'
               placeholder="Date of Payment"
-              value={editedData.payment_due_date ? new Date(editedData.payment_due_date) : undefined}
-              onChange={(date) => handleDateChange('payment_due_date', date)}
+              value={editedData.payment_date ? new Date(editedData.payment_date) : undefined}
+              onChange={(date) => handleDateChange('payment_date', date)}
             />
           </div>
         </div>
@@ -462,7 +481,7 @@ const PTECTrackerEditDialog: React.FC<PTTrackerEditDialogProps> = ({
           </div>
         </div> */}
 
-        <div className="flex gap-4 items-center">
+        <div className="flex gap-4 items-center mb-5">
           <div className="flex flex-col gap-2 w-full">
             {/* <label>Delay</label>
             <OutlinedInput
@@ -487,7 +506,7 @@ const PTECTrackerEditDialog: React.FC<PTTrackerEditDialogProps> = ({
           Cancel
         </Button>
         <Button variant="solid" onClick={handleSubmit}>
-          Save Changes
+          Confirm
         </Button>
       </div>
       </div>

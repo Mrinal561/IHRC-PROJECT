@@ -46,11 +46,32 @@ export const createEsiSetup = createAsyncThunk(
 
 export const fetchEsiSetupById = createAsyncThunk(
     'esisetup/fetchEsiSetupById',
-    async (id: string) => {
-        const { data } = await httpClient.get(endpoints.esiSetup.getById(id));
-        return data;
+    async (id: string, { rejectWithValue }) => {
+        try {
+            const { data } = await httpClient.get(endpoints.esiSetup.getById(id));
+            return data;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.message )
+        }
     }
 );
+
+export const updateEsiSetup = createAsyncThunk(
+    'esisetup/updateEsiSetup',
+    async ({ id, esiData }: { id: string; esiData: Partial<EsiSetupData> }, { rejectWithValue }) => {
+        try {
+            const response = await httpClient.put(endpoints.esiSetup.update(id), esiData, {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || 'Failed to update ESI Setup record');
+        }
+    }
+);
+
 
 const esiSetupSlice = createSlice({
     name: 'esisetup',
@@ -102,6 +123,21 @@ const esiSetupSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload as string;
             })
+        .addCase(updateEsiSetup.pending, (state) => {
+    state.loading = true;
+    state.error = null;
+})
+.addCase(updateEsiSetup.fulfilled, (state, action) => {
+    state.loading = false;
+    // Optionally update the specific record in the esisetup array if needed
+   state.esisetup = state.esisetup.map(esi => 
+                    esi.id === action.payload.id ? action.payload : esi
+                );
+})
+.addCase(updateEsiSetup.rejected, (state, action) => {
+    state.loading = false;
+    state.error = action.payload as string;
+})
             // // Fetch All ESI Tracker
             // .addCase(fetchEsiTracker.pending, (state) => {
             //     state.loading = true;

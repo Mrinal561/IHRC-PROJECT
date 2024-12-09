@@ -87,13 +87,15 @@ export interface LwfTrackerId {
     loading: boolean;
     error: string | null;
     isDeleted: boolean; // Added for delete status tracking
+    isUpdated: boolean;
 }
 
 const initialState: LwfTrackerId = {
     currentTracker: null,
     loading: false,
     error: null,
-    isDeleted: false // Added initial state for delete status
+    isDeleted: false,
+    isUpdated: false
 };
 
 // Create async thunk for fetching LWF tracker by ID
@@ -122,6 +124,22 @@ export const deleteLwfTracker = createAsyncThunk(
     }
 );
 
+export const updateLwfTracker = createAsyncThunk(
+    'lwfTracker/update',
+    async ({ id, data }: { id: string; data: any }, { rejectWithValue }) => {
+        try {
+            const response = await httpClient.put(endpoints.lwftracker.update(id), data, {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || 'Failed to update LWF tracker');
+        }
+    }
+);
+
 const lwfTrackerSlice = createSlice({
     name: 'lwfTracker',
     initialState,
@@ -132,8 +150,11 @@ const lwfTrackerSlice = createSlice({
         clearError: (state) => {
             state.error = null;
         },
-        resetDeleteStatus: (state) => { // Added reset action for delete status
+        resetDeleteStatus: (state) => { 
             state.isDeleted = false;
+        },
+        resetUpdateStatus: (state) => {
+            state.isUpdated = false;
         }
     },
     extraReducers: (builder) => {
@@ -150,6 +171,21 @@ const lwfTrackerSlice = createSlice({
             .addCase(fetchLwfTrackerById.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
+            })
+            .addCase(updateLwfTracker.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+                state.isUpdated = false;
+            })
+            .addCase(updateLwfTracker.fulfilled, (state, action) => {
+                state.loading = false;
+                state.currentTracker = action.payload;
+                state.isUpdated = true;
+            })
+            .addCase(updateLwfTracker.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+                state.isUpdated = false;
             })
             
             // Delete LWF Tracker Cases

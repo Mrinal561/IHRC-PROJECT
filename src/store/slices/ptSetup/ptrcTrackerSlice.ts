@@ -13,7 +13,7 @@ export interface PtrcTrackerState {
     loading: boolean;
     error: string | null;
     isDeleted: boolean;
-
+    isUpdated: boolean; 
 }
 
 const initialState: PtrcTrackerState = {
@@ -22,7 +22,7 @@ const initialState: PtrcTrackerState = {
     loading: false,
     error: null,
     isDeleted: false,
-
+    isUpdated: false,
 };
 
 // Create PTRC Tracker
@@ -67,6 +67,22 @@ export const deletePtrcTracker = createAsyncThunk(
     }
 );
 
+export const updatePtrcTracker = createAsyncThunk(
+    'ptrcTracker/update',
+    async ({ id, data }: { id: string; data: any }, { rejectWithValue }) => {
+        try {
+            const response = await httpClient.put(endpoints.ptrc.update(id), data, {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || 'Failed to update PTRC tracker');
+        }
+    }
+);
+
 const ptrcTrackerSlice = createSlice({
     name: 'ptrcTracker',
     initialState,
@@ -79,6 +95,9 @@ const ptrcTrackerSlice = createSlice({
         },
         resetDeleteStatus: (state) => {
             state.isDeleted = false;
+        },
+        resetUpdateStatus: (state) => { 
+            state.isUpdated = false;
         }
     },    extraReducers: (builder) => {
         builder
@@ -122,6 +141,21 @@ const ptrcTrackerSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload as string;
                 state.isDeleted = false;
+            })
+             .addCase(updatePtrcTracker.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+                state.isUpdated = false;
+            })
+            .addCase(updatePtrcTracker.fulfilled, (state, action) => {
+                state.loading = false;
+                state.currentTracker = action.payload;
+                state.isUpdated = true;
+            })
+            .addCase(updatePtrcTracker.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+                state.isUpdated = false;
             });
     },
 });
@@ -129,7 +163,8 @@ const ptrcTrackerSlice = createSlice({
 export const {
     clearCurrentTracker,
     clearError,
-    resetDeleteStatus
+    resetDeleteStatus,
+    resetUpdateStatus
 } = ptrcTrackerSlice.actions;
 
 export default ptrcTrackerSlice.reducer;

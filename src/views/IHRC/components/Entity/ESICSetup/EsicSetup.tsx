@@ -103,6 +103,11 @@ const CompanyESISetupPage: React.FC = () => {
       setIsLoading(false);
     }
   };
+       const refreshESISetupData = () => {
+    fetchESISetupData();
+    // showNotification('PF Setup data refreshed successfully');
+  };
+
 
   useEffect(() => {
     if (actualCompanyName) {
@@ -192,6 +197,7 @@ const CompanyESISetupPage: React.FC = () => {
         // onDelete={handleDelete}
         // onEdit={handleEdit}
         isLoading={isLoading}
+        onRefresh={refreshESISetupData}
         // refreshData={fetchESISetupData}
       />
 

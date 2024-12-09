@@ -42,9 +42,13 @@ export const createPF = createAsyncThunk(
 // Fetch PF record by ID
 export const fetchPFById = createAsyncThunk(
     'pf/fetchPFById',
-    async (id: string) => {
-        const { data } = await httpClient.get(endpoints.pf.getById(id));
-        return data;
+    async (id: string, { rejectWithValue }) => {
+        try {
+            const { data } = await httpClient.get(endpoints.pfSetup.getById(id));
+            return data;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.message )
+       }
     }
 );
 
@@ -53,8 +57,12 @@ export const updatePF = createAsyncThunk(
     'pf/updatePF',
     async ({ id, pfData }: { id: string; pfData: Partial<PFData> }, { rejectWithValue }) => {
         try {
-            const { data } = await httpClient.put(endpoints.pf.update(id), pfData);
-            return data;
+            const response = await httpClient.put(endpoints.pfSetup.update(id), pfData, {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response?.data?.message || 'Failed to update PF record');
         }

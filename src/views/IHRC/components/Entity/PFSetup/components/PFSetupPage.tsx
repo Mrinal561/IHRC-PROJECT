@@ -31,7 +31,7 @@ interface PFSetupData {
     register_date: Date | null
     register_certificate: string
     signatory_data: SignatoryData[]
-    user: string
+    pf_user: string
     password: string
 }
 
@@ -117,7 +117,7 @@ const PFSetupPage: React.FC = () => {
         register_date: null,
         register_certificate: '',
         signatory_data: [],
-        user: '',
+        pf_user: '',
         password: '',
     })
 
@@ -579,11 +579,11 @@ const PFSetupPage: React.FC = () => {
                         <p className="mb-2">PF User</p>
                         <OutlinedInput
                             label="Username"
-                            value={pfSetupData.user}
+                            value={pfSetupData.pf_user}
                             onChange={(value: string) => {
                                 setPfSetupData((prev) => ({
                                     ...prev,
-                                    user: value,
+                                    pf_user: value,
                                 }))
                             }}
                         />
