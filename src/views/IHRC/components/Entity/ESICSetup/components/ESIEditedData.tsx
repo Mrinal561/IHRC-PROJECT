@@ -199,9 +199,7 @@ import { ESISetupData } from './EsicSetupTable';
 import OutlinedSelect from '@/components/ui/Outlined';
 import { useDispatch } from 'react-redux';
 import { showErrorNotification } from '@/components/ui/ErrorMessage';
-import { fetchESIById } from '@/store/slices/esiSetup/esiSlice'; // You'll need to create this
 import { fetchEsiSetupById, updateEsiSetup } from '@/store/slices/esiSetup/esiSetupSlice';
-import { updateESI } from '@/store/slices/esitracker/esitrackerSlice';
 
 interface ESIEditedDataProps {
   initialData: ESISetupData | null;

@@ -173,4 +173,7 @@ export const endpoints = {
         getById: (id: any) => api(`companyadmin/lwfsetup/${id}`),
           update: (id: any) => api(`companyadmin/lwfsetup/${id}`),
     },
+    request: {
+        request:(id:any) => api(`companyadmin/company/edit=request/${id}`)
+    }
 }

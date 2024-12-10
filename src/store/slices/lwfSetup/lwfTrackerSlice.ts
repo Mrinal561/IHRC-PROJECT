@@ -48,7 +48,7 @@ export const fetchLwfById = createAsyncThunk(
 );
 
 export const updateLwf = createAsyncThunk(
-    'lwfsetup/updateLwfTracker',
+    'lwfsetup/updateLwfSetup',
     async ({ id, data }: { id: string; data: Partial<LwfTrackerCreate> }, { rejectWithValue }) => {
         try {
             const response = await httpClient.put(endpoints.lwfSetup.update(id), data, {

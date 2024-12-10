@@ -25,6 +25,8 @@ export type PfChallanData = {
     upload_date: string; // or Date if parsed
     status: string;
     uploaded_by: number;
+    is_requested?: boolean;
+    iseditable?: boolean;
     created_at: string; // or Date if parsed
     updated_at: string; // or Date if parsed
     UploadBy: {
