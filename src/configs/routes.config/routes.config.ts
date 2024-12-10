@@ -210,7 +210,7 @@ export const protectedRoutes = [
         path:  '/Edit-permission',
         component: lazy(() => import('@/views/IHRC/components/Entity/CompanyName/components/EditPermission')),
         authority: [],
-      },
+    },
     {
         key: 'entityMenu.pfSetup',
         path:  `${APP_PREFIX_PATH}/IHRC/pf-setup/:companyName`,

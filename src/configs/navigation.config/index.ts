@@ -116,17 +116,6 @@ const navigationConfig: NavigationTree[] = [
                         authority: [],
                         subMenu: [],
                     },
-
-                    {
-                        key: 'companySetup.collapse.entitySetup.collapse.item6',
-                        path: '/branch',
-                        title: 'Branch',
-                        translateKey: 'nav.companySetup.collapse.entitySetup.collapse.item6',
-                        icon: '',
-                        type: NAV_ITEM_TYPE_ITEM,
-                        authority: [],
-                        subMenu: [],
-                    },
                     {
                         key: 'companySetup.collapse.entitySetup.collapse.item6',
                         path: '/branch',
