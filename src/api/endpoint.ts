@@ -40,10 +40,13 @@ export const endpoints = {
     },
     complianceSuperadmin: {
         getAll: () => api('/companyadmin/compliance/recommend'),
+        // getAll: () => api('/companyadmin/compliance/recommend'),
     },
     assign: {
         create: () => api('companyadmin/compliance'),
         getAll: () => api('companyadmin/compliance'),
+        // create: () => api('companyadmin/compliance'),
+        // getAll: () => api('companyadmin/compliance'),
         update: () => api(`companyadmin/compliance/assign-user`),
     },
     due: {
@@ -56,6 +59,7 @@ export const endpoints = {
         getById: (id: string) => api(`companyadmin/branch/${id}`),
         create: () => api('companyadmin/branch'),
         update: (id: string) => api(`companyadmin/branch/${id}`),
+        // update: (id: string) => api(`companyadmin/branch/${id}`),
         delete: (id: string) => api(`companyadmin/branch/${id}`),
         downloadFormat: () => api(`upload/sample_files/branch.xlsx`),
         bulkCreate: () => api(`/companyadmin/branch/bulk-upload`),
@@ -136,6 +140,7 @@ export const endpoints = {
     },
     ptec: {
         download: () => api('upload/sample_files/ptec-tracker.xlsx'),
+        // download: () => api('upload/sample_files/ptec-tracker.xlsx'),
         bulkUpload: () => api('/companyadmin/ptsetup/ptec-tracker'),
         getAll: () => api('/companyadmin/ptsetup/ptec-tracker'),
         uploadDocs: (id: any) =>
@@ -174,6 +179,7 @@ export const endpoints = {
           update: (id: any) => api(`companyadmin/lwfsetup/${id}`),
     },
     request: {
-        request:(id:any) => api(`companyadmin/company/edit=request/${id}`)
+        request: (id: any) => api(`companyadmin/company/edit=request/${id}`),
+        getAll:() => api(`companyadmin/company/tracker-edit-permission`)
     }
 }

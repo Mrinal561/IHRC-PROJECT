@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Button, Dialog, Tooltip } from '@/components/ui';
+import { Button, Dialog, toast, Tooltip } from '@/components/ui';
 import { FiEdit, FiFile, FiTrash } from 'react-icons/fi';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 import { MdAdminPanelSettings, MdEdit } from 'react-icons/md';
@@ -14,6 +14,7 @@ import { useDispatch } from 'react-redux';
 import { deleteTracker } from '@/store/slices/pftracker/pfTrackerSlice';
 import { VscGitPullRequestGoToChanges } from 'react-icons/vsc';
 import { FaUserShield } from 'react-icons/fa';
+import { requestCompanyEdit } from '@/store/slices/request/requestSLice';
 const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
 interface PfTrackerTableProps {
@@ -62,6 +63,28 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> =({
       }
     }
   };
+
+  const handleRequestToAdmin = async (id: any) => {
+  try {
+    // Dispatch the request with the required type
+    const res = await dispatch(requestCompanyEdit({
+      id: id,
+      payload: {
+        type: "pf" 
+      }
+    })).unwrap(); 
+
+    if (res) {
+      console.log('Requested Successfully')
+        if (onRefresh) {
+            onRefresh()
+        }
+    }
+
+  } catch (error) {
+    console.log("Admin request error:", error);
+  }
+};
   
   const handleEdit = (row: PfChallanData) => {
     setEditingData(row);
@@ -277,7 +300,7 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> =({
           <Tooltip title="Request to Admin">
             <Button
               size="sm"
-              // onClick={() => handleRequestToAdmin(row.original)}
+              onClick={() => handleRequestToAdmin(row.original.id)}
               icon={<FaUserShield />}
               className="text-blue-500"
             />
