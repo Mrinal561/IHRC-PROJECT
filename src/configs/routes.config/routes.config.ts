@@ -50,12 +50,7 @@ export const protectedRoutes = [
       component: lazy(() => import('@/views/IHRC/components/AuditChecklist/Status/components/ViewDetails')),
       authority: [],
     },
-     {
-      key: 'editPermission.complianceItem',
-      path:  `${APP_PREFIX_PATH}/Edit-permission`,
-      component: lazy(() => import('@/views/IHRC/components/Entity/CompanyName/components/EditPermission')),
-      authority: [],
-    },
+   
     {
         key: 'branchInputDetail.item',
         path: `/add-branch`,
@@ -210,6 +205,12 @@ export const protectedRoutes = [
         ),
         authority: [],
     },
+    {
+        key: 'entityMenu.collapse.item7',
+        path:  '/Edit-permission',
+        component: lazy(() => import('@/views/IHRC/components/Entity/CompanyName/components/EditPermission')),
+        authority: [],
+      },
     {
         key: 'entityMenu.pfSetup',
         path:  `${APP_PREFIX_PATH}/IHRC/pf-setup/:companyName`,

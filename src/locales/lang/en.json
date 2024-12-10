@@ -35,7 +35,8 @@
                         "item3": "State",
                         "item4": "District",
                         "item5": "Location",
-                        "item6": "Branch"
+                        "item6": "Branch",
+                        "item7": "Edit Permission"
                     }
                 },
                 "userSetup": "User Setup"

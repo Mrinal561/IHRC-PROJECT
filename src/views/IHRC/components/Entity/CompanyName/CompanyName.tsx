@@ -148,9 +148,9 @@ const CompanyName = () => {
     setIsOpen(false);
     setCompanyName('');
   };
-  const handleClick = () => {
-    navigate('/app/Edit-permission');
-  };
+  // const handleClick = () => {
+  //   navigate('/app/Edit-permission');
+  // };
 
 
   
@@ -164,11 +164,11 @@ const CompanyName = () => {
         <div className="flex gap-3 items-center">
           <Filter />
           <Bu onUploadSuccess={handleDataChange} />
-          <Button
+          {/* <Button
             size='sm'
             variant='solid'
              onClick={handleClick}
-          >Edit Permission</Button>
+          >Edit Permission</Button> */}
           <Button
             size="sm"
             icon={<HiPlusCircle />}
