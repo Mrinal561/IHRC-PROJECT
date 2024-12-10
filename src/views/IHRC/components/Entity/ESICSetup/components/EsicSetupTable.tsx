@@ -287,19 +287,22 @@ interface ESISetupTableProps {
     data: EsiSetupData[];
     onDelete?: (index: number) => void;
   onEdit?: (index: number, newData: EsiSetupData) => void;
-  loading?: boolean;
+    loading?: boolean;
+     onRefresh?: () => void;
 }
 
 const ESISetupTable: React.FC<ESISetupTableProps> = ({ 
     data,
     loading = false,
     onDelete,
-    onEdit 
+    onEdit,
+    onRefresh
 }) => {
     const [dialogIsOpen, setDialogIsOpen] = useState(false);
     const [itemToDelete, setItemToDelete] = useState<number | null>(null);
     const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
     const [itemToEdit, setItemToEdit] = useState<EsiSetupData | null>(null);
+  const [editingId, setEditingId] = useState<number | null>(null);
 
     const openNotification = (type: 'success' | 'info' | 'danger' | 'warning', message: string) => {
         toast.push(
@@ -399,6 +402,7 @@ const ESISetupTable: React.FC<ESISetupTableProps> = ({
     const openEditDialog = (item: EsiSetupData) => {
         setItemToEdit(item);
         setEditDialogIsOpen(true);
+         setEditingId(item.id);
     };
 
     const handleDialogClose = () => {
@@ -481,11 +485,13 @@ const ESISetupTable: React.FC<ESISetupTableProps> = ({
                 onClose={handleDialogClose}
                 onRequestClose={handleDialogClose}
                 width={800}
-                height={570}
+                height={340}
             >
                 <h5 className="mb-4">Edit ESI Setup</h5>
                 {itemToEdit && (
                     <ESIEditedData
+                        onRefresh={onRefresh}
+                        id = {editingId}
                         initialData={itemToEdit}
                         onClose={handleDialogClose}
                         onSubmit={handleEditConfirm}

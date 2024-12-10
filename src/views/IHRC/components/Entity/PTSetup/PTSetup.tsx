@@ -224,6 +224,11 @@ const PTSetupPage: React.FC = () => {
     }
   };
 
+       const refreshPTSetupData = () => {
+    fetchPTSetupData();
+    // showNotification('PF Setup data refreshed successfully');
+  };
+
   useEffect(() => {
     fetchPTSetupData();
   }, []);
@@ -270,7 +275,7 @@ const PTSetupPage: React.FC = () => {
         </Button>
       </div>
 
-      <PTSetupTable data={ptSetupData} />
+      <PTSetupTable data={ptSetupData}  onRefresh={refreshPTSetupData} />
     </div>
   );
 };

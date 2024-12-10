@@ -43,6 +43,11 @@ const LWFSetupPage: React.FC = () => {
     }
   };
 
+     const refreshLWFSetupData = () => {
+    fetchLWFSetupData();
+    // showNotification('PF Setup data refreshed successfully');
+  };
+
   useEffect(() => {
     fetchLWFSetupData();
   }, []);
@@ -98,7 +103,7 @@ const LWFSetupPage: React.FC = () => {
         </Button>
       </div>
 
-      <LWFSetupTable data={lwfSetupData} />
+      <LWFSetupTable data={lwfSetupData}  onRefresh={refreshLWFSetupData}/>
 
       <Dialog
         isOpen={isOpen}

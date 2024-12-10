@@ -74,6 +74,7 @@ export interface PtecTrackerState {
     loading: boolean;
     error: string | null;
     isDeleted: boolean;
+    isUpdated: boolean;
 }
 
 const initialState: PtecTrackerState = {
@@ -82,6 +83,7 @@ const initialState: PtecTrackerState = {
     loading: false,
     error: null,
     isDeleted: false,
+    isUpdated: false,
 };
 
 // Create PTEC Tracker
@@ -127,6 +129,22 @@ export const deletePtecTracker = createAsyncThunk(
     }
 );
 
+export const updatePtecTracker = createAsyncThunk(
+    'ptecTracker/update',
+    async ({ id, data }: { id: string; data: any }, { rejectWithValue }) => {
+        try {
+            const response = await httpClient.put(endpoints.ptec.update(id), data, {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || 'Failed to update PTEC tracker');
+        }
+    }
+);
+
 const ptecTrackerSlice = createSlice({
     name: 'ptecTracker',
     initialState,
@@ -139,6 +157,9 @@ const ptecTrackerSlice = createSlice({
         },
         resetDeleteStatus: (state) => {
             state.isDeleted = false;
+        },
+         resetUpdateStatus: (state) => { 
+            state.isUpdated = false;
         }
     },
     extraReducers: (builder) => {
@@ -185,6 +206,21 @@ const ptecTrackerSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload as string;
                 state.isDeleted = false;
+            })
+            .addCase(updatePtecTracker.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+                state.isUpdated = false;
+            })
+            .addCase(updatePtecTracker.fulfilled, (state, action) => {
+                state.loading = false;
+                state.currentTracker = action.payload;
+                state.isUpdated = true;
+            })
+            .addCase(updatePtecTracker.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+                state.isUpdated = false;
             });
     },
 });
@@ -192,7 +228,8 @@ const ptecTrackerSlice = createSlice({
 export const {
     clearCurrentTracker,
     clearError,
-    resetDeleteStatus
+    resetDeleteStatus,
+     resetUpdateStatus
 } = ptecTrackerSlice.actions;
 
 export default ptecTrackerSlice.reducer;

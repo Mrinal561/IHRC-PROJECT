@@ -11,6 +11,7 @@ import { CompanyData } from '@/@types/company';
 import { endpoints } from '@/api/endpoint';
 import httpClient from '@/api/http-client';
 import Bu from './components/Bu';
+import { useNavigate } from 'react-router-dom';
 
 interface NewCompany {
   name: string;
@@ -24,6 +25,7 @@ const CompanyName = () => {
   const [companyData, setCompanyData] = useState<CompanyData[]>([]);
   const [dialogIsOpen, setIsOpen] = useState(false);
   const [tableKey, setTableKey] = useState(0);
+  const navigate = useNavigate();
   
   // Company creation states
   const [companyName, setCompanyName] = useState('');
@@ -146,6 +148,9 @@ const CompanyName = () => {
     setIsOpen(false);
     setCompanyName('');
   };
+  // const handleClick = () => {
+  //   navigate('/app/Edit-permission');
+  // };
 
 
   
@@ -159,6 +164,11 @@ const CompanyName = () => {
         <div className="flex gap-3 items-center">
           <Filter />
           <Bu onUploadSuccess={handleDataChange} />
+          {/* <Button
+            size='sm'
+            variant='solid'
+             onClick={handleClick}
+          >Edit Permission</Button> */}
           <Button
             size="sm"
             icon={<HiPlusCircle />}

@@ -401,6 +401,7 @@ const PTECTrackerTable: React.FC<PTTrackerTableProps> = ({
           onSubmit={handleEditSubmit}
           data={editingData}
           trackerId={editingData.id}
+          onRefresh={onRefresh}
         />
       )}
 

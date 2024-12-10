@@ -119,11 +119,11 @@ const PTRCTrackerTable: React.FC<PTTrackerTableProps> = ({
         accessorKey: 'no_of_emp',
         cell: (props) => <div className="w-36 truncate">{props.getValue() as number}</div>,
       },
-      {
-        header: 'Month',
-        accessorKey: 'payroll_month',
-        cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
-      },
+      // {
+      //   header: 'Month',
+      //   accessorKey: 'payroll_month',
+      //   cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
+      // },
       {
         header: 'Gross Salary',
         accessorKey: 'gross_salary',
@@ -356,7 +356,7 @@ const PTRCTrackerTable: React.FC<PTTrackerTableProps> = ({
           onSubmit={handleEditSubmit}
           data={editingData}
           trackerId={editingData.id}
-
+          onRefresh={onRefresh}
         />
       )}
     </div>

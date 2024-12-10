@@ -53,6 +53,21 @@ export const fetchptsetupById = createAsyncThunk(
         return data;
     }
 );
+export const updatePT = createAsyncThunk(
+    'ptsetup/updatePTTracker',
+    async ({ id, data }: { id: string; data: Partial<PTSetupData> }, { rejectWithValue }) => {
+        try {
+            const response = await httpClient.put(endpoints.ptSetup.update(id), data, {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || 'Failed to update PT tracker');
+        }
+    }
+);
 
 const ptsetupSlice = createSlice({
     name: 'ptsetup',
@@ -104,6 +119,17 @@ const ptsetupSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload as string;
             })
+            .addCase(updatePT.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(updatePT.fulfilled, (state) => {
+                state.loading = false;
+            })
+            .addCase(updatePT.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+            });
             // // Fetch All ESI Tracker
             // .addCase(fetchEsiTracker.pending, (state) => {
             //     state.loading = true;

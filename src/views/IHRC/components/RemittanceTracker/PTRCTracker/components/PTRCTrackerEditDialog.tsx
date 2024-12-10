@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Dialog, Button, DatePicker, toast, Notification } from '@/components/ui';
 import OutlinedInput from '@/components/ui/OutlinedInput';
 import OutlinedSelect from '@/components/ui/Outlined';
-import { fetchPtrcTrackerById } from '@/store/slices/ptSetup/ptrcTrackerSlice';
+import { fetchPtrcTrackerById, updatePtrcTracker } from '@/store/slices/ptSetup/ptrcTrackerSlice';
 import { useDispatch } from 'react-redux';
 import { showErrorNotification } from '@/components/ui/ErrorMessage';
 
@@ -19,6 +19,8 @@ interface PTRCTrackerData {
   payment_due_date?: string;
   delay_reason?: string;
   differenceInAmount?: number;
+  payment_date?: string;
+  difference_reason?: string;
 }
 
 
@@ -27,6 +29,7 @@ interface PTRCTrackerEditDialogProps {
   onClose: () => void;
   onSubmit: (editedData: PTRCTrackerData) => void;
   trackerId: number;
+    onRefresh: () => void;
 }
 
 const PTRCTrackerEditDialog: React.FC<PTRCTrackerEditDialogProps> = ({
@@ -34,6 +37,7 @@ const PTRCTrackerEditDialog: React.FC<PTRCTrackerEditDialogProps> = ({
   onClose,
   onSubmit,
   trackerId,
+   onRefresh
 }) => {
   const [editedData, setEditedData] = useState<PTRCTrackerData>({
     id: trackerId,
@@ -83,15 +87,32 @@ const PTRCTrackerEditDialog: React.FC<PTRCTrackerEditDialogProps> = ({
   };
 
   const handleSubmit = async () => {
-    try {
-      console.log(editedData);
-      onSubmit(editedData);
-      onClose();
-      openNotification('success', 'PT EC Tracker edited successfully');
-    } catch (err) {
-      console.error('Error submitting tracker data:', err);
-      openNotification('danger', 'Failed to save changes');
+       try {
+    // Create updateData object (matching the original updateTracker data expectation)
+    const updateData = {
+      payment_date: editedData.payment_date || '',
+      delay_reason: editedData.delay_reason || '',
+      difference_reason: editedData.difference_reason,
+      total_paid_amt: editedData.total_paid_amt,
+      no_of_emp: editedData.no_of_emp,
+      gross_salary: editedData.gross_salary,
+    };
+
+    // Dispatch updateTracker with id and updateData
+    const resultAction = await dispatch(updatePtrcTracker({
+      id: trackerId, 
+      data: updateData // Note: data, not formData
+    }));
+
+    onClose();
+    openNotification('success', 'PTRC Tracker edited successfully');
+     if (onRefresh) {
+      onRefresh();
     }
+  } catch (err) {
+    console.error('Error submitting tracker data:', err);
+    openNotification('danger', 'Failed to save changes');
+  }
   };
   
   const handleDateChange = (field: 'dueDate' | 'dateOfPayment' | 'month' | 'payment_due_date', date: Date | null) => {
@@ -167,8 +188,8 @@ const PTRCTrackerEditDialog: React.FC<PTRCTrackerEditDialogProps> = ({
             <DatePicker
             size='sm'
               placeholder="Date of Payment"
-              value={editedData.payment_due_date ? new Date(editedData.payment_due_date) : undefined}
-              onChange={(date) => handleDateChange('payment_due_date', date)}
+              value={editedData.payment_date ? new Date(editedData.payment_date) : undefined}
+              onChange={(date) => handleDateChange('payment_date', date)}
             />
           </div>
           <div className='flex flex-col gap-2 w-full'>
@@ -186,8 +207,8 @@ const PTRCTrackerEditDialog: React.FC<PTRCTrackerEditDialogProps> = ({
             <label>Difference Amount Reason</label>
             <OutlinedInput
               label="Reason"
-              value={editedData.differenceInAmount?.toString() || ''  }
-              onChange={(value) => handleChange('differenceInAmount', value)}
+              value={editedData.difference_reason?.toString() || ''  }
+              onChange={(value) => handleChange('difference_reason', value)}
             />
           </div>
         <div className='flex flex-col gap-2 w-full'>

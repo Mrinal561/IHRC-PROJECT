@@ -329,14 +329,16 @@ import dayjs from 'dayjs';
 
 interface PTSetupTableProps {
   data: PTSetupData[];
+    onRefresh?: () => void;
 }
 
-const PTSetupTable: React.FC<PTSetupTableProps> = ({ data }) => {
+const PTSetupTable: React.FC<PTSetupTableProps> = ({ data , onRefresh}) => {
   const [dialogIsOpen, setDialogIsOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<number | null>(null);
   const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
   const [itemToEdit, setItemToEdit] = useState<PTSetupData | null>(null);
   const [suspendDialogIsOpen, setSuspendDialogIsOpen] = useState(false);
+  const [editingId, setEditingId] = useState<number | null>(null);
 
   const openSuspendDialog = (index: number) => {
     setSuspendDialogIsOpen(true);
@@ -507,6 +509,7 @@ const PTSetupTable: React.FC<PTSetupTableProps> = ({ data }) => {
   const openEditDialog = (item: PTSetupData) => {
     setItemToEdit(item);
     setEditDialogIsOpen(true);
+        setEditingId(item.id);
   };
 
   const handleDialogClose = () => {
@@ -565,11 +568,13 @@ const PTSetupTable: React.FC<PTSetupTableProps> = ({ data }) => {
         onClose={handleDialogClose}
         onRequestClose={handleDialogClose}
         width={1060}
-        height={570}
+        height={480}
       >
         <h5 className="mb-4">Edit PT Setup</h5>
         {itemToEdit && (
           <PTEditedData
+             onRefresh={onRefresh}
+            id={editingId}
             initialData={itemToEdit}
             onClose={handleDialogClose}
             onSubmit={(data: PTSetupData) => {

@@ -7,7 +7,7 @@ import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
 import { showErrorNotification } from '@/components/ui/ErrorMessage';
 import { useDispatch } from 'react-redux';
-import { fetchTrackerById } from '@/store/slices/pftracker/pfTrackerSlice';
+import { fetchTrackerById, updatePfTracker } from '@/store/slices/pftracker/pfTrackerSlice';
 
 interface PfChallanData {
   id: number;
@@ -15,6 +15,7 @@ interface PfChallanData {
   crn_no?: string;
   epf_wage?: number;
   eps_wage?: number;
+  edli_wage?: number;
   total_challan_amt?: number;
   payroll_month?: string;
   dueDate?: string;
@@ -23,6 +24,8 @@ interface PfChallanData {
   no_of_emp?: number;
   delay_in_days?: string;
   delay_reason?: string;
+  difference_reason?: string;
+  total_paid_amt?: number;
 }
 
 interface PFTrackerEditDialogProps {
@@ -30,6 +33,7 @@ interface PFTrackerEditDialogProps {
   onClose: () => void;
   onSubmit: (editedData: PfChallanData) => void;
   trackerId: number;
+     onRefresh: () => void;
 }
 
 const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
@@ -37,6 +41,7 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
   onClose,
   onSubmit,
   trackerId,
+  onRefresh
 }) => {
   const [editedData, setEditedData] = useState<PfChallanData>({
     id: trackerId,
@@ -92,15 +97,38 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
 
   const handleSubmit = async () => {
     try {
-      // You might want to add an API call to update the data here
-      console.log(editedData)
-      // onSubmit(editedData);
-      onClose();
-      openNotification('success', 'PF Tracker edited successfully');
-    } catch (err) {
-      console.error('Error submitting tracker data:', err);
-      openNotification('danger', 'Failed to save changes');
+    // Create updateData object (matching the original updateTracker data expectation)
+    const updateData = {
+      no_of_emp: editedData.no_of_emp,
+      delay_reason: editedData.delay_reason || '',
+      epf_wage: editedData.epf_wage || 0,
+      eps_wage: editedData.eps_wage || 0,
+      edli_wage: editedData.edli_wage || 0,
+      total_challan_amt: editedData.total_challan_amt || 0,
+      total_paid_amt: editedData.total_paid_amt || 0,
+      payment_date: editedData.payment_date || '',
+      challan_type: editedData.challan_type,
+      trrn_no: editedData.trrn_no || '',
+      crn_no: editedData.crn_no || '',
+      difference_reason: editedData.difference_reason || '',
+      payroll_month: editedData.payroll_month,
+     
+    };
+
+    // Dispatch updateTracker with id and updateData
+    const resultAction =  await dispatch(updatePfTracker({
+      id: trackerId,
+      data: updateData
+    }));
+
+    onClose();
+    openNotification('success', 'PF Tracker edited successfully');
+     if (onRefresh) {
+      onRefresh();
     }
+  } catch (err) {
+    console.error('Error submitting tracker data:', err);
+  }
   };
   
   const handleDateChange = (field: 'month' | 'dueDate' | 'dateOfPayment', date: Date | null) => {
@@ -194,10 +222,10 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
 
         <div className="flex gap-8 items-center">
           <div className='flex flex-col gap-2'>
-            <label>Enter the Wages</label>
+            <label>Enter EPF Wages</label>
             <div className='w-[219px]'>
               <OutlinedInput
-                label="Wages"
+                label="EPF Wage"
                 value={editedData.epf_wage?.toString() || ''}
                 onChange={(value) => handleChange('epf_wage', parseFloat(value))}
               />
@@ -214,7 +242,20 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
             </div>
           </div>
           <div className='flex flex-col gap-2'>
-            <label>Enter Total Challan Amount</label>
+           <label>Edli Wage</label>
+            <div className='w-[219px]'>
+              <OutlinedInput
+                label="Edli Wage"
+                value={editedData.edli_wage?.toString() || ''}
+                onChange={(value) => handleChange('edli_wage', parseFloat(value))}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className='flex gap-8 items-center'>
+          <div className='flex flex-col gap-2'>
+             <label>Enter Total Challan Amount</label>
             <div className='w-[219px]'>
               <OutlinedInput
                 label="Total Challan Amount"
@@ -223,23 +264,11 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
               />
             </div>
           </div>
-        </div>
-
-        <div className='flex gap-8 items-center'>
-          {/* <div className='flex flex-col gap-2 w-full'>
-            <label>Select Month</label>
-            <div className='w-full'>
-              <DatePicker
-                placeholder="Month"
-                value={editedData.payroll_month ? new Date(editedData.payroll_month) : undefined}
-                onChange={(date) => handleDateChange('month', date)}
-              />
-            </div>
-          </div> */}
           <div className='flex flex-col gap-2 w-full'>
             <label>Select Date of Payment</label>
             <div className='w-full'>
               <DatePicker
+                size='sm'
                 placeholder="Date of Payment"
                 value={editedData.payment_date ? new Date(editedData.payment_date) : undefined}
                 onChange={(date) => handleDateChange('payment_date', date)}
@@ -249,14 +278,14 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
         </div>
 
         <div className='flex gap-4 items-center'>
-          <div className='flex flex-col gap-2 w-full'>
-            <label>Type of Challan</label>
-            <div className='w-full'>
+           <div className='flex flex-col gap-2'>
+            <label>Total Paid Amount </label>
+            <div className='w-[219px]'>
               <OutlinedInput
-              label="Type of Challan"
-              value={editedData.challan_type || ''}
-              onChange={(value) => handleChange('challan_type', value)}
-            />
+                label="Total Paid Amount"
+                value={editedData.total_paid_amt?.toString() || ''}
+                onChange={(value) => handleChange('total_paid_amt', parseFloat(value))}
+              />
             </div>
           </div>
 
@@ -273,16 +302,16 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
         </div>
 
         <div className='flex gap-4 items-center'>
-          {/* <div className='flex flex-col gap-2 w-full'>
-            <label>Enter Delay</label>
+          <div className='flex flex-col gap-2 w-full'>
+            <label>Difference Reason</label>
             <div className='w-full'>
               <OutlinedInput
-                label="Delay"
-                value={editedData.delay_in_days || ''}
-                onChange={(value) => handleChange('delay_in_days', value)}
+                label="Difference Reason"
+                value={editedData.difference_reason || ''}
+                onChange={(value) => handleChange('difference_reason', value)}
               />
             </div>
-          </div> */}
+          </div>
 
           <div className='flex flex-col gap-2 w-full'>
             <label>Enter Delay Reason</label>

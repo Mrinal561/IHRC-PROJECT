@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Button, Dialog, Tooltip } from '@/components/ui';
+import { Button, Dialog, toast, Tooltip } from '@/components/ui';
 import { FiEdit, FiFile, FiTrash } from 'react-icons/fi';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
-import { MdEdit } from 'react-icons/md';
+import { MdAdminPanelSettings, MdEdit } from 'react-icons/md';
 import PFTrackerEditDialog from './PFTrackerEditDialog';
 import ConfigDropdown from './ConfigDropdown';
 import { PfChallanData } from '@/@types/pfTracker';
@@ -12,6 +12,9 @@ import loadingAnimation from '@/assets/lotties/system-regular-716-spinner-three-
 import Lottie from 'lottie-react';
 import { useDispatch } from 'react-redux';
 import { deleteTracker } from '@/store/slices/pftracker/pfTrackerSlice';
+import { VscGitPullRequestGoToChanges } from 'react-icons/vsc';
+import { FaUserShield } from 'react-icons/fa';
+import { requestCompanyEdit } from '@/store/slices/request/requestSLice';
 const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
 interface PfTrackerTableProps {
@@ -60,6 +63,28 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> =({
       }
     }
   };
+
+  const handleRequestToAdmin = async (id: any) => {
+  try {
+    // Dispatch the request with the required type
+    const res = await dispatch(requestCompanyEdit({
+      id: id,
+      payload: {
+        type: "pf" 
+      }
+    })).unwrap(); 
+
+    if (res) {
+      console.log('Requested Successfully')
+        if (onRefresh) {
+            onRefresh()
+        }
+    }
+
+  } catch (error) {
+    console.log("Admin request error:", error);
+  }
+};
   
   const handleEdit = (row: PfChallanData) => {
     setEditingData(row);
@@ -256,34 +281,86 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> =({
         },
       },
       {
-        header: 'Actions',
-        id: 'actions',
-        cell: ({ row }) => (
-          <div className="flex items-center gap-2">
-            <Tooltip title="Edit">
-              <Button
-                size="sm"
-                onClick={() => handleEdit(row.original)}
-                icon={<MdEdit />}
-              />
-            </Tooltip>
-            <Tooltip title="Delete">
-              <Button
-                size="sm"
-                onClick={() => handleDeleteConfirmation(row.original.id)}
-                icon={<FiTrash />}
-                className="text-red-500"
-              />
-            </Tooltip>
-            <ConfigDropdown 
-              companyName={row.original.PfSetup.Company.name} 
-              companyGroupName={row.original.PfSetup.CompanyGroup.name} 
-              trackerId={row.original.id} 
-              onRefresh={onRefresh}
+  header: 'Actions',
+  id: 'actions',
+  cell: ({ row }) => {
+    const { iseditable } = row.original;
+    console.log("editable:",iseditable)
+    return (
+      <div className="flex items-center gap-2">
+        {iseditable ? (
+          <Tooltip title="Edit">
+            <Button
+              size="sm"
+              onClick={() => handleEdit(row.original)}
+              icon={<MdEdit />}
             />
-          </div>
-        ),
-      },
+          </Tooltip>
+        ) : (
+          <Tooltip title="Request to Admin">
+            <Button
+              size="sm"
+              onClick={() => handleRequestToAdmin(row.original.id)}
+              icon={<FaUserShield />}
+              className="text-blue-500"
+            />
+          </Tooltip>
+        )}
+        <Tooltip title="Delete">
+          <Button
+            size="sm"
+            onClick={() => handleDeleteConfirmation(row.original.id)}
+            icon={<FiTrash />}
+            className="text-red-500"
+          />
+        </Tooltip>
+        <ConfigDropdown 
+          companyName={row.original.PfSetup.Company.name} 
+          companyGroupName={row.original.PfSetup.CompanyGroup.name} 
+          trackerId={row.original.id} 
+          onRefresh={onRefresh}
+        />
+      </div>
+    );
+  },
+}
+      // {
+      //   header: 'Actions',
+      //   id: 'actions',
+      //   cell: ({ row }) => (
+      //     <div className="flex items-center gap-2">
+      //       <Tooltip title="Edit">
+      //         <Button
+      //           size="sm"
+      //           onClick={() => handleEdit(row.original)}
+      //           icon={<MdEdit />}
+      //         />
+      //       </Tooltip>
+      //       <Tooltip title="Delete">
+      //         <Button
+      //           size="sm"
+      //           onClick={() => handleDeleteConfirmation(row.original.id)}
+      //           icon={<FiTrash />}
+      //           className="text-red-500"
+      //         />
+      //       </Tooltip>
+      //        <Tooltip title="Request to Admin">
+      //         <Button
+      //           size="sm"
+      //           onClick={() => console.log(row.index)}
+      //           icon={<FaUserShield />}
+      //           className="text-blue-500"
+      //         />
+      //       </Tooltip>
+      //       <ConfigDropdown 
+      //         companyName={row.original.PfSetup.Company.name} 
+      //         companyGroupName={row.original.PfSetup.CompanyGroup.name} 
+      //         trackerId={row.original.id} 
+      //         onRefresh={onRefresh}
+      //       />
+      //     </div>
+      //   ),
+      // },
     ],
     [onRefresh]
   );
@@ -345,6 +422,7 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> =({
           onClose={() => setEditDialogOpen(false)}
           onSubmit={handleEditSubmit}
           trackerId={editingData.id}
+          onRefresh={onRefresh}
         />
       )}
 

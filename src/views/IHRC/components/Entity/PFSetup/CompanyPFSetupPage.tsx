@@ -45,6 +45,11 @@ const CompanyPFSetupPage: React.FC = () => {
       throw error;
     }
   };
+  
+   const refreshPFSetupData = () => {
+    fetchPFSetupData();
+    // showNotification('PF Setup data refreshed successfully');
+  };
 
   useEffect(() => {
     fetchPFSetupData();
@@ -92,7 +97,7 @@ const CompanyPFSetupPage: React.FC = () => {
         </Button>
       </div>
 
-      <PFSetupTable data={pfSetupData} />
+      <PFSetupTable data={pfSetupData}  onRefresh={refreshPFSetupData}/>
     </div>
   );
 };

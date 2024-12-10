@@ -157,7 +157,7 @@ import OutlinedInput from '@/components/ui/OutlinedInput';
 import OutlinedSelect from '@/components/ui/Outlined';
 import { useDispatch } from 'react-redux';
 import { showErrorNotification } from '@/components/ui/ErrorMessage';
-import { fetchLwfTrackerById } from '@/store/slices/lwfTracker/lwfTracker';
+import { fetchLwfTrackerById, updateLwfTracker } from '@/store/slices/lwfTracker/lwfTracker';
 
 interface LWFTrackerData {
   id: number;
@@ -174,6 +174,7 @@ interface LWFTrackerEditDialogProps {
   onClose: () => void;
   onSubmit: (editedData: LWFTrackerData) => void;
   trackerId: number;
+   onRefresh: () => void;
 }
 
 const LWFTrackerEditDialog: React.FC<LWFTrackerEditDialogProps> = ({
@@ -181,6 +182,7 @@ const LWFTrackerEditDialog: React.FC<LWFTrackerEditDialogProps> = ({
   onClose,
   onSubmit,
   trackerId,
+  onRefresh
 }) => {
   const [editedData, setEditedData] = useState<LWFTrackerData>({
     id: trackerId,
@@ -226,15 +228,30 @@ const LWFTrackerEditDialog: React.FC<LWFTrackerEditDialogProps> = ({
   };
 
   const handleSubmit = async () => {
-    try {
-      console.log(editedData);
-      onSubmit(editedData);
-      onClose();
-      openNotification('success', 'LWF Tracker edited successfully');
-    } catch (err) {
-      console.error('Error submitting tracker data:', err);
-      openNotification('danger', 'Failed to save changes');
+      try {
+    // Create updateData object (matching the original updateTracker data expectation)
+    const updateData = {
+      payment_date: editedData.payment_date || '',
+      delay_reason: editedData.delay_reason || '',
+      receipt_no: editedData.receipt_no,
+      total_paid_amt: editedData.total_paid_amt,
+    };
+
+    // Dispatch updateTracker with id and updateData
+    const resultAction = await dispatch(updateLwfTracker({
+      id: trackerId, 
+      data: updateData // Note: data, not formData
+    }));
+
+    onClose();
+    openNotification('success', 'LWF Tracker edited successfully');
+     if (onRefresh) {
+      onRefresh();
     }
+  } catch (err) {
+    console.error('Error submitting tracker data:', err);
+    openNotification('danger', 'Failed to save changes');
+  }
   };
   
   const handleDateChange = (field: 'dueDate' | 'submittedOn', date: Date | null) => {
@@ -276,7 +293,7 @@ const LWFTrackerEditDialog: React.FC<LWFTrackerEditDialogProps> = ({
       onClose={onClose}
       onRequestClose={onClose}
       width={800}
-      height={450}
+      height={360}
     >
       <h5 className="mb-4">Edit LWF Tracker Detail</h5>
       
@@ -297,7 +314,7 @@ const LWFTrackerEditDialog: React.FC<LWFTrackerEditDialogProps> = ({
             <label>Enter Total Amount</label>
             <div className='w-full'>
               <OutlinedInput
-                label="Total Amount"
+                label="Total Paid Amount"
                 value={editedData.total_paid_amt?.toString() || ''}
                 onChange={(value) => handleChange('total_paid_amt', parseFloat(value))}
               />
@@ -316,26 +333,17 @@ const LWFTrackerEditDialog: React.FC<LWFTrackerEditDialogProps> = ({
               />
             </div>
           </div> */}
-          <div className='flex flex-col gap-2 w-full'>
+          
+        </div>
+
+        <div className='flex gap-8 items-center'>
+         <div className='flex flex-col gap-2 w-full'>
             <label>Enter Delay Reason</label>
             <div className='w-full'>
               <OutlinedInput
                 label="Delay Reason"
                 value={editedData.delay_reason || ''}
                 onChange={(value) => handleChange('delay_reason', value)}
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className='flex gap-8 items-center'>
-          <div className='flex flex-col gap-2 w-full'>
-            <label>Enter Difference Reason</label>
-            <div className='w-full'>
-              <OutlinedInput
-                label="Difference Reason"
-                value={editedData.difference_reason || ''}
-                onChange={(value) => handleChange('difference_reason', value)}
               />
             </div>
           </div>
@@ -357,7 +365,7 @@ const LWFTrackerEditDialog: React.FC<LWFTrackerEditDialogProps> = ({
           Cancel
         </Button>
         <Button variant="solid" onClick={handleSubmit}>
-          Save Changes
+          Confirm
         </Button>
       </div>
     </Dialog>

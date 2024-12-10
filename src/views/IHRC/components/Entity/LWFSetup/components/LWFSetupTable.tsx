@@ -35,19 +35,22 @@ interface LWFSetupTableProps {
     // onDelete?: (index: number) => void;
     // onEdit?: (index: number, newData: LWFSetupData) => void;
     onSuspend?: (index: number) => void;
+     onRefresh?: () => void;
 }
 
 const LWFSetupTable: React.FC<LWFSetupTableProps> = ({ 
     data,
     // onDelete,
     // onEdit,
-    onSuspend 
+    onSuspend,
+    onRefresh
 }) => {
     const [dialogIsOpen, setDialogIsOpen] = useState(false);
     const [itemToDelete, setItemToDelete] = useState<number | null>(null);
     const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
     const [itemToEdit, setItemToEdit] = useState<LWFSetupData | null>(null);
     const [suspendDialogIsOpen, setSuspendDialogIsOpen] = useState(false);
+  const [editingId, setEditingId] = useState<number | null>(null);
 
     const openSuspendDialog = (index: number) => {
         setSuspendDialogIsOpen(true);
@@ -209,6 +212,7 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
     const openEditDialog = (item: LWFSetupData) => {
         setItemToEdit(item);
         setEditDialogIsOpen(true);
+        setEditingId(item.id);
     };
 
     const handleDialogClose = () => {
@@ -291,11 +295,13 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
                 onClose={handleDialogClose}
                 onRequestClose={handleDialogClose}
                 width={800}
-                height={570}
+                height={330}
             >
                 <h5 className="mb-4">Edit LWF Setup</h5>
                 {itemToEdit && (
                     <LWFEditedData
+                        onRefresh={onRefresh}
+                        id={editingId}
                         initialData={itemToEdit}
                         onClose={handleDialogClose}
                         onSubmit={handleEditConfirm}

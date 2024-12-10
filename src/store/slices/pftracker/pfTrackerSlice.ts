@@ -300,9 +300,44 @@ export const deletePfiwTracker = createAsyncThunk(
     }
 );
 
+export const updatePfiwTracker = createAsyncThunk(
+    'tracker/updatePfiwTracker',
+    async ({ id, data }: { id: string; data: Partial<PfChallanData> }, { rejectWithValue }) => {
+        try {
+            const response = await httpClient.put(endpoints.pfiwtracker.update(id), data, {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || 'Failed to update PFIW tracker');
+        }
+    }
+);
+
+export const updatePfTracker = createAsyncThunk(
+    'tracker/updatePfTracker',
+    async ({ id, data }: { id: any; data: Partial<PfChallanData> }, { rejectWithValue }) => {
+        try {
+            const response = await httpClient.put(endpoints.tracker.update(id), data, {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || 'Failed to update PF tracker');
+        }
+    }
+);
+
 const trackerSlice = createSlice({
     name: 'tracker',
-    initialState,
+     initialState: {
+        ...initialState,
+        isUpdated: false, 
+    },
     reducers: {
         clearCurrentTracker: (state) => {
             state.currentTracker = null;
@@ -313,6 +348,9 @@ const trackerSlice = createSlice({
         resetDeleteStatus: (state) => {
             state.isDeleted = false;
             state.isPfiwDeleted = false;
+        },
+        resetUpdateStatus: (state) => {
+            state.isUpdated = false;
         }
     },
     extraReducers: (builder) => {
@@ -377,6 +415,37 @@ const trackerSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload as string;
                 state.isPfiwDeleted = false;
+            })
+        
+            .addCase(updatePfiwTracker.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+                state.isUpdated = false;
+            })
+            .addCase(updatePfiwTracker.fulfilled, (state, action) => {
+                state.loading = false;
+                state.currentTracker = action.payload;
+                state.isUpdated = true;
+            })
+            .addCase(updatePfiwTracker.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+                state.isUpdated = false;
+            })
+         .addCase(updatePfTracker.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+                state.isUpdated = false;
+            })
+            .addCase(updatePfTracker.fulfilled, (state, action) => {
+                state.loading = false;
+                state.currentTracker = action.payload;
+                state.isUpdated = true;
+            })
+            .addCase(updatePfTracker.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+                state.isUpdated = false;
             });
     },
 });
@@ -384,6 +453,7 @@ const trackerSlice = createSlice({
 export const { 
     clearCurrentTracker, 
     clearError, 
-    resetDeleteStatus 
+    resetDeleteStatus,
+    resetUpdateStatus 
 } = trackerSlice.actions;
 export default trackerSlice.reducer;
