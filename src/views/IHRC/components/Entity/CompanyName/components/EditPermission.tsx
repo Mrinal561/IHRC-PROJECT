@@ -542,9 +542,9 @@ const EditPermission = () => {
   }
 
   return (
-    <div className="p-8">
-      <div className="flex justify-between items-center mb-12">
-        <h1 className="font-semibold text-gray-800">Edit Permission Manager</h1>
+    <div className="mb-2">
+      <div className="flex justify-between mb-12">
+        <h3 className="text-2xl font-bold">Edit Permission Manager</h3>
         <div className="flex items-center gap-4">
           <div className="w-52">
             <OutlinedSelect
