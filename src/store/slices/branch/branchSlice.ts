@@ -70,9 +70,14 @@ export const fetchBranches = createAsyncThunk(
  
   export const updateBranch = createAsyncThunk(
     'branch/updateBranch',
-    async ({ id, data }: { id: string; data: BranchData }) => {
+    async ({ id, data }: { id: string; data: BranchData }, { rejectWithValue }) => {
+      try{
         const response = await httpClient.put(endpoints.branch.update(id), data);
         return response.data;
+      } catch (error:any){
+        return rejectWithValue(error.response?.data?.message);
+      }
+       
     }
   );
  
