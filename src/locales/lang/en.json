@@ -39,7 +39,8 @@
                         "item7": "Edit Permission"
                     }
                 },
-                "userSetup": "User Setup"
+                "userSetup": "User Setup",
+                "userAccess": "User Access Permission"
 
             }
         },
