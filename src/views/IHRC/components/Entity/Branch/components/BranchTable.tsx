@@ -18,6 +18,7 @@ import { HiOutlineViewGrid } from 'react-icons/hi';
 // import {lo}
 import loadingAnimation from '@/assets/lotties/system-regular-716-spinner-three-dots-loop-scale.json'
 import Lottie from 'lottie-react';
+import BranchEditDialog from './BranchEditDialog';
 
 interface SelectOption {
     value: string;
@@ -58,6 +59,7 @@ interface BranchTableProps {
     const [districtOptions, setDistrictOptions] = useState<SelectOption[]>([]);
     const [locationOptions, setLocationOptions] = useState<SelectOption[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [currentBranchId, setCurrentBranchId] = useState<number | null>(null);
 
 
 
@@ -140,7 +142,7 @@ interface BranchTableProps {
                         <Tooltip title="Edit">
                             <Button
                                 size="sm"
-                                // onClick={() => openEditDialog(row.index)}
+                                onClick={() => handleEditClick(row.original.id)}
                                 icon={<MdEdit />}
                                 className="text-blue-500"
                             />
@@ -171,132 +173,7 @@ interface BranchTableProps {
         )
     }
 
-    // const openDeleteDialog = (index: number) => {
-    //     setItemToDelete(index);
-    //     setDialogIsOpen(true);
-    // };
-
-    // const openEditDialog = (index: number) => {
-    //     setItemToEdit(index);
-    //     const item = data[index];
-    //     setEditedBranch(item.Branch || '');
-    //     setSelectedCompanyGroup(item.Company_Group_Name ? { value: item.Company_Group_Name, label: item.Company_Group_Name } : null);
-    //     setSelectedCompany(item.Company_Name ? { value: item.Company_Name, label: item.Company_Name } : null);
-    //     setSelectedState(item.State ? { value: item.State, label: item.State } : null);
-    //     setSelectedDistrict(item.District ? { value: item.District, label: item.District } : null);
-    //     setSelectedLocation(item.Location ? { value: item.Location, label: item.Location } : null);
-    //     updateCompanyOptions(item.Company_Group_Name);
-    //     updateDistrictOptions(item.State);
-    //     updateLocationOptions(item.District);
-    //     setEditDialogIsOpen(true);
-    // };
-
-    // const handleDialogClose = () => {
-    //     setDialogIsOpen(false);
-    //     setEditDialogIsOpen(false);
-    //     setItemToDelete(null);
-    //     setItemToEdit(null);
-    //     setEditedBranch('');
-    //     setSelectedCompanyGroup(null);
-    //     setSelectedCompany(null);
-    //     setSelectedState(null);
-    //     setSelectedDistrict(null);
-    //     setSelectedLocation(null);
-    // };
-
-    // const handleDialogOk = () => {
-    //     if (itemToDelete !== null) {
-    //         const newData = [...data];
-    //         newData.splice(itemToDelete, 1);
-    //         setData(newData);
-    //         setDialogIsOpen(false);
-    //         setItemToDelete(null);
-    //         openNotification('danger', 'Branch deleted successfully');
-    //     }
-    // };
-
-    // const handleEditConfirm = () => {
-    //     if (itemToEdit !== null && editedBranch.trim() && selectedCompanyGroup && selectedCompany && selectedState && selectedDistrict && selectedLocation) {
-    //         const newData = [...data];
-    //         newData[itemToEdit] = {
-    //             ...newData[itemToEdit],
-    //             Company_Group_Name: selectedCompanyGroup.value,
-    //             Company_Name: selectedCompany.value,
-    //             State: selectedState.value,
-    //             District: selectedDistrict.value,
-    //             Location: selectedLocation.value,
-    //             Branch: editedBranch.trim()
-    //         };
-    //         setData(newData);
-    //         setEditDialogIsOpen(false);
-    //         setItemToEdit(null);
-    //         setEditedBranch('');
-    //         setSelectedCompanyGroup(null);
-    //         setSelectedCompany(null);
-    //         setSelectedState(null);
-    //         setSelectedDistrict(null);
-    //         setSelectedLocation(null);
-    //         openNotification('success', 'Branch updated successfully');
-    //     } else {
-    //         openNotification('danger', 'Please fill in all fields before confirming.');
-    //     }
-    // };
-
-    // const updateCompanyOptions = (companyGroup: string | undefined) => {
-    //     if (companyGroup) {
-    //         const companiesForGroup = data
-    //             .filter(item => item.Company_Group_Name === companyGroup)
-    //             .map(item => item.Company_Name)
-    //             .filter((value, index, self) => value && self.indexOf(value) === index);
-    //         setCompanyOptions(companiesForGroup.map(company => ({ value: company!, label: company! })));
-    //     } else {
-    //         setCompanyOptions([]);
-    //     }
-    // };
-
-    // const updateDistrictOptions = (state: string | undefined) => {
-    //     if (state) {
-    //         const districtsForState = data
-    //             .filter(item => item.State === state)
-    //             .map(item => item.District)
-    //             .filter((value, index, self) => value && self.indexOf(value) === index);
-    //         setDistrictOptions(districtsForState.map(district => ({ value: district!, label: district! })));
-    //     } else {
-    //         setDistrictOptions([]);
-    //     }
-    // };
-
-    // const updateLocationOptions = (district: string | undefined) => {
-    //     if (district) {
-    //         const locationsForDistrict = data
-    //             .filter(item => item.District === district)
-    //             .map(item => item.Location)
-    //             .filter((value, index, self) => value && self.indexOf(value) === index);
-    //         setLocationOptions(locationsForDistrict.map(location => ({ value: location!, label: location! })));
-    //     } else {
-    //         setLocationOptions([]);
-    //     }
-    // };
-
-    // const handleCompanyGroupChange = (option: SelectOption | null) => {
-    //     setSelectedCompanyGroup(option);
-    //     setSelectedCompany(null);
-    //     updateCompanyOptions(option?.value);
-    // };
-
-    // const handleStateChange = (option: SelectOption | null) => {
-    //     setSelectedState(option);
-    //     setSelectedDistrict(null);
-    //     setSelectedLocation(null);
-    //     updateDistrictOptions(option?.value);
-    // };
-
-    // const handleDistrictChange = (option: SelectOption | null) => {
-    //     setSelectedDistrict(option);
-    //     setSelectedLocation(null);
-    //     updateLocationOptions(option?.value);
-    // };
-
+  
  
     const fetchBranchData = async (page: 1, size: 10) => {
         setIsLoading(true);
@@ -332,6 +209,19 @@ interface BranchTableProps {
       }
     }
 
+
+    const handleEditClick = (branchId: number) => {
+        setCurrentBranchId(branchId);
+        setEditDialogIsOpen(true);
+      };
+    
+      const handleRefreshData = () => {
+        fetchBranchData(1,10);
+      };
+    
+      useEffect(() => {
+        fetchBranchData(1,10);
+      }, []);
     // useEffect(() => {
     //     if (onRefreshMethodAvailable) {
     //         onRefreshMethodAvailable(fetchBranchData(1, 10));
@@ -415,6 +305,13 @@ interface BranchTableProps {
                     stickyLastColumn={true}
                 />
             )}
+
+<BranchEditDialog
+        isOpen={editDialogIsOpen}
+        onClose={() => setEditDialogIsOpen(false)}
+        branchId={currentBranchId}
+        onRefresh={handleRefreshData}
+      />
 
             {/* <Dialog
                 isOpen={dialogIsOpen}

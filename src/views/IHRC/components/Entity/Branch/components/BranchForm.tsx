@@ -759,7 +759,7 @@ const AddBranchForm: React.FC = () => {
                     </div>
                 </div>
 
-{formData.type === 'owned' && (
+{/* {formData.type === 'owned' && (
     <div className="border rounded-md py-4 p-2 mt-4">
         <div className="flex flex-col gap-8">
             <div className="flex justify-between">
@@ -840,6 +840,233 @@ const AddBranchForm: React.FC = () => {
                                         ? format(date, 'yyyy-MM-dd')
                                         : '',
                                 }))
+                            }}
+                        />
+                    </div>
+                )}
+
+                <div>
+                    <div className="flex flex-col gap-2">
+                        <label>
+                            {seRegistrationNumberExists === 'applied'
+                                ? 'Please upload the S&E  acknowledgment copy'
+                                : 'Please upload the S&E Registration certificate'}
+                            <span className="text-red-500">*</span>
+                        </label>
+                        <Input
+                            id="file-upload"
+                            size="sm"
+                            type="file"
+                            accept=".pdf"
+                            className="py-[5px]"
+                            onChange={handleSeDocumentUpload}
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+)} */}
+
+{/* {formData.type === 'owned' && (
+    <div className="border rounded-md py-4 p-2 mt-4">
+        <div className="flex flex-col gap-8">
+            <div className="flex justify-between">
+                <h4>S&E Setup</h4>
+                {renderDocumentValidityRadio(
+                    seValidityType,
+                    setSeValidityType,
+                    handleSeValidityChange,
+                    'S&E Validity Type',
+                )}
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <div>
+                    <p className="mb-2">S&E Registration Status</p>
+                    <OutlinedSelect
+                        label="S&E Registration Status"
+                        options={[
+                            { value: 'valid', label: 'Have Valid License' },
+                            { value: 'expired', label: 'Expired' },
+                            { value: 'applied', label: 'Applied For' },
+                        ]}
+                        value={null} 
+                        onChange={(selectedOption:any) => {
+                            const newStatus = selectedOption?.value || 'applied';
+                            setSeRegistrationNumberExists(newStatus);
+                            
+                            setFormData((prev) => {
+                                // Remove lease_document, lease_validity, and lease_status
+                                const { register_number, se_validity, se_status, lease_document, lease_validity, lease_status, ...rest } = prev;
+                                return {
+                                    ...rest,
+                                    se_status: newStatus,
+                                    ...(newStatus === 'applied' 
+                                        ? {} 
+                                        : { register_number: '', se_validity: '' })
+                                };
+                            });
+                        }}
+                    />
+                </div>
+
+                {(seRegistrationNumberExists === 'valid' || seRegistrationNumberExists === 'expired') && (
+                    <div>
+                        <p className="mb-2">
+                            S&E Registration Number
+                            <span className="text-red-500">*</span>
+                        </p>
+                        <OutlinedInput
+                            label="S&E Registration Number"
+                            value={formData.register_number || ''}
+                            onChange={(value: string) => {
+                                setFormData((prev) => {
+                                    // Remove lease_document, lease_validity, and lease_status
+                                    const { lease_document, lease_validity, lease_status, ...rest } = prev;
+                                    return {
+                                        ...rest,
+                                        register_number: value,
+                                    };
+                                });
+                            }}
+                        />
+                    </div>
+                )}
+
+                {seRegistrationNumberExists === 'valid' && seValidityType === 'fixed' && (
+                    <div>
+                        <p className="mb-2">
+                            S&E Validity <span className="text-red-500">*</span>
+                        </p>
+                        <DatePicker
+                            size="sm"
+                            placeholder="Pick a Date"
+                            onChange={(date) => {
+                                setFormData((prev) => {
+                                    // Remove lease_document, lease_validity, and lease_status
+                                    const { lease_document, lease_validity, lease_status, ...rest } = prev;
+                                    return {
+                                        ...rest,
+                                        se_validity: date
+                                            ? format(date, 'yyyy-MM-dd')
+                                            : '',
+                                    };
+                                });
+                            }}
+                        />
+                    </div>
+                )}
+
+                <div>
+                    <div className="flex flex-col gap-2">
+                        <label>
+                            {seRegistrationNumberExists === 'applied'
+                                ? 'Please upload the S&E  acknowledgment copy'
+                                : 'Please upload the S&E Registration certificate'}
+                            <span className="text-red-500">*</span>
+                        </label>
+                        <Input
+                            id="file-upload"
+                            size="sm"
+                            type="file"
+                            accept=".pdf"
+                            className="py-[5px]"
+                            onChange={handleSeDocumentUpload}
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+)} */}
+
+{formData.type === 'owned' && (
+    <div className="border rounded-md py-4 p-2 mt-4">
+        <div className="flex flex-col gap-8">
+            <div className="flex justify-between">
+                <h4>S&E Setup</h4>
+                {renderDocumentValidityRadio(
+                    seValidityType,
+                    setSeValidityType,
+                    handleSeValidityChange,
+                    'S&E Validity Type',
+                )}
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <div>
+                    <p className="mb-2">S&E Registration Status</p>
+                    <OutlinedSelect
+                        label="S&E Registration Status"
+                        options={[
+                            { value: 'valid', label: 'Have Valid License' },
+                            { value: 'expired', label: 'Expired' },
+                            { value: 'applied', label: 'Applied For' },
+                        ]}
+                        value={null} 
+                        onChange={(selectedOption:any) => {
+                            const newStatus = selectedOption?.value || 'applied';
+                            setSeRegistrationNumberExists(newStatus);
+                            
+                            setFormData((prev) => {
+                                // Remove lease_document, lease_validity, and lease_status
+                                const { register_number, se_validity, se_status, lease_document, lease_validity, lease_status, ...rest } = prev;
+                                return {
+                                    ...rest,
+                                    se_status: newStatus,
+                                    se_validity: newStatus === 'valid' 
+                                        ? '' 
+                                        : '2024-12-31', // ISO 8601 format
+                                    ...(newStatus === 'applied' 
+                                        ? {} 
+                                        : { register_number: '' })
+                                };
+                            });
+                        }}
+                    />
+                </div>
+
+                {(seRegistrationNumberExists === 'valid' || seRegistrationNumberExists === 'expired') && (
+                    <div>
+                        <p className="mb-2">
+                            S&E Registration Number
+                            <span className="text-red-500">*</span>
+                        </p>
+                        <OutlinedInput
+                            label="S&E Registration Number"
+                            value={formData.register_number || ''}
+                            onChange={(value: string) => {
+                                setFormData((prev) => {
+                                    // Remove lease_document, lease_validity, and lease_status
+                                    const { lease_document, lease_validity, lease_status, ...rest } = prev;
+                                    return {
+                                        ...rest,
+                                        register_number: value,
+                                    };
+                                });
+                            }}
+                        />
+                    </div>
+                )}
+
+                {seRegistrationNumberExists === 'valid' && seValidityType === 'fixed' && (
+                    <div>
+                        <p className="mb-2">
+                            S&E Validity <span className="text-red-500">*</span>
+                        </p>
+                        <DatePicker
+                            size="sm"
+                            placeholder="Pick a Date"
+                            onChange={(date) => {
+                                setFormData((prev) => {
+                                    // Remove lease_document, lease_validity, and lease_status
+                                    const { lease_document, lease_validity, lease_status, ...rest } = prev;
+                                    return {
+                                        ...rest,
+                                        se_validity: date
+                                            ? format(date, 'yyyy-MM-dd')
+                                            : '',
+                                    };
+                                });
                             }}
                         />
                     </div>
