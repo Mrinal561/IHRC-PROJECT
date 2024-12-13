@@ -22,6 +22,7 @@ import dayjs from 'dayjs';
 import loadingAnimation from '@/assets/lotties/system-regular-716-spinner-three-dots-loop-scale.json'
 import Lottie from 'lottie-react';
 import { HiOutlineViewGrid } from 'react-icons/hi'
+import UserEditDialog from './UserEditDialog';
 
 
 const UserTable: React.FC = () => {
@@ -37,8 +38,8 @@ const UserTable: React.FC = () => {
     // });
     const [dialogIsOpen, setDialogIsOpen] = useState(false);
     const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
-    const [itemToDelete, setItemToDelete] = useState<UserData | null>(null);
-    const [itemToEdit, setItemToEdit] = useState<UserData | null>(null);
+    const [itemToDelete, setItemToDelete] = useState<string | null>(null);
+    const [itemToEdit, setItemToEdit] = useState<number | null>(null);
     const [editedUserData, setEditedUserData] = useState<Partial<UserData>>({});
 
 
@@ -112,7 +113,7 @@ const UserTable: React.FC = () => {
                         <Tooltip title="Edit User Details">
                             <Button
                                 size="sm"
-                                onClick={() => openEditDialog(row.original)}
+                                onClick={() => handleEditClick(row.original.id)}
                                 icon={<MdEdit />}
                                 className="text-blue-500"
                             />
@@ -136,7 +137,7 @@ const UserTable: React.FC = () => {
                         <Tooltip title="Delete User">
                             <Button
                                 size="sm"
-                                onClick={() => openDeleteDialog(row.original)}
+                                onClick={() => openDeleteDialog(row.original.id)}
                                 icon={<FiTrash />}
                                 className="text-red-500"
                             />
@@ -160,9 +161,9 @@ const UserTable: React.FC = () => {
     }
 
     const handleDeleteConfirm = async () => {
-        if (itemToDelete?.id) {
+        if (itemToDelete) {
             try {
-                const response = await dispatch(deleteUser(itemToDelete.id)).unwrap();
+                const response = await dispatch(deleteUser(itemToDelete)).unwrap();
                 
                 if (response) {
                     handleDialogClose();
@@ -219,8 +220,8 @@ const UserTable: React.FC = () => {
     //     }
     // };
 
-    const openDeleteDialog = (user: UserData) => {
-        setItemToDelete(user);
+    const openDeleteDialog = (userid: string) => {
+        setItemToDelete(userid);
         setDialogIsOpen(true);
     };
     // const openSuspendDialog = (index: number) => {
@@ -236,7 +237,10 @@ const UserTable: React.FC = () => {
         setEditDialogIsOpen(true);
     };
 
-
+    const handleEditClick = (user: number) => {
+        setItemToEdit(user);
+        setEditDialogIsOpen(true);
+      };
 
     const handleDialogClose = () => {
         setDialogIsOpen(false);
@@ -405,7 +409,7 @@ const UserTable: React.FC = () => {
             >
                 <h5 className="mb-4">Confirm Deleting User</h5>
                 <p>
-                Are you sure you want to delete the user "{itemToDelete?.name}"? 
+                Are you sure you want to delete the user? 
                 This action cannot be undone.
                 </p>
                 <div className="text-right mt-6">
@@ -421,7 +425,12 @@ const UserTable: React.FC = () => {
                     </Button>
                 </div>
             </Dialog>
-
+            <UserEditDialog
+      isOpen={editDialogIsOpen}
+      onClose={() => setEditDialogIsOpen(false)}
+      userId={itemToEdit}
+      onRefresh={fetchUserData}
+    />
             {/* <Dialog
                 isOpen={editDialogIsOpen}
                 onClose={handleDialogClose}
