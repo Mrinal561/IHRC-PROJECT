@@ -65,7 +65,7 @@ export const endpoints = {
         bulkCreate: () => api(`/companyadmin/branch/bulk-upload`),
     },
     role: {
-        getAll: () => api('companyadmin/role'),
+        getAll: () => api('superadmin/role'),
     },
     compliance: {
         getAll: () =>
@@ -181,5 +181,9 @@ export const endpoints = {
     request: {
         request: (id: any) => api(`companyadmin/company/edit=request/${id}`),
         getAll:() => api(`companyadmin/company/tracker-edit-permission`)
+    },
+    certificate:{
+        list: ()=> api('/companyadmin/certificate/list'),
+        certificateDownload: (id:any)=> api(`/companyadmin/certificate/download/${id}`)
     }
 }
