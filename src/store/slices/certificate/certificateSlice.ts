@@ -49,25 +49,25 @@ export const downloadCertificate = createAsyncThunk(
     async (id: string, { rejectWithValue }) => {
         try {
             const response = await httpClient.get(endpoints.certificate.certificateDownload(id), {
-                responseType: 'blob', // Important for file download
+                responseType: 'blob',
                 headers: {
-                    'Accept': 'application/vnd.ms-excel' // Specify we're expecting an Excel file
+                    'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' // Updated MIME type for XLSX
                 }
             });
             
-            // Create a URL for the blob with Excel MIME type
+            // Create a URL for the blob with XLSX MIME type
             const url = window.URL.createObjectURL(new Blob([response.data], {
-                type: 'application/vnd.ms-excel'
+                type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
             }));
             const link = document.createElement('a');
             link.href = url;
             
             // Get filename from header or use default
             const contentDisposition = response.headers['content-disposition'];
-            let filename = 'certificate.xls'; // default filename for Excel
+            let filename = 'certificate.xlsx'; // Updated default filename for XLSX
             if (contentDisposition) {
                 const filenameMatch = contentDisposition.match(/filename="(.+)"/);
-                if (filenameMatch.length === 2) filename = filenameMatch[1];
+                if (filenameMatch?.length === 2) filename = filenameMatch[1];
             }
             
             link.setAttribute('download', filename);
@@ -76,7 +76,7 @@ export const downloadCertificate = createAsyncThunk(
             link.remove();
             window.URL.revokeObjectURL(url);
             
-            return true; // Indicate successful download
+            return true;
         } catch (error: any) {
             return rejectWithValue(error.response?.data?.message || 'Failed to download certificate');
         }
