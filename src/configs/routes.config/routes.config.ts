@@ -114,6 +114,14 @@ export const protectedRoutes = [
         authority: [],
     },
     {
+        key: 'groupMenu.collapse.item6',
+        path: '/role',
+        component: lazy(() =>
+            import('@/views/IHRC/components/GlobalSettings/Role/Role')
+        ),
+        authority: [],
+    },
+    {
         key: 'groupMenu.collapse.item2',
         path: '/global-notification',
         component: lazy(() =>
@@ -359,6 +367,12 @@ export const protectedRoutes = [
         key: 'pfSetup.adddetail',
         path: '/add-pf-setup',
         component: lazy(() => import('@/views/IHRC/components/Entity/PFSetup/components/PFSetupPage')),
+        authority: [],
+    },
+    {
+        key: 'role.permission',
+        path: '/role-permission',
+        component: lazy(() => import('@/views/IHRC/components/GlobalSettings/Role/components/RolePermission')),
         authority: [],
     },
     {

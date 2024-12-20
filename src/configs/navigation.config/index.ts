@@ -47,6 +47,16 @@ const navigationConfig: NavigationTree[] = [
                 subMenu: [],
             },
             {
+                key: 'groupMenu.collapse.item6',
+                path: '/role',
+                title: 'Role',
+                translateKey: 'nav.groupMenu.collapse.item6',
+                icon: '',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [],
+                subMenu: [],
+            },
+            {
                 key: 'groupMenu.collapse.item3',
                 path: '/global-status',
                 title: 'Status Settings',

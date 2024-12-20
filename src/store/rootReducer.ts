@@ -24,6 +24,9 @@ import pftracker,{ TrackerState } from './slices/pftracker/pfTrackerSlice'
 import lwfid, { LwfTrackerId } from './slices/lwfTracker/lwfTracker';
 import esitracker, { ESITrackersState } from './slices/esitracker/esitrackerSlice'
 import certificate, { CertificateState } from './slices/certificate/certificateSlice'
+import role,{ RoleState } from './slices/role/roleSlice'
+
+
 export type RootState = CombinedState<{
     auth: CombinedState<AuthState>
     base: CombinedState<BaseState>
@@ -49,6 +52,7 @@ export type RootState = CombinedState<{
     theme: ThemeState
     assigedCompliance: ComplianceAssignmentState
     certificate: CertificateState
+    role: RoleState
     /* eslint-disable @typescript-eslint/no-explicit-any */
     [RtkQueryService.reducerPath]: any
 }>
@@ -82,6 +86,7 @@ const staticReducers = {
     lwfid,
     esitracker,
     certificate,
+    role,
     [RtkQueryService.reducerPath]: RtkQueryService.reducer,
 }
  

@@ -66,6 +66,11 @@ export const endpoints = {
     },
     role: {
         getAll: () => api('companyadmin/role'),
+        create:()=> api(`companyadmin/role`),
+        update:(id:any)=> api(`companyadmin/role/${id}`),
+        getById:(id:any)=> api(`companyadmin/role/${id}`),
+        delete:(id:any)=> api(`companyadmin/role/${id}`),
+        rolePermission:(id:any) => api(`/companyadmin/role/role-permission/${id}`)
     },
     compliance: {
         getAll: () =>
