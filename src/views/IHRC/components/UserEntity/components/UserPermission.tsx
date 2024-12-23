@@ -285,8 +285,8 @@ import Td from '@/components/ui/Table/Td';
 import THead from '@/components/ui/Table/THead';
 import TBody from '@/components/ui/Table/TBody';
 import Checkbox from '@/components/ui/Checkbox/Checkbox';
-import  Button  from '@/components/ui/button/Button';
-import { HiOutlinePlusCircle, HiOutlineMinusCircle } from 'react-icons/hi';
+import { Button } from '@/components/ui/button';
+ import { HiOutlinePlusCircle, HiOutlineMinusCircle } from 'react-icons/hi';
 import {
   useReactTable,
   getCoreRowModel,
