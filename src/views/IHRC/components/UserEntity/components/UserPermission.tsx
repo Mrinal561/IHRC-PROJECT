@@ -277,7 +277,8 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import  Table  from '@/components/ui/table/table';
+// import  Table  from '@/components/ui/table/table';
+import Table from '@/components/ui/Table/Table';
 import Tr from '@/components/ui/Table/Tr';
 import Th from '@/components/ui/Table/Th';
 import Td from '@/components/ui/Table/Td';
