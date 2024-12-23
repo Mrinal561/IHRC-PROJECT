@@ -13,6 +13,8 @@ import loadingAnimation from '@/assets/lotties/system-regular-716-spinner-three-
 import Lottie from 'lottie-react';
 import { deleteLwfTracker } from '@/store/slices/lwfTracker/lwfTracker';
 import { useDispatch } from 'react-redux';
+import { FaUserShield } from 'react-icons/fa';
+import { requestCompanyEdit } from '@/store/slices/request/requestSLice';
 
 export interface Company {
   id: number;
@@ -50,6 +52,8 @@ export interface LWFTrackerData {
   uploaded_by: number;
   created_at: string;
   updated_at: string;
+  is_requested?: boolean;
+  iseditable?: boolean;
   UploadBy: {
     id: number;
     name: string;
@@ -107,6 +111,28 @@ const LWFTrackerTable: React.FC<LWFTrackerTableProps> = ({
       if (onRefresh) {
         onRefresh();
       }
+    }
+  };
+
+  const handleRequestToAdmin = async (id: any) => {
+    try {
+      // Dispatch the request with the required type
+      const res = await dispatch(requestCompanyEdit({
+        id: id,
+        payload: {
+          type: "lwf" 
+        }
+      })).unwrap(); 
+  
+      if (res) {
+        console.log('Requested Successfully')
+          if (onRefresh) {
+              onRefresh()
+          }
+      }
+  
+    } catch (error) {
+      console.log("Admin request error:", error);
     }
   };
 
@@ -264,32 +290,75 @@ const LWFTrackerTable: React.FC<LWFTrackerTableProps> = ({
       {
         header: 'Actions',
         id: 'actions',
-        cell: ({ row }) => (
-          <div className="flex items-center gap-2">
-            <Tooltip title="Edit">
-              <Button
-                size="sm"
-                onClick={() => handleEdit(row.original)}
-                icon={<MdEdit />}
-              />
-            </Tooltip>
-            <Tooltip title="Delete">
-              <Button
-                size="sm"
-                onClick={() => handleDeleteConfirmation(row.original.id)}
-                icon={<FiTrash />}
-                className="text-red-500"
-              />
-            </Tooltip>
-            <ConfigDropdown 
-              companyName={row.original.LwfSetup.Company.name} 
-              companyGroupName={row.original.LwfSetup.CompanyGroup.name} 
-              trackerId={row.original.id}
-              onRefresh={onRefresh}
-            />
-          </div>
-        ),
-      },
+        cell: ({ row }) => {
+            const { iseditable } = row.original;
+            return (
+                <div className="flex items-center gap-2">
+                    {iseditable ? (
+                        <Tooltip title="Edit">
+                            <Button
+                                size="sm"
+                                onClick={() => handleEdit(row.original)}
+                                icon={<MdEdit />}
+                            />
+                        </Tooltip>
+                    ) : (
+                        <Tooltip title="Request to Admin">
+                            <Button
+                                size="sm" 
+                                onClick={() => handleRequestToAdmin(row.original.id)}
+                                icon={<FaUserShield />}
+                                className="text-blue-500"
+                            />
+                        </Tooltip>
+                    )}
+                    <Tooltip title="Delete">
+                        <Button
+                            size="sm"
+                            onClick={() => handleDeleteConfirmation(row.original.id)}
+                            icon={<FiTrash />}
+                            className="text-red-500"
+                        />
+                    </Tooltip>
+                    <ConfigDropdown
+                        companyName={row.original.LwfSetup.Company.name}
+                        companyGroupName={row.original.LwfSetup.CompanyGroup.name}
+                        trackerId={row.original.id}
+                        onRefresh={onRefresh}
+                    />
+                </div>
+            );
+        },
+     }
+      // {
+      //   header: 'Actions',
+      //   id: 'actions',
+      //   cell: ({ row }) => (
+      //     <div className="flex items-center gap-2">
+      //       <Tooltip title="Edit">
+      //         <Button
+      //           size="sm"
+      //           onClick={() => handleEdit(row.original)}
+      //           icon={<MdEdit />}
+      //         />
+      //       </Tooltip>
+      //       <Tooltip title="Delete">
+      //         <Button
+      //           size="sm"
+      //           onClick={() => handleDeleteConfirmation(row.original.id)}
+      //           icon={<FiTrash />}
+      //           className="text-red-500"
+      //         />
+      //       </Tooltip>
+      //       <ConfigDropdown 
+      //         companyName={row.original.LwfSetup.Company.name} 
+      //         companyGroupName={row.original.LwfSetup.CompanyGroup.name} 
+      //         trackerId={row.original.id}
+      //         onRefresh={onRefresh}
+      //       />
+      //     </div>
+      //   ),
+      // },
     ],
     [onRefresh]
   );

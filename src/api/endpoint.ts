@@ -33,10 +33,11 @@ export const endpoints = {
     },
     user: {
         getAll: () => api('companyadmin/user'),
-        getById: (id: string) => api(`companyadmin/user/${id}`),
+        getById: (id: any) => api(`companyadmin/user/${id}`),
         create: () => api('companyadmin/user'),
         update: (id: string) => api(`companyadmin/user/${id}`),
         delete: (id: string) => api(`companyadmin/user/${id}`),
+        updatePermission:(id:any)=> api(`companyadmin/user/permissions/${id}`)
     },
     complianceSuperadmin: {
         getAll: () => api('/companyadmin/compliance/recommend'),
@@ -66,6 +67,11 @@ export const endpoints = {
     },
     role: {
         getAll: () => api('companyadmin/role'),
+        create:()=> api(`companyadmin/role`),
+        update:(id:any)=> api(`companyadmin/role/${id}`),
+        getById:(id:any)=> api(`companyadmin/role/${id}`),
+        delete:(id:any)=> api(`companyadmin/role/${id}`),
+        rolePermission:(id:any) => api(`/companyadmin/role/role-permission/${id}`)
     },
     compliance: {
         getAll: () =>
@@ -179,7 +185,11 @@ export const endpoints = {
           update: (id: any) => api(`companyadmin/lwfsetup/${id}`),
     },
     request: {
-        request: (id: any) => api(`companyadmin/company/edit=request/${id}`),
+        request: (id: any) => api(`companyadmin/company/edit-request/${id}`),
         getAll:() => api(`companyadmin/company/tracker-edit-permission`)
+    },
+    certificate:{
+        list: ()=> api('/companyadmin/certificate/list'),
+        certificateDownload: (id:any)=> api(`/companyadmin/certificate/download/${id}`)
     }
 }
