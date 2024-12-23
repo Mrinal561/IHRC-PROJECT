@@ -294,7 +294,7 @@ import {
 import { updateRolePermissions } from '@/store/slices/role/roleSlice';
 import { useDispatch } from 'react-redux';
 import Checkbox from '@/components/ui/Checkbox/Checkbox';
-import Button from '@/components/ui/Button/Button';
+import { Button } from '@/components/ui';
 
 // const { Tr, Th, Td, THead, TBody } = Table;
 
