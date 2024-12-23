@@ -12,6 +12,8 @@ export interface UserState {
     loading: boolean;
     error: string | null;
     createUser: UserData | null;
+    selectedUser: UserData | null;
+    userPermissions: string[];
 }
 
 const initialState: UserState = {
@@ -20,6 +22,8 @@ const initialState: UserState = {
     loading: false,
     error: null,
     createUser: null,
+    selectedUser: null,
+    userPermissions: [],
 };
 
 
@@ -48,6 +52,23 @@ export const createUser = createAsyncThunk(
     }
 );
 
+export const updateUserPermissions = createAsyncThunk(
+    'user/updateUserPermissions',
+    async ({ id, permissions }: { id: string, permissions: string[] }, { rejectWithValue }) => {
+        try {
+            const { data } = await httpClient.post(
+                endpoints.user.updatePermission(id),
+                { permissions }
+            );
+            return data;
+        } catch (error: any) {
+            const err = error as AxiosError<any>
+            return rejectWithValue(err.response?.data?.message || 'Failed to update user permissions');
+        }
+    }
+);
+
+
 export const updateUser = createAsyncThunk(
     'user/update',
     async ({ id, data }: { id: string; data: Partial<UserData> }, {rejectWithValue}) => {
@@ -68,8 +89,8 @@ export const deleteUser = createAsyncThunk(
     'user/delete',
     async (id: string, {rejectWithValue}) => {
         try{
-            await UserService.deleteUser(id);
-            return id;
+           const {data} = await httpClient.delete(endpoints.user.delete(id))
+           return data;
         } catch (error: any) {
             const err = error as AxiosError<any>
 
@@ -79,6 +100,19 @@ export const deleteUser = createAsyncThunk(
     }
 );
 
+
+export const fetchUserById = createAsyncThunk(
+    'user/fetchById',
+    async (id: string, { rejectWithValue }) => {
+        try {
+            const { data } = await httpClient.get(endpoints.user.getById(id));
+            return data;
+        } catch (error: any) {
+            const err = error as AxiosError<any>
+            return rejectWithValue(err.response?.data?.message || 'Failed to fetch user');
+        }
+    }
+);
 const userSlice = createSlice({
     name: 'user',
     initialState,
@@ -142,9 +176,34 @@ const userSlice = createSlice({
             })
             .addCase(deleteUser.fulfilled, (state, action) => {
                 state.loading = false;
-                state.users = state.users.filter(user => user.group_id !== Number(action.payload));
+                // state.users = state.users.filter(user => user.group_id !== Number(action.payload));
             })
             .addCase(deleteUser.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+            })
+            .addCase(fetchUserById.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchUserById.fulfilled, (state, action) => {
+                state.loading = false;
+                state.selectedUser = action.payload;
+            })
+            .addCase(fetchUserById.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+                state.selectedUser = null;
+            })
+            .addCase(updateUserPermissions.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(updateUserPermissions.fulfilled, (state, action) => {
+                state.loading = false;
+                state.userPermissions = action.payload.permissions;
+            })
+            .addCase(updateUserPermissions.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
             });

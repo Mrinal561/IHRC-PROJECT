@@ -22,6 +22,7 @@ import dayjs from 'dayjs';
 import loadingAnimation from '@/assets/lotties/system-regular-716-spinner-three-dots-loop-scale.json'
 import Lottie from 'lottie-react';
 import { HiOutlineViewGrid } from 'react-icons/hi'
+import UserEditDialog from './UserEditDialog';
 
 
 const UserTable: React.FC = () => {
@@ -37,8 +38,8 @@ const UserTable: React.FC = () => {
     // });
     const [dialogIsOpen, setDialogIsOpen] = useState(false);
     const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
-    const [itemToDelete, setItemToDelete] = useState<UserData | null>(null);
-    const [itemToEdit, setItemToEdit] = useState<UserData | null>(null);
+    const [itemToDelete, setItemToDelete] = useState<string | null>(null);
+    const [itemToEdit, setItemToEdit] = useState<number | null>(null);
     const [editedUserData, setEditedUserData] = useState<Partial<UserData>>({});
 
 
@@ -47,14 +48,14 @@ const UserTable: React.FC = () => {
         () => [
             {
                 header: 'Company Group',
-                accessorKey: 'CompanyGroup.name',
+                accessorKey: 'company_details.name',
                 cell: (props) => (
                     <div className="w-32 truncate">{props.getValue() as string}</div>
                 ),
             },
             {
-                header: 'First Name',
-                accessorKey: 'name',
+                header: 'Name',
+                accessorKey: 'user_details.name',
                 cell: (props) => <div className="w-32 truncate">{props.getValue() as string}</div>,
             },
             // {
@@ -64,7 +65,7 @@ const UserTable: React.FC = () => {
             // },
             {
                 header: 'Email',
-                accessorKey: 'email',
+                accessorKey: 'user_details.email',
                 cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
             },
             // {
@@ -74,7 +75,7 @@ const UserTable: React.FC = () => {
             // },
             {
                 header: 'Mobile Number',
-                accessorKey: 'mobile',
+                accessorKey: 'user_details.mobile',
                 cell: (props) => <div className="w-36 truncate">{props.getValue() as string}</div>,
             },
             // {
@@ -84,12 +85,12 @@ const UserTable: React.FC = () => {
             // },
             {
                 header: 'PAN',
-                accessorKey: 'pan_card',
+                accessorKey: 'user_details.pan_card',
                 cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
             },
             {
                 header: 'Aadhar',
-                accessorKey: 'aadhar_no',
+                accessorKey: 'user_details.aadhar_no',
                 cell: (props) => <div className="w-36 truncate">{props.getValue() as string}</div>,
             },
             {
@@ -112,7 +113,7 @@ const UserTable: React.FC = () => {
                         <Tooltip title="Edit User Details">
                             <Button
                                 size="sm"
-                                onClick={() => openEditDialog(row.original)}
+                                onClick={() => handleEditClick(row.original.user_details.id)}
                                 icon={<MdEdit />}
                                 className="text-blue-500"
                             />
@@ -136,7 +137,7 @@ const UserTable: React.FC = () => {
                         <Tooltip title="Delete User">
                             <Button
                                 size="sm"
-                                onClick={() => openDeleteDialog(row.original)}
+                                onClick={() => openDeleteDialog(row.original.user_details.id)}
                                 icon={<FiTrash />}
                                 className="text-red-500"
                             />
@@ -160,9 +161,26 @@ const UserTable: React.FC = () => {
     }
 
     const handleDeleteConfirm = async () => {
-        if (itemToDelete?.id) {
-            try {
-                const response = await dispatch(deleteUser(itemToDelete.id)).unwrap();
+        console.log(itemToDelete)
+        if (itemToDelete) {
+                const response = await dispatch(deleteUser(itemToDelete)).unwrap()
+                .catch((error: any) => {
+                  // Handle different error formats
+                  if (error.response?.data?.message) {
+                      // API error response
+                      showErrorNotification(error.response.data.message);
+                  } else if (error.message) {
+                      // Regular error object
+                      showErrorNotification(error.message);
+                  } else if (Array.isArray(error)) {
+                      // Array of error messages
+                      showErrorNotification(error);
+                  } else {
+                      // Fallback error message
+                      showErrorNotification(error);
+                  }
+                  throw error; // Re-throw to prevent navigation
+              });
                 
                 if (response) {
                     handleDialogClose();
@@ -178,15 +196,6 @@ const UserTable: React.FC = () => {
                         </Notification>
                     );
                 }
-            } catch (error: any) {
-                if (error.response?.data?.message) {
-                    showErrorNotification(error.response.data.message);
-                } else if (error.message) {
-                    showErrorNotification(error.message);
-                } else {
-                    showErrorNotification('An unexpected error occurred while deleting the user');
-                }
-            }
         }
     };
 
@@ -219,8 +228,8 @@ const UserTable: React.FC = () => {
     //     }
     // };
 
-    const openDeleteDialog = (user: UserData) => {
-        setItemToDelete(user);
+    const openDeleteDialog = (userid: string) => {
+        setItemToDelete(userid);
         setDialogIsOpen(true);
     };
     // const openSuspendDialog = (index: number) => {
@@ -236,7 +245,10 @@ const UserTable: React.FC = () => {
         setEditDialogIsOpen(true);
     };
 
-
+    const handleEditClick = (user: number) => {
+        setItemToEdit(user);
+        setEditDialogIsOpen(true);
+      };
 
     const handleDialogClose = () => {
         setDialogIsOpen(false);
@@ -405,7 +417,7 @@ const UserTable: React.FC = () => {
             >
                 <h5 className="mb-4">Confirm Deleting User</h5>
                 <p>
-                Are you sure you want to delete the user "{itemToDelete?.name}"? 
+                Are you sure you want to delete the user? 
                 This action cannot be undone.
                 </p>
                 <div className="text-right mt-6">
@@ -421,7 +433,12 @@ const UserTable: React.FC = () => {
                     </Button>
                 </div>
             </Dialog>
-
+            <UserEditDialog
+      isOpen={editDialogIsOpen}
+      onClose={() => setEditDialogIsOpen(false)}
+      userId={itemToEdit}
+      onRefresh={fetchUserData}
+    />
             {/* <Dialog
                 isOpen={editDialogIsOpen}
                 onClose={handleDialogClose}

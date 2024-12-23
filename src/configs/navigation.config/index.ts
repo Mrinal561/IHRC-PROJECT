@@ -1,3 +1,4 @@
+
 import {
     NAV_ITEM_TYPE_TITLE,
     NAV_ITEM_TYPE_ITEM,
@@ -41,6 +42,16 @@ const navigationConfig: NavigationTree[] = [
                 path: '/global-notification',
                 title: 'Notification Settings',
                 translateKey: 'nav.groupMenu.collapse.item2',
+                icon: '',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [],
+                subMenu: [],
+            },
+            {
+                key: 'groupMenu.collapse.item6',
+                path: '/role',
+                title: 'Role',
+                translateKey: 'nav.groupMenu.collapse.item6',
                 icon: '',
                 type: NAV_ITEM_TYPE_ITEM,
                 authority: [],

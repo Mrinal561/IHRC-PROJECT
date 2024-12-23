@@ -12,6 +12,8 @@ import loadingAnimation from '@/assets/lotties/system-regular-716-spinner-three-
 import { deleteTracker } from '@/store/slices/esitracker/esitrackerSlice';
 import Lottie from 'lottie-react';
 import { useDispatch } from 'react-redux';
+import { FaUserShield } from 'react-icons/fa';
+import { requestCompanyEdit } from '@/store/slices/request/requestSLice';
 
 interface EsiTrackerTableProps {
     dataSent: esiChallanData[];
@@ -63,6 +65,28 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> =({
           if (onRefresh) {
             onRefresh();
           }
+        }
+      };
+
+      const handleRequestToAdmin = async (id: any) => {
+        try {
+          // Dispatch the request with the required type
+          const res = await dispatch(requestCompanyEdit({
+            id: id,
+            payload: {
+              type: "esi" 
+            }
+          })).unwrap(); 
+      
+          if (res) {
+            console.log('Requested Successfully')
+              if (onRefresh) {
+                  onRefresh()
+              }
+          }
+      
+        } catch (error) {
+          console.log("Admin request error:", error);
         }
       };
       
@@ -297,32 +321,75 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> =({
             },
             {
                 header: 'Actions',
-                id: 'actions',
-                cell: ({ row }) => (
-                    <div className="flex items-center gap-2">
-                        <Tooltip title="Edit">
-                            <Button
-                                size="sm"
-                                onClick={() => handleEdit(row.original)}
-                                icon={<MdEdit />}
+                id: 'actions', 
+                cell: ({ row }) => {
+                    const { iseditable } = row.original;
+                    return (
+                        <div className="flex items-center gap-2">
+                            {iseditable ? (
+                                <Tooltip title="Edit">
+                                    <Button
+                                        size="sm"
+                                        onClick={() => handleEdit(row.original)}
+                                        icon={<MdEdit />}
+                                    />
+                                </Tooltip>
+                            ) : (
+                                <Tooltip title="Request to Admin">
+                                    <Button
+                                        size="sm"
+                                        onClick={() => handleRequestToAdmin(row.original.id)}
+                                        icon={<FaUserShield />}
+                                        className="text-blue-500"
+                                    />
+                                </Tooltip>
+                            )}
+                            <Tooltip title="Delete">
+                                <Button
+                                    size="sm"
+                                    onClick={() => handleDeleteConfirmation(row.original.id)}
+                                    icon={<FiTrash />}
+                                    className="text-red-500"
+                                />
+                            </Tooltip>
+                            <ESIConfigDropdown
+                                companyName={row.original.EsiSetup.Company.name}
+                                companyGroupName={row.original.EsiSetup.CompanyGroup.name}
+                                trackerId={row.original.id}
+                                onRefresh={onRefresh}
                             />
-                        </Tooltip>
-                        <Tooltip title="Delete">
-                            <Button
-                                size="sm"
-                                onClick={() => handleDeleteConfirmation(row.original.id)}
+                        </div>
+                    );
+                },
+             }
+            // {
+            //     header: 'Actions',
+            //     id: 'actions',
+            //     cell: ({ row }) => (
+            //         <div className="flex items-center gap-2">
+            //             <Tooltip title="Edit">
+            //                 <Button
+            //                     size="sm"
+            //                     onClick={() => handleEdit(row.original)}
+            //                     icon={<MdEdit />}
+            //                 />
+            //             </Tooltip>
+            //             <Tooltip title="Delete">
+            //                 <Button
+            //                     size="sm"
+            //                     onClick={() => handleDeleteConfirmation(row.original.id)}
 
-                                icon={<FiTrash />}
-                                className="text-red-500"
-                            />
-                        </Tooltip>
-                        <ESIConfigDropdown  companyName={row.original.EsiSetup.Company.name} 
-              companyGroupName={row.original.EsiSetup.CompanyGroup.name} 
-              trackerId={row.original.id}  
-              onRefresh={onRefresh}           />
-                    </div>
-                ),
-            },
+            //                     icon={<FiTrash />}
+            //                     className="text-red-500"
+            //                 />
+            //             </Tooltip>
+            //             <ESIConfigDropdown  companyName={row.original.EsiSetup.Company.name} 
+            //   companyGroupName={row.original.EsiSetup.CompanyGroup.name} 
+            //   trackerId={row.original.id}  
+            //   onRefresh={onRefresh}           />
+            //         </div>
+            //     ),
+            // },
         ],
         [onRefresh]
     )
