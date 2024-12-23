@@ -376,6 +376,12 @@ export const protectedRoutes = [
         authority: [],
     },
     {
+        key: 'user.permission',
+        path: '/user-permission',
+        component: lazy(() => import('@/views/IHRC/components/UserEntity/components/UserPermission')),
+        authority: [],
+    },
+    {
         key: 'ptSetup.adddetail',
         path: '/add-pt-setup',
         component: lazy(() => import('@/views/IHRC/components/Entity/PTSetup/components/PTSetupPage')),

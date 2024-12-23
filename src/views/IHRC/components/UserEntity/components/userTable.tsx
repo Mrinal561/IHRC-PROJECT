@@ -48,14 +48,14 @@ const UserTable: React.FC = () => {
         () => [
             {
                 header: 'Company Group',
-                accessorKey: 'CompanyGroup.name',
+                accessorKey: 'company_details.name',
                 cell: (props) => (
                     <div className="w-32 truncate">{props.getValue() as string}</div>
                 ),
             },
             {
-                header: 'First Name',
-                accessorKey: 'name',
+                header: 'Name',
+                accessorKey: 'user_details.name',
                 cell: (props) => <div className="w-32 truncate">{props.getValue() as string}</div>,
             },
             // {
@@ -65,7 +65,7 @@ const UserTable: React.FC = () => {
             // },
             {
                 header: 'Email',
-                accessorKey: 'email',
+                accessorKey: 'user_details.email',
                 cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
             },
             // {
@@ -75,7 +75,7 @@ const UserTable: React.FC = () => {
             // },
             {
                 header: 'Mobile Number',
-                accessorKey: 'mobile',
+                accessorKey: 'user_details.mobile',
                 cell: (props) => <div className="w-36 truncate">{props.getValue() as string}</div>,
             },
             // {
@@ -85,12 +85,12 @@ const UserTable: React.FC = () => {
             // },
             {
                 header: 'PAN',
-                accessorKey: 'pan_card',
+                accessorKey: 'user_details.pan_card',
                 cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
             },
             {
                 header: 'Aadhar',
-                accessorKey: 'aadhar_no',
+                accessorKey: 'user_details.aadhar_no',
                 cell: (props) => <div className="w-36 truncate">{props.getValue() as string}</div>,
             },
             {
@@ -113,7 +113,7 @@ const UserTable: React.FC = () => {
                         <Tooltip title="Edit User Details">
                             <Button
                                 size="sm"
-                                onClick={() => handleEditClick(row.original.id)}
+                                onClick={() => handleEditClick(row.original.user_details.id)}
                                 icon={<MdEdit />}
                                 className="text-blue-500"
                             />
@@ -137,7 +137,7 @@ const UserTable: React.FC = () => {
                         <Tooltip title="Delete User">
                             <Button
                                 size="sm"
-                                onClick={() => openDeleteDialog(row.original.id)}
+                                onClick={() => openDeleteDialog(row.original.user_details.id)}
                                 icon={<FiTrash />}
                                 className="text-red-500"
                             />
@@ -161,9 +161,26 @@ const UserTable: React.FC = () => {
     }
 
     const handleDeleteConfirm = async () => {
+        console.log(itemToDelete)
         if (itemToDelete) {
-            try {
-                const response = await dispatch(deleteUser(itemToDelete)).unwrap();
+                const response = await dispatch(deleteUser(itemToDelete)).unwrap()
+                .catch((error: any) => {
+                  // Handle different error formats
+                  if (error.response?.data?.message) {
+                      // API error response
+                      showErrorNotification(error.response.data.message);
+                  } else if (error.message) {
+                      // Regular error object
+                      showErrorNotification(error.message);
+                  } else if (Array.isArray(error)) {
+                      // Array of error messages
+                      showErrorNotification(error);
+                  } else {
+                      // Fallback error message
+                      showErrorNotification(error);
+                  }
+                  throw error; // Re-throw to prevent navigation
+              });
                 
                 if (response) {
                     handleDialogClose();
@@ -179,15 +196,6 @@ const UserTable: React.FC = () => {
                         </Notification>
                     );
                 }
-            } catch (error: any) {
-                if (error.response?.data?.message) {
-                    showErrorNotification(error.response.data.message);
-                } else if (error.message) {
-                    showErrorNotification(error.message);
-                } else {
-                    showErrorNotification('An unexpected error occurred while deleting the user');
-                }
-            }
         }
     };
 

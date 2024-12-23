@@ -15,9 +15,10 @@ const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
 interface PFTrackerBulkUploadProps {
   onUploadConfirm: () => void;
+  canCreate:boolean;
 }
 
-const PFTrackerBulkUpload: React.FC<PFTrackerBulkUploadProps> = ({ onUploadConfirm }) => {
+const PFTrackerBulkUpload: React.FC<PFTrackerBulkUploadProps> = ({ onUploadConfirm, canCreate }) => {
   const dispatch = useDispatch();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [file, setFile] = useState<File | null>(null);
@@ -158,14 +159,17 @@ const PFTrackerBulkUpload: React.FC<PFTrackerBulkUploadProps> = ({ onUploadConfi
 
   return (
     <>
-      <Button 
-        variant="solid" 
-        size="sm" 
-        icon={<HiUpload />} 
-        onClick={handleUploadClick}
-      >
-        Upload PF
-      </Button>
+      {canCreate && ( 
+        <Button 
+          variant="solid" 
+          size="sm" 
+          icon={<HiUpload />} 
+          onClick={handleUploadClick}
+        >
+          Upload PF
+        </Button>
+      )}
+
 
       <Dialog
         isOpen={isDialogOpen}

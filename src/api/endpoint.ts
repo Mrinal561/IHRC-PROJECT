@@ -33,10 +33,11 @@ export const endpoints = {
     },
     user: {
         getAll: () => api('companyadmin/user'),
-        getById: (id: string) => api(`companyadmin/user/${id}`),
+        getById: (id: any) => api(`companyadmin/user/${id}`),
         create: () => api('companyadmin/user'),
         update: (id: string) => api(`companyadmin/user/${id}`),
         delete: (id: string) => api(`companyadmin/user/${id}`),
+        updatePermission:(id:any)=> api(`companyadmin/user/permissions/${id}`)
     },
     complianceSuperadmin: {
         getAll: () => api('/companyadmin/compliance/recommend'),

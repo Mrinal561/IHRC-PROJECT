@@ -72,8 +72,10 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
           }
           throw error;
         });
+        console.log(response)
       
       setEditedData(response);
+      console.log(response)
     } catch (error) {
       setError('Failed to load User details');
       console.error('Error fetching User data:', error);

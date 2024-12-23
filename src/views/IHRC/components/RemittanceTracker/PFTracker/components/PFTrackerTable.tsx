@@ -30,6 +30,8 @@ interface PfTrackerTableProps {
   };
   onPaginationChange: (page: number) => void;
   onPageSizeChange: (pageSize: number) => void;
+    canEdit: boolean;
+    canDelete: boolean;
 }
 
 const PFTrackerTable: React.FC<PfTrackerTableProps> =({ 
@@ -40,7 +42,9 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> =({
   onPaginationChange,
   onPageSizeChange,
   companyName, 
-  code
+  code,
+  canDelete,
+  canEdit
 }) => {
   const dispatch = useDispatch();
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -281,86 +285,104 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> =({
         },
       },
       {
-  header: 'Actions',
-  id: 'actions',
-  cell: ({ row }) => {
-    const { iseditable } = row.original;
-    console.log("editable:",iseditable)
-    return (
-      <div className="flex items-center gap-2">
-        {iseditable ? (
-          <Tooltip title="Edit">
-            <Button
-              size="sm"
-              onClick={() => handleEdit(row.original)}
-              icon={<MdEdit />}
-            />
-          </Tooltip>
-        ) : (
-          <Tooltip title="Request to Admin">
-            <Button
-              size="sm"
-              onClick={() => handleRequestToAdmin(row.original.id)}
-              icon={<FaUserShield />}
-              className="text-blue-500"
-            />
-          </Tooltip>
-        )}
-        <Tooltip title="Delete">
-          <Button
-            size="sm"
-            onClick={() => handleDeleteConfirmation(row.original.id)}
-            icon={<FiTrash />}
-            className="text-red-500"
-          />
-        </Tooltip>
-        <ConfigDropdown 
-          companyName={row.original.PfSetup.Company.name} 
-          companyGroupName={row.original.PfSetup.CompanyGroup.name} 
-          trackerId={row.original.id} 
-          onRefresh={onRefresh}
-        />
-      </div>
-    );
-  },
-}
-      // {
-      //   header: 'Actions',
-      //   id: 'actions',
-      //   cell: ({ row }) => (
-      //     <div className="flex items-center gap-2">
-      //       <Tooltip title="Edit">
-      //         <Button
-      //           size="sm"
-      //           onClick={() => handleEdit(row.original)}
-      //           icon={<MdEdit />}
-      //         />
-      //       </Tooltip>
-      //       <Tooltip title="Delete">
-      //         <Button
-      //           size="sm"
-      //           onClick={() => handleDeleteConfirmation(row.original.id)}
-      //           icon={<FiTrash />}
-      //           className="text-red-500"
-      //         />
-      //       </Tooltip>
-      //        <Tooltip title="Request to Admin">
-      //         <Button
-      //           size="sm"
-      //           onClick={() => console.log(row.index)}
-      //           icon={<FaUserShield />}
-      //           className="text-blue-500"
-      //         />
-      //       </Tooltip>
-      //       <ConfigDropdown 
-      //         companyName={row.original.PfSetup.Company.name} 
-      //         companyGroupName={row.original.PfSetup.CompanyGroup.name} 
-      //         trackerId={row.original.id} 
-      //         onRefresh={onRefresh}
-      //       />
-      //     </div>
-      //   ),
-      // },
+        header: 'Actions',
+        id: 'actions',
+        cell: ({ row }) => {
+          const { iseditable } = row.original;
+          
+          return (
+            <div className="flex items-center gap-2">
+              {/* Edit/Request Button */}
+              {canEdit && (
+                <>
+                  {iseditable ? (
+                    <Tooltip title="Edit">
+                      <Button
+                        size="sm"
+                        onClick={() => handleEdit(row.original)}
+                        icon={<MdEdit />}
+                      />
+                    </Tooltip>
+                  ) : (
+                    <Tooltip title="Request to Admin">
+                      <Button
+                        size="sm"
+                        onClick={() => handleRequestToAdmin(row.original.id)}
+                        icon={<FaUserShield />}
+                        className="text-blue-500"
+                      />
+                    </Tooltip>
+                  )}
+                </>
+              )}
+              
+              {/* Delete Button */}
+              {canDelete && (
+                <Tooltip title="Delete">
+                  <Button
+                    size="sm"
+                    onClick={() => handleDeleteConfirmation(row.original.id)}
+                    icon={<FiTrash />}
+                    className="text-red-500"
+                  />
+                </Tooltip>
+              )}
+              
+              {/* Config Dropdown is always visible */}
+              <ConfigDropdown 
+                companyName={row.original.PfSetup.Company.name} 
+                companyGroupName={row.original.PfSetup.CompanyGroup.name} 
+                trackerId={row.original.id} 
+                onRefresh={onRefresh}
+              />
+            </div>
+          );
+        },
+      }
+//       {
+//   header: 'Actions',
+//   id: 'actions',
+//   cell: ({ row }) => {
+//     const { iseditable } = row.original;
+//     console.log("editable:",iseditable)
+//     return (
+//       <div className="flex items-center gap-2">
+//         {iseditable ? (
+//           <Tooltip title="Edit">
+//             <Button
+//               size="sm"
+//               onClick={() => handleEdit(row.original)}
+//               icon={<MdEdit />}
+//             />
+//           </Tooltip>
+//         ) : (
+//           <Tooltip title="Request to Admin">
+//             <Button
+//               size="sm"
+//               onClick={() => handleRequestToAdmin(row.original.id)}
+//               icon={<FaUserShield />}
+//               className="text-blue-500"
+//             />
+//           </Tooltip>
+//         )}
+//         <Tooltip title="Delete">
+//           <Button
+//             size="sm"
+//             onClick={() => handleDeleteConfirmation(row.original.id)}
+//             icon={<FiTrash />}
+//             className="text-red-500"
+//           />
+//         </Tooltip>
+//         <ConfigDropdown 
+//           companyName={row.original.PfSetup.Company.name} 
+//           companyGroupName={row.original.PfSetup.CompanyGroup.name} 
+//           trackerId={row.original.id} 
+//           onRefresh={onRefresh}
+//         />
+//       </div>
+//     );
+//   },
+// }
     ],
     [onRefresh]
   );

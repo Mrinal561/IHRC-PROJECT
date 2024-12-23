@@ -13,6 +13,7 @@ export interface UserState {
     error: string | null;
     createUser: UserData | null;
     selectedUser: UserData | null;
+    userPermissions: string[];
 }
 
 const initialState: UserState = {
@@ -22,6 +23,7 @@ const initialState: UserState = {
     error: null,
     createUser: null,
     selectedUser: null,
+    userPermissions: [],
 };
 
 
@@ -49,6 +51,23 @@ export const createUser = createAsyncThunk(
         }
     }
 );
+
+export const updateUserPermissions = createAsyncThunk(
+    'user/updateUserPermissions',
+    async ({ id, permissions }: { id: string, permissions: string[] }, { rejectWithValue }) => {
+        try {
+            const { data } = await httpClient.post(
+                endpoints.user.updatePermission(id),
+                { permissions }
+            );
+            return data;
+        } catch (error: any) {
+            const err = error as AxiosError<any>
+            return rejectWithValue(err.response?.data?.message || 'Failed to update user permissions');
+        }
+    }
+);
+
 
 export const updateUser = createAsyncThunk(
     'user/update',
@@ -175,6 +194,18 @@ const userSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload as string;
                 state.selectedUser = null;
+            })
+            .addCase(updateUserPermissions.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(updateUserPermissions.fulfilled, (state, action) => {
+                state.loading = false;
+                state.userPermissions = action.payload.permissions;
+            })
+            .addCase(updateUserPermissions.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
             });
     },
 });

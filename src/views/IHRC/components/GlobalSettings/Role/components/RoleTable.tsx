@@ -61,41 +61,21 @@ const getChildColors = (parentBg, parentText) => {
 const MenuItemBox = ({ menu, parentColors }) => {
     return (
         <div className="flex items-center gap-2">
-            {/* Parent Menu Item */}
             <div className={`inline-flex items-center rounded-md px-3 py-1 ${parentColors.bg}`}>
                 <span className={`font-medium whitespace-nowrap ${parentColors.text}`}>
                     {menu.name}
                 </span>
             </div>
             
-            {/* Children Menu Items */}
             {menu.children && menu.children.length > 0 && (
                 <div className="flex items-center gap-2">
                     <div className="text-black text-lg font-medium">→</div>
                     {menu.children.map((childMenu, idx) => (
-                        <div key={idx} className="flex items-center gap-2">
-                            <div 
-                                className={`inline-flex items-center rounded-md px-3 py-1 ${getChildColors(parentColors.bg, parentColors.text).bg}`}
-                            >
-                                <span className={`whitespace-nowrap ${getChildColors(parentColors.bg, parentColors.text).text}`}>
-                                    {childMenu.name}
-                                </span>
-                            </div>
-                            
-                            {/* Recursive rendering for nested children */}
-                            {childMenu.children && childMenu.children.length > 0 && (
-                                <>
-                                    <div className="text-gray-300">→</div>
-                                    {childMenu.children.map((grandChild, index) => (
-                                        <MenuItemBox 
-                                            key={index} 
-                                            menu={grandChild} 
-                                            parentColors={getChildColors(parentColors.bg, parentColors.text)}
-                                        />
-                                    ))}
-                                </>
-                            )}
-                        </div>
+                        <MenuItemBox 
+                            key={idx} 
+                            menu={childMenu} 
+                            parentColors={getChildColors(parentColors.bg, parentColors.text)}
+                        />
                     ))}
                 </div>
             )}
@@ -137,7 +117,12 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
     const moduleColorMap = new Map();
 
     useEffect(() => {
-        setRoleTableData(roleData);
+        const transformedData = roleData.map(item => ({
+            id: item.role_details.id,
+            name: item.role_details.name,
+            moduleAccess: item.modules
+        }));
+        setRoleTableData(transformedData);
     }, [roleData]);
 
     const handleEditConfirm = async () => {
@@ -171,6 +156,7 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
 
     const openEditDialog = async (role) => {
         try {
+            console.log(role)
             const response = await dispatch(fetchRoleById(role.id)).unwrap();
             if (response) {
                 setItemToEdit(response);
@@ -178,7 +164,8 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
                 setEditDialogIsOpen(true);
             }
         } catch (error) {
-            showErrorNotification('Failed to fetch role details');
+            // showErrorNotification('Failed to fetch role details');
+            console.log(error)
         }
     };
 
@@ -201,6 +188,7 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
     };
 
     const handleDeleteConfirm = async () => {
+        // console.log(itemToDelete)
         if (itemToDelete?.id) {
             try {
                 const result = await dispatch(deleteRole(itemToDelete.id))
@@ -211,7 +199,7 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
                 }
             } catch (error) {
                 console.error(error);
-                showErrorNotification('Failed to delete role');
+                // showErrorNotification('Failed to delete role');
             } finally {
                 handleDeleteDialogClose();
             }
