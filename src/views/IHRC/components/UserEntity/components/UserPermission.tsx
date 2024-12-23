@@ -285,7 +285,7 @@ import Td from '@/components/ui/Table/Td';
 import THead from '@/components/ui/Table/THead';
 import TBody from '@/components/ui/Table/TBody';
 import  Checkbox  from '@/components/ui/checkbox/Checkbox';
-import  Button  from '@/components/ui/button/Button';
+// import { Button } from '@/components/ui/button';
 import { HiOutlinePlusCircle, HiOutlineMinusCircle } from 'react-icons/hi';
 import {
   useReactTable,
@@ -295,6 +295,7 @@ import {
 } from '@tanstack/react-table';
 import { useDispatch } from 'react-redux';
 import { updateUserPermissions } from '@/store/slices/userEntity/UserEntitySlice';
+import Button from '@/components/ui/Button/Button';
 
 // const {  Th, Td, THead, TBody } = Table;
 
