@@ -275,9 +275,15 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { useParams, useLocation, Navigate, useNavigate } from 'react-router-dom';
-import { Table } from '@/components/ui/table';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Button } from '@/components/ui/button';
+// import { Table } from '@/components/ui/table';
+import Table from '@/components/ui/Table/Table';
+import Tr from '@/components/ui/Table/Tr';
+import Th from '@/components/ui/Table/Th';
+import Td from '@/components/ui/Table/Td';
+import THead from '@/components/ui/Table/THead';
+import TBody from '@/components/ui/Table/TBody';
+// import { Checkbox } from '@/components/ui/checkbox';
+// import { Button } from '@/components/ui/button';
 import { HiOutlinePlusCircle, HiOutlineMinusCircle } from 'react-icons/hi';
 import {
   useReactTable,
@@ -287,8 +293,10 @@ import {
 } from '@tanstack/react-table';
 import { updateRolePermissions } from '@/store/slices/role/roleSlice';
 import { useDispatch } from 'react-redux';
+import Checkbox from '@/components/ui/Checkbox/Checkbox';
+import Button from '@/components/ui/Button/Button';
 
-const { Tr, Th, Td, THead, TBody } = Table;
+// const { Tr, Th, Td, THead, TBody } = Table;
 
 const RolePermission = () => {
   const { id } = useParams();
