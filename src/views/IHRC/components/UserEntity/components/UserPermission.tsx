@@ -277,7 +277,12 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Table } from '@/components/ui/table';
+import  Table  from '@/components/ui/table/table';
+import Tr from '@/components/ui/Table/Tr';
+import Th from '@/components/ui/Table/Th';
+import Td from '@/components/ui/Table/Td';
+import THead from '@/components/ui/Table/THead';
+import TBody from '@/components/ui/Table/TBody';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { HiOutlinePlusCircle, HiOutlineMinusCircle } from 'react-icons/hi';
@@ -290,7 +295,7 @@ import {
 import { useDispatch } from 'react-redux';
 import { updateUserPermissions } from '@/store/slices/userEntity/UserEntitySlice';
 
-const { Tr, Th, Td, THead, TBody } = Table;
+// const {  Th, Td, THead, TBody } = Table;
 
 const UserPermission = () => {
   const location = useLocation();
