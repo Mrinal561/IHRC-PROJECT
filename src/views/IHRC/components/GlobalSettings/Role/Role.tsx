@@ -35,7 +35,7 @@ const Role = () => {
     setIsLoading(true);
     try {
       const data = await dispatch(fetchRoles());
-      setRoleData(data.payload);
+      setRoleData(data.payload.data);
       console.log('Role Data:', data.payload);
     } catch (error) {
       console.error('Error fetching role data:', error);

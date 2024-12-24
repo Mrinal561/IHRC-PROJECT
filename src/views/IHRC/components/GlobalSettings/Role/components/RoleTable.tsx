@@ -132,7 +132,7 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
                     id: itemToEdit.id,
                     name: editedRoleName.trim() 
                 })).unwrap();
-
+                console.log(result)
                 if (result) {
                     onDataChange();
                     showSuccessNotification('Role updated successfully');
