@@ -1,230 +1,3 @@
-// // import  AdaptableCard  from '@/components/shared/AdaptableCard'
-// // import ESITrackerTable from './components/ESITrackerTable';
-// // import ESITrackerTool from './components/ESITrackerTool';
-// // import React, { useCallback, useEffect, useState } from 'react'
-// // import { esiChallanData } from '@/@types/esiTracker';
-// // import httpClient from '@/api/http-client';
-// // import { endpoints } from '@/api/endpoint';
-
-// // const ESITracker = () => {
-// //   const [filters, setFilters] = useState({ groupName: '', companyName: '', esiCode: '' });
-
-// //   const [data, setData] = useState<esiChallanData[]>([]);
-// //   const [isLoading, setIsLoading] = useState(false)
-// //     const [pagination, setPagination] = useState({
-// //     total: 0,
-// //     pageIndex: 1,
-// //     pageSize: 10,
-// //   });
-
-
-
-
-// //   const fetchEsiTrackerData =  useCallback(async (page: number, pageSize: number) => {
-// //     setIsLoading(true)
-
-// //     try {
-// //       const res = await httpClient.get(endpoints.esiTracker.getAll(), {
-// //           params: {
-// //             page,
-// //             page_size: pageSize,
-// //           },
-// //         });
-// //       console.log(res.data.data)
-// //       setData(res.data.data);
-// //         setPagination((prev) => ({
-// //           ...prev,
-// //           total: res.data.paginate_data.totalResults,
-// //         }));
-// //     } catch (error) {
-// //       console.error('Error fetching PF tracker data:', error);
-// //     } finally {
-// //       setIsLoading(false)
-// //   }
-// //   }, []);
-// //     useEffect(() => {
-// //     fetchEsiTrackerData(pagination.pageIndex, pagination.pageSize);
-// //   }, [fetchEsiTrackerData, pagination.pageIndex, pagination.pageSize]);
-
-// //   const handleFilterChange = (newFilters) => {
-// //     setFilters(newFilters);
-// //   };
-// //   const handlePaginationChange = (page: number) => {
-// //     setPagination((prev) => ({ ...prev, pageIndex: page }));
-// //   };
-
-// //   const handlePageSizeChange = (newPageSize: number) => {
-// //     setPagination((prev) => ({
-// //       ...prev,
-// //       pageSize: newPageSize,
-// //       pageIndex: 1, // Reset to first page when changing page size
-// //     }));
-// //   };
-
-// //   return (
-// //     <AdaptableCard className="h-full" bodyClass="h-full">
-// //       <div className="flex flex-wrap gap-6 items-center justify-between mb-6">
-// //         <div className="mb-4 lg:mb-0">
-// //           <h3 className="text-2xl font-bold">ESI Tracker</h3>
-// //         </div>
-// //         <ESITrackerTool onFilterChange={handleFilterChange} />
-// //       </div>
-// //       <ESITrackerTable dataSent={data} loading={isLoading}
-// //         onRefresh={()=>fetchEsiTrackerData(pagination.pageIndex, pagination.pageSize)}
-// //          pagination={pagination}
-// //         onPaginationChange={handlePaginationChange}
-// //         onPageSizeChange={handlePageSizeChange}
-// //       />
-// //     </AdaptableCard>
-// //   )
-// // }
-
-// // export default ESITracker
-
-// import React, { useCallback, useEffect, useState } from 'react';
-// import AdaptableCard from '@/components/shared/AdaptableCard';
-// import ESITrackerTable from './components/ESITrackerTable';
-// import ESITrackerTool from './components/ESITrackerTool';
-// import { esiChallanData } from '@/@types/esiTracker';
-// import httpClient from '@/api/http-client';
-// import { endpoints } from '@/api/endpoint';
-
-// const ESITracker: React.FC = () => {
-//     const [filters, setFilters] = useState({
-//         groupName: '',
-//         groupId: '',
-//         companyName: '',
-//         companyId: '',
-//         esiCode: '',
-//     });
-
-//     const [data, setData] = useState<esiChallanData[]>([]);
-//     const [isLoading, setIsLoading] = useState(false);
-//     const [pagination, setPagination] = useState({
-//         total: 0,
-//         pageIndex: 1,
-//         pageSize: 10,
-//     });
-
-//     const fetchEsiTrackerData = useCallback(
-//         async (page: number, pageSize: number) => {
-//             setIsLoading(true);
-//             try {
-//                 const params: any = {
-//                     page,
-//                     page_size: pageSize,
-//                     'group_id[]': filters.groupId,
-//                     'company_id[]': filters.companyId,
-//                 };
-
-//                 // Only add pf_code[] to params if it's selected
-//                 if (filters.esiCode) {
-//                     params['esi_code[]'] = filters.esiCode;
-//                 }
-
-//                 const res = await httpClient.get(endpoints.esiTracker.getAll(), {
-//                     params
-//                 });
-                
-//                 console.log(res.data.data);
-//                 setData(res.data.data);
-//                 setPagination((prev) => ({
-//                     ...prev,
-//                     total: res.data.paginate_data.totalResults,
-//                 }));
-//             } catch (error) {
-//                 console.error('Error fetching ESI tracker data:', error);
-//             } finally {
-//                 setIsLoading(false);
-//             }
-//         },
-        // [filters.groupId, filters.companyId, filters.esiCode]
-//     );
-
-//     useEffect(() => {
-//         fetchEsiTrackerData(pagination.pageIndex, pagination.pageSize);
-//     }, [fetchEsiTrackerData, pagination.pageIndex, pagination.pageSize, filters.groupId, filters.companyId]);
-
-//     const handleFilterChange = (newFilters) => {
-//         setFilters(newFilters);
-//         // Reset pagination to first page when filters change
-//         setPagination((prev) => ({
-//             ...prev,
-//             pageIndex: 1,
-//         }));
-//     };
-
-//     const handlePaginationChange = (page: number) => {
-//         setPagination((prev) => ({ ...prev, pageIndex: page }));
-//     };
-
-//     const handlePageSizeChange = (newPageSize: number) => {
-//         setPagination((prev) => ({
-//             ...prev,
-//             pageSize: newPageSize,
-//             pageIndex: 1, // Reset to first page when changing page size
-//         }));
-//     };
-
-// const refreshEsiTrackerData = useCallback(() => {
-//     setIsLoading(true);
-//     try {
-//         const params: any = {
-//             page: 1,
-//             page_size: 10,
-//             'group_id[]': filters.groupId,
-//             'company_id[]': filters.companyId,
-//         };
-
-//         // Only add esi_code[] to params if it's selected
-//         if (filters.esiCode) {
-//             params['esi_code[]'] = filters.esiCode;
-//         }
-//         console.log(params)
-//         httpClient.get(endpoints.esiTracker.getAll(), {
-//             params
-//         }).then(res => {
-//             console.log(res.data.data);
-//             setData(res.data.data);
-//             setPagination((prev) => ({
-//                 ...prev,
-//                 total: res.data.paginate_data.totalResults,
-//                 pageIndex: 1,
-//                 pageSize: 10
-//             }));
-//         }).catch(error => {
-//             console.error('Error fetching ESI tracker data:', error);
-//         }).finally(() => {
-//             setIsLoading(false);
-//         });
-//     } catch (error) {
-//         console.error('Error in refreshEsiTrackerData:', error);
-//         setIsLoading(false);
-//     }
-// }, [filters.groupId, filters.companyId, filters.esiCode]);
-
-//     return (
-//         <AdaptableCard className="h-full" bodyClass="h-full">
-//             <div className="flex flex-wrap gap-6 items-center justify-between mb-6">
-//                 <div className="">
-//                     <h3 className="text-2xl font-bold">ESI Tracker</h3>
-//                 </div>
-//                 <ESITrackerTool onFilterChange={handleFilterChange} />
-//             </div>
-//             <ESITrackerTable
-//                 loading={isLoading}
-//                 dataSent={data}
-//                 // onRefresh={() => fetchEsiTrackerData(pagination.pageIndex, pagination.pageSize)}
-//                 onRefresh={refreshEsiTrackerData}
-//                 pagination={pagination}
-//                 onPaginationChange={handlePaginationChange}
-//                 onPageSizeChange={handlePageSizeChange}
-//             />
-//         </AdaptableCard>
-//     );
-// }
-
-// export default ESITracker;
 
 
 import React, { useCallback, useEffect, useState, useRef } from 'react';
@@ -234,6 +7,31 @@ import ESITrackerTool from './components/ESITrackerTool';
 import { esiChallanData } from '@/@types/esiTracker';
 import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { Notification, toast } from '@/components/ui'
+import { fetchAuthUser } from '@/store/slices/login';
+import { Loading } from '@/components/shared';
+
+
+interface Permissions {
+    canList: boolean;
+    canCreate: boolean;
+    canEdit: boolean;
+    canDelete: boolean;
+}
+
+const getPermissions = (menuItem: any): Permissions => {
+    const permissionsObject = menuItem?.permissions || menuItem?.access || {}
+    return {
+        canList: !!permissionsObject.can_list,
+        canCreate: !!permissionsObject.can_create,
+        canEdit: !!permissionsObject.can_edit,
+        canDelete: !!permissionsObject.can_delete,
+    }
+}
+
+
 
 const ESITracker: React.FC = () => {
     const [filters, setFilters] = useState({
@@ -246,7 +44,8 @@ const ESITracker: React.FC = () => {
 
     // Use a ref to store the latest filters
     const filtersRef = useRef(filters);
-
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
     const [data, setData] = useState<esiChallanData[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [pagination, setPagination] = useState({
@@ -254,6 +53,74 @@ const ESITracker: React.FC = () => {
         pageIndex: 1,
         pageSize: 10,
     });
+    const [permissions, setPermissions] = useState<Permissions>({
+        canList: false,
+        canCreate: false,
+        canEdit: false,
+        canDelete: false,
+    })
+    const [isInitialized, setIsInitialized] = useState(false)
+    const [permissionCheckComplete, setPermissionCheckComplete] = useState(false)
+
+
+
+    useEffect(() => {
+        const initializeAuth = async () => {
+            try {
+                const response = await dispatch(fetchAuthUser())
+                
+                // Find Remittance Tracker module
+                const remittanceModule = response.payload.moduleAccess?.find(
+                    (module: any) => module.id === 3
+                )
+                
+                if (!remittanceModule) {
+                    console.warn('Remittance Tracker module not found')
+                    setPermissionCheckComplete(true)
+                    return
+                }
+
+                // Find PF Tracker menu item
+                const pfTrackerMenu = remittanceModule.menus?.find(
+                    (menu: any) => menu.id === 18
+                )
+
+                if (!pfTrackerMenu) {
+                    console.warn('PF Tracker menu not found')
+                    setPermissionCheckComplete(true)
+                    return
+                }
+
+                // Get and set permissions only once
+                const newPermissions = getPermissions(pfTrackerMenu)
+                setPermissions(newPermissions)
+                setIsInitialized(true)
+                
+                // If no list permission, show notification and redirect
+                if (!newPermissions.canList) {
+                    toast.push(
+                        <Notification
+                            title="Permission"
+                            type="danger"
+                        >
+                            You don't have permission of ESI Tracker
+                        </Notification>
+                    )
+                    navigate('/home')
+                }
+                setPermissionCheckComplete(true)
+
+            } catch (error) {
+                console.error('Error fetching auth user:', error)
+                setIsInitialized(true)
+                setPermissionCheckComplete(true)
+            }
+        }
+
+        if (!isInitialized) {
+            initializeAuth()
+        }
+    }, [dispatch, isInitialized])
 
     // Update the ref whenever filters change
     useEffect(() => {
@@ -362,13 +229,26 @@ const ESITracker: React.FC = () => {
         }));
     };
 
+    if (!isInitialized || !permissionCheckComplete) {
+        return (
+            <Loading loading={true} type="default">
+                <div className="h-full" />
+            </Loading>
+        )
+    }
+
+    // Only render if we have list permission
+    if (!permissions.canList) {
+        return null
+    }
+
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
             <div className="flex flex-wrap gap-6 items-center justify-between mb-6">
                 <div className="">
                     <h3 className="text-2xl font-bold">ESI Tracker</h3>
                 </div>
-                <ESITrackerTool onFilterChange={handleFilterChange} />
+                <ESITrackerTool onFilterChange={handleFilterChange} canCreate={permissions.canCreate} />
             </div>
             <ESITrackerTable
                 loading={isLoading}
@@ -379,6 +259,8 @@ const ESITracker: React.FC = () => {
                 pagination={pagination}
                 onPaginationChange={handlePaginationChange}
                 onPageSizeChange={handlePageSizeChange}
+                canEdit={permissions.canEdit}
+                canDelete={permissions.canDelete}
             />
         </AdaptableCard>
     );

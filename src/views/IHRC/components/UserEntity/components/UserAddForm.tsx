@@ -155,10 +155,10 @@ const UserAddForm = () => {
   const loadUserRoles = async () => {
     try {
       const { data } = await httpClient.get(endpoints.role.getAll());
-      
+      console.log(data)
       // Transform the data to extract role details
       setUserRole(
-        data.map((item: any) => ({ 
+        data.data.map((item: any) => ({ 
           label: item.role_details.name,
           value: String(item.role_details.id)
         }))
