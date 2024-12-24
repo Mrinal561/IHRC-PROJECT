@@ -153,20 +153,21 @@ const UserAddForm = () => {
 
 
   const loadUserRoles = async () => {
-    try{
+    try {
       const { data } = await httpClient.get(endpoints.role.getAll());
+      
+      // Transform the data to extract role details
       setUserRole(
-        data.map((v: any) => ({ 
-          label: v.name, 
-          value: String(v.id)
+        data.map((item: any) => ({ 
+          label: item.role_details.name,
+          value: String(item.role_details.id)
         }))
-      );      
-    }
-    catch(error){
+      );
+    } catch (error) {
       console.error('Failed to load user roles:', error);
       showNotification('danger', 'Failed to load user roles');
     }
-  }
+  };
 
   useEffect(() => {
     loadUserRoles()
