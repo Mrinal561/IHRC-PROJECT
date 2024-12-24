@@ -28,6 +28,8 @@ interface EsiTrackerTableProps {
   };
   onPaginationChange: (page: number) => void;
   onPageSizeChange: (pageSize: number) => void;
+  canEdit:boolean;
+  canDelete:boolean;
   }
 
 const ESITrackerTable: React.FC<EsiTrackerTableProps> =({ 
@@ -38,7 +40,9 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> =({
   onPaginationChange,
     onPageSizeChange,
     companyName,
-  code
+  code,
+  canEdit,
+  canDelete
 }) => {
     // const [data, setData] = useState<ESITrackerData[]>(sampleData);
     const dispatch = useDispatch();
@@ -321,47 +325,59 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> =({
             },
             {
                 header: 'Actions',
-                id: 'actions', 
+                id: 'actions',
                 cell: ({ row }) => {
-                    const { iseditable } = row.original;
-                    return (
-                        <div className="flex items-center gap-2">
-                            {iseditable ? (
-                                <Tooltip title="Edit">
-                                    <Button
-                                        size="sm"
-                                        onClick={() => handleEdit(row.original)}
-                                        icon={<MdEdit />}
-                                    />
-                                </Tooltip>
-                            ) : (
-                                <Tooltip title="Request to Admin">
-                                    <Button
-                                        size="sm"
-                                        onClick={() => handleRequestToAdmin(row.original.id)}
-                                        icon={<FaUserShield />}
-                                        className="text-blue-500"
-                                    />
-                                </Tooltip>
-                            )}
-                            <Tooltip title="Delete">
-                                <Button
-                                    size="sm"
-                                    onClick={() => handleDeleteConfirmation(row.original.id)}
-                                    icon={<FiTrash />}
-                                    className="text-red-500"
-                                />
+                  const { iseditable } = row.original;
+                  
+                  return (
+                    <div className="flex items-center gap-2">
+                      {/* Edit/Request Button */}
+                      {canEdit && (
+                        <>
+                          {iseditable ? (
+                            <Tooltip title="Edit">
+                              <Button
+                                size="sm"
+                                onClick={() => handleEdit(row.original)}
+                                icon={<MdEdit />}
+                              />
                             </Tooltip>
-                            <ESIConfigDropdown
-                                companyName={row.original.EsiSetup.Company.name}
-                                companyGroupName={row.original.EsiSetup.CompanyGroup.name}
-                                trackerId={row.original.id}
-                                onRefresh={onRefresh}
-                            />
-                        </div>
-                    );
+                          ) : (
+                            <Tooltip title="Request to Admin">
+                              <Button
+                                size="sm"
+                                onClick={() => handleRequestToAdmin(row.original.id)}
+                                icon={<FaUserShield />}
+                                className="text-blue-500"
+                              />
+                            </Tooltip>
+                          )}
+                        </>
+                      )}
+                      
+                      {/* Delete Button */}
+                      {canDelete && (
+                        <Tooltip title="Delete">
+                          <Button
+                            size="sm"
+                            onClick={() => handleDeleteConfirmation(row.original.id)}
+                            icon={<FiTrash />}
+                            className="text-red-500"
+                          />
+                        </Tooltip>
+                      )}
+                      
+                      {/* Config Dropdown is always visible */}
+                      <ESIConfigDropdown
+                        companyName={row.original.EsiSetup.Company.name}
+                        companyGroupName={row.original.EsiSetup.CompanyGroup.name}
+                        trackerId={row.original.id}
+                        onRefresh={onRefresh}
+                      />
+                    </div>
+                  );
                 },
-             }
+            },
             // {
             //     header: 'Actions',
             //     id: 'actions',

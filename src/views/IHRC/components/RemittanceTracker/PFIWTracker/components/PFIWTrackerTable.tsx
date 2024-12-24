@@ -315,6 +315,8 @@ interface PFIWTrackerTableProps {
   };
   onPaginationChange: (page: number) => void;
   onPageSizeChange: (pageSize: number) => void;
+    canEdit: boolean;
+    canDelete: boolean;
 }
 
 const PFIWTrackerTable: React.FC<PFIWTrackerTableProps> =({ 
@@ -325,7 +327,9 @@ const PFIWTrackerTable: React.FC<PFIWTrackerTableProps> =({
   onPaginationChange,
   onPageSizeChange,
   companyName,
-  code
+  code,
+  canDelete,
+  canEdit
 }) => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editingData, setEditingData] = useState<PFIWTrackerData | null>(null);
@@ -504,21 +508,30 @@ const confirmDelete = () => {
         id: 'actions',
         cell: ({ row }) => (
           <div className="flex items-center gap-2">
-            <Tooltip title="Edit">
-              <Button
-                size="sm"
-                onClick={() => handleEdit(row.original)}
-                icon={<MdEdit />}
-              />
-            </Tooltip>
-            <Tooltip title="Delete">
-              <Button
-                size="sm"
-                onClick={() => handleDeleteConfirmation(row.original.id)}
-                icon={<FiTrash />}
-                className="text-red-500"
-              />
-            </Tooltip>
+            {/* Edit Button - Only show if canEdit is true */}
+            {canEdit && (
+              <Tooltip title="Edit">
+                <Button
+                  size="sm"
+                  onClick={() => handleEdit(row.original)}
+                  icon={<MdEdit />}
+                />
+              </Tooltip>
+            )}
+            
+            {/* Delete Button - Only show if canDelete is true */}
+            {canDelete && (
+              <Tooltip title="Delete">
+                <Button
+                  size="sm"
+                  onClick={() => handleDeleteConfirmation(row.original.id)}
+                  icon={<FiTrash />}
+                  className="text-red-500"
+                />
+              </Tooltip>
+            )}
+            
+            {/* ConfigDropdown is always visible */}
             <ConfigDropdown 
               companyName={row.original.PfSetup.Company.name} 
               companyGroupName={row.original.PfSetup.CompanyGroup.name} 
