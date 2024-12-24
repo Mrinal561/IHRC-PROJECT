@@ -98,8 +98,9 @@ const ESITrackerTool: React.FC<{
     companyName: string; 
     companyId: string;
     esiCode: string 
-  }) => void 
-}> = ({ onFilterChange }) => {
+  }) => void ,
+  canCreate:boolean;
+}> = ({ onFilterChange, canCreate }) => {
   const [showUploadedDetails, setShowUploadedDetails] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [filters, setFilters] = useState({ 
@@ -176,7 +177,7 @@ const ESITrackerTool: React.FC<{
           onClick={handleDownload}>
           Download ESI Data
         </Button>
-        <ESITrackerBulkUpload onUploadConfirm={handleUploadConfirm} />
+        <ESITrackerBulkUpload onUploadConfirm={handleUploadConfirm} canCreate={canCreate} />
       </div>
     </div>
   );

@@ -261,28 +261,25 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
                         <Tooltip title="Edit Role">
                             <Button
                                 size="sm"
-                                variant="plain"
                                 onClick={() => openEditDialog(row.original)}
                                 icon={<MdEdit className="h-5 w-5" />}
-                                className="text-gray-600 hover:text-blue-600 transition-colors"
+                                className="text-blue-600"
                             />
                         </Tooltip>
                         <Tooltip title="Modify Access">
                             <Button
                                 size="sm"
-                                variant="plain"
                                 onClick={() => handleModifyAccess(row.original)}
                                 icon={<RiShieldKeyholeLine className="h-5 w-5" />}
-                                className="text-gray-600 hover:text-purple-600 transition-colors"
+                                className="text-purple-600 "
                             />
                         </Tooltip>
                         <Tooltip title="Delete">
                             <Button
                                 size="sm"
-                                variant="plain"
                                 onClick={() => openDeleteDialog(row.original)}
                                 icon={<FiTrash className="h-5 w-5" />}
-                                className="text-gray-600 hover:text-red-600 transition-colors"
+                                className="text-red-600 "
                             />
                         </Tooltip>
                     </div>

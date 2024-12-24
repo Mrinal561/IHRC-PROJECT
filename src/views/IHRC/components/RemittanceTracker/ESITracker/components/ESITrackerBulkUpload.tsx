@@ -16,9 +16,10 @@ const documentPath = "../store/AllMappedESICompliancesDetails.xls";
 
 interface ESITrackerBulkUploadProps {
     onUploadConfirm: () => void;
+    canCreate: boolean;
 }
 
-const ESITrackerBulkUpload: React.FC<ESITrackerBulkUploadProps> = ({ onUploadConfirm }) => {
+const ESITrackerBulkUpload: React.FC<ESITrackerBulkUploadProps> = ({ onUploadConfirm, canCreate }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [remark, setRemark] = useState('');
   const [file, setFile] = useState<File | null>(null);
@@ -169,6 +170,7 @@ const ESITrackerBulkUpload: React.FC<ESITrackerBulkUploadProps> = ({ onUploadCon
 
   return (
     <>
+    {canCreate &&(
       <Button 
         variant="solid" 
         size="sm" 
@@ -177,6 +179,7 @@ const ESITrackerBulkUpload: React.FC<ESITrackerBulkUploadProps> = ({ onUploadCon
       >
         Upload ESI
       </Button>
+    )}
 
       <Dialog
         isOpen={isDialogOpen}

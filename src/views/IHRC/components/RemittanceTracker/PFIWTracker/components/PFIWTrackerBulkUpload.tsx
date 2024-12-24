@@ -13,9 +13,10 @@ import { showErrorNotification } from '@/components/ui/ErrorMessage';
 
 interface PFIWTrackerBulkUploadProps {
   onUploadConfirm: () => void;
+  canCreate:boolean;
 }
 
-const PFIWTrackerBulkUpload: React.FC<PFIWTrackerBulkUploadProps> = ({ onUploadConfirm }) => {
+const PFIWTrackerBulkUpload: React.FC<PFIWTrackerBulkUploadProps> = ({ onUploadConfirm, canCreate }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [currentGroup, setCurrentGroup] = useState('');
@@ -157,6 +158,7 @@ const PFIWTrackerBulkUpload: React.FC<PFIWTrackerBulkUploadProps> = ({ onUploadC
 
   return (
     <>
+    {canCreate && (
       <Button 
         variant="solid" 
         size="sm" 
@@ -165,6 +167,7 @@ const PFIWTrackerBulkUpload: React.FC<PFIWTrackerBulkUploadProps> = ({ onUploadC
       >
         Upload PF IW
       </Button>
+    )}
 
       <Dialog
         isOpen={isDialogOpen}

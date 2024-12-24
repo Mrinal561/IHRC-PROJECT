@@ -101,8 +101,9 @@ const PFIWTrackerTool: React.FC<{
     companyName: string; 
     companyId: string;
     pfCode: string 
-  }) => void 
-}> = ({ onFilterChange }) => {
+  }) => void ;
+  canCreate:boolean
+}> = ({ onFilterChange, canCreate }) => {
   const [showUploadedDetails, setShowUploadedDetails] = useState(false);
   const [filters, setFilters] = useState({ 
     groupName: '', 
@@ -177,7 +178,7 @@ const PFIWTrackerTool: React.FC<{
           onClick={handleDownload}>
           Download PF IW Data
         </Button>
-        <PFIWTrackerBulkUpload onUploadConfirm={handleUploadConfirm} />
+        <PFIWTrackerBulkUpload onUploadConfirm={handleUploadConfirm} canCreate={canCreate} />
       </div>
     </div>
   );
