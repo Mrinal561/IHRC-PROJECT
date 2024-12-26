@@ -79,8 +79,9 @@ const LWFTrackerTool: React.FC<{
     companyName: string; 
     companyId: string;
     lwfCode: string 
-  }) => void 
-}> = ({ onFilterChange }) => {
+  }) => void ;
+  canCreate:boolean;
+}> = ({ onFilterChange, canCreate }) => {
   const [showUploadedDetails, setShowUploadedDetails] = useState(false);
   const [filters, setFilters] = useState({ 
     groupName: '', 
@@ -156,7 +157,7 @@ const LWFTrackerTool: React.FC<{
         >
           Download LWF Data
         </Button>
-        <LWFTrackerBulkUpload onUploadConfirm={handleUploadConfirm} />
+        <LWFTrackerBulkUpload onUploadConfirm={handleUploadConfirm} canCreate={canCreate}/>
       </div>
     </div>
   );

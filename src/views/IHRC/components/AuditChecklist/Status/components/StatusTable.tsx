@@ -32,6 +32,7 @@ interface StatusTableProps {
     locationId?: string;
   };
    onStatusUpdate: () => void;
+   canCreate : boolean;
 }
 
 interface BulkActionData {
@@ -159,6 +160,7 @@ const StatusTable: React.FC<StatusTableProps> = ({
   currentFilter,
   filterValues,
    onStatusUpdate,
+   canCreate,
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -507,6 +509,8 @@ const StatusTable: React.FC<StatusTableProps> = ({
                   />
                 </Tooltip>
               )}
+              {canCreate && (
+                <>
               {status === 'pending' && (
                 <>
                   <Tooltip title="Approve Compliance">
@@ -527,11 +531,12 @@ const StatusTable: React.FC<StatusTableProps> = ({
                   </Tooltip>
                 </>
               )}
+              </>
+              )}
             </div>
           );
         },
       },
-      // ... rest of the columns remain the same
     ],
     [selectedItems, filteredData, handleBulkSelection, handleSingleSelection]
   );
@@ -600,6 +605,8 @@ const StatusTable: React.FC<StatusTableProps> = ({
         <div className="flex gap-2">
           <StatusTableSearch onSearch={onSearch} />
           <CustomDateRangePicker onApply={handleDateRangeApply} />
+          {canCreate && (
+            <>
           <Button
             size="sm"
             onClick={() => setIsConfirmDialogOpen(true)}
@@ -623,6 +630,8 @@ const StatusTable: React.FC<StatusTableProps> = ({
           >
             Bulk Reject
           </Button>
+          </>
+          )}
           <Button size='sm' icon={<HiDownload />} variant='solid' onClick={BulkDownload}>Download</Button>
         </div>
       </div>

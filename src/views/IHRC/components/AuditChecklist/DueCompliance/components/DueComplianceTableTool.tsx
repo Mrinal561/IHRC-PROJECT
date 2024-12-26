@@ -46,11 +46,12 @@ interface DueComplianceDataRow {
 interface DueComplianceTableToolProps {
   data: DueComplianceDataRow[];
   onUploadAll: (selectedComplianceIds: number[], remark: string) => void;
+  canCreate: boolean;
 }
 
 const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
-const BulkUploadButton = () => {
+const BulkUploadButton = ({canCreate}) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [remark, setRemark] = useState('');
   const [file, setFile] = useState<File | null>(null);
@@ -182,6 +183,7 @@ const BulkUploadButton = () => {
 
   return (
     <>
+    {canCreate && (
       <Button 
         variant="solid" 
         size="sm" 
@@ -190,7 +192,7 @@ const BulkUploadButton = () => {
       >
         Bulk Upload
       </Button>
-
+)}
       <Dialog
         isOpen={isDialogOpen}
         onClose={handleCancel}
@@ -240,7 +242,7 @@ const BulkUploadButton = () => {
   );
 };
 
-const DueComplianceTableTool: React.FC<DueComplianceTableToolProps> = ({ data, onUploadAll }) => {
+const DueComplianceTableTool: React.FC<DueComplianceTableToolProps> = ({ data, onUploadAll, canCreate }) => {
   const navigate = useNavigate();
   const [dialogIsOpen, setDialogIsOpen] = useState(false);
   const [selectedCount, setSelectedCount] = useState(0);
@@ -275,9 +277,10 @@ const DueComplianceTableTool: React.FC<DueComplianceTableToolProps> = ({ data, o
     <div className="flex flex-col lg:flex-row lg:items-center gap-3">
       <DueComplianceTableSearch />
       {/* <DueComplianceFilter /> */}
-      <BulkUploadButton />
+      <BulkUploadButton  canCreate={canCreate}/>
       
       <div className="block lg:inline-block md:mb-0 mb-4">
+        {canCreate && (
         <Button
           size="sm"
           variant='solid'
@@ -286,6 +289,7 @@ const DueComplianceTableTool: React.FC<DueComplianceTableToolProps> = ({ data, o
         >
           Copy from Previous Month Data
         </Button>
+        )}
       </div>
 
       <Dialog isOpen={dialogIsOpen} onClose={() => setDialogIsOpen(false)}>
