@@ -98,6 +98,7 @@ interface ComplianceDetailTableProps {
   };
   onPaginationChange: (page: number) => void;
   onPageSizeChange: (pageSize: number) => void;
+  canCreate: boolean;
 }
  
 const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
@@ -110,6 +111,7 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
   pagination,
   onPaginationChange,
   onPageSizeChange,
+  canCreate,
 }) => {
   const [tableData, setTableData] = useState({
     total: data.length,
@@ -325,6 +327,7 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
                 className="hover:bg-transparent"
               />
             </Tooltip> */}
+            {canCreate && (
             <Tooltip title="Update Status" placement="top">
               <Button
                 size="sm"
@@ -333,6 +336,7 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
                 className="hover:bg-transparent"
               />
             </Tooltip>
+            )}
             {row.original.proof_document && (
               <Tooltip title="Download Proof" placement="top">
                 <Button

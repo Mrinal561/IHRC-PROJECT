@@ -848,12 +848,15 @@ export const BulkSetOwnerApproverButton: React.FC<BulkSetOwnerApproverButtonProp
 interface AssignChecklistTableToolProps {
   selectedIds: number[];
   refreshTable: () => void;
+  canCreate: boolean;
 }
  
 const AssignChecklistTableTool: React.FC<AssignChecklistTableToolProps> = ({
   selectedIds,
-  refreshTable
+  refreshTable,
+  canCreate,
 }) => {
+  console.log("==============",canCreate)
   return (
     <div className="flex flex-col lg:flex-row lg:items-center gap-3">
       <div>
@@ -861,10 +864,12 @@ const AssignChecklistTableTool: React.FC<AssignChecklistTableToolProps> = ({
       </div>
       <div className="flex items-center gap-3">
         <BulkAlertButton />
+        {canCreate && (
         <BulkSetOwnerApproverButton
           selectedIds={selectedIds}
           refreshTable={refreshTable}
         />
+      )}
       </div>
     </div>
   );

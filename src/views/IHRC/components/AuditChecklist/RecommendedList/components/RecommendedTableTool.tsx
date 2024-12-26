@@ -18,6 +18,7 @@ interface AssignChecklistButtonProps {
     districtValue?: string;
     locationValue?: string
     onAssignSuccess?: () => void;
+    canCreate: boolean;
 }
  
 const AssignChecklistButton = ({
@@ -28,7 +29,8 @@ const AssignChecklistButton = ({
     stateValue,
     locationValue,
     districtValue,
-    onAssignSuccess
+    onAssignSuccess,
+    canCreate
 }: AssignChecklistButtonProps) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isAssigning, setIsAssigning] = useState(false);
@@ -172,6 +174,7 @@ const AssignChecklistButton = ({
  
     return (
         <>
+        {canCreate && (
             <Button
                 variant="solid"
                 size="sm"
@@ -181,7 +184,7 @@ const AssignChecklistButton = ({
             >
                Assign Checklist
             </Button>
- 
+        )}
             <Dialog
                 isOpen={isDialogOpen}
                 onClose={handleCancel}
@@ -223,6 +226,7 @@ interface RecommendedTableToolProps {
     districtValue?: string;
     locationValue?: string
     onAssignSuccess?: () => void;
+    canCreate: boolean;
 }
  
 const RecommendedTableTool = ({
@@ -233,7 +237,8 @@ const RecommendedTableTool = ({
     stateValue,
     locationValue,
     districtValue,
-    onAssignSuccess
+    onAssignSuccess,
+    canCreate,
 }: RecommendedTableToolProps) => {
     return (
         <>
@@ -248,6 +253,7 @@ const RecommendedTableTool = ({
                             districtValue={districtValue}
                             locationValue={locationValue}
                         onAssignSuccess={onAssignSuccess}
+                        canCreate={canCreate}
                     />
                 </div>
             </div>

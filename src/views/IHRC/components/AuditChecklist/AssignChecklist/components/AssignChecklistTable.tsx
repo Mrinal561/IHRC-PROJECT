@@ -99,6 +99,7 @@ interface AssignChecklistTableProps {
   };
   onPaginationChange: (page: number) => void;
   onPageSizeChange: (pageSize: number) => void;
+  canCreate: boolean;
 }
 
 const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
@@ -111,6 +112,7 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
       pagination,
   onPaginationChange,
   onPageSizeChange,
+  canCreate,
 }) => {
     console.log(data);
     
@@ -587,6 +589,7 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
                                 className="hover:bg-transparent"
                             />
                         </Tooltip>
+                        {canCreate && (
                         <Tooltip title="Set Owner & Approver" placement="top">
                             <Button
                                 size="sm"
@@ -595,6 +598,7 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
                                 className="hover:bg-transparent"
                             />
                         </Tooltip>
+                        )}
                         <Tooltip
                             title="Set Compliance Reminder"
                             placement="top"

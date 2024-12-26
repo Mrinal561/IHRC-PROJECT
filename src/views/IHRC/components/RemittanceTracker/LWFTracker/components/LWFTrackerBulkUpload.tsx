@@ -128,9 +128,10 @@ import { createLwfTracker } from '@/store/slices/lwfSetup/lwfTrackerSlice';
 
 interface LWFTrackerBulkUploadProps {
   onUploadConfirm: () => void;
+  canCreate: boolean;
 }
 
-const LWFTrackerBulkUpload: React.FC<LWFTrackerBulkUploadProps> = ({ onUploadConfirm }) => {
+const LWFTrackerBulkUpload: React.FC<LWFTrackerBulkUploadProps> = ({ onUploadConfirm, canCreate }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [currentGroup, setCurrentGroup] = useState('');
@@ -265,6 +266,7 @@ const LWFTrackerBulkUpload: React.FC<LWFTrackerBulkUploadProps> = ({ onUploadCon
 
   return (
     <>
+    {canCreate && (
       <Button 
         variant="solid" 
         size="sm" 
@@ -273,6 +275,7 @@ const LWFTrackerBulkUpload: React.FC<LWFTrackerBulkUploadProps> = ({ onUploadCon
       >
         Upload LWF
       </Button>
+  )}
 
       <Dialog
         isOpen={isDialogOpen}

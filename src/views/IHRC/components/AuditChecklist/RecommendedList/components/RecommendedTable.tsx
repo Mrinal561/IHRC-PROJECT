@@ -59,6 +59,7 @@ interface RecommendedTableContentProps {
     locationValue?: string
     setIstableLoading: boolean
     onSelectedCompliancesChange: (selectedIds: number[]) => void
+    canCreate:boolean;
 }
  
 const ViewDetailsButton = ({
@@ -72,7 +73,8 @@ const ViewDetailsButton = ({
     onAssignSuccess,
     // onTableRerender,
     setIstableLoading,
-    clearCheckboxes
+    clearCheckboxes,
+    canCreate,
 }: {
     compliance: ComplianceData;
     branchValue?: string;
@@ -85,6 +87,7 @@ const ViewDetailsButton = ({
     // onTableRerender: () => void;
     setIstableLoading: () => void
     clearCheckboxes: () => void;
+    canCreate:boolean;
 }) => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -212,6 +215,7 @@ const ViewDetailsButton = ({
                     onClick={handleViewDetails}
                 />
             </Tooltip>
+            {canCreate&&(
             <Tooltip title="Assign Compliance">
                 <Button
                     size="sm"
@@ -219,6 +223,7 @@ const ViewDetailsButton = ({
                     icon={<RiCheckLine />}
                 />
             </Tooltip>
+            )}
         </div>
     );
 };
@@ -235,7 +240,8 @@ const RecommendedTable = ({
     districtValue,
     // onDataUpdate,
     setIstableLoading,
-    onSelectedCompliancesChange
+    onSelectedCompliancesChange,
+    canCreate
 }: RecommendedTableContentProps)  => {
     const dispatch = useDispatch()
     const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set())
@@ -448,6 +454,7 @@ const RecommendedTable = ({
                             // onTableRerender={IstableLoading}
                             setIstableLoading={setIstableLoading}
                             clearCheckboxes={clearCheckboxes} 
+                            canCreate={canCreate}
                         />
                     </div>
                 ),

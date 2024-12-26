@@ -31,6 +31,8 @@ interface PTTrackerTableProps {
   };
   onPaginationChange: (page: number) => void;
   onPageSizeChange: (pageSize: number) => void;
+  canEdit:boolean;
+  canDelete:boolean;
 }
 
 const PTECTrackerTable: React.FC<PTTrackerTableProps> = ({
@@ -41,7 +43,9 @@ const PTECTrackerTable: React.FC<PTTrackerTableProps> = ({
   onPaginationChange,
   onPageSizeChange,
   companyName,
-  code
+  code,
+  canDelete,
+  canEdit
 }) => {
    const dispatch = useDispatch();
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -308,6 +312,7 @@ const PTECTrackerTable: React.FC<PTTrackerTableProps> = ({
         id: 'actions',
         cell: ({ row }) => (
           <div className="flex items-center gap-2">
+            {canEdit && (
             <Tooltip title="Edit">
               <Button
                 size="sm"
@@ -315,6 +320,9 @@ const PTECTrackerTable: React.FC<PTTrackerTableProps> = ({
                 icon={<MdEdit />}
               />
             </Tooltip>
+              )}
+              
+              {canDelete && (
             <Tooltip title="Delete">
               <Button
                 size="sm"
@@ -323,6 +331,7 @@ const PTECTrackerTable: React.FC<PTTrackerTableProps> = ({
                 className="text-red-500"
               />
             </Tooltip>
+              )}
             <ConfigDropdown 
               companyName={row.original.PtSetup.Company.name}
               companyGroupName={row.original.PtSetup.CompanyGroup.name}
