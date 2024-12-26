@@ -1,8 +1,16 @@
+
+
 // import React, { useState, useMemo, useEffect } from 'react';
-// import { useLocation } from 'react-router-dom';
-// import { Table } from '@/components/ui/table';
-// import { Checkbox } from '@/components/ui/checkbox';
-// import { Button } from '@/components/ui/button';
+// import { useLocation, useNavigate } from 'react-router-dom';
+// // import  Table  from '@/components/ui/table/table';
+// import Table from '@/components/ui/Table/Table';
+// import Tr from '@/components/ui/Table/Tr';
+// import Th from '@/components/ui/Table/Th';
+// import Td from '@/components/ui/Table/Td';
+// import THead from '@/components/ui/Table/THead';
+// import TBody from '@/components/ui/Table/TBody';
+// import  Checkbox  from '@/components/ui/checkbox/Checkbox';
+// // import { Button } from '@/components/ui/button';
 // import { HiOutlinePlusCircle, HiOutlineMinusCircle } from 'react-icons/hi';
 // import {
 //   useReactTable,
@@ -12,16 +20,15 @@
 // } from '@tanstack/react-table';
 // import { useDispatch } from 'react-redux';
 // import { updateUserPermissions } from '@/store/slices/userEntity/UserEntitySlice';
-// // import { updateUserPermissions } from '@/store/slices/userEntity/UserEntitySlice';
+// import Button from '@/components/ui/Button/Button';
 
-// const { Tr, Th, Td, THead, TBody } = Table;
+// // const {  Th, Td, THead, TBody } = Table;
 
 // const UserPermission = () => {
 //   const location = useLocation();
 //   const userData = location.state?.userData;
 //   const dispatch = useDispatch();
 
-//   // Transform moduleAccess data into the required format
 //   const transformModuleData = (moduleAccess) => {
 //     return moduleAccess?.map(module => ({
 //       id: module.id,
@@ -63,6 +70,7 @@
 
 //   const [permissions, setPermissions] = useState([]);
 //   const [expanded, setExpanded] = useState({});
+//   const navigate = useNavigate();
 
 //   useEffect(() => {
 //     if (userData?.moduleAccess) {
@@ -76,17 +84,54 @@
 //       const updatePermission = (items) => {
 //         return items.map(item => {
 //           if (item.id === rowId) {
-//             // Update the parent and all children if any
-//             const updatedItem = { ...item, [permission]: value };
+//             let updatedItem = { ...item };
+            
+//             // If turning off view, also turn off other permissions
+//             if (permission === 'view' && !value) {
+//               updatedItem = {
+//                 ...updatedItem,
+//                 view: false,
+//                 create: false,
+//                 edit: false,
+//                 delete: false
+//               };
+//             } else {
+//               updatedItem[permission] = value;
+//             }
+
+//             // Update children if any
 //             if (item.subRows) {
-//               updatedItem.subRows = item.subRows.map(subItem => ({
-//                 ...subItem,
-//                 [permission]: value,
-//                 subRows: subItem.subRows?.map(childItem => ({
-//                   ...childItem,
-//                   [permission]: value
-//                 }))
-//               }));
+//               updatedItem.subRows = item.subRows.map(subItem => {
+//                 const updatedSubItem = permission === 'view' && !value
+//                   ? {
+//                       ...subItem,
+//                       view: false,
+//                       create: false,
+//                       edit: false,
+//                       delete: false
+//                     }
+//                   : { ...subItem, [permission]: value };
+
+//                 // Handle nested children if they exist
+//                 if (subItem.subRows) {
+//                   return {
+//                     ...updatedSubItem,
+//                     subRows: subItem.subRows.map(childItem =>
+//                       permission === 'view' && !value
+//                         ? {
+//                             ...childItem,
+//                             view: false,
+//                             create: false,
+//                             edit: false,
+//                             delete: false
+//                           }
+//                         : { ...childItem, [permission]: value }
+//                     )
+//                   };
+//                 }
+
+//                 return updatedSubItem;
+//               });
 //             }
 //             return updatedItem;
 //           }
@@ -129,8 +174,10 @@
 //       id: userData.id,
 //       permissions: flattenPermissions(permissions)
 //     };
-//     console.log(formattedData)
-//     dispatch(updateUserPermissions(formattedData));
+//    const res = dispatch(updateUserPermissions(formattedData));
+//    if(res){
+//     navigate(-1);
+//    }
 //   };
 
 //   const columns = useMemo(
@@ -152,7 +199,7 @@
 //                 )}
 //               </button>
 //             ) : (
-//               <span className="w-7" /> // Spacer for alignment
+//               <span className="w-7" />
 //             )}
 //             <span className={`${row.depth > 0 ? 'ml-4' : ''} ${row.depth > 1 ? 'ml-8' : ''}`}>
 //               {row.original.menu}
@@ -178,6 +225,7 @@
 //         cell: ({ row }) => (
 //           <Checkbox
 //             checked={row.original.create || false}
+//             disabled={!row.original.view}
 //             onChange={(checked) => 
 //               handleCheckboxChange(row.original.id, 'create', checked)
 //             }
@@ -190,6 +238,7 @@
 //         cell: ({ row }) => (
 //           <Checkbox
 //             checked={row.original.edit || false}
+//             disabled={!row.original.view}
 //             onChange={(checked) => 
 //               handleCheckboxChange(row.original.id, 'edit', checked)
 //             }
@@ -202,6 +251,7 @@
 //         cell: ({ row }) => (
 //           <Checkbox
 //             checked={row.original.delete || false}
+//             disabled={!row.original.view}
 //             onChange={(checked) => 
 //               handleCheckboxChange(row.original.id, 'delete', checked)
 //             }
@@ -277,7 +327,6 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-// import  Table  from '@/components/ui/table/table';
 import Table from '@/components/ui/Table/Table';
 import Tr from '@/components/ui/Table/Tr';
 import Th from '@/components/ui/Table/Th';
@@ -285,7 +334,6 @@ import Td from '@/components/ui/Table/Td';
 import THead from '@/components/ui/Table/THead';
 import TBody from '@/components/ui/Table/TBody';
 import Checkbox from '@/components/ui/Checkbox/Checkbox';
-import { Button } from '@/components/ui';
  import { HiOutlinePlusCircle, HiOutlineMinusCircle } from 'react-icons/hi';
 import {
   useReactTable,
@@ -360,7 +408,6 @@ const UserPermission = () => {
           if (item.id === rowId) {
             let updatedItem = { ...item };
             
-            // If turning off view, also turn off other permissions
             if (permission === 'view' && !value) {
               updatedItem = {
                 ...updatedItem,
@@ -373,7 +420,6 @@ const UserPermission = () => {
               updatedItem[permission] = value;
             }
 
-            // Update children if any
             if (item.subRows) {
               updatedItem.subRows = item.subRows.map(subItem => {
                 const updatedSubItem = permission === 'view' && !value
@@ -386,7 +432,6 @@ const UserPermission = () => {
                     }
                   : { ...subItem, [permission]: value };
 
-                // Handle nested children if they exist
                 if (subItem.subRows) {
                   return {
                     ...updatedSubItem,
@@ -448,10 +493,10 @@ const UserPermission = () => {
       id: userData.id,
       permissions: flattenPermissions(permissions)
     };
-   const res = dispatch(updateUserPermissions(formattedData));
-   if(res){
-    navigate(-1);
-   }
+    const res = dispatch(updateUserPermissions(formattedData));
+    if(res){
+      navigate(-1);
+    }
   };
 
   const columns = useMemo(
@@ -536,7 +581,7 @@ const UserPermission = () => {
     []
   );
 
-  const table = useReactTable({
+  const tableModel = useReactTable({
     data: permissions,
     columns,
     state: {
@@ -547,6 +592,10 @@ const UserPermission = () => {
     getCoreRowModel: getCoreRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
   });
+
+  const filteredRows = tableModel.getRowModel().rows.filter(row => 
+    !(row.original.module_id === 2 && row.depth > 0)
+  );
 
   return (
     <div className="p-8">
@@ -561,7 +610,7 @@ const UserPermission = () => {
       <div className="rounded-md border">
         <Table>
           <THead>
-            {table.getHeaderGroups().map((headerGroup) => (
+            {tableModel.getHeaderGroups().map((headerGroup) => (
               <Tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
                   <Th key={header.id} colSpan={header.colSpan}>
@@ -575,7 +624,7 @@ const UserPermission = () => {
             ))}
           </THead>
           <TBody>
-            {table.getRowModel().rows.map((row) => (
+            {filteredRows.map((row) => (
               <Tr 
                 key={row.id} 
                 className={row.depth > 0 ? `bg-gray-50 ${row.depth > 1 ? 'bg-gray-100' : ''}` : ''}

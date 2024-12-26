@@ -13,9 +13,10 @@ const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
 interface PTTrackerBulkUploadProps {
   onUploadConfirm: () => void;
+  canCreate:boolean;
 }
 
-const PTECTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({ onUploadConfirm }) => {
+const PTECTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({ onUploadConfirm, canCreate }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentGroup, setCurrentGroup] = useState('');
   const [isUploading, setIsUploading] = useState(false);
@@ -160,6 +161,7 @@ const PTECTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({ onUploadCon
   
   return (
     <>
+    {canCreate && (
       <Button 
         variant="solid" 
         size="sm" 
@@ -168,7 +170,7 @@ const PTECTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({ onUploadCon
       >
         Upload PT EC
       </Button>
-
+    )}
       <Dialog
         isOpen={isDialogOpen}
         onClose={handleCancel}

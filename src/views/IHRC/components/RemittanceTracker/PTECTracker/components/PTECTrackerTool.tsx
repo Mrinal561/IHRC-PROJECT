@@ -92,8 +92,9 @@ const PTECTrackerTool: React.FC<{
     companyName: string; 
     companyId: string;
     ptCode: string 
-  }) => void 
-}> = ({ onFilterChange }) => {
+  }) => void ;
+  canCreate: boolean;
+}> = ({ onFilterChange, canCreate }) => {
   const [showUploadedDetails, setShowUploadedDetails] = useState(false);
   const [filters, setFilters] = useState({ 
     groupName: '', 
@@ -169,7 +170,7 @@ const PTECTrackerTool: React.FC<{
         >
           Download PT EC Data
         </Button>
-        <PTRCTrackerBulkUpload onUploadConfirm={handleUploadConfirm} />
+        <PTRCTrackerBulkUpload onUploadConfirm={handleUploadConfirm} canCreate={canCreate} />
       </div>
     </div>
   );

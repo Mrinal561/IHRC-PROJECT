@@ -8,8 +8,31 @@ import DueComplianceTableTool from './components/DueComplianceTableTool';
 import DueComplianceTable from './components/DueComplianceTable';
 import { endpoints } from '@/api/endpoint';
 import httpClient from '@/api/http-client';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { fetchAuthUser } from '@/store/slices/login';
+import { Loading } from '@/components/shared';
+
+interface Permissions {
+    canList: boolean;
+    canCreate: boolean;
+    canEdit: boolean;
+    canDelete: boolean;
+  }
+  
+  const getPermissions = (menuItem: any): Permissions => {
+    const permissionsObject = menuItem?.permissions || menuItem?.access || {}
+    return {
+        canList: !!permissionsObject.can_list,
+        canCreate: !!permissionsObject.can_create,
+        canEdit: !!permissionsObject.can_edit,
+        canDelete: !!permissionsObject.can_delete,
+    }
+  }
 
 const DueCompliance = () => {
+    const navigate = useNavigate()
+    const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(false);
     const [data, setData] = useState([]);
       const [pagination, setPagination] = useState({
@@ -17,6 +40,76 @@ const DueCompliance = () => {
     pageIndex: 1,
     pageSize: 10,
   });
+  const [permissions, setPermissions] = useState<Permissions>({
+    canList: false,
+    canCreate: false,
+    canEdit: false,
+    canDelete: false,
+})
+const [isInitialized, setIsInitialized] = useState(false)
+const [permissionCheckComplete, setPermissionCheckComplete] = useState(false)
+
+useEffect(() => {
+    const initializeAuth = async () => {
+        try {
+            const response = await dispatch(fetchAuthUser())
+            
+            // Find Remittance Tracker module
+            const remittanceModule = response.payload.moduleAccess?.find(
+                (module: any) => module.id === 2
+            )
+            
+            if (!remittanceModule) {
+                console.warn('Audit Checklist module not found')
+                setPermissionCheckComplete(true)
+                return
+            }
+
+            // Find PF Tracker menu item
+            const recommendedMenu = remittanceModule.menus?.find(
+                (menu: any) => menu.id === 12
+            )
+
+            if (!recommendedMenu) {
+                console.warn('Due List not found')
+                setPermissionCheckComplete(true)
+                return
+            }
+
+            // Get and set permissions only once
+            const newPermissions = getPermissions(recommendedMenu)
+            setPermissions(newPermissions)
+            setIsInitialized(true)
+            
+            // If no list permission, show notification and redirect
+            if (!newPermissions.canList) {
+                toast.push(
+                    <Notification
+                        title="Permission"
+                        type="danger"
+                    >
+                        You don't have permission of Due List
+                    </Notification>
+                )
+                navigate('/home')
+            }
+            setPermissionCheckComplete(true)
+
+        } catch (error) {
+            console.error('Error fetching auth user:', error)
+            setIsInitialized(true)
+            setPermissionCheckComplete(true)
+        }
+    }
+
+    if (!isInitialized) {
+        initializeAuth()
+    }
+}, [dispatch, isInitialized])
+
+
+
+
     const fetchDueComplianceData = useCallback(async (page: number = 1, pageSize: number = 10) => {
         console.log('Fetching due compliance data...');
         
@@ -81,6 +174,19 @@ const DueCompliance = () => {
     setPagination((prev) => ({...prev, pageSize: newPageSize, pageIndex: 1 }));
   };
 
+  if (!isInitialized || !permissionCheckComplete) {
+    return (
+        <Loading loading={true} type="default">
+            <div className="h-full" />
+        </Loading>
+    )
+}
+
+// Only render if we have list permission
+if (!permissions.canList) {
+    return null
+}
+
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-10">
@@ -89,7 +195,7 @@ const DueCompliance = () => {
                     <p className="text-gray-600">View your company's due compliance</p>
                 </div>
                 <div className="flex items-center gap-4">
-                    <DueComplianceTableTool data={data} onUploadAll={handleUploadAll} />
+                    <DueComplianceTableTool data={data} onUploadAll={handleUploadAll} canCreate={permissions.canCreate}/>
                 </div>
             </div>
             <DueComplianceTable 
@@ -101,6 +207,7 @@ const DueCompliance = () => {
                  pagination={pagination}
         onPaginationChange={handlePaginationChange}
         onPageSizeChange={handlePageSizeChange}
+        canCreate={permissions.canCreate}
             />
         </AdaptableCard>
     );

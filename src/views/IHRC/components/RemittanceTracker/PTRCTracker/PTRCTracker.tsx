@@ -1,59 +1,5 @@
 
 
-// import React, { useCallback, useEffect, useState } from 'react'
-// import AdaptableCard from '@/components/shared/AdaptableCard'
-// import PTRCTrackerTool from './components/PTRCTrackerTool'
-// import PTRCTrackerTable from './components/PTRCTrackerTable'
-// import { PTTrackerData} from '@/@types/PTTracker'
-// import httpClient from '@/api/http-client'
-// import { endpoints } from '@/api/endpoint'
-
-// const PTRCTracker = () => {
-//   const [filters, setFilters] = useState({ groupName: '', companyName: '', pfCode: '' })
-//   const [data, setData] = useState<PTTrackerData[]>([])
-//   const [isLoading, setIsLoading] = useState(false)
-
-//   const fetchPtrcTrackerData = useCallback(async () => {
-//     setIsLoading(true)
-//     try {
-//       const res = await httpClient.get(endpoints.ptrc.getAll())
-//       console.log(res.data.data)
-//       setData(res.data.data)
-//     } catch (error) {
-//       console.error('Error fetching PTRC tracker data:', error)
-//     } finally {
-//       setIsLoading(false)
-//     }
-//   }, [])
-
-//   useEffect(() => {
-//     fetchPtrcTrackerData()
-//   }, [fetchPtrcTrackerData])
-
-//   const handleFilterChange = (newFilters) => {
-//     setFilters(newFilters)
-//   }
-
-//   return (
-//     <AdaptableCard className="h-full" bodyClass="h-full">
-//       <div className="flex flex-wrap gap-6 items-center justify-between mb-6">
-//         <div className="mb-4 lg:mb-0">
-//           <h3 className="text-2xl font-bold">PT RC Tracker</h3>
-//         </div>
-//         <PTRCTrackerTool onFilterChange={handleFilterChange} />
-//       </div>
-//       <PTRCTrackerTable
-//         dataSent={data}
-//         loading={isLoading}
-//         onRefresh={fetchPtrcTrackerData}
-//       />
-//     </AdaptableCard>
-//   )
-// }
-
-// export default PTRCTracker
-
-
 import React, { useCallback, useEffect, useState } from 'react'
 import AdaptableCard from '@/components/shared/AdaptableCard'
 import PTRCTrackerTool from './components/PTRCTrackerTool'
@@ -61,8 +7,35 @@ import PTRCTrackerTable from './components/PTRCTrackerTable'
 import { PTTrackerData } from '@/@types/PTTracker'
 import httpClient from '@/api/http-client'
 import { endpoints } from '@/api/endpoint'
+import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { fetchAuthUser } from '@/store/slices/login'
+import { Notification, toast } from '@/components/ui'
+import { Loading } from '@/components/shared'
+
+
+
+interface Permissions {
+    canList: boolean;
+    canCreate: boolean;
+    canEdit: boolean;
+    canDelete: boolean;
+}
+
+const getPermissions = (menuItem: any): Permissions => {
+    const permissionsObject = menuItem?.permissions || menuItem?.access || {}
+    return {
+        canList: !!permissionsObject.can_list,
+        canCreate: !!permissionsObject.can_create,
+        canEdit: !!permissionsObject.can_edit,
+        canDelete: !!permissionsObject.can_delete,
+    }
+}
+
 
 const PTRCTracker: React.FC = () => {
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
     const [filters, setFilters] = useState({
         groupName: '',
         groupId: '',
@@ -77,6 +50,75 @@ const PTRCTracker: React.FC = () => {
         pageIndex: 1,
         pageSize: 10,
     })
+    const [permissions, setPermissions] = useState<Permissions>({
+        canList: false,
+        canCreate: false,
+        canEdit: false,
+        canDelete: false,
+    })
+    const [isInitialized, setIsInitialized] = useState(false)
+    const [permissionCheckComplete, setPermissionCheckComplete] = useState(false)
+
+
+    useEffect(() => {
+        const initializeAuth = async () => {
+            try {
+                const response = await dispatch(fetchAuthUser())
+                
+                // Find Remittance Tracker module
+                const remittanceModule = response.payload.moduleAccess?.find(
+                    (module: any) => module.id === 3
+                )
+                
+                if (!remittanceModule) {
+                    console.warn('Remittance Tracker module not found')
+                    setPermissionCheckComplete(true)
+                    return
+                }
+
+                // Find PF Tracker menu item
+                const pfTrackerMenu = remittanceModule.menus?.find(
+                    (menu: any) => menu.id === 20
+                )
+
+                if (!pfTrackerMenu) {
+                    console.warn('PTEC Tracker menu not found')
+                    setPermissionCheckComplete(true)
+                    return
+                }
+
+                // Get and set permissions only once
+                const newPermissions = getPermissions(pfTrackerMenu)
+                setPermissions(newPermissions)
+                setIsInitialized(true)
+                
+                // If no list permission, show notification and redirect
+                if (!newPermissions.canList) {
+                    toast.push(
+                        <Notification
+                            title="Permission"
+                            type="danger"
+                        >
+                            You don't have permission of PTRC Tracker
+                        </Notification>
+                    )
+                    navigate('/home')
+                }
+                setPermissionCheckComplete(true)
+
+            } catch (error) {
+                console.error('Error fetching auth user:', error)
+                setIsInitialized(true)
+                setPermissionCheckComplete(true)
+            }
+        }
+
+        if (!isInitialized) {
+            initializeAuth()
+        }
+    }, [dispatch, isInitialized])
+
+
 
     const fetchPtrcTrackerData = useCallback(
         async (page: number, pageSize: number) => {
@@ -132,13 +174,28 @@ const PTRCTracker: React.FC = () => {
         }))
     }
 
+
+    if (!isInitialized || !permissionCheckComplete) {
+        return (
+            <Loading loading={true} type="default">
+                <div className="h-full" />
+            </Loading>
+        )
+    }
+
+    // Only render if we have list permission
+    if (!permissions.canList) {
+        return null
+    }
+
+
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
             <div className="flex flex-wrap gap-6 items-center justify-between mb-6">
                 <div className="mb-4 lg:mb-0">
                     <h3 className="text-2xl font-bold">PT RC Tracker</h3>
                 </div>
-                <PTRCTrackerTool onFilterChange={handleFilterChange} />
+                <PTRCTrackerTool onFilterChange={handleFilterChange} canCreate={permissions.canCreate} />
             </div>
             <PTRCTrackerTable
                 dataSent={data}
@@ -154,6 +211,8 @@ const PTRCTracker: React.FC = () => {
                 pagination={pagination}
                 onPaginationChange={handlePaginationChange}
                 onPageSizeChange={handlePageSizeChange}
+                canEdit={permissions.canEdit}
+                canDelete={permissions.canDelete}
             />
         </AdaptableCard>
     )

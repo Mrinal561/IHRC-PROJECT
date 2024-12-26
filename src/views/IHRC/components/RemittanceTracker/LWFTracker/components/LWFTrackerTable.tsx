@@ -81,6 +81,8 @@ interface LWFTrackerTableProps {
   };
   onPaginationChange: (page: number) => void;
   onPageSizeChange: (pageSize: number) => void;
+  canDelete:boolean;
+  canEdit: boolean;
 }
 
 const LWFTrackerTable: React.FC<LWFTrackerTableProps> = ({ 
@@ -91,7 +93,9 @@ const LWFTrackerTable: React.FC<LWFTrackerTableProps> = ({
   onPaginationChange,
   onPageSizeChange,
   companyName,
-  code
+  code,
+  canDelete,
+  canEdit
 }) => {
   const dispatch = useDispatch();
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -292,34 +296,46 @@ const LWFTrackerTable: React.FC<LWFTrackerTableProps> = ({
         id: 'actions',
         cell: ({ row }) => {
             const { iseditable } = row.original;
+            
             return (
                 <div className="flex items-center gap-2">
-                    {iseditable ? (
-                        <Tooltip title="Edit">
+                    {/* Edit/Request Button */}
+                    {canEdit && (
+                        <>
+                            {iseditable ? (
+                                <Tooltip title="Edit">
+                                    <Button
+                                        size="sm"
+                                        onClick={() => handleEdit(row.original)}
+                                        icon={<MdEdit />}
+                                    />
+                                </Tooltip>
+                            ) : (
+                                <Tooltip title="Request to Admin">
+                                    <Button
+                                        size="sm"
+                                        onClick={() => handleRequestToAdmin(row.original.id)}
+                                        icon={<FaUserShield />}
+                                        className="text-blue-500"
+                                    />
+                                </Tooltip>
+                            )}
+                        </>
+                    )}
+                    
+                    {/* Delete Button */}
+                    {canDelete && (
+                        <Tooltip title="Delete">
                             <Button
                                 size="sm"
-                                onClick={() => handleEdit(row.original)}
-                                icon={<MdEdit />}
-                            />
-                        </Tooltip>
-                    ) : (
-                        <Tooltip title="Request to Admin">
-                            <Button
-                                size="sm" 
-                                onClick={() => handleRequestToAdmin(row.original.id)}
-                                icon={<FaUserShield />}
-                                className="text-blue-500"
+                                onClick={() => handleDeleteConfirmation(row.original.id)}
+                                icon={<FiTrash />}
+                                className="text-red-500"
                             />
                         </Tooltip>
                     )}
-                    <Tooltip title="Delete">
-                        <Button
-                            size="sm"
-                            onClick={() => handleDeleteConfirmation(row.original.id)}
-                            icon={<FiTrash />}
-                            className="text-red-500"
-                        />
-                    </Tooltip>
+                    
+                    {/* Config Dropdown */}
                     <ConfigDropdown
                         companyName={row.original.LwfSetup.Company.name}
                         companyGroupName={row.original.LwfSetup.CompanyGroup.name}
@@ -329,7 +345,7 @@ const LWFTrackerTable: React.FC<LWFTrackerTableProps> = ({
                 </div>
             );
         },
-     }
+    }
       // {
       //   header: 'Actions',
       //   id: 'actions',

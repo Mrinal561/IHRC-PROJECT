@@ -339,8 +339,8 @@ const PFSetupPage: React.FC = () => {
             if (response.data) {
                 // Format the users data to only include name and id
                 const formattedUsers = response.data.data.map((user: any) => ({
-                    id: user.id,
-                    name: `${user.name}`,
+                    id: user.user_details.id,
+                    name: `${user.user_details.name}`,
                 }))
 
                 setUsers(formattedUsers)
