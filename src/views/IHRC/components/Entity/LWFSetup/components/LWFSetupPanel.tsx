@@ -754,8 +754,8 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
         <Select
           isMulti
           options={users.map(user => ({
-            value: String(user.id),                           
-            label: `${user.name}`,
+            value: String(user.user_details.id),                           
+            label: `${user.user_details.name}`,
           }))}
           onChange={handleSignatoryChange}
         />
