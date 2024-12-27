@@ -261,7 +261,7 @@ useEffect(() => {
       const response = await httpClient.get(endpoints.user.getAll());
       console.log('Users API Response:', response.data)
       if(response.data){
-        const authorizedSignatories = response.data.data.filter(user => user.auth_signatory);
+        const authorizedSignatories = response.data.data.filter(user => user.user_details.auth_signatory);
         setUsers(authorizedSignatories)
         console.log(authorizedSignatories);
         
@@ -526,8 +526,8 @@ useEffect(() => {
 <Select
                             isMulti
                             options={users.map(user => ({
-                              value: String(user.id),                           
-                              label: `${user.name}`,
+                              value: String(user.user_details.id),                           
+                              label: `${user.user_details.name}`,
                             }))}
                             onChange={handleSignatoryChange}
 
