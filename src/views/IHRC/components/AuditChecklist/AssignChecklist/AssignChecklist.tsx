@@ -76,62 +76,105 @@ const [permissionCheckComplete, setPermissionCheckComplete] = useState(false)
 
 //permission check section 
 useEffect(() => {
-    const initializeAuth = async () => {
-        try {
-            const response = await dispatch(fetchAuthUser())
-            
-            // Find Remittance Tracker module
-            const remittanceModule = response.payload.moduleAccess?.find(
-                (module: any) => module.id === 2
-            )
-            
-            if (!remittanceModule) {
-                console.warn('Audit Checklist module not found')
-                setPermissionCheckComplete(true)
-                return
-            }
+  const initializeAuth = async () => {
+      try {
+          const response = await dispatch(fetchAuthUser())
+          
+          // Check if moduleAccess exists in response
+          if (!response.payload?.moduleAccess) {
+              toast.push(
+                  <Notification
+                      title="Permission"
+                      type="danger"
+                  >
+                      You don't have access to any modules
+                  </Notification>
+              )
+              navigate('/home')
+              setPermissionCheckComplete(true)
+              setIsInitialized(true)
+              return
+          }
 
-            // Find PF Tracker menu item
-            const recommendedMenu = remittanceModule.menus?.find(
-                (menu: any) => menu.id === 10
-            )
+          // Find Remittance Tracker module
+          const remittanceModule = response.payload.moduleAccess?.find(
+              (module: any) => module.id === 2
+          )
+          
+          if (!remittanceModule) {
+              toast.push(
+                  <Notification
+                      title="Permission"
+                      type="danger"
+                  >
+                      You don't have access to this module
+                  </Notification>
+              )
+              navigate('/home')
+              setPermissionCheckComplete(true)
+              setIsInitialized(true)
+              return
+          }
 
-            if (!recommendedMenu) {
-                console.warn('Reccommended List not found')
-                setPermissionCheckComplete(true)
-                return
-            }
+          // Find PF Tracker menu item
+          const recommendedMenu = remittanceModule.menus?.find(
+              (menu: any) => menu.id === 10
+          )
 
-            // Get and set permissions only once
-            const newPermissions = getPermissions(recommendedMenu)
-            setPermissions(newPermissions)
-            setIsInitialized(true)
-            
-            // If no list permission, show notification and redirect
-            if (!newPermissions.canList) {
-                toast.push(
-                    <Notification
-                        title="Permission"
-                        type="danger"
-                    >
-                        You don't have permission of Assigned List
-                    </Notification>
-                )
-                navigate('/home')
-            }
-            setPermissionCheckComplete(true)
+          if (!recommendedMenu) {
+              toast.push(
+                  <Notification
+                      title="Permission"
+                      type="danger"
+                  >
+                      You don't have access to this menu
+                  </Notification>
+              )
+              navigate('/home')
+              setPermissionCheckComplete(true)
+              setIsInitialized(true)
+              return
+          }
 
-        } catch (error) {
-            console.error('Error fetching auth user:', error)
-            setIsInitialized(true)
-            setPermissionCheckComplete(true)
-        }
-    }
+          // Get and set permissions only once
+          const newPermissions = getPermissions(recommendedMenu)
+          setPermissions(newPermissions)
+          setIsInitialized(true)
+          
+          // If no list permission, show notification and redirect
+          if (!newPermissions.canList) {
+              toast.push(
+                  <Notification
+                      title="Permission"
+                      type="danger"
+                  >
+                      You don't have permission to view the Assigned List
+                  </Notification>
+              )
+              navigate('/home')
+          }
+          setPermissionCheckComplete(true)
 
-    if (!isInitialized) {
-        initializeAuth()
-    }
-}, [dispatch, isInitialized])
+      } catch (error) {
+          console.error('Error fetching auth user:', error)
+          toast.push(
+              <Notification
+                  title="Error"
+                  type="danger"
+              >
+                  Failed to check permissions. Please try again later.
+              </Notification>
+          )
+          navigate('/home')
+          setIsInitialized(true)
+          setPermissionCheckComplete(true)
+      }
+  }
+
+  if (!isInitialized) {
+      initializeAuth()
+  }
+}, [dispatch, isInitialized, navigate])
 
 
 
