@@ -166,6 +166,21 @@ const LWFTracker: React.FC = () => {
         const initializeAuth = async () => {
             try {
                 const response = await dispatch(fetchAuthUser())
+
+                if (!response.payload?.moduleAccess) {
+                    toast.push(
+                        <Notification
+                            title="Permission"
+                            type="danger"
+                        >
+                            You don't have access to any modules
+                        </Notification>
+                    )
+                    navigate('/home')
+                    setPermissionCheckComplete(true)
+                    setIsInitialized(true)
+                    return
+                }
                 
                 // Find Remittance Tracker module
                 const remittanceModule = response.payload.moduleAccess?.find(
@@ -173,8 +188,17 @@ const LWFTracker: React.FC = () => {
                 )
                 
                 if (!remittanceModule) {
-                    console.warn('Remittance Tracker module not found')
+                    toast.push(
+                        <Notification
+                            title="Permission"
+                            type="danger"
+                        >
+                            You don't have access to this module
+                        </Notification>
+                    )
+                    navigate('/home')
                     setPermissionCheckComplete(true)
+                    setIsInitialized(true)
                     return
                 }
 
@@ -184,8 +208,17 @@ const LWFTracker: React.FC = () => {
                 )
 
                 if (!pfTrackerMenu) {
-                    console.warn('PF Tracker menu not found')
+                    toast.push(
+                        <Notification
+                            title="Permission"
+                            type="danger"
+                        >
+                            You don't have access to this menu
+                        </Notification>
+                    )
+                    navigate('/home')
                     setPermissionCheckComplete(true)
+                    setIsInitialized(true)
                     return
                 }
 
@@ -218,7 +251,7 @@ const LWFTracker: React.FC = () => {
         if (!isInitialized) {
             initializeAuth()
         }
-    }, [dispatch, isInitialized])
+    }, [dispatch, isInitialized, navigate])
 
 
     const fetchLWFTrackerData = useCallback(
