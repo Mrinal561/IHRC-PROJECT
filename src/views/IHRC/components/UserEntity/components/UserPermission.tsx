@@ -19,6 +19,7 @@ import { useDispatch } from 'react-redux';
 import { updateUserPermissions } from '@/store/slices/userEntity/UserEntitySlice';
 import Button from '@/components/ui/Button'
 
+
 const UserPermission = () => {
   const location = useLocation();
   const userData = location.state?.userData;
