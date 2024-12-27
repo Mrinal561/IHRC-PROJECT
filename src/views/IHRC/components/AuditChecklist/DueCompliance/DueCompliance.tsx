@@ -53,6 +53,21 @@ useEffect(() => {
     const initializeAuth = async () => {
         try {
             const response = await dispatch(fetchAuthUser())
+
+            if (!response.payload?.moduleAccess) {
+                toast.push(
+                    <Notification
+                        title="Permission"
+                        type="danger"
+                    >
+                        You don't have access to any modules
+                    </Notification>
+                )
+                navigate('/home')
+                setPermissionCheckComplete(true)
+                setIsInitialized(true)
+                return
+            }
             
             // Find Remittance Tracker module
             const remittanceModule = response.payload.moduleAccess?.find(
@@ -60,8 +75,17 @@ useEffect(() => {
             )
             
             if (!remittanceModule) {
-                console.warn('Audit Checklist module not found')
+                toast.push(
+                    <Notification
+                        title="Permission"
+                        type="danger"
+                    >
+                        You don't have access to this module
+                    </Notification>
+                )
+                navigate('/home')
                 setPermissionCheckComplete(true)
+                setIsInitialized(true)
                 return
             }
 
@@ -71,8 +95,17 @@ useEffect(() => {
             )
 
             if (!recommendedMenu) {
-                console.warn('Due List not found')
+                toast.push(
+                    <Notification
+                        title="Permission"
+                        type="danger"
+                    >
+                        You don't have access to this menu
+                    </Notification>
+                )
+                navigate('/home')
                 setPermissionCheckComplete(true)
+                setIsInitialized(true)
                 return
             }
 
@@ -105,7 +138,7 @@ useEffect(() => {
     if (!isInitialized) {
         initializeAuth()
     }
-}, [dispatch, isInitialized])
+}, [dispatch, isInitialized, navigate])
 
 
 
