@@ -20,14 +20,18 @@ import { format, isPast } from 'date-fns'
 import { MdLabel } from 'react-icons/md'
 import { showErrorNotification } from '@/components/ui/ErrorMessage'
 import SESetup from './SEsetup'
-import { HiPlusCircle } from 'react-icons/hi'
+import { HiMinusCircle, HiPlusCircle } from 'react-icons/hi'
 
 
 
 interface AgreementSection {
     agreement_type: string;
-    agreement_validity: string;
+    start_date: string;
+    end_date: string;
     agreement_document: string | null;
+    owner_name:string;
+    partner_name:string;
+    partner_contact:string;
 }
 
 interface BranchFormData {
@@ -59,8 +63,9 @@ interface BranchFormData {
     se_validity?: string
     lease_validity?: string
     se_status?: string
-    office_mode?: 'physical' | 'virtual';
-    agreement_data?: AgreementSection[];
+    office_mode?: 'physical' | 'virtual'
+    agreement_data?: AgreementSection[]
+    gst_number?: string
 }
 
 interface SelectOption {
@@ -117,7 +122,11 @@ const AddBranchForm: React.FC = () => {
         useState('no')
         const [agreement_data, setAgreements] = useState<AgreementSection[]>([{
             agreement_type: '',
-            agreement_validity: '',
+            start_date: '',
+            end_date: '',
+            owner_name: '',
+            partner_name: '',
+            partner_contact: '',
             agreement_document: null
         }]);
 
@@ -152,6 +161,7 @@ const AddBranchForm: React.FC = () => {
         se_status: '',
         office_mode: 'physical',
         agreement_data: [],
+        gst_number: '',
     })
 
     useEffect(() => {
@@ -169,11 +179,18 @@ const AddBranchForm: React.FC = () => {
     const handleAddAgreement = () => {
         setAgreements([...agreement_data, {
             agreement_type: '',
-            agreement_validity: '',
+            start_date: '',
+            end_date: '',
+            owner_name: '',
+            partner_name: '',
+            partner_contact: '',
             agreement_document: null
         }]);
     };
-
+    const handleRemoveAgreement = (indexToRemove:any) => {
+        const updatedAgreements = agreement_data.filter((_, index) => index !== indexToRemove);
+        setAgreements(updatedAgreements);
+    };
 
     const handleAgreementChange = (index: number, field: keyof AgreementSection, value: string) => {
         const newAgreements = [...agreement_data];
@@ -205,6 +222,7 @@ const AddBranchForm: React.FC = () => {
         { value: 'other', label: 'Others' },
         // { value: 'branch', label: 'Branch' },
     ]
+
 
     const documentValidityOptions = [
         { value: 'fixed', label: 'Fixed' },
@@ -746,6 +764,21 @@ const AddBranchForm: React.FC = () => {
                     </div>
                     <div>
                         <p className="mb-2">
+                            GST Number
+                        </p>
+                        <OutlinedInput
+                            label="Gst Number"
+                            value={formData.gst_number}
+                            onChange={(value: string) => {
+                                setFormData((prev) => ({
+                                    ...prev,
+                                    gst_number: value,
+                                }))
+                            }}
+                        />
+                    </div>
+                    <div>
+                        <p className="mb-2">
                             Branch Mode <span className="text-red-500">*</span>
                         </p>
                         <OutlinedSelect
@@ -1255,15 +1288,15 @@ const AddBranchForm: React.FC = () => {
 <div className="border rounded-lg p-6 mt-4">
     <div className="flex flex-col gap-6">
         <div className="flex justify-between items-center">
-            <h6 className="text-lg font-medium">Agreement</h6>
+            <h6 className="text-lg font-medium">Partnership Agreement</h6>
             <Tooltip title="Add Agreement" placement="top">
                 <Button
                     size="sm"
                     variant="plain"
                     onClick={handleAddAgreement}
-                    icon={<HiPlusCircle />}
                     className="text-blue-600"
                 >
+                    <HiPlusCircle className="h-5 w-5" />
                 </Button>
             </Tooltip>
         </div>
@@ -1271,45 +1304,116 @@ const AddBranchForm: React.FC = () => {
         <div className="flex flex-col gap-4">
             {agreement_data.map((agreement, index) => (
                 <div key={index} className="border border-gray-200 rounded-lg p-4">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="flex justify-between items-start mb-4">
+                        
+                        <h6 className="text-sm font-medium">Agreement {index + 1}</h6>
+                        <Tooltip title="Remove Agreement" placement="top">
+                        <Button
+                            size="sm"
+                            variant="plain"
+                            onClick={() => handleRemoveAgreement(index)}
+                            className="text-red-600 hover:text-red-700"
+                        >
+                           <HiMinusCircle className='h-5 w-5' />
+                        </Button>
+                        </Tooltip>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="flex flex-col">
                             <label className="mb-2 text-sm text-gray-600">
                                 Agreement Type
                             </label>
-                            <OutlinedInput
-                            label='Agreement Type'
+                            <Input
+                                size="sm"
                                 value={agreement.agreement_type}
-                                onChange={(value: string) => 
-                                    handleAgreementChange(index, 'agreement_type', value)
+                                onChange={(e) => 
+                                    handleAgreementChange(index, 'agreement_type', e.target.value)
                                 }
                             />
                         </div>
+
                         <div className="flex flex-col">
                             <label className="mb-2 text-sm text-gray-600">
-                                Validity Upto
+                                Owner's Name
+                            </label>
+                            <Input
+                                size="sm"
+                                value={agreement.owner_name}
+                                onChange={(e) => 
+                                    handleAgreementChange(index, 'owner_name', e.target.value)
+                                }
+                            />
+                        </div>
+
+                        <div className="flex flex-col">
+                            <label className="mb-2 text-sm text-gray-600">
+                                Partner's Name
+                            </label>
+                            <Input
+                                size="sm"
+                                value={agreement.partner_name}
+                                onChange={(e) => 
+                                    handleAgreementChange(index, 'partner_name', e.target.value)
+                                }
+                            />
+                        </div>
+
+                        <div className="flex flex-col">
+                            <label className="mb-2 text-sm text-gray-600">
+                                Partner's Contact
+                            </label>
+                            <Input
+                                size="sm"
+                                value={agreement.partner_contact}
+                                onChange={(e) => 
+                                    handleAgreementChange(index, 'partner_contact', e.target.value)
+                                }
+                            />
+                        </div>
+
+                        <div className="flex flex-col">
+                            <label className="mb-2 text-sm text-gray-600">
+                                Start Date
                             </label>
                             <DatePicker
                                 size="sm"
-                                placeholder="Pick a Date"
+                                placeholder="Pick Start Date"
                                 onChange={(date) => {
                                     handleAgreementChange(
                                         index,
-                                        'agreement_validity',
+                                        'start_date',
                                         date ? format(date, 'yyyy-MM-dd') : ''
                                     );
                                 }}
                             />
                         </div>
+
                         <div className="flex flex-col">
                             <label className="mb-2 text-sm text-gray-600">
+                                End Date
+                            </label>
+                            <DatePicker
+                                size="sm"
+                                placeholder="Pick End Date"
+                                onChange={(date) => {
+                                    handleAgreementChange(
+                                        index,
+                                        'end_date',
+                                        date ? format(date, 'yyyy-MM-dd') : ''
+                                    );
+                                }}
+                            />
+                        </div>
+
+                        <div className="flex flex-col md:col-span-2">
+                            <label className="mb-2 text-sm text-gray-600">
                                 Upload Document
-                                {/* <span className="text-red-500 ml-1">*</span> */}
                             </label>
                             <Input
-                            size='sm'
+                                size="sm"
                                 type="file"
                                 accept=".pdf"
-                                 className="py-[5px]"
+                                className="py-[5px]"
                                 onChange={(e) => {
                                     const file = e.target.files?.[0];
                                     if (file) {

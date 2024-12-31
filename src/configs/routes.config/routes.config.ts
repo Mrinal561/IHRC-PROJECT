@@ -310,8 +310,8 @@ export const protectedRoutes = [
         authority: [],
     },    
     {
-        key: 'remittanceTracker.collapse.item8',
-        path: '/s&e-tracker',
+        key: 'remittanceTracker.collapse.item7',
+        path: '/notice-tracker',
         component: lazy(() => import('@/views/IHRC/components/RemittanceTracker/S&ETracker/SandETracker')),
         authority: [],
     },    

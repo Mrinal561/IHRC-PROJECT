@@ -4,6 +4,7 @@ import SandETrackerBulkUpload from './SandETrackerBulkUpload';
 import { Button } from '@/components/ui';
 import CustomDateRangePicker from '../../PFTracker/components/CustomDateRangePicker';
 import { HiDownload } from 'react-icons/hi';
+import NoticeUploadDialog from './SandETrackerBulkUpload';
 
 
 const SandETrackerTool = () => {
@@ -29,8 +30,9 @@ const SandETrackerTool = () => {
         <Button  
         variant="solid" 
         size="sm" 
-        icon={<HiDownload />}>Download S&E Data</Button>
-        <SandETrackerBulkUpload onUploadConfirm={handleUploadConfirm} />
+        icon={<HiDownload />}>Download Notice Data</Button>
+        {/* <SandETrackerBulkUpload onUploadConfirm={handleUploadConfirm} /> */}
+        <NoticeUploadDialog />
       </div>
     </div>
   )
