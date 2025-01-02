@@ -52,7 +52,7 @@ export const createCompany = createAsyncThunk(
             const { data } = await httpClient.post(endpoints.company.create(), companyData);
             return data;
         } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || 'Failed to create company');
+            return rejectWithValue(error.response?.data?.message);
         }
     }
 );

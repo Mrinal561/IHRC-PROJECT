@@ -8,24 +8,30 @@ import { endpoints } from '@/api/endpoint';
 import { showErrorNotification } from '@/components/ui/ErrorMessage';
 import { useDispatch } from 'react-redux';
 import { fetchTrackerById, updatePfTracker } from '@/store/slices/pftracker/pfTrackerSlice';
+import * as Yup from 'yup';
+
 
 interface PfChallanData {
   id: number;
   trrn_no?: string;
   crn_no?: string;
-  epf_wage?: number;
-  eps_wage?: number;
-  edli_wage?: number;
-  total_challan_amt?: number;
+  epf_wage?: string;
+  eps_wage?: string;
+  edli_wage?: string;
+  total_challan_amt?: string;
   payroll_month?: string;
   dueDate?: string;
   payment_date?: string;
   challan_type?: string;
-  no_of_emp?: number;
+  no_of_emp?: string;
   delay_in_days?: string;
   delay_reason?: string;
   difference_reason?: string;
   total_paid_amt?: number;
+}
+
+interface ValidationErrors {
+  [key: string]: string;
 }
 
 interface PFTrackerEditDialogProps {
@@ -35,6 +41,67 @@ interface PFTrackerEditDialogProps {
   trackerId: number;
      onRefresh: () => void;
 }
+
+const validationSchema = Yup.object().shape({
+  trrn_no: Yup.string()
+    .required('TRRN No. is required')
+    .matches(/^[A-Za-z0-9]+$/, 'TRRN No. should be alphanumeric'),
+  crn_no: Yup.string()
+    .required('CRN No. is required')
+    .matches(/^[A-Za-z0-9]+$/, 'CRN No. should be alphanumeric'),
+  epf_wage: Yup.number()
+    .required('EPF Wage is required')
+    .min(0, 'EPF Wage must be positive')
+    .typeError('EPF Wage must be a number'),
+  eps_wage: Yup.number()
+    .required('EPS Wage is required')
+    .min(0, 'EPS Wage must be positive')
+    .typeError('EPS Wage must be a number'),
+  edli_wage: Yup.number()
+    .required('EDLI Wage is required')
+    .min(0, 'EDLI Wage must be positive')
+    .typeError('EDLI Wage must be a number'),
+  total_challan_amt: Yup.number()
+    .required('Total Challan Amount is required')
+    .min(0, 'Total Challan Amount must be positive')
+    .typeError('Total Challan Amount must be a number'),
+  payment_date: Yup.date()
+    .required('Payment Date is required')
+    .typeError('Invalid date format'),
+  total_paid_amt: Yup.number()
+    .required('Total Paid Amount is required')
+    .min(0, 'Total Paid Amount must be positive')
+    .typeError('Total Paid Amount must be a number'),
+  no_of_emp: Yup.number()
+    .required('Number of Employees is required')
+    .integer('Number of Employees must be an integer')
+    .min(1, 'Number of Employees must be at least 1')
+    .typeError('Number of Employees must be a number'),
+    difference_reason: Yup.string().test({
+      name: 'difference-check',
+      test: function(diffReason, context) {
+        const { total_challan_amt, total_paid_amt } = context.parent;
+        if (Number(total_challan_amt) !== Number(total_paid_amt)) {
+          return diffReason ? diffReason.length >= 3 : false;
+        }
+        return true;
+      },
+      message: 'Difference reason is required when amounts differ and must be at least 3 characters'
+    }),
+    
+    delay_reason: Yup.string().test({
+      name: 'delay-check',
+      test: function(delayReason, context) {
+        const { payment_date } = context.parent;
+        if (payment_date && Yup.date().isValidSync(payment_date)) {
+          return delayReason ? delayReason.length >= 3 : false;
+        }
+        return true;
+      },
+      message: 'Delay reason is required when payment date is provided and must be at least 3 characters'
+    })
+});
+
 
 const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
   isOpen,
@@ -49,6 +116,7 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const dispatch = useDispatch();
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
 
   useEffect(() => {
     if (isOpen && trackerId) {
@@ -91,21 +159,41 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
     }
   };
 
-  const handleChange = (field: keyof PfChallanData, value: string | number) => {
+  const validateField = async (field: keyof PfChallanData, value: any) => {
+    try {
+      // If the value is empty string, don't validate yet
+      if (value === '') {
+        setValidationErrors(prev => ({ ...prev, [field]: '' }));
+        return true;
+      }
+      await validationSchema.validateAt(field, { ...editedData, [field]: value });
+      setValidationErrors(prev => ({ ...prev, [field]: '' }));
+      return true;
+    } catch (err) {
+      if (err instanceof Yup.ValidationError) {
+        setValidationErrors(prev => ({ ...prev, [field]: err.message }));
+      }
+      return false;
+    }
+  };
+
+  const handleChange = async (field: keyof PfChallanData, value: string | number) => {
     setEditedData((prev) => ({ ...prev, [field]: value }));
+    await validateField(field, value);
   };
 
   const handleSubmit = async () => {
     try {
+      await validationSchema.validate(editedData, { abortEarly: false });
     // Create updateData object (matching the original updateTracker data expectation)
     const updateData = {
-      no_of_emp: editedData.no_of_emp,
+      no_of_emp: editedData.no_of_emp || '0',
       delay_reason: editedData.delay_reason || '',
-      epf_wage: editedData.epf_wage || 0,
-      eps_wage: editedData.eps_wage || 0,
-      edli_wage: editedData.edli_wage || 0,
-      total_challan_amt: editedData.total_challan_amt || 0,
-      total_paid_amt: editedData.total_paid_amt || 0,
+      epf_wage: editedData.epf_wage || '0',
+      eps_wage: editedData.eps_wage || '0',
+      edli_wage: editedData.edli_wage || '0',
+      total_challan_amt: editedData.total_challan_amt || '0',
+      total_paid_amt: editedData.total_paid_amt || '0',
       payment_date: editedData.payment_date || '',
       challan_type: editedData.challan_type,
       trrn_no: editedData.trrn_no || '',
@@ -127,13 +215,27 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
       onRefresh();
     }
   } catch (err) {
-    console.error('Error submitting tracker data:', err);
+    if (err instanceof Yup.ValidationError) {
+      // Transform validation errors into object
+      const errors: ValidationErrors = {};
+      err.inner.forEach((error) => {
+        if (error.path) {
+          errors[error.path] = error.message;
+        }
+      });
+      setValidationErrors(errors);
+      openNotification('danger', 'Please fix validation errors');
+    } else {
+      console.error('Error submitting tracker data:', err);
+      openNotification('danger', 'Failed to update PF Tracker');
+    }
   }
-  };
+};
   
-  const handleDateChange = (field: 'month' | 'dueDate' | 'dateOfPayment', date: Date | null) => {
+  const handleDateChange = async(field: 'month' | 'dueDate' | 'dateOfPayment', date: Date | null) => {
     if (date) {
-      handleChange(field, date.toISOString().split('T')[0]);
+      const dateString = date.toISOString().split('T')[0];
+      await handleChange(field, dateString);
     }
   };
 
@@ -205,6 +307,9 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
                 value={editedData.trrn_no || ''}
                 onChange={(value) => handleChange('trrn_no', value)}
               />
+               {validationErrors['trrn_no'] && (
+                <p className="text-red-500 text-sm mt-1">{validationErrors['trrn_no']}</p>
+              )}
             </div>
           </div>
 
@@ -216,6 +321,9 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
                 value={editedData.crn_no || ''}
                 onChange={(value) => handleChange('crn_no', value)}
               />
+               {validationErrors['crn_no'] && (
+                <p className="text-red-500 text-sm mt-1">{validationErrors['crn_no']}</p>
+              )}
             </div>
           </div>
         </div>
@@ -226,9 +334,12 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
             <div className='w-[219px]'>
               <OutlinedInput
                 label="EPF Wage"
-                value={editedData.epf_wage?.toString() || ''}
+                value={editedData.epf_wage || '0'}
                 onChange={(value) => handleChange('epf_wage', parseFloat(value))}
               />
+               {validationErrors['epf_wage'] && (
+                <p className="text-red-500 text-sm mt-1">{validationErrors['epf_wage']}</p>
+              )}
             </div>
           </div>
           <div className='flex flex-col gap-2'>
@@ -236,9 +347,12 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
             <div className='w-[219px]'>
               <OutlinedInput
                 label="EPS Wage"
-                value={editedData.eps_wage?.toString() || ''}
+                value={editedData.eps_wage || '0'}
                 onChange={(value) => handleChange('eps_wage', parseFloat(value))}
               />
+               {validationErrors['eps_wage'] && (
+                <p className="text-red-500 text-sm mt-1">{validationErrors['eps_wage']}</p>
+              )}
             </div>
           </div>
           <div className='flex flex-col gap-2'>
@@ -246,9 +360,12 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
             <div className='w-[219px]'>
               <OutlinedInput
                 label="Edli Wage"
-                value={editedData.edli_wage?.toString() || ''}
+                value={editedData.edli_wage || '0'}
                 onChange={(value) => handleChange('edli_wage', parseFloat(value))}
               />
+                {validationErrors['edli_wage'] && (
+                <p className="text-red-500 text-sm mt-1">{validationErrors['edli_wage']}</p>
+              )}
             </div>
           </div>
         </div>
@@ -259,9 +376,12 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
             <div className='w-[219px]'>
               <OutlinedInput
                 label="Total Challan Amount"
-                value={editedData.total_challan_amt?.toString() || ''}
+                value={editedData.total_challan_amt || '0'}
                 onChange={(value) => handleChange('total_challan_amt', parseFloat(value))}
               />
+               {validationErrors['edli_wage'] && (
+                <p className="text-red-500 text-sm mt-1">{validationErrors['edli_wage']}</p>
+              )}
             </div>
           </div>
           <div className='flex flex-col gap-2 w-full'>
@@ -273,6 +393,9 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
                 value={editedData.payment_date ? new Date(editedData.payment_date) : undefined}
                 onChange={(date) => handleDateChange('payment_date', date)}
               />
+               {validationErrors['payment_date'] && (
+                <p className="text-red-500 text-sm mt-1">{validationErrors['payment_date']}</p>
+              )}
             </div>
           </div>
         </div>
@@ -283,9 +406,12 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
             <div className='w-[219px]'>
               <OutlinedInput
                 label="Total Paid Amount"
-                value={editedData.total_paid_amt?.toString() || ''}
+                value={editedData.total_paid_amt || '0'}
                 onChange={(value) => handleChange('total_paid_amt', parseFloat(value))}
               />
+               {validationErrors['total_paid_amt'] && (
+                <p className="text-red-500 text-sm mt-1">{validationErrors['total_paid_amt']}</p>
+              )}
             </div>
           </div>
 
@@ -294,9 +420,12 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
             <div className='w-full'>
               <OutlinedInput
                 label="No. of Employees"
-                value={editedData.no_of_emp?.toString() || ''}
+                value={editedData.no_of_emp || '0'}
                 onChange={(value) => handleChange('no_of_emp', parseInt(value, 10))}
               />
+                {validationErrors['no_of_emp'] && (
+                <p className="text-red-500 text-sm mt-1">{validationErrors['no_of_emp']}</p>
+              )}
             </div>
           </div>
         </div>
@@ -310,6 +439,9 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
                 value={editedData.difference_reason || ''}
                 onChange={(value) => handleChange('difference_reason', value)}
               />
+              {validationErrors['difference_reason'] && (
+                <p className="text-red-500 text-sm mt-1">{validationErrors['difference_reason']}</p>
+              )}
             </div>
           </div>
 
@@ -321,6 +453,9 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
                 value={editedData.delay_reason || ''}
                 onChange={(value) => handleChange('delay_reason', value)}
               />
+              {validationErrors['delay_reason'] && (
+                <p className="text-red-500 text-sm mt-1">{validationErrors['delay_reason']}</p>
+              )}
             </div>
           </div>
         </div>
