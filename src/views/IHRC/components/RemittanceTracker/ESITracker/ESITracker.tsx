@@ -40,6 +40,8 @@ const ESITracker: React.FC = () => {
         companyName: '',
         companyId: '',
         esiCode: '',
+        startDate:'',
+        endDate:''
     });
 
     // Use a ref to store the latest filters
@@ -173,6 +175,8 @@ const ESITracker: React.FC = () => {
                     page_size: pageSize,
                     'group_id[]': currentFilters.groupId || '',
                     'company_id[]': currentFilters.companyId || '',
+                    'from_date': filters.startDate,
+                    'to_date': filters.endDate,
                 };
 
                 // Only add esi_code[] to params if it's selected
@@ -198,7 +202,7 @@ const ESITracker: React.FC = () => {
                 setIsLoading(false);
             }
         },
-         [filters.groupId, filters.companyId, filters.esiCode]// Remove dependencies to prevent unnecessary re-creations
+         [filters.groupId, filters.companyId, filters.esiCode, filters.startDate,filters.endDate]// Remove dependencies to prevent unnecessary re-creations
     );
 
     useEffect(() => {
