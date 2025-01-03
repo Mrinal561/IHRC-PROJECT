@@ -92,7 +92,9 @@ const PTRCTrackerTool: React.FC<{
     groupId: string;
     companyName: string; 
     companyId: string;
-    ptCode: string 
+    ptCode: string ;
+    startDate: string;
+    endDate: string;
   }) => void ;
   canCreate: boolean;
 }> = ({ onFilterChange, canCreate }) => {
@@ -102,7 +104,9 @@ const PTRCTrackerTool: React.FC<{
     groupId: '',
     companyName: '', 
     companyId: '',
-    ptCode: '' 
+    ptCode: '' ,
+    startDate:'',
+    endDate:''
   });
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
@@ -115,13 +119,7 @@ const PTRCTrackerTool: React.FC<{
     setShowUploadedDetails(false);
   };
 
-  const handleFilterChange = (newFilters: { 
-    groupName: string; 
-    groupId: string;
-    companyName: string; 
-    companyId: string;
-    ptCode: string 
-  }) => {
+  const handleFilterChange = (newFilters) => {
     setFilters(newFilters);
     onFilterChange(newFilters);
   };
@@ -133,6 +131,20 @@ const PTRCTrackerTool: React.FC<{
   const handleDateRangeApply = (start: Date, end: Date) => {
     setStartDate(start);
     setEndDate(end);
+
+        // console.log(startDate, endDate)
+        setFilters(prevFilters => ({
+          ...prevFilters,
+          startDate: start.toISOString().split('T')[0], // Format: YYYY-MM-DD
+          endDate: end.toISOString().split('T')[0]
+        }));
+      
+        // Also call onFilterChange to notify parent component
+        onFilterChange({
+          ...filters,
+          startDate: start.toISOString().split('T')[0],
+          endDate: end.toISOString().split('T')[0]
+        });
   };
 
   const handleDownload = async () => {

@@ -35,7 +35,7 @@ export const requestCompanyEdit = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const response = await httpClient.post(
+      const response = await httpClient.put(
         endpoints.request.request(id), 
         payload
       );

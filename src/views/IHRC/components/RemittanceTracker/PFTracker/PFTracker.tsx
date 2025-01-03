@@ -39,6 +39,8 @@ const PFTracker: React.FC = () => {
         companyName: '',
         companyId: '',
         pfCode: '',
+        startDate: '',
+        endDate: '',
     })
     const [data, setData] = useState<PfChallanData[]>([])
     const dispatch = useDispatch()
@@ -160,6 +162,8 @@ const PFTracker: React.FC = () => {
                     page_size: pageSize,
                     'group_id[]': filters.groupId,
                     'company_id[]': filters.companyId,
+                    'from_date': filters.startDate,
+                    'to_date': filters.endDate,
                 }
 
                 if (filters.pfCode) {
@@ -181,7 +185,7 @@ const PFTracker: React.FC = () => {
                 setIsLoading(false)
             }
         },
-        [filters.groupId, filters.companyId, filters.pfCode, permissions.canList]
+        [filters.groupId, filters.companyId, filters.pfCode, permissions.canList,filters.startDate, filters.endDate]
     )
 
     useEffect(() => {
@@ -189,6 +193,12 @@ const PFTracker: React.FC = () => {
             fetchPFTrackerData(pagination.pageIndex, pagination.pageSize)
         }
     }, [fetchPFTrackerData, pagination.pageIndex, pagination.pageSize, filters.groupId, filters.companyId, isInitialized, permissions.canList])
+
+
+    useEffect(() => {
+        console.log('Updated dates:', filters.startDate, filters.endDate);
+      }, [filters.startDate, filters.endDate]);
+
 
     const handleFilterChange = (newFilters: any) => {
         setFilters(newFilters)

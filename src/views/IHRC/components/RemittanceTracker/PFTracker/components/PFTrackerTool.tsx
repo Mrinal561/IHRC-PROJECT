@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PFTrackerFilter from './PFTrackerFilter';
 import PFTrackerTable from './PFTrackerTable';
 import PFTrackerBulkUpload from './PFTrackerBulkUpload';
@@ -17,7 +17,9 @@ const PFTrackerTool: React.FC<{
     groupId: string;
     companyName: string; 
     companyId: string;
-    pfCode: string 
+    pfCode: string ;
+    startDate: string;
+    endDate: string;
   }) => void ;
   canCreate:boolean
 }> = ({ onFilterChange, canCreate }) => {
@@ -27,10 +29,12 @@ const PFTrackerTool: React.FC<{
     groupId: '',
     companyName: '', 
     companyId: '',
-    pfCode: '' 
+    pfCode: '' ,
+    startDate:'',
+    endDate:''
   });
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
 
   const handleUploadConfirm = () => {
     setShowUploadedDetails(true);
@@ -49,9 +53,26 @@ const PFTrackerTool: React.FC<{
     return <UploadedPFDetails onBack={handleBack} />;
   }
 
+  useEffect(() => {
+    console.log('Updated dates:', startDate, endDate);
+  }, [startDate, endDate]);
+
   const handleDateRangeApply = (start: Date, end: Date) => {
     setStartDate(start);
     setEndDate(end);
+    // console.log(startDate, endDate)
+    setFilters(prevFilters => ({
+      ...prevFilters,
+      startDate: start.toISOString().split('T')[0], // Format: YYYY-MM-DD
+      endDate: end.toISOString().split('T')[0]
+    }));
+  
+    // Also call onFilterChange to notify parent component
+    onFilterChange({
+      ...filters,
+      startDate: start.toISOString().split('T')[0],
+      endDate: end.toISOString().split('T')[0]
+    });
   };
 
   const handleDownload = async () => {

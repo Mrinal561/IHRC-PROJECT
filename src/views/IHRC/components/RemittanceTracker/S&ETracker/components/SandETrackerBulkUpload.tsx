@@ -122,7 +122,7 @@
 
 import React, { useState } from 'react';
 import { Button, DatePicker, Dialog } from '@/components/ui';
-import { HiPlus } from 'react-icons/hi';
+import { HiPlus, HiPlusCircle } from 'react-icons/hi';
 import OutlinedInput from '@/components/ui/OutlinedInput';
 
 const NoticeUploadDialog = () => {
@@ -184,7 +184,7 @@ const NoticeUploadDialog = () => {
       <Button
         variant="solid"
         size="sm"
-        icon={<HiPlus />}
+        icon={<HiPlusCircle />} 
         onClick={() => setIsOpen(true)}
       >
         Add Notice

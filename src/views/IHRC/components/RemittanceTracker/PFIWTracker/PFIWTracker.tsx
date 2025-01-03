@@ -38,6 +38,8 @@ const PFIWTracker: React.FC = () => {
         companyName: '',
         companyId: '',
         pfCode: '',
+        startDate: '',
+        endDate:''
     })
     const [data, setData] = useState([])
     const dispatch = useDispatch()
@@ -160,6 +162,8 @@ const PFIWTracker: React.FC = () => {
                     page_size: pageSize,
                     'group_id[]': filters.groupId,
                     'company_id[]': filters.companyId,
+                    'from_date': filters.startDate,
+                    'to_date': filters.endDate,
                 }
 
                 // Only add pf_code[] to params if it's selected
@@ -183,7 +187,7 @@ const PFIWTracker: React.FC = () => {
                 setIsLoading(false)
             }
         },
-        [filters.groupId, filters.companyId, filters.pfCode]
+        [filters.groupId, filters.companyId, filters.pfCode, filters.startDate, filters.endDate]
     )
 
     useEffect(() => {
