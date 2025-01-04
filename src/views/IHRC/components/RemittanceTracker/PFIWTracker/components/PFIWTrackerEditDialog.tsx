@@ -137,7 +137,7 @@ import { endpoints } from '@/api/endpoint';
 import { showErrorNotification } from '@/components/ui/ErrorMessage';
 import { useDispatch } from 'react-redux';
 import { fetchPfiwTrackerById, updatePfiwTracker } from '@/store/slices/pftracker/pfTrackerSlice';
-
+import * as yup from 'yup';
 
 interface PfChallanData {
   id: number;
@@ -155,6 +155,23 @@ interface PfChallanData {
   delay_reason?: string;
   submit_date?: string;
 }
+
+interface ValidationErrors {
+  submit_date?: string;
+  delay_reason?: string;
+}
+
+const validationSchema = yup.object().shape({
+  submit_date: yup
+    .date()
+    .required('Submission date is required')
+    .typeError('Please enter a valid date'),
+  delay_reason: yup
+    .string()
+    .required('Delay reason is required')
+    .min(5, 'Delay reason must be at least 5 characters')
+    .max(200, 'Delay reason cannot exceed 200 characters'),
+});
 
 
 interface PFIWTrackerEditDialogProps {
@@ -177,6 +194,7 @@ const PFIWTrackerEditDialog: React.FC<PFIWTrackerEditDialogProps> = ({
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
     const dispatch = useDispatch();
 
   useEffect(() => {
@@ -207,6 +225,7 @@ const PFIWTrackerEditDialog: React.FC<PFIWTrackerEditDialogProps> = ({
                 throw error; // Re-throw to prevent navigation
             });
       setEditedData(response);
+      setValidationErrors({});
     } catch (error) {
       setError('Failed to load PFIW Tracker details');
       console.error('Error fetching PFIW Tracker data:', error);
@@ -217,6 +236,7 @@ const PFIWTrackerEditDialog: React.FC<PFIWTrackerEditDialogProps> = ({
 
   const handleChange = (field: keyof PFIWTrackerData, value: string | number) => {
     setEditedData((prev) => ({...prev, [field]: value }));
+    setValidationErrors((prev) => ({ ...prev, [field]: undefined }));
   };
 
   const handleDateChange = (field: 'onth' | 'dueDate' | 'ubmissionDate', date: Date | null) => {
@@ -225,8 +245,32 @@ const PFIWTrackerEditDialog: React.FC<PFIWTrackerEditDialogProps> = ({
     }
   };
 
+  const validateForm = async (): Promise<boolean> => {
+    try {
+      await validationSchema.validate(editedData, { abortEarly: false });
+      setValidationErrors({});
+      return true;
+    } catch (err) {
+      if (err instanceof yup.ValidationError) {
+        const errors: ValidationErrors = {};
+        err.inner.forEach((e) => {
+          if (e.path) {
+            errors[e.path as keyof ValidationErrors] = e.message;
+          }
+        });
+        setValidationErrors(errors);
+      }
+      return false;
+    }
+  };
+
   const handleSubmit = async () => {
   try {
+
+    const isValid = await validateForm();
+      if (!isValid) {
+        return;
+      }
       // Create updateData object (matching the original updateTracker data expectation)
       const updateData = {
         submit_date: editedData.submit_date,
@@ -326,10 +370,14 @@ const PFIWTrackerEditDialog: React.FC<PFIWTrackerEditDialogProps> = ({
             <label>Submission Date</label>
             <div className='w-full'>
               <DatePicker
+              size='sm'
                 placeholder="Month"
                 value={editedData.submit_date ? new Date(editedData.submit_date) : undefined}
                 onChange={(date) => handleDateChange('submit_date', date)}
               />
+              {validationErrors.submit_date && (
+                <p className="text-red-500 text-sm mt-1">{validationErrors.submit_date}</p>
+              )}
             </div>
           </div>
         </div>
@@ -350,6 +398,9 @@ const PFIWTrackerEditDialog: React.FC<PFIWTrackerEditDialogProps> = ({
               value={editedData.delay_reason || ''}
               onChange={(value) => handleChange('delay_reason', value)}
             />
+             {validationErrors.delay_reason && (
+              <p className="text-red-500 text-sm mt-1">{validationErrors.delay_reason}</p>
+            )}
           </div>
         </div>
       </div>
