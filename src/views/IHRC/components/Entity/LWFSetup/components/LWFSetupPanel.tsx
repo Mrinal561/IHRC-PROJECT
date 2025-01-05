@@ -329,6 +329,10 @@ import LocationAutosuggest from '../../Branch/components/LocationAutosuggest';
 interface LWFSetupPanelProps {
   onClose: () => void;
   addLWFSetup: (data: any) => void;
+  companyId:string;
+  groupId:string;
+  companyName:string;
+  groupName:string;
 }
 
 interface SelectOption {
@@ -351,7 +355,11 @@ interface UserSignatory {
 
 const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
   onClose,
-  addLWFSetup
+  addLWFSetup,
+  companyId,
+  companyName,
+  groupId,
+   groupName
 }) => {
   const dispatch = useDispatch<AppDispatch>();
   const [isLoading, setIsLoading] = useState(false);
@@ -600,7 +608,12 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
     console.log(formData);
     try {
       setIsLoading(true);
-      const response = await httpClient.post(endpoints.lwfSetup.create(), formData);
+      const data = {
+        ...formData,
+        company_id:companyId,
+        group_id: groupId,
+      }
+      const response = await httpClient.post(endpoints.lwfSetup.create(), data);
       if(response){
         addLWFSetup(response.data);
         onClose();
@@ -619,21 +632,31 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
       <div className="grid grid-cols-2 gap-4 mb-4">
         <div>
           <p className="mb-2">Company Group</p>
-          <OutlinedSelect
+          {/* <OutlinedSelect
             label="Select Company Group"
             options={companyGroups}
             value={selectedCompanyGroup}
             onChange={setSelectedCompanyGroup}
-          />
+          /> */}
+           <OutlinedInput
+                            label="Company Group"
+                            value={groupName}
+                            disabled
+                            />
         </div>
         <div>
           <p className="mb-2">Company</p>
-          <OutlinedSelect
+          {/* <OutlinedSelect
             label="Select Company"
             options={companies}
             value={selectedCompany}
             onChange={setSelectedCompany}
-          />
+          /> */}
+          <OutlinedInput
+                            label="Company"
+                            value={companyName}
+                            disabled
+                            />
         </div>
       </div>
 

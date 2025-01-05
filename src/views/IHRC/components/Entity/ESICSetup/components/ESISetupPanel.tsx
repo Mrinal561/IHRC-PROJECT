@@ -17,6 +17,10 @@ interface ESISetupPanelProps {
   onClose: () => void;
   addESISetup: (data: any) => void;
   refreshData: () => Promise<void>;
+  companyId:string;
+  groupId:string;
+  companyname:string;
+  groupName:string;
 }
 
 interface SelectOption {
@@ -55,7 +59,7 @@ interface LocationOption {
   district_id: number;
 }
 
-const ESISetupPanel = ({ onClose, addESISetup , refreshData}) => {
+const ESISetupPanel = ({ onClose, addESISetup , refreshData, companyId, companyName, groupId, groupName}) => {
   const dispatch = useDispatch<AppDispatch>();
   const [isLoading, setIsLoading] = useState(false);
   const [companyGroups, setCompanyGroups] = useState<SelectOption[]>([]);
@@ -329,6 +333,8 @@ useEffect(() => {
       const data = {
         ...formData,
         signatory_data: formData.signatory_data,
+        company_id:companyId,
+        group_id: groupId,
       };
   
 
@@ -403,21 +409,31 @@ useEffect(() => {
       <div className="grid grid-cols-2 gap-4 mb-4">
         <div>
           <p className="mb-2">Company Group</p>
-          <OutlinedSelect
+          {/* <OutlinedSelect
             label="Select Company Group"
             options={companyGroups}
             value={selectedCompanyGroup}
             onChange={setSelectedCompanyGroup}
-          />
+          /> */}
+           <OutlinedInput
+                            label="Company Group"
+                            value={groupName}
+                            disabled
+                            />
         </div>
         <div>
           <p className="mb-2">Company</p>
-          <OutlinedSelect
+          {/* <OutlinedSelect
             label="Select Company"
             options={companies}
             value={selectedCompany}
             onChange={setSelectedCompany}
-          />
+          /> */}
+           <OutlinedInput
+                            label="Company"
+                            value={companyName}
+                            disabled
+                            />
         </div>
       </div>
 

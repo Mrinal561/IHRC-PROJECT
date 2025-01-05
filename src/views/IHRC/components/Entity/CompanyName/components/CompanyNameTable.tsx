@@ -162,6 +162,7 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({
               companyName={row.original.name} 
               companyGroupName={row.original.company_group_name}
               companyId={row.original.id}
+              groupId={row.original.group_id}
             />
           </div>
         ),

@@ -7,6 +7,7 @@ import {
     DatePicker,
     Select,
 } from '@/components/ui'
+// import { useLocation } from 'react-router-dom'
 import OutlinedInput from '@/components/ui/OutlinedInput'
 import { MultiValue, ActionMeta } from 'react-select'
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -34,6 +35,13 @@ interface PFSetupData {
     pf_user: string
     password: string
 }
+
+interface LocationState {
+    companyName?: string;
+    companyGroupName?: string;
+    companyId?: string;
+    groupId?: string;
+  }
 
 interface PFSetupPageProps {
     onClose: () => void
@@ -75,6 +83,12 @@ interface Location {
 const PFSetupPage: React.FC = () => {
     const navigate = useNavigate()
     const location = useLocation()
+  const locationState = location.state as LocationState;
+  
+  const companyName = locationState?.companyName;
+  const companyGroupName = locationState?.companyGroupName;
+  const companyId = locationState?.companyId;
+  const groupId = locationState?.groupId;
     const companyData = location.state?.companyData
     const [fileBase64, setFileBase64] = useState<string>('')
     const dispatch = useDispatch<AppDispatch>()
@@ -199,11 +213,15 @@ const PFSetupPage: React.FC = () => {
         const formData = {
             ...pfSetupData,
             register_date: pfSetupData.register_date?.toISOString() || '',
+            Company_Group_Name: companyGroupName,
+            Company_Name: companyName,
+            company_id: companyId,
+            group_id: groupId
         }
 
         try {
             // Here you would send the formData to your API
-            console.log('Submitting PF Setup with base64 files:', formData)
+            console.log('Submitting PF Setup with base64 files:', formData,companyGroupName,companyName)
 
             // Example API call (uncomment and modify as needed)
             const response = await dispatch(createPF(formData))
@@ -495,23 +513,33 @@ const PFSetupPage: React.FC = () => {
                 <div className="grid grid-cols-2 gap-4 mb-4">
                     <div>
                         <p className="mb-2"> Company</p>
-                        <OutlinedSelect
+                        {/* <OutlinedSelect
                             label="Select Company Group"
                             options={companyGroups}
                             value={selectedCompanyGroup}
                             onChange={setSelectedCompanyGroup}
-                        />
+                        /> */}
+                         <OutlinedInput
+                            label="Company Group"
+                            value={companyGroupName}
+                            disabled
+                            />
                     </div>
                     <div>
                         <p className="mb-2"> Company</p>
-                        <OutlinedSelect
+                        {/* <OutlinedSelect
                             label="Select Company"
                             options={companies}
                             value={selectedCompany}
                             onChange={(option: SelectOption | null) => {
                                 setSelectedCompany(option)
                             }}
-                        />
+                        /> */}
+                         <OutlinedInput
+                            label="Company"
+                            value={companyName}
+                            disabled
+                            />
                     </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">

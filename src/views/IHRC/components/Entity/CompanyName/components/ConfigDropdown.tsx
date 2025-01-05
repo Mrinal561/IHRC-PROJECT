@@ -9,12 +9,14 @@ interface ConfigDropdownProps {
   companyName: string;
   companyGroupName?: string;
   companyId: string;
+  groupId:string;
 }
 
 const ConfigDropdown: React.FC<ConfigDropdownProps> = ({ 
   companyName, 
   companyGroupName, 
-  companyId 
+  companyId ,
+  groupId
 }) =>{
   const [isOpen, setIsOpen] = useState(false);
   const buttonRef = useRef(null);
@@ -41,7 +43,7 @@ const ConfigDropdown: React.FC<ConfigDropdownProps> = ({
 
   const handleSetupClick = (setupType) => {
     const urlSafeCompanyName = encodeURIComponent(companyName.replace(/\s+/g, '-').toLowerCase());
-    navigate(`${APP_PREFIX_PATH}/IHRC/${setupType.toLowerCase()}-setup/${urlSafeCompanyName}`, { state: { companyName, companyGroupName,  companyId } });
+    navigate(`${APP_PREFIX_PATH}/IHRC/${setupType.toLowerCase()}-setup/${urlSafeCompanyName}`, { state: { companyName, companyGroupName,  companyId, groupId } });
     setIsOpen(false);
   };
 

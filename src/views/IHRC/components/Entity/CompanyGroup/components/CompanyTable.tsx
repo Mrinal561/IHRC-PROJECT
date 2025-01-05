@@ -58,11 +58,11 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
         );
         if (data?.data) {
             setCompanyGroupTableData(data.data);
-            setTableData(prev => ({
-                ...prev,
-                total: data.paginate_data.totalResult,
-                pageIndex: data.paginate_data.page,
-            }));
+            // setTableData(prev => ({
+            //     ...prev,
+            //     total: data.paginate_data.totalResult,
+            //     pageIndex: data.paginate_data.page,
+            // }));
         }
     };
 
@@ -268,16 +268,19 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
                 skeletonAvatarColumns={[0]}
                 skeletonAvatarProps={{ className: 'rounded-md' }}
                 loading={isLoading}
-                pagingData={{
-                    total: tableData.total,
-                    pageIndex: tableData.pageIndex,
-                    pageSize: tableData.pageSize,
-                }}
-                onPaginationChange={onPaginationChange}
-                onSelectChange={onSelectChange}
+                // pagingData={{
+                //     total: tableData.total,
+                //     pageIndex: tableData.pageIndex,
+                //     pageSize: tableData.pageSize,
+                // }}
+                // onPaginationChange={onPaginationChange}
+                // onSelectChange={onSelectChange}
                 stickyHeader={true}
                 stickyFirstColumn={true}
                 stickyLastColumn={true}
+                pageSizes={[]} 
+                 onPaginationChange={() => {}} 
+                onSelectChange={() => {}}
             />
             )}
             <Dialog

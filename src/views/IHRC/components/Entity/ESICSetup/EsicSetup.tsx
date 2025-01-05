@@ -28,6 +28,7 @@ interface LocationState {
     companyName?: string;
   companyGroupName?: string;
   companyId?: string;
+  groupId?: string;
 }
 
 const CompanyESISetupPage: React.FC = () => {
@@ -43,7 +44,10 @@ const CompanyESISetupPage: React.FC = () => {
   const [esiSetups, setEsiSetups] = useState([]);
   const [loading, setLoading] = useState(false);
    const actualCompanyId = locationState?.companyId;
-  
+   const actualCompanyName = locationState?.companyName;
+  const actualGroupName = locationState?.companyGroupName;
+  const actualGroupId = locationState?.groupId;
+
   // Function to fetch ESI setups and refresh table data
   const refreshData = async () => {
     setLoading(true);
@@ -60,8 +64,8 @@ const CompanyESISetupPage: React.FC = () => {
 
 
 
-  const actualCompanyName = location.state?.companyName || decodeURIComponent(companyName || '').replace(/-/g, ' ');
-  const actualCompanyGroupName = locationState?.companyGroupName || '';
+  // const actualCompanyName = location.state?.companyName || decodeURIComponent(companyName || '').replace(/-/g, ' ');
+  // const actualCompanyGroupName = locationState?.companyGroupName || '';
 
   const showNotification = (type: 'success' | 'danger', message: string) => {
     toast.push(
@@ -213,6 +217,10 @@ const CompanyESISetupPage: React.FC = () => {
           onClose={handleClose}
           addESISetup={handleAddESISetup}
           refreshData={fetchESISetupData}
+          companyId={actualCompanyId}
+          groupId={actualGroupId}
+          companyName={actualCompanyName}
+          groupName={actualGroupName}
           />
       </Dialog>
     </div>

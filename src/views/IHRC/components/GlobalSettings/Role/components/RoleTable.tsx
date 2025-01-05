@@ -114,6 +114,9 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
         sort: { order: '', key: '' },
     });
 
+
+    
+
     const moduleColorMap = new Map();
 
     useEffect(() => {
