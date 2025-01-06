@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button, Dialog, Notification, toast } from '@/components/ui';
 import { HiPlusCircle } from 'react-icons/hi';
@@ -12,11 +13,27 @@ import { endpoints } from '@/api/endpoint';
 import httpClient from '@/api/http-client';
 import Bu from './components/Bu';
 import { useNavigate } from 'react-router-dom';
+import * as yup from 'yup';
+import { useFormik } from 'formik';
+import { showErrorNotification } from '@/components/ui/ErrorMessage';
 
 interface NewCompany {
   name: string;
   group_id: number;
 }
+
+const validationSchema = yup.object().shape({
+  name: yup
+  .string()
+  .required('Company name is required')
+  .min(2, 'Company name must be at least 2 characters')
+  .max(100, 'Company name must not exceed 100 characters')
+  .matches(/^\S.*\S$|^\S$/,'The input must not have leading or trailing spaces'),
+  group_id: yup
+    .number()
+    .min(1, 'Valid company group is required')
+    .required('Company group is required')
+});
 
 const CompanyName = () => {
   const dispatch = useAppDispatch();
@@ -26,23 +43,7 @@ const CompanyName = () => {
   const [dialogIsOpen, setIsOpen] = useState(false);
   const [tableKey, setTableKey] = useState(0);
   const navigate = useNavigate();
-  
-  // Company creation states
-  const [companyName, setCompanyName] = useState('');
   const [companyGroup, setCompanyGroup] = useState({ id: 0, name: '' });
-  const [newCompany, setNewCompany] = useState<NewCompany>({
-    name: '',
-    group_id: 0
-  });
-
-  // Update newCompany when inputs change
-  useEffect(() => {
-    setNewCompany(prev => ({
-      ...prev,
-      name: companyName,
-      group_id: companyGroup.id
-    }));
-  }, [companyName, companyGroup]);
 
   // Load default company group
   const loadDefaultCompanyGroup = async () => {
@@ -54,10 +55,13 @@ const CompanyName = () => {
       // Assuming we want the first company group as default
       if (data.data && data.data.length > 0) {
         const defaultGroup = data.data[0];
-        setCompanyGroup({
+        const groupData = {
           id: defaultGroup.id,
           name: defaultGroup.name
-        });
+        };
+        setCompanyGroup(groupData);
+        // Initialize formik with the default group_id
+        formik.setFieldValue('group_id', defaultGroup.id);
       }
     } catch (error) {
       console.error('Failed to load default company group:', error);
@@ -68,10 +72,6 @@ const CompanyName = () => {
       );
     }
   };
-
-  useEffect(() => {
-    loadDefaultCompanyGroup();
-  }, []);
 
   const fetchCompanyDataTable = async (page = 1, pageSize = 10) => {
     setIsLoading(true);
@@ -101,59 +101,70 @@ const CompanyName = () => {
     }
   };
 
-  useEffect(() => {
-    fetchCompanyDataTable();
-  }, []);
-
   const handleDataChange = async () => {
     setTableKey(prevKey => prevKey + 1);
     await fetchCompanyDataTable(1, 10);
   };
 
-  const onDialogOk = async () => {
-    if (!newCompany.name.trim() || !newCompany.group_id) {
-      toast.push(
-        <Notification title="Error" type="danger">
-          Please fill in all required fields
-        </Notification>
-      );
-      return;
-    }
-
-    setDialogLoading(true);
-    try {
-      const response = await dispatch(createCompany(newCompany)).unwrap();
-
-      if(response) {
-        onDialogClose();
-        toast.push(
-          <Notification title="Success" type="success">
-            Company added successfully
-          </Notification>
-        );
-        handleDataChange();
+  const formik = useFormik({
+    initialValues: {
+      name: '',
+      group_id: companyGroup.id, // Initialize with current group_id
+    },
+    validationSchema,
+    enableReinitialize: true, // This ensures form values update when initialValues change
+    onSubmit: async (values) => {
+      if (values.group_id === 0) {
+        showErrorNotification('Valid company group is required');
+        return;
       }
-    } catch (error) {
-      toast.push(
-        <Notification title="Failed" type="danger">
-          Failed to add company
-        </Notification>
-      );
-    } finally {
-      setDialogLoading(false);
-    }
-  };
+      
+      setDialogLoading(true);
+      try {
+        const response = await dispatch(createCompany(values))
+          .unwrap()
+          .catch((error: any) => {
+            if (error.response?.data?.message) {
+              showErrorNotification(error.response.data.message);
+            } else if (error.message) {
+              showErrorNotification(error.message);
+            } else if (Array.isArray(error)) {
+              showErrorNotification(error);
+            } else {
+              showErrorNotification(error);
+            }
+            throw error;
+          });
+
+        if(response) {
+          onDialogClose();
+          toast.push(
+            <Notification title="Success" type="success">
+              Company added successfully
+            </Notification>
+          );
+          handleDataChange();
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setDialogLoading(false);
+      }
+    },
+  });
+
+  useEffect(() => {
+    loadDefaultCompanyGroup();
+  }, []);
+
+  useEffect(() => {
+    fetchCompanyDataTable();
+  }, []);
 
   const onDialogClose = () => {
     setIsOpen(false);
-    setCompanyName('');
+    formik.resetForm();
   };
-  // const handleClick = () => {
-  //   navigate('/app/Edit-permission');
-  // };
-
-
-  
 
   return (
     <AdaptableCard className="h-full" bodyClass="h-full">
@@ -164,11 +175,6 @@ const CompanyName = () => {
         <div className="flex gap-3 items-center">
           <Filter />
           <Bu onUploadSuccess={handleDataChange} />
-          {/* <Button
-            size='sm'
-            variant='solid'
-             onClick={handleClick}
-          >Edit Permission</Button> */}
           <Button
             size="sm"
             icon={<HiPlusCircle />}
@@ -192,41 +198,49 @@ const CompanyName = () => {
         onClose={onDialogClose}
         onRequestClose={onDialogClose}
       >
-        <h5 className="mb-4">Add Company</h5>
-        <div className="mb-4 flex flex-col gap-3">
-          <label>Company Group</label>
-          <OutlinedInput
-            label="Company Group"
-            value={companyGroup.name} onChange={function (value: string): void {
-              throw new Error('Function not implemented.');
-            } }            // disabled
-          />
-        </div>
-        <div className="mb-4 flex flex-col gap-3">
-          <label>Enter company name <span className='text-red-500'>*</span></label>
-          <OutlinedInput
-            label="Company"
-            value={companyName}
-            onChange={(value: string) => setCompanyName(value)}
-          />
-        </div>
-        <div className="text-right mt-6">
-          <Button
-            className="ltr:mr-2 rtl:ml-2"
-            variant="plain"
-            onClick={onDialogClose}
-            disabled={dialogLoading}
-          >
-            Cancel
-          </Button>
-          <Button
-            variant="solid"
-            onClick={onDialogOk}
-            loading={dialogLoading}
-          >
-            {dialogLoading ? 'Adding...' : 'Confirm'}
-          </Button>
-        </div>
+        <form onSubmit={formik.handleSubmit}>
+          <h5 className="mb-4">Add Company</h5>
+          <div className="mb-4 flex flex-col gap-3">
+            <label>Company Group</label>
+            <OutlinedInput
+              label="Company Group"
+              value={companyGroup.name}
+              disabled
+            />
+            {formik.touched.group_id && formik.errors.group_id && (
+              <div className="mt-1 text-red-500 text-sm">{formik.errors.group_id}</div>
+            )}
+          </div>
+          <div className="mb-4 flex flex-col gap-3">
+            <label>Enter company name <span className="text-red-500">*</span></label>
+            <OutlinedInput
+              label="Company Name"
+              value={formik.values.name}
+              onChange={(value) => formik.setFieldValue('name', value)}
+            />
+            {formik.touched.name && formik.errors.name && (
+              <div className="mt-1 text-red-500 text-sm">{formik.errors.name}</div>
+            )}
+          </div>
+          <div className="text-right mt-6">
+            <Button
+              className="ltr:mr-2 rtl:ml-2"
+              variant="plain"
+              onClick={onDialogClose}
+              disabled={dialogLoading}
+              type="button"
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="solid"
+              loading={dialogLoading}
+              type="submit"
+            >
+              {dialogLoading ? 'Adding...' : 'Confirm'}
+            </Button>
+          </div>
+        </form>
       </Dialog>
     </AdaptableCard>
   );

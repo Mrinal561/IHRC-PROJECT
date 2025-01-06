@@ -158,16 +158,41 @@ import OutlinedSelect from '@/components/ui/Outlined';
 import { useDispatch } from 'react-redux';
 import { showErrorNotification } from '@/components/ui/ErrorMessage';
 import { fetchLwfTrackerById, updateLwfTracker } from '@/store/slices/lwfTracker/lwfTracker';
+import * as Yup from 'yup';
+
 
 interface LWFTrackerData {
   id: number;
   receipt_no?: string;
-  total_paid_amt?: number;
+  total_paid_amt?: number | null;
   delay_in_days?: string;
   delay_reason?: string;
   difference_reason?: string;
   payment_date?: string;
 }
+interface ValidationErrors {
+  [key: string]: string;
+}
+
+const validationSchema = Yup.object().shape({
+  receipt_no: Yup.string()
+    .required('Receipt number is required')
+    .min(3, 'Receipt number must be at least 3 characters'),
+  total_paid_amt: Yup.number()
+    .nullable()
+    .transform((value) => (isNaN(value) ? null : value))
+    .required('Total paid amount is required')
+    .min(0, 'Total paid amount must be greater than or equal to 0'),
+  payment_date: Yup.string()
+    .required('Payment date is required'),
+  delay_reason: Yup.string()
+  .required('Delay reason is required')
+    .when('delay_in_days', {
+      is: (delay_in_days: string) => delay_in_days && parseInt(delay_in_days) > 0,
+      then: (schema) => schema.required('Delay reason is required when there is a delay'),
+      otherwise: (schema) => schema.optional(),
+    }),
+});
 
 interface LWFTrackerEditDialogProps {
   isOpen: boolean;
@@ -190,6 +215,7 @@ const LWFTrackerEditDialog: React.FC<LWFTrackerEditDialogProps> = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const dispatch = useDispatch();
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
 
   useEffect(() => {
     if (isOpen && trackerId) {
@@ -225,10 +251,44 @@ const LWFTrackerEditDialog: React.FC<LWFTrackerEditDialogProps> = ({
 
   const handleChange = (field: keyof LWFTrackerData, value: string | number) => {
     setEditedData((prev) => ({ ...prev, [field]: value }));
+
+    if (field === 'total_paid_amt') {
+      // Handle empty string or invalid number
+      const numValue = value === '' ? null : Number(value);
+      setEditedData((prev) => ({ ...prev, [field]: numValue }));
+    } else {
+      setEditedData((prev) => ({ ...prev, [field]: value }));
+    }
   };
+  
+  const validateForm = async (): Promise<boolean> => {
+    try {
+      await validationSchema.validate(editedData, { abortEarly: false });
+      setValidationErrors({});
+      return true;
+    } catch (err) {
+      if (err instanceof Yup.ValidationError) {
+        const errors: ValidationErrors = {};
+        err.inner.forEach((e) => {
+          if (e.path) {
+            errors[e.path] = e.message;
+          }
+        });
+        setValidationErrors(errors);
+      }
+      return false;
+    }
+  };
+
 
   const handleSubmit = async () => {
       try {
+
+        const isValid = await validateForm();
+      if (!isValid) {
+        openNotification('danger', 'Please fix the validation errors');
+        return;
+      }
     // Create updateData object (matching the original updateTracker data expectation)
     const updateData = {
       payment_date: editedData.payment_date || '',
@@ -289,86 +349,78 @@ const LWFTrackerEditDialog: React.FC<LWFTrackerEditDialogProps> = ({
 
   return (
     <Dialog
-      isOpen={isOpen}
-      onClose={onClose}
-      onRequestClose={onClose}
-      width={800}
-      height={360}
-    >
-      <h5 className="mb-4">Edit LWF Tracker Detail</h5>
-      
-      <div className="p-4 space-y-4">
-        <div className='flex gap-4 items-center'>
-          <div className='flex flex-col gap-2 w-full'>
-            <label>Enter Receipt Number</label>
-            <div className='w-full'>
-              <OutlinedInput
-                label="Receipt Number"
-                value={editedData.receipt_no || ''}
-                onChange={(value) => handleChange('receipt_no', value)}
-              />
-            </div>
-          </div>
-
-          <div className='flex flex-col gap-2 w-full'>
-            <label>Enter Total Amount</label>
-            <div className='w-full'>
-              <OutlinedInput
-                label="Total Paid Amount"
-                value={editedData.total_paid_amt?.toString() || ''}
-                onChange={(value) => handleChange('total_paid_amt', parseFloat(value))}
-              />
-            </div>
-          </div>
+    isOpen={isOpen}
+    onClose={onClose}
+    onRequestClose={onClose}
+    width={800}
+    height={400} // Increased height to accommodate error messages
+  >
+    <h5 className="mb-4">Edit LWF Tracker Detail</h5>
+    
+    <div className="p-4 space-y-6"> {/* Increased space between rows */}
+      <div className='grid grid-cols-2 gap-4'> {/* Changed to grid layout */}
+        <div className='flex flex-col min-h-[90px]'> {/* Added minimum height */}
+          <label className="mb-2">Enter Receipt Number</label>
+          <OutlinedInput
+            label="Receipt Number"
+            value={editedData.receipt_no || ''}
+            onChange={(value) => handleChange('receipt_no', value)}
+          />
+          {validationErrors.receipt_no && (
+            <span className="text-red-500 text-sm mt-1">{validationErrors.receipt_no}</span>
+          )}
         </div>
 
-        <div className="flex gap-4 items-center">
-          {/* <div className='flex flex-col gap-2 w-full'>
-            <label>Delay</label>
-            <div className='w-full'>
-              <OutlinedInput
-                label="Delay"
-                value={editedData.delay_in_days || ''}
-                onChange={(value) => handleChange('delay_in_days', value)}
-              />
-            </div>
-          </div> */}
-          
-        </div>
-
-        <div className='flex gap-8 items-center'>
-         <div className='flex flex-col gap-2 w-full'>
-            <label>Enter Delay Reason</label>
-            <div className='w-full'>
-              <OutlinedInput
-                label="Delay Reason"
-                value={editedData.delay_reason || ''}
-                onChange={(value) => handleChange('delay_reason', value)}
-              />
-            </div>
-          </div>
-          <div className='flex flex-col gap-2 w-full'>
-            <label>Select Date of Payment</label>
-            <div className='w-full'>
-              <DatePicker
-                placeholder="Date of Payment"
-                value={editedData.payment_date ? new Date(editedData.payment_date) : undefined}
-                onChange={(date) => handleDateChange('payment_date', date)}
-              />
-            </div>
-          </div>
+        <div className='flex flex-col min-h-[90px]'> {/* Added minimum height */}
+          <label className="mb-2">Enter Total Amount</label>
+          <OutlinedInput
+            label="Total Paid Amount"
+            value={editedData.total_paid_amt?.toString() || ''}
+            onChange={(value) => handleChange('total_paid_amt', value)}
+          />
+          {validationErrors.total_paid_amt && (
+            <span className="text-red-500 text-sm mt-1">{validationErrors.total_paid_amt}</span>
+          )}
         </div>
       </div>
 
-      <div className="flex justify-end mt-6">
-        <Button variant="plain" onClick={onClose} className="mr-2">
-          Cancel
-        </Button>
-        <Button variant="solid" onClick={handleSubmit}>
-          Confirm
-        </Button>
+      <div className='grid grid-cols-2 gap-4'> {/* Changed to grid layout */}
+        <div className='flex flex-col min-h-[90px]'> {/* Added minimum height */}
+          <label className="mb-2">Enter Delay Reason</label>
+          <OutlinedInput
+            label="Delay Reason"
+            value={editedData.delay_reason || ''}
+            onChange={(value) => handleChange('delay_reason', value)}
+          />
+          {validationErrors.delay_reason && (
+            <span className="text-red-500 text-sm mt-1">{validationErrors.delay_reason}</span>
+          )}
+        </div>
+
+        <div className='flex flex-col min-h-[90px]'> {/* Added minimum height */}
+          <label className="mb-2">Select Date of Payment</label>
+          <DatePicker
+          size='sm'
+            placeholder="Date of Payment"
+            value={editedData.payment_date ? new Date(editedData.payment_date) : undefined}
+            onChange={(date) => handleDateChange('payment_date', date)}
+          />
+          {validationErrors.payment_date && (
+            <span className="text-red-500 text-sm mt-1">{validationErrors.payment_date}</span>
+          )}
+        </div>
       </div>
-    </Dialog>
+    </div>
+
+    <div className="flex justify-end mt-6">
+      <Button variant="plain" onClick={onClose} className="mr-2">
+        Cancel
+      </Button>
+      <Button variant="solid" onClick={handleSubmit}>
+        Confirm
+      </Button>
+    </div>
+  </Dialog>
   );
 };
 

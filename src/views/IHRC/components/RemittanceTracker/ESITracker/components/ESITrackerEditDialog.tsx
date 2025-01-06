@@ -8,6 +8,8 @@ import OutlinedSelect from '@/components/ui/Outlined';
 import { showErrorNotification } from '@/components/ui/ErrorMessage';
 import { useDispatch } from 'react-redux';
 import { fetchTrackerById, updateTracker } from '@/store/slices/esitracker/esitrackerSlice';
+import * as yup from 'yup';
+
 
 interface ESITrackerFormData {
   id?: number;
@@ -15,9 +17,9 @@ interface ESITrackerFormData {
   gross_wage?: number;
   employee_esi?: number;
   employer_esi?: number;
-  total_esi?: number;
+  total_esi?: number ;
   challan_amt?: number;
-  payment_date?: string;
+  payment_date?: number;
   challan_no?: number;
   delay_reason?: string;
   difference_reason?: string;
@@ -28,20 +30,83 @@ interface ESITrackerFormData {
 
 interface ESIChallanData {
   id: number;
-  no_of_emp?: number;
-  gross_wage?: number;
-  employee_esi?: number;
-  employer_esi?: number;
-  total_esi?: number;
-  challan_amt?: number;
+  no_of_emp?: string;
+  gross_wage?: string;
+  employee_esi?: string;
+  employer_esi?: string;
+  total_esi?: string;
+  challan_amt?: string;
   // payroll_month?: string;
   payment_date?: string;
-  challan_no?: number;
+  challan_no?: string;
   // challan_type?: string;
   delay_reason?: string;
   difference_reason?: string;
   payroll_month?: string;
 }
+
+
+interface ValidationErrors {
+  no_of_emp?: string;
+  gross_wage?: string;
+  employee_esi?: string;
+  employer_esi?: string;
+  total_esi?: string;
+  challan_amt?: string;
+  payment_date?: string;
+  challan_no?: string;
+  delay_reason?: string;
+  difference_reason?: string;
+}
+
+const validationSchema = yup.object().shape({
+  no_of_emp: yup
+  .number()
+  .typeError("Number of employees cannot be zero")
+  .required('Number of employees is required')
+  .positive('Number of employees must be positive'),
+gross_wage: yup
+  .number()
+  .typeError("Gross wage cannot be zero")
+  .required('Gross wage is required')
+  .positive('Gross wage must be positive'),
+employee_esi: yup
+  .number()
+  .typeError("Employee ESI cannot be zero")
+  .required('Employee ESI is required')
+  .positive('Employee ESI must be positive'),
+employer_esi: yup
+  .number()
+  .typeError("Employer ESI cannot be zero")
+  .required('Employer ESI is required')
+  .positive('Employer ESI must be positive'),
+total_esi: yup
+  .number()
+  .typeError("Total ESI cannot be zero")
+  .required('Total ESI is required')
+  .positive('Total ESI must be positive'),
+  // .test('total-esi-match', 'Total ESI should equal employee + employer ESI', 
+  //   function(value) {
+  //     const { employee_esi, employer_esi } = this.parent;
+  //     if (!value || !employee_esi || !employer_esi) return true;
+  //     return Math.abs(value - (employee_esi + employer_esi)) < 0.01;
+  // }),
+challan_amt: yup
+  .number()
+  .typeError("Challan amount cannot be zero")
+  .required('Challan amount is required')
+  .positive('Challan amount must be positive'),
+payment_date: yup
+  .date()
+  .required('Payment date is required')
+  .max(new Date(), 'Payment date cannot be in the future'),
+challan_no: yup
+  .string()
+  .required('Challan number is required')
+  .matches(/^[0-9]+$/, 'Challan number must contain only digits'),
+delay_reason: yup.string().nullable(),
+difference_reason: yup.string().nullable()
+});
 
 interface ESITrackerEditDialogProps {
   isOpen: boolean;
@@ -65,6 +130,7 @@ const ESITrackerEditDialog: React.FC<ESITrackerEditDialogProps> = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const dispatch = useDispatch();
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
 
   // useEffect(() => {
   //   setEditedData(data);
@@ -103,6 +169,7 @@ const ESITrackerEditDialog: React.FC<ESITrackerEditDialogProps> = ({
             });
       console.log(response)
         setEditedData(response);
+        setValidationErrors({});
         console.log(editedData)
         setLoading(false);
     } catch (err) {
@@ -112,14 +179,47 @@ const ESITrackerEditDialog: React.FC<ESITrackerEditDialogProps> = ({
       openNotification('danger', 'Failed to load tracker details');
     }
   };
-
   const handleChange = (field: keyof ESIChallanData, value: string | number) => {
     setEditedData((prev) => ({ ...prev, [field]: value }));
+    
+    validationSchema.validateAt(field, { [field]: value }).catch((err) => {
+      setValidationErrors((prev) => ({
+        ...prev,
+        [field]: err.message
+      }));
+    });
+  };
+
+  const validateForm = async (): Promise<boolean> => {
+    try {
+      await validationSchema.validate(editedData, { abortEarly: false });
+      setValidationErrors({});
+      return true;
+    } catch (err) {
+      if (err instanceof yup.ValidationError) {
+        const errors: ValidationErrors = {};
+        err.inner.forEach((e) => {
+          if (e.path) {
+            errors[e.path as keyof ValidationErrors] = e.message;
+          }
+        });
+        setValidationErrors(errors);
+      }
+      return false;
+    }
   };
   
   
 const handleSubmit = async () => {
   try {
+
+    const isValid = await validateForm();
+    if (!isValid) {
+      console.log(isValid)
+      openNotification('danger', 'Please fix the validation errors');
+      return;
+    }
+
     // Create updateData object (matching the original updateTracker data expectation)
     const updateData = {
       no_of_emp: editedData.no_of_emp,
@@ -196,130 +296,140 @@ const handleSubmit = async () => {
       onClose={onClose}
       onRequestClose={onClose}
       width={800}
-      height={520}
+      height={560}
     >
       <h5 className="mb-4">Edit ESI Tracker Detail</h5>
       
-      <div className="p-4 space-y-4">
-        <div className='flex gap-4 items-center'>
-        <div className='flex flex-col gap-2 w-full'>
-            <label>Enter Number of Employees</label>
-            <div className='w-full'>
-              <OutlinedInput
-                label="No. of Employees"
-                value={editedData.no_of_emp?.toString() || ''}
-                onChange={(value) => handleChange('no_of_emp', parseInt(value, 10))}
-              />
-            </div>
+      <div className="p-4 space-y-1">
+        {/* First Row */}
+        <div className='grid grid-cols-2 gap-4'>
+          <div className='flex flex-col min-h-[90px]'>
+            <label className="mb-2">Enter Number of Employees</label>
+            <OutlinedInput
+              label="No. of Employees"
+              value={editedData.no_of_emp || "0"}
+              onChange={(value) => handleChange('no_of_emp', parseFloat(value))}
+            />
+            {validationErrors.no_of_emp && (
+              <p className="text-red-500 text-sm mt-1">{validationErrors.no_of_emp}</p>
+            )}
           </div>
-          <div className='flex flex-col gap-2 w-full'>
-            <label>Enter Challan No .</label>
-            <div className='w-full'>
-              <OutlinedInput
-                label="Challan No"
-                value={editedData.challan_no?.toString() || ''}
-                onChange={(value) => handleChange('challan_no', value)}
-              />
-            </div>
+          <div className='flex flex-col min-h-[90px]'>
+            <label className="mb-2">Enter Challan No.</label>
+            <OutlinedInput
+              label="Challan No"
+              value={editedData.challan_no || ''}
+              onChange={(value) => handleChange('challan_no', value)}
+            />
+            {validationErrors.challan_no && (
+              <p className="text-red-500 text-sm mt-1">{validationErrors.challan_no}</p>
+            )}
           </div>
         </div>
 
-        <div className='flex gap-8 items-center'>
-          <div className='flex flex-col gap-2'>
-            <label>Select Date of Payment</label>
-            <div className='w-[219px]'>
-              <DatePicker
-                placeholder="Amount Paid On"
-                value={editedData.payment_date ? new Date(editedData.payment_date) : undefined}
-                onChange={(date) => handleDateChange('payment_date', date)}
-              />
-            </div>
+        {/* Second Row */}
+        <div className='grid grid-cols-3 gap-4'>
+          <div className='flex flex-col min-h-[90px]'>
+            <label className="mb-2">Select Date of Payment</label>
+            <DatePicker
+            size='sm'
+              placeholder="Amount Paid On"
+              value={editedData.payment_date ? new Date(editedData.payment_date) : undefined}
+              onChange={(date) => handleDateChange('payment_date', date)}
+            />
+            {validationErrors.payment_date && (
+              <p className="text-red-500 text-sm mt-1">{validationErrors.payment_date}</p>
+            )}
           </div>
-          <div className='flex flex-col gap-2 w-full'>
-             <label>Enter ESI Gross Wages</label>
-            <div className='w-[219px]'>
-              <OutlinedInput
-                label="ESI Gross Wages"
-                value={editedData.gross_wage?.toString() || ''}
-                onChange={(value) => handleChange('gross_wage', parseFloat(value))}
-              />
-            </div>
-           
-           
+          <div className='flex flex-col min-h-[90px]'>
+            <label className="mb-2">Enter ESI Gross Wages</label>
+            <OutlinedInput
+              label="ESI Gross Wages"
+              value={editedData.gross_wage || '0'}
+              onChange={(value) => handleChange('gross_wage', parseFloat(value))}
+            />
+            {validationErrors.gross_wage && (
+              <p className="text-red-500 text-sm mt-1">{validationErrors.gross_wage}</p>
+            )}
           </div>
-          <div className='flex flex-col gap-2 w-full'>
-             <label>Enter EE ESI</label>
-            <div className='w-[219px]'>
-              <OutlinedInput
-                label="EE ESI"
-                value={editedData.employee_esi?.toString() || ''}
-                onChange={(value) => handleChange('employee_esi', parseFloat(value))}
-              />
-            </div>
-           
-           
-          </div>
-        </div>
-        <div className="flex gap-8 items-center">
-          <div className='flex flex-col gap-2'>
-            <label>Enter ER ESI</label>
-            <div className='w-[219px]'>
-              <OutlinedInput
-                label="ER ESI"
-                value={editedData.employer_esi?.toString() || ''}
-                onChange={(value) => handleChange('employer_esi', parseFloat(value))}
-              />
-            </div>
-           
-          </div>
-          <div className='flex flex-col gap-2'>
-            <label>Total ESI</label>
-            <div className='w-[219px]'>
-              <OutlinedInput
-                label="Total Esi"
-                value={editedData.total_esi?.toString() || ''}
-                onChange={(value) => handleChange('total_esi', parseFloat(value))}
-              />
-            </div>
-          </div>
-          <div className='flex flex-col gap-2'>
-             <label>Total Challan Amount</label>
-            <div className='w-[219px]'>
-              <OutlinedInput
-                label="Total Amount As per Challan"
-                value={editedData.challan_amt?.toString() || ''}
-                onChange={(value) => handleChange('challan_amt', parseFloat(value))}
-              />
-            </div>
+          <div className='flex flex-col min-h-[90px]'>
+            <label className="mb-2">Enter EE ESI</label>
+            <OutlinedInput
+              label="EE ESI"
+              value={editedData.employee_esi || '0'}
+              onChange={(value) => handleChange('employee_esi', parseFloat(value))}
+            />
+            {validationErrors.employee_esi && (
+              <p className="text-red-500 text-sm mt-1">{validationErrors.employee_esi}</p>
+            )}
           </div>
         </div>
- <div className='flex gap-4 items-center'>
-          <div className='flex flex-col gap-2'>
-             <label>Difference Reason</label>
-            <div className='w-[219px]'>
-              <OutlinedInput
-                label="Difference Reason"
-                value={editedData.difference_reason?.toString() || ''}
-                onChange={(value) => handleChange('difference_reason', value)}
-              />
-            </div>
-           
-          </div>
-          <div className='flex flex-col gap-2'>
-            <label>Delay Reason</label>
-            <div className='w-[219px]'>
-              <OutlinedInput
-                label="Delay Reason"
-                value={editedData.delay_reason?.toString() || ''}
-                onChange={(value) => handleChange('delay_reason', parseFloat(value))}
-              />
-            </div>
-          </div>
-</div>
-        
 
+        {/* Third Row */}
+        <div className="grid grid-cols-3 gap-4">
+          <div className='flex flex-col min-h-[90px]'>
+            <label className="mb-2">Enter ER ESI</label>
+            <OutlinedInput
+              label="ER ESI"
+              value={editedData.employer_esi || '0'}
+              onChange={(value) => handleChange('employer_esi', parseFloat(value))}
+            />
+            {validationErrors.employer_esi && (
+              <p className="text-red-500 text-sm mt-1">{validationErrors.employer_esi}</p>
+            )}
+          </div>
+          <div className='flex flex-col min-h-[90px]'>
+            <label className="mb-2">Total ESI</label>
+            <OutlinedInput
+              label="Total Esi"
+              value={editedData.total_esi || '0'}
+              onChange={(value) => handleChange('total_esi', parseFloat(value))}
+            />
+            {validationErrors.total_esi && (
+              <p className="text-red-500 text-sm mt-1">{validationErrors.total_esi}</p>
+            )}
+          </div>
+          <div className='flex flex-col min-h-[90px]'>
+            <label className="mb-2">Total Challan Amount</label>
+            <OutlinedInput
+              label="Total Amount As per Challan"
+              value={editedData.challan_amt || '0'}
+              onChange={(value) => handleChange('challan_amt', parseFloat(value))}
+            />
+            {validationErrors.challan_amt && (
+              <p className="text-red-500 text-sm mt-1">{validationErrors.challan_amt}</p>
+            )}
+          </div>
+        </div>
+
+        {/* Fourth Row */}
+        <div className='grid grid-cols-2 gap-4'>
+          <div className='flex flex-col min-h-[90px]'>
+            <label className="mb-2">Difference Reason</label>
+            <OutlinedInput
+              label="Difference Reason"
+              value={editedData.difference_reason?.toString() || ''}
+              onChange={(value) => handleChange('difference_reason', value)}
+            />
+            {validationErrors.difference_reason && (
+              <p className="text-red-500 text-sm mt-1">{validationErrors.difference_reason}</p>
+            )}
+          </div>
+          <div className='flex flex-col min-h-[90px]'>
+            <label className="mb-2">Delay Reason</label>
+            <OutlinedInput
+              label="Delay Reason"
+              value={editedData.delay_reason?.toString() || ''}
+              onChange={(value) => handleChange('delay_reason', value)}
+            />
+            {validationErrors.delay_reason && (
+              <p className="text-red-500 text-sm mt-1">{validationErrors.delay_reason}</p>
+            )}
+          </div>
+        </div>
       </div>
-      <div className="flex justify-end mt-6">
+
+      <div className="flex justify-end">
         <Button variant="plain" onClick={onClose} className="mr-2">
           Cancel
         </Button>

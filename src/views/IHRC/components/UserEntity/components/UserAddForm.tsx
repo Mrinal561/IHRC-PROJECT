@@ -10,6 +10,67 @@ import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
 import { createUser } from '@/store/slices/userEntity/UserEntitySlice'
 import { format } from 'date-fns';
+import * as yup from 'yup';
+
+const userValidationSchema = yup.object().shape({
+  group_id: yup
+    .number()
+    .required('Company group is required')
+    .min(1, 'Please select a company group'),
+  company_id: yup
+    .number()
+    .required('Company is required')
+    .min(1, 'Please select a company'),
+  name: yup
+  .string()
+  .required('Name is required')
+  .min(2, 'Name must be at least 2 characters')
+  .matches(/^\S.*\S$|^\S$/,'The input must not have leading or trailing spaces'),
+  // .transform((value) => {
+  //   // Normalize multiple spaces to single space and trim
+  //   return value?.replace(/\s+/g, ' ').trim();
+  // }),
+  email: yup
+    .string()
+    .required('Email is required')
+    .email('Invalid email format'),
+  password: yup
+    .string()
+    .required('Password is required')
+    .min(8, 'Password must be at least 8 characters')
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+      'Password must contain at least one uppercase letter, one lowercase letter, one number and one special character'
+    ),
+  mobile: yup
+    .string()
+    .required('Mobile number is required')
+    .matches(/^[0-9]{10}$/, 'Mobile number must be 10 digits'),
+  joining_date: yup
+    .string()
+    .required('Joining date is required'),
+  role_id: yup
+    .number()
+    .required('Designation is required')
+    .min(1, 'Please select a designation'),
+  aadhar_no: yup
+    .string()
+    .nullable()
+    .transform((value) => (value === '' ? null : value))
+    .matches(/^[0-9]{12}$/, 'Aadhar number must be 12 digits')
+    .optional(),
+  pan_card: yup
+    .string()
+    .nullable()
+    .transform((value) => (value === '' ? null : value))
+    .matches(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, 'Invalid PAN format')
+    .optional(),
+  auth_signatory: yup.boolean(),
+  suspend: yup.boolean(),
+  disable: yup.boolean()
+});
+
+
 
 interface UserFormData {
   group_id: number;
@@ -33,6 +94,10 @@ interface SelectOption {
   label: string;
 }
 
+interface ValidationErrors {
+  [key: string]: string;
+}
+
 const UserAddForm = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
@@ -44,7 +109,7 @@ const UserAddForm = () => {
   const [ userRole, setUserRole ] = useState<SelectOption[]>([]);
   const [ selectedUserRole, setSelectedUserRole ] = useState<SelectOption | null>(null);
   const [isAuthorizedSignatory, setIsAuthorizedSignatory] = useState(false);
-
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
   
   const [formData, setFormData] = useState<UserFormData>({
     group_id: 0,
@@ -206,13 +271,14 @@ const UserAddForm = () => {
     setIsAuthorizedSignatory(checked);
   };
 
-  const handleInputChange = (field: keyof UserFormData, value: string | boolean | number | Date) => {
-    setFormData(prev => ({
-      ...prev,
+  const handleInputChange = async (field: keyof UserFormData, value: string | boolean | number | Date) => {
+    const newFormData = {
+      ...formData,
       [field]: value
-    }));
+    };
+    setFormData(newFormData);
+    await validateField(field, value);
   };
-
   
   const formatErrorMessages = (errors: any): string => {
     // If errors is an array, join them with line breaks
@@ -264,50 +330,71 @@ const UserAddForm = () => {
   const handleAddUser = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Basic validation
-    // if (!formData.group_id || !formData.first_name || !formData.email || !formData.last_name ||!formData.joining_date || !formData.mobile || !formData.password || !formData.role_id) {
-    //   showNotification('danger', 'Please fill in all required fields');
-    //   return;
-    // }
-
     try {
-      const resultAction = await dispatch(createUser(formData))
-      .unwrap()
-      .catch((error: any) => {
-        // Handle different error formats
-        if (error.response?.data?.message) {
-            // API error response
-            showErrorNotification(error.response.data.message);
-        } else if (error.message) {
-            // Regular error object
-            showErrorNotification(error.message);
-        } else if (Array.isArray(error)) {
-            // Array of error messages
-            showErrorNotification(error);
-        } else {
-            // Fallback error message
-            showErrorNotification('An unexpected error occurred. Please try again.');
-        }
-        throw error; // Re-throw to prevent navigation
-    });
-
-if (resultAction) {
-    navigate('/user-entity');
-    showNotification('success', 'User added successfully');
-}
-
-
+      // Validate all fields
+      await userValidationSchema.validate(formData, { abortEarly: false });
       
-    } catch (error: any) {
-      // showNotification('danger', error?.message || 'Failed to add user');
-      console.error('User creation error:', error);
+      // If validation passes, proceed with user creation
+      const resultAction = await dispatch(createUser(formData))
+        .unwrap()
+        .catch((error: any) => {
+          if (error.response?.data?.message) {
+            showErrorNotification(error.response.data.message);
+          } else if (error.message) {
+            showErrorNotification(error.message);
+          } else if (Array.isArray(error)) {
+            showErrorNotification(error);
+          } else {
+            showErrorNotification('An unexpected error occurred. Please try again.');
+          }
+          throw error;
+        });
 
+      if (resultAction) {
+        navigate('/user-entity');
+        showNotification('success', 'User added successfully');
+      }
+    } catch (error) {
+      if (error instanceof yup.ValidationError) {
+        // Handle validation errors
+        const newErrors: ValidationErrors = {};
+        error.inner.forEach((err) => {
+          if (err.path) {
+            newErrors[err.path] = err.message;
+          }
+        });
+        setValidationErrors(newErrors);
+        showErrorNotification('Please fix the validation errors');
+      } else {
+        console.error('User creation error:', error);
+      }
     }
   };
+
 
   const handleDateChange = (date: Date) => {
     handleInputChange('joining_date', date);
   };
+  
+  const validateField = async (field: keyof UserFormData, value: any) => {
+    try {
+      await yup.reach(userValidationSchema, field).validate(value);
+      setValidationErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
+    } catch (error) {
+      if (error instanceof yup.ValidationError) {
+        setValidationErrors(prev => ({
+          ...prev,
+          [field]: error.message
+        }));
+      }
+    }
+  };
+
+
 
   return (
     <div className="p-2 bg-white rounded-lg">
@@ -331,6 +418,9 @@ if (resultAction) {
               value={selectedCompanyGroup}
               onChange={setSelectedCompanyGroup}
             />
+             {validationErrors.group_id && (
+              <span className="text-red-500 text-sm">{validationErrors.group_id}</span>
+            )}
           </div>
           <div className='flex flex-col gap-2'>
             <p className='mb-2'>Select the company<span className="text-red-500">*</span></p>
@@ -342,6 +432,9 @@ if (resultAction) {
                                 setSelectedCompany(option)
                             }}
                         />
+                         {validationErrors.company_id && (
+              <span className="text-red-500 text-sm">{validationErrors.company_id}</span>
+            )}
           </div>
         </div>
 
@@ -353,6 +446,9 @@ if (resultAction) {
               value={formData.name}
               onChange={(value: string) => handleInputChange('name', value)}
             />
+             {validationErrors.name && (
+              <span className="text-red-500 text-sm">{validationErrors.name}</span>
+            )}
           </div>
           <div className='flex flex-col gap-1'>
             <p className="mb-2">Date of Joining <span className="text-red-500">*</span></p>
@@ -367,6 +463,9 @@ if (resultAction) {
                 }))
               }}
             />
+            {validationErrors.joining_date && (
+              <span className="text-red-500 text-sm">{validationErrors.joining_date}</span>
+            )}
           </div>
           {/* <div className='flex flex-col gap-1'>
             <p className="mb-2">Last Name <span className="text-red-500">*</span></p>
@@ -383,6 +482,9 @@ if (resultAction) {
               value={formData.email}
               onChange={(value) => handleInputChange('email', value)}
             />
+            {validationErrors.email && (
+              <span className="text-red-500 text-sm">{validationErrors.email}</span>
+            )}
           </div>
 
           <div className='flex flex-col gap-1'>
@@ -392,6 +494,9 @@ if (resultAction) {
               value={formData.password}
               onChange={(value) => handleInputChange('password', value)}
             />
+            {validationErrors.password && (
+              <span className="text-red-500 text-sm">{validationErrors.password}</span>
+            )}
           </div>
         </div>
 
@@ -404,6 +509,9 @@ if (resultAction) {
               value={formData.mobile}
               onChange={(value) => handleInputChange('mobile', value)}
             />
+            {validationErrors.mobile && (
+              <span className="text-red-500 text-sm">{validationErrors.mobile}</span>
+            )}
           </div>
 
 
@@ -415,6 +523,9 @@ if (resultAction) {
               value={selectedUserRole}
               onChange={setSelectedUserRole}
             />
+            {validationErrors.role_id && (
+              <span className="text-red-500 text-sm">{validationErrors.role_id}</span>
+            )}
           </div>
 
           
@@ -429,6 +540,9 @@ if (resultAction) {
               value={formData.aadhar_no}
               onChange={(value) => handleInputChange('aadhar_no', value)}
             />
+             {validationErrors.aadhar_no && (
+              <span className="text-red-500 text-sm">{validationErrors.aadhar_no}</span>
+            )}
           </div>
 
           <div className='flex flex-col gap-1'>
@@ -438,19 +552,14 @@ if (resultAction) {
               value={formData.pan_card}
               onChange={(value) => handleInputChange('pan_card', value)}
             />
+
+{validationErrors.pan_card && (
+              <span className="text-red-500 text-sm">{validationErrors.pan_card}</span>
+            )}
           </div>
-
-
-         
-
-         
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 my-8">
-
-        
-          
-         
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 my-8">  
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 my-8">
