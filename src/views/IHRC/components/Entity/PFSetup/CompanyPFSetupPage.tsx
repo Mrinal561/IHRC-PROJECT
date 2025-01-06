@@ -27,8 +27,12 @@ const CompanyPFSetupPage: React.FC = () => {
     companyName?: string; 
     companyGroupName?: string; 
     companyId?: string; // Add companyId to the type
+    groupId?: string;
   };
   const actualCompanyId = locationState?.companyId;
+  const actualCompanyName = locationState?.companyName;
+  const actualGroupName = locationState?.companyGroupName;
+  const actualGroupId = locationState?.groupId;
 
   const fetchPFSetupData = async () => {
     try {
@@ -60,7 +64,15 @@ const CompanyPFSetupPage: React.FC = () => {
   };
 
   const handleAddPFSetup = () => {
-    navigate(`/add-pf-setup`);
+    console.log(actualCompanyName,actualGroupName)
+    navigate(`/add-pf-setup`, {
+      state: {
+        companyName: actualCompanyName,
+        companyGroupName: actualGroupName,
+        companyId: actualCompanyId,
+        groupId: actualGroupId
+      }
+    });
   };
 
   const showNotification = (message: string) => {

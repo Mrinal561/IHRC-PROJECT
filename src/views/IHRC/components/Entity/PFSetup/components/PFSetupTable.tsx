@@ -12,11 +12,13 @@ import dayjs from 'dayjs';
 interface PFSetupTableProps {
   data: PFData[];
   onRefresh?: () => void;
+  companyName: string;
+  groupName: string;
   // onDelete: (index: number) => void;
   // onEdit: (index: number, newData: Partial<PFSetupData>) => void;
 }
 
-const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh }) => {
+const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh , companyName, groupName}) => {
   const [dialogIsOpen, setDialogIsOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<number | null>(null);
   const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
@@ -145,14 +147,14 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh }) => {
                 className="text-red-500"
               />
             </Tooltip>
-            <Tooltip title="Suspend User">
+            {/* <Tooltip title="Suspend User">
                             <Button
                                 size="sm"
                                 onClick={() => openSuspendDialog(row.index)}
                                 icon={<IoPersonRemoveOutline />}
                                 className="text-blue-500"
                             />
-                        </Tooltip>
+                        </Tooltip> */}
           </div>
         ),
       },

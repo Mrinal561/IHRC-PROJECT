@@ -7,7 +7,7 @@ import { HiDownload } from 'react-icons/hi';
 import NoticeUploadDialog from './SandETrackerBulkUpload';
 
 
-const SandETrackerTool = () => {
+const SandETrackerTool = ({onRefresh}) => {
   const [showUploadedDetails, setShowUploadedDetails] = useState(false);
 
 
@@ -32,7 +32,7 @@ const SandETrackerTool = () => {
         size="sm" 
         icon={<HiDownload />}>Download Notice Data</Button>
         {/* <SandETrackerBulkUpload onUploadConfirm={handleUploadConfirm} /> */}
-        <NoticeUploadDialog />
+        <NoticeUploadDialog onSuccess={onRefresh} />
       </div>
     </div>
   )

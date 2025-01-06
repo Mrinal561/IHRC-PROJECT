@@ -25,8 +25,13 @@ const LWFSetupPage: React.FC = () => {
     companyName?: string; 
     companyGroupName?: string; 
     companyId?: string; // Add companyId to the type
+    groupId?:string;
   };
   const actualCompanyId = locationState?.companyId;
+  const actualCompanyName = locationState?.companyName;
+  const actualGroupName = locationState?.companyGroupName;
+  const actualGroupId = locationState?.groupId;
+
 
   const fetchLWFSetupData = async () => {
     try {
@@ -112,10 +117,14 @@ const LWFSetupPage: React.FC = () => {
         width={800}
         height={650}
       >
-        <h4 className="mb-4">Add LWF Setup</h4>
+        <h4 className="mb-2">Add LWF Setup</h4>
         <LWFSetupPanel
           onClose={() => setIsOpen(false)}
           addLWFSetup={handleAddLWFSetup}
+          companyId={actualCompanyId}
+          groupId={actualGroupId}
+          companyName={actualCompanyName}
+          groupName={actualGroupName}
         />
       </Dialog>
     </div>

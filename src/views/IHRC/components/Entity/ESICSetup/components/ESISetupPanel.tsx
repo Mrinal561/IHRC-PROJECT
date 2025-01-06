@@ -12,11 +12,49 @@ import DistrictAutosuggest from './DistrictAutoSuggest';
 import LocationAutosuggest from '../../Branch/components/LocationAutosuggest';
 import { createEsiSetup } from '@/store/slices/esiSetup/esiSetupSlice';
 import { showErrorNotification } from '@/components/ui/ErrorMessage';
+import * as yup from 'yup';
+
+
+const esiSetupSchema = yup.object().shape({
+  code_Type: yup.string().required('Code type is required'),
+  code: yup.string()
+    .required('ESI code is required')
+    .matches(/^[0-9]+$/, 'ESI code must contain only numbers'),
+  district_id: yup.number()
+    .required('District is required')
+    .min(1, 'Please select a district'),
+  location: yup.string()
+    .required('Location is required')
+    .min(2, 'Please Select a location'),
+  esi_user: yup.string()
+    .required('ESI user is required')
+    .min(3, 'ESI user must be at least 3 characters'),
+  password: yup.string()
+    .required('Password is required')
+    .min(6, 'Password must be at least 6 characters'),
+  signatory_data: yup.array()
+    .of(
+      yup.object().shape({
+        signatory_id: yup.number().required('Signatory  is required')
+      })
+    )
+    .min(1, 'At least one signatory must be selected'),
+  certificate: yup.string()
+    .required('Certificate is required')
+});
+
+interface ValidationErrors {
+  [key: string]: string;
+}
 
 interface ESISetupPanelProps {
   onClose: () => void;
   addESISetup: (data: any) => void;
   refreshData: () => Promise<void>;
+  companyId:string;
+  groupId:string;
+  companyname:string;
+  groupName:string;
 }
 
 interface SelectOption {
@@ -55,8 +93,9 @@ interface LocationOption {
   district_id: number;
 }
 
-const ESISetupPanel = ({ onClose, addESISetup , refreshData}) => {
+const ESISetupPanel = ({ onClose, addESISetup , refreshData, companyId, companyName, groupId, groupName}) => {
   const dispatch = useDispatch<AppDispatch>();
+  const [errors, setErrors] = useState<ValidationErrors>({});
   const [isLoading, setIsLoading] = useState(false);
   const [companyGroups, setCompanyGroups] = useState<SelectOption[]>([]);
   const [selectedCompanyGroup, setSelectedCompanyGroup] = useState<SelectOption | null>(null);
@@ -317,9 +356,34 @@ useEffect(() => {
     }
   };
 
+
+  const validateForm = async () => {
+    try {
+      await esiSetupSchema.validate(formData, { abortEarly: false });
+      setErrors({});
+      return true;
+    } catch (yupError) {
+      if (yupError instanceof yup.ValidationError) {
+        const newErrors: ValidationErrors = {};
+        yupError.inner.forEach((error) => {
+          if (error.path) {
+            newErrors[error.path] = error.message;
+          }
+        });
+        setErrors(newErrors);
+      }
+      return false;
+    }
+  };
+
   // Handle form submission
   const handleSubmit = async () => {
     try {
+      const isValid = await validateForm();
+      if(!isValid){
+        showNotification('danger', 'Please fix the validation errors');
+        return;
+      }
       setIsLoading(true);
 
       // const signatoriesWithIds = selectedSignatories.map((s) => ({
@@ -329,6 +393,8 @@ useEffect(() => {
       const data = {
         ...formData,
         signatory_data: formData.signatory_data,
+        company_id:companyId,
+        group_id: groupId,
       };
   
 
@@ -398,170 +464,217 @@ useEffect(() => {
 
   
 
-  return (
-   <div className="p-4">
-      <div className="grid grid-cols-2 gap-4 mb-4">
-        <div>
-          <p className="mb-2">Company Group</p>
-          <OutlinedSelect
-            label="Select Company Group"
-            options={companyGroups}
-            value={selectedCompanyGroup}
-            onChange={setSelectedCompanyGroup}
-          />
-        </div>
-        <div>
-          <p className="mb-2">Company</p>
-          <OutlinedSelect
-            label="Select Company"
-            options={companies}
-            value={selectedCompany}
-            onChange={setSelectedCompany}
-          />
+return (
+  <div className="p-4">
+    {/* Company Group and Company Section */}
+    <div className="grid grid-cols-2 gap-4 mb-3">
+      <div className="space-y-2">
+        <p className="text-sm font-medium">Company Group</p>
+        <OutlinedInput
+          label="Company Group"
+          value={groupName}
+          disabled
+        />
+      </div>
+      <div className="space-y-2">
+        <p className="text-sm font-medium">Company</p>
+        <OutlinedInput
+          label="Company"
+          value={companyName}
+          disabled
+        />
+      </div>
+    </div>
+
+    {/* Code Type and ESI Code Section */}
+    <div className="grid grid-cols-2 gap-4 mb-3">
+      <div className="space-y-2">
+        <p className="text-sm font-medium">Code Type</p>
+        <OutlinedSelect
+          label="Select Code Type"
+          options={codeTypeOptions}
+          value={codeTypeOptions.find(option => option.value === formData.code_Type)}
+          onChange={(option: SelectOption | null) => {
+            setFormData(prev => ({
+              ...prev,
+              code_Type: option?.value || ''
+            }));
+          }}
+        />
+        <div className="min-h-[20px]">
+          {errors.code_Type && (
+            <p className="text-red-500 text-xs mt-1">{errors.code_Type}</p>
+          )}
         </div>
       </div>
-
-
-      <div className='grid grid-cols-2 gap-4 mb-4'>
-      <div>
-           <p className="mb-2">Code Type</p>
-           <OutlinedSelect
-             label="Select Code Type"
-             options={codeTypeOptions}
-             value={codeTypeOptions.find(option => option.value === formData.code_Type)}
-             onChange={(option: SelectOption | null) => {
-               setFormData(prev => ({
-                 ...prev,
-                 code_Type: option?.value || ''
-               }));
-             }}
-           />
-         </div>
-         <div>
-           <p className="mb-2">ESI Code</p>
-           <OutlinedInput
-             label="ESI Code"
-             value={formData.code}
-             onChange={(value: string) => {
-               setFormData(prev => ({
-                 ...prev,
-                 code: value
-               }));
-             }}
-           />
-         </div>
-      </div>
-
-      <div className="grid grid-cols-3 gap-4 mb-4">
-        <div>
-          <p className="mb-2">State</p>
-          <OutlinedSelect
-            label="Select State"
-            options={states}
-            value={selectedStates}
-            onChange={handleStateChange}
-          />
+      <div className="space-y-2">
+        <p className="text-sm font-medium">ESI Code</p>
+        <OutlinedInput
+          label="ESI Code"
+          value={formData.code}
+          onChange={(value: string) => {
+            setFormData(prev => ({
+              ...prev,
+              code: value
+            }));
+          }}
+        />
+        <div className="min-h-[20px]">
+          {errors.code && (
+            <p className="text-red-500 text-xs mt-1">{errors.code}</p>
+          )}
         </div>
-        <div>
+      </div>
+    </div>
+
+    {/* Location Fields Section */}
+    <div className="grid grid-cols-3 gap-4 mb-3">
+      <div className="space-y-2">
+        <p className="text-sm font-medium">State</p>
+        <OutlinedSelect
+          label="Select State"
+          options={states}
+          value={selectedStates}
+          onChange={handleStateChange}
+        />
+        <div className="min-h-[20px]">
+          {errors.state_id && (
+            <p className="text-red-500 text-xs mt-1">{errors.state_id}</p>
+          )}
+        </div>
+      </div>
+      <div className="space-y-2">
         <DistrictAutosuggest 
-        value={selectedDistrict}
-        onChange={(district) => {
-          setSelectedDistrict(district);
-          setFormData(prev => ({
-            ...prev,
-            district_id: district.id || 0
-          }));
-        }}
-        stateId={selectedStates?.value ? parseInt(selectedStates.value) : undefined}
-        onDistrictSelect={(id) => setSelectedDistrictId(id)}  // Add this prop
-      />
+          value={selectedDistrict}
+          onChange={(district) => {
+            setSelectedDistrict(district);
+            setFormData(prev => ({
+              ...prev,
+              district_id: district.id || 0
+            }));
+          }}
+          stateId={selectedStates?.value ? parseInt(selectedStates.value) : undefined}
+          onDistrictSelect={(id) => setSelectedDistrictId(id)}
+        />
+        <div className="min-h-[20px]">
+          {errors.district_id && (
+            <p className="text-red-500 text-xs mt-1">{errors.district_id}</p>
+          )}
         </div>
-        <div>
+      </div>
+      <div className="space-y-2">
         <LocationAutosuggest
           value={selectedLocation}
           onChange={(location: string) => {
             setSelectedLocation(location);
-            setFormData(prev => ({ // Update formData with selected location
-            ...prev,
+            setFormData(prev => ({
+              ...prev,
               location: location
             }));
           }}
           districtId={selectedDistrictId}
         />
+        <div className="min-h-[20px]">
+          {errors.location && (
+            <p className="text-red-500 text-xs mt-1">{errors.location}</p>
+          )}
         </div>
       </div>
+    </div>
 
-      <div className="grid grid-cols-2 gap-4 mb-4">
-        <div>
-          <p className="mb-2">ESI User</p>
-          <OutlinedInput
-            label="ESI User"
-            value={formData.esi_user}
-            onChange={(value: string) => {
-              setFormData(prev => ({
-                ...prev,
-                esi_user: value
-              }));
-            }}
-          />
-        </div>
-        <div>
-          <p className="mb-2">Password</p>
-          <OutlinedInput
-            label="Password"
-            value={formData.password}
-            onChange={(value: string) => {
-              setFormData(prev => ({
-                ...prev,
-                password: value
-              }));
-            }}
-          />
+    {/* ESI User and Password Section */}
+    <div className="grid grid-cols-2 gap-4 mb-3">
+      <div className="space-y-2">
+        <p className="text-sm font-medium">ESI User</p>
+        <OutlinedInput
+          label="ESI User"
+          value={formData.esi_user}
+          onChange={(value: string) => {
+            setFormData(prev => ({
+              ...prev,
+              esi_user: value
+            }));
+          }}
+        />
+        <div className="min-h-[20px]">
+          {errors.esi_user && (
+            <p className="text-red-500 text-xs mt-1">{errors.esi_user}</p>
+          )}
         </div>
       </div>
-
-      <div className="mb-4">
-        <p className="mb-2">Authorized Signatory</p>
-
-<Select
-                            isMulti
-                            options={users.map(user => ({
-                              value: String(user.user_details.id),                           
-                              label: `${user.user_details.name}`,
-                            }))}
-                            onChange={handleSignatoryChange}
-
-                        />
+      <div className="space-y-2">
+        <p className="text-sm font-medium">Password</p>
+        <OutlinedInput
+          label="Password"
+          value={formData.password}
+          onChange={(value: string) => {
+            setFormData(prev => ({
+              ...prev,
+              password: value
+            }));
+          }}
+        />
+        <div className="min-h-[20px]">
+          {errors.password && (
+            <p className="text-red-500 text-xs mt-1">{errors.password}</p>
+          )}
+        </div>
       </div>
+    </div>
 
-      <div className="mb-4">
-        <p className="mb-2">Upload Certificate</p>
+    {/* Authorized Signatory and Certificate Section */}
+    <div className="grid grid-cols-2 gap-4 mb-3">
+      <div className="space-y-2">
+        <p className="text-sm font-medium">Authorized Signatory</p>
+        <Select
+          isMulti
+          options={users.map(user => ({
+            value: String(user.user_details.id),
+            label: `${user.user_details.name}`,
+          }))}
+          onChange={handleSignatoryChange}
+        />
+        <div className="min-h-[20px]">
+          {errors.signatory_data && (
+            <p className="text-red-500 text-xs mt-1">{errors.signatory_data}</p>
+          )}
+        </div>
+      </div>
+      <div className="space-y-1">
+        <p className="text-sm font-medium">Upload Certificate(PDF Only)</p>
         <Input
           type="file"
           onChange={handleFileUpload}
           accept=".pdf,.jpg,.jpeg,.png"
         />
-      </div>
-
-      <div className="flex justify-end gap-2">
-        <Button
-          variant="solid"
-          size="sm"
-          onClick={handleSubmit}
-          loading={isLoading}
-        >
-          Create ESI Setup
-        </Button>
-        <Button
-          variant="plain"
-          size="sm"
-          onClick={onClose}
-        >
-          Cancel
-        </Button>
+        <div className="min-h-[20px]">
+          {errors.certificate && (
+            <p className="text-red-500 text-xs mt-1">{errors.certificate}</p>
+          )}
+        </div>
       </div>
     </div>
-  );
+
+    {/* Buttons Section */}
+    <div className="flex justify-end gap-2">
+      <Button
+        variant="solid"
+        size="sm"
+        onClick={handleSubmit}
+        loading={isLoading}
+      >
+        Create ESI Setup
+      </Button>
+      <Button
+        variant="plain"
+        size="sm"
+        onClick={onClose}
+      >
+        Cancel
+      </Button>
+    </div>
+  </div>
+);
 };
 
 export default ESISetupPanel;

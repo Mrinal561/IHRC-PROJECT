@@ -1,335 +1,3 @@
-// import React, { useState } from 'react';
-// import { Button, Input, Dialog, toast, Notification } from '@/components/ui';
-// import OutlinedInput from '@/components/ui/OutlinedInput';
-// import OutlinedSelect from '@/components/ui/Outlined/Outlined';
-// import { Select, DatePicker } from '@/components/ui';
-// import { MultiValue, ActionMeta } from 'react-select';
-// import style from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark';
-// import { HiArrowLeft } from 'react-icons/hi';
-// import { useNavigate } from 'react-router-dom';
-// import { PTSetupData } from '@/@types/PtSetup';
-
-
-// interface PTSetupPageProps {
-//   // addPFSetup: (newPFSetup: PTSetupData) => void;
-//   onClose: () => void;
-//   companyGroupName: string;
-//   companyName: string;
-// }
-
-// interface Signatory {
-//   name: string;
-//   designation: string;
-//   mobile: string;
-//   email: string;
-// }
-
-// interface SelectOption {
-//     value: string
-//     label: string
-// }
-
-// interface Location {
-//     id: number
-//     name: string
-//     district_id: number
-// }
-
-// const PTSetupPage = () => {
-
-
-
-//   const [existingSignatories, setExistingSignatories] = useState<Signatory[]>([
-//     { name: 'Amit', designation: 'Manager', mobile: '1234567890', email: 'amit@example.com'},
-//     { name: 'Krishna Kumar Singh', designation: 'Director', mobile: '9876543210', email: 'krishna@example.com'},
-//     { name: 'Ajay Thakur', designation: 'CFO', mobile: '5555555555', email: 'ajay@example.com'},
-//   ]);
-
-//   const [showAddSignatoryDialog, setShowAddSignatoryDialog] = useState(false);
-//   const [newSignatory, setNewSignatory] = useState<Signatory>({
-//     name: '',
-//     designation: '',
-//     mobile: '',
-//     email: '',
-//   });
-
-//   const navigate = useNavigate()
-//   const [fileBase64, setFileBase64] = useState<string>('');
-//   const [states, setStates] = useState<SelectOption[]>([])
-//   const [selectedStates, setSelectedStates] = useState<SelectOption | null>(
-//       null,
-//   )
-//   const [selectedLocation, setSelectedLocation] = useState<SelectOption | null>(null)
-//   const [isLoading, setIsLoading] = useState(true)
-//   const [companyGroups, setCompanyGroups] = useState<SelectOption[]>([])
-//   const [selectedCompanyGroup, setSelectedCompanyGroup] =
-//       useState<SelectOption | null>(null)
-//   const [companies, setCompanies] = useState<SelectOption[]>([])
-//   const [selectedCompany, setSelectedCompany] = useState<SelectOption | null>(
-//       null,
-//   )
-//   const [districts, setDistricts] = useState<SelectOption[]>([])
-//   const [selectedDistrict, setSelectedDistrict] =
-//       useState<SelectOption | null>(null)
-//       const [locations, setLocations] = useState<SelectOption[]>([])
-
-
-
-//   const handleInputChange = (field: keyof PTSetupData, value: string | Date | null | File | string[]) => {
-//     // setPTSetupData(prev => ({ ...prev, [field]: value }));
-//   };
-
-//   const handleSignatoryChange = (
-//     newValue: MultiValue<{ value: string; label: string }>,
-//     actionMeta: ActionMeta<{ value: string; label: string }>
-//   ) => {
-//     const selectedSignatories = newValue.map(option => option.value);
-//     // handleInputChange('authorizedSignatories', selectedSignatories);
-
-//     if (actionMeta.action === 'select-option' && actionMeta.option?.value === 'add_new') {
-//       setShowAddSignatoryDialog(true);
-//     //   handleInputChange('authorizedSignatories', selectedSignatories.filter(name => name !== 'add_new'));
-//     }
-//   };
-
-//   const handleSubmit = () => {
-//     // if (PTSetupData.ptState && PTSetupData.ptLocation && PTSetupData.authorizedSignatories.length > 0) {
-//       // addPFSetup(PTSetupData);
-//       navigate(-1);
-//       toast.push(
-//         <Notification title="Success" type="success">
-//           <div className="flex items-center">
-//             <span>PT Setup successfully created</span>
-//           </div>
-//         </Notification>
-//       );
-//     //   onClose();
-//     // } else {
-//     //   toast.push(
-//     //     <Notification title="Error" type="danger">
-//     //       <div className="flex items-center">
-//     //         <span>Please fill in all required fields</span>
-//     //       </div>
-//     //     </Notification>
-//     //   );
-//     // }
-//   };
-
-//   const handleAddSignatory = () => {
-//     setExistingSignatories(prev => [...prev, newSignatory]);
-//     setShowAddSignatoryDialog(false);
-//     setNewSignatory({
-//       name: '',
-//       designation: '',
-//       mobile: '',
-//       email: '',
-//     });
-//   };
-
-//   const handleNewSignatoryInputChange = (field: keyof Signatory, value: string) => {
-//     setNewSignatory(prev => ({ ...prev, [field]: value }));
-//   };
-
-// return (
-//     <div className="p-6 space-y-6">
-//       {/* Header */}
-//       <div className="flex items-center gap-4 mb-8">
-//         <Button
-//           variant="plain"
-//           size="sm"
-//           className="p-2"
-//           onClick={() => navigate(-1)}
-//         >
-//           <HiArrowLeft className="h-5 w-5" />
-//         </Button>
-//         <h1 className="text-2xl font-semibold text-gray-800">*Add PT Setup</h1>
-//       </div>
-
-//       <div className="space-y-6">
-//         {/* Row 1: Company Group and Company Name */}
-//         <div className="grid grid-cols-2 gap-6">
-//           <div className="space-y-2">
-//             {/* <label className="text-sm font-medium text-gray-600">Enter Company Group</label> */}
-//             <OutlinedInput
-//                         label="Company Group" value={''} onChange={function (value: string): void {
-//                             throw new Error('Function not implemented.');
-//                         } }                // value={PTSetupData.Company_Group_Name}
-//                 // onChange={(value: string) => handleInputChange('Company_Group_Name', value)}
-//                 />
-//           </div>
-//           <div className="space-y-2">
-//             {/* <label className="text-sm font-medium text-gray-600">Enter Company Name</label> */}
-//              <OutlinedInput
-//                         label="Company" value={''} onChange={function (value: string): void {
-//                             throw new Error('Function not implemented.');
-//                         } }                // value={PTSetupData.Company_Name}
-//                 // onChange={(value: string) => handleInputChange('Company_Name', value)}
-//               />
-//           </div>
-//         </div>
-
-//         {/* Row 2: State, District, Location */}
-//         <div className="grid grid-cols-3 gap-6">
-//           <div className="space-y-2">
-//             <label className="text-sm font-medium text-gray-600">Enter State</label>
-//             <OutlinedInput
-//               label="State"
-//               value=""
-//               onChange={(value) => {}}
-//             />
-//           </div>
-//           <div className="space-y-2">
-//             <label className="text-sm font-medium text-gray-600">Enter District</label>
-//             <OutlinedInput
-//               label="District"
-//               value=""
-//               onChange={(value) => {}}
-//             />
-//           </div>
-//           <div className="space-y-2">
-//             <label className="text-sm font-medium text-gray-600">Enter Location</label>
-//             <OutlinedInput
-//               label="Location"
-//               value=""
-//               onChange={(value) => {}}
-//             />
-//           </div>
-//         </div>
-
-//         {/* Row 3: Registration Number, Enrollment Number, Registration Date */}
-//         <div className="grid grid-cols-3 gap-6">
-//           <div className="space-y-2">
-//             <label className="text-sm font-medium text-gray-600">PT Registration Number</label>
-//             <OutlinedInput
-//               label="Registration Number"
-//               value=""
-//               onChange={(value) => {}}
-//             />
-//           </div>
-//           <div className="space-y-2">
-//             <label className="text-sm font-medium text-gray-600">PT Enrollment Number</label>
-//             <OutlinedInput
-//               label="Enrollment Number"
-//               value=""
-//               onChange={(value) => {}}
-//             />
-//           </div>
-//           <div className="space-y-2">
-//             <label className="text-sm font-medium text-gray-600">PT Registration Date</label>
-//             <DatePicker
-//               placeholder="Select Date"
-//               className="w-full"
-//               size="sm"
-//             />
-//           </div>
-//         </div>
-
-//         {/* Row 4: User ID, Email, Password */}
-//         <div className="grid grid-cols-3 gap-6">
-//           <div className="space-y-2">
-//             <label className="text-sm font-medium text-gray-600">Enter User ID</label>
-//             <OutlinedInput
-//               label="User ID (Optional)"
-//               value=""
-//               onChange={(value) => {}}
-//             />
-//           </div>
-//           <div className="space-y-2">
-//             <label className="text-sm font-medium text-gray-600">Enter Email</label>
-//             <OutlinedInput
-//               label="Email"
-//               value=""
-//               onChange={(value) => {}}
-//             />
-//           </div>
-//           <div className="space-y-2">
-//             <label className="text-sm font-medium text-gray-600">Enter Password</label>
-//             <OutlinedInput
-//               label="Password (Optional)"
-//               value=""
-//               onChange={(value) => {}}
-//             />
-//           </div>
-//         </div>
-
-//         {/* Row 5: Mobile Number and Remittance Mode */}
-//         <div className="grid grid-cols-2 gap-6">
-//           <div className="space-y-2">
-//             <label className="text-sm font-medium text-gray-600">Enter Mobile Number</label>
-//             <OutlinedInput
-//               label="Mobile"
-//               value=""
-//               onChange={(value) => {}}
-//             />
-//           </div>
-//           <div className="space-y-2">
-//             <label className="text-sm font-medium text-gray-600">Select Remittance Mode</label>
-//             <OutlinedSelect
-//                         label="Mode"
-//                         options={[
-//                             { value: 'online', label: 'Online' },
-//                             { value: 'offline', label: 'Offline' },
-//                         ]} value={undefined} onChange={undefined}            />
-//           </div>
-//         </div>
-
-//         {/* Row 6: PT RC and EC Frequency */}
-//         <div className="grid grid-cols-2 gap-6">
-//           <div className="space-y-2">
-//             <label className="text-sm font-medium text-gray-600">PT RC Frequency</label>
-//             <OutlinedInput
-//               label="PT RC Frequency"
-//               value=""
-//               onChange={(value) => {}}
-//             />
-//           </div>
-//           <div className="space-y-2">
-//             <label className="text-sm font-medium text-gray-600">PT EC Frequency</label>
-//             <OutlinedInput
-//               label="PT EC Frequency"
-//               value=""
-//               onChange={(value) => {}}
-//             />
-//           </div>
-//         </div>
-
-//         {/* Row 7: Document Uploads */}
-//         <div className="grid grid-cols-2 gap-6">
-//           <div className="space-y-2">
-//             <label className="text-sm font-medium text-gray-600">Upload PT EC Certificate</label>
-//             <Input
-//               type="file"
-//               className="w-full"
-//             />
-//           </div>
-//           <div className="space-y-2">
-//             <label className="text-sm font-medium text-gray-600">Upload PT RC Certificate</label>
-//             <Input
-//               type="file"
-//               className="w-full"
-//             />
-//           </div>
-//         </div>
-//       </div>
-
-//       {/* Footer Actions */}
-//       <div className="flex justify-end gap-4 pt-4">
-//       <Button onClick={() => navigate(-1)}>Cancel</Button>
-
-//         <Button
-//           variant="solid"
-//           className="px-6 bg-blue-600 text-white hover:bg-blue-700"
-//           onClick={handleSubmit}
-//         >
-//           Confirm
-//         </Button>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default PTSetupPage;
-
 
 import React, { useEffect, useState } from 'react'
 import { Button, Input, toast, Notification, DatePicker } from '@/components/ui'
@@ -345,6 +13,85 @@ import { useDispatch } from 'react-redux'
 import { AppDispatch } from '@/store'
 import { showErrorNotification } from '@/components/ui/ErrorMessage'
 import { createptsetup } from '@/store/slices/ptSetup/ptSetupSlice'
+import * as yup from 'yup';
+
+const ptSetupSchema = yup.object().shape({
+    state_id: yup
+        .number()
+        .required('State is required')
+        .positive('Please select a valid state'),
+    
+    district: yup
+        .string()
+        .required('District is required'),
+    
+    location: yup
+        .string()
+        .required('Location is required'),
+    
+    register_number: yup
+        .string()
+        .required('Registration number is required')
+        .matches(/^[A-Za-z0-9]+$/, 'Registration number must contain only letters and numbers'),
+    
+    enroll_number: yup
+        .string()
+        .required('Enrollment number is required')
+        .matches(/^[A-Za-z0-9]+$/, 'Enrollment number must contain only letters and numbers'),
+    
+ register_date: yup.date().required('Registration date is required')
+    .max(new Date(), 'Registration date cannot be in the future'),
+    
+    remmit_mode: yup
+        .string()
+        .required('Remittance mode is required')
+        .oneOf(['online', 'offline'], 'Invalid remittance mode'),
+    
+    username: yup
+        .string()
+        .required('Username is required')
+        .min(4, 'Username must be at least 4 characters')
+        .matches(/^[A-Za-z0-9_]+$/, 'Username can only contain letters, numbers, and underscores'),
+    
+    password: yup
+        .string()
+        .required('Password is required')
+        .min(8, 'Password must be at least 8 characters')
+        .matches(
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+            'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
+        ),
+    
+    email: yup
+        .string()
+        .required('Email is required')
+        .email('Invalid email format'),
+    
+    mobile: yup
+        .string()
+        .required('Mobile number is required')
+        .matches(/^[0-9]{10}$/, 'Mobile number must be exactly 10 digits'),
+    
+    ec_certificate: yup
+        .string()
+        .required('EC Certificate is required'),
+    
+    rc_certificate: yup
+        .string()
+        .required('RC Certificate is required'),
+    
+    ptec_frequency: yup
+        .string()
+        .required('PTEC frequency is required'),
+    
+    ptrc_frequency: yup
+        .string()
+        .required('PTRC frequency is required')
+});
+
+interface ValidationErrors {
+    [key: string]: string;
+  }
 
 interface PTSetupData {
    group_id: number
@@ -373,8 +120,25 @@ interface SelectOption {
     ptrc_frequency?: string
 }
 
+
+interface LocationState {
+    companyName?: string;
+    companyGroupName?: string;
+    companyId?: string;
+    groupId?: string;
+  }
+
 const PTSetupPage = () => {
+
+  const [errors, setErrors] = useState<ValidationErrors>({});
     const navigate = useNavigate()
+    const location = useLocation()
+  const locationState = location.state as LocationState;
+  
+  const companyName = locationState?.companyName;
+  const companyGroupName = locationState?.companyGroupName;
+  const companyId = locationState?.companyId;
+  const groupId = locationState?.groupId;
     const dispatch = useDispatch<AppDispatch>()
     const [isLoading, setIsLoading] = useState(true)
 
@@ -471,51 +235,6 @@ const PTSetupPage = () => {
             )
         }
     }
-
-    // Load states
-//     const loadStates = async () => {
-//         try {
-//             const response = await httpClient.get(endpoints.common.state())
-//             if (response.data) {
-//                 const formattedStates = response.data.map((state: any) => ({
-//                     label: state.name,
-//                     value: String(state.id)
-//                 }))
-//                 setStates(formattedStates)
-//             }
-//         } catch (error) {
-//             console.error('Failed to load states:', error)
-//             toast.push(
-//                 <Notification title="Error" type="danger">
-//                     Failed to load states
-//                 </Notification>
-//             )
-//         }
-    //   }
-    
-//     const loadStates = async () => {
-//     try {
-//         const response = await httpClient.get(endpoints.common.state())
-//         if (response.data) {
-//             const formattedStates = response.data
-//                 .filter((state: any) => state.ptrc_active && state.ptec_active)
-//                 .map((state: any) => ({
-//                     label: state.name,
-//                     value: String(state.id)
-//                 }))
-//             setStates(formattedStates)
-//             // console.log("states",states)
-//         }
-//     } catch (error) {
-//         console.error('Failed to load states:', error)
-//         toast.push(
-//             <Notification title="Error" type="danger">
-//                 Failed to load states
-//             </Notification>
-//         )
-//     }
-    // }
-    
 const loadStates = async () => {
     try {
         const response = await httpClient.get(endpoints.common.state())
@@ -541,22 +260,6 @@ const loadStates = async () => {
     }
 }
 
-//   const handleStateChange = (option: SelectOption | null) => {
-//         setSelectedState(option);
-//         setSelectedDistrict({ id: null, name: '' }); // Reset district selection
-//         setSelectedLocation(''); // Reset location selection
-        
-//         if (option) {
-//             setPtSetupData(prev => ({
-//                 ...prev,
-//                 state_id: parseInt(option.value),
-//                 district: '', // Reset district in form data
-//                 location: ''
-//             }));
-//         }
-//     };
-  
-    
     const handleStateChange = (option: SelectOption | null) => {
     setSelectedState(option);
     setSelectedDistrict({ id: null, name: '' }); // Reset district selection
@@ -611,6 +314,28 @@ const loadStates = async () => {
         }
     }
 
+
+
+    const validateForm = async () => {
+        try {
+          await ptSetupSchema.validate(ptSetupData, { abortEarly: false });
+          setErrors({});
+          return true;
+        } catch (yupError) {
+          if (yupError instanceof yup.ValidationError) {
+            const newErrors: ValidationErrors = {};
+            yupError.inner.forEach((error) => {
+              if (error.path) {
+                newErrors[error.path] = error.message;
+              }
+            });
+            setErrors(newErrors);
+          }
+          return false;
+        }
+      };
+
+
     // Submit handler
     const handleSubmit = async () => {
         try {
@@ -618,8 +343,8 @@ const loadStates = async () => {
                 ...ptSetupData,
                 register_date: ptSetupData.register_date?.toISOString() || '',
                 // Ensure all number fields are converted to strings
-                group_id: ptSetupData.group_id,
-                company_id: ptSetupData.company_id,
+                group_id: groupId,
+                company_id: companyId,
                 state_id: ptSetupData.state_id,
                 // district is already a string
                 // register_number is already a string
@@ -627,6 +352,15 @@ const loadStates = async () => {
                 // mobile is already a string
             }
           console.log(formData);
+          const isValid = await validateForm();
+            if (!isValid) {
+            toast.push(
+                <Notification title="Error" type="danger">
+                Please fix the validation errors
+                </Notification>
+            );
+            return;
+            }
            const response = await dispatch(createptsetup(formData))
       .unwrap()
       .catch((error: any) => {
@@ -704,21 +438,31 @@ const loadStates = async () => {
                 <div className="grid grid-cols-2 gap-4">
                     <div>
                         <p className="mb-2">Company Group</p>
-                        <OutlinedSelect
+                        {/* <OutlinedSelect
                             label="Select Company Group"
                             options={companyGroups}
                             value={selectedCompanyGroup}
                             onChange={setSelectedCompanyGroup}
-                        />
+                        /> */}
+                         <OutlinedInput
+                            label="Company Group"
+                            value={companyGroupName}
+                            disabled
+                            />
                     </div>
                     <div>
                         <p className="mb-2">Company</p>
-                        <OutlinedSelect
+                        {/* <OutlinedSelect
                             label="Select Company"
                             options={companies}
                             value={selectedCompany}
                             onChange={setSelectedCompany}
-                        />
+                        /> */}
+                         <OutlinedInput
+                            label="Company"
+                            value={companyName}
+                            disabled
+                            />
                     </div>
                 </div>
 
@@ -732,6 +476,9 @@ const loadStates = async () => {
                             value={selectedState}
                             onChange={handleStateChange}
                         />
+                         {errors.state_id && (
+            <p className="text-red-500 text-xs mt-1">{errors.state_id}</p>
+          )}
                     </div>
                     <div>
                        <DistrictAutosuggest 
@@ -757,6 +504,9 @@ const loadStates = async () => {
                             }));
                         }}
                     />
+                     {errors.district && (
+            <p className="text-red-500 text-xs mt-1">{errors.district}</p>
+          )}
                     </div>
                     <div>
                         <LocationAutosuggest
@@ -770,6 +520,9 @@ const loadStates = async () => {
                             }}
                             districtId={selectedDistrictId}
                         />
+                         {errors.location && (
+            <p className="text-red-500 text-xs mt-1">{errors.location}</p>
+          )}
                     </div>
                 </div>
 
@@ -785,6 +538,9 @@ const loadStates = async () => {
                             register_number: value
                         }))}
                     />
+                     {errors.register_number && (
+            <p className="text-red-500 text-xs mt-1">{errors.register_number}</p>
+          )}
                     </div>
                     <div>
                         <p className="mb-2">PT EC Enrollment Number</p>
@@ -796,6 +552,9 @@ const loadStates = async () => {
                             enroll_number: value
                         }))}
                     />
+                    {errors.enroll_number && (
+            <p className="text-red-500 text-xs mt-1">{errors.enroll_number}</p>
+          )}
                     </div>
                     <div>
                         <p className="mb-2">Registration Date</p>
@@ -808,6 +567,9 @@ const loadStates = async () => {
                                 register_date: date
                             }))}
                         />
+                         {errors.register_date && (
+            <p className="text-red-500 text-xs mt-1">{errors.register_date}</p>
+          )}
                     </div>
                 </div>
 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -844,6 +606,10 @@ const loadStates = async () => {
                                 username: value
                             }))}
                         />
+                        {errors.username && (
+            <p className="text-red-500 text-xs mt-1">{errors.username}</p>
+          )}
+                        
                     </div>
                     <div>
                         <p className="mb-2">Password</p>
@@ -856,6 +622,9 @@ const loadStates = async () => {
                                 password: value
                             }))}
                         />
+                         {errors.password && (
+            <p className="text-red-500 text-xs mt-1">{errors.password}</p>
+          )}
                     </div>
                     <div>
                         <p className="mb-2">Email</p>
@@ -867,6 +636,9 @@ const loadStates = async () => {
                                 email: value
                             }))}
                         />
+                          {errors.email && (
+            <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+          )}
                     </div>
                 </div>
 
@@ -882,6 +654,9 @@ const loadStates = async () => {
                             mobile: value
                         }))}
               />
+                 {errors.mobile && (
+            <p className="text-red-500 text-xs mt-1">{errors.mobile}</p>
+          )}
             </div>
                     <div>
                         <p className="mb-2">Remittance Mode</p>
@@ -899,13 +674,16 @@ const loadStates = async () => {
                     }))
                   }
                 } } value={undefined}/>
+                   {errors.remmit_mode && (
+            <p className="text-red-500 text-xs mt-1">{errors.remmit_mode}</p>
+          )}
                     </div>
             </div>
 
                 {/* Certificates */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <p className="mb-2">RC Certificate</p>
+                        <p className="mb-2">RC Certificate(PDF Only)</p>
                         <Input
                             type="file"
                             onChange={(e) => {
@@ -913,9 +691,12 @@ const loadStates = async () => {
                                 if (file) handleCertificateUpload('rc', file)
                             }}
                         />
+                        {errors.rc_certificate && (
+            <p className="text-red-500 text-xs mt-1">{errors.rc_certificate}</p>
+          )}
                     </div>
                      <div>
-                        <p className="mb-2">EC Certificate</p>
+                        <p className="mb-2">EC Certificate(PDF Only)</p>
                         <Input
                             type="file"
                             onChange={(e) => {
@@ -923,6 +704,9 @@ const loadStates = async () => {
                                 if (file) handleCertificateUpload('ec', file)
                             }}
                         />
+                        {errors.ec_certificate && (
+            <p className="text-red-500 text-xs mt-1">{errors.ec_certificate}</p>
+          )}
                     </div>
                 </div>
 
