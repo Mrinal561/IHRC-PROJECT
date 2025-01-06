@@ -13,6 +13,85 @@ import { useDispatch } from 'react-redux'
 import { AppDispatch } from '@/store'
 import { showErrorNotification } from '@/components/ui/ErrorMessage'
 import { createptsetup } from '@/store/slices/ptSetup/ptSetupSlice'
+import * as yup from 'yup';
+
+const ptSetupSchema = yup.object().shape({
+    state_id: yup
+        .number()
+        .required('State is required')
+        .positive('Please select a valid state'),
+    
+    district: yup
+        .string()
+        .required('District is required'),
+    
+    location: yup
+        .string()
+        .required('Location is required'),
+    
+    register_number: yup
+        .string()
+        .required('Registration number is required')
+        .matches(/^[A-Za-z0-9]+$/, 'Registration number must contain only letters and numbers'),
+    
+    enroll_number: yup
+        .string()
+        .required('Enrollment number is required')
+        .matches(/^[A-Za-z0-9]+$/, 'Enrollment number must contain only letters and numbers'),
+    
+ register_date: yup.date().required('Registration date is required')
+    .max(new Date(), 'Registration date cannot be in the future'),
+    
+    remmit_mode: yup
+        .string()
+        .required('Remittance mode is required')
+        .oneOf(['online', 'offline'], 'Invalid remittance mode'),
+    
+    username: yup
+        .string()
+        .required('Username is required')
+        .min(4, 'Username must be at least 4 characters')
+        .matches(/^[A-Za-z0-9_]+$/, 'Username can only contain letters, numbers, and underscores'),
+    
+    password: yup
+        .string()
+        .required('Password is required')
+        .min(8, 'Password must be at least 8 characters')
+        .matches(
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+            'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
+        ),
+    
+    email: yup
+        .string()
+        .required('Email is required')
+        .email('Invalid email format'),
+    
+    mobile: yup
+        .string()
+        .required('Mobile number is required')
+        .matches(/^[0-9]{10}$/, 'Mobile number must be exactly 10 digits'),
+    
+    ec_certificate: yup
+        .string()
+        .required('EC Certificate is required'),
+    
+    rc_certificate: yup
+        .string()
+        .required('RC Certificate is required'),
+    
+    ptec_frequency: yup
+        .string()
+        .required('PTEC frequency is required'),
+    
+    ptrc_frequency: yup
+        .string()
+        .required('PTRC frequency is required')
+});
+
+interface ValidationErrors {
+    [key: string]: string;
+  }
 
 interface PTSetupData {
    group_id: number
@@ -50,6 +129,8 @@ interface LocationState {
   }
 
 const PTSetupPage = () => {
+
+  const [errors, setErrors] = useState<ValidationErrors>({});
     const navigate = useNavigate()
     const location = useLocation()
   const locationState = location.state as LocationState;
@@ -154,51 +235,6 @@ const PTSetupPage = () => {
             )
         }
     }
-
-    // Load states
-//     const loadStates = async () => {
-//         try {
-//             const response = await httpClient.get(endpoints.common.state())
-//             if (response.data) {
-//                 const formattedStates = response.data.map((state: any) => ({
-//                     label: state.name,
-//                     value: String(state.id)
-//                 }))
-//                 setStates(formattedStates)
-//             }
-//         } catch (error) {
-//             console.error('Failed to load states:', error)
-//             toast.push(
-//                 <Notification title="Error" type="danger">
-//                     Failed to load states
-//                 </Notification>
-//             )
-//         }
-    //   }
-    
-//     const loadStates = async () => {
-//     try {
-//         const response = await httpClient.get(endpoints.common.state())
-//         if (response.data) {
-//             const formattedStates = response.data
-//                 .filter((state: any) => state.ptrc_active && state.ptec_active)
-//                 .map((state: any) => ({
-//                     label: state.name,
-//                     value: String(state.id)
-//                 }))
-//             setStates(formattedStates)
-//             // console.log("states",states)
-//         }
-//     } catch (error) {
-//         console.error('Failed to load states:', error)
-//         toast.push(
-//             <Notification title="Error" type="danger">
-//                 Failed to load states
-//             </Notification>
-//         )
-//     }
-    // }
-    
 const loadStates = async () => {
     try {
         const response = await httpClient.get(endpoints.common.state())
@@ -224,22 +260,6 @@ const loadStates = async () => {
     }
 }
 
-//   const handleStateChange = (option: SelectOption | null) => {
-//         setSelectedState(option);
-//         setSelectedDistrict({ id: null, name: '' }); // Reset district selection
-//         setSelectedLocation(''); // Reset location selection
-        
-//         if (option) {
-//             setPtSetupData(prev => ({
-//                 ...prev,
-//                 state_id: parseInt(option.value),
-//                 district: '', // Reset district in form data
-//                 location: ''
-//             }));
-//         }
-//     };
-  
-    
     const handleStateChange = (option: SelectOption | null) => {
     setSelectedState(option);
     setSelectedDistrict({ id: null, name: '' }); // Reset district selection
@@ -294,6 +314,28 @@ const loadStates = async () => {
         }
     }
 
+
+
+    const validateForm = async () => {
+        try {
+          await ptSetupSchema.validate(ptSetupData, { abortEarly: false });
+          setErrors({});
+          return true;
+        } catch (yupError) {
+          if (yupError instanceof yup.ValidationError) {
+            const newErrors: ValidationErrors = {};
+            yupError.inner.forEach((error) => {
+              if (error.path) {
+                newErrors[error.path] = error.message;
+              }
+            });
+            setErrors(newErrors);
+          }
+          return false;
+        }
+      };
+
+
     // Submit handler
     const handleSubmit = async () => {
         try {
@@ -310,6 +352,15 @@ const loadStates = async () => {
                 // mobile is already a string
             }
           console.log(formData);
+          const isValid = await validateForm();
+            if (!isValid) {
+            toast.push(
+                <Notification title="Error" type="danger">
+                Please fix the validation errors
+                </Notification>
+            );
+            return;
+            }
            const response = await dispatch(createptsetup(formData))
       .unwrap()
       .catch((error: any) => {
@@ -425,6 +476,9 @@ const loadStates = async () => {
                             value={selectedState}
                             onChange={handleStateChange}
                         />
+                         {errors.state_id && (
+            <p className="text-red-500 text-xs mt-1">{errors.state_id}</p>
+          )}
                     </div>
                     <div>
                        <DistrictAutosuggest 
@@ -450,6 +504,9 @@ const loadStates = async () => {
                             }));
                         }}
                     />
+                     {errors.district && (
+            <p className="text-red-500 text-xs mt-1">{errors.district}</p>
+          )}
                     </div>
                     <div>
                         <LocationAutosuggest
@@ -463,6 +520,9 @@ const loadStates = async () => {
                             }}
                             districtId={selectedDistrictId}
                         />
+                         {errors.location && (
+            <p className="text-red-500 text-xs mt-1">{errors.location}</p>
+          )}
                     </div>
                 </div>
 
@@ -478,6 +538,9 @@ const loadStates = async () => {
                             register_number: value
                         }))}
                     />
+                     {errors.register_number && (
+            <p className="text-red-500 text-xs mt-1">{errors.register_number}</p>
+          )}
                     </div>
                     <div>
                         <p className="mb-2">PT EC Enrollment Number</p>
@@ -489,6 +552,9 @@ const loadStates = async () => {
                             enroll_number: value
                         }))}
                     />
+                    {errors.enroll_number && (
+            <p className="text-red-500 text-xs mt-1">{errors.enroll_number}</p>
+          )}
                     </div>
                     <div>
                         <p className="mb-2">Registration Date</p>
@@ -501,6 +567,9 @@ const loadStates = async () => {
                                 register_date: date
                             }))}
                         />
+                         {errors.register_date && (
+            <p className="text-red-500 text-xs mt-1">{errors.register_date}</p>
+          )}
                     </div>
                 </div>
 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -537,6 +606,10 @@ const loadStates = async () => {
                                 username: value
                             }))}
                         />
+                        {errors.username && (
+            <p className="text-red-500 text-xs mt-1">{errors.username}</p>
+          )}
+                        
                     </div>
                     <div>
                         <p className="mb-2">Password</p>
@@ -549,6 +622,9 @@ const loadStates = async () => {
                                 password: value
                             }))}
                         />
+                         {errors.password && (
+            <p className="text-red-500 text-xs mt-1">{errors.password}</p>
+          )}
                     </div>
                     <div>
                         <p className="mb-2">Email</p>
@@ -560,6 +636,9 @@ const loadStates = async () => {
                                 email: value
                             }))}
                         />
+                          {errors.email && (
+            <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+          )}
                     </div>
                 </div>
 
@@ -575,6 +654,9 @@ const loadStates = async () => {
                             mobile: value
                         }))}
               />
+                 {errors.mobile && (
+            <p className="text-red-500 text-xs mt-1">{errors.mobile}</p>
+          )}
             </div>
                     <div>
                         <p className="mb-2">Remittance Mode</p>
@@ -592,13 +674,16 @@ const loadStates = async () => {
                     }))
                   }
                 } } value={undefined}/>
+                   {errors.remmit_mode && (
+            <p className="text-red-500 text-xs mt-1">{errors.remmit_mode}</p>
+          )}
                     </div>
             </div>
 
                 {/* Certificates */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <p className="mb-2">RC Certificate</p>
+                        <p className="mb-2">RC Certificate(PDF Only)</p>
                         <Input
                             type="file"
                             onChange={(e) => {
@@ -606,9 +691,12 @@ const loadStates = async () => {
                                 if (file) handleCertificateUpload('rc', file)
                             }}
                         />
+                        {errors.rc_certificate && (
+            <p className="text-red-500 text-xs mt-1">{errors.rc_certificate}</p>
+          )}
                     </div>
                      <div>
-                        <p className="mb-2">EC Certificate</p>
+                        <p className="mb-2">EC Certificate(PDF Only)</p>
                         <Input
                             type="file"
                             onChange={(e) => {
@@ -616,6 +704,9 @@ const loadStates = async () => {
                                 if (file) handleCertificateUpload('ec', file)
                             }}
                         />
+                        {errors.ec_certificate && (
+            <p className="text-red-500 text-xs mt-1">{errors.ec_certificate}</p>
+          )}
                     </div>
                 </div>
 

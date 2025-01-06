@@ -147,14 +147,14 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh , companyN
                 className="text-red-500"
               />
             </Tooltip>
-            <Tooltip title="Suspend User">
+            {/* <Tooltip title="Suspend User">
                             <Button
                                 size="sm"
                                 onClick={() => openSuspendDialog(row.index)}
                                 icon={<IoPersonRemoveOutline />}
                                 className="text-blue-500"
                             />
-                        </Tooltip>
+                        </Tooltip> */}
           </div>
         ),
       },

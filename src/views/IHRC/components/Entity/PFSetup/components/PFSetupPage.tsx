@@ -22,6 +22,68 @@ import { AppDispatch } from '@/store'
 import { createEsiSetup } from '@/services/EsiSetupService'
 import { createPF } from '@/store/slices/pfSetup/pfSlice'
 import { showErrorNotification } from '@/components/ui/ErrorMessage'
+import * as yup from 'yup';
+
+const pfSetupSchema = yup.object().shape({
+    pf_code: yup
+        .string()
+        .required('PF Code is required'),
+        // .matches(/^[A-Z]{2}\/[A-Z]{2}\/\d{5}\/\d{3}$/, 'Invalid PF Code format. Format should be XX/XX/12345/123'),
+    
+    state_id: yup
+        .number()
+        .required('State is required')
+        .min(1, 'Please select a state'),
+    
+    district: yup
+        .string()
+        .required('District is required')
+        .min(2, 'District name must be at least 2 characters'),
+    
+    location: yup
+        .string()
+        .required('Location is required')
+        .min(2, 'Location must be at least 2 characters'),
+    
+    pf_user: yup
+        .string()
+        .required('PF User is required')
+        .min(3, 'Username must be at least 3 characters'),
+    
+    password: yup
+        .string()
+        .required('Password is required')
+        .min(8, 'Password must be at least 8 characters')
+        .matches(
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+            'Password must contain at least one uppercase letter, one lowercase letter, one number and one special character'
+        ),
+    
+    register_date: yup
+        .date()
+        .required('Registration date is required')
+        .max(new Date(), 'Registration date cannot be in the future'),
+    
+    register_certificate: yup
+        .string()
+        .required('Registration certificate is required'),
+    
+    signatory_data: yup.array().of(
+        yup.object().shape({
+            signatory_id: yup.number().required('Signatory ID is required'),
+            dsc_validity: yup
+                .string()
+                .required('DSC validity date is required'),
+            e_sign_status: yup
+                .string()
+                .required('E-sign status is required')
+                .oneOf(['active', 'inactive'], 'Invalid e-sign status'),
+        })
+    ).min(1, 'At least one signatory is required'),
+})
+
+
+
 interface PFSetupData {
     group_id: number
     company_id: number
@@ -81,6 +143,8 @@ interface Location {
 }
 
 const PFSetupPage: React.FC = () => {
+
+    const [errors, setErrors] = useState<{ [key: string]: string }>({})
     const navigate = useNavigate()
     const location = useLocation()
   const locationState = location.state as LocationState;
@@ -207,9 +271,50 @@ const PFSetupPage: React.FC = () => {
         }
     }
 
+    const validateForm = async () => {
+        try {
+            await pfSetupSchema.validate(pfSetupData, { abortEarly: false })
+            setErrors({})
+            return true
+        } catch (err) {
+            if (err instanceof yup.ValidationError) {
+                const newErrors: { [key: string]: string } = {}
+                err.inner.forEach((error) => {
+                    if (error.path) {
+                        // Handle nested paths for signatory data
+                        if (error.path.startsWith('signatory_data[')) {
+                            // Extract the index and field from the path
+                            const match = error.path.match(/signatory_data\[(\d+)\]\.(.+)/)
+                            if (match) {
+                                const [_, index, field] = match
+                                newErrors[`signatory_data_${index}_${field}`] = error.message
+                            }
+                        } else {
+                            newErrors[error.path] = error.message
+                        }
+                    }
+                })
+                setErrors(newErrors)
+                
+                toast.push(
+                    <Notification title="Validation Error" type="danger">
+                        Please fix the highlighted errors to continue
+                    </Notification>
+                )
+            }
+            return false
+        }
+    }
+    
+
     // Handle submit with base64 files
     const handleSubmit = async () => {
         console.log(pfSetupData)
+
+        const isValid = await validateForm();
+        if(!isValid){
+            return;
+        }
         const formData = {
             ...pfSetupData,
             register_date: pfSetupData.register_date?.toISOString() || '',
@@ -263,6 +368,19 @@ const PFSetupPage: React.FC = () => {
             //     </Notification>,
             // )
         }
+    }
+
+    const getErrorMessage = (field: string, signatoryIndex?: number) => {
+        if (signatoryIndex !== undefined) {
+            // For signatory fields, construct the error key
+            const errorKey = `signatory_data_${signatoryIndex}_${field}`
+            return errors[errorKey] ? (
+                <p className="text-red-500 text-sm mt-1">{errors[errorKey]}</p>
+            ) : null
+        }
+        return errors[field] ? (
+            <p className="text-red-500 text-sm mt-1">{errors[field]}</p>
+        ) : null
     }
 
     const loadCompanyGroups = async () => {
@@ -551,7 +669,8 @@ const PFSetupPage: React.FC = () => {
                             onChange={(value: string) =>
                                 handleInputChange('pf_code', value)
                             }
-                        />
+                            />
+                            {getErrorMessage('pf_code')}
                     </div>
                     <div>
                         <p className="mb-2"> State</p>
@@ -561,6 +680,7 @@ const PFSetupPage: React.FC = () => {
                             value={selectedStates}
                             onChange={handleStateChange}
                         />
+                        {getErrorMessage('state_id')}
                     </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -585,6 +705,7 @@ const PFSetupPage: React.FC = () => {
                                 setSelectedDistrictId(districtId)
                             }}
                         />
+                        {getErrorMessage('district')}
                     </div>
                     <div>
                         <LocationAutosuggest
@@ -600,6 +721,7 @@ const PFSetupPage: React.FC = () => {
                             }}
                             districtId={selectedDistrictId}
                         />
+                        {getErrorMessage('location')}
                     </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-4">
@@ -615,6 +737,7 @@ const PFSetupPage: React.FC = () => {
                                 }))
                             }}
                         />
+                        {getErrorMessage('pf_user')}
                     </div>
                     <div>
                         <p className="mb-2">Password</p>
@@ -628,6 +751,7 @@ const PFSetupPage: React.FC = () => {
                                 }))
                             }}
                         />
+                        {getErrorMessage('password')}
                     </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -642,6 +766,7 @@ const PFSetupPage: React.FC = () => {
                                 handleInputChange('register_date', date)
                             }
                         />
+                        {getErrorMessage('register_date')}
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -655,12 +780,13 @@ const PFSetupPage: React.FC = () => {
                             }))}
                             onChange={handleSignatoryChange}
                         />
+                         {getErrorMessage('signatory_data')}
                     </div>
                 </div>
                 {selectedSignatories.length > 0 && (
                     <div className="space-y-4 border rounded-lg p-4">
                         <h6 className="font-semibold">Selected Signatories</h6>
-                        {selectedSignatories.map((signatory) => (
+                        {selectedSignatories.map((signatory, index) => (
                             <div
                                 key={signatory.id}
                                 className="border p-4 rounded-lg"
@@ -713,6 +839,7 @@ const PFSetupPage: React.FC = () => {
                                                     )
                                                 }}
                                             />
+                                            {getErrorMessage('dsc_validity', index)}
                                         </div>
                                     </div>
                                     <div>
@@ -744,6 +871,7 @@ const PFSetupPage: React.FC = () => {
                                                         )
                                                     }
                                                 />
+                                                  {getErrorMessage('e_sign_status', index)}
                                             </div>
                                         </div>
                                     </div>
@@ -754,12 +882,13 @@ const PFSetupPage: React.FC = () => {
                 )}
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                        PF Registration Certificate
+                        PF Registration Certificate(PDF Only)
                     </label>
                     <Input
                         type="file"
                         onChange={handleRegistrationCertificateUpload}
                     />
+                    {getErrorMessage('register_certificate')}
                 </div>
                 <div className="flex justify-end space-x-2">
                     <Button onClick={() => navigate(-1)}>Cancel</Button>

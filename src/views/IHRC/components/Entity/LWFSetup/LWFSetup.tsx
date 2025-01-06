@@ -117,7 +117,7 @@ const LWFSetupPage: React.FC = () => {
         width={800}
         height={650}
       >
-        <h4 className="mb-4">Add LWF Setup</h4>
+        <h4 className="mb-2">Add LWF Setup</h4>
         <LWFSetupPanel
           onClose={() => setIsOpen(false)}
           addLWFSetup={handleAddLWFSetup}
