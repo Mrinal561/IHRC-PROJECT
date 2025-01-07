@@ -86,20 +86,21 @@ export const endpoints = {
         create: () => api('companyadmin/esisetup'),
         // download: () => api(`companyadmin/esisetup/esi-tracker/export`)
          update: (id: any) => api(`/companyadmin/esisetup/${id}`),
+         delete: (id:any) => api(`companyadmin/esisetup/${id}`)
     },
     pfSetup: {
         getAll: () => api('companyadmin/pfsetup'),
         create: () => api('companyadmin/pfsetup'),
         getById: (id: any) => api(`companyadmin/pfsetup/${id}`),
         update: (id: any) => api(`/companyadmin/pfsetup/${id}`),
-        
-        
+        delete: (id:any) => api(`companyadmin/pfsetup/${id}`)   
     },
     ptSetup: {
         getAll: () => api('companyadmin/ptsetup'),
         create: () => api('companyadmin/ptsetup'),
         getById: (id: any) => api(`companyadmin/ptsetup/${id}`),
         update: (id: any) => api(`companyadmin/ptsetup/${id}`),
+        delete: (id:any) => api(`companyadmin/ptsetup/${id}`)
     },
     tracker: {
         downloadFormat: () => api('upload/sample_files/pf-tracker.xlsx'),
@@ -125,7 +126,7 @@ export const endpoints = {
     },
     ptrc: {
         download: () => api('upload/sample_files/ptrc-tracker.xlsx'),
-        bulkUpload: () => api('/companyadmin/ptsetup/ptrc-tracker'),
+        bulkUpload: () => api('companyadmin/ptsetup/ptrc-tracker'),
         getAll: () => api('/companyadmin/ptsetup/ptrc-tracker'),
         uploadDocs: (id: any) =>
             api(`/companyadmin/ptsetup/ptrc-tracker/document/${id}`),
@@ -183,6 +184,7 @@ export const endpoints = {
         create: () => api('/companyadmin/lwfsetup'),
         getById: (id: any) => api(`companyadmin/lwfsetup/${id}`),
           update: (id: any) => api(`companyadmin/lwfsetup/${id}`),
+          delete: (id:any) => api(`companyadmin/lwfsetup/${id}`)
     },
     request: {
         request: (id: any) => api(`companyadmin/company/edit-request/${id}`),

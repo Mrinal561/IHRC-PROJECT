@@ -120,12 +120,12 @@ const Filter: React.FC = () => {
   return (
     <div className=" flex gap-3 z-20">
       <div className="w-52">
-        <OutlinedSelect
+        {/* <OutlinedSelect
           label="Company Group"
           options={groupOptions}
           value={selectedGroup}
           onChange={handleGroupChange}
-        />
+        /> */}
       </div>
     </div>
   );

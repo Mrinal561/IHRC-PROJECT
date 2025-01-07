@@ -14,6 +14,21 @@ import {
 } from '@/store/slices/companyGroup/companyGroupSlice';
 import { CompanyGroupData } from '@/store/slices/companyGroup/companyGroupSlice';
 import { showErrorNotification } from '@/components/ui/ErrorMessage';
+import * as yup from 'yup';
+
+
+interface ValidationErrors {
+    name?: string;
+}
+
+const companySchema = yup.object().shape({
+    name: yup
+      .string()
+      .required('Role name is required')
+      .min(3, 'Role name must be at least 3 characters')
+      .max(50, 'Role name must not exceed 50 characters')
+      .matches(/^[a-zA-Z0-9\s_-]+$/, 'Role name can only contain letters, numbers, spaces, underscores, and hyphens')
+  });
 
 const CompanyGroup = () => {
     const dispatch = useAppDispatch();
@@ -25,6 +40,7 @@ const CompanyGroup = () => {
     const [newCompanyGroup, setNewCompanyGroup] = useState({
         name: ''
     });
+    const [errors, setErrors] = useState<ValidationErrors>({});
 
     // Updated to include pagination parameters
     const fetchCompanyDataTable = async (page = 1, pageSize = 10) => {
@@ -52,6 +68,26 @@ const CompanyGroup = () => {
         fetchCompanyDataTable();
     }, []);
 
+    const validateForm = async () => {
+        try {
+            await companySchema.validate(newCompanyGroup, { abortEarly: false });
+            setErrors({}); // Clear any existing errors
+            return true;
+        } catch (err) {
+            if (err instanceof yup.ValidationError) {
+                const validationErrors: ValidationErrors = {};
+                err.inner.forEach((error) => {
+                    if (error.path) {
+                        validationErrors[error.path as keyof ValidationErrors] = error.message;
+                    }
+                });
+                setErrors(validationErrors);
+            }
+            return false;
+        }
+    };
+    
+
     const handleConfirm = async () => {
         if (companyData.length > 0) {
             toast.push(
@@ -63,15 +99,16 @@ const CompanyGroup = () => {
         }
 
 
-        if (!newCompanyGroup.name.trim()) {
-            toast.push(
-                <Notification title="Error" type="danger">
-                    Please enter a valid company group name
-                </Notification>
-            );
-            return;
-        }
-
+        // if (!newCompanyGroup.name.trim()) {
+        //     toast.push(
+        //         <Notification title="Error" type="danger">
+        //             Please enter a valid company group name
+        //         </Notification>
+        //     );
+        //     return;
+        // }
+        const isValid = await validateForm();
+        if(!isValid) return;
         setDialogLoading(true);
         try {
             const result = await dispatch(createCompanyGroup(newCompanyGroup)).unwrap()
@@ -122,6 +159,7 @@ const CompanyGroup = () => {
 
     const handleInputChange = (field: keyof CompanyGroupData, value: string) => {
         setNewCompanyGroup(prev => ({ ...prev, [field]: value }));
+        setErrors(prev => ({ ...prev, [field]: undefined }));
     };
 
     return (
@@ -153,7 +191,7 @@ const CompanyGroup = () => {
                 onClose={onDialogClose}
                 onRequestClose={onDialogClose}
                 width={500}
-                height={250}
+                height={260}
             >
                 <div className="flex flex-col h-full justify-between">
                     <h5 className="mb-4">Add Company Group</h5>
@@ -164,6 +202,9 @@ const CompanyGroup = () => {
                             value={newCompanyGroup.name}
                             onChange={(value: string) => handleInputChange('name', value)}
                         />
+                         {errors.name && (
+              <div className="text-red-500 text-sm mt-1">{errors.name}</div>
+            )}
                     </div>
                     <div className="text-right mt-6">
                         <Button

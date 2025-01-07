@@ -8,6 +8,9 @@ import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 import LWFEditedData from './LWFEditedData';
 import { IoPersonRemoveOutline } from 'react-icons/io5';
 import dayjs from 'dayjs';
+import { showErrorNotification } from '@/components/ui/ErrorMessage';
+import { deleteLwf } from '@/store/slices/lwfSetup/lwfTrackerSlice';
+import { useDispatch } from 'react-redux';
 
 export interface LWFSetupData {
     Company_Group_Name: string;
@@ -45,6 +48,7 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
     onSuspend,
     onRefresh
 }) => {
+    const dispatch = useDispatch();
     const [dialogIsOpen, setDialogIsOpen] = useState(false);
     const [itemToDelete, setItemToDelete] = useState<number | null>(null);
     const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
@@ -184,7 +188,7 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
                         <Tooltip title="Delete">
                             <Button
                                 size="sm"
-                                onClick={() => openDialog(row.index)}
+                                onClick={() => openDialog(row.original)}
                                 icon={<FiTrash />}
                                 className="text-red-500"
                             />
@@ -222,15 +226,50 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
         setItemToEdit(null);
     };
 
-    const handleDialogOk = () => {
-        if (itemToDelete !== null) {
-            onDelete?.(itemToDelete);
-            setDialogIsOpen(false);
-            setItemToDelete(null);
-            openNotification('danger', 'LWF Setup deleted successfully');
+    const handleDialogOk = async () => {
+        if (itemToDelete) {
+          try {
+            const res = await dispatch(deleteLwf(itemToDelete.id)).unwrap()
+            .catch((error: any) => {
+              // Handle different error formats
+              if (error.response?.data?.message) {
+                  // API error response
+                  showErrorNotification(error.response.data.message);
+              } else if (error.message) {
+                  // Regular error object
+                  showErrorNotification(error.message);
+              } else if (Array.isArray(error)) {
+                  // Array of error messages
+                  showErrorNotification(error);
+              } else {
+                  // Fallback error message
+                  showErrorNotification(error);
+              }
+              throw error; // Re-throw to prevent navigation
+          });
+            
+            if (res) {
+              toast.push(
+                <Notification title="Success" type="success">
+                  LWF Setup deleted successfully
+                </Notification>
+              );
+              setDialogIsOpen(false);
+              setItemToDelete(null);
+              if (onRefresh) {
+                onRefresh(); // Refresh the data after successful deletion
+              }
+            }
+          } catch (error) {
+            // toast.push(
+            //   <Notification title="Error" type="danger">
+            //     Failed to delete PF Setup
+            //   </Notification>
+            // );
+            console.log(error)
+          }
         }
-    };
-
+      };
     const handleEditConfirm = (editedData: LWFSetupData) => {
         if (itemToEdit !== null) {
             const index = data.findIndex(item => item === itemToEdit);
@@ -295,7 +334,7 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
                 onClose={handleDialogClose}
                 onRequestClose={handleDialogClose}
                 width={800}
-                height={330}
+                height={350}
             >
                 <h5 className="mb-4">Edit LWF Setup</h5>
                 {itemToEdit && (

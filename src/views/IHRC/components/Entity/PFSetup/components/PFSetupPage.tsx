@@ -23,6 +23,7 @@ import { createEsiSetup } from '@/services/EsiSetupService'
 import { createPF } from '@/store/slices/pfSetup/pfSlice'
 import { showErrorNotification } from '@/components/ui/ErrorMessage'
 import * as yup from 'yup';
+import OutlinedPasswordInput from '@/components/ui/OutlinedInput/OutlinedPasswordInput'
 
 const pfSetupSchema = yup.object().shape({
     pf_code: yup
@@ -56,7 +57,7 @@ const pfSetupSchema = yup.object().shape({
         .min(8, 'Password must be at least 8 characters')
         .matches(
             /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
-            'Password must contain at least one uppercase letter, one lowercase letter, one number and one special character'
+            'Must include A-Z, a-z, 0-9, @$!%*?& (Weak Password)'
         ),
     
     register_date: yup
@@ -741,7 +742,7 @@ const PFSetupPage: React.FC = () => {
                     </div>
                     <div>
                         <p className="mb-2">Password</p>
-                        <OutlinedInput
+                        <OutlinedPasswordInput
                             label="Password"
                             value={pfSetupData.password}
                             onChange={(value: string) => {

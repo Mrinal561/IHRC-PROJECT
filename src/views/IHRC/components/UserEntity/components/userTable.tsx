@@ -103,13 +103,13 @@ const UserTable: React.FC = () => {
                 id: 'actions',
                 cell: ({ row }) => (
                     <div className="flex items-center gap-2">
-                        <Tooltip title="View User Details">
+                        {/* <Tooltip title="View User Details">
                             <Button
                                     size="sm"
                                     icon={<RiEyeLine />}
                                     className="text-blue-500"
                                 />
-                        </Tooltip>
+                        </Tooltip> */}
                         <Tooltip title="Edit User Details">
                             <Button
                                 size="sm"
@@ -118,22 +118,22 @@ const UserTable: React.FC = () => {
                                 className="text-blue-500"
                             />
                         </Tooltip>
-                        <Tooltip title="Suspend User">
+                        {/* <Tooltip title="Suspend User">
                             <Button
                                 size="sm"
                                 // onClick={() => openSuspendDialog(row.original)}
                                 icon={<IoPersonRemoveOutline />}
                                 className="text-blue-500"
                             />
-                        </Tooltip>
-                        <Tooltip title="Disable Login">
+                        </Tooltip> */}
+                        {/* <Tooltip title="Disable Login">
                             <Button
                                 size="sm"
                                 // onClick={() => openDisableDialog(row.original)}
                                 icon={<RiCloseLine />}
                                 className="text-blue-500"
                             />
-                        </Tooltip>
+                        </Tooltip> */}
                         <Tooltip title="Delete User">
                             <Button
                                 size="sm"

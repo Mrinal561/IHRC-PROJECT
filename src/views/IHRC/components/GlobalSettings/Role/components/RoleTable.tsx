@@ -12,6 +12,22 @@ import { showErrorNotification } from '@/components/ui/ErrorMessage';
 import OutlinedInput from '@/components/ui/OutlinedInput';
 import { deleteRole, fetchRoleById, updateRole } from '@/store/slices/role/roleSlice';
 import { useNavigate } from 'react-router-dom';
+import * as yup from 'yup';
+
+
+const roleSchema = yup.object().shape({
+    name: yup
+        .string()
+        .required('Role name is required')
+        .min(3, 'Role name must be at least 3 characters')
+        .max(50, 'Role name must not exceed 50 characters')
+        .matches(
+            /^[a-zA-Z0-9\s_-]+$/,
+            'Role name can only contain letters, numbers, spaces, underscores and hyphens'
+        ),
+});
+
+
 
 const colorPalette = [
     { bg: 'bg-blue-100', text: 'text-blue-700' },
@@ -98,6 +114,7 @@ const ModuleMenuGroup = ({ module, colors }) => {
 };
 
 const RoleTable = ({ roleData, isLoading, onDataChange }) => {
+    const [validationError, setValidationError] = useState('');
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [roleTableData, setRoleTableData] = useState([]);
@@ -129,25 +146,27 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
     }, [roleData]);
 
     const handleEditConfirm = async () => {
-        if (itemToEdit?.id && editedRoleName.trim()) {
-            try {
-                const result = await dispatch(updateRole({
-                    id: itemToEdit.id,
-                    name: editedRoleName.trim() 
-                })).unwrap();
-                console.log(result)
-                if (result) {
-                    onDataChange();
-                    showSuccessNotification('Role updated successfully');
-                }
-            } catch (error) {
-                console.error(error);
-                showErrorNotification('Failed to update role');
-            } finally {
+        try {
+            setValidationError('');
+            await roleSchema.validate({ name: editedRoleName.trim() });
+            
+            const result = await dispatch(updateRole({
+                id: itemToEdit.id,
+                name: editedRoleName.trim() 
+            })).unwrap();
+            
+            if (result) {
+                onDataChange();
+                showSuccessNotification('Role updated successfully');
                 handleDialogClose();
             }
-        } else {
-            showErrorNotification('Please enter a valid role name');
+        } catch (error) {
+            if (error instanceof yup.ValidationError) {
+                setValidationError(error.message);
+            } else {
+                console.error(error);
+                showErrorNotification('Failed to update role');
+            }
         }
     };
 
@@ -194,7 +213,25 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
         // console.log(itemToDelete)
         if (itemToDelete?.id) {
             try {
-                const result = await dispatch(deleteRole(itemToDelete.id))
+                const result = await dispatch(deleteRole(itemToDelete.id)) .unwrap()
+                .catch((error: any) => {
+                  // Handle different error formats
+                  if (error.response?.data?.message) {
+                      // API error response
+                      console.log('inside error')
+                      showErrorNotification(error.response.data.message);
+                  } else if (error.message) {
+                      // Regular error object
+                      showErrorNotification(error.message);
+                  } else if (Array.isArray(error)) {
+                      // Array of error messages
+                      showErrorNotification(error);
+                  } else {
+                      // Fallback error message
+                      showErrorNotification(error);
+                  }
+                  throw error; // Re-throw to prevent navigation
+              });
                 
                 if (result) {
                     onDataChange();
@@ -370,6 +407,11 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
                         value={editedRoleName}
                         onChange={(value) => setEditedRoleName(value)}
                     />
+                    {validationError && (
+            <div className="text-red-500 text-sm mt-1">
+                {validationError}
+            </div>
+        )}
                 </div>
                 <div className="text-right mt-6">
                     <Button

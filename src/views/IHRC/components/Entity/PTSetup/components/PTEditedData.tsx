@@ -1,285 +1,3 @@
-// import React, { useEffect, useState } from 'react';
-// import { Button, Input, Dialog, Notification } from '@/components/ui';
-// import OutlinedInput from '@/components/ui/OutlinedInput';
-// import { Select, DatePicker } from '@/components/ui';
-// import {PTSetupData} from './PTSetupTable';
-// import OutlinedSelect from '@/components/ui/Outlined';
-
-// interface PTEditedDataProps {
-//     initialData: PTSetupData | null;
-//     onClose: () => void;
-//     onSubmit: (data: PTSetupData) => void;
-//   }
-
-  
-// interface Signatory {
-//     name: string;
-//     designation: string;
-//     mobile: string;
-//     email: string;
-//   }
-
-
-// const PTEditedData: React.FC<PTEditedDataProps> = ({ initialData, onClose, onSubmit }) => {
-//     const [showAddSignatoryDialog, setShowAddSignatoryDialog] = useState(false);
-//     const [formData, setFormData] = useState<PTSetupData>({
-//         Company_Group_Name:'',
-//     Company_Name:'',
-//     ptState:'',
-//     ptLocation:'',
-//     enroll_number:'',
-//     ptRegistrationNumber:'',
-//     register_date:'',
-//     ptRemmitanceMode:'',
-//     username:'',
-//     password:'',
-//     authorizedSignatory:'',
-//     signatoryDesignation:'',
-//     mobile:'',
-//     email:'',
-//     ptecPaymentFrequency:'',
-//     ptrcPaymentFrequency:'',
-//     })
-//     useEffect(() => {
-//         if (initialData) {
-//           setFormData(initialData);
-//         }
-//       }, [initialData]);
-    
-//       const handleChange = (field: keyof PTSetupData, value: string) => {
-//         setFormData(prev => ({ ...prev, [field]: value }));
-//       };
-    
-//       const handleSubmit = () => {
-//         onSubmit(formData);
-//       }
-
-//     const handleAddSignatory = () => {
-//         setShowAddSignatoryDialog(false);
-//     };
-
-//     const handleInputChange = (field: keyof PTSetupData, value: string | Date | null | File | string[]) => {
-//         setPTSetupData(prev => ({ ...prev, [field]: value }));
-//       };
-
-//       const [existingSignatories, setExistingSignatories] = useState<Signatory[]>([
-//         { name: 'Amit', designation: 'Manager', mobile: '1234567890', email: 'amit@example.com'},
-//         { name: 'Krishna Kumar Singh', designation: 'Director', mobile: '9876543210', email: 'krishna@example.com'},
-//         { name: 'Ajay Thakur', designation: 'CFO', mobile: '5555555555', email: 'ajay@example.com'},
-//       ]);
-
-//     return (
-//         <div className="py-4 px-2 space-y-4">
-//             <div className="flex gap-4 items-center">
-//                 <div className="w-full">
-//                     <OutlinedInput
-//                         label="Company Group"
-//                         value={formData.Company_Group_Name}
-//                         onChange={function (value: string): void {
-//                             throw new Error('Function not implemented.')
-//                         }}
-//                     />
-//                 </div>
-//                 <div className="w-full">
-//                     <OutlinedInput
-//                         label="Company"
-//                         value={formData.Company_Name}
-//                         onChange={function (value: string): void {
-//                             throw new Error('Function not implemented.')
-//                         }}
-//                     />
-//                 </div>
-//             </div>
-
-//             <div className="flex gap-8 items-center">
-//                 <div className="flex flex-col gap-2">
-//                     <label>Enter the PT State</label>
-//                     <div className="w-56">
-//                         <OutlinedInput
-//                             label="State"
-//                             value={formData.ptState}
-//                             onChange={function (value: string): void {
-//                                 throw new Error('Function not implemented.')
-//                             }}
-//                         />
-//                     </div>
-//                 </div>
-//                 <div className="flex flex-col gap-2">
-//                     <label>Enter the PT Location</label>
-//                     <div className="w-56">
-//                         <OutlinedInput
-//                             label="Location"
-//                             value={formData.ptLocation}
-//                             onChange={function (value: string): void {
-//                                 throw new Error('Function not implemented.')
-//                             }}
-//                         />
-//                     </div>
-//                 </div>
-//                 <div className="flex flex-col gap-2">
-//                     <label>PT Registration Number</label>
-//                     <div className="w-56">
-//                         <OutlinedInput
-//                             label="Registration Number"
-//                             value={formData.ptRegistrationNumber}
-//                             onChange={function (value: string): void {
-//                                 throw new Error('Function not implemented.')
-//                             }}
-//                         />
-//                     </div>
-//                 </div>
-//                 <div className="flex flex-col gap-2">
-//                     <label>PT Enrollment Number</label>
-//                     <div className="w-56">
-//                         <OutlinedInput
-//                             label="Enrollment Number"
-//                             value={formData.enroll_number}
-//                             onChange={function (value: string): void {
-//                                 throw new Error('Function not implemented.')
-//                             }}
-//                         />
-//                     </div>
-//                 </div>
-//             </div>
-
-//             <div className="flex gap-8 items-center">
-//                 <div className="flex flex-col gap-2">
-//                     <label>Enter User ID</label>
-//                     <div className="w-56">
-//                         <OutlinedInput
-//                             label="User ID (Optional)"
-//                             value={formData.username || ''}
-//                             onChange={function (value: string): void {
-//                                 throw new Error('Function not implemented.')
-//                             }}
-//                         />
-//                     </div>
-//                 </div>
-//                 <div className="flex flex-col gap-2">
-//                     <label>Enter User Password</label>
-//                     <div className="w-56">
-//                         <OutlinedInput
-//                             label="Password (Optional)"
-//                             value={formData.password || ''}
-//                             onChange={function (value: string): void {
-//                                 throw new Error('Function not implemented.')
-//                             }}
-//                         />
-//                     </div>
-//                 </div>
-//                 <div className="flex flex-col gap-2 w-full">
-//                     <label>Select Remittance Mode</label>
-//                     <div className="w-full">
-//                         <OutlinedSelect
-//                             label="Mode"
-//                             options={[
-//                                 { value: 'online', label: 'Online' },
-//                                 { value: 'offline', label: 'Offline' },
-//                             ]}
-//                             value={formData.ptRemmitanceMode}
-//                             onChange={(value: string) =>
-//                                 handleInputChange('ptRemmitanceMode', value)
-//                             }
-//                         />
-//                     </div>
-//                 </div>
-//                 <div className="flex flex-col gap-2">
-//                     <label>Enter Email</label>
-//                     <div className="w-56">
-//                         <OutlinedInput
-//                             label="Email"
-//                             value={formData.email}
-//                             onChange={function (value: string): void {
-//                                 throw new Error('Function not implemented.')
-//                             }}
-//                         />
-//                     </div>
-//                 </div>
-//             </div>
-
-//             <div className="flex gap-8 items-center">
-//                 <div className="flex flex-col gap-2">
-//                     <label>PT Registration Date</label>
-//                     <div className="w-56">
-//                         <DatePicker
-//                             placeholder="Select date"
-//                             value={new Date(formData.register_date)}
-//                             // disabled
-//                         />
-//                     </div>
-//                 </div>
-//                 <div className="flex flex-col gap-2">
-//                     <label>Enter Mobile Number</label>
-//                     <div className="w-56">
-//                         <OutlinedInput
-//                             label="Mobile"
-//                             value={formData.mobile}
-//                             onChange={function (value: string): void {
-//                                 throw new Error('Function not implemented.')
-//                             }}
-//                         />
-//                     </div>
-//                 </div>
-//                 <div className="flex flex-col gap-2">
-//                     <label>PT EC Frequency</label>
-//                     <div className="w-56">
-//                         <OutlinedInput
-//                             label="PT EC Frequency"
-//                             value={formData.ptecPaymentFrequency}
-//                             onChange={function (value: string): void {
-//                                 throw new Error('Function not implemented.')
-//                             }}
-//                         />
-//                     </div>
-//                 </div>
-//                 <div className="flex flex-col gap-2">
-//                     <label>PT RC Frequency</label>
-//                     <div className="w-56">
-//                         <OutlinedInput
-//                             label="PT RC Frequency"
-//                             value={formData.ptrcPaymentFrequency}
-//                             onChange={function (value: string): void {
-//                                 throw new Error('Function not implemented.')
-//                             }}
-//                         />
-//                     </div>
-//                 </div>
-//             </div>
-//             <div className="flex gap-4 items-center">
-//                 <div className="flex flex-col gap-2 w-full">
-//                     <label>Upload the PT EC certificate</label>
-//                     <Input
-//                         id="file-upload"
-//                         type="file"
-//                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-//                             const file = e.target.files?.[0] || null
-//                             handleInputChange(
-//                                 'lwfRegistrationCertificate',
-//                                 file,
-//                             )
-//                         }}
-//                     />
-//                 </div>
-//                 <div className="flex flex-col gap-2 w-full">
-//                     <label>Upload the PT RC certificate</label>
-//                     <Input
-//                         id="file-upload"
-//                         type="file"
-//                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-//                             const file = e.target.files?.[0] || null
-//                             handleInputChange(
-//                                 'lwfRegistrationCertificate',
-//                                 file,
-//                             )
-//                         }}
-//                     />
-//                 </div>
-//             </div>
-//         </div>
-//     )
-// };
-
-// export default PTEditedData;
 
 
 import React, { useEffect, useState } from 'react';
@@ -289,7 +7,55 @@ import { useDispatch } from 'react-redux';
 import { showErrorNotification } from '@/components/ui/ErrorMessage';
 import { PTSetupData } from './PTSetupTable';
 import { fetchptsetupById, updatePT } from '@/store/slices/ptSetup/ptSetupSlice';
+import * as yup from 'yup';
 
+
+interface ValidationErrors {
+  register_number?: string;
+  enroll_number?: string;
+  username?:string;
+  password?:string;
+  email?: string;
+  mobile?: string;
+  register_date?: Date;
+}
+
+const ptSchema = yup.object().shape({
+  register_number: yup
+    .string()
+    .required('Register Number is required'),
+    enroll_number: yup
+    .string()
+    .required('Enrollment Number is required'),
+    username: yup
+    .string()
+    .required('PF User is required')
+    .min(3, 'Username must be at least 3 characters'),
+    password: yup
+    .string()
+    .required('Password is required')
+    .min(8, 'Password must be at least 8 characters')
+    .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+        'Must include A-Z, a-z, 0-9, @$!%*?& (Weak Password)'
+    ),
+    email: yup
+    .string()
+    .required('Email is required')
+    .email('Invalid email format'),
+  mobile: yup
+    .string()
+    .required('Mobile number is required')
+    // .positive('Mobile number must be positive')
+    // .integer('Mobile number must be an integer')
+    .test('len', 'Mobile number must be exactly 10 digits', (val) => 
+      val ? val.toString().length === 10 : false
+    ),
+    register_date: yup
+    .date()
+    .required('Registration date is required')
+    .max(new Date(), 'Registration date cannot be in the future'),
+});
 interface PTEditedDataProps {
   id?: number;
   initialData?: PTSetupData | null;
@@ -318,6 +84,7 @@ const PTEditedData: React.FC<PTEditedDataProps> = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const dispatch = useDispatch();
+  const [errors, setErrors] = useState<ValidationErrors>({});
 
   useEffect(() => {
     if (id) {
@@ -357,8 +124,41 @@ const PTEditedData: React.FC<PTEditedDataProps> = ({
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  const validateForm = async () => {
+    try {
+        // Validate the form data against the schema
+        await ptSchema.validate({
+          register_number: formData.register_number,
+          mobile: formData.mobile,
+            enroll_number: formData.enroll_number,
+            username: formData.username,
+            password: formData.password,
+            email: formData.email,
+            register_date: formData.register_date ? new Date(formData.register_date) : undefined
+        }, { abortEarly: false });
+        
+        // Clear any existing errors if validation passes
+        setErrors({});
+        return true;
+    } catch (err) {
+        if (err instanceof yup.ValidationError) {
+            const validationErrors: ValidationErrors = {};
+            err.inner.forEach((error) => {
+                if (error.path) {
+                    // Update the ValidationErrors interface to include all possible fields
+                    validationErrors[error.path as keyof ValidationErrors] = error.message;
+                }
+            });
+            setErrors(validationErrors);
+        }
+        return false;
+    }
+};
+
   const handleSubmit = async () => {
     try {
+      const isValid = await validateForm();
+      if(!isValid) return;
       // Implement your update logic similar to LW
       const updateData = {
         register_number: formData.register_number,
@@ -433,6 +233,11 @@ const PTEditedData: React.FC<PTEditedDataProps> = ({
               value={formData.register_number}
               onChange={(value) => handleChange('register_number', value)}
             />
+             <div className="h-5">
+              {errors.register_number && (
+                <div className="text-red-500 text-sm">{errors.register_number}</div>
+              )}
+            </div>
           </div>
         </div>
         <div className="flex flex-col gap-2 w-full">
@@ -443,6 +248,11 @@ const PTEditedData: React.FC<PTEditedDataProps> = ({
               value={formData.enroll_number}
               onChange={(value) => handleChange('enroll_number', value)}
             />
+            <div className="h-5">
+              {errors.enroll_number && (
+                <div className="text-red-500 text-sm">{errors.enroll_number}</div>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -456,6 +266,11 @@ const PTEditedData: React.FC<PTEditedDataProps> = ({
               value={formData.username}
               onChange={(value) => handleChange('username', value)}
             />
+            <div className="h-5">
+              {errors.username && (
+                <div className="text-red-500 text-sm">{errors.username}</div>
+              )}
+            </div>
           </div>
         </div>
         <div className="flex flex-col gap-2 w-full">
@@ -466,6 +281,11 @@ const PTEditedData: React.FC<PTEditedDataProps> = ({
               value={formData.password}
               onChange={(value) => handleChange('password', value)}
             />
+             <div className="h-5">
+              {errors.password && (
+                <div className="text-red-500 text-sm">{errors.password}</div>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -479,6 +299,11 @@ const PTEditedData: React.FC<PTEditedDataProps> = ({
               value={formData.email}
               onChange={(value) => handleChange('email', value)}
             />
+            <div className="h-5">
+              {errors.email && (
+                <div className="text-red-500 text-sm">{errors.email}</div>
+              )}
+            </div>
           </div>
         </div>
         <div className="flex flex-col gap-2 w-full">
@@ -489,6 +314,11 @@ const PTEditedData: React.FC<PTEditedDataProps> = ({
               value={formData.mobile}
               onChange={(value) => handleChange('mobile', value)}
             />
+             <div className="h-5">
+              {errors.mobile && (
+                <div className="text-red-500 text-sm">{errors.mobile}</div>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -503,6 +333,11 @@ const PTEditedData: React.FC<PTEditedDataProps> = ({
               value={formData.register_date ? new Date(formData.register_date) : null}
               onChange={(date) => handleChange('register_date', date?.toISOString() || '')}
             />
+            <div className="h-5">
+              {errors.register_date && (
+                <div className="text-red-500 text-sm">{errors.register_date}</div>
+              )}
+            </div>
           </div>
         </div>
       </div>
