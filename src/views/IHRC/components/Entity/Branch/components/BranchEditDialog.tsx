@@ -24,6 +24,7 @@ interface BranchDetails {
     register_number?: string | null;
     status?: string;
     se_status?: string;
+    office_mode?: string;
     se_document?: string | null;
     lease_document?: string | null;
     document_validity_type?: string;
@@ -147,6 +148,7 @@ const BranchEditDialog: React.FC<BranchEditDialogProps> = ({
         address: editedData.address,
         opening_date: editedData.opening_date,
         head_count: editedData.head_count,
+        office_mode: editedData.office_mode,
         type: editedData.type,
         office_type: editedData.office_type,
         other_office:editedData.OtherBrancOffice?.name,
@@ -154,7 +156,7 @@ const BranchEditDialog: React.FC<BranchEditDialogProps> = ({
             remark: editedData.custom_data?.remark,
             status: editedData.custom_data?.status
         },
-        se_status: editedData.se_status || "",
+        se_status: editedData.se_status,
         lease_status: editedData.lease_status,
         lease_validity: editedData.lease_validity,
         se_document: editedData.se_document,

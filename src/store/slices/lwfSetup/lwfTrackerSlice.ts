@@ -1,19 +1,29 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import httpClient from "@/api/http-client";
 import { endpoints } from "@/api/endpoint";
+import { LWFSetupData } from "@/@types/lwfData";
 
+
+
+// export interface LWFState{
+//     lwfData: LWFSetupData[];
+//     loading: boolean;
+//     error: string | null;
+// }
 export type LwfTrackerCreate = {
     document: File;
     month: string;
 };
 
 export interface LwfTrackerState {
+    lwfData: LWFSetupData[];
     documents: File[];
     loading: boolean;
     error: string | null;
 }
 
 const initialState: LwfTrackerState = {
+    lwfData: [],
     documents: [],
     loading: false,
     error: null,
@@ -63,6 +73,18 @@ export const updateLwf = createAsyncThunk(
     }
 );
 
+export const deleteLwf = createAsyncThunk(
+    'lwf/deleteLWF',
+    async (id: string, { rejectWithValue }) => {
+        try {
+            await httpClient.delete(endpoints.lwfSetup.delete(id));
+            return id;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || 'Failed to delete PF record');
+        }
+    }
+);
+
 
 
 const LwfTrackerSlice = createSlice({
@@ -103,6 +125,18 @@ const LwfTrackerSlice = createSlice({
                 state.loading = false;
             })
             .addCase(updateLwf.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+            })
+            .addCase(deleteLwf.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(deleteLwf.fulfilled, (state, action) => {
+                state.loading = false;
+                state.lwfData = state.lwfData.filter(pf => pf.id.toString() !== action.payload);
+            })
+            .addCase(deleteLwf.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
             });

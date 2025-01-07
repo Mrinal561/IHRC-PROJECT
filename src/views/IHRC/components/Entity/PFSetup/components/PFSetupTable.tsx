@@ -7,6 +7,9 @@ import PFEditedData from './PFEditedData';
 import { IoPersonRemoveOutline } from 'react-icons/io5';
 import { PFData } from '@/@types/pfData';
 import dayjs from 'dayjs';
+import { deletePF } from '@/store/slices/pfSetup/pfSlice';
+import { useDispatch } from 'react-redux';
+import { showErrorNotification } from '@/components/ui/ErrorMessage';
 
 
 interface PFSetupTableProps {
@@ -19,6 +22,7 @@ interface PFSetupTableProps {
 }
 
 const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh , companyName, groupName}) => {
+  const dispatch = useDispatch()
   const [dialogIsOpen, setDialogIsOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<number | null>(null);
   const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
@@ -142,7 +146,7 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh , companyN
             <Tooltip title="Delete">
               <Button
                 size="sm"
-                onClick={() => openDialog(row.index)}
+                onClick={() => openDialog(row.original)}
                 icon={<FiTrash />}
                 className="text-red-500"
               />
@@ -192,18 +196,49 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh , companyN
     // setEditedData({});
   };
 
-  const handleDialogOk = () => {
-    if (itemToDelete !== null) {
-      const newData = [...data];
-      newData.splice(itemToDelete, 1);
-      setData(newData);
+  const handleDialogOk = async () => {
+    if (itemToDelete) {
+      try {
+        const res = await dispatch(deletePF(itemToDelete.id)).unwrap()
+        .catch((error: any) => {
+          // Handle different error formats
+          if (error.response?.data?.message) {
+              // API error response
+              showErrorNotification(error.response.data.message);
+          } else if (error.message) {
+              // Regular error object
+              showErrorNotification(error.message);
+          } else if (Array.isArray(error)) {
+              // Array of error messages
+              showErrorNotification(error);
+          } else {
+              // Fallback error message
+              showErrorNotification('An unexpected error occurred. Please try again.');
+          }
+          throw error; // Re-throw to prevent navigation
+      });
+        
       setDialogIsOpen(false);
-      setItemToDelete(null);
-      openNotification('danger', 'PF Setup deleted successfully');
-
+        if (res) {
+          toast.push(
+            <Notification title="Success" type="success">
+              PF Setup deleted successfully
+            </Notification>
+          );
+          setItemToDelete(null);
+          if (onRefresh) {
+            onRefresh(); // Refresh the data after successful deletion
+          }
+        }
+      } catch (error) {
+        toast.push(
+          <Notification title="Error" type="danger">
+            Failed to delete PF Setup
+          </Notification>
+        );
+      }
     }
   };
-
   const handleEditConfirm = () => {
     if (itemToEdit !== null) {
       // onEdit(itemToEdit, editedData);
@@ -270,7 +305,7 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh , companyN
         onClose={handleDialogClose}
         onRequestClose={handleDialogClose}
         width={800}
-        height={320}
+        height={330}
       >
         <h5 className="mb-4">Edit PF Setup</h5>
         {/* Add your edit form fields here */}

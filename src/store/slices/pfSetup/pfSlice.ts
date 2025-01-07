@@ -74,7 +74,7 @@ export const deletePF = createAsyncThunk(
     'pf/deletePF',
     async (id: string, { rejectWithValue }) => {
         try {
-            await httpClient.delete(endpoints.pf.delete(id));
+            await httpClient.delete(endpoints.pfSetup.delete(id));
             return id;
         } catch (error: any) {
             return rejectWithValue(error.response?.data?.message || 'Failed to delete PF record');

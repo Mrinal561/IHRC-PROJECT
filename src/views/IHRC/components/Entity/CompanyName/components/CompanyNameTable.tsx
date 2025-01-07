@@ -18,6 +18,22 @@ import { showErrorNotification } from '@/components/ui/ErrorMessage';
 import loadingAnimation from '@/assets/lotties/system-regular-716-spinner-three-dots-loop-scale.json'
 import Lottie from 'lottie-react';
 import { HiOutlineViewGrid } from 'react-icons/hi'
+import * as yup from 'yup';
+
+
+interface ValidationErrors {
+  name?: string;
+}
+
+const companySchema = yup.object().shape({
+  name: yup
+    .string()
+    .required('Company name is required')
+    .min(3, 'Company name must be at least 3 characters')
+    .max(50, 'Company name must not exceed 50 characters')
+    .matches(/^\S.*\S$|^\S$/,'The input must not have leading or trailing spaces')
+    .matches(/^[a-zA-Z0-9\s_-]+$/, 'Role name can only contain letters, numbers, spaces, underscores, and hyphens')
+});
 
 
 interface CompanyData {
@@ -56,6 +72,7 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({
   const [editedName, setEditedName] = useState('');
   const [selectedCompanyGroup, setSelectedCompanyGroup] = useState<SelectOption | null>(null);
   const [companyGroups, setCompanyGroups] = useState<SelectOption[]>([]);
+  const [errors, setErrors] = useState<ValidationErrors>({});
   const [tableData, setTableData] = useState({
     total: 0,
     pageIndex: 1,
@@ -134,14 +151,14 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({
         id: 'actions',
         cell: ({ row }) => (
           <div className="flex items-center gap-2">
-            <Tooltip title="View Company Details">
+            {/* <Tooltip title="View Company Details">
               <Button
                 size="sm"
                 onClick={() => handleViewDetails(row.original)}
                 icon={<RiEyeLine />}
                 className="text-blue-500"
               />
-            </Tooltip>
+            </Tooltip> */}
             <Tooltip title="Edit Company">
               <Button
                 size="sm"
@@ -210,6 +227,7 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({
     setItemToEdit(null);
     setEditedName('');
     setSelectedCompanyGroup(null);
+    setErrors({}); 
   };
 
   const showNotification = (type: 'success' | 'danger', message: string) => {
@@ -223,8 +241,30 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({
   const handleDeleteConfirm = async () => {
     if (itemToDelete?.id) {
       try {
-        await dispatch(deleteCompany(itemToDelete.id));
+        const res = await dispatch(deleteCompany(itemToDelete.id))
+        .unwrap()
+        .catch((error: any) => {
+          // Handle different error formats
+          if (error.response?.data?.message) {
+              // API error response
+              console.log('inside error')
+              showErrorNotification(error.response.data.message);
+          } else if (error.message) {
+              // Regular error object
+              showErrorNotification(error.message);
+          } else if (Array.isArray(error)) {
+              // Array of error messages
+              showErrorNotification(error);
+          } else {
+              // Fallback error message
+              showErrorNotification(error);
+          }
+          throw error; // Re-throw to prevent navigation
+      });
+      handleDialogClose();
+      if(res){
         showNotification('success', 'Company deleted successfully');
+      }
         
         // Recalculate the current page after deletion
         const newTotal = tableData.total - 1;
@@ -235,15 +275,36 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({
         await fetchCompanyData(newPageIndex, tableData.pageSize);
         onDataChange(); // Notify parent component
       } catch (error) {
-        showNotification('danger', 'Failed to delete company');
+        // showNotification('danger', 'Failed to delete company');
       }
-      handleDialogClose();
+      
     }
   };
 
+  const validateForm = async () => {
+    try {
+        await companySchema.validate({ name: editedName }, { abortEarly: false });
+        setErrors({});
+        return true;
+    } catch (err) {
+        if (err instanceof yup.ValidationError) {
+            const validationErrors: ValidationErrors = {};
+            err.inner.forEach((error) => {
+                if (error.path) {
+                    validationErrors[error.path as keyof ValidationErrors] = error.message;
+                }
+            });
+            setErrors(validationErrors);
+        }
+        return false;
+    }
+};
+  
   const handleEditConfirm = async () => {
-    if (itemToEdit?.id && editedName.trim()) {
+    // if (itemToEdit?.id && editedName.trim()) {
       try {
+        const isValid = await validateForm();
+        if(!isValid) return;
         const groupId = selectedCompanyGroup 
           ? parseInt(selectedCompanyGroup.value)
           : itemToEdit.group_id;
@@ -268,7 +329,7 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({
                 showErrorNotification(error);
             } else {
                 // Fallback error message
-                showErrorNotification('An unexpected error occurred. Please try again.');
+                showErrorNotification(error);
             }
             throw error; // Re-throw to prevent navigation
         });
@@ -290,9 +351,9 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({
         showNotification('danger', 'Failed to update company');
       }
       handleDialogClose();
-    } else {
-      showNotification('danger', 'Please fill in all required fields');
-    }
+    // } else {
+    //   showNotification('danger', 'Please fill in all required fields');
+    // }
   };
 
   const onPaginationChange = (page: number) => {
@@ -406,6 +467,9 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({
               value={editedName}
               onChange={(value: string) => setEditedName(value)}
             />
+             {errors.name && (
+              <div className="text-red-500 text-sm mt-1">{errors.name}</div>
+            )}
           </div>
         </div>
         <div className="text-right mt-6">

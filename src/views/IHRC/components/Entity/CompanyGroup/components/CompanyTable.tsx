@@ -15,8 +15,20 @@ import { showErrorNotification } from '@/components/ui/ErrorMessage';
 import loadingAnimation from '@/assets/lotties/system-regular-716-spinner-three-dots-loop-scale.json'
 import Lottie from 'lottie-react';
 import { HiOutlineViewGrid } from 'react-icons/hi'
+import * as yup from 'yup';
 
+interface ValidationErrors {
+    name?: string;
+}
 
+const companySchema = yup.object().shape({
+    name: yup
+      .string()
+      .required('Role name is required')
+      .min(3, 'Role name must be at least 3 characters')
+      .max(50, 'Role name must not exceed 50 characters')
+      .matches(/^[a-zA-Z0-9\s_-]+$/, 'Role name can only contain letters, numbers, spaces, underscores, and hyphens')
+  });
 
 interface CompanyTableProps {
     companyData: CompanyGroupData[];
@@ -36,6 +48,7 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
     const [itemToDelete, setItemToDelete] = useState<CompanyGroupData | null>(null);
     const [itemToEdit, setItemToEdit] = useState<CompanyGroupData | null>(null);
     const [editedCompanyGroupName, setEditedCompanyGroupName] = useState('');
+    const [errors, setErrors] = useState<ValidationErrors>({});
     const [tableData, setTableData] = useState({
         total: 0,
         pageIndex: 1,
@@ -143,10 +156,31 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
         }
     };
 
+    const validateForm = async () => {
+        try {
+            await companySchema.validate({ name: editedCompanyGroupName }, { abortEarly: false });
+            setErrors({});
+            return true;
+        } catch (err) {
+            if (err instanceof yup.ValidationError) {
+                const validationErrors: ValidationErrors = {};
+                err.inner.forEach((error) => {
+                    if (error.path) {
+                        validationErrors[error.path as keyof ValidationErrors] = error.message;
+                    }
+                });
+                setErrors(validationErrors);
+            }
+            return false;
+        }
+    };
+
     const handleEditConfirm = async () => {
         
-        if (itemToEdit?.id && editedCompanyGroupName.trim()) {
+        // if (itemToEdit?.id && editedCompanyGroupName.trim()) {
             try {
+                const isValid = await validateForm();
+                if(!isValid) return;
                 const result = await dispatch(updateCompanyGroup({
                     id: itemToEdit.id,
                     data: { name: editedCompanyGroupName.trim() }
@@ -170,17 +204,16 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
 
                 if (result) {
                     onDataChange();
+                    handleDialogClose();
                     showSuccessNotification('Company group updated successfully');
                 } 
             } catch (error) {
                 console.error('Error updating company group:', error);
                 // showErrorNotification('Failed to update company group');
-            } finally {
-                handleDialogClose();
-            }
-        } else {
-            showErrorNotification('Please enter a valid company group name');
-        }
+            } 
+        // } else {
+        //     showErrorNotification('Please enter a valid company group name');
+        // }
     };
 
     const openDeleteDialog = (company: CompanyGroupData) => {
@@ -200,6 +233,7 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
         setItemToDelete(null);
         setItemToEdit(null);
         setEditedCompanyGroupName('');
+        setErrors({}); 
     };
 
     const showSuccessNotification = (message: string) => {
@@ -322,6 +356,9 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
                         value={editedCompanyGroupName}
                         onChange={(value: string) => setEditedCompanyGroupName(value)}
                     />
+                    {errors.name && (
+              <div className="text-red-500 text-sm mt-1">{errors.name}</div>
+            )}
                 </div>
                 <div className="text-right mt-6">
                     <Button

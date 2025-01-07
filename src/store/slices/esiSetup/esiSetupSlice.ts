@@ -72,6 +72,19 @@ export const updateEsiSetup = createAsyncThunk(
     }
 );
 
+// Delete ESI record
+export const deleteESI = createAsyncThunk(
+    'esi/deleteESI',
+    async (id: string, { rejectWithValue }) => {
+        try {
+            await httpClient.delete(endpoints.esiSetup.delete(id));
+            return id;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || 'Failed to delete PF record');
+        }
+    }
+);
+
 
 const esiSetupSlice = createSlice({
     name: 'esisetup',
@@ -96,6 +109,18 @@ const esiSetupSlice = createSlice({
                 state.esisetup = action.payload;
             })
             .addCase(fetchEsiSetup.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+            })
+            .addCase(deleteESI.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(deleteESI.fulfilled, (state, action) => {
+                state.loading = false;
+                state.esisetup = state.esisetup.filter(esi => esi.id.toString() !== action.payload);
+            })
+            .addCase(deleteESI.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
             })
