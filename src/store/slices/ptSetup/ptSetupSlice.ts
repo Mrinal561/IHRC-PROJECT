@@ -69,6 +69,20 @@ export const updatePT = createAsyncThunk(
     }
 );
 
+// Delete PT record
+export const deletePT = createAsyncThunk(
+    'pt/deletePT',
+    async (id: string, { rejectWithValue }) => {
+        try {
+            await httpClient.delete(endpoints.ptSetup.delete(id));
+            return id;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || 'Failed to delete PF record');
+        }
+    }
+);
+
+
 const ptsetupSlice = createSlice({
     name: 'ptsetup',
     initialState,
@@ -127,6 +141,19 @@ const ptsetupSlice = createSlice({
                 state.loading = false;
             })
             .addCase(updatePT.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+            })
+            //Delete PT
+            .addCase(deletePT.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(deletePT.fulfilled, (state, action) => {
+                state.loading = false;
+                state.ptsetup = state.ptsetup.filter(pt => pt.id.toString() !== action.payload);
+            })
+            .addCase(deletePT.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
             });

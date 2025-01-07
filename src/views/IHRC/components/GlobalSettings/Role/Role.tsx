@@ -8,7 +8,19 @@ import { useDispatch } from 'react-redux';
 import { showErrorNotification } from '@/components/ui/ErrorMessage';
 import { createRole, fetchRoles } from '@/store/slices/role/roleSlice';
 import RoleTable from './components/RoleTable';
+import * as yup from 'yup';
 // import RoleTable from './components/RoleTable';
+
+
+const roleSchema = yup.object().shape({
+  name: yup
+    .string()
+    .required('Role name is required')
+    .min(3, 'Role name must be at least 3 characters')
+    .max(50, 'Role name must not exceed 50 characters')
+    .matches(/^[a-zA-Z0-9\s_-]+$/, 'Role name can only contain letters, numbers, spaces, underscores, and hyphens')
+});
+
 
 const Role = () => {
   const dispatch = useDispatch();
@@ -17,6 +29,9 @@ const Role = () => {
   const [roleData, setRoleData] = useState([]);
   const [key, setKey] = useState(0);
   const [formData, setFormData] = useState({
+    name: ''
+  });
+  const [errors, setErrors] = useState({
     name: ''
   });
 
@@ -28,6 +43,11 @@ const Role = () => {
     setFormData(prev => ({
       ...prev,
       [field]: value
+    }));
+
+    setErrors(prev => ({
+      ...prev,
+      [field]: ''
     }));
   };
 
@@ -55,9 +75,31 @@ const Role = () => {
     setFormData({
       name: ''
     });
+    setErrors({ name: '' });
   };
 
+  const validateForm = async () => {
+    try {
+      await roleSchema.validate(formData, { abortEarly: false });
+      return true;
+    } catch (err) {
+      if (err instanceof yup.ValidationError) {
+        const validationErrors = {};
+        err.inner.forEach((error) => {
+          if (error.path) {
+            validationErrors[error.path] = error.message;
+          }
+        });
+        setErrors(validationErrors);
+      }
+      return false;
+    }
+  };
+
+
   const handleConfirm = async () => {
+    const isValid = await validateForm();
+    if(!isValid) return;
     setIsLoading(true);
     try {
       const result = await dispatch(createRole(formData))
@@ -122,6 +164,9 @@ const Role = () => {
               value={formData.name}
               onChange={(value: string) => handleInputChange('name', value)}
             />
+             {errors.name && (
+              <div className="text-red-500 text-sm mt-1">{errors.name}</div>
+            )}
           </div>
         </div>
 

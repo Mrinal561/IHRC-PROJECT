@@ -22,6 +22,7 @@ import { endpoints } from '@/api/endpoint';
 import DistrictAutosuggest from '../../ESICSetup/components/DistrictAutoSuggest';
 import LocationAutosuggest from '../../Branch/components/LocationAutosuggest';
 import * as yup from 'yup';
+import OutlinedPasswordInput from '@/components/ui/OutlinedInput/OutlinedPasswordInput';
 
 const validationSchema = yup.object().shape({
   state_id: yup
@@ -42,7 +43,11 @@ const validationSchema = yup.object().shape({
   username: yup.string().required('User ID is required')
     .min(4, 'User ID must be at least 4 characters'),
   password: yup.string().required('Password is required')
-    .min(6, 'Password must be at least 6 characters'),
+    .min(6, 'Password must be at least 6 characters')
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+      'Must include A-Z, a-z, 0-9, @$!%*?& (Weak Password)'
+  ),
   signatory_data: yup.array().min(1, 'At least one signatory is required'),
   certificate: yup.string().required('Certificate is required'),
 });
@@ -551,7 +556,7 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
         </div>
         <div>
           <p className="mb-2">Password</p>
-          <OutlinedInput
+          <OutlinedPasswordInput
             label="Password"
             value={formData.password}
             onChange={(value: string) => {

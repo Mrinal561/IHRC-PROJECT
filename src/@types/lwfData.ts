@@ -1,4 +1,5 @@
 export type LWFSetupData = {
+    id:number;
     Company_Group_Name: string;
     Company_Name: string;
     lwfState: string;
@@ -17,5 +18,5 @@ export type LWFSetupData = {
     lwfPaymentDueDate: string;
     lwfApplicableState: string;
     lwfRegistrationCertificate?: File | null;
-    id?: number;
+    // id?: number;
 }

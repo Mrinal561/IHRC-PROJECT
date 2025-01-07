@@ -13,6 +13,7 @@ import LocationAutosuggest from '../../Branch/components/LocationAutosuggest';
 import { createEsiSetup } from '@/store/slices/esiSetup/esiSetupSlice';
 import { showErrorNotification } from '@/components/ui/ErrorMessage';
 import * as yup from 'yup';
+import OutlinedPasswordInput from '@/components/ui/OutlinedInput/OutlinedPasswordInput';
 
 
 const esiSetupSchema = yup.object().shape({
@@ -20,6 +21,9 @@ const esiSetupSchema = yup.object().shape({
   code: yup.string()
     .required('ESI code is required')
     .matches(/^[0-9]+$/, 'ESI code must contain only numbers'),
+    state_id: yup
+        .number()
+        .min(1, 'Please select a state'),
   district_id: yup.number()
     .required('District is required')
     .min(1, 'Please select a district'),
@@ -31,7 +35,11 @@ const esiSetupSchema = yup.object().shape({
     .min(3, 'ESI user must be at least 3 characters'),
   password: yup.string()
     .required('Password is required')
-    .min(6, 'Password must be at least 6 characters'),
+    .min(6, 'Password must be at least 6 characters')
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+      'Must include A-Z, a-z, 0-9, @$!%*?& (Weak Password)'
+  ),
   signatory_data: yup.array()
     .of(
       yup.object().shape({
@@ -414,7 +422,7 @@ useEffect(() => {
             showErrorNotification(error);
         } else {
             // Fallback error message
-            showErrorNotification('An unexpected error occurred. Please try again.');
+            showErrorNotification(error);
         }
         throw error; // Re-throw to prevent navigation
     });
@@ -604,7 +612,7 @@ return (
       </div>
       <div className="space-y-2">
         <p className="text-sm font-medium">Password</p>
-        <OutlinedInput
+        <OutlinedPasswordInput
           label="Password"
           value={formData.password}
           onChange={(value: string) => {

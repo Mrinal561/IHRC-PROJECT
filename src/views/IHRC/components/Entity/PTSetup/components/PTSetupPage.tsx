@@ -14,6 +14,7 @@ import { AppDispatch } from '@/store'
 import { showErrorNotification } from '@/components/ui/ErrorMessage'
 import { createptsetup } from '@/store/slices/ptSetup/ptSetupSlice'
 import * as yup from 'yup';
+import OutlinedPasswordInput from '@/components/ui/OutlinedInput/OutlinedPasswordInput'
 
 const ptSetupSchema = yup.object().shape({
     state_id: yup
@@ -59,7 +60,7 @@ const ptSetupSchema = yup.object().shape({
         .min(8, 'Password must be at least 8 characters')
         .matches(
             /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
-            'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'
+           'Must include A-Z, a-z, 0-9, @$!%*?& (Weak Password)'
         ),
     
     email: yup
@@ -613,7 +614,7 @@ const loadStates = async () => {
                     </div>
                     <div>
                         <p className="mb-2">Password</p>
-                        <OutlinedInput
+                        <OutlinedPasswordInput
                             label="Password"
                             // type="password"
                             value={ptSetupData.password}
