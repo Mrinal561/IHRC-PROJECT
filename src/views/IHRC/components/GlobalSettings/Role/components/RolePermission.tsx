@@ -331,6 +331,7 @@ import { updateRolePermissions } from '@/store/slices/role/roleSlice';
 import { useDispatch } from 'react-redux';
 import Checkbox from '@/components/ui/Checkbox/Checkbox';
 import Button from '@/components/ui/Button/Button';
+import { IoArrowBack } from 'react-icons/io5';
 
 const RolePermission = () => {
   const { id } = useParams();
@@ -581,11 +582,19 @@ const RolePermission = () => {
   const filteredRows = tableModel.getRowModel().rows;
 
   return (
-    <div className="p-8">
+    <div className="">
       <div className="flex justify-between items-center mb-4">
+        <div className='flex items-center gap-2 mb-3'>
+        <Button
+          size="sm"
+          variant="plain"
+          icon={<IoArrowBack className="text-[#72828e] hover:text-[#5d6169]" />}
+          onClick={() => navigate(-1)}
+        />
         <h2 className="text-2xl font-bold">
           {role ? `Permissions - ${role}` : 'Permissions'}
         </h2>
+        </div>
         <Button variant="solid" size="sm" onClick={handleUpdateAll}>
           Update Permissions
         </Button>

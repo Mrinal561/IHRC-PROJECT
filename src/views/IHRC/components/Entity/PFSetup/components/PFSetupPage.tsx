@@ -150,8 +150,8 @@ const PFSetupPage: React.FC = () => {
     const location = useLocation()
   const locationState = location.state as LocationState;
   
-  const companyName = locationState?.companyName;
   const companyGroupName = locationState?.companyGroupName;
+  const companyName = locationState?.companyName;
   const companyId = locationState?.companyId;
   const groupId = locationState?.groupId;
     const companyData = location.state?.companyData
