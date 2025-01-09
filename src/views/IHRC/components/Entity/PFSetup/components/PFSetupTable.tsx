@@ -39,13 +39,13 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh , companyN
 
   const columns: ColumnDef<PFData>[] = useMemo(
     () => [
-      {
-        header: 'Company Group',
-        accessorKey: 'CompanyGroup.name',
-        cell: (props) => (
-          <div className="w-36 text-start">{props.getValue() as string}</div>
-        ),
-      },
+      // {
+      //   header: 'Company Group',
+      //   accessorKey: 'CompanyGroup.name',
+      //   cell: (props) => (
+      //     <div className="w-36 text-start">{props.getValue() as string}</div>
+      //   ),
+      // },
       {
         header: 'Company',
         accessorKey: 'Company.name',
