@@ -1,6 +1,6 @@
 
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Button, Dialog, Input, Notification, toast} from '@/components/ui';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 import { HiDownload, HiUpload } from 'react-icons/hi';
@@ -10,6 +10,7 @@ import { endpoints } from '@/api/endpoint';
 import { useDispatch } from 'react-redux';
 import { createPfTracker } from '@/store/slices/pfSetup/pfTrackerSlice';
 import { showErrorNotification } from '@/components/ui/ErrorMessage';
+import { addMonths, format, parse, startOfYear } from 'date-fns';
 
 const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
@@ -18,27 +19,34 @@ interface PFTrackerBulkUploadProps {
   canCreate:boolean;
 }
 
+const generateMonthOptions = () => {
+  const currentYear = new Date().getFullYear();
+  const twoDigitYear = String(currentYear) // Gets last 2 digits of year
+  const months = [];
+  
+  // Generate options for current year only
+  const startDate = startOfYear(new Date(currentYear, 0));
+  for (let i = 0; i < 12; i++) {
+    const date = addMonths(startDate, i);
+    months.push({
+      value: format(date, 'yyyy-MM'),
+      label: `${format(date, 'MMM')} ${twoDigitYear}`  // Shows "Jan 25", "Feb 25", etc.
+    });
+  }
+  
+  return months;
+};
+
+
 const PFTrackerBulkUpload: React.FC<PFTrackerBulkUploadProps> = ({ onUploadConfirm, canCreate }) => {
   const dispatch = useDispatch();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [currentGroup, setCurrentGroup] = useState('');
   const navigate = useNavigate();
+  const groupOptions = useMemo(() => generateMonthOptions(), []);
+  const [loading, setLoading] = useState(false);
 
-  const groupOptions = [
-    { value: '2024-01', label: 'January 2024' },
-    { value: '2024-02', label: 'February 2024' },
-    { value: '2024-03', label: 'March 2024' },
-    { value: '2024-04', label: 'April 2024' },
-    { value: '2024-05', label: 'May 2024' },
-    { value: '2024-06', label: 'June 2024' },
-    { value: '2024-07', label: 'July 2024' },
-    { value: '2024-08', label: 'August 2024' },
-    { value: '2024-09', label: 'September 2024' },
-    { value: '2024-10', label: 'October 2024' },
-    { value: '2024-11', label: 'November 2024' },
-    { value: '2024-12', label: 'December 2024' },
-  ];
 
   const handleUploadClick = () => {
     setIsDialogOpen(true);
@@ -48,13 +56,13 @@ const PFTrackerBulkUpload: React.FC<PFTrackerBulkUploadProps> = ({ onUploadConfi
     try {
       if (!file || !currentGroup) {
         toast.push(
-          <Notification title="Error" type="danger">
+          <Notification title="Error" type="danger" duration={3000}>
             Please select a file and a month to upload
           </Notification>
         );
         return;
       }
-
+      setLoading(true);
       const formData = new FormData();
       formData.append('document', file);
       formData.append('month', currentGroup);
@@ -83,7 +91,7 @@ const PFTrackerBulkUpload: React.FC<PFTrackerBulkUploadProps> = ({ onUploadConfi
 
       if (res) {
         toast.push(
-          <Notification title="Success" type="success">
+          <Notification title="Success" type="success" duration={3000}>
             Upload successful!
           </Notification>
         );
@@ -103,6 +111,8 @@ const PFTrackerBulkUpload: React.FC<PFTrackerBulkUploadProps> = ({ onUploadConfi
       //   // </Notification>
       // );
       console.error('Upload error:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -114,17 +124,37 @@ const PFTrackerBulkUpload: React.FC<PFTrackerBulkUploadProps> = ({ onUploadConfi
 
   const handleDownload = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    // if (!currentGroup) {
-    //   toast.push(<Notification type="warning" title="Please select a month before downloading" />, {
-    //   });
-    //   return;
-    // }
+    if (!currentGroup) {
+      toast.push(<Notification type="warning" title="Please select a month before downloading" />, {
+      });
+      return;
+    }
 
     try {
-      const res = await httpClient.get(endpoints.tracker.downloadFormat(), {
-        responseType: "blob",
-      });
 
+      const selectedDate = parse(currentGroup, 'yyyy-MM', new Date());
+      const reqBody = {
+        month: selectedDate.getMonth() + 1, // Adding 1 because getMonth() returns 0-11
+        year: selectedDate.getFullYear()
+      };
+      
+      // const res = await httpClient.request({
+      //   method: "GET",
+      //   url: endpoints.tracker.downloadFormat(),
+      //   data: reqBody, // Pass the body here
+      //   responseType: "blob" // Configuration for response type
+      // });
+      
+      const res = await httpClient.get(endpoints.tracker.downloadFormat(),{
+        responseType: "blob",
+        data: reqBody
+      });
+      if(res){
+      toast.push(
+        <Notification title="Success" type="success"  duration={3000}>
+          File was Downloaded Successfully
+        </Notification>
+      );}
       const blob = new Blob([res.data], { type: "text/xlsx" });
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
@@ -136,7 +166,7 @@ const PFTrackerBulkUpload: React.FC<PFTrackerBulkUploadProps> = ({ onUploadConfi
     } catch (error) {
       console.error('Download error:', error);
       toast.push(
-        <Notification title="Error" type="danger">
+        <Notification title="Error" type="danger"  duration={3000}>
           Failed to download template. Please try again.
         </Notification>
       );
@@ -181,11 +211,11 @@ const PFTrackerBulkUpload: React.FC<PFTrackerBulkUploadProps> = ({ onUploadConfi
           <p className=''>Select Payroll Month:</p>
           <div className='w-40'>
           <OutlinedSelect
-            label="Month"
-            options={groupOptions}
-            value={groupOptions.find((option) => option.value === currentGroup)}
-            onChange={handleChange(setCurrentGroup, 'groupName')}
-          />
+              label="Month"
+              options={groupOptions}
+              value={groupOptions.find((option) => option.value === currentGroup)}
+              onChange={handleChange(setCurrentGroup, 'groupName')}
+            />
           </div>
         </div>
         
@@ -214,6 +244,7 @@ const PFTrackerBulkUpload: React.FC<PFTrackerBulkUploadProps> = ({ onUploadConfi
             variant="solid"
             size="sm"
             onClick={handleConfirm}
+            loading={loading}
           >
             Confirm
           </Button>

@@ -321,7 +321,7 @@ const UserTable: React.FC = () => {
               setUserTableData(data.data);
               setTableData((prev) => ({
                   ...prev,
-                  total: data.paginateData.totalResult,
+                  total: data.paginateData.totalResults,
                   pageIndex: data.paginateData.page,
                 }))
             }

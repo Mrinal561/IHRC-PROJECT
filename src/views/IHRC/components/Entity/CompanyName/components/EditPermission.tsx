@@ -430,10 +430,10 @@ const EditPermission = () => {
       //     </div>
       //   ),
       // },
-      {
-        header: 'Tracker ID',
-        accessorKey: 'tracker_id',
-      },
+      // {
+      //   header: 'Tracker ID',
+      //   accessorKey: 'tracker_id',
+      // },
       {
         header: 'Requested By',
         accessorKey: 'UpdateBy',
@@ -544,9 +544,9 @@ const EditPermission = () => {
   return (
     <div className="p-8">
       <div className="flex justify-between items-center mb-12">
-        <h1 className="font-semibold text-gray-800">Edit Permission Manager</h1>
+        <h1 className="font-semibold text-gray-800">Remittance Tracker Edit Permission</h1>
         <div className="flex items-center gap-4">
-          <div className="w-52">
+          <div className="w-52 z-10-">
             <OutlinedSelect
               label="Filter"
               options={filterOptions}
