@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { Button, Checkbox, toast, Notification, DatePicker } from '@/components/ui';
 import { IoArrowBack } from 'react-icons/io5';
@@ -11,12 +11,14 @@ import { endpoints } from '@/api/endpoint';
 import { createUser } from '@/store/slices/userEntity/UserEntitySlice'
 import { format } from 'date-fns';
 import * as yup from 'yup';
+import { group } from 'console';
+import OutlinedPasswordInput from '@/components/ui/OutlinedInput/OutlinedPasswordInput';
 
 const userValidationSchema = yup.object().shape({
-  group_id: yup
-    .number()
-    .required('Company group is required')
-    .min(1, 'Please select a company group'),
+  // group_id: yup
+  //   .number()
+  //   .required('Company group is required')
+  //   .min(1, 'Please select a company group'),
   company_id: yup
     .number()
     .required('Company is required')
@@ -71,6 +73,11 @@ const userValidationSchema = yup.object().shape({
 });
 
 
+interface LocationState {
+  companyName?: string;
+  companyId?: string;
+}
+
 
 interface UserFormData {
   group_id: number;
@@ -101,7 +108,10 @@ interface ValidationErrors {
 const UserAddForm = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  
+  const location = useLocation()
+  const locationState = location.state as LocationState;
+  const companyName = locationState?.companyName;
+  const companyId = locationState?.companyId;
   const [companyGroups, setCompanyGroups] = useState<SelectOption[]>([]);
   const [selectedCompanyGroup, setSelectedCompanyGroup] = useState<SelectOption | null>(null);
   const [companies, setCompanies] = useState<SelectOption[]>([]);
@@ -161,7 +171,7 @@ const UserAddForm = () => {
     const groupIdParam = [`${groupId}`]
     const { data } = await httpClient.get(endpoints.company.getAll(), {
       params: {
-        'group_id[]': groupIdParam, // Add group_id as a query parameter
+        'group_id[]': companyId, // Add group_id as a query parameter
       },
     });
     if (data?.data) {
@@ -201,12 +211,12 @@ const UserAddForm = () => {
     
   
   useEffect(() => {
-   if (selectedCompanyGroup?.value) {
-     loadCompanies(selectedCompanyGroup.value);
+   if (companyId) {
+     loadCompanies(companyId);
    } else {
      setCompanies([]); // Reset companies when no group is selected
    }
- }, [selectedCompanyGroup]);
+ }, []);
 
 
   useEffect(() => {
@@ -333,9 +343,15 @@ const UserAddForm = () => {
     try {
       // Validate all fields
       await userValidationSchema.validate(formData, { abortEarly: false });
+
+      const data  = {
+        ...formData,
+        group_id: companyId,
+        Company_Group_Name: companyName
+      }
       
       // If validation passes, proceed with user creation
-      const resultAction = await dispatch(createUser(formData))
+      const resultAction = await dispatch(createUser(data))
         .unwrap()
         .catch((error: any) => {
           if (error.response?.data?.message) {
@@ -412,15 +428,11 @@ const UserAddForm = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 my-8">
           <div className='flex flex-col gap-2'>
             <p className='mb-2'>Select the company group <span className="text-red-500">*</span></p>
-            <OutlinedSelect
-              label="Select The Company Group"
-              options={companyGroups}
-              value={selectedCompanyGroup}
-              onChange={setSelectedCompanyGroup}
-            />
-             {validationErrors.group_id && (
-              <span className="text-red-500 text-sm">{validationErrors.group_id}</span>
-            )}
+            <OutlinedInput
+                label="Company Group"
+                value={companyName}
+                disabled
+                />
           </div>
           <div className='flex flex-col gap-2'>
             <p className='mb-2'>Select the company<span className="text-red-500">*</span></p>
@@ -476,7 +488,7 @@ const UserAddForm = () => {
             />
           </div> */}
           <div className='flex flex-col gap-1'>
-            <p className="mb-2">Email <span className="text-red-500">*</span></p>
+            <p className="mb-2">Email (Used For Login) <span className="text-red-500">*</span></p>
             <OutlinedInput
               label="Email"
               value={formData.email}
@@ -488,8 +500,8 @@ const UserAddForm = () => {
           </div>
 
           <div className='flex flex-col gap-1'>
-            <p className="mb-2">Password <span className="text-red-500">*</span></p>
-            <OutlinedInput
+            <p className="mb-2">Password (Used For Login) <span className="text-red-500">*</span></p>
+            <OutlinedPasswordInput
               label="Password"
               value={formData.password}
               onChange={(value) => handleInputChange('password', value)}
@@ -534,9 +546,9 @@ const UserAddForm = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 my-8">
           
         <div className='flex flex-col gap-1'>
-            <p className="mb-1">Aadhar No (Optional)</p>
+            <p className="mb-1">Aadhaar No (Optional)</p>
             <OutlinedInput
-              label="Aadhar No"
+              label="Aadhaar No"
               value={formData.aadhar_no}
               onChange={(value) => handleInputChange('aadhar_no', value)}
             />

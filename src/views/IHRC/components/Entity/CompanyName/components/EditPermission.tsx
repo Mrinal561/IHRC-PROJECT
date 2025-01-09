@@ -252,17 +252,17 @@ const EditPermission = () => {
   }
  
   return (
-    <div className="p-8">
+    <div className="">
       <div className="flex justify-between items-center mb-12">
-        <h1 className="font-semibold text-gray-800">Remittance Tracker Edit Permission</h1>
+      <h3 className="text-2xl font-bold">Remittance Tracker Edit Permission</h3>
         <div className="flex items-center gap-4">
           <div className="w-52 z-10-">
-            <OutlinedSelect
+            {/* <OutlinedSelect
               label="Filter"
               options={filterOptions}
               value={filter}
               onChange={handleFilterChange}
-            />
+            /> */}
           </div>
         </div>
       </div>

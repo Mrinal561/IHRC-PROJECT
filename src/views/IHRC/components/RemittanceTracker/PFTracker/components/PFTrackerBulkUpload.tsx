@@ -223,6 +223,7 @@ const PFTrackerBulkUpload: React.FC<PFTrackerBulkUploadProps> = ({ onUploadConfi
           <p>Upload PF File:</p>
           <Input
             type="file"
+            accept='.xlsx'
             onChange={handleFileChange}
             className="mb-4"
           />

@@ -47,7 +47,7 @@ const UserTable: React.FC = () => {
     const columns = useMemo(
         () => [
             {
-                header: 'Company Group',
+                header: 'Company',
                 accessorKey: 'company_details.name',
                 cell: (props) => (
                     <div className="w-32 truncate">{props.getValue() as string}</div>
