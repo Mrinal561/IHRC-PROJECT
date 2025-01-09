@@ -74,13 +74,13 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh , companyN
           <div className="w-44 flex items-center justify-center">{dayjs(props.getValue() as string).format('DD-MM-YYYY')}</div>
         ),
       },
-      {
-        header: 'PF User ID',
-        accessorKey: 'id',
-        cell: (props) => (
-          <div className="w-32 flex items-center justify-center">{props.getValue() as string}</div>
-        ),
-      },
+      // {
+      //   header: 'PF User ID',
+      //   accessorKey: 'id',
+      //   cell: (props) => (
+      //     <div className="w-32 flex items-center justify-center">{props.getValue() as string}</div>
+      //   ),
+      // },
       // {
       //   header: 'PF User Password',
       //   accessorKey: 'pfPassword',
