@@ -21,12 +21,9 @@ const roleSchema = yup.object().shape({
         .required('Role name is required')
         .min(3, 'Role name must be at least 3 characters')
         .max(50, 'Role name must not exceed 50 characters')
-        .matches(
-            /^[a-zA-Z0-9\s_-]+$/,
-            'Role name can only contain letters, numbers, spaces, underscores and hyphens'
-        ),
-});
-
+        .matches(/^\S.*\S$|^\S$/,'The input must not have leading or trailing spaces')
+    });
+  
 
 
 const colorPalette = [
@@ -130,7 +127,10 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
         query: '',
         sort: { order: '', key: '' },
     });
-
+    const [errors, setErrors] = useState({
+        name: ''
+    });
+    const [isTouched, setIsTouched] = useState(false);
 
     
 
@@ -145,11 +145,30 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
         setRoleTableData(transformedData);
     }, [roleData]);
 
-    const handleEditConfirm = async () => {
+    const validateForm = async (name) => {
         try {
-            setValidationError('');
-            await roleSchema.validate({ name: editedRoleName.trim() });
-            
+            await roleSchema.validate({ name }, { abortEarly: false });
+            setErrors({ name: '' });
+            return true;
+        } catch (err) {
+            if (err instanceof yup.ValidationError) {
+                const validationErrors = {};
+                err.inner.forEach((error) => {
+                    if (error.path) {
+                        validationErrors[error.path] = error.message;
+                    }
+                });
+                setErrors(validationErrors);
+            }
+            return false;
+        }
+    };
+
+    const handleEditConfirm = async () => {
+        const isValid = await validateForm(editedRoleName.trim());
+        if (!isValid) return;
+
+        try {
             const result = await dispatch(updateRole({
                 id: itemToEdit.id,
                 name: editedRoleName.trim() 
@@ -161,12 +180,8 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
                 handleDialogClose();
             }
         } catch (error) {
-            if (error instanceof yup.ValidationError) {
-                setValidationError(error.message);
-            } else {
-                console.error(error);
-                showErrorNotification('Failed to update role');
-            }
+            console.error(error);
+            showErrorNotification('Failed to update role');
         }
     };
 
@@ -174,6 +189,8 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
         setEditDialogIsOpen(false);
         setItemToEdit(null);
         setEditedRoleName('');
+        setErrors({ name: '' });
+        setIsTouched(false);
     };
 
     const openEditDialog = async (role) => {
@@ -245,6 +262,19 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
             }
         }
     };
+
+    const handleInputChange = (value) => {
+        setIsTouched(true);
+        setEditedRoleName(value);
+        setErrors({ name: '' });
+    };
+
+    // Add useEffect for validation
+    useEffect(() => {
+        if (isTouched) {
+            validateForm(editedRoleName);
+        }
+    }, [editedRoleName, isTouched]);
 
     const columns = useMemo(
         () => [
@@ -405,13 +435,13 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
                     <OutlinedInput
                         label="Role Name"
                         value={editedRoleName}
-                        onChange={(value) => setEditedRoleName(value)}
+                        onChange={handleInputChange}
                     />
-                    {validationError && (
-            <div className="text-red-500 text-sm mt-1">
-                {validationError}
-            </div>
-        )}
+                 {errors.name && (
+                        <div className="text-red-500 text-sm mt-1">
+                            {errors.name}
+                        </div>
+                    )}
                 </div>
                 <div className="text-right mt-6">
                     <Button

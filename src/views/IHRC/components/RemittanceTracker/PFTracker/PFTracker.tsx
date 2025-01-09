@@ -14,6 +14,10 @@ import { Notification } from '@/components/ui'
 import Loading from '@/components/shared/Loading'
 // import Loading from '@/components/ui/Loading'
 
+
+const FINANCIAL_YEAR_KEY = 'selectedFinancialYear'
+const FINANCIAL_YEAR_CHANGE_EVENT = 'financialYearChanged';
+
 // Interface for permissions
 interface Permissions {
     canList: boolean;
@@ -42,6 +46,7 @@ const PFTracker: React.FC = () => {
         startDate: '',
         endDate: '',
     })
+    const [financialYear, setFinancialYear] = useState(sessionStorage.getItem(FINANCIAL_YEAR_KEY));
     const [data, setData] = useState<PfChallanData[]>([])
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -59,6 +64,29 @@ const PFTracker: React.FC = () => {
         pageIndex: 1,
         pageSize: 10,
     })
+
+
+    useEffect(() => {
+        // Handler for the custom event
+        const handleFinancialYearChange = (event: CustomEvent) => {
+            const newFinancialYear = event.detail;
+            setFinancialYear(newFinancialYear);
+        };
+
+        // Add event listener for our custom event
+        window.addEventListener(
+            FINANCIAL_YEAR_CHANGE_EVENT, 
+            handleFinancialYearChange as EventListener
+        );
+
+        // Cleanup
+        return () => {
+            window.removeEventListener(
+                FINANCIAL_YEAR_CHANGE_EVENT, 
+                handleFinancialYearChange as EventListener
+            );
+        };
+    }, []);
 
     useEffect(() => {
         const initializeAuth = async () => {
@@ -157,6 +185,8 @@ const PFTracker: React.FC = () => {
             
             setIsLoading(true)
             try {
+
+
                 const params: any = {
                     page,
                     page_size: pageSize,
@@ -169,6 +199,11 @@ const PFTracker: React.FC = () => {
                 if (filters.pfCode) {
                     params['pf_code[]'] = filters.pfCode
                 }
+
+                if (financialYear) {
+                    params['financial_year'] = financialYear
+                }
+
 
                 const res = await httpClient.get(endpoints.tracker.pfGetALl(), {
                     params
@@ -185,14 +220,14 @@ const PFTracker: React.FC = () => {
                 setIsLoading(false)
             }
         },
-        [filters.groupId, filters.companyId, filters.pfCode, permissions.canList,filters.startDate, filters.endDate]
+        [filters.groupId, filters.companyId, filters.pfCode, permissions.canList,filters.startDate, filters.endDate,financialYear]
     )
 
     useEffect(() => {
         if (isInitialized && permissions.canList) {
             fetchPFTrackerData(pagination.pageIndex, pagination.pageSize)
         }
-    }, [fetchPFTrackerData, pagination.pageIndex, pagination.pageSize, filters.groupId, filters.companyId, isInitialized, permissions.canList])
+    }, [fetchPFTrackerData, pagination.pageIndex, pagination.pageSize, filters.groupId, filters.companyId, isInitialized, permissions.canList,financialYear])
 
 
     useEffect(() => {
