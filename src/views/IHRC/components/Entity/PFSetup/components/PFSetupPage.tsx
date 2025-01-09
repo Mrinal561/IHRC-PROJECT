@@ -185,7 +185,7 @@ const PFSetupPage: React.FC = () => {
         number | undefined
     >()
     const [selectedLocationId, setSelectedLocationId] = useState('')
-
+    const [formTouched, setFormTouched] = useState(false);
     const [pfSetupData, setPfSetupData] = useState<PFSetupData>({
         group_id: 0,
         company_id: 0,
@@ -308,7 +308,10 @@ const PFSetupPage: React.FC = () => {
     }
     
 useEffect(()=>{
-    validateForm();
+
+   if (formTouched) {
+        validateForm();
+    }
 },[pfSetupData])
     // Handle submit with base64 files
     const handleSubmit = async () => {
@@ -561,6 +564,7 @@ useEffect(()=>{
         value: string | Date | null | File | string[],
     ) => {
         setPfSetupData((prev) => ({ ...prev, [field]: value }))
+        setFormTouched(true);
     }
 
     const handleSignatoryChange = (

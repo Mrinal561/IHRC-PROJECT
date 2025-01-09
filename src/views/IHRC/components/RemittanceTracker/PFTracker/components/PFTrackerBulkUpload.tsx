@@ -45,6 +45,7 @@ const PFTrackerBulkUpload: React.FC<PFTrackerBulkUploadProps> = ({ onUploadConfi
   const [currentGroup, setCurrentGroup] = useState('');
   const navigate = useNavigate();
   const groupOptions = useMemo(() => generateMonthOptions(), []);
+  const [loading, setLoading] = useState(false);
 
 
   const handleUploadClick = () => {
@@ -55,13 +56,13 @@ const PFTrackerBulkUpload: React.FC<PFTrackerBulkUploadProps> = ({ onUploadConfi
     try {
       if (!file || !currentGroup) {
         toast.push(
-          <Notification title="Error" type="danger">
+          <Notification title="Error" type="danger" duration={3000}>
             Please select a file and a month to upload
           </Notification>
         );
         return;
       }
-
+      setLoading(true);
       const formData = new FormData();
       formData.append('document', file);
       formData.append('month', currentGroup);
@@ -90,7 +91,7 @@ const PFTrackerBulkUpload: React.FC<PFTrackerBulkUploadProps> = ({ onUploadConfi
 
       if (res) {
         toast.push(
-          <Notification title="Success" type="success">
+          <Notification title="Success" type="success" duration={3000}>
             Upload successful!
           </Notification>
         );
@@ -110,6 +111,8 @@ const PFTrackerBulkUpload: React.FC<PFTrackerBulkUploadProps> = ({ onUploadConfi
       //   // </Notification>
       // );
       console.error('Upload error:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -146,7 +149,12 @@ const PFTrackerBulkUpload: React.FC<PFTrackerBulkUploadProps> = ({ onUploadConfi
         responseType: "blob",
         data: reqBody
       });
-
+      if(res){
+      toast.push(
+        <Notification title="Success" type="success"  duration={3000}>
+          File was Downloaded Successfully
+        </Notification>
+      );}
       const blob = new Blob([res.data], { type: "text/xlsx" });
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
@@ -158,7 +166,7 @@ const PFTrackerBulkUpload: React.FC<PFTrackerBulkUploadProps> = ({ onUploadConfi
     } catch (error) {
       console.error('Download error:', error);
       toast.push(
-        <Notification title="Error" type="danger">
+        <Notification title="Error" type="danger"  duration={3000}>
           Failed to download template. Please try again.
         </Notification>
       );
@@ -236,6 +244,7 @@ const PFTrackerBulkUpload: React.FC<PFTrackerBulkUploadProps> = ({ onUploadConfi
             variant="solid"
             size="sm"
             onClick={handleConfirm}
+            loading={loading}
           >
             Confirm
           </Button>

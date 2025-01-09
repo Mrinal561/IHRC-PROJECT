@@ -98,6 +98,7 @@ const PFTracker: React.FC = () => {
                         <Notification
                             title="Permission"
                             type="danger"
+                            duration={2000}
                         >
                             You don't have access to any modules
                         </Notification>
@@ -118,6 +119,7 @@ const PFTracker: React.FC = () => {
                         <Notification
                             title="Permission"
                             type="danger"
+                            duration={2000}
                         >
                             You don't have access to this module
                         </Notification>
@@ -138,6 +140,7 @@ const PFTracker: React.FC = () => {
                         <Notification
                             title="Permission"
                             type="danger"
+                            duration={2000}
                         >
                             You don't have access to this menu
                         </Notification>
@@ -159,6 +162,7 @@ const PFTracker: React.FC = () => {
                         <Notification
                             title="Permission"
                             type="danger"
+                            duration={2000}
                         >
                             You don't have permission of PF Tracker
                         </Notification>
