@@ -215,7 +215,7 @@ const PFEditedData: React.FC<PFEditedDataProps> = ({
       {/* First row */}
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <label className="block text-sm font-medium">Enter the PF Code</label>
+          <label className="block text-sm font-medium">PF Code</label>
           <div>
             <OutlinedInput
               label="PF Code"
@@ -231,7 +231,7 @@ const PFEditedData: React.FC<PFEditedDataProps> = ({
         </div>
 
         <div className="space-y-2">
-          <label className="block text-sm font-medium">Enter PF user</label>
+          <label className="block text-sm font-medium">PF user</label>
           <div>
             <OutlinedInput
               label="PF User"
@@ -250,7 +250,7 @@ const PFEditedData: React.FC<PFEditedDataProps> = ({
       {/* Second row */}
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <label className="block text-sm font-medium">Enter PF User Password</label>
+          <label className="block text-sm font-medium">PF User Password</label>
           <div>
             <OutlinedInput
               label="PF Password"

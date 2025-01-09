@@ -148,6 +148,7 @@ const Bu: React.FC<BuProps> = ({ onUploadSuccess }) => {
           <p>Upload Bulk Company File:</p>
           <Input
             type="file"
+            accept='.xlsx'
             onChange={handleFileChange}
             className="mb-4"
           />

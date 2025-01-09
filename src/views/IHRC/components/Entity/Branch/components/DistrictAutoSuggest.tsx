@@ -112,7 +112,7 @@ const DistrictAutosuggest: React.FC<DistrictAutosuggestProps> = ({
 
   return (
     <div className="relative" ref={wrapperRef}>
-      <p className="mb-2">{label} </p>
+      <p className="mb-2">{label} <span className="text-red-500">*</span> </p>
       {/* <span className="text-red-500">*</span> */}
       <div 
       className="relative"

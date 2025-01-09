@@ -51,14 +51,14 @@ const pfSetupSchema = yup.object().shape({
         .required('PF User is required')
         .min(3, 'Username must be at least 3 characters'),
     
-    password: yup
-        .string()
-        .required('Password is required')
-        .min(8, 'Password must be at least 8 characters')
-        .matches(
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
-            'Must include A-Z, a-z, 0-9, @$!%*?& (Weak Password)'
-        ),
+    // password: yup
+    //     .string()
+    //     .required('Password is required')
+    //     .min(8, 'Password must be at least 8 characters')
+    //     .matches(
+    //         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+    //         'Must include A-Z, a-z, 0-9, @$!%*?& (Weak Password)'
+    //     ),
     
     register_date: yup
         .date()
@@ -669,7 +669,7 @@ useEffect(()=>{
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                     <div>
-                        <p className="mb-2"> PF code</p>
+                        <p className="mb-2"> PF code <span className="text-red-500">*</span></p>
                         <OutlinedInput
                             label="PF Code"
                             value={pfSetupData.pf_code}
@@ -680,7 +680,7 @@ useEffect(()=>{
                             {getErrorMessage('pf_code')}
                     </div>
                     <div>
-                        <p className="mb-2"> State</p>
+                        <p className="mb-2"> State <span className="text-red-500">*</span></p>
                         <OutlinedSelect
                             label="Select State"
                             options={states}
@@ -733,7 +733,7 @@ useEffect(()=>{
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-4">
                     <div>
-                        <p className="mb-2">PF User</p>
+                        <p className="mb-2">PF User <span className="text-red-500">*</span></p>
                         <OutlinedInput
                             label="Username"
                             value={pfSetupData.pf_user}
@@ -747,8 +747,8 @@ useEffect(()=>{
                         {getErrorMessage('pf_user')}
                     </div>
                     <div>
-                        <p className="mb-2">Password</p>
-                        <OutlinedPasswordInput
+                        <p className="mb-2">Password <span className="text-red-500">*</span></p>
+                        <OutlinedInput
                             label="Password"
                             value={pfSetupData.password}
                             onChange={(value: string) => {
@@ -758,13 +758,13 @@ useEffect(()=>{
                                 }))
                             }}
                         />
-                        {getErrorMessage('password')}
+                        {/* {getErrorMessage('password')} */}
                     </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                            PF Registration Date
+                            PF Registration Date <span className="text-red-500">*</span>
                         </label>
                         <DatePicker
                             placeholder="Pick a Date"
@@ -777,7 +777,7 @@ useEffect(()=>{
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Choose the Signatories
+                            Choose the Signatories <span className="text-red-500">*</span>
                         </label>
                         <Select
                             isMulti
@@ -830,7 +830,7 @@ useEffect(()=>{
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-4">
                                                 {' '}
-                                                DSC Valid Upto{' '}
+                                                DSC Valid Upto{' '} <span className="text-red-500">*</span>
                                             </label>
                                             <DatePicker
                                                 size="sm"
@@ -889,10 +889,11 @@ useEffect(()=>{
                 )}
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                        PF Registration Certificate(PDF Only)
+                        PF Registration Certificate(PDF Only) <span className="text-red-500">*</span>
                     </label>
                     <Input
                         type="file"
+                        accept=".pdf"
                         onChange={handleRegistrationCertificateUpload}
                     />
                     {getErrorMessage('register_certificate')}
