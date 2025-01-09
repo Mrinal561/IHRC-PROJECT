@@ -18,18 +18,20 @@ const roleSchema = yup.object().shape({
     .required('Role name is required')
     .min(3, 'Role name must be at least 3 characters')
     .max(50, 'Role name must not exceed 50 characters')
-    .matches(/^[a-zA-Z0-9\s_-]+$/, 'Role name can only contain letters, numbers, spaces, underscores, and hyphens')
-});
+    .matches(/^\S.*\S$|^\S$/,'The input must not have leading or trailing spaces')
+  });
 
 
 const Role = () => {
   const dispatch = useDispatch();
+  
   const [isLoading, setIsLoading] = useState(false);
+  const [isTouched, setIsTouched] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [roleData, setRoleData] = useState([]);
   const [key, setKey] = useState(0);
   const [formData, setFormData] = useState({
-    name: ''
+    name: ' '
   });
   const [errors, setErrors] = useState({
     name: ''
@@ -40,6 +42,7 @@ const Role = () => {
   };
 
   const handleInputChange = (field: string, value: string) => {
+    setIsTouched(true);
     setFormData(prev => ({
       ...prev,
       [field]: value
@@ -76,7 +79,16 @@ const Role = () => {
       name: ''
     });
     setErrors({ name: '' });
+    setIsTouched(false);
   };
+
+
+  useEffect(() => {
+    if (isTouched) {
+      validateForm();
+    }
+  }, [formData.name, isTouched]);
+
 
   const validateForm = async () => {
     try {

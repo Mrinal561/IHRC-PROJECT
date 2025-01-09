@@ -89,14 +89,14 @@ const CompanyGroup = () => {
     
 
     const handleConfirm = async () => {
-        if (companyData.length > 0) {
-            toast.push(
-                <Notification title="Error" type="danger">
-                    Only one company group is allowed. Please delete the existing group first.
-                </Notification>
-            );
-            return;
-        }
+        // if (companyData.length > 0) {
+        //     toast.push(
+        //         <Notification title="Error" type="danger">
+        //             Only one company group is allowed. Please delete the existing group first.
+        //         </Notification>
+        //     );
+        //     return;
+        // }
 
 
         // if (!newCompanyGroup.name.trim()) {
@@ -168,15 +168,15 @@ const CompanyGroup = () => {
                 <div className="mb-4 lg:mb-0">
                     <h3 className="text-2xl font-bold">Company Group Manager</h3>
                 </div>
-                <Button 
+                {/* <Button 
                     variant="solid" 
                     onClick={() => setDialogIsOpen(true)} 
                     icon={<HiPlusCircle />} 
                     size="sm"
-                    disabled={companyData.length > 0}
+                    // disabled={companyData.length > 0}
                 >
                     Add Company Group
-                </Button>
+                </Button> */}
             </div>
 
             <CompanyTable 

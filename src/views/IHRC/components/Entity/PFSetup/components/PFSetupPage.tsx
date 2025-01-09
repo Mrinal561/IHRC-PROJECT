@@ -307,7 +307,9 @@ const PFSetupPage: React.FC = () => {
         }
     }
     
-
+useEffect(()=>{
+    validateForm();
+},[pfSetupData])
     // Handle submit with base64 files
     const handleSubmit = async () => {
         console.log(pfSetupData)

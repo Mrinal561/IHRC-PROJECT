@@ -37,6 +37,8 @@ const validationSchema = yup.object().shape({
 
 const CompanyName = () => {
   const dispatch = useAppDispatch();
+  const [nameFieldTouched, setNameFieldTouched] = useState(false);
+
   const [isLoading, setIsLoading] = useState(false);
   const [dialogLoading, setDialogLoading] = useState(false);
   const [companyData, setCompanyData] = useState<CompanyData[]>([]);
@@ -161,10 +163,24 @@ const CompanyName = () => {
     fetchCompanyDataTable();
   }, []);
 
+  // useEffect(() => {
+  //   if (isTouched) {
+  //     formik.validateForm();
+  //   }
+  // }, [formik.values, isTouched]);
+
   const onDialogClose = () => {
     setIsOpen(false);
     formik.resetForm();
+    setNameFieldTouched(false); 
   };
+
+  const handleInputChange = (value: string) => {
+    setNameFieldTouched(true); 
+    formik.setFieldValue('name', value);
+  };
+
+  const shouldShowNameError = nameFieldTouched && formik.errors.name;
 
   return (
     <AdaptableCard className="h-full" bodyClass="h-full">
@@ -216,9 +232,9 @@ const CompanyName = () => {
             <OutlinedInput
               label="Company Name"
               value={formik.values.name}
-              onChange={(value) => formik.setFieldValue('name', value)}
+              onChange={handleInputChange}
             />
-            {formik.touched.name && formik.errors.name && (
+            {shouldShowNameError&& (
               <div className="mt-1 text-red-500 text-sm">{formik.errors.name}</div>
             )}
           </div>

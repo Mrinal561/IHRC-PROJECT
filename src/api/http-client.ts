@@ -31,6 +31,7 @@ httpClient.interceptors.response.use(
             !error.request.responseURL.includes('companyadmin/profile')
         ) {
             // store.dispatch(loginUser());
+            window.location.reload();
         }
         return Promise.reject(error)
     },
