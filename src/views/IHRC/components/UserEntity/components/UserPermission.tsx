@@ -340,6 +340,7 @@ import {
 import { useDispatch } from 'react-redux';
 import { updateUserPermissions } from '@/store/slices/userEntity/UserEntitySlice';
 import Button from '@/components/ui/Button'
+import { IoArrowBack } from 'react-icons/io5';
 
 
 const UserPermission = () => {
@@ -586,11 +587,19 @@ const UserPermission = () => {
   const filteredRows = tableModel.getRowModel().rows;
 
   return (
-    <div className="p-8">
+    <div className="">
       <div className="flex justify-between items-center mb-4">
+      <div className='flex items-center gap-2 mb-3'>
+        <Button
+          size="sm"
+          variant="plain"
+          icon={<IoArrowBack className="text-[#72828e] hover:text-[#5d6169]" />}
+          onClick={() => navigate(-1)}
+        />
         <h2 className="text-2xl font-bold">
           User Permissions - {userData?.name || 'User'}
         </h2>
+        </div>
         <Button variant="solid" size="sm" onClick={handleUpdateAll}>
           Update Permissions
         </Button>
