@@ -60,7 +60,7 @@ const navigationConfig: NavigationTree[] = [
             {
                 key: 'groupMenu.collapse.item7',
                 path: '/Edit-permission',
-                title: 'Edit Permission',
+                title: 'Remittance Edit Permission',
                 translateKey: 'nav.groupMenu.collapse.item7',
                 icon: '',
                 type: NAV_ITEM_TYPE_ITEM,
