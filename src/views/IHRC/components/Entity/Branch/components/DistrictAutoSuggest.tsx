@@ -17,6 +17,7 @@ interface DistrictAutosuggestProps {
   stateId?: number;
   label?: string;
   placeholder?: string;
+  isDisabled?: boolean;
 }
 
 const DistrictAutosuggest: React.FC<DistrictAutosuggestProps> = ({ 
@@ -25,7 +26,8 @@ const DistrictAutosuggest: React.FC<DistrictAutosuggestProps> = ({
   onDistrictSelect,
   stateId,
   label = "District",
-  placeholder = "Enter District"
+  placeholder = "Enter District",
+  isDisabled
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [districts, setDistricts] = useState<District[]>([]);
@@ -127,6 +129,7 @@ const DistrictAutosuggest: React.FC<DistrictAutosuggestProps> = ({
             setIsOpen(true);
           }}
           label={placeholder}
+          isDisabled={isDisabled}
         />
         <button
           onClick={() => stateId && setIsOpen(!isOpen)}
