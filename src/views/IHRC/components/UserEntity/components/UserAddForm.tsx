@@ -33,9 +33,12 @@ const userValidationSchema = yup.object().shape({
   //   return value?.replace(/\s+/g, ' ').trim();
   // }),
   email: yup
-    .string()
-    .required('Email is required')
-    .email('Invalid email format'),
+  .string()
+  .matches(
+     /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|in|org|net|edu|gov)$/,
+     'Invalid email address. Please use a valid email with a.com,.in,.org,.net,.edu, or.gov domain.'
+   )
+  .required('Email is required'),
   password: yup
     .string()
     .required('Password is required')
@@ -55,18 +58,25 @@ const userValidationSchema = yup.object().shape({
     .number()
     .required('Designation is required')
     .min(1, 'Please select a designation'),
-  aadhar_no: yup
+    aadhar_no: yup
     .string()
-    .nullable()
-    .transform((value) => (value === '' ? null : value))
+    .nullable() // Keep this if you want to allow explicit null values
+    .transform((value) => {
+       if (value === '') return ''; // Do not transform empty strings to null
+       return value;
+     })
     .matches(/^[0-9]{12}$/, 'Aadhar number must be 12 digits')
-    .optional(),
-  pan_card: yup
+    .notRequired(), // Use.notRequired() instead of.optional()
+   
+   pan_card: yup
     .string()
     .nullable()
-    .transform((value) => (value === '' ? null : value))
+    .transform((value) => {
+       if (value === '') return ''; // Keep empty strings as is
+       return value;
+     })
     .matches(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, 'Invalid PAN format')
-    .optional(),
+    .notRequired(),
   auth_signatory: yup.boolean(),
   suspend: yup.boolean(),
   disable: yup.boolean()
