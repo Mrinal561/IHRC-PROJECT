@@ -11,6 +11,11 @@ import { deletePF } from '@/store/slices/pfSetup/pfSlice';
 import { useDispatch } from 'react-redux';
 import { showErrorNotification } from '@/components/ui/ErrorMessage';
 
+interface SignatoryData {
+  signatory_id: number;
+  dsc_validity: string;
+  e_sign_status: string;
+}
 
 interface PFSetupTableProps {
   data: PFData[];
@@ -30,7 +35,9 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh , companyN
   const [editedData, setEditedData] = useState<Partial<PFSetupData>>({});
   const [suspendDialogIsOpen, setSuspendDialogIsOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
-
+  // Add these new state declarations
+const [editedSignatoryData, setEditedSignatoryData] = useState<SignatoryData[]>([]);
+const [editFormData, setEditFormData] = useState<PFData | null>(null);
   const openSuspendDialog = (index: number) => {
     setSuspendDialogIsOpen(true);
 };
@@ -184,8 +191,11 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh , companyN
   const openEditDialog = (item: PFData) => {
     // setItemToEdit(item);
     // setEditedData(data[index]);
+    console.log(data)
     setEditingId(item.id);
     setEditDialogIsOpen(true);
+    setEditFormData(item);
+    console.log(item)
   };
 
   const handleDialogClose = () => {
@@ -193,6 +203,8 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh , companyN
     setEditDialogIsOpen(false);
     setItemToDelete(null);
     setItemToEdit(null);
+    setEditFormData(null);
+    setEditedSignatoryData([]); 
     // setEditedData({});
   };
 
@@ -305,14 +317,14 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh , companyN
         onClose={handleDialogClose}
         onRequestClose={handleDialogClose}
         width={800}
-        height={330}
+        height={680}
       >
         <h5 className="mb-4">Edit PF Setup</h5>
         {/* Add your edit form fields here */}
         <PFEditedData
           onRefresh={onRefresh}
           id={editingId}
-        initialData={itemToEdit}
+        initialData={editFormData}
         onClose={handleDialogClose}
         onSubmit={handleEditConfirm} />
         <div className="text-right mt-6">

@@ -28,7 +28,16 @@ export type PFData = {
     Location: {
         id: number;
         name: string;
+        District: {
+            id: number;
+            name: string;
+            State: {
+                id: number;
+                name: string;
+            };
+        };
     };
+    
     Signatory: {
         id: number;
         first_name: string;
