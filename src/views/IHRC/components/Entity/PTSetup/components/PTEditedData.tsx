@@ -8,6 +8,8 @@ import { showErrorNotification } from '@/components/ui/ErrorMessage';
 import { PTSetupData } from './PTSetupTable';
 import { fetchptsetupById, updatePT } from '@/store/slices/ptSetup/ptSetupSlice';
 import * as yup from 'yup';
+import OutlinedSelect from '@/components/ui/Outlined/Outlined';
+import OutlinedPasswordInput from '@/components/ui/OutlinedInput/OutlinedPasswordInput';
 
 
 interface ValidationErrors {
@@ -18,6 +20,7 @@ interface ValidationErrors {
   email?: string;
   mobile?: string;
   register_date?: Date;
+  remmit_mode?:string
 }
 
 const ptSchema = yup.object().shape({
@@ -55,6 +58,10 @@ const ptSchema = yup.object().shape({
     .date()
     .required('Registration date is required')
     .max(new Date(), 'Registration date cannot be in the future'),
+    // remmit_mode: yup
+    // .string()
+    // .required('Remmit mode is required')
+    // .oneOf(['online', 'offline'], 'Invalid remit mode'),
 });
 interface PTEditedDataProps {
   id?: number;
@@ -79,6 +86,7 @@ const PTEditedData: React.FC<PTEditedDataProps> = ({
     email: '',
     mobile: '',
     register_date: '',
+    remmit_mode: '',
   });
 
   const [loading, setLoading] = useState(true);
@@ -158,7 +166,7 @@ const PTEditedData: React.FC<PTEditedDataProps> = ({
   const handleSubmit = async () => {
     try {
       const isValid = await validateForm();
-      if(!isValid) return;
+      // if(!isValid) return;
       // Implement your update logic similar to LW
       const updateData = {
         register_number: formData.register_number,
@@ -168,6 +176,7 @@ const PTEditedData: React.FC<PTEditedDataProps> = ({
         email: formData.email,
         mobile: formData.mobile,
         register_date: formData.register_date || '',
+        remmit_mode: formData.remmit_mode,
       };
 
       const resultAction = await dispatch(updatePT({
@@ -224,6 +233,24 @@ const PTEditedData: React.FC<PTEditedDataProps> = ({
 
   return (
     <div className="p-4 space-y-4">
+       <div className="grid grid-cols-2 gap-4">
+        <div className="h-[70px]">
+          <p className="text-sm font-medium mb-2">Company Group</p>
+          <OutlinedInput
+            label="Company Group"
+            value={formData.CompanyGroup?.name || ''}
+            disabled
+          />
+        </div>
+        <div className="h-[70px]">
+          <p className="text-sm font-medium mb-2">Company</p>
+          <OutlinedInput
+            label="Company"
+            value={formData.Company?.name || ''}
+            disabled
+          />
+        </div>
+      </div>
       <div className="flex gap-4 items-center">
         <div className="flex flex-col gap-2 w-full">
           <label>Enter PT Registration Number</label>
@@ -276,7 +303,7 @@ const PTEditedData: React.FC<PTEditedDataProps> = ({
         <div className="flex flex-col gap-2 w-full">
           <label>Enter PT Password</label>
           <div className="w-full">
-            <OutlinedInput
+            <OutlinedPasswordInput
               label="PT Password"
               value={formData.password}
               onChange={(value) => handleChange('password', value)}
@@ -336,6 +363,30 @@ const PTEditedData: React.FC<PTEditedDataProps> = ({
             <div className="h-5">
               {errors.register_date && (
                 <div className="text-red-500 text-sm">{errors.register_date}</div>
+              )}
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col gap-2 w-full">
+          <label>Remit Mode</label>
+          <div className="w-full">
+            <OutlinedSelect
+            isDisabled
+              label="Select Mode"
+              options={[
+                { value: 'online', label: 'Online' },
+                { value: 'offline', label: 'Offline' }
+              ]}
+              value={formData.remmit_mode ? { value: formData.remmit_mode, label: formData.remmit_mode.charAt(0).toUpperCase() + formData.remmit_mode.slice(1) } : null}
+              onChange={(option) => {
+                if (option) {
+                  handleChange('remmit_mode', option.value);
+                }
+              }}
+            />
+            <div className="h-5">
+              {errors.remmit_mode && (
+                <div className="text-red-500 text-sm">{errors.remmit_mode}</div>
               )}
             </div>
           </div>
