@@ -48,6 +48,7 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh , companyN
       // },
       {
         header: 'Company',
+        enableSorting: false,
         accessorKey: 'Company.name',
         cell: (props) => (
           <div className="w-36 text-start">{props.getValue() as string}</div>
@@ -55,6 +56,7 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh , companyN
       },
       {
         header: 'PF Code',
+        enableSorting: false,
         accessorKey: 'pf_code',
         cell: (props) => (
           <div className="w-36 text-start">{props.getValue() as string}</div>
@@ -62,6 +64,7 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh , companyN
       },
       {
         header: 'PF Code Location',
+        enableSorting: false,
         accessorKey: 'Location.name',
         cell: (props) => (
           <div className="w-36 truncate">{props.getValue() as string}</div>
@@ -69,6 +72,7 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh , companyN
       },
       {
         header: 'PF Registration Date',
+        enableSorting: false,
         accessorKey: 'register_date',
         cell: (props) => (
           <div className="w-44 flex items-center justify-center">{dayjs(props.getValue() as string).format('DD-MM-YYYY')}</div>
@@ -90,6 +94,7 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh , companyN
       // },
       {
         header: 'Authorized Signatory',
+        enableSorting: false,
         accessorKey: 'Signatory.name',
         cell: (props) => (
           <div className="w-48 truncate">{props.getValue() as string}</div>
@@ -97,6 +102,7 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh , companyN
       },
       {
         header: 'Designation',
+        enableSorting: false,
         accessorKey: 'Signatory.Role.name',
         cell: (props) => (
           <div className="w-48 truncate">{props.getValue() as string}</div>
@@ -104,6 +110,7 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh , companyN
       },
       {
         header: 'Mobile',
+        enableSorting: false,
         accessorKey: 'Signatory.mobile',
         cell: (props) => (
           <div className="w-48 truncate">{props.getValue() as string}</div>
@@ -111,6 +118,7 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh , companyN
       },
       {
         header: 'Email',
+        enableSorting: false,
         accessorKey: 'Signatory.email',
         cell: (props) => (
           <div className="w-48 truncate">{props.getValue() as string}</div>
@@ -118,6 +126,7 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh , companyN
       },
       {
         header: 'DSC Validity',
+        enableSorting: false,
         accessorKey: 'dsc_validity',
         cell: (props) => (
           <div className="w-44 flex items-center justify-center">{dayjs(props.getValue() as string).format('DD-MM-YYYY')}</div>
@@ -125,6 +134,7 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh , companyN
       },
       {
         header: 'E Sign',
+        enableSorting: false,
         accessorKey: 'e_sign_status',
         cell: (props) => (
           <div className="w-48 truncate">{props.getValue() as string}</div>

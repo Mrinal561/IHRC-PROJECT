@@ -146,6 +146,7 @@ const EditPermission = () => {
       // },
       {
         header: 'Requested By',
+        enableSorting: false,
         accessorKey: 'UpdateBy',
         cell: (props) => {
           const updateBy = props.getValue() as PermissionData['UpdateBy'];
@@ -158,10 +159,12 @@ const EditPermission = () => {
       },
       {
         header: 'Edit Count',
+        enableSorting: false,
         accessorKey: 'count',
       },
       {
         header: 'Tracker Type',
+        enableSorting: false,
         accessorKey: 'tracker_type',
         cell: (props) => {
           const type = props.getValue() as string;
@@ -175,6 +178,7 @@ const EditPermission = () => {
       },
       {
         header: 'Created At',
+        enableSorting: false,
         accessorKey: 'created_at',
         cell: (props) => {
           const date = new Date(props.getValue() as string);

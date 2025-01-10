@@ -281,6 +281,8 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
             {
                 header: 'Role Name',
                 accessorKey: 'name',
+                enableSorting: false,
+
                 cell: (props) => (
                     <div className="w-36 font-semibold text-gray-700">
                         {props.getValue()}
@@ -289,6 +291,7 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
             },
             {
                 header: 'Module Access',
+                enableSorting: false,
                 id: 'moduleAccess',
                 cell: ({ row }) => (
                     <div className="flex flex-wrap gap-2">
@@ -307,6 +310,7 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
             },
             {
                 header: 'Menu Access',
+                enableSorting: false,
                 id: 'menuAccess',
                 cell: ({ row }) => (
                     <div className="flex flex-col">

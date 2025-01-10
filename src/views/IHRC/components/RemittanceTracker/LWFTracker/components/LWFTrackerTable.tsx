@@ -158,21 +158,25 @@ const LWFTrackerTable: React.FC<LWFTrackerTableProps> = ({
     () => [
       {
         header: 'Company',
+        enableSorting: false,
         accessorKey: 'LwfSetup.Company.name',
         cell: (props) => <div className="w-52 truncate">{props.getValue() as string}</div>,
       },
       {
         header: 'Location',
+        enableSorting: false,
         accessorKey: 'LwfSetup.Location.name',
         cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
       },
       {
         header: 'Registration Number',
+        enableSorting: false,
         accessorKey: 'LwfSetup.register_number',
         cell: (props) => <div className="w-52 truncate">{props.getValue() as string}</div>,
       },
       {
         header: 'Payroll month',
+        enableSorting: false,
         accessorKey: 'period',
        cell: (props) => {
                     const date = new Date(props.getValue() as string);
@@ -185,6 +189,7 @@ const LWFTrackerTable: React.FC<LWFTrackerTableProps> = ({
       },
       {
         header: 'Salary Register Amt',
+        enableSorting: false,
         accessorKey: 'salary_register_amt',
         cell: (props) => <div className="w-52 truncate">
           ₹{(props.getValue() as number)?.toLocaleString() || '-'}
@@ -192,6 +197,7 @@ const LWFTrackerTable: React.FC<LWFTrackerTableProps> = ({
       },
       {
         header: 'Total Paid Amt',
+        enableSorting: false,
         accessorKey: 'total_paid_amt',
         cell: (props) => <div className="w-52 truncate">
           ₹{(props.getValue() as number)?.toLocaleString() || '-'}
@@ -199,6 +205,7 @@ const LWFTrackerTable: React.FC<LWFTrackerTableProps> = ({
       },
       {
         header: 'Difference Amt',
+        enableSorting: false,
         accessorKey: 'difference_amt',
         cell: (props) => <div className="w-52 truncate">
           ₹{(props.getValue() as number)?.toLocaleString() || '-'}
@@ -206,6 +213,7 @@ const LWFTrackerTable: React.FC<LWFTrackerTableProps> = ({
       },
       {
         header: 'Difference Reason',
+        enableSorting: false,
         accessorKey: 'difference_reason',
         cell: (props) => <div className="w-40 truncate">
           {(props.getValue() as string) || '-'}
@@ -213,6 +221,7 @@ const LWFTrackerTable: React.FC<LWFTrackerTableProps> = ({
       },
       {
         header: 'Due Date',
+        enableSorting: false,
         accessorKey: 'payment_due_date',
         cell: (props) => <div className="w-28 truncate">
           {dayjs(props.getValue() as string).format('DD-MM-YYYY')}
@@ -220,6 +229,7 @@ const LWFTrackerTable: React.FC<LWFTrackerTableProps> = ({
       },
       {
         header: 'Payment Date',
+        enableSorting: false,
         accessorKey: 'payment_date',
         cell: (props) => <div className="w-28 truncate">
           {dayjs(props.getValue() as string).format('DD-MM-YYYY')}
@@ -227,6 +237,7 @@ const LWFTrackerTable: React.FC<LWFTrackerTableProps> = ({
       },
       {
         header: 'Delay in Days',
+        enableSorting: false,
         accessorKey: 'delay_in_days',
         cell: (props) => <div className="w-28 truncate">
           {props.getValue() ? `${props.getValue()} Days` : '-'}
@@ -234,6 +245,7 @@ const LWFTrackerTable: React.FC<LWFTrackerTableProps> = ({
       },
       {
         header: 'Delay Reason',
+        enableSorting: false,
         accessorKey: 'delay_reason',
         cell: (props) => <div className="w-40 truncate">
           {(props.getValue() as string) || '-'}
@@ -241,6 +253,7 @@ const LWFTrackerTable: React.FC<LWFTrackerTableProps> = ({
       },
       {
         header: 'Receipt No',
+        enableSorting: false,
         accessorKey: 'receipt_no',
         cell: (props) => <div className="w-52 truncate">
           {props.getValue() as string || '-'}
@@ -248,6 +261,7 @@ const LWFTrackerTable: React.FC<LWFTrackerTableProps> = ({
       },
       {
   header: 'Payment Receipt',
+  enableSorting: false,
   accessorKey: 'receipt_document',
   cell: (props) => {
     const paymentReceiptDocument = props.getValue() as string | null;
@@ -279,6 +293,7 @@ const LWFTrackerTable: React.FC<LWFTrackerTableProps> = ({
 },
       {
         header: 'Status',
+        enableSorting: false,
         accessorKey: 'status',
         cell: (props) => <div className="w-28 truncate">
           {props.getValue() as string}
@@ -286,6 +301,7 @@ const LWFTrackerTable: React.FC<LWFTrackerTableProps> = ({
       },
       {
         header: 'Uploaded By',
+        enableSorting: false,
         accessorKey: 'UploadBy.name',
         cell: (props) => <div className="w-40 truncate">
           {props.getValue() as string}

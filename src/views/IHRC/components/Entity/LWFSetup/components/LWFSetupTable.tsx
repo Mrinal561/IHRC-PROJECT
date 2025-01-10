@@ -76,6 +76,7 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
         () => [
             {
                 header: 'Company Group',
+                enableSorting: false,
                 accessorKey: 'CompanyGroup.name',
                 cell: (props) => (
                     <div className="w-36 text-start">{props.getValue() as string}</div>
@@ -83,6 +84,7 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
             },
             {
                 header: 'Company',
+                enableSorting: false,
                 accessorKey: 'Company.name',
                 cell: (props) => (
                     <div className="w-36 text-start">{props.getValue() as string}</div>
@@ -90,6 +92,7 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
             },
             {
                 header: 'LWF State',
+                enableSorting: false,
                 accessorKey: 'Location.District.State.name',
                 cell: (props) => (
                     <div className="w-36 text-start">{props.getValue() as string}</div>
@@ -97,6 +100,7 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
             },
             {
                 header: 'LWF Location',
+                enableSorting: false,
                 accessorKey: 'Location.name',
                 cell: (props) => (
                     <div className="w-36 text-start">{props.getValue() as string}</div>
@@ -111,6 +115,7 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
             // },
             {
                 header: 'LWF Registration Number',
+                enableSorting: false,
                 accessorKey: 'register_number',
                 cell: (props) => (
                     <div className="w-36 truncate">{props.getValue() as string}</div>
@@ -118,6 +123,7 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
             },
             {
                 header: 'LWF Registration Date',
+                enableSorting: false,
                 accessorKey: 'register_date',
                 cell: (props) => (
                     <div className="w-32 flex items-center justify-center">{dayjs(props.getValue() as string).format('DD-MM-YYYY')}</div>
@@ -125,6 +131,7 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
             },
             {
                 header: 'Remmitance Mode',
+                enableSorting: false,
                 accessorKey: 'remmit_mode',
                 cell: (props) => (
                     <div className="w-40 flex items-center justify-center">{props.getValue() as string}</div>
@@ -132,6 +139,7 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
             },
             {
                 header: 'User ID',
+                enableSorting: false,
                 accessorKey: 'username',
                 cell: (props) => (
                     <div className="w-48 truncate">{props.getValue() as string}</div>
@@ -139,6 +147,7 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
             },
             {
                 header: 'Password',
+                enableSorting: false,
                 accessorKey: 'password',
                 cell: (props) => (
                     <div className="w-48 truncate">{props.getValue() as string}</div>
@@ -146,6 +155,7 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
             },
             {
                 header: 'Authorised Signatory',
+                enableSorting: false,
                 accessorKey: 'Signatory.name',
                 cell: (props) => (
                     <div className="w-48 truncate">{props.getValue() as string}</div>
@@ -153,6 +163,7 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
             },
             {
                 header: 'Designation',
+                enableSorting: false,
                 accessorKey: 'Signatory.Role.name',
                 cell: (props) => (
                     <div className="w-48 truncate">{props.getValue() as string}</div>
@@ -160,6 +171,7 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
             },
             {
                 header: 'Mobile',
+                enableSorting: false,
                 accessorKey: 'Signatory.mobile',
                 cell: (props) => (
                     <div className="w-48 truncate">{props.getValue() as string}</div>
@@ -167,6 +179,7 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
             },
             {
                 header: 'Email',
+                enableSorting: false,
                 accessorKey: 'Signatory.email',
                 cell: (props) => (
                     <div className="w-48 truncate">{props.getValue() as string}</div>

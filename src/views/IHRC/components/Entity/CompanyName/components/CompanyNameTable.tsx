@@ -141,6 +141,7 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({
       // },
       {
         header: 'Company',
+        enableSorting: false,
         accessorKey: 'name',
         cell: (props) => (
           <div className="w-96 truncate">{props.getValue() as string}</div>

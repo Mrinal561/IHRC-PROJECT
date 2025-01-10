@@ -48,6 +48,7 @@ const UserTable: React.FC = () => {
         () => [
             {
                 header: 'Company',
+                enableSorting: false,
                 accessorKey: 'company_details.name',
                 cell: (props) => (
                     <div className="w-32 truncate">{props.getValue() as string}</div>
@@ -55,6 +56,7 @@ const UserTable: React.FC = () => {
             },
             {
                 header: 'Name',
+                enableSorting: false,
                 accessorKey: 'user_details.name',
                 cell: (props) => <div className="w-32 truncate">{props.getValue() as string}</div>,
             },
@@ -65,6 +67,7 @@ const UserTable: React.FC = () => {
             // },
             {
                 header: 'Email',
+                enableSorting: false,
                 accessorKey: 'user_details.email',
                 cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
             },
@@ -75,26 +78,31 @@ const UserTable: React.FC = () => {
             // },
             {
                 header: 'Mobile Number',
+                enableSorting: false,
                 accessorKey: 'user_details.mobile',
                 cell: (props) => <div className="w-36 truncate">{props.getValue() as string}</div>,
             },
             {
                 header: 'Job Role',
+                enableSorting: false,
                 accessorKey: 'role_details.name',
                 cell: (props) => <div className="w-32 truncate">{props.getValue() as string}</div>,
             },
             {
                 header: 'PAN',
+                enableSorting: false,
                 accessorKey: 'user_details.pan_card',
                 cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
             },
             {
                 header: 'Aadhar',
+                enableSorting: false,
                 accessorKey: 'user_details.aadhar_no',
                 cell: (props) => <div className="w-36 truncate">{props.getValue() as string}</div>,
             },
             {
                 header: 'Date of Joining',
+                enableSorting: false,
                 accessorKey: 'joining_date',
                 cell: (props) => <div className="w-32 truncate">{dayjs(props.getValue() as string).format('DD-MM-YYYY')}</div>,
             },

@@ -45,6 +45,7 @@ const PTSetupTable: React.FC<PTSetupTableProps> = ({ data , onRefresh}) => {
     () => [
       {
         header: 'Company Group',
+        enableSorting: false,
         accessorKey: 'CompanyGroup.name',
         cell: (props) => (
           <div className="w-36 text-start">{props.getValue() as string}</div>
@@ -52,6 +53,7 @@ const PTSetupTable: React.FC<PTSetupTableProps> = ({ data , onRefresh}) => {
       },
       {
         header: 'Company',
+        enableSorting: false,
         accessorKey: 'Company.name',
         cell: (props: any) => (
           <div className="w-48 text-start">
@@ -68,6 +70,7 @@ const PTSetupTable: React.FC<PTSetupTableProps> = ({ data , onRefresh}) => {
       // },
       {
         header: 'PT Location',
+        enableSorting: false,
         accessorKey: 'Location.name',
         cell: (props: any) => (
           <div className="w-36 text-start">{props.getValue()}</div>
@@ -75,6 +78,7 @@ const PTSetupTable: React.FC<PTSetupTableProps> = ({ data , onRefresh}) => {
       },
       {
         header: 'PT Enrollment Number(PTEC)',
+        enableSorting: false,
         accessorKey: 'enroll_number',
         cell: (props: any) => (
           <div className="w-48 truncate">{props.getValue()}</div>
@@ -82,6 +86,7 @@ const PTSetupTable: React.FC<PTSetupTableProps> = ({ data , onRefresh}) => {
       },
       {
         header: 'PT Registration Number(PTRC)',
+        enableSorting: false,
         accessorKey: 'register_number',
         cell: (props: any) => (
           <div className="w-48 truncate">{props.getValue()}</div>
@@ -89,6 +94,7 @@ const PTSetupTable: React.FC<PTSetupTableProps> = ({ data , onRefresh}) => {
       },
       {
         header: 'PT Registration Date',
+        enableSorting: false,
         accessorKey: 'register_date',
         cell: (props: any) => (
           <div className="w-48 flex items-center justify-center">
@@ -98,6 +104,7 @@ const PTSetupTable: React.FC<PTSetupTableProps> = ({ data , onRefresh}) => {
       },
       {
         header: 'Remittance Mode',
+        enableSorting: false,
         accessorKey: 'remmit_mode',
         cell: (props: any) => (
           <div className="w-40 flex items-center justify-center">
@@ -125,6 +132,7 @@ const PTSetupTable: React.FC<PTSetupTableProps> = ({ data , onRefresh}) => {
       // },
       {
         header: 'Username',
+        enableSorting: false,
         accessorKey: 'username',
         cell: (props: any) => (
           <div className="w-48 truncate">{props.getValue()}</div>
@@ -132,6 +140,7 @@ const PTSetupTable: React.FC<PTSetupTableProps> = ({ data , onRefresh}) => {
       },
       {
         header: 'Password',
+        enableSorting: false,
         accessorKey: 'password',
         cell: (props: any) => (
           <div className="w-48 truncate">{props.getValue()}</div>
@@ -139,6 +148,7 @@ const PTSetupTable: React.FC<PTSetupTableProps> = ({ data , onRefresh}) => {
       },
       {
         header: 'Mobile',
+        enableSorting: false,
         accessorKey: 'mobile',
         cell: (props: any) => (
           <div className="w-48 truncate">{props.getValue()}</div>
@@ -146,6 +156,7 @@ const PTSetupTable: React.FC<PTSetupTableProps> = ({ data , onRefresh}) => {
       },
       {
         header: 'Email',
+        enableSorting: false,
         accessorKey: 'email',
         cell: (props: any) => (
           <div className="w-48 truncate">{props.getValue()}</div>
