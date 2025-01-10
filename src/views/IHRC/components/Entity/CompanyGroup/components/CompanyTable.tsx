@@ -82,7 +82,7 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
     const columns = useMemo(
         () => [
             {
-                header: 'Company Group',
+                header: 'Entity Group',
                 enableSorting: false,
                 accessorKey: 'name',
                 cell: (props) => (
