@@ -7,6 +7,11 @@ import { showErrorNotification } from '@/components/ui/ErrorMessage';
 import { useDispatch } from 'react-redux';
 import { fetchPFById, updatePF } from '@/store/slices/pfSetup/pfSlice';
 import * as yup from 'yup';
+import httpClient from '@/api/http-client';
+import { endpoints } from '@/api/endpoint';
+import OutlinedSelect from '@/components/ui/Outlined/Outlined';
+import DistrictAutosuggest from '../../Branch/components/DistrictAutoSuggest';
+import LocationAutosuggest from '../../Branch/components/LocationAutosuggest';
 
 
 interface ValidationErrors {
@@ -45,11 +50,28 @@ interface PFEditedDataProps {
   onRefresh: () => void;
 }
 
-interface Signatory {
-  name: string;
-  designation: string;
-  mobile: string;
-  email: string;
+interface PFSetupData {
+  group_id?: number;
+  company_id?: number;
+  state_id?: number;
+  district: string;
+  location: string;
+  location_id?:string;
+  pf_code: string;
+  register_date: Date | string | null;
+  register_certificate: string;
+  signatory_data: SignatoryData[];
+  pf_user: string;
+  password: string;
+  Company_Group_Name?: string;
+  Company_Name?: string;
+}
+
+interface SignatoryData {
+  signatory_id: number;
+  dsc_validity: string;
+  e_sign: string;
+  e_sign_status: string;
 }
 
 const PFEditedData: React.FC<PFEditedDataProps> = ({ 
@@ -60,27 +82,35 @@ const PFEditedData: React.FC<PFEditedDataProps> = ({
   onRefresh 
 }) => {
   const [formData, setFormData] = useState<PFSetupData>({
-    Company_Group_Name: '',
-    Company_Name: '',
+    group_id: 0,
+    company_id: 0,
+    state_id: 0,
+    district: '',
+    location: '',
     pf_code: '',
-    pfCodeLocation: '',
-    register_date: '',
+    register_date: null,
+    register_certificate: '',
+    signatory_data: [],
     pf_user: '',
     password: '',
-    authorizedSignatory: '',
-    signatoryDesignation: '',
-    signatoryMobile: '',
-    signatoryEmail: '',
-    dscValidDate: '',
-    esign: '',
   });
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const dispatch = useDispatch();
   const [errors, setErrors] = useState<ValidationErrors>({});
+  const [states, setStates] = useState<Array<{ value: string; label: string }>>([]);
+  const [selectedState, setSelectedState] = useState<{ value: string; label: string } | null>(null);
+  const [selectedDistrict, setSelectedDistrict] = useState('');
+  const [selectedDistrictId, setSelectedDistrictId] = useState<number>();
+  const [selectedLocation, setSelectedLocation] = useState('');
+  const [users, setUsers] = useState<Array<{ id: number; name: string }>>([]);
+  const [selectedSignatories, setSelectedSignatories] = useState<Array<{ id: number; name: string }>>([]);
+  const [selectedLocationId, setSelectedLocationId] = useState<number>();
 
   useEffect(() => {
+    loadStates();
+    loadUsers();
     if (id) {
       fetchPFData();
     } else if (initialData) {
@@ -88,6 +118,39 @@ const PFEditedData: React.FC<PFEditedDataProps> = ({
       setLoading(false);
     }
   }, [id, initialData]);
+
+  const loadStates = async () => {
+    try {
+      const response = await httpClient.get(endpoints.common.state());
+      if (response.data) {
+        const formattedStates = response.data.map((state: any) => ({
+          label: state.name,
+          value: String(state.id),
+        }));
+        setStates(formattedStates);
+      }
+    } catch (error) {
+      console.error('Failed to load states:', error);
+      showErrorNotification('Failed to load states');
+    }
+  };
+
+  const loadUsers = async () => {
+    try {
+      const response = await httpClient.get(endpoints.user.getAll());
+      if (response.data) {
+        const formattedUsers = response.data.data.map((user: any) => ({
+          id: user.user_details.id,
+          name: user.user_details.name,
+        }));
+        setUsers(formattedUsers);
+      }
+    } catch (error) {
+      console.error('Failed to load users:', error);
+      showErrorNotification('Failed to load users');
+    }
+  };
+
 
   const fetchPFData = async () => {
     try {
@@ -104,7 +167,57 @@ const PFEditedData: React.FC<PFEditedDataProps> = ({
           }
           throw error;
         });
-      setFormData(response);
+
+      // Transform the data including company group and company names
+      const transformedData = {
+        ...response,
+        Company_Group_Name: response.CompanyGroup?.name || '',
+        Company_Name: response.Company?.name || '',
+        signatory_data: [{
+          signatory_id: response.signatory_id,
+          dsc_validity: response.dsc_validity,
+          e_sign: '',
+          e_sign_status: response.e_sign_status
+        }]
+      };
+
+      setFormData(transformedData);
+      
+      // Handle nested location data
+      if (response.Location) {
+        // Set state
+        const stateData = response.Location.District?.State;
+        if (stateData) {
+          const stateOption = {
+            value: String(stateData.id),
+            label: stateData.name
+          };
+          setSelectedState(stateOption);
+          handleChange('state_id', stateData.id);
+        }
+
+        // Set district
+        const districtData = response.Location.District;
+        if (districtData) {
+          setSelectedDistrict(districtData.name);
+          setSelectedDistrictId(districtData.id);
+          handleChange('district', districtData.name);
+        }
+
+        // Set location
+        setSelectedLocation(response.Location.name);
+        handleChange('location', response.Location.name);
+      }
+      
+      // Update signatory selection with complete data
+      if (response.Signatory) {
+        const signatoryUser = {
+          id: response.Signatory.id,
+          name: response.Signatory.name
+        };
+        setSelectedSignatories([signatoryUser]);
+      }
+      
       setLoading(false);
     } catch (err) {
       console.error('Error fetching PF data:', err);
@@ -114,9 +227,61 @@ const PFEditedData: React.FC<PFEditedDataProps> = ({
     }
   };
 
+
   const handleChange = (field: keyof PFSetupData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
+
+
+  const handleSignatoryChange = (newSignatories: Array<{ value: string; label: string }>) => {
+    const signatoryData = newSignatories.map(sig => ({
+      signatory_id: Number(sig.value),
+      dsc_validity: '',
+      e_sign: '',
+      e_sign_status: 'active',
+    }));
+    
+    setFormData(prev => ({
+      ...prev,
+      signatory_data: signatoryData,
+    }));
+
+    const selectedUsers = newSignatories.map(sig => 
+      users.find(user => user.id === Number(sig.value))
+    ).filter(user => user) as Array<{ id: number; name: string }>;
+    setSelectedSignatories(selectedUsers);
+  };
+
+  const handleStateChange = (option: { value: string; label: string } | null) => {
+    setSelectedState(option);
+    // Reset district and location when state changes
+    setSelectedDistrict('');
+    setSelectedDistrictId(undefined);
+    setSelectedLocation('');
+    handleChange('district', '');
+    handleChange('location', '');
+    
+    if (option) {
+      handleChange('state_id', Number(option.value));
+    }
+  };
+  const handleDistrictChange = (value: string, districtId?: number) => {
+    setSelectedDistrict(value);
+    setSelectedDistrictId(districtId);
+    handleChange('district', value);
+    // Reset location when district changes
+    setSelectedLocation('');
+    handleChange('location', '');
+  };
+
+  // Update location handling
+  const handleLocationChange = (value: string, locationId?: number) => {
+    setSelectedLocation(value);
+    setSelectedLocationId(locationId);
+    handleChange('location', value);
+    handleChange('location_id', locationId); // Add location_id to your form data if needed
+  };
+
 
   const validateForm = async () => {
     try {
@@ -146,38 +311,60 @@ const PFEditedData: React.FC<PFEditedDataProps> = ({
     }
 };
 
-  const handleSubmit = async() => {
-    try {
-    // Create updateData object (matching the original updateTracker data expectation)
-
+const handleSubmit = async () => {
+  try {
     const isValid = await validateForm();
-    if(!isValid) return;
+    if (!isValid) return;
 
+    // Create updateData object with exact required fields
     const updateData = {
-      pf_code: formData.pf_code,
-      pf_user: formData.pf_user,
-      password: formData.password,
-      register_date: formData.register_date || '',
+      // IDs
+      group_id: formData.group_id,
+      company_id: formData.company_id,
+      state_id: selectedState ? Number(selectedState.value) : undefined,
+      
+      // Location data
+      district: selectedDistrict || undefined,
+      location: selectedLocation || undefined,
+      
+      // PF details
+      pf_code: formData.pf_code || undefined,
+      pf_user: formData.pf_user || undefined,
+      password: formData.password || undefined,
+      
+      // Registration details
+      register_date: formData.register_date || undefined,
+      register_certificate: formData.register_certificate || undefined,
+      
+      // Signatory data
+      signatory_data: formData.signatory_data || undefined
     };
 
-    // Dispatch updateTracker with id and updateData
-    const resultAction = await dispatch(updatePF({
-      id: id, 
-      pfData: updateData 
-    }));
+    // Remove any undefined values to keep the payload clean
+    const cleanedUpdateData = Object.fromEntries(
+      Object.entries(updateData).filter(([_, value]) => value !== undefined)
+    );
 
-      onClose();
-      if (resultAction) {
-        openNotification('success', 'PF Setup edited successfully');
-         if (onRefresh) {
-          onRefresh();
-        }
+    // Dispatch update action
+    const resultAction = await dispatch(
+      updatePF({
+        id: id,
+        pfData: cleanedUpdateData
+      })
+    );
+
+    if (resultAction) {
+      openNotification('success', 'PF Setup edited successfully');
+      if (onRefresh) {
+        onRefresh();
       }
+      onClose();
+    }
   } catch (err) {
-    console.error('Error submitting tracker data:', err);
+    console.error('Error submitting PF data:', err);
     openNotification('danger', 'Failed to save changes');
   }
-  };
+};
 
   const openNotification = (type: 'success' | 'info' | 'danger' | 'warning', message: string) => {
     toast.push(
@@ -210,86 +397,177 @@ const PFEditedData: React.FC<PFEditedDataProps> = ({
     return <div>Loading...</div>;
   }
 
-  return (
-    <div className="p-2 space-y-1">
-      {/* First row */}
+return (
+    <div className="p-4 space-y-4">
       <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <label className="block text-sm font-medium">PF Code</label>
-          <div>
-            <OutlinedInput
-              label="PF Code"
-              value={formData.pf_code}
-              onChange={(value) => handleChange('pf_code', value)}
-            />
-            <div className="h-5">
-              {errors.pf_code && (
-                <div className="text-red-500 text-sm">{errors.pf_code}</div>
-              )}
-            </div>
-          </div>
+        <div>
+          <OutlinedInput
+            label="Company Group"
+            value={formData.Company_Group_Name || ''}
+            disabled
+          />
         </div>
-
-        <div className="space-y-2">
-          <label className="block text-sm font-medium">PF user</label>
-          <div>
-            <OutlinedInput
-              label="PF User"
-              value={formData.pf_user}
-              onChange={(value) => handleChange('pf_user', value)}
-            />
-            <div className="h-5">
-              {errors.pf_user && (
-                <div className="text-red-500 text-sm">{errors.pf_user}</div>
-              )}
-            </div>
-          </div>
+        <div>
+          <OutlinedInput
+            label="Company"
+            value={formData.Company_Name || ''}
+            disabled
+          />
         </div>
       </div>
 
-      {/* Second row */}
       <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <label className="block text-sm font-medium">PF User Password</label>
-          <div>
-            <OutlinedInput
-              label="PF Password"
-              value={formData.password}
-              onChange={(value) => handleChange('password', value)}
-            />
-            <div className="h-5">
-              {errors.password && (
-                <div className="text-red-500 text-sm">{errors.password}</div>
-              )}
-            </div>
-          </div>
+        <div>
+          <OutlinedInput
+            label="PF Code"
+            value={formData.pf_code}
+            onChange={(value) => handleChange('pf_code', value)}
+            error={errors.pf_code}
+          />
         </div>
+        <div>
+          <OutlinedSelect
+            label="Select State"
+            options={states}
+            value={selectedState}
+            onChange={handleStateChange}
+            // isDisabled={true}
+            // error={errors.state_id}
+          />
+        </div>
+      </div>
 
-        <div className="space-y-2">
-          <label className="block text-sm font-medium">PF Registration Date</label>
+      <div className="grid grid-cols-2 gap-4">
+        <DistrictAutosuggest
+          value={selectedDistrict}
+          onChange={(value: string) => handleDistrictChange(value)}
+          stateId={selectedState ? parseInt(selectedState.value) : undefined}
+          onDistrictSelect={setSelectedDistrictId}
+          // error={errors.district}
+          // isDisabled={true}
+        />
+        <LocationAutosuggest
+          value={selectedLocation}
+          locationId={selectedLocationId}
+          onChange={(value: string) => handleLocationChange(value)}
+          districtId={selectedDistrictId}
+          // error={errors.location}
+        />
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <OutlinedInput
+            label="PF User"
+            value={formData.pf_user}
+            onChange={(value) => handleChange('pf_user', value)}
+            error={errors.pf_user}
+          />
+        </div>
+        <div>
+          <OutlinedInput
+            label="Password"
+            type="password"
+            value={formData.password}
+            onChange={(value) => handleChange('password', value)}
+            error={errors.password}
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+    <div>
+    <label className="block text-sm font-medium text-gray-700 mb-1">
+                            PF Registration Date
+                        </label>
+      <DatePicker
+        // label="Registration Date"
+        value={formData.register_date ? new Date(formData.register_date) : null}
+        onChange={(date) => handleChange('register_date', date)}
+        // error={errors.register_date}
+      />
+    </div>
+    <div>
+    <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Choose the Signatories
+                        </label>
+      <Select
+      isDisabled
+        isMulti
+        label="Select Signatories"
+        options={users.map(user => ({
+          value: String(user.id),
+          label: user.name,
+        }))}
+        value={selectedSignatories.map(signatory => ({
+          value: String(signatory.id),
+          label: signatory.name
+        }))}
+        onChange={handleSignatoryChange}
+        // error={errors.signatory_data}
+      />
+    </div>
+  </div>
+
+  {selectedSignatories.length > 0 && (
+  <div className="space-y-4 border rounded-lg p-4">
+    <h6 className="font-semibold">Selected Signatories</h6>
+    {selectedSignatories.map((signatory, index) => (
+      <div key={signatory.id} className="border p-4 rounded-lg">
+        <h4 className="text-sm mb-4">{signatory.name}</h4>
+        <div className="grid grid-cols-2 gap-4">
           <div>
             <DatePicker
-              size="sm"
-              placeholder="Select date"
-              value={formData.register_date ? new Date(formData.register_date) : null}
-              onChange={(date) => handleChange('register_date', date?.toISOString() || '')}
+             disabled
+              label="DSC Valid Upto"
+              value={formData.signatory_data[index]?.dsc_validity ? new Date(formData.signatory_data[index].dsc_validity) : null}
+              onChange={(date) => {
+                const newSignatoryData = [...formData.signatory_data];
+                newSignatoryData[index] = {
+                  ...newSignatoryData[index],
+                  dsc_validity: date ? date.toISOString() : '',
+                };
+                handleChange('signatory_data', newSignatoryData);
+              }}
+              // error={errors[`signatory_data.${index}.dsc_validity`]}
             />
-            <div className="h-5">
-              {errors.register_date && (
-                <div className="text-red-500 text-sm">{errors.register_date}</div>
-              )}
-            </div>
           </div>
+          <div>
+            <Select
+            isDisabled
+              // label="E-Sign Status"
+              options={[
+                { value: 'active', label: 'Active' },
+                { value: 'inactive', label: 'Inactive' },
+              ]}
+              value={{ 
+                value: formData.signatory_data[index]?.e_sign_status || 'inactive', 
+                label: (formData.signatory_data[index]?.e_sign_status || 'inactive').charAt(0).toUpperCase() + 
+                       (formData.signatory_data[index]?.e_sign_status || 'inactive').slice(1) 
+              }}
+              onChange={(option) => {
+                const newSignatoryData = [...formData.signatory_data];
+                newSignatoryData[index] = {
+                  ...newSignatoryData[index],
+                  e_sign_status: option?.value || 'inactive',
+                };
+                handleChange('signatory_data', newSignatoryData);
+              }}
+              // error={errors[`signatory_data.${index}.e_sign_status`]}
+            />
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
-      </div>
+      )}
 
-      {/* Button row */}
-      <div className="flex justify-end gap-4">
-        <Button variant="plain" onClick={onClose}>
+      <div className="flex justify-end space-x-4 mt-6">
+        <Button onClick={onClose}>
           Cancel
         </Button>
-        <Button variant="solid" onClick={handleSubmit}>
-          Confirm
+        <Button variant='solid' onClick={handleSubmit} disabled={loading}>
+          {loading ? 'Updating...' : 'Update PF Setup'}
         </Button>
       </div>
     </div>
