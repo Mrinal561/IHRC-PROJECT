@@ -291,21 +291,25 @@ const NoticeTrackerTable: React.FC<NoticeTrackerTableProps> = ({
     () => [
       {
         header: 'Company Group',
+        enableSorting: false,
         accessorKey: 'CompanyGroup.name',
         cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
       },
       {
         header: 'Company',
+        enableSorting: false,
         accessorKey: 'Company.name',
         cell: (props) => <div className="w-52 truncate">{props.getValue() as string}</div>,
       },
       {
         header: 'Location',
+        enableSorting: false,
         accessorKey: 'Location.name',
         cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
       },
       {
         header: 'Notice Type',
+        enableSorting: false,
         accessorKey: 'notice_type',
         cell: (props) => (
           <div className="w-32 truncate capitalize">
@@ -315,6 +319,7 @@ const NoticeTrackerTable: React.FC<NoticeTrackerTableProps> = ({
       },
       {
         header: 'Notice Date',
+        enableSorting: false,
         accessorKey: 'notice_date',
         cell: (props) => (
           <div className="w-32 truncate">
@@ -324,11 +329,13 @@ const NoticeTrackerTable: React.FC<NoticeTrackerTableProps> = ({
       },
       {
         header: 'Reference Number',
+        enableSorting: false,
         accessorKey: 'reference_number',
         cell: (props) => <div className="w-36 truncate">{props.getValue() as string}</div>,
       },
       {
         header: 'Related Act',
+        enableSorting: false,
         accessorKey: 'related_act',
         cell: (props) => (
           <div className="w-32 truncate capitalize">
@@ -338,6 +345,7 @@ const NoticeTrackerTable: React.FC<NoticeTrackerTableProps> = ({
       },
       {
         header: 'Notice Document',
+        enableSorting: false,
         accessorKey: 'notice_document',
         cell: (props) => {
           const document = props.getValue() as string | null;
