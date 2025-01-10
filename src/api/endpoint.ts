@@ -200,5 +200,8 @@ export const endpoints = {
         list:()=> api('/companyadmin/noticetracker'),
         detail: (id:any) => api(`/companyadmin/noticetracker/${id}`),
         delete: (id:any) => api(`/companyadmin/noticetracker/${id}`)
+    },
+    permission:{
+        approve:(id:any)=> api(`companyadmin/company/tracker-edit-permission/${id}`)
     }
 }
