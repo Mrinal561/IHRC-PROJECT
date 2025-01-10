@@ -297,11 +297,11 @@ const PFSetupPage: React.FC = () => {
                 })
                 setErrors(newErrors)
                 
-                toast.push(
-                    <Notification title="Validation Error" type="danger">
-                        Please fix the highlighted errors to continue
-                    </Notification>
-                )
+                // toast.push(
+                //     <Notification title="Validation Error" type="danger">
+                //         Please fix the highlighted errors to continue
+                //     </Notification>
+                // )
             }
             return false
         }
@@ -319,6 +319,11 @@ useEffect(()=>{
 
         const isValid = await validateForm();
         if(!isValid){
+            toast.push(
+                <Notification title="Validation Error" type="danger">
+                    Please fix the highlighted errors to continue
+                </Notification>
+            )
             return;
         }
         const formData = {
@@ -351,7 +356,7 @@ useEffect(()=>{
                     } else {
                         // Fallback error message
                         showErrorNotification(
-                            'An unexpected error occurred. Please try again.',
+                            error
                         )
                     }
                     throw error // Re-throw to prevent navigation
