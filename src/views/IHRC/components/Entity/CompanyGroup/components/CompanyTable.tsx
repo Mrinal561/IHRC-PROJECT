@@ -82,7 +82,7 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
     const columns = useMemo(
         () => [
             {
-                header: 'Company Group',
+                header: 'Entity Group',
                 accessorKey: 'name',
                 cell: (props) => (
                     <div className="w-96 truncate">{props.getValue() as string}</div>
