@@ -347,26 +347,28 @@ const EditPermission = () => {
   });
 
   // Fetch data from API
+
+  const fetchData = async () => {
+    try {
+      setIsLoading(true);
+      const response = await httpClient.get(endpoints.request.getAll());
+      
+      console.log(response.data.data)
+      // Assuming the API returns an array of permission data
+      const fetchedData: PermissionData[] = response.data.data;
+
+      setData(fetchedData);
+      setTableData(prev => ({ ...prev, total: fetchedData.length }));
+      setIsLoading(false);
+    } catch (err) {
+      console.error('Error fetching permission data:', err);
+      setError('Failed to load permission data');
+      setIsLoading(false);
+    }
+  };
+
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setIsLoading(true);
-        const response = await httpClient.get(endpoints.request.getAll());
-        
-        console.log(response.data.data)
-        // Assuming the API returns an array of permission data
-        const fetchedData: PermissionData[] = response.data.data;
-
-        setData(fetchedData);
-        setTableData(prev => ({ ...prev, total: fetchedData.length }));
-        setIsLoading(false);
-      } catch (err) {
-        console.error('Error fetching permission data:', err);
-        setError('Failed to load permission data');
-        setIsLoading(false);
-      }
-    };
-
     fetchData();
   }, []);
 
@@ -501,10 +503,37 @@ const EditPermission = () => {
   };
 
   const handleApprove = (id: number) => {
-    // Implement your approval logic here
-    toast.success('Permission request approved', {
-      description: `Request ID ${id} has been approved`
-    });
+    const approvePermission = async () => {
+      try {
+        const response = await httpClient.delete(endpoints.permission.approve(id));
+        if (response) {
+         fetchData();
+          toast.push(
+            <Notification title="Copy Success" type="success" duration={3000}>
+            Permission has been given successfully
+        </Notification>,
+          );
+          // Optionally, refresh the data or update the local state
+          // fetchData(); // if you want to refresh the entire data
+          // or update the local state if you have a way to do so
+        } else {
+          toast.push(
+            <Notification title="Failed" type="danger" duration={3000}>
+            Failed to approve permission request
+        </Notification>,
+          );
+        }
+      } catch (err) {
+        console.error('Error approving permission:', err);
+        toast.push(
+            <Notification title="Failed" type="danger" duration={3000}>
+            Failed to approve permission request
+        </Notification>,
+        )
+      }
+    };
+  
+    approvePermission();
   };
 
   const onPaginationChange = (page: number) => {
@@ -532,14 +561,14 @@ const EditPermission = () => {
   }
 
   // Error state
-  if (error) {
-    return (
-      <div className="p-8 text-center text-red-600">
-        <p>{error}</p>
-        <Button onClick={() => window.location.reload()}>Retry</Button>
-      </div>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <div className="p-8 text-center text-red-600">
+  //       <p>{error}</p>
+  //       <Button onClick={() => window.location.reload()}>Retry</Button>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="">
