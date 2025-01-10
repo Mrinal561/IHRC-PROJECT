@@ -11,6 +11,11 @@ import { deletePF } from '@/store/slices/pfSetup/pfSlice';
 import { useDispatch } from 'react-redux';
 import { showErrorNotification } from '@/components/ui/ErrorMessage';
 
+interface SignatoryData {
+  signatory_id: number;
+  dsc_validity: string;
+  e_sign_status: string;
+}
 
 interface PFSetupTableProps {
   data: PFData[];
@@ -30,7 +35,9 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh , companyN
   const [editedData, setEditedData] = useState<Partial<PFSetupData>>({});
   const [suspendDialogIsOpen, setSuspendDialogIsOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
-
+  // Add these new state declarations
+const [editedSignatoryData, setEditedSignatoryData] = useState<SignatoryData[]>([]);
+const [editFormData, setEditFormData] = useState<PFData | null>(null);
   const openSuspendDialog = (index: number) => {
     setSuspendDialogIsOpen(true);
 };
@@ -39,15 +46,16 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh , companyN
 
   const columns: ColumnDef<PFData>[] = useMemo(
     () => [
-      {
-        header: 'Company Group',
-        accessorKey: 'CompanyGroup.name',
-        cell: (props) => (
-          <div className="w-36 text-start">{props.getValue() as string}</div>
-        ),
-      },
+      // {
+      //   header: 'Company Group',
+      //   accessorKey: 'CompanyGroup.name',
+      //   cell: (props) => (
+      //     <div className="w-36 text-start">{props.getValue() as string}</div>
+      //   ),
+      // },
       {
         header: 'Company',
+        enableSorting: false,
         accessorKey: 'Company.name',
         cell: (props) => (
           <div className="w-36 text-start">{props.getValue() as string}</div>
@@ -55,6 +63,7 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh , companyN
       },
       {
         header: 'PF Code',
+        enableSorting: false,
         accessorKey: 'pf_code',
         cell: (props) => (
           <div className="w-36 text-start">{props.getValue() as string}</div>
@@ -62,6 +71,7 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh , companyN
       },
       {
         header: 'PF Code Location',
+        enableSorting: false,
         accessorKey: 'Location.name',
         cell: (props) => (
           <div className="w-36 truncate">{props.getValue() as string}</div>
@@ -69,18 +79,19 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh , companyN
       },
       {
         header: 'PF Registration Date',
+        enableSorting: false,
         accessorKey: 'register_date',
         cell: (props) => (
           <div className="w-44 flex items-center justify-center">{dayjs(props.getValue() as string).format('DD-MM-YYYY')}</div>
         ),
       },
-      {
-        header: 'PF User ID',
-        accessorKey: 'id',
-        cell: (props) => (
-          <div className="w-32 flex items-center justify-center">{props.getValue() as string}</div>
-        ),
-      },
+      // {
+      //   header: 'PF User ID',
+      //   accessorKey: 'id',
+      //   cell: (props) => (
+      //     <div className="w-32 flex items-center justify-center">{props.getValue() as string}</div>
+      //   ),
+      // },
       // {
       //   header: 'PF User Password',
       //   accessorKey: 'pfPassword',
@@ -90,6 +101,7 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh , companyN
       // },
       {
         header: 'Authorized Signatory',
+        enableSorting: false,
         accessorKey: 'Signatory.name',
         cell: (props) => (
           <div className="w-48 truncate">{props.getValue() as string}</div>
@@ -97,6 +109,7 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh , companyN
       },
       {
         header: 'Designation',
+        enableSorting: false,
         accessorKey: 'Signatory.Role.name',
         cell: (props) => (
           <div className="w-48 truncate">{props.getValue() as string}</div>
@@ -104,6 +117,7 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh , companyN
       },
       {
         header: 'Mobile',
+        enableSorting: false,
         accessorKey: 'Signatory.mobile',
         cell: (props) => (
           <div className="w-48 truncate">{props.getValue() as string}</div>
@@ -111,6 +125,7 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh , companyN
       },
       {
         header: 'Email',
+        enableSorting: false,
         accessorKey: 'Signatory.email',
         cell: (props) => (
           <div className="w-48 truncate">{props.getValue() as string}</div>
@@ -118,6 +133,7 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh , companyN
       },
       {
         header: 'DSC Validity',
+        enableSorting: false,
         accessorKey: 'dsc_validity',
         cell: (props) => (
           <div className="w-44 flex items-center justify-center">{dayjs(props.getValue() as string).format('DD-MM-YYYY')}</div>
@@ -125,6 +141,7 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh , companyN
       },
       {
         header: 'E Sign',
+        enableSorting: false,
         accessorKey: 'e_sign_status',
         cell: (props) => (
           <div className="w-48 truncate">{props.getValue() as string}</div>
@@ -184,8 +201,11 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh , companyN
   const openEditDialog = (item: PFData) => {
     // setItemToEdit(item);
     // setEditedData(data[index]);
+    console.log(data)
     setEditingId(item.id);
     setEditDialogIsOpen(true);
+    setEditFormData(item);
+    console.log(item)
   };
 
   const handleDialogClose = () => {
@@ -193,6 +213,8 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh , companyN
     setEditDialogIsOpen(false);
     setItemToDelete(null);
     setItemToEdit(null);
+    setEditFormData(null);
+    setEditedSignatoryData([]); 
     // setEditedData({});
   };
 
@@ -305,14 +327,14 @@ const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh , companyN
         onClose={handleDialogClose}
         onRequestClose={handleDialogClose}
         width={800}
-        height={330}
+        height={660}
       >
         <h5 className="mb-4">Edit PF Setup</h5>
         {/* Add your edit form fields here */}
         <PFEditedData
           onRefresh={onRefresh}
           id={editingId}
-        initialData={itemToEdit}
+        initialData={editFormData}
         onClose={handleDialogClose}
         onSubmit={handleEditConfirm} />
         <div className="text-right mt-6">

@@ -140,12 +140,13 @@ const EditPermission = () => {
       //     </div>
       //   ),
       // },
-      {
-        header: 'Tracker ID',
-        accessorKey: 'tracker_id',
-      },
+      // {
+      //   header: 'Tracker ID',
+      //   accessorKey: 'tracker_id',
+      // },
       {
         header: 'Requested By',
+        enableSorting: false,
         accessorKey: 'UpdateBy',
         cell: (props) => {
           const updateBy = props.getValue() as PermissionData['UpdateBy'];
@@ -158,10 +159,12 @@ const EditPermission = () => {
       },
       {
         header: 'Edit Count',
+        enableSorting: false,
         accessorKey: 'count',
       },
       {
         header: 'Tracker Type',
+        enableSorting: false,
         accessorKey: 'tracker_type',
         cell: (props) => {
           const type = props.getValue() as string;
@@ -175,6 +178,7 @@ const EditPermission = () => {
       },
       {
         header: 'Created At',
+        enableSorting: false,
         accessorKey: 'created_at',
         cell: (props) => {
           const date = new Date(props.getValue() as string);
@@ -252,17 +256,17 @@ const EditPermission = () => {
   }
  
   return (
-    <div className="mb-2">
-    <div className="flex justify-between mb-12">
-      <h3 className="text-2xl font-bold">Edit Permission Manager</h3>
-      <div className="flex items-center gap-4">
-        <div className="w-52">
-          <OutlinedSelect
-            label="Filter"
-            options={filterOptions}
-            value={filter}
-            onChange={handleFilterChange}
-          />
+    <div className="">
+      <div className="flex justify-between items-center mb-12">
+      <h3 className="text-2xl font-bold">Remittance Tracker Edit Permission</h3>
+        <div className="flex items-center gap-4">
+          <div className="w-52 z-10-">
+            {/* <OutlinedSelect
+              label="Filter"
+              options={filterOptions}
+              value={filter}
+              onChange={handleFilterChange}
+            /> */}
           </div>
         </div>
       </div>

@@ -159,11 +159,11 @@ const UploadedPFDetails: React.FC<UploadedPFDetailsProps> = ({ onBack }) => {
         accessorKey: 'remark',
         cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
       },
-      {
-        header: 'Upload Date',
-        accessorKey: 'upload_date',
-        cell: (props) => <div className="w-40 truncate">{dayjs(props.getValue() as string).format('DD-MM-YYYY')}</div>,
-      },
+      // {
+      //   header: 'Upload Date',
+      //   accessorKey: 'upload_date',
+      //   cell: (props) => <div className="w-40 truncate">{dayjs(props.getValue() as string).format('DD-MM-YYYY')}</div>,
+      // },
       {
         header: 'Status',
         accessorKey: 'status',

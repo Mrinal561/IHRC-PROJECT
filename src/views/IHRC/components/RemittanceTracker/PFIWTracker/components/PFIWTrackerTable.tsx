@@ -135,21 +135,25 @@ const confirmDelete = () => {
     () => [
       {
         header: 'Company',
+        enableSorting: false,
         accessorKey: 'PfSetup.Company.name',
         cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
       },
       {
         header: 'PF Code',
+        enableSorting: false,
         accessorKey: 'PfSetup.pf_code',
         cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
       },
       {
         header: 'Location',
+        enableSorting: false,
         accessorKey: 'PfSetup.Location.name',
         cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
       },
       {
         header: 'Payroll month',
+        enableSorting: false,
         accessorKey: 'payroll_month',
         cell: (props) => {
           const date = new Date(props.getValue() as string);
@@ -162,6 +166,7 @@ const confirmDelete = () => {
       },
       {
         header: 'Due Date',
+        enableSorting: false,
         accessorKey: 'payment_due_date',
         cell: (props) => (
           <div className="w-28 truncate">
@@ -171,6 +176,7 @@ const confirmDelete = () => {
       },
       {
         header: 'Date Of Payment',
+        enableSorting: false,
         accessorKey: 'payment_date',
         cell: (props) => (
           <div className="w-40 truncate">
@@ -180,6 +186,7 @@ const confirmDelete = () => {
       },
       {
         header: 'Submission Date',
+        enableSorting: false,
         accessorKey: 'submit_date',
         cell: (props) => (
           <div className="w-40 truncate">
@@ -189,6 +196,7 @@ const confirmDelete = () => {
       },
       {
         header: 'Delay',
+        enableSorting: false,
         accessorKey: 'delay_days',
         cell: (props) => (
           <div className="w-40 truncate">
@@ -198,6 +206,7 @@ const confirmDelete = () => {
       },
       {
         header: 'Delay Reason',
+        enableSorting: false,
         accessorKey: 'delay_reason',
         cell: (props) => {
           const value = props.getValue() as string;
@@ -211,6 +220,7 @@ const confirmDelete = () => {
 
 {
   header: 'IW return',
+  enableSorting: false,
   accessorKey: 'challan_document',
   cell: (props) => {
     const challanDocument = props.getValue() as string | null;
@@ -243,6 +253,7 @@ const confirmDelete = () => {
 },
       {
         header: 'Upload Status',
+        enableSorting: false,
         id: 'uploadStatus',
         cell: ({ row }) => {
           const { challan_document } = row.original;

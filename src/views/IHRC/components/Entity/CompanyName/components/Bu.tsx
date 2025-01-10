@@ -137,7 +137,7 @@ const Bu: React.FC<BuProps> = ({ onUploadSuccess }) => {
         onClose={handleCancel}
         width={450}
       >
-        <h5 className="mb-4"> Add Bulk Uploads</h5>
+        <h5 className="mb-4"> Bulk Upload Company</h5>
         <div className="my-4 flex gap-2 items-center">
           <p>Download Bulk Upload Format</p>
           <a onClick={handleDownload} className="text-blue-600 hover:underline">
@@ -145,9 +145,10 @@ const Bu: React.FC<BuProps> = ({ onUploadSuccess }) => {
           </a>
         </div>
         <div className="flex flex-col gap-2">
-          <p>Upload Branch File:</p>
+          <p>Upload Bulk Company File:</p>
           <Input
             type="file"
+            accept='.xlsx'
             onChange={handleFileChange}
             className="mb-4"
           />

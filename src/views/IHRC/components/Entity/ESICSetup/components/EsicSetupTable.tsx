@@ -48,6 +48,7 @@ const ESISetupTable: React.FC<ESISetupTableProps> = ({
         () => [
             {
                 header: 'Company Group',
+                enableSorting: false,
                 accessorKey: 'CompanyGroup.name',
                 cell: (props) => (
                     <div className="w-36 text-start">{props.getValue() as string}</div>
@@ -55,6 +56,7 @@ const ESISetupTable: React.FC<ESISetupTableProps> = ({
             },
             {
                 header: 'Company',
+                enableSorting: false,
                 accessorKey: 'Company.name',
                 cell: (props) => (
                     <div className="w-36 text-start">{props.getValue() as string}</div>
@@ -62,6 +64,7 @@ const ESISetupTable: React.FC<ESISetupTableProps> = ({
             },
             {
                 header: 'ESI Code Type',
+                enableSorting: false,
                 accessorKey: 'code_Type',
                 cell: (props) => (
                     <div className="w-36 text-start">{props.getValue() as string}</div>
@@ -69,6 +72,7 @@ const ESISetupTable: React.FC<ESISetupTableProps> = ({
             },
             {
                 header: 'ESI Code',
+                enableSorting: false,
                 accessorKey: 'code',
                 cell: (props) => (
                     <div className="w-36 text-start">{props.getValue() as string}</div>
@@ -76,6 +80,7 @@ const ESISetupTable: React.FC<ESISetupTableProps> = ({
             },
             {
                 header: 'ESI Code Location',
+                enableSorting: false,
                 accessorKey: 'Location.name',
                 cell: (props) => (
                     <div className="w-36 truncate">{props.getValue() as string}</div>
@@ -83,6 +88,7 @@ const ESISetupTable: React.FC<ESISetupTableProps> = ({
             },
             {
                 header: 'ESI User ID',
+                enableSorting: false,
                 accessorKey: 'esi_user',
                 cell: (props) => (
                     <div className="w-32 flex items-center justify-center">{props.getValue() as string}</div>
@@ -90,6 +96,7 @@ const ESISetupTable: React.FC<ESISetupTableProps> = ({
             },
             {
                 header: 'ESI User Password',
+                enableSorting: false,
                 accessorKey: 'password',
                 cell: (props) => (
                     <div className="w-40 flex items-center justify-center">{props.getValue() as string}</div>

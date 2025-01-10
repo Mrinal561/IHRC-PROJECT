@@ -132,15 +132,16 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({
 
   const columns = useMemo<ColumnDef<CompanyData>[]>(
     () => [
-      {
-        header: 'Company Group',
-        accessorKey: 'company_group_name',
-        cell: (props) => (
-          <div className="w-96 truncate">{props.getValue() as string}</div>
-        ),
-      },
+      // {
+      //   header: 'Company Group',
+      //   accessorKey: 'company_group_name',
+      //   cell: (props) => (
+      //     <div className="w-96 truncate">{props.getValue() as string}</div>
+      //   ),
+      // },
       {
         header: 'Company',
+        enableSorting: false,
         accessorKey: 'name',
         cell: (props) => (
           <div className="w-96 truncate">{props.getValue() as string}</div>

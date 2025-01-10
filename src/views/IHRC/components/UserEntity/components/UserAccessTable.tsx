@@ -155,6 +155,7 @@ const UserAccessTable = ({ userData, isLoading, onDataChange }) => {
         () => [
             {
                 header: 'Name',
+                enableSorting: false,
                 accessorKey: 'user_details.name',
                 cell: (props) => (
                     <div className="text-gray-700">{props.getValue()}</div>
@@ -162,6 +163,7 @@ const UserAccessTable = ({ userData, isLoading, onDataChange }) => {
             },
             {
                 header: 'Role',
+                enableSorting: false,
                 accessorKey: 'role_details.name',
                 cell: (props) => (
                     <div className="text-gray-700">{props.getValue()}</div>
@@ -169,6 +171,7 @@ const UserAccessTable = ({ userData, isLoading, onDataChange }) => {
             },
             {
                 header: 'Module Access',
+                enableSorting: false,
                 accessorKey: 'moduleAccess',
                 cell: ({ getValue }) => {
                     const modules = getValue() || [];
@@ -190,6 +193,7 @@ const UserAccessTable = ({ userData, isLoading, onDataChange }) => {
             },
             {
                 header: 'Menu Access',
+                enableSorting: false,
                 accessorKey: 'moduleAccess',
                 cell: ({ getValue }) => {
                     const modules = getValue() || [];

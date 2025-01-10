@@ -27,8 +27,8 @@ const companySchema = yup.object().shape({
       .required('Role name is required')
       .min(3, 'Role name must be at least 3 characters')
       .max(50, 'Role name must not exceed 50 characters')
-      .matches(/^[a-zA-Z0-9\s_-]+$/, 'Role name can only contain letters, numbers, spaces, underscores, and hyphens')
-  });
+      .matches(/^\S.*\S$|^\S$/,'The input must not have leading or trailing spaces')
+    });
 
 interface CompanyTableProps {
     companyData: CompanyGroupData[];
@@ -83,6 +83,7 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
         () => [
             {
                 header: 'Company Group',
+                enableSorting: false,
                 accessorKey: 'name',
                 cell: (props) => (
                     <div className="w-96 truncate">{props.getValue() as string}</div>
@@ -101,14 +102,14 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
                                 className="text-blue-500"
                             />
                         </Tooltip>
-                        <Tooltip title="Delete">
+                        {/* <Tooltip title="Delete">
                             <Button
                                 size="sm"
                                 onClick={() => openDeleteDialog(row.original)}
                                 icon={<FiTrash />}
                                 className="text-red-500"
                             />
-                        </Tooltip>
+                        </Tooltip> */}
                     </div>
                 ),
             },
@@ -175,12 +176,19 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
         }
     };
 
+    useEffect(()=>{
+        validateForm();
+    },[editedCompanyGroupName])
+
     const handleEditConfirm = async () => {
         
         // if (itemToEdit?.id && editedCompanyGroupName.trim()) {
             try {
                 const isValid = await validateForm();
-                if(!isValid) return;
+                if(!isValid) {
+                    showErrorNotification("Please fix the validation Error");
+                    return
+                };
                 const result = await dispatch(updateCompanyGroup({
                     id: itemToEdit.id,
                     data: { name: editedCompanyGroupName.trim() }

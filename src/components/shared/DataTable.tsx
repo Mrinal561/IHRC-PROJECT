@@ -91,7 +91,6 @@ function _DataTable<T>(
         [pageSizes]
     )
 
-
     const handlePaginationChange = (page: number) => {
         if (!loading) {
             onPaginationChange?.(page)
@@ -111,8 +110,7 @@ function _DataTable<T>(
             const id = sorting.length > 0 ? sorting[0].id : ''
             onSort?.({ order: sortOrder, key: id })
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [sorting])
+    }, [sorting, onSort])
 
     const finalColumns: ColumnDef<T>[] = useMemo(() => {
         const columns = columnsProp
@@ -122,11 +120,9 @@ function _DataTable<T>(
                 {
                     id: 'select',
                     header: ({ table }) => (
-                      
                         <></>
                     ),
                     cell: ({ row }) => (
-                      
                         <></>
                     ),
                 },
@@ -134,12 +130,10 @@ function _DataTable<T>(
             ]
         }
         return columns
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [columnsProp, selectable])
 
     const table = useReactTable({
         data,
-        // eslint-disable-next-line  @typescript-eslint/no-explicit-any
         columns: finalColumns as ColumnDef<unknown | object | any[], any>[],
         getCoreRowModel: getCoreRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
@@ -155,7 +149,6 @@ function _DataTable<T>(
         },
     })
 
-    
     const resetSorting = () => {
         table.resetSorting()
     }
@@ -171,26 +164,35 @@ function _DataTable<T>(
 
     return (
         <Loading loading={loading && data.length !== 0} type="cover">
-             <div className="relative overflow-x-auto overflow-y-auto max-h-[500px] ">
+            <div className="relative overflow-x-auto overflow-y-auto max-h-[500px]">
                 <style>{`
                     .sticky-column {
                         position: sticky;
                         background: #ffffff;
-                        // z-index: 10;
+                        z-index: 1;
                     }
                     .sticky-left {
                         left: 0;
+                        z-index: 2;
                     }
                     .sticky-right {
                         right: 0;
+                        z-index: 2;
                     }
                     .sticky-header {
                         position: sticky;
+                        top: 0;
                         background: #f9fafb;
-                        // z-index: 10;
+                        z-index: 3;
+                    }
+                    .sticky-header.sticky-left {
+                        z-index: 4;
+                    }
+                    .sticky-header.sticky-right {
+                        z-index: 4;
                     }
                     .table-row:hover .sticky-column {
-                        background-color: #f3f4f6;  
+                        background-color: #f3f4f6;
                     }
                     .table-row:hover .sticky-column::after {
                         content: '';
@@ -208,12 +210,12 @@ function _DataTable<T>(
                         {table.getHeaderGroups().map((headerGroup) => (
                             <Table.Tr key={headerGroup.id}>
                                 {headerGroup.headers.map((header, index) => {
-                                    const isFirstColumn = index === 3;
+                                    const isFirstColumn = index === 0;
                                     const isLastColumn = index === headerGroup.headers.length - 1;
                                     const stickyClass = classNames({
-                                        'sticky-header': (isFirstColumn && selectable) || (isLastColumn && props.stickyLastColumn) ,
-                                        'sticky-column': (isFirstColumn && selectable) || (isLastColumn && props.stickyLastColumn) ,
-                                        'sticky-left': isFirstColumn && selectable,
+                                        'sticky-header': true,
+                                        'sticky-column': (isFirstColumn && props.stickyFirstColumn) || (isLastColumn && props.stickyLastColumn),
+                                        'sticky-left': isFirstColumn && props.stickyFirstColumn,
                                         'sticky-right': isLastColumn && props.stickyLastColumn,
                                     });
 
@@ -222,7 +224,6 @@ function _DataTable<T>(
                                             key={header.id}
                                             colSpan={header.colSpan}
                                             className={stickyClass}
-                                            
                                         >
                                             {header.isPlaceholder ? null : (
                                                 <div
@@ -235,8 +236,7 @@ function _DataTable<T>(
                                                     onClick={header.column.getToggleSortingHandler()}
                                                 >
                                                     {flexRender(
-                                                        header.column.columnDef
-                                                            .header,
+                                                        header.column.columnDef.header,
                                                         header.getContext()
                                                     )}
                                                     {header.column.getCanSort() && (
@@ -266,23 +266,20 @@ function _DataTable<T>(
                                 .rows.slice(0, pageSize)
                                 .map((row) => {
                                     return (
-                                        <Table.Tr key={row.id} className='table-row'>
+                                        <Table.Tr key={row.id} className="table-row">
                                             {row.getVisibleCells().map((cell, index) => {
-                                                const isFirstColumn = index === 3;
+                                                const isFirstColumn = index === 0;
                                                 const isLastColumn = index === row.getVisibleCells().length - 1;
                                                 const stickyClass = classNames({
-                                                    'sticky-column': (isFirstColumn && selectable) || (isLastColumn && props.stickyLastColumn),
-                                                    'sticky-left': isFirstColumn && selectable,
+                                                    'sticky-column': (isFirstColumn && props.stickyFirstColumn) || (isLastColumn && props.stickyLastColumn),
+                                                    'sticky-left': isFirstColumn && props.stickyFirstColumn,
                                                     'sticky-right': isLastColumn && props.stickyLastColumn,
-                                                    // 'show-shadow': (isFirstColumn && showLeftShadow) || (isLastColumn && showRightShadow)
-
                                                 });
 
                                                 return (
                                                     <Table.Td key={cell.id} className={stickyClass}>
                                                         {flexRender(
-                                                            cell.column.columnDef
-                                                                .cell,
+                                                            cell.column.columnDef.cell,
                                                             cell.getContext()
                                                         )}
                                                     </Table.Td>

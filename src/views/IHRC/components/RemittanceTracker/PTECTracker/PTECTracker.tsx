@@ -12,6 +12,9 @@ import { Notification, toast } from '@/components/ui'
 import { fetchAuthUser } from '@/store/slices/login'
 import { Loading } from '@/components/shared'
 
+const FINANCIAL_YEAR_KEY = 'selectedFinancialYear'
+const FINANCIAL_YEAR_CHANGE_EVENT = 'financialYearChanged';
+
 
 interface Permissions {
     canList: boolean;
@@ -58,8 +61,30 @@ const PTECTracker: React.FC = () => {
     })
     const [isInitialized, setIsInitialized] = useState(false)
     const [permissionCheckComplete, setPermissionCheckComplete] = useState(false)
+    const [financialYear, setFinancialYear] = useState(sessionStorage.getItem(FINANCIAL_YEAR_KEY));
 
 
+    useEffect(() => {
+        // Handler for the custom event
+        const handleFinancialYearChange = (event: CustomEvent) => {
+            const newFinancialYear = event.detail;
+            setFinancialYear(newFinancialYear);
+        };
+
+        // Add event listener for our custom event
+        window.addEventListener(
+            FINANCIAL_YEAR_CHANGE_EVENT, 
+            handleFinancialYearChange as EventListener
+        );
+
+        // Cleanup
+        return () => {
+            window.removeEventListener(
+                FINANCIAL_YEAR_CHANGE_EVENT, 
+                handleFinancialYearChange as EventListener
+            );
+        };
+    }, []);
 
 
     useEffect(() => {
@@ -170,6 +195,9 @@ const PTECTracker: React.FC = () => {
                   if (filters.ptCode) {
                     params['pt_code[]'] = filters.ptCode;
                 }
+                if (financialYear) {
+                    params['financial_year'] = financialYear
+                }
                 const res = await httpClient.get(endpoints.ptec.getAll(), {
                     params
                 })
@@ -184,12 +212,12 @@ const PTECTracker: React.FC = () => {
                 setIsLoading(false)
             }
         },
-        [filters.groupId, filters.companyId, filters.ptCode, filters.startDate, filters.endDate],
+        [filters.groupId, filters.companyId, filters.ptCode, filters.startDate, filters.endDate,financialYear]
     )
 
     useEffect(() => {
         fetchPTTrackerData(pagination.pageIndex, pagination.pageSize)
-    }, [fetchPTTrackerData, pagination.pageIndex, pagination.pageSize,filters.groupId, filters.companyId])
+    }, [fetchPTTrackerData, pagination.pageIndex, pagination.pageSize,filters.groupId, filters.companyId,financialYear])
 
     const handleFilterChange = (newFilters: any) => {
         setFilters(newFilters)

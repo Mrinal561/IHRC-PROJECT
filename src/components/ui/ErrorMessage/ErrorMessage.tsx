@@ -32,7 +32,7 @@ export const showErrorNotification = (errors: any) => {
     const errorMessages = formattedMessage.split('\n').filter(Boolean); // Filter out empty strings
     
     toast.push(
-      <Notification title="Error" type="danger">
+      <Notification title="Error" type="danger" duration={3000}>
         <div style={{ whiteSpace: 'pre-line' }}>
           {errorMessages.length > 1? ( // Check if there are multiple error messages
             <ul style={{ padding: 0, margin: 0, listStyle: 'disc inside' }}>

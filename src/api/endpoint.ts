@@ -103,7 +103,7 @@ export const endpoints = {
         delete: (id:any) => api(`companyadmin/ptsetup/${id}`)
     },
     tracker: {
-        downloadFormat: () => api('upload/sample_files/pf-tracker.xlsx'),
+        downloadFormat: () => api('/companyadmin/pfsetup/pf-tracker/exportdata'),
         pfUpload: () => api('companyadmin/pfsetup/pf-tracker'),
         pfGetALl: () => api(`companyadmin/pfsetup/pf-tracker`),
         uploadDocs: (id: any) =>
