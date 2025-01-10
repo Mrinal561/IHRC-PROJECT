@@ -56,7 +56,6 @@ interface PFSetupData {
   state_id?: number;
   district: string;
   location: string;
-  location_id?:string;
   pf_code: string;
   register_date: Date | string | null;
   register_certificate: string;
@@ -107,7 +106,7 @@ const PFEditedData: React.FC<PFEditedDataProps> = ({
   const [users, setUsers] = useState<Array<{ id: number; name: string }>>([]);
   const [selectedSignatories, setSelectedSignatories] = useState<Array<{ id: number; name: string }>>([]);
   const [selectedLocationId, setSelectedLocationId] = useState<number>();
-
+  
   useEffect(() => {
     loadStates();
     loadUsers();
@@ -275,11 +274,9 @@ const PFEditedData: React.FC<PFEditedDataProps> = ({
   };
 
   // Update location handling
-  const handleLocationChange = (value: string, locationId?: number) => {
+  const handleLocationChange = (value: string) => {
     setSelectedLocation(value);
-    setSelectedLocationId(locationId);
     handleChange('location', value);
-    handleChange('location_id', locationId); // Add location_id to your form data if needed
   };
 
 
@@ -418,65 +415,85 @@ return (
 
       <div className="grid grid-cols-2 gap-4">
         <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+                           PF Code
+                        </label>
           <OutlinedInput
             label="PF Code"
             value={formData.pf_code}
             onChange={(value) => handleChange('pf_code', value)}
-            error={errors.pf_code}
+            // error={errors.pf_code}
           />
         </div>
         <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+                           PF User
+                        </label>
+          <OutlinedInput
+            label="PF User"
+            value={formData.pf_user}
+            onChange={(value) => handleChange('pf_user', value)}
+            // error={errors.pf_user}
+          />
+        </div>
+        {/* <div>
           <OutlinedSelect
             label="Select State"
             options={states}
             value={selectedState}
             onChange={handleStateChange}
-            // isDisabled={true}
+            isDisabled={true}
             // error={errors.state_id}
           />
-        </div>
+        </div> */}
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      {/* <div className="grid grid-cols-2 gap-4">
         <DistrictAutosuggest
           value={selectedDistrict}
           onChange={(value: string) => handleDistrictChange(value)}
           stateId={selectedState ? parseInt(selectedState.value) : undefined}
           onDistrictSelect={setSelectedDistrictId}
           // error={errors.district}
-          // isDisabled={true}
+          isDisabled={true}
         />
         <LocationAutosuggest
           value={selectedLocation}
-          locationId={selectedLocationId}
           onChange={(value: string) => handleLocationChange(value)}
           districtId={selectedDistrictId}
           // error={errors.location}
         />
-      </div>
+      </div> */}
 
       <div className="grid grid-cols-2 gap-4">
+        
         <div>
-          <OutlinedInput
-            label="PF User"
-            value={formData.pf_user}
-            onChange={(value) => handleChange('pf_user', value)}
-            error={errors.pf_user}
-          />
-        </div>
-        <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+                           Password
+                        </label>
           <OutlinedInput
             label="Password"
-            type="password"
             value={formData.password}
             onChange={(value) => handleChange('password', value)}
-            error={errors.password}
+            // error={errors.password}
           />
         </div>
+        <div>
+    <label className="block text-sm font-medium text-gray-700 mb-2">
+                            PF Registration Date
+                        </label>
+      <DatePicker
+      size='sm'
+        // label="Registration Date"
+        value={formData.register_date ? new Date(formData.register_date) : null}
+        onChange={(date) => handleChange('register_date', date)}
+        // error={errors.register_date}
+      />
+    </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-    <div>
+      <div className="grid grid-cols-1 gap-4">
+    {/* <div>
     <label className="block text-sm font-medium text-gray-700 mb-1">
                             PF Registration Date
                         </label>
@@ -486,10 +503,10 @@ return (
         onChange={(date) => handleChange('register_date', date)}
         // error={errors.register_date}
       />
-    </div>
+    </div> */}
     <div>
     <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Choose the Signatories
+                            Signatories
                         </label>
       <Select
       isDisabled
