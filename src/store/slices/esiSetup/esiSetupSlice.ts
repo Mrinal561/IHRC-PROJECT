@@ -58,7 +58,7 @@ export const fetchEsiSetupById = createAsyncThunk(
 
 export const updateEsiSetup = createAsyncThunk(
     'esisetup/updateEsiSetup',
-    async ({ id, esiData }: { id: string; esiData: Partial<EsiSetupData> }, { rejectWithValue }) => {
+    async ({ id, esiData }: { id: number; esiData: Partial<EsiSetupData> }, { rejectWithValue }) => {
         try {
             const response = await httpClient.put(endpoints.esiSetup.update(id), esiData, {
                 headers: {

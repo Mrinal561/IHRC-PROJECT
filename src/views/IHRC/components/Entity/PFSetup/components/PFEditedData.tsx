@@ -394,9 +394,10 @@ const handleSubmit = async () => {
     return <div>Loading...</div>;
   }
 
-return (
-    <div className="p-4 space-y-4">
-      <div className="grid grid-cols-2 gap-4">
+  return (
+    <div className="p-3 space-y-3">
+      {/* Company Details Section */}
+      <div className="grid grid-cols-2 gap-3">
         <div>
           <OutlinedInput
             label="Company Group"
@@ -412,178 +413,136 @@ return (
           />
         </div>
       </div>
-
-      <div className="grid grid-cols-2 gap-4">
+  
+      {/* PF Details Section */}
+      <div className="grid grid-cols-2 gap-3">
         <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-                           PF Code
-                        </label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">PF Code</label>
           <OutlinedInput
-            label="PF Code"
+          label='PF Code'
             value={formData.pf_code}
             onChange={(value) => handleChange('pf_code', value)}
-            // error={errors.pf_code}
           />
+          {errors.pf_code && (
+            <p className="mt-0.5 text-xs text-red-600">{errors.pf_code}</p>
+          )}
         </div>
         <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-                           PF User
-                        </label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">PF User</label>
           <OutlinedInput
-            label="PF User"
+          label='PF User'
             value={formData.pf_user}
             onChange={(value) => handleChange('pf_user', value)}
-            // error={errors.pf_user}
           />
+          {errors.pf_user && (
+            <p className="mt-0.5 text-xs text-red-600">{errors.pf_user}</p>
+          )}
         </div>
-        {/* <div>
-          <OutlinedSelect
-            label="Select State"
-            options={states}
-            value={selectedState}
-            onChange={handleStateChange}
-            isDisabled={true}
-            // error={errors.state_id}
-          />
-        </div> */}
       </div>
-
-      {/* <div className="grid grid-cols-2 gap-4">
-        <DistrictAutosuggest
-          value={selectedDistrict}
-          onChange={(value: string) => handleDistrictChange(value)}
-          stateId={selectedState ? parseInt(selectedState.value) : undefined}
-          onDistrictSelect={setSelectedDistrictId}
-          // error={errors.district}
-          isDisabled={true}
-        />
-        <LocationAutosuggest
-          value={selectedLocation}
-          onChange={(value: string) => handleLocationChange(value)}
-          districtId={selectedDistrictId}
-          // error={errors.location}
-        />
-      </div> */}
-
-      <div className="grid grid-cols-2 gap-4">
-        
+  
+      {/* Password and Registration Date Section */}
+      <div className="grid grid-cols-2 gap-3">
         <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-                           Password
-                        </label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
           <OutlinedInput
-            label="Password"
+          label='Password'
             value={formData.password}
             onChange={(value) => handleChange('password', value)}
-            // error={errors.password}
           />
+          {errors.password && (
+            <p className="mt-0.5 text-xs text-red-600">{errors.password}</p>
+          )}
         </div>
         <div>
-    <label className="block text-sm font-medium text-gray-700 mb-2">
-                            PF Registration Date
-                        </label>
-      <DatePicker
-      size='sm'
-        // label="Registration Date"
-        value={formData.register_date ? new Date(formData.register_date) : null}
-        onChange={(date) => handleChange('register_date', date)}
-        // error={errors.register_date}
-      />
-    </div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">PF Registration Date</label>
+          <DatePicker
+            size="sm"
+            value={formData.register_date ? new Date(formData.register_date) : null}
+            onChange={(date) => handleChange('register_date', date)}
+          />
+          {errors.register_date && (
+            <p className="mt-0.5 text-xs text-red-600">{errors.register_date}</p>
+          )}
+        </div>
       </div>
-
-      <div className="grid grid-cols-1 gap-4">
-    {/* <div>
-    <label className="block text-sm font-medium text-gray-700 mb-1">
-                            PF Registration Date
-                        </label>
-      <DatePicker
-        // label="Registration Date"
-        value={formData.register_date ? new Date(formData.register_date) : null}
-        onChange={(date) => handleChange('register_date', date)}
-        // error={errors.register_date}
-      />
-    </div> */}
-    <div>
-    <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Signatories
-                        </label>
-      <Select
-      isDisabled
-        isMulti
-        label="Select Signatories"
-        options={users.map(user => ({
-          value: String(user.id),
-          label: user.name,
-        }))}
-        value={selectedSignatories.map(signatory => ({
-          value: String(signatory.id),
-          label: signatory.name
-        }))}
-        onChange={handleSignatoryChange}
-        // error={errors.signatory_data}
-      />
-    </div>
-  </div>
-
-  {selectedSignatories.length > 0 && (
-  <div className="space-y-4 border rounded-lg p-4">
-    <h6 className="font-semibold">Selected Signatories</h6>
-    {selectedSignatories.map((signatory, index) => (
-      <div key={signatory.id} className="border p-4 rounded-lg">
-        <h4 className="text-sm mb-4">{signatory.name}</h4>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <DatePicker
-             disabled
-              label="DSC Valid Upto"
-              value={formData.signatory_data[index]?.dsc_validity ? new Date(formData.signatory_data[index].dsc_validity) : null}
-              onChange={(date) => {
-                const newSignatoryData = [...formData.signatory_data];
-                newSignatoryData[index] = {
-                  ...newSignatoryData[index],
-                  dsc_validity: date ? date.toISOString() : '',
-                };
-                handleChange('signatory_data', newSignatoryData);
-              }}
-              // error={errors[`signatory_data.${index}.dsc_validity`]}
-            />
-          </div>
-          <div>
-            <Select
-            isDisabled
-              // label="E-Sign Status"
-              options={[
-                { value: 'active', label: 'Active' },
-                { value: 'inactive', label: 'Inactive' },
-              ]}
-              value={{ 
-                value: formData.signatory_data[index]?.e_sign_status || 'inactive', 
-                label: (formData.signatory_data[index]?.e_sign_status || 'inactive').charAt(0).toUpperCase() + 
-                       (formData.signatory_data[index]?.e_sign_status || 'inactive').slice(1) 
-              }}
-              onChange={(option) => {
-                const newSignatoryData = [...formData.signatory_data];
-                newSignatoryData[index] = {
-                  ...newSignatoryData[index],
-                  e_sign_status: option?.value || 'inactive',
-                };
-                handleChange('signatory_data', newSignatoryData);
-              }}
-              // error={errors[`signatory_data.${index}.e_sign_status`]}
-            />
+  
+      {/* Signatories Section */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Signatories</label>
+        <Select
+          isDisabled
+          isMulti
+          options={users.map(user => ({
+            value: String(user.id),
+            label: user.name,
+          }))}
+          value={selectedSignatories.map(signatory => ({
+            value: String(signatory.id),
+            label: signatory.name
+          }))}
+          onChange={handleSignatoryChange}
+        />
+      </div>
+  
+      {/* Selected Signatories Details */}
+      {selectedSignatories.length > 0 && (
+        <div className="border rounded-lg p-2 space-y-2">
+          <h6 className="font-semibold text-sm">Selected Signatories</h6>
+          {selectedSignatories.map((signatory, index) => (
+            <div key={signatory.id} className="border p-2 rounded-lg">
+              <h4 className="text-sm mb-2">{signatory.name}</h4>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">DSC Validity</label>
+                  <DatePicker
+                    disabled
+                    // label="DSC Valid Upto"
+                    size="sm"
+                    value={formData.signatory_data[index]?.dsc_validity ? new Date(formData.signatory_data[index].dsc_validity) : null}
+                    onChange={(date) => {
+                      const newSignatoryData = [...formData.signatory_data];
+                      newSignatoryData[index] = {
+                        ...newSignatoryData[index],
+                        dsc_validity: date ? date.toISOString() : '',
+                      };
+                      handleChange('signatory_data', newSignatoryData);
+                    }}
+                  />
+                </div>
+                <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1"> E-sign Status</label>
+                  <Select
+                  size='sm'
+                    isDisabled
+                    options={[
+                      { value: 'active', label: 'Active' },
+                      { value: 'inactive', label: 'Inactive' },
+                    ]}
+                    value={{ 
+                      value: formData.signatory_data[index]?.e_sign_status || 'inactive', 
+                      label: (formData.signatory_data[index]?.e_sign_status || 'inactive').charAt(0).toUpperCase() + 
+                             (formData.signatory_data[index]?.e_sign_status || 'inactive').slice(1) 
+                    }}
+                    onChange={(option) => {
+                      const newSignatoryData = [...formData.signatory_data];
+                      newSignatoryData[index] = {
+                        ...newSignatoryData[index],
+                        e_sign_status: option?.value || 'inactive',
+                      };
+                      handleChange('signatory_data', newSignatoryData);
+                    }}
+                  />
                 </div>
               </div>
             </div>
           ))}
         </div>
       )}
-
-      <div className="flex justify-end space-x-4 mt-6">
-        <Button onClick={onClose}>
-          Cancel
-        </Button>
-        <Button variant='solid' onClick={handleSubmit} disabled={loading}>
+  
+      {/* Action Buttons */}
+      <div className="flex justify-end space-x-3 mt-4">
+        <Button variant='plain' onClick={onClose}>Cancel</Button>
+        <Button variant="solid" onClick={handleSubmit} disabled={loading}>
           {loading ? 'Updating...' : 'Update PF Setup'}
         </Button>
       </div>

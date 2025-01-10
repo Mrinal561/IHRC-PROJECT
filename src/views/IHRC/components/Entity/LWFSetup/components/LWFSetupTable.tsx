@@ -347,7 +347,7 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
                 onClose={handleDialogClose}
                 onRequestClose={handleDialogClose}
                 width={800}
-                height={350}
+                height={550}
             >
                 <h5 className="mb-4">Edit LWF Setup</h5>
                 {itemToEdit && (

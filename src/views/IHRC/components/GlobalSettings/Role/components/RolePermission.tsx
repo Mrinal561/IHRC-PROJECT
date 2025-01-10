@@ -336,12 +336,13 @@ import { IoArrowBack } from 'react-icons/io5';
 const RolePermission = () => {
   const { id } = useParams();
   const location = useLocation();
-  const role = location.state?.role;
+  const role = location.state?.roleData?.name;
   const roleData = location.state?.roleData;
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const transformModuleData = (moduleAccess) => {
+    console.log(role)
     return moduleAccess?.map(module => {
       // Only include the Remittance Tracker and its relevant submenus
       if (module.name === 'Remittance Tracker') {

@@ -22,7 +22,7 @@ export const endpoints = {
         create: () => api('companyadmin/company'),
         update: (id: string) => api(`companyadmin/company/${id}`),
         delete: (id: string) => api(`companyadmin/company/${id}`),
-        downloadFormat: () => api(`upload/sample_files/company.xlsx`),
+        downloadFormat: () => api(`upload/sample_files/export-template`),
         bulkCreate: () => api(`/companyadmin/company/bulk-upload`),
     },
     common: {
