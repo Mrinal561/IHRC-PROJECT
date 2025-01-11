@@ -158,12 +158,20 @@ const UserAddForm = () => {
                     params: { ignorePlatform: true },
                 },
             )
-            setCompanyGroups(
-                data.data.map((v: any) => ({
-                    label: v.name,
-                    value: String(v.id),
-                })),
-            )
+            // setCompanyGroups(
+            //     data.data.map((v: any) => ({
+            //         label: v.name,
+            //         value: String(v.id),
+            //     })),
+            // )
+            const groups = data.data.map((v: any) => ({
+                label: v.name,
+                value: String(v.id),
+            }))
+            setCompanyGroups(groups)
+            if (groups.length === 1) {
+                setSelectedCompanyGroup(groups[0])
+            }
         } catch (error) {
             console.error('Failed to load company groups:', error)
             showNotification('danger', 'Failed to load company groups')
@@ -176,11 +184,13 @@ const UserAddForm = () => {
 
     const loadCompanies = async (groupId: string[] | number[]) => {
         try {
+            console.log('Loading companies for group:', groupId)
             const { data } = await httpClient.get(endpoints.company.getAll(), {
                 params: {
-                    'group_id[]': companyId,
+                    'group_id[]': groupId,
                 },
             })
+            console.log('Response data:', data)
             if (data?.data) {
                 const formattedCompanies = data.data.map((company: any) => ({
                     label: company.name,
@@ -222,12 +232,13 @@ const UserAddForm = () => {
     }, [selectedCompany])
 
     useEffect(() => {
-        if (companyId) {
-            loadCompanies(companyId)
+        console.log('Selected company group changed:', selectedCompanyGroup)
+        if (selectedCompanyGroup?.value) {
+            loadCompanies([selectedCompanyGroup.value])
         } else {
             setCompanies([])
         }
-    }, [])
+    }, [selectedCompanyGroup])
 
     useEffect(() => {
         setFormData((prev) => ({
@@ -381,7 +392,7 @@ const UserAddForm = () => {
 
             const data = {
                 ...formData,
-                group_id: companyId,
+                // group_id: gr,
                 Company_Group_Name: companyName,
             }
 
@@ -445,7 +456,7 @@ const UserAddForm = () => {
                         </p>
                         <OutlinedInput
                             label="Company Group"
-                            value={companyName}
+                            value={selectedCompanyGroup?.label || ''}
                             disabled
                         />
                     </div>
@@ -459,6 +470,8 @@ const UserAddForm = () => {
     options={companies}
     value={selectedCompany}
     onChange={(option: SelectOption | null) => {
+        console.log('Companies available:', companies)
+        console.log('Selected company:', option)
         setSelectedCompany(option)
     }}
 />
