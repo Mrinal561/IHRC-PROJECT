@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
@@ -17,14 +18,9 @@ import { endpoints } from '@/api/endpoint'
 import { createUser } from '@/store/slices/userEntity/UserEntitySlice'
 import { format } from 'date-fns'
 import * as yup from 'yup'
-import { group } from 'console'
 import OutlinedPasswordInput from '@/components/ui/OutlinedInput/OutlinedPasswordInput'
 
 const userValidationSchema = yup.object().shape({
-    // group_id: yup
-    //   .number()
-    //   .required('Company group is required')
-    //   .min(1, 'Please select a company group'),
     company_id: yup
         .number()
         .required('Company is required')
@@ -37,10 +33,6 @@ const userValidationSchema = yup.object().shape({
             /^\S.*\S$|^\S$/,
             'The input must not have leading or trailing spaces',
         ),
-    // .transform((value) => {
-    //   // Normalize multiple spaces to single space and trim
-    //   return value?.replace(/\s+/g, ' ').trim();
-    // }),
     email: yup
         .string()
         .matches(
@@ -67,17 +59,16 @@ const userValidationSchema = yup.object().shape({
         .min(1, 'Please select a designation'),
     aadhar_no: yup
         .string()
-        .nullable() // Keep this if you want to allow explicit null values
-        .transform((value) => (value === '' ? null : value)) // Convert empty strings to null
-        .notRequired() // Use.notRequired() instead of.optional()
+        .nullable()
+        .transform((value) => (value === '' ? null : value))
+        .notRequired()
         .matches(/^[0-9]{12}$/, 'Aadhar number must be 12 digits'),
-
     pan_card: yup
         .string()
         .nullable()
-        .transform((value) => (value === '' ? null : value)) // Convert empty strings to null
-        .notRequired() // Mark the field as optional
-        .matches(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, 'Invalid PAN format'), // Apply format validation
+        .transform((value) => (value === '' ? null : value))
+        .notRequired()
+        .matches(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, 'Invalid PAN format'),
     auth_signatory: yup.boolean(),
     suspend: yup.boolean(),
     disable: yup.boolean(),
@@ -92,7 +83,6 @@ interface UserFormData {
     group_id: number
     company_id: number
     name: string
-    // last_name: string;
     email: string
     password: string
     mobile: string
@@ -121,6 +111,7 @@ const UserAddForm = () => {
     const locationState = location.state as LocationState
     const companyName = locationState?.companyName
     const companyId = locationState?.companyId
+    const [isFormSubmitted, setIsFormSubmitted] = useState(false)
     const [companyGroups, setCompanyGroups] = useState<SelectOption[]>([])
     const [selectedCompanyGroup, setSelectedCompanyGroup] =
         useState<SelectOption | null>(null)
@@ -152,7 +143,6 @@ const UserAddForm = () => {
         disable: false,
     })
 
-    // Update group_id when company group selection changes
     useEffect(() => {
         setFormData((prev) => ({
             ...prev,
@@ -161,10 +151,6 @@ const UserAddForm = () => {
                 : 0,
         }))
     }, [selectedCompanyGroup])
-
-    useEffect(() => {
-        userValidationSchema.validate(formData, { abortEarly: false })
-    }, [formData])
 
     const loadCompanyGroups = async () => {
         try {
@@ -192,10 +178,9 @@ const UserAddForm = () => {
 
     const loadCompanies = async (groupId: string[] | number[]) => {
         try {
-            const groupIdParam = [`${groupId}`]
             const { data } = await httpClient.get(endpoints.company.getAll(), {
                 params: {
-                    'group_id[]': companyId, // Add group_id as a query parameter
+                    'group_id[]': companyId,
                 },
             })
             if (data?.data) {
@@ -233,13 +218,16 @@ const UserAddForm = () => {
                 ? parseInt(selectedCompany.value)
                 : 0,
         }))
+        if (selectedCompany) {
+            validateField('company_id', parseInt(selectedCompany.value))
+        }
     }, [selectedCompany])
 
     useEffect(() => {
         if (companyId) {
             loadCompanies(companyId)
         } else {
-            setCompanies([]) // Reset companies when no group is selected
+            setCompanies([])
         }
     }, [])
 
@@ -250,14 +238,14 @@ const UserAddForm = () => {
                 ? parseInt(selectedUserRole.value)
                 : 0,
         }))
-        validateField('role_id', selectedUserRole?.value)
+        if (selectedUserRole) {
+            validateField('role_id', parseInt(selectedUserRole.value))
+        }
     }, [selectedUserRole])
 
     const loadUserRoles = async () => {
         try {
             const { data } = await httpClient.get(endpoints.role.getAll())
-            console.log(data)
-            // Transform the data to extract role details
             setUserRole(
                 data.data.map((item: any) => ({
                     label: item.role_details.name,
@@ -288,15 +276,6 @@ const UserAddForm = () => {
         )
     }
 
-    // const handleAuthSignatoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //   const isChecked = e.target.checked;
-    //   console.log('Auth Signatory Changed:', isChecked); // Debug log
-    //   setFormData(prev => ({
-    //     ...prev,
-    //     auth_signatory: isChecked
-    //   }));
-    // };
-
     useEffect(() => {
         setFormData((prev) => ({
             ...prev,
@@ -308,8 +287,30 @@ const UserAddForm = () => {
         checked: boolean,
         e: React.ChangeEvent<HTMLInputElement>,
     ) => {
-        console.log('Auth Signatory Changed:', checked)
         setIsAuthorizedSignatory(checked)
+    }
+
+    const validateField = async (field: keyof UserFormData, value: any) => {
+        try {
+            // Don't validate empty fields unless form is submitted
+            if (!isFormSubmitted && !value) {
+                return
+            }
+
+            await yup.reach(userValidationSchema, field).validate(value)
+            setValidationErrors((prev) => {
+                const newErrors = { ...prev }
+                delete newErrors[field]
+                return newErrors
+            })
+        } catch (error) {
+            if (error instanceof yup.ValidationError) {
+                setValidationErrors((prev) => ({
+                    ...prev,
+                    [field]: error.message,
+                }))
+            }
+        }
     }
 
     const handleInputChange = async (
@@ -325,12 +326,9 @@ const UserAddForm = () => {
     }
 
     const formatErrorMessages = (errors: any): string => {
-        // If errors is an array, join them with line breaks
         if (Array.isArray(errors)) {
             return errors.join('\n')
-        }
-        // If errors is an object, extract all error messages
-        else if (typeof errors === 'object' && errors !== null) {
+        } else if (typeof errors === 'object' && errors !== null) {
             const messages: string[] = []
             Object.entries(errors).forEach(([key, value]) => {
                 if (Array.isArray(value)) {
@@ -341,20 +339,17 @@ const UserAddForm = () => {
             })
             return messages.join('\n')
         }
-        // If it's a single string error
         return String(errors)
     }
 
     const showErrorNotification = (errors: any) => {
         const formattedMessage = formatErrorMessages(errors)
-
-        // Split the formatted message into individual error messages
-        const errorMessages = formattedMessage.split('\n').filter(Boolean) // Filter out empty strings
+        const errorMessages = formattedMessage.split('\n').filter(Boolean)
 
         toast.push(
             <Notification title="Error" type="danger">
                 <div style={{ whiteSpace: 'pre-line' }}>
-                    {errorMessages.length > 1 ? ( // Check if there are multiple error messages
+                    {errorMessages.length > 1 ? (
                         <ul
                             style={{
                                 padding: 0,
@@ -372,7 +367,7 @@ const UserAddForm = () => {
                             ))}
                         </ul>
                     ) : (
-                        <span>{formattedMessage}</span> // If only one error message, display as before
+                        <span>{formattedMessage}</span>
                     )}
                 </div>
             </Notification>,
@@ -381,9 +376,9 @@ const UserAddForm = () => {
 
     const handleAddUser = async (e: React.FormEvent) => {
         e.preventDefault()
+        setIsFormSubmitted(true)
 
         try {
-            // Validate all fields
             await userValidationSchema.validate(formData, { abortEarly: false })
 
             const data = {
@@ -392,7 +387,6 @@ const UserAddForm = () => {
                 Company_Group_Name: companyName,
             }
 
-            // If validation passes, proceed with user creation
             const resultAction = await dispatch(createUser(data))
                 .unwrap()
                 .catch((error: any) => {
@@ -416,7 +410,6 @@ const UserAddForm = () => {
             }
         } catch (error) {
             if (error instanceof yup.ValidationError) {
-                // Handle validation errors
                 const newErrors: ValidationErrors = {}
                 error.inner.forEach((err) => {
                     if (err.path) {
@@ -427,28 +420,6 @@ const UserAddForm = () => {
                 showErrorNotification('Please fix the validation errors')
             } else {
                 console.error('User creation error:', error)
-            }
-        }
-    }
-
-    const handleDateChange = (date: Date) => {
-        handleInputChange('joining_date', date)
-    }
-
-    const validateField = async (field: keyof UserFormData, value: any) => {
-        try {
-            await yup.reach(userValidationSchema, field).validate(value)
-            setValidationErrors((prev) => {
-                const newErrors = { ...prev }
-                delete newErrors[field]
-                return newErrors
-            })
-        } catch (error) {
-            if (error instanceof yup.ValidationError) {
-                setValidationErrors((prev) => ({
-                    ...prev,
-                    [field]: error.message,
-                }))
             }
         }
     }
@@ -486,210 +457,189 @@ const UserAddForm = () => {
                             <span className="text-red-500">*</span>
                         </p>
                         <OutlinedSelect
-                            label="Select Company"
-                            options={companies}
-                            value={selectedCompany}
-                            onChange={(option: SelectOption | null) => {
-                                setSelectedCompany(option)
-                            }}
-                        />
-                        {validationErrors.company_id && (
-                            <span className="text-red-500 text-sm">
-                                {validationErrors.company_id}
-                            </span>
-                        )}
-                    </div>
-                </div>
+    label="Select Company"
+    options={companies}
+    value={selectedCompany}
+    onChange={(option: SelectOption | null) => {
+        setSelectedCompany(option)
+    }}
+/>
+{(isFormSubmitted || selectedCompany !== null) && validationErrors.company_id && (
+    <span className="text-red-500 text-sm">
+        {validationErrors.company_id}
+    </span>
+)}
+</div>
+</div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 my-8">
-                    <div className="flex flex-col gap-1">
-                        <p className="mb-2">
-                            Name <span className="text-red-500">*</span>
-                        </p>
-                        <OutlinedInput
-                            label="Name"
-                            value={formData.name}
-                            onChange={(value: string) =>
-                                handleInputChange('name', value)
-                            }
-                        />
-                        {validationErrors.name && (
-                            <span className="text-red-500 text-sm">
-                                {validationErrors.name}
-                            </span>
-                        )}
-                    </div>
-                    <div className="flex flex-col gap-1">
-                        <p className="mb-2">
-                            Date of Joining{' '}
-                            <span className="text-red-500">*</span>
-                        </p>
-                        <DatePicker
-                            size="sm"
-                            placeholder="Pick a date"
-                            // value={formData.joining_date}
-                            onChange={(date) => {
-                                setFormData((prev) => ({
-                                    ...prev,
-                                    joining_date: date
-                                        ? format(date, 'yyyy-MM-dd')
-                                        : '',
-                                }))
-                            }}
-                        />
-                        {validationErrors.joining_date && (
-                            <span className="text-red-500 text-sm">
-                                {validationErrors.joining_date}
-                            </span>
-                        )}
-                    </div>
-                    {/* <div className='flex flex-col gap-1'>
-            <p className="mb-2">Last Name <span className="text-red-500">*</span></p>
-            <OutlinedInput
-              label="Last Name"
-              value={formData.last_name}
-              onChange={(value) => handleInputChange('last_name', value)}
-            />
-          </div> */}
-                    <div className="flex flex-col gap-1">
-                        <p className="mb-2">
-                            Email (Used For Login){' '}
-                            <span className="text-red-500">*</span>
-                        </p>
-                        <OutlinedInput
-                            label="Email"
-                            value={formData.email}
-                            onChange={(value) =>
-                                handleInputChange('email', value)
-                            }
-                        />
-                        {validationErrors.email && (
-                            <span className="text-red-500 text-sm">
-                                {validationErrors.email}
-                            </span>
-                        )}
-                    </div>
+<div className="grid grid-cols-1 md:grid-cols-2 gap-10 my-8">
+    <div className="flex flex-col gap-1">
+        <p className="mb-2">
+            Name <span className="text-red-500">*</span>
+        </p>
+        <OutlinedInput
+            label="Name"
+            value={formData.name}
+            onChange={(value: string) =>
+                handleInputChange('name', value)
+            }
+        />
+        {(isFormSubmitted || formData.name !== '') && validationErrors.name && (
+            <span className="text-red-500 text-sm">
+                {validationErrors.name}
+            </span>
+        )}
+    </div>
+    <div className="flex flex-col gap-1">
+        <p className="mb-2">
+            Date of Joining <span className="text-red-500">*</span>
+        </p>
+        <DatePicker
+            size="sm"
+            placeholder="Pick a date"
+            onChange={(date) => {
+                const formattedDate = date ? format(date, 'yyyy-MM-dd') : '';
+                setFormData((prev) => ({
+                    ...prev,
+                    joining_date: formattedDate,
+                }));
+                validateField('joining_date', formattedDate);
+            }}
+        />
+        {(isFormSubmitted || formData.joining_date !== '') && validationErrors.joining_date && (
+            <span className="text-red-500 text-sm">
+                {validationErrors.joining_date}
+            </span>
+        )}
+    </div>
 
-                    <div className="flex flex-col gap-1">
-                        <p className="mb-2">
-                            Password (Used For Login){' '}
-                            <span className="text-red-500">*</span>
-                        </p>
-                        <OutlinedPasswordInput
-                            label="Password"
-                            value={formData.password}
-                            onChange={(value) =>
-                                handleInputChange('password', value)
-                            }
-                        />
-                        {validationErrors.password && (
-                            <span className="text-red-500 text-sm">
-                                {validationErrors.password}
-                            </span>
-                        )}
-                    </div>
-                </div>
+    <div className="flex flex-col gap-1">
+        <p className="mb-2">
+            Email (Used For Login) <span className="text-red-500">*</span>
+        </p>
+        <OutlinedInput
+            label="Email"
+            value={formData.email}
+            onChange={(value) => handleInputChange('email', value)}
+        />
+        {(isFormSubmitted || formData.email !== '') && validationErrors.email && (
+            <span className="text-red-500 text-sm">
+                {validationErrors.email}
+            </span>
+        )}
+    </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 my-8">
-                    <div className="flex flex-col gap-1">
-                        <p className="mb-1">
-                            Mobile No <span className="text-red-500">*</span>
-                        </p>
-                        <OutlinedInput
-                            label="Mobile no"
-                            value={formData.mobile}
-                            onChange={(value) =>
-                                handleInputChange('mobile', value)
-                            }
-                        />
-                        {validationErrors.mobile && (
-                            <span className="text-red-500 text-sm">
-                                {validationErrors.mobile}
-                            </span>
-                        )}
-                    </div>
+    <div className="flex flex-col gap-1">
+        <p className="mb-2">
+            Password (Used For Login) <span className="text-red-500">*</span>
+        </p>
+        <OutlinedPasswordInput
+            label="Password"
+            value={formData.password}
+            onChange={(value) => handleInputChange('password', value)}
+        />
+        {(isFormSubmitted || formData.password !== '') && validationErrors.password && (
+            <span className="text-red-500 text-sm">
+                {validationErrors.password}
+            </span>
+        )}
+    </div>
+</div>
 
-                    <div className="flex flex-col gap-1">
-                        <p className="mb-2">
-                            Designation <span className="text-red-500">*</span>
-                        </p>
-                        <OutlinedSelect
-                            label="Designation"
-                            options={userRole}
-                            value={selectedUserRole}
-                            onChange={setSelectedUserRole}
-                        />
-                        {validationErrors.role_id && (
-                            <span className="text-red-500 text-sm">
-                                {validationErrors.role_id}
-                            </span>
-                        )}
-                    </div>
-                </div>
+<div className="grid grid-cols-1 md:grid-cols-2 gap-10 my-8">
+    <div className="flex flex-col gap-1">
+        <p className="mb-1">
+            Mobile No <span className="text-red-500">*</span>
+        </p>
+        <OutlinedInput
+            label="Mobile no"
+            value={formData.mobile}
+            onChange={(value) => handleInputChange('mobile', value)}
+        />
+        {(isFormSubmitted || formData.mobile !== '') && validationErrors.mobile && (
+            <span className="text-red-500 text-sm">
+                {validationErrors.mobile}
+            </span>
+        )}
+    </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 my-8">
-                    <div className="flex flex-col gap-1">
-                        <p className="mb-1">Aadhaar No (Optional)</p>
-                        <OutlinedInput
-                            label="Aadhaar No"
-                            value={formData.aadhar_no}
-                            onChange={(value) =>
-                                handleInputChange('aadhar_no', value)
-                            }
-                        />
-                        {validationErrors.aadhar_no && (
-                            <span className="text-red-500 text-sm">
-                                {validationErrors.aadhar_no}
-                            </span>
-                        )}
-                    </div>
+    <div className="flex flex-col gap-1">
+        <p className="mb-2">
+            Designation <span className="text-red-500">*</span>
+        </p>
+        <OutlinedSelect
+            label="Designation"
+            options={userRole}
+            value={selectedUserRole}
+            onChange={setSelectedUserRole}
+        />
+        {(isFormSubmitted || selectedUserRole !== null) && validationErrors.role_id && (
+            <span className="text-red-500 text-sm">
+                {validationErrors.role_id}
+            </span>
+        )}
+    </div>
+</div>
 
-                    <div className="flex flex-col gap-1">
-                        <p className="mb-1">PAN (Optional)</p>
-                        <OutlinedInput
-                            label="PAN"
-                            value={formData.pan_card}
-                            onChange={(value) =>
-                                handleInputChange('pan_card', value)
-                            }
-                        />
+<div className="grid grid-cols-1 md:grid-cols-2 gap-10 my-8">
+    <div className="flex flex-col gap-1">
+        <p className="mb-1">Aadhaar No (Optional)</p>
+        <OutlinedInput
+            label="Aadhaar No"
+            value={formData.aadhar_no}
+            onChange={(value) =>
+                handleInputChange('aadhar_no', value)
+            }
+        />
+        {(isFormSubmitted || formData.aadhar_no !== '') && validationErrors.aadhar_no && (
+            <span className="text-red-500 text-sm">
+                {validationErrors.aadhar_no}
+            </span>
+        )}
+    </div>
 
-                        {validationErrors.pan_card && (
-                            <span className="text-red-500 text-sm">
-                                {validationErrors.pan_card}
-                            </span>
-                        )}
-                    </div>
-                </div>
+    <div className="flex flex-col gap-1">
+        <p className="mb-1">PAN (Optional)</p>
+        <OutlinedInput
+            label="PAN"
+            value={formData.pan_card}
+            onChange={(value) =>
+                handleInputChange('pan_card', value)
+            }
+        />
+        {(isFormSubmitted || formData.pan_card !== '') && validationErrors.pan_card && (
+            <span className="text-red-500 text-sm">
+                {validationErrors.pan_card}
+            </span>
+        )}
+    </div>
+</div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 my-8"></div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 my-8">
-                    <div className="flex items-center">
-                        <Checkbox
-                            checked={formData.auth_signatory}
-                            onChange={handleAuthSignatoryChange}
-                        >
-                            User will be assigned as a{' '}
-                            <b>Authorised Signatory</b>
-                        </Checkbox>
-                    </div>
-                    <div className="flex justify-end gap-2">
-                        <Button type="submit" variant="solid" size="sm">
-                            Add User
-                        </Button>
-                        <Button
-                            type="button"
-                            variant="plain"
-                            size="sm"
-                            onClick={() => navigate('/user-entity')}
-                        >
-                            Cancel
-                        </Button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    )
+<div className="grid grid-cols-1 md:grid-cols-2 gap-10 my-8">
+    <div className="flex items-center">
+        <Checkbox
+            checked={formData.auth_signatory}
+            onChange={handleAuthSignatoryChange}
+        >
+            User will be assigned as a <b>Authorised Signatory</b>
+        </Checkbox>
+    </div>
+    <div className="flex justify-end gap-2">
+        <Button type="submit" variant="solid" size="sm">
+            Add User
+        </Button>
+        <Button
+            type="button"
+            variant="plain"
+            size="sm"
+            onClick={() => navigate('/user-entity')}
+        >
+            Cancel
+        </Button>
+    </div>
+</div>
+</form>
+</div>
+  )
 }
 export default UserAddForm
