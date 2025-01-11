@@ -162,6 +162,10 @@ const UserAddForm = () => {
         }))
     }, [selectedCompanyGroup])
 
+    useEffect(() => {
+        userValidationSchema.validate(formData, { abortEarly: false })
+    }, [formData])
+
     const loadCompanyGroups = async () => {
         try {
             const { data } = await httpClient.get(
@@ -246,6 +250,7 @@ const UserAddForm = () => {
                 ? parseInt(selectedUserRole.value)
                 : 0,
         }))
+        validateField('role_id', selectedUserRole?.value)
     }, [selectedUserRole])
 
     const loadUserRoles = async () => {
