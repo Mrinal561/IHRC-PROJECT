@@ -6,6 +6,7 @@ import httpClient from "@/api/http-client";
 export interface CompanyGroupData{
     id:string;
     name:string;
+    created_by: string;
 }
 
 export interface CompanyGroupState

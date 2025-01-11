@@ -597,7 +597,7 @@ const UserPermission = () => {
           onClick={() => navigate(-1)}
         />
         <h2 className="text-2xl font-bold">
-          User Permissions - {userData?.name || 'User'}
+          User Permissions - {userData?.name || 'User'} 
         </h2>
         </div>
         <Button variant="solid" size="sm" onClick={handleUpdateAll}>

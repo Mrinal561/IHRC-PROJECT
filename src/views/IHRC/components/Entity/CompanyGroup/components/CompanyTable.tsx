@@ -49,6 +49,7 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
     const [itemToEdit, setItemToEdit] = useState<CompanyGroupData | null>(null);
     const [editedCompanyGroupName, setEditedCompanyGroupName] = useState('');
     const [errors, setErrors] = useState<ValidationErrors>({});
+    const [editedCreatedBy, setEditedCreatedBy] = useState<string | null>(null);
     const [tableData, setTableData] = useState({
         total: 0,
         pageIndex: 1,
@@ -191,7 +192,10 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
                 };
                 const result = await dispatch(updateCompanyGroup({
                     id: itemToEdit.id,
-                    data: { name: editedCompanyGroupName.trim() }
+                    data: { 
+                        name: editedCompanyGroupName.trim(),
+                        created_by: editedCreatedBy 
+                    }
                 })).unwrap().catch((error: any) => {
                     // Handle different error formats
                     if (error.response?.data?.message) {
@@ -232,6 +236,7 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
     const openEditDialog = (company: CompanyGroupData) => {
         setItemToEdit(company);
         setEditedCompanyGroupName(company.name);
+        setEditedCreatedBy(company.created_by);
         setEditDialogIsOpen(true);
     };
 
@@ -357,7 +362,7 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
                 onClose={handleDialogClose}
                 onRequestClose={handleDialogClose}
             >
-                <h5 className="mb-4">Edit Company Group Name</h5>
+                <h5 className="mb-4">Edit Entity Name</h5>
                 <div className="mb-4">
                     <OutlinedInput
                         label="Company Group Name"
