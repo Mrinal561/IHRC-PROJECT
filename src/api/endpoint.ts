@@ -116,7 +116,7 @@ export const endpoints = {
     esiTracker: {
         getAll: () => api(`companyadmin/esisetup/esi-tracker`),
         bulkUpload: () => api(`companyadmin/esisetup/esi-tracker`),
-        download: () => api(`upload/sample_files/esi-tracker.xlsx`),
+        download: () => api('/companyadmin/esisetup/esi-tracker/exportdata'),
         uploadDocs: (id: any) =>
             api(`companyadmin/esisetup/esi-tracker/challan/${id}`),
         downloadAll: () => api('/companyadmin/esisetup/esi-tracker/export'),
@@ -125,7 +125,7 @@ export const endpoints = {
         update: (id: any) => api(`/companyadmin/esisetup/esi-tracker/${id}`),
     },
     ptrc: {
-        download: () => api('upload/sample_files/ptrc-tracker.xlsx'),
+        download: () => api('/companyadmin/ptsetup/ptrc-tracker/exportdata'),
         bulkUpload: () => api('companyadmin/ptsetup/ptrc-tracker'),
         getAll: () => api('/companyadmin/ptsetup/ptrc-tracker'),
         uploadDocs: (id: any) =>
@@ -146,7 +146,7 @@ export const endpoints = {
         download: () => api(`upload/sample_files/esi-tracker.xlsx`),
     },
     ptec: {
-        download: () => api('upload/sample_files/ptec-tracker.xlsx'),
+        download: () => api('/companyadmin/ptsetup/ptec-tracker/exportdata'),
         // download: () => api('upload/sample_files/ptec-tracker.xlsx'),
         bulkUpload: () => api('/companyadmin/ptsetup/ptec-tracker'),
         getAll: () => api('/companyadmin/ptsetup/ptec-tracker'),
@@ -158,7 +158,7 @@ export const endpoints = {
         update: (id: any) => api(`/companyadmin/ptsetup/ptec-tracker/${id}`),
     },
     pfiwtracker: {
-        download: () => api('upload/sample_files/pfiw-tracker.xlsx'),
+        download: () => api('/companyadmin/pfsetup/pfiw-tracker/exportdata'),
         bulkupload: () => api('/companyadmin/pfsetup/pfiw-tracker'),
         pfiwGetAll: () => api('/companyadmin/pfsetup/pfiw-tracker'),
         challanupload: (id: any) =>
@@ -170,7 +170,7 @@ export const endpoints = {
     },
     lwftracker: {
         downlaodAll: () => api(`/companyadmin/lwfsetup/lwf-tracker/export`),
-        download: () => api('upload/sample_files/lwf-tracker.xlsx'),
+        download: () => api('/companyadmin/lwfsetup/lwf-tracker/exportdata'),
         bulkupload: () => api('/companyadmin/lwfsetup/lwf-tracker'),
         lwfGetAll: () => api('companyadmin/lwfsetup/lwf-tracker'),
         upload: (id: any) =>
