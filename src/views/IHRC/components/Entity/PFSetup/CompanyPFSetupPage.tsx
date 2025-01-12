@@ -10,6 +10,7 @@ import PFSetupTable from './components/PFSetupTable';
 import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
 import { PFData } from '@/@types/pfData';
+import CompanyName from '../CompanyName/CompanyName';
 
 interface LocationState {
   companyName?: string;
@@ -97,7 +98,7 @@ const CompanyPFSetupPage: React.FC = () => {
             className="mr-2"
           >
           </Button>
-          <h1 className="text-2xl font-bold">PF Setup</h1>
+          <h1 className="text-2xl font-bold"> {actualCompanyName} - PF Setup</h1>
         </div>
         <Button
           variant="solid"

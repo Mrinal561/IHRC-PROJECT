@@ -96,7 +96,7 @@ const LWFSetupPage: React.FC = () => {
             className="mr-2"
           >
           </Button>
-          <h1 className="text-2xl font-bold">LWF Setup</h1>
+          <h1 className="text-2xl font-bold">{actualCompanyName}-LWF Setup</h1>
         </div>
         <Button
           variant="solid"
