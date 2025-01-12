@@ -74,20 +74,20 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
 
     const columns: ColumnDef<LWFSetupData>[] = useMemo(
         () => [
-            {
-                header: 'Company Group',
-                accessorKey: 'CompanyGroup.name',
-                cell: (props) => (
-                    <div className="w-36 text-start">{props.getValue() as string}</div>
-                ),
-            },
-            {
-                header: 'Company',
-                accessorKey: 'Company.name',
-                cell: (props) => (
-                    <div className="w-36 text-start">{props.getValue() as string}</div>
-                ),
-            },
+            // {
+            //     header: 'Company Group',
+            //     accessorKey: 'CompanyGroup.name',
+            //     cell: (props) => (
+            //         <div className="w-36 text-start">{props.getValue() as string}</div>
+            //     ),
+            // },
+            // {
+            //     header: 'Company',
+            //     accessorKey: 'Company.name',
+            //     cell: (props) => (
+            //         <div className="w-36 text-start">{props.getValue() as string}</div>
+            //     ),
+            // },
             {
                 header: 'LWF State',
                 accessorKey: 'Location.District.State.name',
