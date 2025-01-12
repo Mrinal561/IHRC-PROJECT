@@ -141,6 +141,13 @@ const UserEditForm = () => {
     })
     const [loading, setLoading] = useState(false)
 
+
+    const formatInitialDate = (dateString) => {
+        if (!dateString) return null;
+        // Parse the date string to a Date object
+        const date = new Date(dateString);
+        return isNaN(date.getTime()) ? null : date;
+    };
     const loadCompanyGroups = async () => {
         try {
             const { data } = await httpClient.get(
@@ -293,8 +300,9 @@ const UserEditForm = () => {
                         name: editedData?.name || '',
                         email: editedData?.email || '',
                         mobile: editedData?.mobile || '',
-                        // joining_date:
-                        //     editedData?.joining_date.toISOString() || null,
+                        joining_date: formatInitialDate(
+                            editedData?.joining_date,
+                        ),
                         role_id: editedData?.role_id || 0,
                         aadhar_no: editedData?.aadhar_no || '',
                         pan_card: editedData?.pan_card || '',
@@ -307,11 +315,11 @@ const UserEditForm = () => {
                 >
                     {({ setFieldValue, values, errors, touched }) => (
                         <Form>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 my-8">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 my-8 relative">
                                 {/* Company Group (Read-only) */}
                                 <div className="flex flex-col gap-2">
                                     <p className="mb-2">
-                                        Select the company group{' '}
+                                        Company group{' '}
                                         <span className="text-red-500">*</span>
                                     </p>
                                     <input
@@ -325,20 +333,20 @@ const UserEditForm = () => {
                                 {/* Select Company */}
                                 <div className="flex flex-col gap-2">
                                     <p className="mb-2">
-                                        Select the company{' '}
+                                        Company{' '}
                                         <span className="text-red-500">*</span>
                                     </p>
                                     <Field name="company_id">
                                         {({ field }: any) => (
                                             <OutlinedSelect
                                                 label="Select Company"
-                                                options={companies} // Assuming `companies` is an array of options
+                                                options={companies}
                                                 value={companies.find(
                                                     (company) =>
                                                         Number(
                                                             company.value,
                                                         ) === values.company_id,
-                                                )} // Find selected company
+                                                )}
                                                 onChange={(
                                                     selectedOption: SelectOption | null,
                                                 ) => {
@@ -349,12 +357,11 @@ const UserEditForm = () => {
                                                             : null,
                                                     )
                                                 }}
-                                                isMulti={false} // Single select
-                                                isDisabled={false}
+                                                isMulti={false}
+                                                isDisabled={true}
                                             />
                                         )}
                                     </Field>
-                                    {/* Show error message if any */}
                                     {touched.company_id &&
                                         errors.company_id && (
                                             <span className="text-red-500 text-sm">
@@ -492,7 +499,7 @@ const UserEditForm = () => {
                                         )}
                                 </div>
 
-                                {/* Role field with validation */}
+                                {/* Role field */}
                                 <div className="flex flex-col gap-2">
                                     <p className="mb-2">
                                         Select Role{' '}
@@ -502,12 +509,12 @@ const UserEditForm = () => {
                                         {({ field }: any) => (
                                             <OutlinedSelect
                                                 label="Select Role"
-                                                options={userRole} // assuming `userRole` is available
+                                                options={userRole}
                                                 value={userRole.find(
                                                     (role) =>
                                                         Number(role.value) ==
                                                         values.role_id,
-                                                )} // Find the selected option by role_id
+                                                )}
                                                 onChange={(
                                                     selectedOption: SelectOption | null,
                                                 ) => {
@@ -518,7 +525,7 @@ const UserEditForm = () => {
                                                             : null,
                                                     )
                                                 }}
-                                                isMulti={false} // Single select
+                                                isMulti={false}
                                                 isDisabled={false}
                                             />
                                         )}
@@ -529,8 +536,10 @@ const UserEditForm = () => {
                                         </span>
                                     )}
                                 </div>
+
+                                {/* Aadhar */}
                                 <div className="flex flex-col gap-2">
-                                    <p className="mb-2">Aadhar </p>
+                                    <p className="mb-2">Aadhar</p>
                                     <Field
                                         name="aadhar"
                                         render={({ field }) => (
@@ -585,8 +594,8 @@ const UserEditForm = () => {
                                     )}
                                 </div>
 
-                                {/* Checkbox (Auth Signatory) */}
-                                <div className="flex flex-col gap-2">
+                                {/* Auth Signatory (moved to full width) */}
+                                <div className="col-span-2 flex flex-col gap-2">
                                     <label className="flex items-center">
                                         <Checkbox
                                             checked={values.auth_signatory}
@@ -603,9 +612,18 @@ const UserEditForm = () => {
                                     </label>
                                 </div>
 
-                                {/* Submit Button */}
-                                <div className="flex justify-between mt-4">
-                                    <Button type="submit">Save User</Button>
+                                {/* Buttons (moved to right) */}
+                                <div className="col-span-2 flex justify-end gap-2 mt-4">
+                                    <Button
+                                        variant="plain"
+                                        onClick={() => navigate(-1)}
+                                        type='button'
+                                    >
+                                        Cancel
+                                    </Button>
+                                    <Button type="submit" variant="solid">
+                                        Save User
+                                    </Button>
                                 </div>
                             </div>
                         </Form>
