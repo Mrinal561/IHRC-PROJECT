@@ -327,7 +327,7 @@ const [editFormData, setEditFormData] = useState<PFData | null>(null);
         onClose={handleDialogClose}
         onRequestClose={handleDialogClose}
         width={800}
-        height={670}
+        height={690}
       >
         <h5 className="mb-4">Edit PF Setup</h5>
         {/* Add your edit form fields here */}
