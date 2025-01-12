@@ -84,7 +84,7 @@ const PFTrackerBulkUpload: React.FC<PFTrackerBulkUploadProps> = ({ onUploadConfi
             showErrorNotification(error);
         } else {
             // Fallback error message
-            showErrorNotification('An unexpected error occurred. Please try again.');
+            showErrorNotification(error);
         }
         throw error; // Re-throw to prevent navigation
     });

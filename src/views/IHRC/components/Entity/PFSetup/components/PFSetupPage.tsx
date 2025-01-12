@@ -199,6 +199,8 @@ const PFSetupPage: React.FC = () => {
         pf_user: '',
         password: '',
     })
+    const [isSubmitted, setIsSubmitted] = useState(false)
+    
 
     const convertToBase64 = (file: File): Promise<string> => {
         return new Promise((resolve, reject) => {
@@ -271,6 +273,19 @@ const PFSetupPage: React.FC = () => {
             )
         }
     }
+    const validateField = async (field: string, value: any) => {
+        try {
+            // Create a partial schema for just this field
+            const fieldSchema = yup.reach(pfSetupSchema, field)
+            await fieldSchema.validate(value)
+            return ''
+        } catch (err) {
+            if (err instanceof yup.ValidationError) {
+                return err.message
+            }
+            return ''
+        }
+    }
 
     const validateForm = async () => {
         try {
@@ -282,9 +297,7 @@ const PFSetupPage: React.FC = () => {
                 const newErrors: { [key: string]: string } = {}
                 err.inner.forEach((error) => {
                     if (error.path) {
-                        // Handle nested paths for signatory data
                         if (error.path.startsWith('signatory_data[')) {
-                            // Extract the index and field from the path
                             const match = error.path.match(/signatory_data\[(\d+)\]\.(.+)/)
                             if (match) {
                                 const [_, index, field] = match
@@ -296,16 +309,19 @@ const PFSetupPage: React.FC = () => {
                     }
                 })
                 setErrors(newErrors)
-                
-                // toast.push(
-                //     <Notification title="Validation Error" type="danger">
-                //         Please fix the highlighted errors to continue
-                //     </Notification>
-                // )
             }
             return false
         }
     }
+
+    useEffect(() => {
+        const validateChangedFields = async () => {
+            if (isSubmitted) {
+                await validateForm()
+            }
+        }
+        validateChangedFields()
+    }, [pfSetupData, isSubmitted])
     
 useEffect(()=>{
 
@@ -315,17 +331,18 @@ useEffect(()=>{
 },[pfSetupData])
     // Handle submit with base64 files
     const handleSubmit = async () => {
-        console.log(pfSetupData)
-
-        const isValid = await validateForm();
-        if(!isValid){
+        setIsSubmitted(true)
+        const isValid = await validateForm()
+        
+        if (!isValid) {
             toast.push(
                 <Notification title="Validation Error" type="danger">
                     Please fix the highlighted errors to continue
                 </Notification>
             )
-            return;
+            return
         }
+
         const formData = {
             ...pfSetupData,
             register_date: pfSetupData.register_date?.toISOString() || '',
@@ -336,30 +353,19 @@ useEffect(()=>{
         }
 
         try {
-            // Here you would send the formData to your API
-            console.log('Submitting PF Setup with base64 files:', formData,companyGroupName,companyName)
-
-            // Example API call (uncomment and modify as needed)
             const response = await dispatch(createPF(formData))
                 .unwrap()
                 .catch((error: any) => {
-                    // Handle different error formats
                     if (error.response?.data?.message) {
-                        // API error response
                         showErrorNotification(error.response.data.message)
                     } else if (error.message) {
-                        // Regular error object
                         showErrorNotification(error.message)
                     } else if (Array.isArray(error)) {
-                        // Array of error messages
                         showErrorNotification(error)
                     } else {
-                        // Fallback error message
-                        showErrorNotification(
-                            error
-                        )
+                        showErrorNotification(error)
                     }
-                    throw error // Re-throw to prevent navigation
+                    throw error
                 })
             if (response) {
                 toast.push(
@@ -367,19 +373,15 @@ useEffect(()=>{
                         <div className="flex items-center">
                             <span>PF Setup successfully created</span>
                         </div>
-                    </Notification>,
+                    </Notification>
                 )
                 navigate(-1)
             }
         } catch (error: any) {
             console.error('Error submitting PF setup:', error)
-            // toast.push(
-            //     <Notification title="Error" type="danger">
-            //         {error}
-            //     </Notification>,
-            // )
         }
     }
+
 
     const getErrorMessage = (field: string, signatoryIndex?: number) => {
         if (signatoryIndex !== undefined) {
@@ -564,21 +566,26 @@ useEffect(()=>{
         loadStates()
     }, [])
 
-    const handleInputChange = (
+    const handleInputChange = async (
         field: keyof PFSetupData,
-        value: string | Date | null | File | string[],
+        value: string | Date | null | File | string[]
     ) => {
-        setPfSetupData((prev) => ({ ...prev, [field]: value }))
-        setFormTouched(true);
+        setPfSetupData(prev => ({ ...prev, [field]: value }))
+        
+        if (isSubmitted) {
+            const error = await validateField(field, value)
+            setErrors(prev => ({
+                ...prev,
+                [field]: error
+            }))
+        }
     }
 
-    const handleSignatoryChange = (
+    const handleSignatoryChange = async (
         newValue: MultiValue<{ value: string; label: string }>,
         actionMeta: ActionMeta<{ value: string; label: string }>,
     ) => {
         const selectedUserIds = newValue.map((option) => parseInt(option.value))
-
-        // Update signatory_data array
         const newSignatoryData = selectedUserIds.map((id) => ({
             signatory_id: id,
             dsc_validity: '',
@@ -591,6 +598,14 @@ useEffect(()=>{
             ...prev,
             signatory_data: newSignatoryData,
         }))
+
+        if (isSubmitted) {
+            const error = await validateField('signatory_data', newSignatoryData)
+            setErrors(prev => ({
+                ...prev,
+                signatory_data: error
+            }))
+        }
 
         const newSelectedSignatories = selectedUserIds.map((id) => {
             return users.find((user) => user.id === id) || { id, name: '' }
@@ -897,6 +912,7 @@ useEffect(()=>{
                         PF Registration Certificate(PDF Only)
                     </label>
                     <Input
+                    accept='.pdf'
                         type="file"
                         onChange={handleRegistrationCertificateUpload}
                     />

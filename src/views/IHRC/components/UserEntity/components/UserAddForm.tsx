@@ -560,8 +560,15 @@ const UserAddForm = () => {
                             </div>
 
                             {/* Submit Button */}
-                            <div className="flex justify-between mt-4">
-                                <Button type="submit">Save User</Button>
+                            <div className="col-span-2 flex justify-end gap-2 mt-4">
+                                    <Button
+                                        variant="plain"
+                                        onClick={() => navigate(-1)}
+                                        type='button'
+                                    >
+                                        Cancel
+                                    </Button>
+                                <Button type="submit" variant='solid'>Save User</Button>
                             </div>
                         </div>
                     </Form>
