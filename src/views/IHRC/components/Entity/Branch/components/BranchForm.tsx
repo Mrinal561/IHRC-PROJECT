@@ -683,21 +683,6 @@ const AddBranchForm: React.FC = () => {
     }
 
     useEffect(() => {
-        // //Check validation here only which filed change
-        // const validateField = async (fieldName: string, value: any) => {
-        //     try {
-        //         // Validate the specific field
-        //         await validationSchema.validateAt(fieldName, {
-        //             [fieldName]: value,
-        //         })
-        //         console.log(`Validation passed for ${fieldName}:`, value)
-        //     } catch (error) {
-        //         console.error(
-        //             `Validation error for ${fieldName}:`,
-        //             error.message,
-        //         )
-        //     }
-        // }
         Object.keys(formData).forEach((field: any) => {
             if (formData[field]) {
                 const value = formData[field]
