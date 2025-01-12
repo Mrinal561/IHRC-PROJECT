@@ -100,6 +100,7 @@ const UserTable: React.FC = () => {
                     </div>
                 ),
             },
+            
             // {
             //     header: 'Password',
             //     accessorKey: 'password',
