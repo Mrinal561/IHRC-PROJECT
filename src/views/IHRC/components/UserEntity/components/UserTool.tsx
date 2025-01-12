@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useEffect, useState } from 'react'
 import { Button } from '@/components/ui'
 import { HiPlusCircle } from 'react-icons/hi'
@@ -6,6 +7,16 @@ import { useDispatch } from 'react-redux'
 import { APP_PREFIX_PATH } from '@/constants/route.constant'
 import { fetchUsers } from '@/store/slices/userEntity/UserEntitySlice'
 import { fetchCompanyGroups } from '@/store/slices/companyGroup/companyGroupSlice'
+=======
+import React, { useEffect, useState } from 'react';
+import { Button } from '@/components/ui';
+import { HiPlusCircle } from 'react-icons/hi';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { APP_PREFIX_PATH } from '@/constants/route.constant';
+import { fetchUsers } from '@/store/slices/userEntity/UserEntitySlice';
+import { fetchCompanyGroups } from '@/store/slices/companyGroup/companyGroupSlice';
+>>>>>>> 60a36f64eb5d75c5abc1fe32ce562c2f1372ad12
 
 const UserTool: React.FC = () => {
     const navigate = useNavigate()

@@ -46,7 +46,7 @@ const PFTracker: React.FC = () => {
         startDate: '',
         endDate: '',
     })
-    const [financialYear, setFinancialYear] = useState(sessionStorage.getItem(FINANCIAL_YEAR_KEY));
+   
     const [data, setData] = useState<PfChallanData[]>([])
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -64,7 +64,7 @@ const PFTracker: React.FC = () => {
         pageIndex: 1,
         pageSize: 10,
     })
-
+    const [financialYear, setFinancialYear] = useState(sessionStorage.getItem(FINANCIAL_YEAR_KEY));
 
     useEffect(() => {
         // Handler for the custom event

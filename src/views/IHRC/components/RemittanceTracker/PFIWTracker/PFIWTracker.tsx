@@ -13,6 +13,11 @@ import { useNavigate } from 'react-router-dom';
 import { Notification, toast } from '@/components/ui'
 import { fetchAuthUser } from '@/store/slices/login';
 
+
+const FINANCIAL_YEAR_KEY = 'selectedFinancialYear'
+const FINANCIAL_YEAR_CHANGE_EVENT = 'financialYearChanged';
+
+
 interface Permissions {
     canList: boolean;
     canCreate: boolean;
@@ -41,6 +46,7 @@ const PFIWTracker: React.FC = () => {
         startDate: '',
         endDate:''
     })
+    const [financialYear, setFinancialYear] = useState(sessionStorage.getItem(FINANCIAL_YEAR_KEY));
     const [data, setData] = useState([])
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -60,6 +66,28 @@ const PFIWTracker: React.FC = () => {
     const [isInitialized, setIsInitialized] = useState(false)
     const [permissionCheckComplete, setPermissionCheckComplete] = useState(false)
 
+
+    useEffect(() => {
+        // Handler for the custom event
+        const handleFinancialYearChange = (event: CustomEvent) => {
+            const newFinancialYear = event.detail;
+            setFinancialYear(newFinancialYear);
+        };
+
+        // Add event listener for our custom event
+        window.addEventListener(
+            FINANCIAL_YEAR_CHANGE_EVENT, 
+            handleFinancialYearChange as EventListener
+        );
+
+        // Cleanup
+        return () => {
+            window.removeEventListener(
+                FINANCIAL_YEAR_CHANGE_EVENT, 
+                handleFinancialYearChange as EventListener
+            );
+        };
+    }, []);
 
     useEffect(() => {
         const initializeAuth = async () => {
@@ -170,10 +198,14 @@ const PFIWTracker: React.FC = () => {
                 if (filters.pfCode) {
                     params['pf_code[]'] = filters.pfCode;
                 }
+                if (financialYear) {
+                    params['financial_year'] = financialYear
+                }
 
                 const res = await httpClient.get(endpoints.pfiwtracker.pfiwGetAll(), {
                     params
                 })
+                
                 
                 console.log(res.data.data)
                 setData(res.data.data)
@@ -187,7 +219,7 @@ const PFIWTracker: React.FC = () => {
                 setIsLoading(false)
             }
         },
-        [filters.groupId, filters.companyId, filters.pfCode, filters.startDate, filters.endDate]
+        [filters.groupId, filters.companyId, filters.pfCode, filters.startDate, filters.endDate,financialYear]
     )
 
     useEffect(() => {

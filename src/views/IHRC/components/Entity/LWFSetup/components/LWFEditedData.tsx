@@ -281,7 +281,7 @@
 
 
 import React, { useEffect, useState } from 'react';
-import { Button, Dialog, DatePicker, toast, Notification } from '@/components/ui';
+import { Button, Dialog, DatePicker, toast, Notification, Input } from '@/components/ui';
 import OutlinedInput from '@/components/ui/OutlinedInput';
 import OutlinedSelect from '@/components/ui/Outlined';
 import OutlinedPasswordInput from '@/components/ui/OutlinedInput/OutlinedPasswordInput';
@@ -316,6 +316,8 @@ interface LWFSetupData {
   remmit_mode: string;
   Company?: Company;
   CompanyGroup?: CompanyGroup;
+  certificate?:string;
+  signatory_id?:number;
 }
 
 const lwfSchema = yup.object().shape({
@@ -365,6 +367,8 @@ const LWFEditedData: React.FC<LWFEditedDataProps> = ({
     password: '',
     register_date: '',
     remmit_mode: '',
+    certificate:'',
+    signatory_id: 0
   });
   
   const [errors, setErrors] = useState<ValidationErrors>({});
@@ -452,6 +456,8 @@ const LWFEditedData: React.FC<LWFEditedDataProps> = ({
         password: formData.password,
         register_date: formData.register_date || '',
         remmit_mode: formData.remmit_mode,
+        signatory_id : formData.signatory_id,
+        certificate: formData.certificate,
       };
 
       const resultAction = await dispatch(updateLwf({
@@ -482,6 +488,37 @@ const LWFEditedData: React.FC<LWFEditedDataProps> = ({
       </Notification>
     );
   };
+  const convertToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            const base64String = (reader.result as string).split(',')[1];
+            resolve(base64String);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+};
+
+const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (file) {
+      try {
+          const base64String = await convertToBase64(file);
+          setFormData(prev => ({
+              ...prev,
+              certificate: base64String
+          }));
+      } catch (error) {
+          console.error('Error converting file to base64:', error);
+          toast.push(
+              <Notification title="Error" type="danger">
+                  Failed to process certificate
+              </Notification>
+          );
+      }
+  }
+};
 
   if (error) {
     return (
@@ -595,32 +632,43 @@ const LWFEditedData: React.FC<LWFEditedDataProps> = ({
       </div>
 
       {/* Remittance Mode */}
-      <div className="flex gap-4 items-center">
-        <div className="flex flex-col gap-2 w-full">
-          <label>Remit Mode</label>
-          <div className="w-full">
-            <OutlinedSelect
-              // isDisabled={true}
-              label="Select Mode"
-              options={remittanceModeOptions}
-              value={formData.remmit_mode ? { 
-                value: formData.remmit_mode, 
-                label: formData.remmit_mode.charAt(0).toUpperCase() + formData.remmit_mode.slice(1) 
-              } : null}
-              onChange={(option) => {
-                if (option) {
-                  handleChange('remmit_mode', option.value);
-                }
-              }}
-            />
-            <div className="h-5">
-              {errors.remmit_mode && (
-                <div className="text-red-500 text-sm">{errors.remmit_mode}</div>
-              )}
-            </div>
-          </div>
-        </div>
+      <div className="grid grid-cols-2 gap-4">
+  {/* Remit Mode Section */}
+  <div className="flex flex-col">
+    <label className="block text-sm font-medium text-gray-700 mb-2">Remit Mode</label>
+    <div>
+      <OutlinedSelect
+        label="Select Mode"
+        options={remittanceModeOptions}
+        value={formData.remmit_mode ? { 
+          value: formData.remmit_mode, 
+          label: formData.remmit_mode.charAt(0).toUpperCase() + formData.remmit_mode.slice(1) 
+        } : null}
+        onChange={(option) => {
+          if (option) {
+            handleChange('remmit_mode', option.value);
+          }
+        }}
+      />
+      <div className="h-5">
+        {errors.remmit_mode && (
+          <div className="text-red-500 text-sm">{errors.remmit_mode}</div>
+        )}
       </div>
+    </div>
+  </div>
+
+  {/* ESI Certificate Section */}
+  <div className="flex flex-col">
+    <label className="block text-sm font-medium text-gray-700 mb-2">LWF Certificate</label>
+    <Input
+      type="file"
+      onChange={handleFileChange}
+      className="w-full"
+      accept=".pdf" 
+    />
+  </div>
+</div>
 
       <div className="flex justify-end mt-6">
         <Button variant="plain" onClick={onClose} className="mr-2">

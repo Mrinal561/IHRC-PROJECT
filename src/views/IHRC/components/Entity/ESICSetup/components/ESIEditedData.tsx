@@ -403,7 +403,7 @@
 // export default ESIEditedData;
 
 import React, { useEffect, useState } from 'react';
-import { Button, Dialog, Notification, toast } from '@/components/ui';
+import { Button, Dialog, Input, Notification, toast } from '@/components/ui';
 import OutlinedInput from '@/components/ui/OutlinedInput';
 import OutlinedSelect from '@/components/ui/Outlined';
 import OutlinedPasswordInput from '@/components/ui/OutlinedInput/OutlinedPasswordInput';
@@ -420,6 +420,7 @@ interface ESISetupData {
   code: string;
   esi_user: string;
   password: string;
+  certificate?: string; 
   CompanyGroup?: {
     id: number;
     name: string;
@@ -448,6 +449,7 @@ interface ValidationErrors {
   code?: string;
   esi_user?: string;
   password?: string;
+  certificate?:string;
 }
 
 interface ESIEditedDataProps {
@@ -496,6 +498,7 @@ const ESIEditedData: React.FC<ESIEditedDataProps> = ({
     code: '',
     esi_user: '',
     password: '',
+    certificate: '',
   });
   const storedId = id;
 
@@ -580,6 +583,7 @@ const ESIEditedData: React.FC<ESIEditedDataProps> = ({
         code: formData.code,
         esi_user: formData.esi_user,
         password: formData.password,
+        certificate: formData.certificate,
       };
       if (!id) {
         toast.push(
@@ -617,6 +621,37 @@ const ESIEditedData: React.FC<ESIEditedDataProps> = ({
       );
     }
   };
+  const convertToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            const base64String = (reader.result as string).split(',')[1];
+            resolve(base64String);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+};
+
+const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (file) {
+      try {
+          const base64String = await convertToBase64(file);
+          setFormData(prev => ({
+              ...prev,
+              certificate: base64String
+          }));
+      } catch (error) {
+          console.error('Error converting file to base64:', error);
+          toast.push(
+              <Notification title="Error" type="danger">
+                  Failed to process certificate
+              </Notification>
+          );
+      }
+  }
+};
 
   if (loading) {
     return <div>Loading...</div>;
@@ -706,6 +741,17 @@ const ESIEditedData: React.FC<ESIEditedDataProps> = ({
           )}
         </div>
       </div>
+      <div className="grid grid-cols-1 gap-3">
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-2">ESI Certificate</label>
+    <Input
+      type="file"
+      onChange={handleFileChange}
+      className="w-full"
+      accept=".pdf" 
+    />
+    </div>
+    </div>
   
       {/* Action Buttons */}
       <div className="flex justify-end gap-2">
