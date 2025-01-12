@@ -12,6 +12,7 @@ import { endpoints } from '@/api/endpoint';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 import DistrictAutosuggest from '../../Branch/components/DistrictAutoSuggest';
 import LocationAutosuggest from '../../Branch/components/LocationAutosuggest';
+import { Eye } from 'lucide-react';
 
 
 interface ValidationErrors {
@@ -31,12 +32,8 @@ const pfSchema = yup.object().shape({
     .min(3, 'Username must be at least 3 characters'),
     password: yup
     .string()
-    .required('Password is required')
-    .min(8, 'Password must be at least 8 characters')
-    .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
-        'Must include A-Z, a-z, 0-9, @$!%*?& (Weak Password)'
-    ),
+    // .required('Password is required')
+    .min(8, 'Password must be at least 8 characters'),
     register_date: yup
     .date()
     .required('Registration date is required')
@@ -107,6 +104,20 @@ const PFEditedData: React.FC<PFEditedDataProps> = ({
   const [selectedSignatories, setSelectedSignatories] = useState<Array<{ id: number; name: string }>>([]);
   const [selectedLocationId, setSelectedLocationId] = useState<number>();
   
+  const handleDocumentView = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (formData.register_certificate) {
+        const fullPath = `${import.meta.env.VITE_API_GATEWAY}/${formData.register_certificate}`;
+        window.open(fullPath, '_blank');
+    }
+ };
+ const handleLeaseDocumentView = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (formData.register_certificate) {
+        const fullPath = `${import.meta.env.VITE_API_GATEWAY}/${formData.register_certificate}`;
+        window.open(fullPath, '_blank');
+    }
+ };
   useEffect(() => {
     loadStates();
     loadUsers();
@@ -458,9 +469,11 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
   return (
     <div className="p-3 space-y-3">
-      {/* Company Details Section */}
-      <div className="grid grid-cols-2 gap-3">
+      {/* First Row: Company Group, Company, PF Code */}
+      <div className="grid grid-cols-3 gap-3">
+      
         <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Company Group</label>
           <OutlinedInput
             label="Company Group"
             value={formData.Company_Group_Name || ''}
@@ -468,20 +481,17 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
           />
         </div>
         <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Company</label>
           <OutlinedInput
             label="Company"
             value={formData.Company_Name || ''}
             disabled
           />
         </div>
-      </div>
-  
-      {/* PF Details Section */}
-      <div className="grid grid-cols-2 gap-3">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">PF Code</label>
           <OutlinedInput
-          label='PF Code'
+            label="PF Code"
             value={formData.pf_code}
             onChange={(value) => handleChange('pf_code', value)}
           />
@@ -489,10 +499,14 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
             <p className="mt-0.5 text-xs text-red-600">{errors.pf_code}</p>
           )}
         </div>
+      </div>
+
+      {/* Second Row: PF User, Password, Registration Date */}
+      <div className="grid grid-cols-3 gap-3">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">PF User</label>
           <OutlinedInput
-          label='PF User'
+            label="PF User"
             value={formData.pf_user}
             onChange={(value) => handleChange('pf_user', value)}
           />
@@ -500,14 +514,10 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
             <p className="mt-0.5 text-xs text-red-600">{errors.pf_user}</p>
           )}
         </div>
-      </div>
-  
-      {/* Password and Registration Date Section */}
-      <div className="grid grid-cols-2 gap-3">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
           <OutlinedInput
-          label='Password'
+            label="Password"
             value={formData.password}
             onChange={(value) => handleChange('password', value)}
           />
@@ -527,7 +537,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
           )}
         </div>
       </div>
-  
+
       {/* Signatories Section */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Signatories</label>
@@ -545,7 +555,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
           onChange={handleSignatoryChange}
         />
       </div>
-  
+
       {/* Selected Signatories Details */}
       {selectedSignatories.length > 0 && (
         <div className="border rounded-lg p-2 space-y-2">
@@ -555,10 +565,9 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
               <h4 className="text-sm mb-2">{signatory.name}</h4>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">DSC Validity</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">DSC Validity</label>
                   <DatePicker
                     disabled
-                    // label="DSC Valid Upto"
                     size="sm"
                     value={formData.signatory_data[index]?.dsc_validity ? new Date(formData.signatory_data[index].dsc_validity) : null}
                     onChange={(date) => {
@@ -572,18 +581,18 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
                   />
                 </div>
                 <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1"> E-sign Status</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">E-sign Status</label>
                   <Select
-                  size='sm'
+                    size="sm"
                     isDisabled
                     options={[
                       { value: 'active', label: 'Active' },
                       { value: 'inactive', label: 'Inactive' },
                     ]}
-                    value={{ 
-                      value: formData.signatory_data[index]?.e_sign_status || 'inactive', 
-                      label: (formData.signatory_data[index]?.e_sign_status || 'inactive').charAt(0).toUpperCase() + 
-                             (formData.signatory_data[index]?.e_sign_status || 'inactive').slice(1) 
+                    value={{
+                      value: formData.signatory_data[index]?.e_sign_status || 'inactive',
+                      label: (formData.signatory_data[index]?.e_sign_status || 'inactive').charAt(0).toUpperCase() +
+                        (formData.signatory_data[index]?.e_sign_status || 'inactive').slice(1)
                     }}
                     onChange={(option) => {
                       const newSignatoryData = [...formData.signatory_data];
@@ -600,27 +609,40 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
           ))}
         </div>
       )}
-  {/* Certificate Upload Section */}
-<div className="grid grid-cols-1 gap-3">
-  <div>
-    <label className="block text-sm font-medium text-gray-700 mb-2">PF Certificate</label>
-    <Input
-      type="file"
-      onChange={handleFileChange}
-      className="w-full"
-      accept=".pdf" 
-    />
-    </div>
-    </div>
+
+      {/* Certificate Upload Section */}
+      <div className="grid grid-cols-1 gap-3">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">PF Certificate</label>
+          <div className="flex items-center gap-2">
+            <Input
+              type="file"
+              onChange={handleFileChange}
+              className="w-full"
+              accept=".pdf"
+            />
+            {formData.register_certificate && (
+              <button
+                onClick={handleDocumentView}
+                className="p-2 hover:bg-gray-100 rounded-full flex-shrink-0"
+                title="View Document"
+              >
+                <Eye size={20} />
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
       {/* Action Buttons */}
       <div className="flex justify-end space-x-3 mt-4">
-        <Button variant='plain' onClick={onClose}>Cancel</Button>
+        <Button variant="plain" onClick={onClose}>Cancel</Button>
         <Button variant="solid" onClick={handleSubmit} disabled={loading}>
           {loading ? 'Updating...' : 'Update PF Setup'}
         </Button>
       </div>
     </div>
-  );
+);
 };
 
 export default PFEditedData;

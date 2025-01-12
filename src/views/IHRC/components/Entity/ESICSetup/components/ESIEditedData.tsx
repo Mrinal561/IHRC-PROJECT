@@ -8,6 +8,7 @@ import { useDispatch } from 'react-redux';
 import { showErrorNotification } from '@/components/ui/ErrorMessage';
 import { fetchEsiSetupById, updateEsiSetup } from '@/store/slices/esiSetup/esiSetupSlice';
 import * as yup from 'yup';
+import { Eye } from 'lucide-react';
 
 interface ESISetupData {
   id: number;
@@ -103,6 +104,15 @@ const ESIEditedData: React.FC<ESIEditedDataProps> = ({
     { value: 'main', label: 'Main' },
     { value: 'subcode', label: 'SubCode' },
   ];
+
+  const handleDocumentView = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (formData.certificate) {
+        const fullPath = `${import.meta.env.VITE_API_GATEWAY}/${formData.certificate}`;
+        window.open(fullPath, '_blank');
+    }
+ };
+
 
   useEffect(() => {
     console.log(id)
@@ -290,10 +300,10 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     );
   }
 
-  return (
+return (
     <div className="p-4 space-y-6">
-      {/* Company Group and Company Info */}
-      <div className="grid grid-cols-2 gap-4">
+      {/* First Row: Company Group, Company, Code Type */}
+      <div className="grid grid-cols-3 gap-4">
         <div className="h-[70px]">
           <p className="text-sm font-medium mb-2">Company Group</p>
           <OutlinedInput
@@ -310,10 +320,6 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
             disabled
           />
         </div>
-      </div>
-  
-      {/* ESI Code Type and Code */}
-      <div className="grid grid-cols-2 gap-4">
         <div className="h-[90px]">
           <p className="text-sm font-medium mb-2">Code Type</p>
           <OutlinedSelect
@@ -328,6 +334,10 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
             <p className="text-red-500 text-xs mt-1">{errors.code_Type}</p>
           )}
         </div>
+      </div>
+
+      {/* Second Row: ESI Code, ESI User, Password */}
+      <div className="grid grid-cols-3 gap-4">
         <div className="h-[90px]">
           <p className="text-sm font-medium mb-2">ESI Code</p>
           <OutlinedInput
@@ -337,10 +347,6 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
           />
           {errors.code && <p className="text-red-500 text-xs mt-1">{errors.code}</p>}
         </div>
-      </div>
-  
-      {/* ESI User and Password */}
-      <div className="grid grid-cols-2 gap-4">
         <div className="h-[90px]">
           <p className="text-sm font-medium mb-2">ESI User</p>
           <OutlinedInput
@@ -364,18 +370,31 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
           )}
         </div>
       </div>
+
+      {/* ESI Certificate */}
       <div className="grid grid-cols-1 gap-3">
-  <div>
-    <label className="block text-sm font-medium text-gray-700 mb-2">ESI Certificate</label>
-    <Input
-      type="file"
-      onChange={handleFileChange}
-      className="w-full"
-      accept=".pdf" 
-    />
-    </div>
-    </div>
-  
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">ESI Certificate</label>
+          <div className="flex items-center gap-2">
+            <Input
+              type="file"
+              onChange={handleFileChange}
+              className="w-full"
+              accept=".pdf"
+            />
+            {formData.certificate && (
+              <button
+                onClick={handleDocumentView}
+                className="p-2 hover:bg-gray-100 rounded-full flex-shrink-0"
+                title="View Document"
+              >
+                <Eye size={20} />
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
       {/* Action Buttons */}
       <div className="flex justify-end gap-2">
         <Button variant="plain" onClick={onClose}>
@@ -386,7 +405,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         </Button>
       </div>
     </div>
-  );
+);
 };
 
 export default ESIEditedData;

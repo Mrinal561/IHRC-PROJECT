@@ -34,6 +34,7 @@ import SESetup from './SEsetup'
 import { HiMinusCircle, HiPlusCircle } from 'react-icons/hi'
 import * as yup from 'yup'
 import { Formik, Field, Form, ErrorMessage } from 'formik'
+import { Eye } from 'lucide-react'
 
 interface AgreementSection {
     agreement_type: string
@@ -347,6 +348,20 @@ const AddBranchForm: React.FC = () => {
         { value: 'lifetime', label: 'Lifetime' },
     ]
 
+    const handleDocumentView = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        if (formData.se_document) {
+            const fullPath = `${import.meta.env.VITE_API_GATEWAY}/${formData.se_document}`;
+            window.open(fullPath, '_blank');
+        }
+     };
+     const handleLeaseDocumentView = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        if (formData.se_document) {
+            const fullPath = `${import.meta.env.VITE_API_GATEWAY}/${formData.lease_document}`;
+            window.open(fullPath, '_blank');
+        }
+     };
     const handleSeValidityChange = (date: Date | null) => {
         console.log('Current seValidityType:', seValidityType)
         console.log('Date:', date)
@@ -580,8 +595,8 @@ const AddBranchForm: React.FC = () => {
                 office_type: response.office_type || '',
                 other_office: response.OtherBrancOffice?.name || '',
                 lease_status: response.lease_status || '',
-                // lease_document: response.lease_document || '',
-                // se_document: response.se_document || '',
+                lease_document: response.lease_document || '',
+                se_document: response.se_document || '',
                 document_validity_type:
                     response.document_validity_type || 'fixed',
                 se_validity: formatInitialDate(response.se_validity) || null, // Convert to YYYY-MM-DD format
@@ -853,9 +868,9 @@ const AddBranchForm: React.FC = () => {
                     Update New Branch
                 </h3>
             </div>
-            <p>
+            {/* <p>
                 {companyGroups.length},{companies.length},{states.length}
-            </p>
+            </p> */}
             {!!companyGroups.length &&
                 !!companies.length &&
                 !!states.length && (
@@ -1516,29 +1531,34 @@ const AddBranchForm: React.FC = () => {
                                                 </div>
                                             )}
                                             <div>
-                                                <div className="flex flex-col gap-4">
-                                                    <label>
-                                                        Please upload Lease deed
-                                                        copy
-                                                        <span className="text-red-500">
-                                                            *
-                                                        </span>
-                                                    </label>
+                                            <div className="flex flex-col gap-4">
+                                                <label>
+                                                    Please upload Lease deed copy
+                                                    <span className="text-red-500">*</span>
+                                                </label>
+                                                <div className="flex items-center gap-2">
                                                     <Input
-                                                        id="file-upload"
-                                                        type="file"
-                                                        accept=".pdf"
-                                                        onChange={
-                                                            handleLeaseDocumentUpload
-                                                        }
+                                                    id="file-upload"
+                                                    type="file"
+                                                    accept=".pdf"
+                                                    onChange={handleLeaseDocumentUpload}
                                                     />
-                                                    {errors?.lease_document && (
-                                                        <span className="text-red-500 text-sm">
-                                                            {
-                                                                errors?.lease_document as String
-                                                            }
-                                                        </span>
+                                                    
+                                                    {formData.lease_document && (
+                                                        <button
+                                                            onClick={handleLeaseDocumentView}
+                                                            className="p-2 hover:bg-gray-100 rounded-full flex-shrink-0"
+                                                            title="View Document"
+                                                        >
+                                                            <Eye size={20} />
+                                                        </button>
                                                     )}
+                                                </div>
+                                                {errors?.lease_document && (
+                                                    <span className="text-red-500 text-sm">
+                                                    {errors?.lease_document as String}
+                                                    </span>
+                                                )}
                                                 </div>
                                             </div>
                                         </div>
@@ -1726,22 +1746,35 @@ const AddBranchForm: React.FC = () => {
                                                     <label>
                                                         {seRegistrationNumberExists ===
                                                         'applied'
-                                                            ? 'Please upload the S&E  acknowledgment copy'
+                                                            ? 'Please upload the S&E acknowledgment copy'
                                                             : 'Please upload the S&E Registration certificate'}
                                                         <span className="text-red-500">
                                                             *
                                                         </span>
                                                     </label>
-                                                    <Input
-                                                        id="file-upload"
-                                                        size="sm"
-                                                        type="file"
-                                                        accept=".pdf"
-                                                        className="py-[5px]"
-                                                        onChange={
-                                                            handleSeDocumentUpload
-                                                        }
-                                                    />
+                                                    <div className="flex items-center gap-2">
+                                                        <Input
+                                                            id="file-upload"
+                                                            size="sm"
+                                                            type="file"
+                                                            accept=".pdf"
+                                                            className="py-[5px]"
+                                                            onChange={
+                                                                handleSeDocumentUpload
+                                                            }
+                                                        />
+                                                         {formData.se_document && (
+                                                        <button
+                                                            onClick={
+                                                                handleDocumentView
+                                                            }
+                                                            className="p-2 hover:bg-gray-100 rounded-full flex-shrink-0"
+                                                            title="View Document"
+                                                        >
+                                                            <Eye size={20} />
+                                                        </button>
+                                                         )}
+                                                    </div>
                                                     {errors?.se_document && (
                                                         <span className="text-red-500 text-sm">
                                                             {
