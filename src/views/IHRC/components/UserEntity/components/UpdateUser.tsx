@@ -17,12 +17,13 @@ import { endpoints } from '@/api/endpoint'
 import {
     createUser,
     fetchUserById,
+    updateUser,
 } from '@/store/slices/userEntity/UserEntitySlice'
 import { format } from 'date-fns'
 import * as yup from 'yup'
 import { Formik, Field, Form, ErrorMessage } from 'formik'
 import { showErrorNotification } from '@/components/ui/ErrorMessage/ErrorMessage'
-
+import moment from 'moment'
 interface LocationState {
     userId: any
     companyName?: string
@@ -35,7 +36,7 @@ interface UserFormData {
     name: string
     email: string
     mobile: string
-    joining_date: string
+    joining_date: any
     role_id: number
     aadhar_no: string
     pan_card: string
@@ -53,7 +54,7 @@ interface UserDetails {
     name?: string
     group_id?: number
     company_id?: number
-    joining_date?: string
+    joining_date?: any
     role_id?: number
     auth_signatory?: boolean
     suspend?: boolean
@@ -251,14 +252,20 @@ const UserEditForm = () => {
             company_id: Number(values.company_id),
             role_id: Number(values.role_id),
         }
+        console.log(data)
         try {
-            const resultAction = await dispatch(createUser(data)).unwrap()
-            if (resultAction) {
+            const res = await dispatch(
+                updateUser({
+                    id: userId,
+                    data: data,
+                }),
+            ).unwrap()
+            if (res) {
                 navigate('/user-entity')
-                showNotification('success', 'User added successfully')
+                showNotification('success', 'User Updated successfully')
             }
         } catch (error: any) {
-            const errorMessage = error || 'Failed to add user'
+            const errorMessage = error || 'Failed to Update user'
             showNotification('danger', errorMessage) // Show the API error message
         }
     }
@@ -286,7 +293,8 @@ const UserEditForm = () => {
                         name: editedData?.name || '',
                         email: editedData?.email || '',
                         mobile: editedData?.mobile || '',
-                        joining_date: editedData?.joining_date || '',
+                        // joining_date:
+                        //     editedData?.joining_date.toISOString() || null,
                         role_id: editedData?.role_id || 0,
                         aadhar_no: editedData?.aadhar_no || '',
                         pan_card: editedData?.pan_card || '',
