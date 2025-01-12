@@ -53,14 +53,13 @@ const [editFormData, setEditFormData] = useState<PFData | null>(null);
       //     <div className="w-36 text-start">{props.getValue() as string}</div>
       //   ),
       // },
-      {
-        header: 'Company',
-        enableSorting: false,
-        accessorKey: 'Company.name',
-        cell: (props) => (
-          <div className="w-36 text-start">{props.getValue() as string}</div>
-        ),
-      },
+      // {
+      //   header: 'Company',
+      //   accessorKey: 'Company.name',
+      //   cell: (props) => (
+      //     <div className="w-36 text-start">{props.getValue() as string}</div>
+      //   ),
+      // },
       {
         header: 'PF Code',
         enableSorting: false,

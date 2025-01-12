@@ -742,11 +742,11 @@ return (
         </div>
       </div>
       <div className="space-y-2">
-        <p className="text-sm font-medium">Upload Certificate(PDF Only)</p>
+        <p className="text-sm font-medium">Upload Certificate</p>
         <Input
           type="file"
           onChange={handleFileUpload}
-          accept=".pdf"
+          accept=".pdf, .zip, .jpg"
         />
         <div className="min-h-[20px]">
           {errors.certificate && (

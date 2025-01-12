@@ -43,24 +43,22 @@ const PTSetupTable: React.FC<PTSetupTableProps> = ({ data , onRefresh}) => {
 
   const columns = useMemo(
     () => [
-      {
-        header: 'Company Group',
-        enableSorting: false,
-        accessorKey: 'CompanyGroup.name',
-        cell: (props) => (
-          <div className="w-36 text-start">{props.getValue() as string}</div>
-        ),
-      },
-      {
-        header: 'Company',
-        enableSorting: false,
-        accessorKey: 'Company.name',
-        cell: (props: any) => (
-          <div className="w-48 text-start">
-           {props.getValue() as string}
-          </div>
-        ),
-      },
+      // {
+      //   header: 'Company Group',
+      //   accessorKey: 'CompanyGroup.name',
+      //   cell: (props) => (
+      //     <div className="w-36 text-start">{props.getValue() as string}</div>
+      //   ),
+      // },
+      // {
+      //   header: 'Company',
+      //   accessorKey: 'Company.name',
+      //   cell: (props: any) => (
+      //     <div className="w-48 text-start">
+      //      {props.getValue() as string}
+      //     </div>
+      //   ),
+      // },
       // {
       //   header: 'PT State',
       //   accessorKey: 'ptState',

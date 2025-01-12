@@ -625,11 +625,11 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
       </div>
 
       <div className="mb-2">
-        <p className="mb-2">Upload Certificate(PDF Only)</p>
+        <p className="mb-2">Upload Certificate</p>
         <Input
           type="file"
           onChange={handleFileUpload}
-          accept=".pdf"
+          accept=".pdf, .zip , .jpg"
         />
          <div className="min-h-[20px]">
             {errors.certificate && (

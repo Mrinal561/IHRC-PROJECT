@@ -46,6 +46,7 @@
 
             }
         },
+
         "remittanceTracker": {
             "remittanceTracker": "Remittance Tracker",
             "collapse": {

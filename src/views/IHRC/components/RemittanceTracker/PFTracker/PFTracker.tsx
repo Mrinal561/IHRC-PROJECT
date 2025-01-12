@@ -111,7 +111,7 @@ const PFTracker: React.FC = () => {
                 
                 // Find Remittance Tracker module
                 const remittanceModule = response.payload.moduleAccess?.find(
-                    (module: any) => module.id === 3
+                    (module: any) => module.id === 10
                 )
                 
                 if (!remittanceModule) {
@@ -132,7 +132,7 @@ const PFTracker: React.FC = () => {
 
                 // Find PF Tracker menu item
                 const pfTrackerMenu = remittanceModule.menus?.find(
-                    (menu: any) => menu.id === 16
+                    (menu: any) => menu.id === 65
                 )
 
                 if (!pfTrackerMenu) {
