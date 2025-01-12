@@ -25,6 +25,7 @@ import DistrictAutosuggest from './DistrictAutoSuggest'
 import {
     createBranch,
     fetchBranchById,
+    updateBranch,
 } from '@/store/slices/branch/branchSlice'
 import { format, isPast } from 'date-fns'
 import { MdLabel } from 'react-icons/md'
@@ -113,13 +114,11 @@ const validationSchema = yup.object().shape({
         .string()
         .required('Name is required')
         .min(2, 'Name must be at least 2 characters'),
-    opening_date: yup
-        .string()
-        .required('Opening date is required')
-        .matches(
-            /^\d{4}-\d{2}-\d{2}$/,
-            'Opening date must be in the format YYYY-MM-DD',
-        ),
+    opening_date: yup.string().required('Opening date is required'),
+    // .matches(
+    //     /^\d{4}-\d{2}-\d{2}$/,
+    //     'Opening date must be in the format YYYY-MM-DD',
+    // ),
     head_count: yup
         .string()
         .required('Head count is required')
@@ -158,14 +157,12 @@ const validationSchema = yup.object().shape({
             then: (schema) => schema.required('Lease status is required'),
             otherwise: (schema) => schema.notRequired(),
         }),
-    lease_document: yup
-        .string()
-        .nullable()
-        .when('type', {
-            is: 'rented',
-            then: (schema) => schema.required('Lease document is required'),
-            otherwise: (schema) => schema.notRequired(),
-        }),
+    lease_document: yup.string().nullable(),
+    // .when('type', {
+    //     is: 'rented',
+    //     then: (schema) => schema.required('Lease document is required'),
+    //     otherwise: (schema) => schema.notRequired(),
+    // }),
     lease_validity: yup
         .string()
         .nullable()
@@ -173,10 +170,10 @@ const validationSchema = yup.object().shape({
             is: 'rented',
             then: (schema) =>
                 schema
-                    .matches(
-                        /^\d{4}-\d{2}-\d{2}$/,
-                        'Lease Validity must be in the format YYYY-MM-DD',
-                    )
+                    // .matches(
+                    //     /^\d{4}-\d{2}-\d{2}$/,
+                    //     'Lease Validity must be in the format YYYY-MM-DD',
+                    // )
                     .required('Lease validity is required'),
             otherwise: (schema) => schema.notRequired(),
         }),
@@ -188,14 +185,12 @@ const validationSchema = yup.object().shape({
             then: (schema) => schema.required('SE status is required'),
             otherwise: (schema) => schema.notRequired(),
         }),
-    se_document: yup
-        .string()
-        .nullable()
-        .when('type', {
-            is: (val) => val === 'rented' || val === 'owned',
-            then: (schema) => schema.required('SE document is required'),
-            otherwise: (schema) => schema.notRequired(),
-        }),
+    se_document: yup.string().nullable(),
+    // .when('type', {
+    //     is: (val) => val === 'rented' || val === 'owned',
+    //     then: (schema) => schema.required('SE document is required'),
+    //     otherwise: (schema) => schema.notRequired(),
+    // }),
     register_number: yup
         .string()
         .nullable()
@@ -496,10 +491,6 @@ const AddBranchForm: React.FC = () => {
         }
     }
 
-    useEffect(() => {
-        loadStates()
-    }, [])
-
     // Handle state selection
     const handleStateChange = (option: SelectOption | null) => {
         setSelectedStates(option)
@@ -536,10 +527,22 @@ const AddBranchForm: React.FC = () => {
                     value: String(v.id),
                 })),
             )
+            setSelectedCompanyGroup(
+                data.data.map((v: any) => ({
+                    label: v.name,
+                    value: String(v.id),
+                }))[0],
+            )
         } catch (error) {
             console.error('Failed to load company groups:', error)
             showNotification('danger', 'Failed to load company groups')
         }
+    }
+    const formatInitialDate = (dateString: any) => {
+        if (!dateString) return null
+        // Parse the date string to a Date object
+        const date = new Date(dateString)
+        return isNaN(date.getTime()) ? null : date
     }
 
     const fetchBranchData = async () => {
@@ -569,9 +572,7 @@ const AddBranchForm: React.FC = () => {
                 district: response.District?.id || '', // Use nested object for district name
                 location: response.Location?.id || '', // Use nested object for location name
                 name: response.name || '',
-                opening_date: response.opening_date
-                    ? response.opening_date.split('T')[0]
-                    : '', // Convert to YYYY-MM-DD format
+                opening_date: formatInitialDate(response.opening_date) || null,
                 head_count: response.head_count || '',
                 address: response.address || '',
                 type: response.type || '',
@@ -579,16 +580,13 @@ const AddBranchForm: React.FC = () => {
                 office_type: response.office_type || '',
                 other_office: response.OtherBrancOffice?.name || '',
                 lease_status: response.lease_status || '',
-                lease_document: response.lease_document || '',
-                se_document: response.se_document || '',
+                // lease_document: response.lease_document || '',
+                // se_document: response.se_document || '',
                 document_validity_type:
                     response.document_validity_type || 'fixed',
-                se_validity: response.se_validity
-                    ? response.se_validity.split('T')[0]
-                    : null, // Convert to YYYY-MM-DD format
-                lease_validity: response.lease_validity
-                    ? response.lease_validity.split('T')[0]
-                    : null, // Convert to YYYY-MM-DD format
+                se_validity: formatInitialDate(response.se_validity) || null, // Convert to YYYY-MM-DD format
+                lease_validity:
+                    formatInitialDate(response.lease_validity) || null,
                 se_status: response.se_status || '',
                 gst_number: response.gst_number || '',
             })
@@ -603,6 +601,7 @@ const AddBranchForm: React.FC = () => {
 
     useEffect(() => {
         loadCompanyGroups()
+        loadStates()
         fetchBranchData()
     }, [])
 
@@ -789,7 +788,7 @@ const AddBranchForm: React.FC = () => {
         }
         return true // Validation passed
     }
-    const handleAddBranch = async (values: BranchFormData) => {
+    const handleUpdateBranch = async (values: BranchFormData) => {
         console.log(formData)
         //check validation here all
         await validateFormData() // This validates all fields at once
@@ -798,8 +797,16 @@ const AddBranchForm: React.FC = () => {
             return // Don't proceed if validation failed
         }
 
+        const data = formData.filter((v) => String(v).length)
+
+        // Dispatch update branch action
         try {
-            const response = await dispatch(createBranch(formData))
+            const res = await dispatch(
+                updateBranch({
+                    id: branchId,
+                    data: data,
+                }),
+            )
                 .unwrap()
                 .catch((error: any) => {
                     // Handle different error formats
@@ -814,30 +821,20 @@ const AddBranchForm: React.FC = () => {
                         showErrorNotification(error)
                     } else {
                         // Fallback error message
-                        showErrorNotification(
-                            'An unexpected error occurred. Please try again.',
-                        )
+                        showErrorNotification(error)
                     }
                     throw error // Re-throw to prevent navigation
                 })
 
-            if (response) {
+            if (res) {
                 navigate('/branch')
-                toast.push(
-                    <Notification title="Success" type="success">
-                        Branch added successfully
-                    </Notification>,
-                )
+                showNotification('success', 'Branch Updated successfully')
             }
         } catch (error: any) {
-            console.error('Branch creation error:', error)
-
-            const errorMessage =
-                error.response?.data?.message ||
-                error.message ||
-                'An unexpected error occurred. Please try again.'
-            showErrorNotification(errorMessage)
-            throw error // Re-throw to prevent further execution
+            const errorMessage = error || 'Failed to Update user'
+            showNotification('danger', errorMessage) // Show the API error message
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -888,7 +885,11 @@ const AddBranchForm: React.FC = () => {
                                 <OutlinedSelect
                                     label="Select Company"
                                     options={companies}
-                                    value={selectedCompany}
+                                    value={companies.find(
+                                        (value) =>
+                                            Number(value.value) ==
+                                            formData.company_id,
+                                    )}
                                     onChange={(option: SelectOption | null) => {
                                         setSelectedCompany(option)
                                     }}
@@ -910,7 +911,11 @@ const AddBranchForm: React.FC = () => {
                                 <OutlinedSelect
                                     label="Select State"
                                     options={states}
-                                    value={selectedStates}
+                                    value={states.find(
+                                        (value) =>
+                                            Number(value.value) ==
+                                            formData.state_id,
+                                    )}
                                     onChange={handleStateChange}
                                 />
                                 {errors?.state_id && (
@@ -1010,6 +1015,7 @@ const AddBranchForm: React.FC = () => {
                                 </p>
                                 <DatePicker
                                     size="sm"
+                                    value={formData?.opening_date}
                                     placeholder="Pick a Date"
                                     onChange={(date) => {
                                         setFormData((prev) => ({
@@ -1361,6 +1367,10 @@ const AddBranchForm: React.FC = () => {
                                                     </p>
                                                     <DatePicker
                                                         size="sm"
+                                                        value={
+                                                            formData?.se_validity ||
+                                                            null
+                                                        }
                                                         placeholder="Pick a Date"
                                                         onChange={(date) => {
                                                             setFormData(
@@ -1487,6 +1497,9 @@ const AddBranchForm: React.FC = () => {
                                                         </span>
                                                     </p>
                                                     <DatePicker
+                                                        value={
+                                                            formData?.lease_validity
+                                                        }
                                                         size="sm"
                                                         placeholder="Pick a Date"
                                                         onChange={
@@ -1677,6 +1690,9 @@ const AddBranchForm: React.FC = () => {
                                                         </p>
                                                         <DatePicker
                                                             size="sm"
+                                                            value={
+                                                                formData?.se_validity
+                                                            }
                                                             placeholder="Pick a Date"
                                                             onChange={(
                                                                 date,
@@ -1805,7 +1821,7 @@ const AddBranchForm: React.FC = () => {
                                 type="button"
                                 variant="solid"
                                 size="sm"
-                                onClick={handleAddBranch}
+                                onClick={handleUpdateBranch}
                             >
                                 Add Branch
                             </Button>
