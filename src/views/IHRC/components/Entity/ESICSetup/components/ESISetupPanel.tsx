@@ -278,23 +278,23 @@ const handleRegistrationCertificateUpload = async (e: React.ChangeEvent<HTMLInpu
     }
 };
 
-const handleStateChange = (option: SelectOption | null) => {
-  setSelectedStates(option);
-  setSelectedDistrict(''); // Reset district selection
-  setSelectedLocation(''); // Reset location selection
-  setDistricts([]); // Clear districts
-  setLocations([]); // Clear locations
+// const handleStateChange = (option: SelectOption | null) => {
+//   setSelectedStates(option);
+//   setSelectedDistrict(''); // Reset district selection
+//   setSelectedLocation(''); // Reset location selection
+//   setDistricts([]); // Clear districts
+//   setLocations([]); // Clear locations
   
-  if (option) {
-      // loadDistricts(option.value);
-      // setPfSetupData(prev => ({
-      //     ...prev,
-      //     state_id: parseInt(option.value),
-      //     district_id: 0,
-      //     location: ''
-      // }));
-  }
-};
+//   if (option) {
+//       // loadDistricts(option.value);
+//       // setPfSetupData(prev => ({
+//       //     ...prev,
+//       //     state_id: parseInt(option.value),
+//       //     district_id: 0,
+//       //     location: ''
+//       // }));
+//   }
+// };
 
 useEffect(() => {
   loadStates()
@@ -443,32 +443,157 @@ useEffect(() => {
     }
   };
 
+  const validateField = async (fieldName: string, value: any) => {
+    try {
+      // Create an object with just the field being validated
+      const fieldToValidate = { [fieldName]: value };
+      
+      // Get the validation schema for just this field
+      const fieldSchema = yup.reach(esiSetupSchema, fieldName);
+      
+      await fieldSchema.validate(value);
+      
+      // Clear error for this field if validation passes
+      setErrors(prev => ({
+        ...prev,
+        [fieldName]: undefined
+      }));
+      
+    } catch (error) {
+      if (error instanceof yup.ValidationError) {
+        // Set error for this field
+        setErrors(prev => ({
+          ...prev,
+          [fieldName]: error.message
+        }));
+      }
+    }
+  };
+  const handleStateChange = (option: SelectOption | null) => {
+    setSelectedStates(option);
+    setSelectedDistrict({ id: null, name: '' }); // Reset district selection
+    setSelectedLocation(''); // Reset location selection
+    setDistricts([]); // Clear districts
+    setLocations([]); // Clear locations
+    
+    const stateId = option ? parseInt(option.value) : 0;
+    
+    setFormData(prev => ({
+      ...prev,
+      state_id: stateId,
+      district_id: 0,
+      location: ''
+    }));
+  
+    // Validate the state field
+    validateField('state_id', stateId);
+  };
+  
+
+  // Update change handlers to include validation
+  const handleCodeTypeChange = (option: SelectOption | null) => {
+    const newValue = option?.value || '';
+    setFormData(prev => ({
+      ...prev,
+      code_Type: newValue
+    }));
+    validateField('code_Type', newValue);
+  };
+
+  const handleCodeChange = (value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      code: value
+    }));
+    validateField('code', value);
+  };
+
+  const handleESIUserChange = (value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      esi_user: value
+    }));
+    validateField('esi_user', value);
+  };
+
+  const handlePasswordChange = (value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      password: value
+    }));
+    validateField('password', value);
+  };
+
+  const handleDistrictChange = (district: { id: number | null; name: string }) => {
+    setSelectedDistrict(district);
+    const districtId = district.id || 0;
+    setFormData(prev => ({
+      ...prev,
+      district_id: districtId
+    }));
+    validateField('district_id', districtId);
+  };
+
+  const handleLocationChange = (location: string) => {
+    setSelectedLocation(location);
+    setFormData(prev => ({
+      ...prev,
+      location: location
+    }));
+    validateField('location', location);
+  };
+
   const handleSignatoryChange = (
     newValue: MultiValue<{ value: string; label: string }>,
     actionMeta: ActionMeta<{ value: string; label: string }>,
-) => {
-  const selectedUserIds = newValue
-  .map(option => parseInt(option.value))
-  .filter(id => !isNaN(id)); 
+  ) => {
+    const selectedUserIds = newValue
+      .map(option => parseInt(option.value))
+      .filter(id => !isNaN(id));
 
-
-    // Update signatory_data array
     const newSignatoryData = selectedUserIds.map((id) => ({
-        signatory_id: id,
-    }))
+      signatory_id: id,
+    }));
 
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
       signatory_data: newSignatoryData,
-  }))
+    }));
+    validateField('signatory_data', newSignatoryData);
 
-  
     const newSelectedSignatories = selectedUserIds.map((id) => {
       const user = users.find((u) => u.id === id);
       return user ? user : { id, name: '' };
     });
     setSelectedSignatories(newSelectedSignatories);
-}
+  };
+
+//   const handleSignatoryChange = (
+//     newValue: MultiValue<{ value: string; label: string }>,
+//     actionMeta: ActionMeta<{ value: string; label: string }>,
+// ) => {
+//   const selectedUserIds = newValue
+//   .map(option => parseInt(option.value))
+//   .filter(id => !isNaN(id)); 
+
+
+//     // Update signatory_data array
+//     const newSignatoryData = selectedUserIds.map((id) => ({
+//         signatory_id: id,
+//     }))
+
+//     setFormData((prev) => ({
+//       ...prev,
+//       signatory_data: newSignatoryData,
+//   }))
+
+  
+//     const newSelectedSignatories = selectedUserIds.map((id) => {
+//       const user = users.find((u) => u.id === id);
+//       return user ? user : { id, name: '' };
+//     });
+//     setSelectedSignatories(newSelectedSignatories);
+// }
 
   
 
@@ -502,12 +627,7 @@ return (
           label="Select Code Type"
           options={codeTypeOptions}
           value={codeTypeOptions.find(option => option.value === formData.code_Type)}
-          onChange={(option: SelectOption | null) => {
-            setFormData(prev => ({
-              ...prev,
-              code_Type: option?.value || ''
-            }));
-          }}
+          onChange={handleCodeTypeChange}
         />
         <div className="min-h-[20px]">
           {errors.code_Type && (
@@ -520,12 +640,7 @@ return (
         <OutlinedInput
           label="ESI Code"
           value={formData.code}
-          onChange={(value: string) => {
-            setFormData(prev => ({
-              ...prev,
-              code: value
-            }));
-          }}
+          onChange={handleCodeChange}
         />
         <div className="min-h-[20px]">
           {errors.code && (
@@ -554,13 +669,7 @@ return (
       <div className="space-y-2">
         <DistrictAutosuggest 
           value={selectedDistrict}
-          onChange={(district) => {
-            setSelectedDistrict(district);
-            setFormData(prev => ({
-              ...prev,
-              district_id: district.id || 0
-            }));
-          }}
+          onChange={handleDistrictChange}
           stateId={selectedStates?.value ? parseInt(selectedStates.value) : undefined}
           onDistrictSelect={(id) => setSelectedDistrictId(id)}
         />
@@ -573,13 +682,7 @@ return (
       <div className="space-y-2">
         <LocationAutosuggest
           value={selectedLocation}
-          onChange={(location: string) => {
-            setSelectedLocation(location);
-            setFormData(prev => ({
-              ...prev,
-              location: location
-            }));
-          }}
+          onChange={handleLocationChange}
           districtId={selectedDistrictId}
         />
         <div className="min-h-[20px]">
@@ -597,12 +700,7 @@ return (
         <OutlinedInput
           label="ESI User"
           value={formData.esi_user}
-          onChange={(value: string) => {
-            setFormData(prev => ({
-              ...prev,
-              esi_user: value
-            }));
-          }}
+          onChange={handleESIUserChange}
         />
         <div className="min-h-[20px]">
           {errors.esi_user && (
@@ -615,12 +713,7 @@ return (
         <OutlinedPasswordInput
           label="Password"
           value={formData.password}
-          onChange={(value: string) => {
-            setFormData(prev => ({
-              ...prev,
-              password: value
-            }));
-          }}
+          onChange={handlePasswordChange}
         />
         <div className="min-h-[20px]">
           {errors.password && (

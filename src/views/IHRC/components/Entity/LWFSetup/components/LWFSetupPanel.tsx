@@ -170,22 +170,6 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
     });
   };
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      try {
-        const base64String = await convertToBase64(file);
-        setFormData(prev => ({
-          ...prev,
-          certificate: base64String
-        }));
-      } catch (error) {
-        console.error('Error converting file to base64:', error);
-        showNotification('danger', 'Failed to process file');
-      }
-    }
-  };
-
   // Load Company Groups
   const loadCompanyGroups = async () => {
     try {
@@ -297,44 +281,9 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
     }
   }, [selectedCompany]);
 
-  const handleStateChange = (option: SelectOption | null) => {
-    setSelectedStates(option);
-    setSelectedDistrict({ id: null, name: '' });
-    setSelectedLocation('');
-    setDistricts([]);
-    setLocations([]);
-    
-    if (option) {
-      setFormData(prev => ({
-        ...prev,
-        state_id: parseInt(option.value)
-      }));
-    }
-  };
 
-  const handleSignatoryChange = (
-    newValue: MultiValue<{ value: string; label: string }>,
-    actionMeta: ActionMeta<{ value: string; label: string }>,
-  ) => {
-    const selectedUserIds = newValue
-      .map(option => parseInt(option.value))
-      .filter(id => !isNaN(id));
 
-    const newSignatoryData = selectedUserIds.map((id) => ({
-      signatory_id: id,
-    }));
 
-    setFormData(prev => ({
-      ...prev,
-      signatory_data: newSignatoryData,
-    }));
-
-    const newSelectedSignatories = selectedUserIds.map((id) => {
-      const user = users.find((u) => u.id === id);
-      return user ? user : { id, name: '' };
-    });
-    setSelectedSignatories(newSelectedSignatories);
-  };
 
   const validateForm = async () => {
     try {
@@ -387,31 +336,151 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
     }
   };
 
+  const validateField = async (fieldName: string, value: any) => {
+    try {
+      await validationSchema.validateAt(fieldName, { ...formData, [fieldName]: value });
+      setErrors(prev => ({ ...prev, [fieldName]: undefined }));
+    } catch (error) {
+      if (error instanceof yup.ValidationError) {
+        setErrors(prev => ({ ...prev, [fieldName]: error.message }));
+      }
+    }
+  };
+
+  // Modify state change handlers to include validation
+  const handleStateChange = (option: SelectOption | null) => {
+    setSelectedStates(option);
+    setSelectedDistrict({ id: null, name: '' });
+    setSelectedLocation('');
+    setDistricts([]);
+    setLocations([]);
+    
+    const stateId = option ? parseInt(option.value) : 0;
+    setFormData(prev => ({
+      ...prev,
+      state_id: stateId
+    }));
+    validateField('state_id', stateId);
+  };
+
+  const handleDistrictChange = (district: DistrictValue) => {
+    setSelectedDistrict(district);
+    const districtId = district.id || 0;
+    setFormData(prev => ({
+      ...prev,
+      district_id: districtId
+    }));
+    validateField('district_id', districtId);
+    setSelectedDistrictId(districtId);
+  };
+
+  const handleLocationChange = (value: string) => {
+    setSelectedLocation(value);
+    setFormData(prev => ({
+      ...prev,
+      location: value
+    }));
+    validateField('location', value);
+  };
+
+  const handleRegisterNumberChange = (value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      register_number: value
+    }));
+    validateField('register_number', value);
+  };
+
+  const handleRegisterDateChange = (date: Date | null) => {
+    setFormData(prev => ({
+      ...prev,
+      register_date: date
+    }));
+    validateField('register_date', date);
+  };
+
+  const handleRemitModeChange = (option: SelectOption | null) => {
+    const value = option?.value || '';
+    setFormData(prev => ({
+      ...prev,
+      remmit_mode: value
+    }));
+    validateField('remmit_mode', value);
+  };
+
+  const handleUsernameChange = (value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      username: value
+    }));
+    validateField('username', value);
+  };
+
+  const handlePasswordChange = (value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      password: value
+    }));
+    validateField('password', value);
+  };
+
+  const handleSignatoryChange = (
+    newValue: MultiValue<{ value: string; label: string }>,
+    actionMeta: ActionMeta<{ value: string; label: string }>,
+  ) => {
+    const selectedUserIds = newValue
+      .map(option => parseInt(option.value))
+      .filter(id => !isNaN(id));
+
+    const newSignatoryData = selectedUserIds.map((id) => ({
+      signatory_id: id,
+    }));
+
+    setFormData(prev => ({
+      ...prev,
+      signatory_data: newSignatoryData,
+    }));
+    validateField('signatory_data', newSignatoryData);
+
+    const newSelectedSignatories = selectedUserIds.map((id) => {
+      const user = users.find((u) => u.id === id);
+      return user ? user : { id, name: '' };
+    });
+    setSelectedSignatories(newSelectedSignatories);
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      try {
+        const base64String = await convertToBase64(file);
+        setFormData(prev => ({
+          ...prev,
+          certificate: base64String
+        }));
+        validateField('certificate', base64String);
+      } catch (error) {
+        console.error('Error converting file to base64:', error);
+        showNotification('danger', 'Failed to process file');
+      }
+    }
+  };
+
+
   return (
     <div className="p-4">
       <div className="grid grid-cols-2 gap-4 mb-4">
         <div>
           <p className="mb-2">Company Group</p>
-          {/* <OutlinedSelect
-            label="Select Company Group"
-            options={companyGroups}
-            value={selectedCompanyGroup}
-            onChange={setSelectedCompanyGroup}
-          /> */}
            <OutlinedInput
-                            label="Company Group"
-                            value={groupName}
-                            disabled
-                            />
+            label="Company Group"
+            value={groupName}
+            disabled
+            />
         </div>
         <div>
           <p className="mb-2">Company</p>
-          {/* <OutlinedSelect
-            label="Select Company"
-            options={companies}
-            value={selectedCompany}
-            onChange={setSelectedCompany}
-          /> */}
+         
           <OutlinedInput
                             label="Company"
                             value={companyName}
@@ -439,13 +508,7 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
         <div>
         <DistrictAutosuggest 
         value={selectedDistrict}
-        onChange={(district) => {
-          setSelectedDistrict(district);
-          setFormData(prev => ({
-            ...prev,
-            district_id: district.id || 0
-          }));
-        }}
+        onChange={handleDistrictChange}
         stateId={selectedStates?.value ? parseInt(selectedStates.value) : undefined}
         onDistrictSelect={(id) => setSelectedDistrictId(id)}  // Add this prop
       />
@@ -458,13 +521,7 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
         <div>
           <LocationAutosuggest
             value={selectedLocation}
-            onChange={(value: string) => {
-              setSelectedLocation(value);
-              setFormData(prev => ({
-                ...prev,
-                location: value
-              }));
-            }}
+            onChange={handleLocationChange}
             districtId={selectedDistrictId}
           />
            <div className="min-h-[20px]">
@@ -481,12 +538,7 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
           <OutlinedInput
             label="Registration Number"
             value={formData.register_number}
-            onChange={(value: string) => {
-              setFormData(prev => ({
-                ...prev,
-                register_number: value
-              }));
-            }}
+            onChange={handleRegisterNumberChange}
           />
            <div className="min-h-[20px]">
             {errors.register_number && (
@@ -500,12 +552,7 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
           size='sm'
         placeholder="Registration Date"
         value={formData.register_date}
-        onChange={(date: Date | null) => {
-          setFormData(prev => ({
-            ...prev,
-            register_date: date
-          }));
-        }}
+        onChange={handleRegisterDateChange}
       />
        <div className="min-h-[20px]">
             {errors.register_date && (
@@ -520,12 +567,7 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
             label="Select Mode"
             options={remittanceModeOptions}
             value={remittanceModeOptions.find(option => option.value === formData.remmit_mode)}
-            onChange={(option: SelectOption | null) => {
-              setFormData(prev => ({
-                ...prev,
-                remmit_mode: option?.value || ''
-              }));
-            }}
+            onChange={handleRemitModeChange}
           />
            <div className="min-h-[20px]">
             {errors.remmit_mode && (
@@ -541,12 +583,7 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
           <OutlinedInput
             label="User ID"
             value={formData.username}
-            onChange={(value: string) => {
-              setFormData(prev => ({
-                ...prev,
-                username: value
-              }));
-            }}
+            onChange={handleUsernameChange}
           />
           <div className="min-h-[20px]">
             {errors.username && (
@@ -559,12 +596,7 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
           <OutlinedPasswordInput
             label="Password"
             value={formData.password}
-            onChange={(value: string) => {
-              setFormData(prev => ({
-                ...prev,
-                password: value
-              }));
-            }}
+            onChange={handlePasswordChange}
           />
           <div className="min-h-[20px]">
             {errors.password && (
@@ -597,7 +629,7 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
         <Input
           type="file"
           onChange={handleFileUpload}
-          accept=".pdf,.jpg,.jpeg,.png"
+          accept=".pdf"
         />
          <div className="min-h-[20px]">
             {errors.certificate && (

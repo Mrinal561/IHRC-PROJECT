@@ -227,8 +227,13 @@ const PFEditedData: React.FC<PFEditedDataProps> = ({
   };
 
 
-  const handleChange = (field: keyof PFSetupData, value: string) => {
+  const handleChange = (field: keyof PFSetupData, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+    
+    // Validate fields that have validation rules
+    if (field === 'pf_code' || field === 'pf_user' || field === 'password' || field === 'register_date') {
+      validateField(field, value);
+    }
   };
 
 
@@ -278,6 +283,32 @@ const PFEditedData: React.FC<PFEditedDataProps> = ({
     setSelectedLocation(value);
     handleChange('location', value);
   };
+  const handleDateChange = (date: Date | null) => {
+    handleChange('register_date', date);
+    validateField('register_date', date);
+  };
+
+  const validateField = async (field: keyof ValidationErrors, value: any) => {
+    try {
+      // Create a schema for just this field
+      const fieldSchema = yup.reach(pfSchema, field);
+      await fieldSchema.validate(value);
+      
+      // Clear error for this field if validation passes
+      setErrors(prev => ({
+        ...prev,
+        [field]: undefined
+      }));
+    } catch (err) {
+      if (err instanceof yup.ValidationError) {
+        // Set error for just this field
+        setErrors(prev => ({
+          ...prev,
+          [field]: err.message
+        }));
+      }
+    }
+  };
 
 
   const validateForm = async () => {
@@ -311,7 +342,7 @@ const PFEditedData: React.FC<PFEditedDataProps> = ({
 const handleSubmit = async () => {
   try {
     const isValid = await validateForm();
-    // if (!isValid) return;
+    if (!isValid) return;
 
     // Create updateData object with exact required fields
     const updateData = {
@@ -489,7 +520,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
           <DatePicker
             size="sm"
             value={formData.register_date ? new Date(formData.register_date) : null}
-            onChange={(date) => handleChange('register_date', date)}
+            onChange={handleDateChange}
           />
           {errors.register_date && (
             <p className="mt-0.5 text-xs text-red-600">{errors.register_date}</p>

@@ -130,51 +130,10 @@ const PTEditedData: React.FC<PTEditedDataProps> = ({
         }
     }
 
-    const handleChange = (field: keyof PTSetupData, value: string) => {
-        setFormData((prev) => ({ ...prev, [field]: value }))
-    }
-
-    const validateForm = async () => {
-        try {
-            // Validate the form data against the schema
-            await ptSchema.validate(
-                {
-                    register_number: formData.register_number,
-                    mobile: formData.mobile,
-                    enroll_number: formData.enroll_number,
-                    username: formData.username,
-                    password: formData.password,
-                    email: formData.email,
-                    register_date: formData.register_date
-                        ? new Date(formData.register_date)
-                        : undefined,
-                },
-                { abortEarly: false },
-            )
-
-            // Clear any existing errors if validation passes
-            setErrors({})
-            return true
-        } catch (err) {
-            if (err instanceof yup.ValidationError) {
-                const validationErrors: ValidationErrors = {}
-                err.inner.forEach((error) => {
-                    if (error.path) {
-                        // Update the ValidationErrors interface to include all possible fields
-                        validationErrors[error.path as keyof ValidationErrors] =
-                            error.message
-                    }
-                })
-                setErrors(validationErrors)
-            }
-            return false
-        }
-    }
-
     const handleSubmit = async () => {
         try {
             const isValid = await validateForm()
-            // if(!isValid) return;
+            if(!isValid) return;
             // Implement your update logic similar to LW
             const updateData = {
                 register_number: formData.register_number,
@@ -261,6 +220,91 @@ const PTEditedData: React.FC<PTEditedDataProps> = ({
           }
       }
   }
+
+  const validateField = async (field: keyof PTSetupData, value: any) => {
+    try {
+        // Create a schema for just this field
+        const fieldSchema = yup.reach(ptSchema, field)
+        await fieldSchema.validate(value)
+        setErrors(prev => ({ ...prev, [field]: undefined }))
+    } catch (err) {
+        if (err instanceof yup.ValidationError) {
+            setErrors(prev => ({ ...prev, [field]: err.message }))
+        }
+    }
+}
+
+// Modify handleChange to include validation
+const handleChange = async (field: keyof PTSetupData, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }))
+    // Validate the field as it changes
+    await validateField(field, value)
+
+    // Special validation for password to check against username
+    if (field === 'password' || field === 'username') {
+        const newFormData = { ...formData, [field]: value }
+        if (newFormData.password === newFormData.username) {
+            setErrors(prev => ({
+                ...prev,
+                password: 'Password cannot be same as username'
+            }))
+        }
+    }
+
+    // Special validation for mobile number to check for numeric only
+    if (field === 'mobile') {
+        if (!/^\d*$/.test(value)) {
+            setErrors(prev => ({
+                ...prev,
+                mobile: 'Mobile number must contain only digits'
+            }))
+        }
+    }
+}
+
+// Modify validateForm to check for custom validations as well
+const validateForm = async () => {
+    try {
+        await ptSchema.validate(
+            {
+                register_number: formData.register_number,
+                mobile: formData.mobile,
+                enroll_number: formData.enroll_number,
+                username: formData.username,
+                password: formData.password,
+                email: formData.email,
+                register_date: formData.register_date
+                    ? new Date(formData.register_date)
+                    : undefined,
+            },
+            { abortEarly: false }
+        )
+
+        // Additional custom validations
+        if (formData.password === formData.username) {
+            setErrors(prev => ({
+                ...prev,
+                password: 'Password cannot be same as username'
+            }))
+            return false
+        }
+
+        setErrors({})
+        return true
+    } catch (err) {
+        if (err instanceof yup.ValidationError) {
+            const validationErrors: ValidationErrors = {}
+            err.inner.forEach((error) => {
+                if (error.path) {
+                    validationErrors[error.path as keyof ValidationErrors] = error.message
+                }
+            })
+            setErrors(validationErrors)
+        }
+        return false
+    }
+}
+
 
     if (error) {
         return (
