@@ -117,7 +117,6 @@ const UserEditForm = () => {
     const companyName = locationState?.companyName
     const companyId = locationState?.companyId
     const userId = locationState?.userId
-    console.log(userId)
     const [companyGroups, setCompanyGroups] = useState<SelectOption[]>([])
     const [selectedCompanyGroup, setSelectedCompanyGroup] =
         useState<SelectOption | null>(null)
@@ -141,13 +140,12 @@ const UserEditForm = () => {
     })
     const [loading, setLoading] = useState(false)
 
-
     const formatInitialDate = (dateString) => {
-        if (!dateString) return null;
+        if (!dateString) return null
         // Parse the date string to a Date object
-        const date = new Date(dateString);
-        return isNaN(date.getTime()) ? null : date;
-    };
+        const date = new Date(dateString)
+        return isNaN(date.getTime()) ? null : date
+    }
     const loadCompanyGroups = async () => {
         try {
             const { data } = await httpClient.get(
@@ -617,7 +615,7 @@ const UserEditForm = () => {
                                     <Button
                                         variant="plain"
                                         onClick={() => navigate(-1)}
-                                        type='button'
+                                        type="button"
                                     >
                                         Cancel
                                     </Button>

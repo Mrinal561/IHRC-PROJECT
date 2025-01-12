@@ -93,6 +93,18 @@ export const protectedRoutes = [
         authority: [],
     },
     {
+        key: 'branchl.item',
+        path: `/edit-branch`,
+        component: lazy(
+            () =>
+                import(
+                    '@/views/IHRC/components/Entity/Branch/components/EditBranchForm'
+                ),
+        ),
+        authority: [],
+    },
+
+    {
         key: 'userEntity.add',
         path: `/add-user`,
         component: lazy(
