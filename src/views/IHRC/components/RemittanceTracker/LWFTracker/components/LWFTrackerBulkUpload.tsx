@@ -114,7 +114,7 @@
 // export default LWFTrackerBulkUpload;
 
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Button, Dialog, Input, Notification, toast } from '@/components/ui';
 import { HiDownload, HiUpload } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
@@ -125,11 +125,30 @@ import { endpoints } from '@/api/endpoint';
 import { showErrorNotification } from '@/components/ui/ErrorMessage';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 import { createLwfTracker } from '@/store/slices/lwfSetup/lwfTrackerSlice';
+import { addMonths, format, parse, startOfYear } from 'date-fns';
 
 interface LWFTrackerBulkUploadProps {
   onUploadConfirm: () => void;
   canCreate: boolean;
 }
+
+const generateMonthOptions = () => {
+  const currentYear = new Date().getFullYear();
+  const twoDigitYear = String(currentYear) // Gets last 2 digits of year
+  const months = [];
+  
+  // Generate options for current year only
+  const startDate = startOfYear(new Date(currentYear, 0));
+  for (let i = 0; i < 12; i++) {
+    const date = addMonths(startDate, i);
+    months.push({
+      value: format(date, 'yyyy-MM'),
+      label: `${format(date, 'MMM')} ${twoDigitYear}`  // Shows "Jan 25", "Feb 25", etc.
+    });
+  }
+  
+  return months;
+};
 
 const LWFTrackerBulkUpload: React.FC<LWFTrackerBulkUploadProps> = ({ onUploadConfirm, canCreate }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -138,20 +157,8 @@ const LWFTrackerBulkUpload: React.FC<LWFTrackerBulkUploadProps> = ({ onUploadCon
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const groupOptions = [
-    { value: '2024-01', label: 'January 2024' },
-    { value: '2024-02', label: 'February 2024' },
-    { value: '2024-03', label: 'March 2024' },
-    { value: '2024-04', label: 'April 2024' },
-    { value: '2024-05', label: 'May 2024' },
-    { value: '2024-06', label: 'June 2024' },
-    { value: '2024-07', label: 'July 2024' },
-    { value: '2024-08', label: 'August 2024' },
-    { value: '2024-09', label: 'September 2024' },
-    { value: '2024-10', label: 'October 2024' },
-    { value: '2024-11', label: 'November 2024' },
-    { value: '2024-12', label: 'December 2024' },
-  ];
+  const groupOptions = useMemo(() => generateMonthOptions(), []);
+  const [loading, setLoading] = useState(false);
 
   const handleUploadClick = () => {
     setIsDialogOpen(true);
@@ -167,7 +174,7 @@ const LWFTrackerBulkUpload: React.FC<LWFTrackerBulkUploadProps> = ({ onUploadCon
         );
         return;
       }
-
+      setLoading(true);
       const formData = new FormData();
       formData.append('document', file);
       formData.append('month', currentGroup);
@@ -209,6 +216,8 @@ const LWFTrackerBulkUpload: React.FC<LWFTrackerBulkUploadProps> = ({ onUploadCon
       }
     } catch (error) {
       console.error('Upload error:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -220,16 +229,22 @@ const LWFTrackerBulkUpload: React.FC<LWFTrackerBulkUploadProps> = ({ onUploadCon
 
   const handleDownload = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    // if (!currentGroup) {
-    //   toast.push(
-    //     <Notification type="warning" title="Please select a month before downloading" />
-    //   );
-    //   return;
-    // }
+    if (!currentGroup) {
+      toast.push(
+        <Notification type="warning" title="Please select a month before downloading" />
+      );
+      return;
+    }
 
     try {
+      const selectedDate = parse(currentGroup, 'yyyy-MM', new Date());
+      const reqBody = {
+        month: selectedDate.getMonth() + 1, // Adding 1 because getMonth() returns 0-11
+        year: selectedDate.getFullYear()
+      };
       const res = await httpClient.get(endpoints.lwftracker.download(), {
         responseType: "blob",
+        data: reqBody,
       });
 
       const blob = new Blob([res.data], { type: "text/xlsx" });
@@ -320,6 +335,7 @@ const LWFTrackerBulkUpload: React.FC<LWFTrackerBulkUploadProps> = ({ onUploadCon
             variant="solid"
             size="sm"
             onClick={handleConfirm}
+            loading={loading}
           >
             Confirm
           </Button>

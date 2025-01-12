@@ -15,10 +15,54 @@ import { showErrorNotification } from '@/components/ui/ErrorMessage';
 import { useDispatch } from 'react-redux';
 import { createNotice } from '@/store/slices/noticeTracker/noticeTrackerSlice';
 
+import * as yup from 'yup';
+
 interface SelectOption {
   value: string;
   label: string;
 }
+
+
+interface ValidationErrors {
+  [key: string]: string;
+}
+
+// Validation schema
+const noticeValidationSchema = yup.object().shape({
+  group_id: yup.number()
+    .min(1, 'Please select a company group')
+    .required('Company group is required'),
+  company_id: yup.number()
+    .min(1, 'Please select a company')
+    .required('Company is required'),
+  state_id: yup.string()
+    .required('State is required'),
+  district_id: yup.number()
+    .min(1, 'Please select a district')
+    .required('District is required'),
+  location: yup.string()
+    .required('Location is required')
+    .min(2, 'Location must be at least 2 characters'),
+  notice_type: yup.string()
+    .required('Notice type is required'),
+  notice_date: yup.date()
+    .required('Notice date is required')
+    .nullable()
+    .typeError('Please select a valid date'),
+  reference_number: yup.string()
+    .required('Reference number is required')
+    .min(3, 'Reference number must be at least 3 characters'),
+  related_act: yup.string()
+    .required('Related act is required')
+    .min(2, 'Related act must be at least 2 characters'),
+  notice_document: yup.string()
+    .required('Notice document is required'),
+  noticeDetails: yup.string()
+    .required('Notice details are required')
+    .min(10, 'Notice details must be at least 10 characters')
+});
+
+
 
 const NoticeUploadDialog = ({onSuccess}) => {
   const dispatch = useDispatch();

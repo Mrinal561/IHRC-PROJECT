@@ -116,7 +116,7 @@ export const endpoints = {
     esiTracker: {
         getAll: () => api(`companyadmin/esisetup/esi-tracker`),
         bulkUpload: () => api(`companyadmin/esisetup/esi-tracker`),
-        download: () => api('companyadmin/esisetup/esi-tracker/exportdata'),
+        download: () => api('/companyadmin/esisetup/esi-tracker/exportdata'),
         uploadDocs: (id: any) =>
             api(`companyadmin/esisetup/esi-tracker/challan/${id}`),
         downloadAll: () => api('/companyadmin/esisetup/esi-tracker/export'),
@@ -125,7 +125,7 @@ export const endpoints = {
         update: (id: any) => api(`/companyadmin/esisetup/esi-tracker/${id}`),
     },
     ptrc: {
-        download: () => api('companyadmin/ptsetup/ptrc-tracker/exportdata'),
+        download: () => api('/companyadmin/ptsetup/ptrc-tracker/exportdata'),
         bulkUpload: () => api('companyadmin/ptsetup/ptrc-tracker'),
         getAll: () => api('/companyadmin/ptsetup/ptrc-tracker'),
         uploadDocs: (id: any) =>
@@ -146,7 +146,7 @@ export const endpoints = {
         download: () => api(`upload/sample_files/esi-tracker.xlsx`),
     },
     ptec: {
-        download: () => api('companyadmin/ptsetup/ptec-tracker/exportdata'),
+        download: () => api('/companyadmin/ptsetup/ptec-tracker/exportdata'),
         // download: () => api('upload/sample_files/ptec-tracker.xlsx'),
         bulkUpload: () => api('/companyadmin/ptsetup/ptec-tracker'),
         getAll: () => api('/companyadmin/ptsetup/ptec-tracker'),
