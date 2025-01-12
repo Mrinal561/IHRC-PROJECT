@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
     Button,
@@ -54,12 +54,12 @@ interface BranchFormData {
     type: string
     office_type: string
     other_office: string
-    custom_data: {
-        remark: string
-        status: string
-        email?: string
-        mobile?: string
-    }
+    // custom_data: {
+    //     remark: string
+    //     status: string
+    //     email?: string
+    //     mobile?: string
+    // }
     register_number?: string
     lease_status: string
     //   validity: string;
@@ -125,80 +125,115 @@ const validationSchema = yup.object().shape({
         .string()
         .required('Address is required')
         .min(5, 'Address must be at least 5 characters'),
-    type: yup
-        .string()
-        .required('Type is required')
-        .oneOf(['office', 'branch', 'headquarters'], 'Invalid type'),
-    office_type: yup
-        .string()
-        .required('Office type is required')
-        .oneOf(['regional', 'zonal', 'corporate'], 'Invalid office type'),
-    other_office: yup
-        .string()
-        .notRequired()
-        .nullable()
-        .transform((value) => (value === '' ? null : value)),
-    custom_data: yup.object().shape({
-        remark: yup
-            .string()
-            .required('Remark is required')
-            .min(5, 'Remark must be at least 5 characters'),
-        status: yup
-            .string()
-            .required('Status is required')
-            .oneOf(['active', 'inactive', 'pending'], 'Invalid status'),
-        email: yup.string().notRequired().email('Invalid email format'),
-        mobile: yup
-            .string()
-            .notRequired()
-            .matches(/^[0-9]{10}$/, 'Mobile number must be 10 digits'),
-    }),
-    register_number: yup
-        .string()
-        .notRequired()
-        .nullable()
-        .matches(/^\w+$/, 'Register number must be alphanumeric'),
-    lease_status: yup
-        .string()
-        .required('Lease status is required')
-        .oneOf(['active', 'inactive', 'expired'], 'Invalid lease status'),
-    document: yup.string().notRequired().nullable(),
-    se_document: yup.string().nullable().notRequired(),
-    lease_document: yup.string().nullable().notRequired(),
-    document_validity_type: yup
-        .string()
-        .required('Document validity type is required')
-        .oneOf(['permanent', 'temporary'], 'Invalid document validity type'),
-    se_validity: yup
-        .string()
-        .notRequired()
-        .nullable()
-        .matches(
-            /^\d{4}-\d{2}-\d{2}$/,
-            'SE Validity must be in the format YYYY-MM-DD',
-        ),
-    lease_validity: yup
-        .string()
-        .notRequired()
-        .nullable()
-        .matches(
-            /^\d{4}-\d{2}-\d{2}$/,
-            'Lease Validity must be in the format YYYY-MM-DD',
-        ),
-    se_status: yup
-        .string()
-        .notRequired()
-        .nullable()
-        .oneOf(['active', 'inactive'], 'Invalid SE status'),
     office_mode: yup
         .string()
         .required('Office mode is required')
         .oneOf(['physical', 'virtual'], 'Invalid office mode'),
+    office_type: yup.string().when('office_mode', {
+        is: 'physical',
+        then: (schema) => schema.required('Office type is required'),
+        otherwise: (schema) => schema.notRequired(),
+    }),
+    type: yup.string().when('office_mode', {
+        is: 'physical',
+        then: (schema) => schema.required('Type is required'),
+        otherwise: (schema) => schema.notRequired(),
+    }),
+    other_office: yup
+        .string()
+        .nullable()
+        .when('office_type', {
+            is: 'other',
+            then: (schema) => schema.required('Other office is required'),
+            otherwise: (schema) => schema.notRequired(),
+        }),
+    lease_status: yup
+        .string()
+        .nullable()
+        .when('type', {
+            is: 'rented',
+            then: (schema) => schema.required('Lease status is required'),
+            otherwise: (schema) => schema.notRequired(),
+        }),
+    lease_document: yup
+        .string()
+        .nullable()
+        .when('type', {
+            is: 'rented',
+            then: (schema) => schema.required('Lease document is required'),
+            otherwise: (schema) => schema.notRequired(),
+        }),
+    lease_validity: yup
+        .string()
+        .nullable()
+        .when('type', {
+            is: 'rented',
+            then: (schema) =>
+                schema
+                    .matches(
+                        /^\d{4}-\d{2}-\d{2}$/,
+                        'Lease Validity must be in the format YYYY-MM-DD',
+                    )
+                    .required('Lease validity is required'),
+            otherwise: (schema) => schema.notRequired(),
+        }),
+    se_status: yup
+        .string()
+        .nullable()
+        .when('type', {
+            is: (val) => val === 'rented' || val === 'owned',
+            then: (schema) => schema.required('SE status is required'),
+            otherwise: (schema) => schema.notRequired(),
+        }),
+    se_document: yup
+        .string()
+        .nullable()
+        .when('type', {
+            is: (val) => val === 'rented' || val === 'owned',
+            then: (schema) => schema.required('SE document is required'),
+            otherwise: (schema) => schema.notRequired(),
+        }),
+    register_number: yup
+        .string()
+        .nullable()
+        .when(['type', 'document_validity_type', 'se_status'], {
+            is: (type, docType, seStatus) =>
+                (type === 'owned' &&
+                    docType === 'fixed' &&
+                    seStatus === 'valid') ||
+                (type === 'owned' &&
+                    docType === 'fixed' &&
+                    seStatus === 'expired'),
+            then: (schema) =>
+                schema
+                    .matches(/^\w+$/, 'Register number must be alphanumeric')
+                    .required('Register number is required'),
+            otherwise: (schema) => schema.notRequired(),
+        }),
+    se_validity: yup
+        .string()
+        .nullable()
+        .when(['type', 'document_validity_type', 'se_status'], {
+            is: (type, docType, seStatus) =>
+                type === 'owned' && docType === 'fixed' && seStatus === 'valid',
+            then: (schema) =>
+                schema
+                    .matches(
+                        /^\d{4}-\d{2}-\d{2}$/,
+                        'SE Validity must be in the format YYYY-MM-DD',
+                    )
+                    .required('SE validity is required'),
+            otherwise: (schema) => schema.notRequired(),
+        }),
     gst_number: yup
         .string()
-        .notRequired()
         .nullable()
+        .required('GST Number is required')
         .matches(/^\d{15}$/, 'GST number must be 15 digits'),
+    document: yup.string().nullable(),
+    document_validity_type: yup
+        .string()
+        .required('Document validity type is required'),
 })
 
 const AddBranchForm: React.FC = () => {
@@ -258,12 +293,12 @@ const AddBranchForm: React.FC = () => {
         type: '',
         office_type: '',
         other_office: '',
-        custom_data: {
-            remark: '',
-            status: 'active',
-            email: '',
-            mobile: '',
-        },
+        // custom_data: {
+        //     remark: '',
+        //     status: 'active',
+        //     email: '',
+        //     mobile: '',
+        // },
         // register_number: '',
         lease_status: '',
         se_document: '',
@@ -276,6 +311,7 @@ const AddBranchForm: React.FC = () => {
         agreement_data: [],
         gst_number: '',
     })
+    const [errors, setErrors] = useState<any>({})
 
     useEffect(() => {
         setFormData((prev) => ({
@@ -337,12 +373,6 @@ const AddBranchForm: React.FC = () => {
             // Lifetime option
             console.log('Setting lifetime validity')
 
-            //   setFormData((prev) => ({
-            //     ...prev,
-            //     // se_validity: '',
-            //     // status: 'active',
-            //     document_validity_type: 'lifetime'
-            //   }));
             setFormData((prev) => {
                 const { se_validity, ...rest } = prev
                 return rest
@@ -561,7 +591,6 @@ const AddBranchForm: React.FC = () => {
                 group_id: parseInt(selectedCompanyGroup.value),
                 // Company_Group_Name: selectedCompanyGroup.label
             }))
-
             // Reset selected company
             setSelectedCompany(null)
 
@@ -581,20 +610,6 @@ const AddBranchForm: React.FC = () => {
             }))
         }
     }, [selectedCompany])
-
-    const openNotification = (
-        type: 'success' | 'info' | 'danger' | 'warning',
-        message: string,
-    ) => {
-        toast.push(
-            <Notification
-                title={type.charAt(0).toUpperCase() + type.slice(1)}
-                type={type}
-            >
-                {message}
-            </Notification>,
-        )
-    }
 
     const handleSeDocumentUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
@@ -644,9 +659,77 @@ const AddBranchForm: React.FC = () => {
             location: selectedLocation,
         }))
     }, [selectedLocation])
+    const prevFormData = useRef(formData)
 
+    useEffect(() => {
+        prevFormData.current = formData
+    }, [formData])
+
+    // Validate a specific field when it changes
+    const validateField = async (fieldName: string, value: any) => {
+        try {
+            await validationSchema.validateAt(fieldName, { [fieldName]: value })
+            setErrors((prevErrors) => ({
+                ...prevErrors,
+                [fieldName]: undefined, // Clear the error for this field
+            }))
+        } catch (error) {
+            setErrors((prevErrors) => ({
+                ...prevErrors,
+                [fieldName]: error.message, // Set the error message for this field
+            }))
+            console.log(error.message)
+        }
+    }
+
+    useEffect(() => {
+        // //Check validation here only which filed change
+        // const validateField = async (fieldName: string, value: any) => {
+        //     try {
+        //         // Validate the specific field
+        //         await validationSchema.validateAt(fieldName, {
+        //             [fieldName]: value,
+        //         })
+        //         console.log(`Validation passed for ${fieldName}:`, value)
+        //     } catch (error) {
+        //         console.error(
+        //             `Validation error for ${fieldName}:`,
+        //             error.message,
+        //         )
+        //     }
+        // }
+        Object.keys(formData).forEach((field: any) => {
+            if (formData[field]) {
+                const value = formData[field]
+                // Log the field validation if its value has changed
+                if (value !== prevFormData[field]) {
+                    validateField(field, value)
+                }
+            }
+        })
+    }, [formData])
+    const validateFormData = async () => {
+        try {
+            await validationSchema.validate(formData, { abortEarly: false }) // Validate all fields
+            setErrors({}) // Clear any previous errors
+        } catch (err) {
+            const newErrors: any = {}
+            err.inner.forEach((error: any) => {
+                newErrors[error.path] = error.message // Collect error messages
+            })
+            setErrors(newErrors) // Set errors to display
+            return false // Return false to indicate validation failure
+        }
+        return true // Validation passed
+    }
     const handleAddBranch = async (values: BranchFormData) => {
         console.log(formData)
+        //check validation here all
+        await validateFormData() // This validates all fields at once
+        const isValid = await validateFormData()
+        if (!isValid) {
+            return // Don't proceed if validation failed
+        }
 
         try {
             const response = await dispatch(createBranch(formData))
@@ -681,10 +764,15 @@ const AddBranchForm: React.FC = () => {
             }
         } catch (error: any) {
             console.error('Branch creation error:', error)
+
+            const errorMessage =
+                error.response?.data?.message ||
+                error.message ||
+                'An unexpected error occurred. Please try again.'
+            showErrorNotification(errorMessage)
+            throw error // Re-throw to prevent further execution
         }
     }
-
-    if (error) return <div className="text-red-500">{error}</div>
 
     return (
         <div className="p-2 bg-white rounded-lg">
@@ -699,1155 +787,891 @@ const AddBranchForm: React.FC = () => {
                 />
                 <h3 className="text-2xl font-semibold mb-2">Add New Branch</h3>
             </div>
-            <Formik
-                initialValues={formData}
-                validationSchema={validationSchema}
-                onSubmit={handleAddBranch}
-            >
-                {({ setFieldValue, values, errors, touched }) => (
-                    <Form>
-                        <div className="space-y-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 my-8">
-                                {/* Select Company Group */}
-                                <div className="flex flex-col gap-2">
-                                    <p className="mb-2">
-                                        Select Company Group{' '}
-                                        <span className="text-red-500">*</span>
-                                    </p>
-                                    <Field name="company_group">
-                                        {({ field }: any) => (
-                                            <OutlinedSelect
-                                                {...field}
-                                                label="Select Company Group"
-                                                options={companyGroups} // Assuming `companyGroups` is available
-                                                value={companyGroups.find(
-                                                    (group) =>
-                                                        group.value ===
-                                                        values.company_group,
-                                                )}
-                                                onChange={(
-                                                    selectedOption: SelectOption | null,
-                                                ) =>
-                                                    setFieldValue(
-                                                        'company_group',
-                                                        selectedOption
-                                                            ? selectedOption.value
-                                                            : '',
-                                                    )
-                                                }
-                                                error={
-                                                    touched.company_group &&
-                                                    errors.company_group
-                                                }
-                                            />
-                                        )}
-                                    </Field>
-                                    {touched.company_group &&
-                                        errors.company_group && (
-                                            <span className="text-red-500 text-sm">
-                                                {errors.company_group}
-                                            </span>
-                                        )}
-                                </div>
+            <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <div>
+                        <p className="mb-2">
+                            Select Company Group{' '}
+                            <span className="text-red-500">*</span>
+                        </p>
+                        <OutlinedSelect
+                            label="Select Company Group"
+                            options={companyGroups}
+                            value={selectedCompanyGroup}
+                            onChange={setSelectedCompanyGroup}
+                        />
+                    </div>
+                    <div>
+                        <p className="mb-2">
+                            Company Name <span className="text-red-500">*</span>
+                        </p>
+                        <OutlinedSelect
+                            label="Select Company"
+                            options={companies}
+                            value={selectedCompany}
+                            onChange={(option: SelectOption | null) => {
+                                setSelectedCompany(option)
+                            }}
+                        />
+                        {errors?.company_id && (
+                            <span className="text-red-500 text-sm">
+                                {errors?.company_id as String}
+                            </span>
+                        )}
+                    </div>
+                </div>
 
-                                {/* Select Company */}
-                                <div className="flex flex-col gap-2">
-                                    <p className="mb-2">
-                                        Company Name{' '}
-                                        <span className="text-red-500">*</span>
-                                    </p>
-                                    <Field name="company_name">
-                                        {({ field }: any) => (
-                                            <OutlinedSelect
-                                                {...field}
-                                                label="Select Company"
-                                                options={companies} // Assuming `companies` is available
-                                                value={companies.find(
-                                                    (company) =>
-                                                        Number(
-                                                            company.value,
-                                                        ) === values.company_id,
-                                                )}
-                                                onChange={(
-                                                    selectedOption: SelectOption | null,
-                                                ) =>
-                                                    setFieldValue(
-                                                        'company_id',
-                                                        selectedOption
-                                                            ? selectedOption.value
-                                                            : '',
-                                                    )
-                                                }
-                                                error={
-                                                    touched.company_id &&
-                                                    errors.company_id
-                                                }
-                                            />
-                                        )}
-                                    </Field>
-                                    {touched.company_id &&
-                                        errors.company_id && (
-                                            <span className="text-red-500 text-sm">
-                                                {errors.company_id}
-                                            </span>
-                                        )}
-                                </div>
-                            </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <div>
+                        <p className="mb-2">
+                            State <span className="text-red-500">*</span>
+                        </p>
+                        <OutlinedSelect
+                            label="Select State"
+                            options={states}
+                            value={selectedStates}
+                            onChange={handleStateChange}
+                        />
+                        {errors?.state_id && (
+                            <span className="text-red-500 text-sm">
+                                {errors?.state_id as String}
+                            </span>
+                        )}
+                    </div>
+                    <div>
+                        <DistrictAutosuggest
+                            value={selectedDistrict}
+                            onChange={setSelectedDistrict}
+                            stateId={
+                                selectedStates?.value
+                                    ? parseInt(selectedStates.value)
+                                    : undefined
+                            }
+                            onDistrictSelect={setSelectedDistrictId}
+                        />{' '}
+                        {errors?.district && (
+                            <span className="text-red-500 text-sm">
+                                {errors?.district as String}
+                            </span>
+                        )}
+                    </div>
+                </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 my-8">
-                                {/* Select State */}
-                                <div className="flex flex-col gap-2">
-                                    <p className="mb-2">
-                                        State{' '}
-                                        <span className="text-red-500">*</span>
-                                    </p>
-                                    <Field name="state">
-                                        {({ field }: any) => (
-                                            <OutlinedSelect
-                                                {...field}
-                                                label="Select State"
-                                                options={states} // Assuming `states` is available
-                                                value={states.find(
-                                                    (state) =>
-                                                        Number(state.value) ===
-                                                        values.state_id,
-                                                )}
-                                                onChange={(
-                                                    selectedOption: SelectOption | null,
-                                                ) =>
-                                                    setFieldValue(
-                                                        'state_id',
-                                                        selectedOption
-                                                            ? selectedOption.value
-                                                            : '',
-                                                    )
-                                                }
-                                                error={
-                                                    touched.state_id &&
-                                                    errors.state_id
-                                                }
-                                            />
-                                        )}
-                                    </Field>
-                                    {touched.state_id && errors.state_id && (
-                                        <span className="text-red-500 text-sm">
-                                            {errors.state_id}
-                                        </span>
-                                    )}
-                                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <div>
+                        <LocationAutosuggest
+                            value={selectedLocation}
+                            // onChange={setSelectedLocation}
+                            onChange={(value: string) => {
+                                setSelectedLocation(value)
+                            }}
+                            districtId={selectedDistrictId}
+                            // districtId={selectedDistrict ? parseInt(selectedDistrict) : undefined}
+                        />
+                        {errors?.location && (
+                            <span className="text-red-500 text-sm">
+                                {errors?.location as String}
+                            </span>
+                        )}
+                    </div>
 
-                                {/* Select District */}
-                                <div className="flex flex-col gap-2">
-                                    <p className="mb-2">
-                                        District{' '}
-                                        <span className="text-red-500">*</span>
-                                    </p>
-                                    {/* <Field name="district">
-                                        {({ field }: any) => (
-                                            <DistrictAutosuggest
-                                                value={field.value} // Use value from Field
-                                                onChange={(value: string) =>
-                                                    setFieldValue(
-                                                        'district',
-                                                        value,
-                                                    )
-                                                }
-                                                onDistrictSelect={(
-                                                    id: number,
-                                                ) =>
-                                                    setFieldValue(
-                                                        'district_id',
-                                                        id,
-                                                    )
-                                                }
-                                                stateId={
-                                                    values.state_id || undefined
-                                                } // Ensure valid stateId is passed
-                                                // placeholder="Search District" // Optional custom placeholder
-                                                isDisabled={!values.state_id} // Disable if no state is selected
-                                            />
-                                        )}
-                                    </Field> */}
-                                    <DistrictAutosuggest
-                                        value={selectedDistrict}
-                                        onChange={setSelectedDistrict}
-                                        stateId={values.state_id}
-                                        onDistrictSelect={setSelectedDistrictId}
-                                    />
+                    <div>
+                        <p className="mb-2">
+                            Branch Name <span className="text-red-500">*</span>
+                        </p>
+                        <OutlinedInput
+                            label="Branch Name"
+                            value={formData.name}
+                            onChange={(value: string) => {
+                                setFormData((prev) => ({
+                                    ...prev,
+                                    name: value,
+                                }))
+                            }}
+                        />{' '}
+                        {errors?.name && (
+                            <span className="text-red-500 text-sm">
+                                {errors?.name as String}
+                            </span>
+                        )}
+                    </div>
+                </div>
 
-                                    {touched.district && errors.district && (
-                                        <span className="text-red-500 text-sm">
-                                            {errors.district}
-                                        </span>
-                                    )}
-                                </div>
-                            </div>
+                <div>
+                    <p className="mb-2">
+                        Branch Address <span className="text-red-500">*</span>
+                    </p>
+                    <OutlinedInput
+                        label="Branch Address"
+                        value={formData.address}
+                        onChange={(value: string) => {
+                            setFormData((prev) => ({
+                                ...prev,
+                                address: value,
+                            }))
+                        }}
+                        textarea={true}
+                    />{' '}
+                    {errors?.address && (
+                        <span className="text-red-500 text-sm">
+                            {errors?.address as String}
+                        </span>
+                    )}
+                </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                                <LocationAutosuggest
-                                    value={selectedLocation}
-                                    // onChange={setSelectedLocation}
-                                    onChange={(value: string) => {
-                                        setSelectedLocation(value)
-                                    }}
-                                    districtId={Number(values.district)}
-                                    // districtId={selectedDistrict ? parseInt(selectedDistrict) : undefined}
-                                />
-                                <div>
-                                    <p className="mb-2">
-                                        Branch Name{' '}
-                                        <span className="text-red-500">*</span>
-                                    </p>
-                                    <OutlinedInput
-                                        label="Branch Name"
-                                        value={formData.name}
-                                        onChange={(value: string) => {
-                                            setFormData((prev) => ({
-                                                ...prev,
-                                                name: value,
-                                            }))
-                                        }}
-                                    />
-                                </div>
-                            </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                    <div>
+                        <p className="mb-2">
+                            Branch Opening Date{' '}
+                            <span className="text-red-500">*</span>
+                        </p>
+                        <DatePicker
+                            size="sm"
+                            placeholder="Pick a Date"
+                            onChange={(date) => {
+                                setFormData((prev) => ({
+                                    ...prev,
+                                    opening_date: date
+                                        ? format(date, 'yyyy-MM-dd')
+                                        : '',
+                                }))
+                            }}
+                        />{' '}
+                        {errors?.opening_date && (
+                            <span className="text-red-500 text-sm">
+                                {errors?.opening_date as String}
+                            </span>
+                        )}
+                    </div>
+                    <div>
+                        <p className="mb-2">
+                            Branch Head Count{' '}
+                            <span className="text-red-500">*</span>
+                        </p>
+                        <OutlinedInput
+                            label="Branch Head Count"
+                            value={formData.head_count}
+                            onChange={(value: string) => {
+                                setFormData((prev) => ({
+                                    ...prev,
+                                    head_count: value,
+                                }))
+                            }}
+                        />{' '}
+                        {errors?.head_count && (
+                            <span className="text-red-500 text-sm">
+                                {errors?.head_count as String}
+                            </span>
+                        )}
+                    </div>
+                    <div>
+                        <p className="mb-2">
+                            GST Number <span className="text-red-500">*</span>
+                        </p>
+                        <OutlinedInput
+                            label="Gst Number"
+                            value={formData.gst_number}
+                            onChange={(value: string) => {
+                                setFormData((prev) => ({
+                                    ...prev,
+                                    gst_number: value,
+                                }))
+                            }}
+                        />{' '}
+                        {errors?.gst_number && (
+                            <span className="text-red-500 text-sm">
+                                {errors?.gst_number as String}
+                            </span>
+                        )}
+                    </div>
+                    <div>
+                        <p className="mb-2">
+                            Branch Mode <span className="text-red-500">*</span>
+                        </p>
+                        <OutlinedSelect
+                            label="Select Branch Mode"
+                            options={[
+                                { value: 'physical', label: 'Physical' },
+                                { value: 'virtual', label: 'Virtual' },
+                            ]}
+                            value={{
+                                value: formData.office_mode,
+                                label:
+                                    formData.office_mode
+                                        .charAt(0)
+                                        .toUpperCase() +
+                                    formData.office_mode.slice(1),
+                            }}
+                            onChange={(selectedOption: SelectOption | null) => {
+                                if (selectedOption?.value === 'virtual') {
+                                    const {
+                                        se_status,
+                                        se_validity,
+                                        lease_status,
+                                        office_type,
+                                        type,
+                                        ...rest
+                                    } = formData
+                                    setFormData({
+                                        ...rest,
+                                        office_mode: 'virtual',
+                                    })
+                                } else {
+                                    setFormData((prev) => ({
+                                        ...prev,
+                                        office_mode: 'physical',
+                                    }))
+                                }
+                            }}
+                        />
+                        {errors?.office_mode && (
+                            <span className="text-red-500 text-sm">
+                                {errors?.office_mode as String}
+                            </span>
+                        )}
+                    </div>
 
+                    {formData.office_mode === 'physical' && (
+                        <>
                             <div>
                                 <p className="mb-2">
-                                    Branch Address{' '}
+                                    Office Type{' '}
                                     <span className="text-red-500">*</span>
                                 </p>
-                                <OutlinedInput
-                                    label="Branch Address"
-                                    value={formData.address}
-                                    onChange={(value: string) => {
+                                <OutlinedSelect
+                                    label="Select Office Type"
+                                    options={officeTypeOption}
+                                    value={officeTypeOption.find(
+                                        (option) =>
+                                            option.value ===
+                                            formData.office_type,
+                                    )}
+                                    onChange={(
+                                        selectedOption: SelectOption | null,
+                                    ) => {
                                         setFormData((prev) => ({
                                             ...prev,
-                                            address: value,
+                                            office_type:
+                                                selectedOption?.value || '',
                                         }))
                                     }}
-                                    textarea={true}
-                                />
+                                />{' '}
+                                {errors?.office_type && (
+                                    <span className="text-red-500 text-sm">
+                                        {errors?.office_type as String}
+                                    </span>
+                                )}
                             </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                            {formData.office_type === 'other' && (
                                 <div>
                                     <p className="mb-2">
-                                        Branch Opening Date{' '}
-                                        <span className="text-red-500">*</span>
-                                    </p>
-                                    <DatePicker
-                                        size="sm"
-                                        placeholder="Pick a Date"
-                                        onChange={(date) => {
-                                            setFormData((prev) => ({
-                                                ...prev,
-                                                opening_date: date
-                                                    ? format(date, 'yyyy-MM-dd')
-                                                    : '',
-                                            }))
-                                        }}
-                                    />
-                                </div>
-                                <div>
-                                    <p className="mb-2">
-                                        Branch Head Count{' '}
+                                        Office Type (Others){' '}
                                         <span className="text-red-500">*</span>
                                     </p>
                                     <OutlinedInput
-                                        label="Branch Head Count"
-                                        value={formData.head_count}
+                                        label="Office Type (Others)"
+                                        value={formData.other_office}
                                         onChange={(value: string) => {
                                             setFormData((prev) => ({
                                                 ...prev,
-                                                head_count: value,
+                                                other_office: value,
                                             }))
                                         }}
                                     />
+                                    {errors?.other_office && (
+                                        <span className="text-red-500 text-sm">
+                                            {errors?.other_office as String}
+                                        </span>
+                                    )}
                                 </div>
-                                <div>
-                                    <p className="mb-2">GST Number</p>
-                                    <OutlinedInput
-                                        label="Gst Number"
-                                        value={formData.gst_number}
-                                        onChange={(value: string) => {
-                                            setFormData((prev) => ({
-                                                ...prev,
-                                                gst_number: value,
-                                            }))
-                                        }}
-                                    />
-                                </div>
+                            )}
+                            <div>
+                                <p className="mb-2">
+                                    Branch Type{' '}
+                                    <span className="text-red-500">*</span>
+                                </p>
+                                <OutlinedSelect
+                                    label="Select Branch Type"
+                                    options={branchTypeOptions}
+                                    value={branchTypeOptions.find(
+                                        (option) =>
+                                            option.value === formData.type,
+                                    )}
+                                    onChange={(
+                                        selectedOption: SelectOption | null,
+                                    ) => {
+                                        setFormData((prev) => ({
+                                            ...prev,
+                                            type: selectedOption?.value || '',
+                                        }))
+                                    }}
+                                />
+                                {errors?.type && (
+                                    <span className="text-red-500 text-sm">
+                                        {errors?.type as String}
+                                    </span>
+                                )}
+                            </div>
+                        </>
+                    )}
+                </div>
+                {formData.type === 'owned' && (
+                    <div className="border rounded-md py-4 p-2 mt-4">
+                        <div className="flex flex-col gap-8">
+                            <div className="flex justify-between">
+                                <h4>S&E Setup</h4>
+                                {renderDocumentValidityRadio(
+                                    seValidityType,
+                                    setSeValidityType,
+                                    handleSeValidityChange,
+                                    'S&E Validity Type',
+                                )}
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                                 <div>
                                     <p className="mb-2">
-                                        Branch Mode{' '}
-                                        <span className="text-red-500">*</span>
+                                        S&E Registration Status
                                     </p>
                                     <OutlinedSelect
-                                        label="Select Branch Mode"
+                                        label="S&E Registration Status"
                                         options={[
                                             {
-                                                value: 'physical',
-                                                label: 'Physical',
+                                                value: 'valid',
+                                                label: 'Have Valid License',
                                             },
                                             {
-                                                value: 'virtual',
-                                                label: 'Virtual',
+                                                value: 'expired',
+                                                label: 'Expired',
+                                            },
+                                            {
+                                                value: 'applied',
+                                                label: 'Applied For',
                                             },
                                         ]}
-                                        value={{
-                                            value: formData.office_mode,
-                                            label:
-                                                formData.office_mode
-                                                    .charAt(0)
-                                                    .toUpperCase() +
-                                                formData.office_mode.slice(1),
-                                        }}
-                                        onChange={(
-                                            selectedOption: SelectOption | null,
-                                        ) => {
-                                            if (
-                                                selectedOption?.value ===
-                                                'virtual'
-                                            ) {
+                                        value={null}
+                                        onChange={(selectedOption: any) => {
+                                            const newStatus =
+                                                selectedOption?.value ||
+                                                'applied'
+                                            setSeRegistrationNumberExists(
+                                                newStatus,
+                                            )
+
+                                            setFormData((prev) => {
+                                                // Remove lease_document, lease_validity, and lease_status
                                                 const {
-                                                    se_status,
+                                                    register_number,
                                                     se_validity,
+                                                    se_status,
+                                                    lease_document,
+                                                    lease_validity,
                                                     lease_status,
-                                                    office_type,
-                                                    type,
                                                     ...rest
-                                                } = formData
-                                                setFormData({
+                                                } = prev
+                                                return {
                                                     ...rest,
-                                                    office_mode: 'virtual',
-                                                })
-                                            } else {
-                                                setFormData((prev) => ({
-                                                    ...prev,
-                                                    office_mode: 'physical',
-                                                }))
-                                            }
+                                                    se_status: newStatus,
+                                                    se_validity:
+                                                        newStatus === 'valid'
+                                                            ? ''
+                                                            : '2024-12-31', // ISO 8601 format
+                                                    ...(newStatus === 'applied'
+                                                        ? {}
+                                                        : {
+                                                              register_number:
+                                                                  '',
+                                                          }),
+                                                }
+                                            })
                                         }}
                                     />
+                                    {errors?.se_status && (
+                                        <span className="text-red-500 text-sm">
+                                            {errors?.se_status as String}
+                                        </span>
+                                    )}
                                 </div>
 
-                                {formData.office_mode === 'physical' && (
-                                    <>
+                                {(seRegistrationNumberExists === 'valid' ||
+                                    seRegistrationNumberExists ===
+                                        'expired') && (
+                                    <div>
+                                        <p className="mb-2">
+                                            S&E Registration Number
+                                            <span className="text-red-500">
+                                                *
+                                            </span>
+                                        </p>
+                                        <OutlinedInput
+                                            label="S&E Registration Number"
+                                            value={
+                                                formData.register_number || ''
+                                            }
+                                            onChange={(value: string) => {
+                                                setFormData((prev) => {
+                                                    // Remove lease_document, lease_validity, and lease_status
+                                                    const {
+                                                        lease_document,
+                                                        lease_validity,
+                                                        lease_status,
+                                                        ...rest
+                                                    } = prev
+                                                    return {
+                                                        ...rest,
+                                                        register_number: value,
+                                                    }
+                                                })
+                                            }}
+                                        />{' '}
+                                        {errors?.register_number && (
+                                            <span className="text-red-500 text-sm">
+                                                {
+                                                    errors?.register_number as String
+                                                }
+                                            </span>
+                                        )}
+                                    </div>
+                                )}
+
+                                {seRegistrationNumberExists === 'valid' &&
+                                    seValidityType === 'fixed' && (
                                         <div>
                                             <p className="mb-2">
-                                                Office Type{' '}
+                                                S&E Validity{' '}
                                                 <span className="text-red-500">
                                                     *
                                                 </span>
                                             </p>
-                                            <OutlinedSelect
-                                                label="Select Office Type"
-                                                options={officeTypeOption}
-                                                value={officeTypeOption.find(
-                                                    (option) =>
-                                                        option.value ===
-                                                        formData.office_type,
-                                                )}
-                                                onChange={(
-                                                    selectedOption: SelectOption | null,
-                                                ) => {
-                                                    setFormData((prev) => ({
-                                                        ...prev,
-                                                        office_type:
-                                                            selectedOption?.value ||
-                                                            '',
-                                                    }))
+                                            <DatePicker
+                                                size="sm"
+                                                placeholder="Pick a Date"
+                                                onChange={(date) => {
+                                                    setFormData((prev) => {
+                                                        // Remove lease_document, lease_validity, and lease_status
+                                                        const {
+                                                            lease_document,
+                                                            lease_validity,
+                                                            lease_status,
+                                                            ...rest
+                                                        } = prev
+                                                        return {
+                                                            ...rest,
+                                                            se_validity: date
+                                                                ? format(
+                                                                      date,
+                                                                      'yyyy-MM-dd',
+                                                                  )
+                                                                : '',
+                                                        }
+                                                    })
                                                 }}
                                             />
+                                            {errors?.se_validity && (
+                                                <span className="text-red-500 text-sm">
+                                                    {
+                                                        errors?.se_validity as String
+                                                    }
+                                                </span>
+                                            )}
                                         </div>
-                                        {formData.office_type === 'other' && (
+                                    )}
+
+                                <div>
+                                    <div className="flex flex-col gap-2">
+                                        <label>
+                                            {seRegistrationNumberExists ===
+                                            'applied'
+                                                ? 'Please upload the S&E  acknowledgment copy'
+                                                : 'Please upload the S&E Registration certificate'}
+                                            <span className="text-red-500">
+                                                *
+                                            </span>
+                                        </label>
+                                        <Input
+                                            id="file-upload"
+                                            size="sm"
+                                            type="file"
+                                            accept=".pdf"
+                                            className="py-[5px]"
+                                            onChange={handleSeDocumentUpload}
+                                        />
+                                        {errors?.se_document && (
+                                            <span className="text-red-500 text-sm">
+                                                {errors?.se_document as String}
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+                {formData.type === 'rented' && (
+                    <>
+                        <div className="border rounded-md py-4 p-2 mt-4">
+                            <div className="flex flex-col gap-8">
+                                <div className="flex justify-between">
+                                    <h4>Lease / Rent Setup</h4>
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                    <div>
+                                        <p className="mb-2">
+                                            Lease deed / Rent Agreement Status
+                                            <span className="text-red-500">
+                                                *
+                                            </span>
+                                        </p>
+                                        <OutlinedInput
+                                            label="Status"
+                                            value={
+                                                formData.lease_status ===
+                                                'inactive'
+                                                    ? 'Expired'
+                                                    : 'Active'
+                                            }
+                                            onChange={(value: string) => {
+                                                setFormData((prevData) => ({
+                                                    ...prevData,
+                                                    lease_status:
+                                                        value.toLowerCase() ===
+                                                        'expired'
+                                                            ? 'inactive'
+                                                            : 'active',
+                                                }))
+                                            }}
+                                        />
+                                        {errors?.lease_status && (
+                                            <span className="text-red-500 text-sm">
+                                                {errors?.lease_status as String}
+                                            </span>
+                                        )}
+                                    </div>
+                                    {leaseValidityType === 'fixed' && (
+                                        <div>
+                                            <p className="mb-2">
+                                                Lease deed / Rent Agreement
+                                                valid up to
+                                                <span className="text-red-500">
+                                                    *
+                                                </span>
+                                            </p>
+                                            <DatePicker
+                                                size="sm"
+                                                placeholder="Pick a Date"
+                                                onChange={
+                                                    handleLeaseValidityChange
+                                                }
+                                            />
+                                            {errors?.lease_validity && (
+                                                <span className="text-red-500 text-sm">
+                                                    {
+                                                        errors?.lease_validity as String
+                                                    }
+                                                </span>
+                                            )}
+                                        </div>
+                                    )}
+                                    <div>
+                                        <div className="flex flex-col gap-4">
+                                            <label>
+                                                Please upload Lease deed copy
+                                                <span className="text-red-500">
+                                                    *
+                                                </span>
+                                            </label>
+                                            <Input
+                                                id="file-upload"
+                                                type="file"
+                                                accept=".pdf"
+                                                onChange={
+                                                    handleLeaseDocumentUpload
+                                                }
+                                            />
+                                            {errors?.lease_document && (
+                                                <span className="text-red-500 text-sm">
+                                                    {
+                                                        errors?.lease_document as String
+                                                    }
+                                                </span>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Modified S&E Setup section */}
+                        <div className="border rounded-md py-4 p-2 mt-4">
+                            <div className="flex flex-col gap-8">
+                                <div className="flex justify-between">
+                                    <h4>S&E Setup</h4>
+                                    {renderDocumentValidityRadio(
+                                        seValidityType,
+                                        setSeValidityType,
+                                        handleSeValidityChange,
+                                        'S&E Validity Type',
+                                    )}
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                    <div>
+                                        <p className="mb-2">
+                                            S&E Registration Status
+                                        </p>
+                                        <OutlinedSelect
+                                            label="S&E Registration Status"
+                                            options={[
+                                                {
+                                                    value: 'valid',
+                                                    label: 'Have Valid License',
+                                                },
+                                                {
+                                                    value: 'expired',
+                                                    label: 'Expired',
+                                                },
+                                                {
+                                                    value: 'applied',
+                                                    label: 'Applied For',
+                                                },
+                                            ]}
+                                            value={
+                                                seRegistrationNumberExists ===
+                                                'valid'
+                                                    ? {
+                                                          value: 'valid',
+                                                          label: 'Have Valid License',
+                                                      }
+                                                    : seRegistrationNumberExists ===
+                                                        'expired'
+                                                      ? {
+                                                            value: 'expired',
+                                                            label: 'Expired',
+                                                        }
+                                                      : {
+                                                            value: 'applied',
+                                                            label: 'Applied For',
+                                                        }
+                                            }
+                                            onChange={(selectedOption: any) => {
+                                                const newStatus =
+                                                    selectedOption?.value ||
+                                                    'applied'
+                                                setSeRegistrationNumberExists(
+                                                    newStatus,
+                                                )
+
+                                                setFormData((prev) => {
+                                                    const {
+                                                        register_number,
+                                                        se_validity,
+                                                        se_status,
+                                                        ...rest
+                                                    } = prev
+                                                    return {
+                                                        ...rest,
+                                                        se_status: newStatus, // Add se_status here
+                                                        ...(newStatus ===
+                                                        'applied'
+                                                            ? {}
+                                                            : {
+                                                                  register_number:
+                                                                      '',
+                                                                  se_validity:
+                                                                      '',
+                                                              }),
+                                                    }
+                                                })
+                                            }}
+                                        />
+                                        {errors?.se_status && (
+                                            <span className="text-red-500 text-sm">
+                                                {errors?.se_status as String}
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    {(seRegistrationNumberExists === 'valid' ||
+                                        seRegistrationNumberExists ===
+                                            'expired') && (
+                                        <div>
+                                            <p className="mb-2">
+                                                S&E Registration Number
+                                                <span className="text-red-500">
+                                                    *
+                                                </span>
+                                            </p>
+                                            <OutlinedInput
+                                                label="S&E Registration Number"
+                                                value={
+                                                    formData.register_number ||
+                                                    ''
+                                                }
+                                                onChange={(value: string) => {
+                                                    setFormData((prev) => ({
+                                                        ...prev,
+                                                        register_number: value,
+                                                    }))
+                                                }}
+                                            />{' '}
+                                            {errors?.register_number && (
+                                                <span className="text-red-500 text-sm">
+                                                    {
+                                                        errors?.register_number as String
+                                                    }
+                                                </span>
+                                            )}
+                                        </div>
+                                    )}
+
+                                    {seRegistrationNumberExists === 'valid' &&
+                                        seValidityType === 'fixed' && (
                                             <div>
                                                 <p className="mb-2">
-                                                    Office Type (Others){' '}
+                                                    S&E Validity{' '}
                                                     <span className="text-red-500">
                                                         *
                                                     </span>
                                                 </p>
-                                                <OutlinedInput
-                                                    label="Office Type (Others)"
-                                                    value={
-                                                        formData.other_office
-                                                    }
-                                                    onChange={(
-                                                        value: string,
-                                                    ) => {
+                                                <DatePicker
+                                                    size="sm"
+                                                    placeholder="Pick a Date"
+                                                    onChange={(date) => {
                                                         setFormData((prev) => ({
                                                             ...prev,
-                                                            other_office: value,
+                                                            se_validity: date
+                                                                ? format(
+                                                                      date,
+                                                                      'yyyy-MM-dd',
+                                                                  )
+                                                                : '',
                                                         }))
                                                     }}
-                                                />
+                                                />{' '}
+                                                {errors?.se_validity && (
+                                                    <span className="text-red-500 text-sm">
+                                                        {
+                                                            errors?.se_validity as String
+                                                        }
+                                                    </span>
+                                                )}
                                             </div>
                                         )}
-                                        <div>
-                                            <p className="mb-2">
-                                                Branch Type{' '}
+
+                                    <div>
+                                        <div className="flex flex-col gap-2">
+                                            <label>
+                                                {seRegistrationNumberExists ===
+                                                'applied'
+                                                    ? 'Please upload the S&E  acknowledgment copy'
+                                                    : 'Please upload the S&E Registration certificate'}
                                                 <span className="text-red-500">
                                                     *
                                                 </span>
-                                            </p>
-                                            <OutlinedSelect
-                                                label="Select Branch Type"
-                                                options={branchTypeOptions}
-                                                value={branchTypeOptions.find(
-                                                    (option) =>
-                                                        option.value ===
-                                                        formData.type,
-                                                )}
-                                                onChange={(
-                                                    selectedOption: SelectOption | null,
-                                                ) => {
-                                                    setFormData((prev) => ({
-                                                        ...prev,
-                                                        type:
-                                                            selectedOption?.value ||
-                                                            '',
-                                                    }))
-                                                }}
+                                            </label>
+                                            <Input
+                                                id="file-upload"
+                                                size="sm"
+                                                type="file"
+                                                accept=".pdf"
+                                                className="py-[5px]"
+                                                onChange={
+                                                    handleSeDocumentUpload
+                                                }
                                             />
-                                        </div>
-                                    </>
-                                )}
-                            </div>
-                            {formData.type === 'owned' && (
-                                <div className="border rounded-md py-4 p-2 mt-4">
-                                    <div className="flex flex-col gap-8">
-                                        <div className="flex justify-between">
-                                            <h4>S&E Setup</h4>
-                                            {renderDocumentValidityRadio(
-                                                seValidityType,
-                                                setSeValidityType,
-                                                handleSeValidityChange,
-                                                'S&E Validity Type',
+                                            {errors?.se_document && (
+                                                <span className="text-red-500 text-sm">
+                                                    {
+                                                        errors?.se_document as String
+                                                    }
+                                                </span>
                                             )}
-                                        </div>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                                            <div>
-                                                <p className="mb-2">
-                                                    S&E Registration Status
-                                                </p>
-                                                <OutlinedSelect
-                                                    label="S&E Registration Status"
-                                                    options={[
-                                                        {
-                                                            value: 'valid',
-                                                            label: 'Have Valid License',
-                                                        },
-                                                        {
-                                                            value: 'expired',
-                                                            label: 'Expired',
-                                                        },
-                                                        {
-                                                            value: 'applied',
-                                                            label: 'Applied For',
-                                                        },
-                                                    ]}
-                                                    value={null}
-                                                    onChange={(
-                                                        selectedOption: any,
-                                                    ) => {
-                                                        const newStatus =
-                                                            selectedOption?.value ||
-                                                            'applied'
-                                                        setSeRegistrationNumberExists(
-                                                            newStatus,
-                                                        )
-
-                                                        setFormData((prev) => {
-                                                            // Remove lease_document, lease_validity, and lease_status
-                                                            const {
-                                                                register_number,
-                                                                se_validity,
-                                                                se_status,
-                                                                lease_document,
-                                                                lease_validity,
-                                                                lease_status,
-                                                                ...rest
-                                                            } = prev
-                                                            return {
-                                                                ...rest,
-                                                                se_status:
-                                                                    newStatus,
-                                                                se_validity:
-                                                                    newStatus ===
-                                                                    'valid'
-                                                                        ? ''
-                                                                        : '2024-12-31', // ISO 8601 format
-                                                                ...(newStatus ===
-                                                                'applied'
-                                                                    ? {}
-                                                                    : {
-                                                                          register_number:
-                                                                              '',
-                                                                      }),
-                                                            }
-                                                        })
-                                                    }}
-                                                />
-                                            </div>
-
-                                            {(seRegistrationNumberExists ===
-                                                'valid' ||
-                                                seRegistrationNumberExists ===
-                                                    'expired') && (
-                                                <div>
-                                                    <p className="mb-2">
-                                                        S&E Registration Number
-                                                        <span className="text-red-500">
-                                                            *
-                                                        </span>
-                                                    </p>
-                                                    <OutlinedInput
-                                                        label="S&E Registration Number"
-                                                        value={
-                                                            formData.register_number ||
-                                                            ''
-                                                        }
-                                                        onChange={(
-                                                            value: string,
-                                                        ) => {
-                                                            setFormData(
-                                                                (prev) => {
-                                                                    // Remove lease_document, lease_validity, and lease_status
-                                                                    const {
-                                                                        lease_document,
-                                                                        lease_validity,
-                                                                        lease_status,
-                                                                        ...rest
-                                                                    } = prev
-                                                                    return {
-                                                                        ...rest,
-                                                                        register_number:
-                                                                            value,
-                                                                    }
-                                                                },
-                                                            )
-                                                        }}
-                                                    />
-                                                </div>
-                                            )}
-
-                                            {seRegistrationNumberExists ===
-                                                'valid' &&
-                                                seValidityType === 'fixed' && (
-                                                    <div>
-                                                        <p className="mb-2">
-                                                            S&E Validity{' '}
-                                                            <span className="text-red-500">
-                                                                *
-                                                            </span>
-                                                        </p>
-                                                        <DatePicker
-                                                            size="sm"
-                                                            placeholder="Pick a Date"
-                                                            onChange={(
-                                                                date,
-                                                            ) => {
-                                                                setFormData(
-                                                                    (prev) => {
-                                                                        // Remove lease_document, lease_validity, and lease_status
-                                                                        const {
-                                                                            lease_document,
-                                                                            lease_validity,
-                                                                            lease_status,
-                                                                            ...rest
-                                                                        } = prev
-                                                                        return {
-                                                                            ...rest,
-                                                                            se_validity:
-                                                                                date
-                                                                                    ? format(
-                                                                                          date,
-                                                                                          'yyyy-MM-dd',
-                                                                                      )
-                                                                                    : '',
-                                                                        }
-                                                                    },
-                                                                )
-                                                            }}
-                                                        />
-                                                    </div>
-                                                )}
-
-                                            <div>
-                                                <div className="flex flex-col gap-2">
-                                                    <label>
-                                                        {seRegistrationNumberExists ===
-                                                        'applied'
-                                                            ? 'Please upload the S&E  acknowledgment copy'
-                                                            : 'Please upload the S&E Registration certificate'}
-                                                        <span className="text-red-500">
-                                                            *
-                                                        </span>
-                                                    </label>
-                                                    <Input
-                                                        id="file-upload"
-                                                        size="sm"
-                                                        type="file"
-                                                        accept=".pdf"
-                                                        className="py-[5px]"
-                                                        onChange={
-                                                            handleSeDocumentUpload
-                                                        }
-                                                    />
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            )}
-                            {formData.type === 'rented' && (
-                                <>
-                                    <div className="border rounded-md py-4 p-2 mt-4">
-                                        <div className="flex flex-col gap-8">
-                                            <div className="flex justify-between">
-                                                <h4>Lease / Rent Setup</h4>
-                                                {/* {renderDocumentValidityRadio(
-            leaseValidityType, 
-            setLeaseValidityType, 
-            handleLeaseValidityChange,
-            'Lease Validity Type'
-          )} */}
-                                            </div>
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                                                <div>
-                                                    <p className="mb-2">
-                                                        Lease deed / Rent
-                                                        Agreement Status
-                                                        <span className="text-red-500">
-                                                            *
-                                                        </span>
-                                                    </p>
-                                                    <OutlinedInput
-                                                        label="Status"
-                                                        value={
-                                                            formData.lease_status ===
-                                                            'inactive'
-                                                                ? 'Expired'
-                                                                : 'Active'
-                                                        }
-                                                        onChange={(
-                                                            value: string,
-                                                        ) => {
-                                                            setFormData(
-                                                                (prevData) => ({
-                                                                    ...prevData,
-                                                                    lease_status:
-                                                                        value.toLowerCase() ===
-                                                                        'expired'
-                                                                            ? 'inactive'
-                                                                            : 'active',
-                                                                }),
-                                                            )
-                                                        }}
-                                                    />
-                                                </div>
-                                                {leaseValidityType ===
-                                                    'fixed' && (
-                                                    <div>
-                                                        <p className="mb-2">
-                                                            Lease deed / Rent
-                                                            Agreement valid up
-                                                            to
-                                                            <span className="text-red-500">
-                                                                *
-                                                            </span>
-                                                        </p>
-                                                        <DatePicker
-                                                            size="sm"
-                                                            placeholder="Pick a Date"
-                                                            onChange={
-                                                                handleLeaseValidityChange
-                                                            }
-                                                        />
-                                                    </div>
-                                                )}
-                                                <div>
-                                                    <div className="flex flex-col gap-4">
-                                                        <label>
-                                                            Please upload Lease
-                                                            deed copy
-                                                            <span className="text-red-500">
-                                                                *
-                                                            </span>
-                                                        </label>
-                                                        <Input
-                                                            id="file-upload"
-                                                            type="file"
-                                                            accept=".pdf"
-                                                            onChange={
-                                                                handleLeaseDocumentUpload
-                                                            }
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Modified S&E Setup section */}
-                                    <div className="border rounded-md py-4 p-2 mt-4">
-                                        <div className="flex flex-col gap-8">
-                                            <div className="flex justify-between">
-                                                <h4>S&E Setup</h4>
-                                                {renderDocumentValidityRadio(
-                                                    seValidityType,
-                                                    setSeValidityType,
-                                                    handleSeValidityChange,
-                                                    'S&E Validity Type',
-                                                )}
-                                            </div>
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                                                <div>
-                                                    <p className="mb-2">
-                                                        S&E Registration Status
-                                                    </p>
-                                                    <OutlinedSelect
-                                                        label="S&E Registration Status"
-                                                        options={[
-                                                            {
-                                                                value: 'valid',
-                                                                label: 'Have Valid License',
-                                                            },
-                                                            {
-                                                                value: 'expired',
-                                                                label: 'Expired',
-                                                            },
-                                                            {
-                                                                value: 'applied',
-                                                                label: 'Applied For',
-                                                            },
-                                                        ]}
-                                                        value={
-                                                            seRegistrationNumberExists ===
-                                                            'valid'
-                                                                ? {
-                                                                      value: 'valid',
-                                                                      label: 'Have Valid License',
-                                                                  }
-                                                                : seRegistrationNumberExists ===
-                                                                    'expired'
-                                                                  ? {
-                                                                        value: 'expired',
-                                                                        label: 'Expired',
-                                                                    }
-                                                                  : {
-                                                                        value: 'applied',
-                                                                        label: 'Applied For',
-                                                                    }
-                                                        }
-                                                        onChange={(
-                                                            selectedOption: any,
-                                                        ) => {
-                                                            const newStatus =
-                                                                selectedOption?.value ||
-                                                                'applied'
-                                                            setSeRegistrationNumberExists(
-                                                                newStatus,
-                                                            )
-
-                                                            setFormData(
-                                                                (prev) => {
-                                                                    const {
-                                                                        register_number,
-                                                                        se_validity,
-                                                                        se_status,
-                                                                        ...rest
-                                                                    } = prev
-                                                                    return {
-                                                                        ...rest,
-                                                                        se_status:
-                                                                            newStatus, // Add se_status here
-                                                                        ...(newStatus ===
-                                                                        'applied'
-                                                                            ? {}
-                                                                            : {
-                                                                                  register_number:
-                                                                                      '',
-                                                                                  se_validity:
-                                                                                      '',
-                                                                              }),
-                                                                    }
-                                                                },
-                                                            )
-                                                        }}
-                                                    />
-                                                </div>
-
-                                                {(seRegistrationNumberExists ===
-                                                    'valid' ||
-                                                    seRegistrationNumberExists ===
-                                                        'expired') && (
-                                                    <div>
-                                                        <p className="mb-2">
-                                                            S&E Registration
-                                                            Number
-                                                            <span className="text-red-500">
-                                                                *
-                                                            </span>
-                                                        </p>
-                                                        <OutlinedInput
-                                                            label="S&E Registration Number"
-                                                            value={
-                                                                formData.register_number ||
-                                                                ''
-                                                            }
-                                                            onChange={(
-                                                                value: string,
-                                                            ) => {
-                                                                setFormData(
-                                                                    (prev) => ({
-                                                                        ...prev,
-                                                                        register_number:
-                                                                            value,
-                                                                    }),
-                                                                )
-                                                            }}
-                                                        />
-                                                    </div>
-                                                )}
-
-                                                {seRegistrationNumberExists ===
-                                                    'valid' &&
-                                                    seValidityType ===
-                                                        'fixed' && (
-                                                        <div>
-                                                            <p className="mb-2">
-                                                                S&E Validity{' '}
-                                                                <span className="text-red-500">
-                                                                    *
-                                                                </span>
-                                                            </p>
-                                                            <DatePicker
-                                                                size="sm"
-                                                                placeholder="Pick a Date"
-                                                                onChange={(
-                                                                    date,
-                                                                ) => {
-                                                                    setFormData(
-                                                                        (
-                                                                            prev,
-                                                                        ) => ({
-                                                                            ...prev,
-                                                                            se_validity:
-                                                                                date
-                                                                                    ? format(
-                                                                                          date,
-                                                                                          'yyyy-MM-dd',
-                                                                                      )
-                                                                                    : '',
-                                                                        }),
-                                                                    )
-                                                                }}
-                                                            />
-                                                        </div>
-                                                    )}
-
-                                                <div>
-                                                    <div className="flex flex-col gap-2">
-                                                        <label>
-                                                            {seRegistrationNumberExists ===
-                                                            'applied'
-                                                                ? 'Please upload the S&E  acknowledgment copy'
-                                                                : 'Please upload the S&E Registration certificate'}
-                                                            <span className="text-red-500">
-                                                                *
-                                                            </span>
-                                                        </label>
-                                                        <Input
-                                                            id="file-upload"
-                                                            size="sm"
-                                                            type="file"
-                                                            accept=".pdf"
-                                                            className="py-[5px]"
-                                                            onChange={
-                                                                handleSeDocumentUpload
-                                                            }
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </>
-                            )}
-
-                            <div className="border rounded-md py-4 p-2 mt-4">
-                                <div className="flex flex-col gap-4">
-                                    <h6>Custom Fields</h6>
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-                                        <div className="w-full">
-                                            <OutlinedInput
-                                                label="Remark"
-                                                value={
-                                                    formData.custom_data.remark
-                                                }
-                                                onChange={(value: string) => {
-                                                    setFormData((prev) => ({
-                                                        ...prev,
-                                                        remark: value,
-                                                    }))
-                                                }}
-                                            />
-                                        </div>
-                                        <div className="w-full">
-                                            <OutlinedInput
-                                                label="Email"
-                                                value={
-                                                    formData.custom_data.email
-                                                }
-                                                onChange={(value: string) => {
-                                                    setFormData((prev) => ({
-                                                        ...prev,
-                                                        email: value,
-                                                    }))
-                                                }}
-                                            />
-                                        </div>
-                                        <div className="w-full">
-                                            <OutlinedInput
-                                                label="Mobile"
-                                                value={
-                                                    formData.custom_data.mobile
-                                                }
-                                                onChange={(value: string) => {
-                                                    setFormData((prev) => ({
-                                                        ...prev,
-                                                        mobile: value,
-                                                    }))
-                                                }}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="flex justify-end gap-2">
-                                <Button
-                                    type="button"
-                                    variant="solid"
-                                    size="sm"
-                                    onClick={handleAddBranch}
-                                >
-                                    Add Branch
-                                </Button>
-                                <Button
-                                    type="button"
-                                    variant="plain"
-                                    size="sm"
-                                    onClick={() => navigate(-1)}
-                                >
-                                    Cancel
-                                </Button>
                             </div>
                         </div>
-                    </Form>
+                    </>
                 )}
-            </Formik>
+
+                {/* <div className="border rounded-md py-4 p-2 mt-4">
+                    <div className="flex flex-col gap-4">
+                        <h6>Custom Fields</h6>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                            <div className="w-full">
+                                <OutlinedInput
+                                    label="Remark"
+                                    value={formData.custom_data.remark}
+                                    onChange={(value: string) => {
+                                        setFormData((prev) => ({
+                                            ...prev,
+                                            remark: value,
+                                        }))
+                                    }}
+                                />
+                                {errors['custom_data.remark'] && (
+                                    <span className="text-red-500 text-sm">
+                                        {errors['custom_data.remark']}
+                                    </span>
+                                )}
+                            </div>
+                            <div className="w-full">
+                                <OutlinedInput
+                                    label="Email"
+                                    value={formData.custom_data.email}
+                                    onChange={(value: string) => {
+                                        setFormData((prev) => ({
+                                            ...prev,
+                                            email: value,
+                                        }))
+                                    }}
+                                />{' '}
+                                {errors['custom_data.email'] && (
+                                    <span className="text-red-500 text-sm">
+                                        {errors['custom_data.email']}
+                                    </span>
+                                )}
+                            </div>
+                            <div className="w-full">
+                                <OutlinedInput
+                                    label="Mobile"
+                                    value={formData.custom_data.mobile}
+                                    onChange={(value: string) => {
+                                        setFormData((prev) => ({
+                                            ...prev,
+                                            mobile: value,
+                                        }))
+                                    }}
+                                />{' '}
+                                {errors['custom_data.mobile'] && (
+                                    <span className="text-red-500 text-sm">
+                                        {errors['custom_data.mobile']}
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div> */}
+
+                <div className="flex justify-end gap-2">
+                    <Button
+                        type="button"
+                        variant="solid"
+                        size="sm"
+                        onClick={handleAddBranch}
+                    >
+                        Add Branch
+                    </Button>
+                    <Button
+                        type="button"
+                        variant="plain"
+                        size="sm"
+                        onClick={() => navigate(-1)}
+                    >
+                        Cancel
+                    </Button>
+                </div>
+            </div>
         </div>
     )
 }
 
 export default AddBranchForm
-// const handleDistrictChange = (districtName: string) => {
-//     setSelectedDistrict(districtName)
-//     // Find the district ID from the districtsData
-//     const district = districtsData.find((d) => d.name === districtName)
-//     setSelectedDistrictId(district?.id)
-//     setSelectedLocation('') // Reset location when district changes
-// }
-
-// const [agreement_data, setAgreements] = useState<AgreementSection[]>([{
-//     agreement_type: '',
-//     start_date: '',
-//     end_date: '',
-//     owner_name: '',
-//     partner_name: '',
-//     partner_contact: '',
-//     agreement_document: null
-// }]);
-
-// const handleAddAgreement = () => {
-//     setAgreements([...agreement_data, {
-//         agreement_type: '',
-//         start_date: '',
-//         end_date: '',
-//         owner_name: '',
-//         partner_name: '',
-//         partner_contact: '',
-//         agreement_document: null
-//     }]);
-// };
-// const handleRemoveAgreement = (indexToRemove:any) => {
-//     const updatedAgreements = agreement_data.filter((_, index) => index !== indexToRemove);
-//     setAgreements(updatedAgreements);
-// };
-
-// const handleAgreementChange = (index: number, field: keyof AgreementSection, value: string) => {
-//     const newAgreements = [...agreement_data];
-//     newAgreements[index] = {
-//         ...newAgreements[index],
-//         [field]: value
-//     };
-//     setAgreements(newAgreements);
-
-//     setFormData(prev => ({
-//         ...prev,
-//         agreement_data: newAgreements
-//     }));
-// };
-
-// form type for agreement
-// <div className="border rounded-lg p-6 mt-4">
-//     <div className="flex flex-col gap-6">
-//         <div className="flex justify-between items-center">
-//             <h6 className="text-lg font-medium">Partnership Agreement</h6>
-//             <Tooltip title="Add Agreement" placement="top">
-//                 <Button
-//                     size="sm"
-//                     variant="plain"
-//                     onClick={handleAddAgreement}
-//                     className="text-blue-600"
-//                 >
-//                     <HiPlusCircle className="h-5 w-5" />
-//                 </Button>
-//             </Tooltip>
-//         </div>
-
-//         <div className="flex flex-col gap-4">
-//             {agreement_data.map((agreement, index) => (
-//                 <div key={index} className="border border-gray-200 rounded-lg p-4">
-//                     <div className="flex justify-between items-start mb-4">
-
-//                         <h6 className="text-sm font-medium">Agreement {index + 1}</h6>
-//                         <Tooltip title="Remove Agreement" placement="top">
-//                         <Button
-//                             size="sm"
-//                             variant="plain"
-//                             onClick={() => handleRemoveAgreement(index)}
-//                             className="text-red-600 hover:text-red-700"
-//                         >
-//                            <HiMinusCircle className='h-5 w-5' />
-//                         </Button>
-//                         </Tooltip>
-//                     </div>
-//                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-//                         <div className="flex flex-col">
-//                             <label className="mb-2 text-sm text-gray-600">
-//                                 Agreement Type
-//                             </label>
-//                             <Input
-//                                 size="sm"
-//                                 value={agreement.agreement_type}
-//                                 onChange={(e) =>
-//                                     handleAgreementChange(index, 'agreement_type', e.target.value)
-//                                 }
-//                             />
-//                         </div>
-
-//                         <div className="flex flex-col">
-//                             <label className="mb-2 text-sm text-gray-600">
-//                                 Owner's Name
-//                             </label>
-//                             <Input
-//                                 size="sm"
-//                                 value={agreement.owner_name}
-//                                 onChange={(e) =>
-//                                     handleAgreementChange(index, 'owner_name', e.target.value)
-//                                 }
-//                             />
-//                         </div>
-
-//                         <div className="flex flex-col">
-//                             <label className="mb-2 text-sm text-gray-600">
-//                                 Partner's Name
-//                             </label>
-//                             <Input
-//                                 size="sm"
-//                                 value={agreement.partner_name}
-//                                 onChange={(e) =>
-//                                     handleAgreementChange(index, 'partner_name', e.target.value)
-//                                 }
-//                             />
-//                         </div>
-
-//                         <div className="flex flex-col">
-//                             <label className="mb-2 text-sm text-gray-600">
-//                                 Partner's Contact
-//                             </label>
-//                             <Input
-//                                 size="sm"
-//                                 value={agreement.partner_contact}
-//                                 onChange={(e) =>
-//                                     handleAgreementChange(index, 'partner_contact', e.target.value)
-//                                 }
-//                             />
-//                         </div>
-
-//                         <div className="flex flex-col">
-//                             <label className="mb-2 text-sm text-gray-600">
-//                                 Start Date
-//                             </label>
-//                             <DatePicker
-//                                 size="sm"
-//                                 placeholder="Pick Start Date"
-//                                 onChange={(date) => {
-//                                     handleAgreementChange(
-//                                         index,
-//                                         'start_date',
-//                                         date ? format(date, 'yyyy-MM-dd') : ''
-//                                     );
-//                                 }}
-//                             />
-//                         </div>
-
-//                         <div className="flex flex-col">
-//                             <label className="mb-2 text-sm text-gray-600">
-//                                 End Date
-//                             </label>
-//                             <DatePicker
-//                                 size="sm"
-//                                 placeholder="Pick End Date"
-//                                 onChange={(date) => {
-//                                     handleAgreementChange(
-//                                         index,
-//                                         'end_date',
-//                                         date ? format(date, 'yyyy-MM-dd') : ''
-//                                     );
-//                                 }}
-//                             />
-//                         </div>
-
-//                         <div className="flex flex-col md:col-span-2">
-//                             <label className="mb-2 text-sm text-gray-600">
-//                                 Upload Document
-//                             </label>
-//                             <Input
-//                                 size="sm"
-//                                 type="file"
-//                                 accept=".pdf"
-//                                 className="py-[5px]"
-//                                 onChange={(e) => {
-//                                     const file = e.target.files?.[0];
-//                                     if (file) {
-//                                         const reader = new FileReader();
-//                                         reader.onload = () => {
-//                                             const base64String = (reader.result as string).split(',')[1];
-//                                             handleAgreementChange(index, 'agreement_document', base64String);
-//                                         };
-//                                         reader.readAsDataURL(file);
-//                                     }
-//                                 }}
-//                             />
-//                         </div>
-//                     </div>
-//                 </div>
-//             ))}
-//         </div>
-//     </div>
-// </div>
