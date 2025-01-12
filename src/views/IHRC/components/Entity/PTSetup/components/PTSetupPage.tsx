@@ -178,6 +178,68 @@ const PTSetupPage = () => {
     const [selectedLocation, setSelectedLocation] = useState('')
     const [selectedDistrictId, setSelectedDistrictId] = useState<number>()
 
+
+    const validateField = async (fieldName: string, value: any) => {
+        try {
+            // Create a validation schema for just this field
+            const fieldSchema = yup.reach(ptSetupSchema, fieldName);
+            await fieldSchema.validate(value);
+            
+            // Clear error for this field if validation passes
+            setErrors(prev => ({
+                ...prev,
+                [fieldName]: undefined
+            }));
+        } catch (error) {
+            if (error instanceof yup.ValidationError) {
+                // Set error message for this field
+                setErrors(prev => ({
+                    ...prev,
+                    [fieldName]: error.message
+                }));
+            }
+        }
+    };
+
+
+    const handleInputChange = async (fieldName: string, value: any) => {
+        setPtSetupData(prev => ({
+            ...prev,
+            [fieldName]: value
+        }));
+        
+        // Validate the field immediately after value change
+        await validateField(fieldName, value);
+    };
+
+
+    const handleStateChange = async (option: SelectOption | null) => {
+        setSelectedState(option);
+        setSelectedDistrict({ id: null, name: '' });
+        setSelectedLocation('');
+        
+        if (option) {
+            const selectedStateDetails = states.find(
+                state => state.value === option.value
+            );
+
+            const newStateId = parseInt(option.value);
+            
+            setPtSetupData(prev => ({
+                ...prev,
+                state_id: newStateId,
+                district: '',
+                location: '',
+                ptec_frequency: selectedStateDetails?.ptec_frequency || '',
+                ptrc_frequency: selectedStateDetails?.ptrc_frequency || ''
+            }));
+
+            // Validate state_id field
+            await validateField('state_id', newStateId);
+        }
+    };
+
+
     // File conversion helper
     const convertToBase64 = (file: File): Promise<string> => {
         return new Promise((resolve, reject) => {
@@ -261,27 +323,27 @@ const loadStates = async () => {
     }
 }
 
-    const handleStateChange = (option: SelectOption | null) => {
-    setSelectedState(option);
-    setSelectedDistrict({ id: null, name: '' }); // Reset district selection
-    setSelectedLocation(''); // Reset location selection
+//     const handleStateChange = (option: SelectOption | null) => {
+//     setSelectedState(option);
+//     setSelectedDistrict({ id: null, name: '' }); // Reset district selection
+//     setSelectedLocation(''); // Reset location selection
     
-    if (option) {
-        // Find the state details from the existing states array
-        const selectedStateDetails = states.find(
-            state => state.value === option.value
-        );
+//     if (option) {
+//         // Find the state details from the existing states array
+//         const selectedStateDetails = states.find(
+//             state => state.value === option.value
+//         );
 
-        setPtSetupData(prev => ({
-            ...prev,
-            state_id: parseInt(option.value),
-            district: '', 
-            location: '',
-            ptec_frequency: selectedStateDetails?.ptec_frequency || '',
-            ptrc_frequency: selectedStateDetails?.ptrc_frequency || ''
-        }));
-    }
-};
+//         setPtSetupData(prev => ({
+//             ...prev,
+//             state_id: parseInt(option.value),
+//             district: '', 
+//             location: '',
+//             ptec_frequency: selectedStateDetails?.ptec_frequency || '',
+//             ptrc_frequency: selectedStateDetails?.ptrc_frequency || ''
+//         }));
+//     }
+// };
     
     
       const handleDistrictSelect = (district: { id: number | null; name: string }) => {
@@ -298,22 +360,22 @@ const loadStates = async () => {
 
 
     // Handle certificate uploads
-    const handleCertificateUpload = async (type: 'ec' | 'rc', file: File) => {
-        try {
-            const base64String = await convertToBase64(file)
-            setPtSetupData(prev => ({
-                ...prev,
-                [`${type}_certificate`]: base64String
-            }))
-        } catch (error) {
-            console.error(`Error converting ${type} certificate to base64:`, error)
-            toast.push(
-                <Notification title="Error" type="danger">
-                    Failed to process certificate
-                </Notification>
-            )
-        }
-    }
+    // const handleCertificateUpload = async (type: 'ec' | 'rc', file: File) => {
+    //     try {
+    //         const base64String = await convertToBase64(file)
+    //         setPtSetupData(prev => ({
+    //             ...prev,
+    //             [`${type}_certificate`]: base64String
+    //         }))
+    //     } catch (error) {
+    //         console.error(`Error converting ${type} certificate to base64:`, error)
+    //         toast.push(
+    //             <Notification title="Error" type="danger">
+    //                 Failed to process certificate
+    //             </Notification>
+    //         )
+    //     }
+    // }
 
 
 
@@ -335,6 +397,74 @@ const loadStates = async () => {
           return false;
         }
       };
+      const validateFileType = (file: File) => {
+        const acceptedTypes = ['application/pdf'];
+        if (!acceptedTypes.includes(file.type)) {
+            return 'Only PDF files are allowed';
+        }
+        return null;
+    };
+    
+    const validateFileSize = (file: File) => {
+        const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+        if (file.size > maxSize) {
+            return 'File size should not exceed 5MB';
+        }
+        return null;
+    };
+    
+    // Update the certificate upload handlers
+    const handleCertificateUpload = async (type: 'ec' | 'rc', file: File) => {
+        try {
+            // Validate file type
+            const typeError = validateFileType(file);
+            if (typeError) {
+                setErrors(prev => ({
+                    ...prev,
+                    [`${type}_certificate`]: typeError
+                }));
+                return;
+            }
+    
+            // Validate file size
+            const sizeError = validateFileSize(file);
+            if (sizeError) {
+                setErrors(prev => ({
+                    ...prev,
+                    [`${type}_certificate`]: sizeError
+                }));
+                return;
+            }
+    
+            // If validations pass, convert to base64
+            const base64String = await convertToBase64(file);
+            setPtSetupData(prev => ({
+                ...prev,
+                [`${type}_certificate`]: base64String
+            }));
+    
+            // Clear any previous errors
+            setErrors(prev => ({
+                ...prev,
+                [`${type}_certificate`]: undefined
+            }));
+    
+            // Validate the field using Yup schema
+            await validateField(`${type}_certificate`, base64String);
+    
+        } catch (error) {
+            console.error(`Error processing ${type} certificate:`, error);
+            setErrors(prev => ({
+                ...prev,
+                [`${type}_certificate`]: 'Failed to process certificate'
+            }));
+            toast.push(
+                <Notification title="Error" type="danger">
+                    Failed to process certificate
+                </Notification>
+            );
+        }
+    };
 
 
     // Submit handler
@@ -484,13 +614,14 @@ const loadStates = async () => {
                     <div>
                        <DistrictAutosuggest 
                         value={selectedDistrict}
-                        onChange={(district) => {
+                        onChange={async (district) => {
                             setSelectedDistrict(district);
-                            // Convert district id to string when setting in form data
+                            const districtValue = district.id ? district.id.toString() : '';
                             setPtSetupData(prev => ({
                                 ...prev,
-                                district: district.id ? district.id.toString() : ''
+                                district: districtValue
                             }));
+                            await validateField('district', districtValue);
                             if (district.id) {
                                 setSelectedDistrictId(district.id);
                             }
@@ -512,12 +643,13 @@ const loadStates = async () => {
                     <div>
                         <LocationAutosuggest
                             value={selectedLocation}
-                            onChange={(location: string) => {
+                            onChange={async (location: string) => {
                                 setSelectedLocation(location);
                                 setPtSetupData(prev => ({
                                     ...prev,
                                     location: location
                                 }));
+                                await validateField('location', location);
                             }}
                             districtId={selectedDistrictId}
                         />
@@ -534,10 +666,7 @@ const loadStates = async () => {
                        <OutlinedInput
                         label="Registration Number"
                         value={ptSetupData.register_number}
-                        onChange={(value) => setPtSetupData(prev => ({
-                            ...prev,
-                            register_number: value
-                        }))}
+                        onChange={(value) => handleInputChange('register_number', value)}
                     />
                      {errors.register_number && (
             <p className="text-red-500 text-xs mt-1">{errors.register_number}</p>
@@ -548,10 +677,7 @@ const loadStates = async () => {
                         <OutlinedInput
                         label="Enrollment Number"
                         value={ptSetupData.enroll_number}
-                        onChange={(value) => setPtSetupData(prev => ({
-                            ...prev,
-                            enroll_number: value
-                        }))}
+                        onChange={(value) => handleInputChange('enroll_number', value)}
                     />
                     {errors.enroll_number && (
             <p className="text-red-500 text-xs mt-1">{errors.enroll_number}</p>
@@ -563,10 +689,13 @@ const loadStates = async () => {
                             size='sm'
                             placeholder="Select Date"
                             value={ptSetupData.register_date}
-                            onChange={(date) => setPtSetupData(prev => ({
-                                ...prev,
-                                register_date: date
-                            }))}
+                            onChange={async (date) => {
+                                setPtSetupData(prev => ({
+                                    ...prev,
+                                    register_date: date
+                                }));
+                                await validateField('register_date', date);
+                            }}
                         />
                          {errors.register_date && (
             <p className="text-red-500 text-xs mt-1">{errors.register_date}</p>
@@ -602,10 +731,7 @@ const loadStates = async () => {
                         <OutlinedInput
                             label="Username"
                             value={ptSetupData.username}
-                            onChange={(value) => setPtSetupData(prev => ({
-                                ...prev,
-                                username: value
-                            }))}
+                            onChange={(value) => handleInputChange('username', value)}
                         />
                         {errors.username && (
             <p className="text-red-500 text-xs mt-1">{errors.username}</p>
@@ -618,10 +744,7 @@ const loadStates = async () => {
                             label="Password"
                             // type="password"
                             value={ptSetupData.password}
-                            onChange={(value) => setPtSetupData(prev => ({
-                                ...prev,
-                                password: value
-                            }))}
+                            onChange={(value) => handleInputChange('password', value)}
                         />
                          {errors.password && (
             <p className="text-red-500 text-xs mt-1">{errors.password}</p>
@@ -632,10 +755,7 @@ const loadStates = async () => {
                         <OutlinedInput
                             label="Email"
                             value={ptSetupData.email}
-                            onChange={(value) => setPtSetupData(prev => ({
-                                ...prev,
-                                email: value
-                            }))}
+                            onChange={(value) => handleInputChange('email', value)}
                         />
                           {errors.email && (
             <p className="text-red-500 text-xs mt-1">{errors.email}</p>
@@ -650,10 +770,7 @@ const loadStates = async () => {
                         <OutlinedInput
                         label="Mobile Number"
                         value={ptSetupData.mobile}
-                        onChange={(value) => setPtSetupData(prev => ({
-                            ...prev,
-                            mobile: value
-                        }))}
+                        onChange={(value) => handleInputChange('mobile', value)}
               />
                  {errors.mobile && (
             <p className="text-red-500 text-xs mt-1">{errors.mobile}</p>
@@ -667,14 +784,17 @@ const loadStates = async () => {
                   { value: 'online', label: 'Online' },
                   { value: 'offline', label: 'Offline' }
                 ]}
-                onChange={(option) => {
-                  if (option) {
-                    setPtSetupData(prev => ({
-                      ...prev,
-                      remmit_mode: option.value
-                    }))
-                  }
-                } } value={undefined}/>
+                onChange={async (option) => {
+                    if (option) {
+                        setPtSetupData(prev => ({
+                            ...prev,
+                            remmit_mode: option.value
+                        }));
+                        // Validate the remittance mode immediately after selection
+                        await validateField('remmit_mode', option.value);
+                    }
+                }}
+                value={undefined}/>
                    {errors.remmit_mode && (
             <p className="text-red-500 text-xs mt-1">{errors.remmit_mode}</p>
           )}
@@ -683,33 +803,41 @@ const loadStates = async () => {
 
                 {/* Certificates */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <p className="mb-2">RC Certificate(PDF Only)</p>
-                        <Input
-                            type="file"
-                            onChange={(e) => {
-                                const file = e.target.files?.[0]
-                                if (file) handleCertificateUpload('rc', file)
-                            }}
-                        />
-                        {errors.rc_certificate && (
-            <p className="text-red-500 text-xs mt-1">{errors.rc_certificate}</p>
-          )}
-                    </div>
-                     <div>
-                        <p className="mb-2">EC Certificate(PDF Only)</p>
-                        <Input
-                            type="file"
-                            onChange={(e) => {
-                                const file = e.target.files?.[0]
-                                if (file) handleCertificateUpload('ec', file)
-                            }}
-                        />
-                        {errors.ec_certificate && (
-            <p className="text-red-500 text-xs mt-1">{errors.ec_certificate}</p>
-          )}
-                    </div>
-                </div>
+    <div>
+        <p className="mb-2">RC Certificate (PDF Only)</p>
+        <div className="space-y-2">
+            <Input
+                type="file"
+                accept="application/pdf"
+                onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleCertificateUpload('rc', file);
+                }}
+            />
+            
+            {errors.rc_certificate && (
+                <p className="text-red-500 text-xs">{errors.rc_certificate}</p>
+            )}
+        </div>
+    </div>
+    <div>
+        <p className="mb-2">EC Certificate (PDF Only)</p>
+        <div className="space-y-2">
+            <Input
+                type="file"
+                accept="application/pdf"
+                onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleCertificateUpload('ec', file);
+                }}
+            />
+           
+            {errors.ec_certificate && (
+                <p className="text-red-500 text-xs">{errors.ec_certificate}</p>
+            )}
+        </div>
+    </div>
+</div>
 
                 {/* Action Buttons */}
                 <div className="flex justify-end space-x-2">
