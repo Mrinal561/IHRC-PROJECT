@@ -93,7 +93,7 @@ const PTSetupPage: React.FC = () => {
             className="mr-2"
           >
           </Button>
-          <h1 className="text-2xl font-bold">PT Setup</h1>
+          <h1 className="text-2xl font-bold">{actualCompanyName}-PT Setup</h1>
         </div>
         <Button
           variant="solid"

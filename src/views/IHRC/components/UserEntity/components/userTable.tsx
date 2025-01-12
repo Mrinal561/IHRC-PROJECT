@@ -11,7 +11,7 @@ import { FiTrash } from 'react-icons/fi'
 import { MdEdit } from 'react-icons/md'
 import OutlinedInput from '@/components/ui/OutlinedInput/OutlinedInput'
 import DataTable, { ColumnDef } from '@/components/shared/DataTable'
-import { RiCloseLine, RiEyeLine } from 'react-icons/ri'
+import { RiCloseLine, RiEyeLine, RiShieldKeyholeLine } from 'react-icons/ri'
 import { CiSquareRemove } from 'react-icons/ci'
 import { IoPersonRemoveOutline } from 'react-icons/io5'
 import {
@@ -20,6 +20,7 @@ import {
     updateUser,
     selectUsers,
     selectLoading,
+    fetchUserById,
 } from '@/store/slices/userEntity/UserEntitySlice'
 import { AppDispatch } from '@/store'
 import { useDispatch, useSelector } from 'react-redux'
@@ -51,6 +52,17 @@ const UserTable: React.FC = () => {
     const [itemToEdit, setItemToEdit] = useState<number | null>(null)
     const [editedUserData, setEditedUserData] = useState<Partial<UserData>>({})
 
+    const handleModifyPermission = async (userData) => {
+        try {
+            const response = await dispatch(fetchUserById(userData.user_details.id));
+            if (response) {
+                navigate('/user-permission', { state: { userData: response.payload } });
+            }
+        } catch (error) {
+            showErrorNotification('Failed to fetch role details');
+        }
+    };
+    
     const columns = useMemo(
         () => [
             {
@@ -108,24 +120,24 @@ const UserTable: React.FC = () => {
                     </div>
                 ),
             },
-            {
-                header: 'PAN',
-                accessorKey: 'user_details.pan_card',
-                cell: (props) => (
-                    <div className="w-28 truncate">
-                        {props.getValue() as string}
-                    </div>
-                ),
-            },
-            {
-                header: 'Aadhar',
-                accessorKey: 'user_details.aadhar_no',
-                cell: (props) => (
-                    <div className="w-36 truncate">
-                        {props.getValue() as string}
-                    </div>
-                ),
-            },
+            // {
+            //     header: 'PAN',
+            //     accessorKey: 'user_details.pan_card',
+            //     cell: (props) => (
+            //         <div className="w-28 truncate">
+            //             {props.getValue() as string}
+            //         </div>
+            //     ),
+            // },
+            // {
+            //     header: 'Aadhar',
+            //     accessorKey: 'user_details.aadhar_no',
+            //     cell: (props) => (
+            //         <div className="w-36 truncate">
+            //             {props.getValue() as string}
+            //         </div>
+            //     ),
+            // },
             {
                 header: 'Date of Joining',
                 accessorKey: 'joining_date',
@@ -188,6 +200,15 @@ const UserTable: React.FC = () => {
                                 className="text-blue-500"
                             />
                         </Tooltip> */}
+                         <Tooltip title="Modify Permission">
+                            <Button
+                                size="sm"
+                                onClick={() => handleModifyPermission(row.original)}
+                                icon={<RiShieldKeyholeLine className="h-5 w-5" />}
+                                className="text-purple-600"
+                            />
+                        </Tooltip>
+                        
                         <Tooltip title="Delete User">
                             <Button
                                 size="sm"

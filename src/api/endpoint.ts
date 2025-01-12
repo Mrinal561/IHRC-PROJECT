@@ -197,7 +197,7 @@ export const endpoints = {
     noticeTracker:{
         create: () => api('/companyadmin/noticetracker'),
         update: (id:any) => api(`/companyadmin/noticetracker/${id}`),
-        list:()=> api('/companyadmin/noticetracker'),
+        list:()=> api('companyadmin/noticetracker'),
         detail: (id:any) => api(`/companyadmin/noticetracker/${id}`),
         delete: (id:any) => api(`/companyadmin/noticetracker/${id}`)
     },

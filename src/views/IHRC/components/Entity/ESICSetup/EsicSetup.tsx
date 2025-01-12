@@ -183,7 +183,7 @@ const CompanyESISetupPage: React.FC = () => {
             className="mr-2"
           >
           </Button>
-          <h1 className="text-2xl font-bold">{actualCompanyName} ESI Setup</h1>
+          <h1 className="text-2xl font-bold">{actualCompanyName}- ESI Setup</h1>
         </div>
         <Button
           variant="solid"

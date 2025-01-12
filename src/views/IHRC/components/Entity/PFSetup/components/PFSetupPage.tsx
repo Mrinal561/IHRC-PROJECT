@@ -48,17 +48,11 @@ const pfSetupSchema = yup.object().shape({
     
     pf_user: yup
         .string()
-        .required('PF User is required')
         .min(3, 'Username must be at least 3 characters'),
     
     password: yup
         .string()
-        .required('Password is required')
-        .min(8, 'Password must be at least 8 characters')
-        .matches(
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
-            'Must include A-Z, a-z, 0-9, @$!%*?& (Weak Password)'
-        ),
+        .min(8, 'Password must be at least 8 characters'),
     
     register_date: yup
         .date()
@@ -910,10 +904,10 @@ useEffect(()=>{
                 )}
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                        PF Registration Certificate(PDF Only)
+                        PF Registration Certificate
                     </label>
                     <Input
-                    accept='.pdf'
+                    accept='.pdf,.zip,.jpg'
                         type="file"
                         onChange={handleRegistrationCertificateUpload}
                     />

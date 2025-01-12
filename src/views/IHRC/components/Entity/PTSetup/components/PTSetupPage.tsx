@@ -804,11 +804,11 @@ const loadStates = async () => {
                 {/* Certificates */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
     <div>
-        <p className="mb-2">RC Certificate (PDF Only)</p>
+        <p className="mb-2">RC Certificate</p>
         <div className="space-y-2">
             <Input
                 type="file"
-                accept="application/pdf"
+                accept=".pdf , .zip , .jpg"
                 onChange={(e) => {
                     const file = e.target.files?.[0];
                     if (file) handleCertificateUpload('rc', file);
@@ -821,11 +821,11 @@ const loadStates = async () => {
         </div>
     </div>
     <div>
-        <p className="mb-2">EC Certificate (PDF Only)</p>
+        <p className="mb-2">EC Certificate</p>
         <div className="space-y-2">
             <Input
                 type="file"
-                accept="application/pdf"
+                 accept=".pdf , .zip , .jpg"
                 onChange={(e) => {
                     const file = e.target.files?.[0];
                     if (file) handleCertificateUpload('ec', file);
