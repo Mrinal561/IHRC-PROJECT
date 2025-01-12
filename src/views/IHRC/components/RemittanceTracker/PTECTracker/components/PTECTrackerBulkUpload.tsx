@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Button, Dialog, Input, toast, Notification } from '@/components/ui';
 import { HiDownload, HiUpload } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
@@ -8,6 +8,7 @@ import OutlinedSelect from '@/components/ui/Outlined';
 import { showErrorNotification } from '@/components/ui/ErrorMessage';
 import { useDispatch } from 'react-redux';
 import { createPtecTracker } from '@/store/slices/ptSetup/ptecTrackerSlice';
+import { addMonths, format, parse, startOfYear } from 'date-fns';
 
 const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
@@ -15,6 +16,25 @@ interface PTTrackerBulkUploadProps {
   onUploadConfirm: () => void;
   canCreate:boolean;
 }
+
+const generateMonthOptions = () => {
+  const currentYear = new Date().getFullYear();
+  const twoDigitYear = String(currentYear) // Gets last 2 digits of year
+  const months = [];
+  
+  // Generate options for current year only
+  const startDate = startOfYear(new Date(currentYear, 0));
+  for (let i = 0; i < 12; i++) {
+    const date = addMonths(startDate, i);
+    months.push({
+      value: format(date, 'yyyy-MM'),
+      label: `${format(date, 'MMM')} ${twoDigitYear}`  // Shows "Jan 25", "Feb 25", etc.
+    });
+  }
+  
+  return months;
+};
+
 
 const PTECTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({ onUploadConfirm, canCreate }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -25,20 +45,9 @@ const PTECTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({ onUploadCon
   const [file, setFile] = useState<File | null>(null);
   const navigate = useNavigate();
 
-  const groupOptions = [
-    { value: '2024-01', label: 'January 2024' },
-    { value: '2024-02', label: 'February 2024' },
-    { value: '2024-03', label: 'March 2024' },
-    { value: '2024-04', label: 'April 2024' },
-    { value: '2024-05', label: 'May 2024' },
-    { value: '2024-06', label: 'June 2024' },
-    { value: '2024-07', label: 'July 2024' },
-    { value: '2024-08', label: 'August 2024' },
-    { value: '2024-09', label: 'September 2024' },
-    { value: '2024-10', label: 'October 2024' },
-    { value: '2024-11', label: 'November 2024' },
-    { value: '2024-12', label: 'December 2024' },
-  ];
+  const groupOptions = useMemo(() => generateMonthOptions(), []);
+  const [loading, setLoading] = useState(false);
+
 
   const handleUploadClick = () => {
     setIsDialogOpen(true);
@@ -54,7 +63,7 @@ const PTECTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({ onUploadCon
         );
         return;
       }
-  
+      setLoading(true);
       const formData = new FormData();
       formData.append('document', file);
       formData.append('month', currentGroup);
@@ -104,6 +113,7 @@ const PTECTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({ onUploadCon
       console.error('Upload error:', error);
     } finally {
       setIsUploading(false);
+      setLoading(false);
     }
   };
 
@@ -121,10 +131,21 @@ const PTECTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({ onUploadCon
       return;
     }
     try {
+      const selectedDate = parse(currentGroup, 'yyyy-MM', new Date());
+      const reqBody = {
+        month: selectedDate.getMonth() + 1, // Adding 1 because getMonth() returns 0-11
+        year: selectedDate.getFullYear()
+      };
       const res = await httpClient.get(endpoints.ptec.download(), {
         responseType: "blob",
+        data: reqBody
       });
-      
+      if(res){
+        toast.push(
+          <Notification title="Success" type="success"  duration={3000}>
+            File was Downloaded Successfully
+          </Notification>
+        );}
       const blob = new Blob([res.data], { type: "text/xlsx" });
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
@@ -216,6 +237,7 @@ const PTECTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({ onUploadCon
             variant="solid"
             size="sm"
             onClick={handleConfirm}
+            loading={loading}
           >
             Confirm
           </Button>

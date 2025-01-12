@@ -310,7 +310,7 @@ const PTSetupTable: React.FC<PTSetupTableProps> = ({ data , onRefresh}) => {
         onClose={handleDialogClose}
         onRequestClose={handleDialogClose}
         width={1060}
-        height={650}
+        height={560}
       >
         <h5 className="mb-4">Edit PT Setup</h5>
         {itemToEdit && (

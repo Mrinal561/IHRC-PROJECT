@@ -1,34 +1,42 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Table, Button, Dialog, Tooltip, Notification, toast } from '@/components/ui';
-import { FiTrash } from 'react-icons/fi';
-import { MdEdit } from 'react-icons/md';
-import OutlinedInput from '@/components/ui/OutlinedInput/OutlinedInput';
-import DataTable, { ColumnDef } from '@/components/shared/DataTable';
-import { RiCloseLine, RiEyeLine } from 'react-icons/ri';
-import { CiSquareRemove } from "react-icons/ci";
-import { IoPersonRemoveOutline } from "react-icons/io5";
-import { 
-    fetchUsers, 
-    deleteUser, 
+import React, { useEffect, useMemo, useState } from 'react'
+import {
+    Table,
+    Button,
+    Dialog,
+    Tooltip,
+    Notification,
+    toast,
+} from '@/components/ui'
+import { FiTrash } from 'react-icons/fi'
+import { MdEdit } from 'react-icons/md'
+import OutlinedInput from '@/components/ui/OutlinedInput/OutlinedInput'
+import DataTable, { ColumnDef } from '@/components/shared/DataTable'
+import { RiCloseLine, RiEyeLine } from 'react-icons/ri'
+import { CiSquareRemove } from 'react-icons/ci'
+import { IoPersonRemoveOutline } from 'react-icons/io5'
+import {
+    fetchUsers,
+    deleteUser,
     updateUser,
     selectUsers,
-    selectLoading
-} from '@/store/slices/userEntity/UserEntitySlice';
-import { AppDispatch } from '@/store';
-import { useDispatch, useSelector } from 'react-redux';
-import { UserData } from "@/@types/userEntity";
-import { showErrorNotification } from '@/components/ui/ErrorMessage';
-import dayjs from 'dayjs';
+    selectLoading,
+} from '@/store/slices/userEntity/UserEntitySlice'
+import { AppDispatch } from '@/store'
+import { useDispatch, useSelector } from 'react-redux'
+import { UserData } from '@/@types/userEntity'
+import { showErrorNotification } from '@/components/ui/ErrorMessage'
+import dayjs from 'dayjs'
 import loadingAnimation from '@/assets/lotties/system-regular-716-spinner-three-dots-loop-scale.json'
-import Lottie from 'lottie-react';
+import Lottie from 'lottie-react'
 import { HiOutlineViewGrid } from 'react-icons/hi'
-import UserEditDialog from './UserEditDialog';
-
+import UserEditDialog from './UserEditDialog'
+import { fetchCompanyGroups } from '@/store/slices/companyGroup/companyGroupSlice'
+import { useNavigate } from 'react-router-dom'
 
 const UserTable: React.FC = () => {
-    const dispatch = useDispatch<AppDispatch>();
-    const [isLoading, setIsLoading] = useState(false);
-    const [userTableData, setUserTableData] = useState([]);
+    const dispatch = useDispatch<AppDispatch>()
+    const [isLoading, setIsLoading] = useState(false)
+    const [userTableData, setUserTableData] = useState([])
     // const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
     // const [dialogState, setDialogState] = useState({
     //     delete: false,
@@ -36,13 +44,12 @@ const UserTable: React.FC = () => {
     //     suspend: false,
     //     disable: false
     // });
-    const [dialogIsOpen, setDialogIsOpen] = useState(false);
-    const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
-    const [itemToDelete, setItemToDelete] = useState<string | null>(null);
-    const [itemToEdit, setItemToEdit] = useState<number | null>(null);
-    const [editedUserData, setEditedUserData] = useState<Partial<UserData>>({});
-
-
+    const navigate = useNavigate()
+    const [dialogIsOpen, setDialogIsOpen] = useState(false)
+    const [editDialogIsOpen, setEditDialogIsOpen] = useState(false)
+    const [itemToDelete, setItemToDelete] = useState<string | null>(null)
+    const [itemToEdit, setItemToEdit] = useState<number | null>(null)
+    const [editedUserData, setEditedUserData] = useState<Partial<UserData>>({})
 
     const columns = useMemo(
         () => [
@@ -51,14 +58,20 @@ const UserTable: React.FC = () => {
                 enableSorting: false,
                 accessorKey: 'company_details.name',
                 cell: (props) => (
-                    <div className="w-32 truncate">{props.getValue() as string}</div>
+                    <div className="w-32 truncate">
+                        {props.getValue() as string}
+                    </div>
                 ),
             },
             {
                 header: 'Name',
                 enableSorting: false,
                 accessorKey: 'user_details.name',
-                cell: (props) => <div className="w-32 truncate">{props.getValue() as string}</div>,
+                cell: (props) => (
+                    <div className="w-32 truncate">
+                        {props.getValue() as string}
+                    </div>
+                ),
             },
             // {
             //     header: 'Last Name',
@@ -69,7 +82,11 @@ const UserTable: React.FC = () => {
                 header: 'Email',
                 enableSorting: false,
                 accessorKey: 'user_details.email',
-                cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
+                cell: (props) => (
+                    <div className="w-40 truncate">
+                        {props.getValue() as string}
+                    </div>
+                ),
             },
             // {
             //     header: 'Password',
@@ -80,31 +97,51 @@ const UserTable: React.FC = () => {
                 header: 'Mobile Number',
                 enableSorting: false,
                 accessorKey: 'user_details.mobile',
-                cell: (props) => <div className="w-36 truncate">{props.getValue() as string}</div>,
+                cell: (props) => (
+                    <div className="w-36 truncate">
+                        {props.getValue() as string}
+                    </div>
+                ),
             },
             {
                 header: 'Job Role',
                 enableSorting: false,
                 accessorKey: 'role_details.name',
-                cell: (props) => <div className="w-32 truncate">{props.getValue() as string}</div>,
+                cell: (props) => (
+                    <div className="w-32 truncate">
+                        {props.getValue() as string}
+                    </div>
+                ),
             },
             {
                 header: 'PAN',
                 enableSorting: false,
                 accessorKey: 'user_details.pan_card',
-                cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
+                cell: (props) => (
+                    <div className="w-28 truncate">
+                        {props.getValue() as string}
+                    </div>
+                ),
             },
             {
                 header: 'Aadhar',
                 enableSorting: false,
                 accessorKey: 'user_details.aadhar_no',
-                cell: (props) => <div className="w-36 truncate">{props.getValue() as string}</div>,
+                cell: (props) => (
+                    <div className="w-36 truncate">
+                        {props.getValue() as string}
+                    </div>
+                ),
             },
             {
                 header: 'Date of Joining',
                 enableSorting: false,
                 accessorKey: 'joining_date',
-                cell: (props) => <div className="w-32 truncate">{dayjs(props.getValue() as string).format('DD-MM-YYYY')}</div>,
+                cell: (props) => (
+                    <div className="w-32 truncate">
+                        {dayjs(props.getValue() as string).format('DD-MM-YYYY')}
+                    </div>
+                ),
             },
             {
                 header: 'Actions',
@@ -121,7 +158,24 @@ const UserTable: React.FC = () => {
                         <Tooltip title="Edit User Details">
                             <Button
                                 size="sm"
-                                onClick={() => handleEditClick(row.original.user_details.id)}
+                                onClick={
+                                    () => {
+                                        navigate('/edit-user', {
+                                            state: {
+                                                companyName:
+                                                    row.original.group_details
+                                                        ?.name,
+                                                companyId:
+                                                    row.original.group_details
+                                                        ?.id,
+                                                userId: row.original
+                                                    .user_details?.id,
+                                            },
+                                        })
+                                    }
+
+                                    // handleEditClick(row.original.user_details.id);
+                                }
                                 icon={<MdEdit />}
                                 className="text-blue-500"
                             />
@@ -145,7 +199,11 @@ const UserTable: React.FC = () => {
                         <Tooltip title="Delete User">
                             <Button
                                 size="sm"
-                                onClick={() => openDeleteDialog(row.original.user_details.id)}
+                                onClick={() =>
+                                    openDeleteDialog(
+                                        row.original.user_details.id,
+                                    )
+                                }
                                 icon={<FiTrash />}
                                 className="text-red-500"
                             />
@@ -154,58 +212,65 @@ const UserTable: React.FC = () => {
                 ),
             },
         ],
-        []
-    );
+        [],
+    )
 
-    const openNotification = (type: 'success' | 'info' | 'danger' | 'warning', message: string) => {
+    const openNotification = (
+        type: 'success' | 'info' | 'danger' | 'warning',
+        message: string,
+    ) => {
         toast.push(
             <Notification
                 title={type.charAt(0).toUpperCase() + type.slice(1)}
                 type={type}
             >
                 {message}
-            </Notification>
+            </Notification>,
         )
     }
 
     const handleDeleteConfirm = async () => {
         console.log(itemToDelete)
         if (itemToDelete) {
-                const response = await dispatch(deleteUser(itemToDelete)).unwrap()
+            const response = await dispatch(deleteUser(itemToDelete))
+                .unwrap()
                 .catch((error: any) => {
-                  // Handle different error formats
-                  if (error.response?.data?.message) {
-                      // API error response
-                      showErrorNotification(error.response.data.message);
-                  } else if (error.message) {
-                      // Regular error object
-                      showErrorNotification(error.message);
-                  } else if (Array.isArray(error)) {
-                      // Array of error messages
-                      showErrorNotification(error);
-                  } else {
-                      // Fallback error message
-                      showErrorNotification(error);
-                  }
-                  throw error; // Re-throw to prevent navigation
-              });
-                
-                if (response) {
-                    handleDialogClose();
-                    
-                    const newTotal = tableData.total - 1;
-                    const lastPage = Math.ceil(newTotal / tableData.pageSize);
-                    const newPageIndex = tableData.pageIndex > lastPage ? lastPage : tableData.pageIndex;
-                    
-                    fetchUserData(newPageIndex, tableData.pageSize);
-                    toast.push(
-                        <Notification title="Success" type="success">
-                            User deleted successfully
-                        </Notification>
-                    );
-                }
+                    // Handle different error formats
+                    if (error.response?.data?.message) {
+                        // API error response
+                        showErrorNotification(error.response.data.message)
+                    } else if (error.message) {
+                        // Regular error object
+                        showErrorNotification(error.message)
+                    } else if (Array.isArray(error)) {
+                        // Array of error messages
+                        showErrorNotification(error)
+                    } else {
+                        // Fallback error message
+                        showErrorNotification(error)
+                    }
+                    throw error // Re-throw to prevent navigation
+                })
+
+            if (response) {
+                handleDialogClose()
+
+                const newTotal = tableData.total - 1
+                const lastPage = Math.ceil(newTotal / tableData.pageSize)
+                const newPageIndex =
+                    tableData.pageIndex > lastPage
+                        ? lastPage
+                        : tableData.pageIndex
+
+                fetchUserData(newPageIndex, tableData.pageSize)
+                toast.push(
+                    <Notification title="Success" type="success">
+                        User deleted successfully
+                    </Notification>,
+                )
+            }
         }
-    };
+    }
 
     // const handleEditConfirm = async () => {
     //     if (itemToEdit?.id) {
@@ -237,9 +302,9 @@ const UserTable: React.FC = () => {
     // };
 
     const openDeleteDialog = (userid: string) => {
-        setItemToDelete(userid);
-        setDialogIsOpen(true);
-    };
+        setItemToDelete(userid)
+        setDialogIsOpen(true)
+    }
     // const openSuspendDialog = (index: number) => {
     //     setSuspendDialogIsOpen(true);
     // };
@@ -248,24 +313,23 @@ const UserTable: React.FC = () => {
     // };
 
     const openEditDialog = (user: UserData) => {
-        setItemToEdit(user);
-        setEditedUserData(user);
-        setEditDialogIsOpen(true);
-    };
+        setItemToEdit(user)
+        setEditedUserData(user)
+        setEditDialogIsOpen(true)
+    }
 
     const handleEditClick = (user: number) => {
-        setItemToEdit(user);
-        setEditDialogIsOpen(true);
-      };
+        setItemToEdit(user)
+        setEditDialogIsOpen(true)
+    }
 
     const handleDialogClose = () => {
-        setDialogIsOpen(false);
-        setEditDialogIsOpen(false);
-        setItemToDelete(null);
-        setItemToEdit(null);
-        setEditedUserData({});
-    };
-
+        setDialogIsOpen(false)
+        setEditDialogIsOpen(false)
+        setItemToDelete(null)
+        setItemToEdit(null)
+        setEditedUserData({})
+    }
 
     // const handleDialogOk = () => {
     //     if (itemToDelete !== null) {
@@ -300,55 +364,51 @@ const UserTable: React.FC = () => {
 
     useEffect(() => {
         fetchUserData(1, 10)
-    },[])
+    }, [])
 
     const fetchUserData = async (page: number, size: number) => {
-        setIsLoading(true);
-        try{
-
-            const { payload: data } = await dispatch(fetchUsers({page: page, page_size: size}));
-        //     .unwrap()
-        //     .catch((error: any) => {
-        //       // Handle different error formats
-        //       if (error.data?.data?.message) {
-        //           // API error response
-        //           showErrorNotification(error.data.data.message);
-        //       } else if (error.message) {
-        //           // Regular error object
-        //           showErrorNotification(error.message);
-        //       } else if (Array.isArray(error)) {
-        //           // Array of error messages
-        //           showErrorNotification(error);
-        //       } else {
-        //           // Fallback error message
-        //           showErrorNotification('An unexpected error occurred. Please try again.');
-        //       }
-        //       throw error; // Re-throw to prevent navigation
-        //   });
-          if(data?.data){
-              setUserTableData(data.data);
-              setTableData((prev) => ({
-                  ...prev,
-                  total: data.paginateData.totalResults,
-                  pageIndex: data.paginateData.page,
+        setIsLoading(true)
+        try {
+            const { payload: data } = await dispatch(
+                fetchUsers({ page: page, page_size: size }),
+            )
+            //     .unwrap()
+            //     .catch((error: any) => {
+            //       // Handle different error formats
+            //       if (error.data?.data?.message) {
+            //           // API error response
+            //           showErrorNotification(error.data.data.message);
+            //       } else if (error.message) {
+            //           // Regular error object
+            //           showErrorNotification(error.message);
+            //       } else if (Array.isArray(error)) {
+            //           // Array of error messages
+            //           showErrorNotification(error);
+            //       } else {
+            //           // Fallback error message
+            //           showErrorNotification('An unexpected error occurred. Please try again.');
+            //       }
+            //       throw error; // Re-throw to prevent navigation
+            //   });
+            if (data?.data) {
+                setUserTableData(data.data)
+                setTableData((prev) => ({
+                    ...prev,
+                    total: data.paginateData.totalResults,
+                    pageIndex: data.paginateData.page,
                 }))
             }
-        }
-        catch(error) {
-            console.error('Failed to fetch users:', error);
+        } catch (error) {
+            console.error('Failed to fetch users:', error)
             // toast.push(
             //   <Notification title="Error" type="danger">
             //     Failed to fetch Users
             //   </Notification>
             // );
-          } finally {
-            setIsLoading(false);
-          }
+        } finally {
+            setIsLoading(false)
         }
-    
-
-       
-
+    }
 
     const [tableData, setTableData] = useState({
         total: 0,
@@ -356,48 +416,46 @@ const UserTable: React.FC = () => {
         pageSize: 10,
         query: '',
         sort: { order: '', key: '' },
-    });
-    
-    const onPaginationChange = (page: number) => {
-        setTableData(prev => ({ ...prev, pageIndex: page }));
-        fetchUserData(page, tableData.pageSize)
-    };
-    
-    const onSelectChange = (value: number) => {
-        setTableData(prev => ({ ...prev, pageSize: Number(value), pageIndex: 1 }));
-        fetchUserData(1, value)
-    };
+    })
 
+    const onPaginationChange = (page: number) => {
+        setTableData((prev) => ({ ...prev, pageIndex: page }))
+        fetchUserData(page, tableData.pageSize)
+    }
+
+    const onSelectChange = (value: number) => {
+        setTableData((prev) => ({
+            ...prev,
+            pageSize: Number(value),
+            pageIndex: 1,
+        }))
+        fetchUserData(1, value)
+    }
 
     if (isLoading) {
-        console.log("Loading....................");
-        
+        console.log('Loading....................')
+
         return (
             <div className="flex flex-col items-center justify-center h-96 text-gray-500  rounded-xl">
                 <div className="w-28 h-28">
-                    <Lottie 
-                        animationData={loadingAnimation} 
-                        loop 
+                    <Lottie
+                        animationData={loadingAnimation}
+                        loop
                         className="w-24 h-24"
                     />
                 </div>
-                <p className="text-lg font-semibold">
-                    Loading Data...
-                </p>
-    
+                <p className="text-lg font-semibold">Loading Data...</p>
             </div>
-        );
+        )
     }
 
     return (
-        <div className='relative'>
-             {userTableData.length === 0 ? (
+        <div className="relative">
+            {userTableData.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-96 text-gray-500 border rounded-xl">
-                <HiOutlineViewGrid className="w-12 h-12 mb-4 text-gray-300" />
-                <p className="text-center">
-        No Data Available
-                </p>
-      </div>
+                    <HiOutlineViewGrid className="w-12 h-12 mb-4 text-gray-300" />
+                    <p className="text-center">No Data Available</p>
+                </div>
             ) : (
                 <DataTable
                     columns={columns}
@@ -416,17 +474,17 @@ const UserTable: React.FC = () => {
                     stickyFirstColumn={true}
                     stickyLastColumn={true}
                 />
-                )}
+            )}
 
-             <Dialog
+            <Dialog
                 isOpen={dialogIsOpen}
                 onClose={handleDialogClose}
                 onRequestClose={handleDialogClose}
             >
                 <h5 className="mb-4">Confirm Deleting User</h5>
                 <p>
-                Are you sure you want to delete the user? 
-                This action cannot be undone.
+                    Are you sure you want to delete the user? This action cannot
+                    be undone.
                 </p>
                 <div className="text-right mt-6">
                     <Button
@@ -442,11 +500,11 @@ const UserTable: React.FC = () => {
                 </div>
             </Dialog>
             <UserEditDialog
-      isOpen={editDialogIsOpen}
-      onClose={() => setEditDialogIsOpen(false)}
-      userId={itemToEdit}
-      onRefresh={fetchUserData}
-    />
+                isOpen={editDialogIsOpen}
+                onClose={() => setEditDialogIsOpen(false)}
+                userId={itemToEdit}
+                onRefresh={fetchUserData}
+            />
             {/* <Dialog
                 isOpen={editDialogIsOpen}
                 onClose={handleDialogClose}
@@ -565,7 +623,7 @@ const UserTable: React.FC = () => {
             </Dialog> 
             */}
         </div>
-    );
-};
+    )
+}
 
-export default UserTable;
+export default UserTable
