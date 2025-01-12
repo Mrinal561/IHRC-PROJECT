@@ -14,6 +14,7 @@ export interface PFSetupData {
   pfPassword?: string;
   authorizedSignatory: string[];
   pfRegistrationCertificate?: File | null;
+  
 }
 
 interface PFSetupSidePanelProps {
@@ -82,6 +83,8 @@ const PFSetupSidePanel: React.FC<PFSetupSidePanelProps> = ({
     );
     setSelectedSignatories(newSelectedSignatories);
   };
+
+  
 
 
 

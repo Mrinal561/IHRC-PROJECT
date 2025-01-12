@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { APP_PREFIX_PATH } from '@/constants/route.constant';
 import { fetchUsers } from '@/store/slices/userEntity/UserEntitySlice';
+import { fetchCompanyGroups } from '@/store/slices/companyGroup/companyGroupSlice';
 
 const UserTool: React.FC = () => {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ const UserTool: React.FC = () => {
   const [companyDetails, setCompanyDetails] = useState<{ id: number; name: string } | null>(null);
 
   const handleClick = () => {
+    console.log(companyDetails)
     navigate('/add-user', {
       state: {
         companyName: companyDetails?.name,
@@ -23,12 +25,12 @@ const UserTool: React.FC = () => {
 
   const fetchCompanyData = async () => {
     try {
-      const { data } = await dispatch(fetchUsers()).unwrap(); 
-      console.log(data);
+      const { data } = await dispatch( fetchCompanyGroups({})).unwrap(); 
+      console.log("data",data);
   
       // Check if data exists and has at least one entry
       if (Array.isArray(data) && data.length > 0) {
-        const companyDetails = data[0]?.group_details;
+        const companyDetails = data[0];
         if (companyDetails) {
           setCompanyDetails({ id: companyDetails.id, name: companyDetails.name });
           console.log('Extracted Company Details:', { id: companyDetails.id, name: companyDetails.name });

@@ -311,7 +311,7 @@ const PFEditedData: React.FC<PFEditedDataProps> = ({
 const handleSubmit = async () => {
   try {
     const isValid = await validateForm();
-    if (!isValid) return;
+    // if (!isValid) return;
 
     // Create updateData object with exact required fields
     const updateData = {
@@ -373,6 +373,37 @@ const handleSubmit = async () => {
       </Notification>
     );
   };
+  const convertToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            const base64String = (reader.result as string).split(',')[1];
+            resolve(base64String);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+};
+
+const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (file) {
+      try {
+          const base64String = await convertToBase64(file);
+          setFormData(prev => ({
+              ...prev,
+              register_certificate: base64String
+          }));
+      } catch (error) {
+          console.error('Error converting file to base64:', error);
+          toast.push(
+              <Notification title="Error" type="danger">
+                  Failed to process certificate
+              </Notification>
+          );
+      }
+  }
+};
 
   if (error) {
     return (
@@ -538,7 +569,18 @@ const handleSubmit = async () => {
           ))}
         </div>
       )}
-  
+  {/* Certificate Upload Section */}
+<div className="grid grid-cols-1 gap-3">
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-2">PF Certificate</label>
+    <Input
+      type="file"
+      onChange={handleFileChange}
+      className="w-full"
+      accept=".pdf" 
+    />
+    </div>
+    </div>
       {/* Action Buttons */}
       <div className="flex justify-end space-x-3 mt-4">
         <Button variant='plain' onClick={onClose}>Cancel</Button>

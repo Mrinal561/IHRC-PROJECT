@@ -116,6 +116,10 @@ import { useNavigate } from 'react-router-dom';
 import { Notification, toast } from '@/components/ui'
 import { fetchAuthUser } from '@/store/slices/login';
 
+const FINANCIAL_YEAR_KEY = 'selectedFinancialYear'
+const FINANCIAL_YEAR_CHANGE_EVENT = 'financialYearChanged';
+
+
 interface Permissions {
     canList: boolean;
     canCreate: boolean;
@@ -162,7 +166,29 @@ const LWFTracker: React.FC = () => {
     })
     const [isInitialized, setIsInitialized] = useState(false)
     const [permissionCheckComplete, setPermissionCheckComplete] = useState(false)
+    const [financialYear, setFinancialYear] = useState(sessionStorage.getItem(FINANCIAL_YEAR_KEY));
 
+    useEffect(() => {
+        // Handler for the custom event
+        const handleFinancialYearChange = (event: CustomEvent) => {
+            const newFinancialYear = event.detail;
+            setFinancialYear(newFinancialYear);
+        };
+
+        // Add event listener for our custom event
+        window.addEventListener(
+            FINANCIAL_YEAR_CHANGE_EVENT, 
+            handleFinancialYearChange as EventListener
+        );
+
+        // Cleanup
+        return () => {
+            window.removeEventListener(
+                FINANCIAL_YEAR_CHANGE_EVENT, 
+                handleFinancialYearChange as EventListener
+            );
+        };
+    }, []);
 
     useEffect(() => {
         const initializeAuth = async () => {
@@ -274,6 +300,10 @@ const LWFTracker: React.FC = () => {
                     params['register_number[]'] = filters.lwfCode;
                 }
 
+                if (financialYear) {
+                    params['financial_year'] = financialYear
+                }
+
                 const res = await httpClient.get(endpoints.lwftracker.lwfGetAll(), {
                     params
                 });
@@ -290,7 +320,7 @@ const LWFTracker: React.FC = () => {
                 setIsLoading(false);
             }
         },
-        [filters.groupId, filters.companyId, filters.lwfCode, filters.startDate, filters.endDate]
+        [filters.groupId, filters.companyId, filters.lwfCode, filters.startDate, filters.endDate, financialYear]
     );
 
     useEffect(() => {

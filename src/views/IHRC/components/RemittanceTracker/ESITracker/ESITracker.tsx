@@ -13,6 +13,8 @@ import { Notification, toast } from '@/components/ui'
 import { fetchAuthUser } from '@/store/slices/login';
 import { Loading } from '@/components/shared';
 
+const FINANCIAL_YEAR_KEY = 'selectedFinancialYear'
+const FINANCIAL_YEAR_CHANGE_EVENT = 'financialYearChanged';
 
 interface Permissions {
     canList: boolean;
@@ -49,6 +51,7 @@ const ESITracker: React.FC = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const [data, setData] = useState<esiChallanData[]>([]);
+    const [financialYear, setFinancialYear] = useState(sessionStorage.getItem(FINANCIAL_YEAR_KEY));
     const [isLoading, setIsLoading] = useState(false);
     const [pagination, setPagination] = useState({
         total: 0,
@@ -65,7 +68,27 @@ const ESITracker: React.FC = () => {
     const [permissionCheckComplete, setPermissionCheckComplete] = useState(false)
 
 
+    useEffect(() => {
+        // Handler for the custom event
+        const handleFinancialYearChange = (event: CustomEvent) => {
+            const newFinancialYear = event.detail;
+            setFinancialYear(newFinancialYear);
+        };
 
+        // Add event listener for our custom event
+        window.addEventListener(
+            FINANCIAL_YEAR_CHANGE_EVENT, 
+            handleFinancialYearChange as EventListener
+        );
+
+        // Cleanup
+        return () => {
+            window.removeEventListener(
+                FINANCIAL_YEAR_CHANGE_EVENT, 
+                handleFinancialYearChange as EventListener
+            );
+        };
+    }, []);
     useEffect(() => {
         const initializeAuth = async () => {
             try {
@@ -183,6 +206,9 @@ const ESITracker: React.FC = () => {
                 if (currentFilters.esiCode) {
                     params['esi_code[]'] = currentFilters.esiCode;
                 }
+                if (financialYear) {
+                    params['financial_year'] = financialYear
+                }
 
                 const res = await httpClient.get(endpoints.esiTracker.getAll(), {
                     params
@@ -202,7 +228,7 @@ const ESITracker: React.FC = () => {
                 setIsLoading(false);
             }
         },
-         [filters.groupId, filters.companyId, filters.esiCode, filters.startDate,filters.endDate]// Remove dependencies to prevent unnecessary re-creations
+         [filters.groupId, filters.companyId, filters.esiCode, filters.startDate,filters.endDate, financialYear]// Remove dependencies to prevent unnecessary re-creations
     );
 
     useEffect(() => {

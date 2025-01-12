@@ -245,6 +245,7 @@ interface NoticeTrackerTableProps {
   data: NoticeData[];
   loading: boolean;
   onRefresh?: () => void;
+  companyName:string;
   pagination: {
     total: number;
     pageIndex: number;
@@ -261,6 +262,7 @@ const NoticeTrackerTable: React.FC<NoticeTrackerTableProps> = ({
   pagination,
   onPaginationChange,
   onPageSizeChange,
+  companyName,
 }) => {
   const dispatch = useDispatch();
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -411,10 +413,14 @@ const NoticeTrackerTable: React.FC<NoticeTrackerTableProps> = ({
 
   return (
     <div className="relative">
-      {data.length === 0 ? (
+       {!companyName ? (
         <div className="flex flex-col items-center justify-center h-96 text-gray-500 border rounded-xl">
           <HiOutlineViewGrid className="w-12 h-12 mb-4 text-gray-300" />
-          <p className="text-center">No notice tracker data available</p>
+          <p className="text-center">Please select a company first to view data</p>
+        </div>
+      ) : data.length === 0 ? (
+        <div className="flex flex-col items-center justify-center h-96 text-gray-500 border rounded-xl">
+          <HiOutlineViewGrid className="w-12 h-12 mb-4 text-gray-300" />
         </div>
       ) : (
         <DataTable
