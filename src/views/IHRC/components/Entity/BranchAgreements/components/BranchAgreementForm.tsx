@@ -230,7 +230,11 @@ const [subCategoryInput, setSubCategoryInput] = useState('');
   };
   
 
-  const handleFormSubmit = async (values: FormValues, { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }) => {
+
+  const handleFormSubmit = async (
+    values: FormValues, 
+    { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }
+  ) => {
     try {
       if (!values.agreementDocument) {
         showNotification('danger', 'Agreement document is required');
@@ -242,11 +246,10 @@ const [subCategoryInput, setSubCategoryInput] = useState('');
       if (values.agreementDocument instanceof File) {
         base64Document = await convertFileToBase64(values.agreementDocument);
       }
-
-      const startDate = new Date(values.startDate); // startDateInput comes from your form
-  const endDate = new Date(values.endDate); 
   
-      // Create request body
+      const startDate = new Date(values.startDate);
+      const endDate = new Date(values.endDate);
+  
       const requestBody = {
         branch_id: parseInt(values.branch, 10),
         agreement_type: values.agreementType,
@@ -258,28 +261,33 @@ const [subCategoryInput, setSubCategoryInput] = useState('');
         end_date: endDate.toISOString(),
         applicable_for_all: values.applicableForAllCompany,
         agreement_document: base64Document,
-        // file_name: values.agreementDocument.name, // Send original filename
-        // file_type: values.agreementDocument.type  // Send mime type
+        // Uncomment if your API needs these
+        // file_name: values.agreementDocument.name,
+        // file_type: values.agreementDocument.type
       };
   
       const response = await httpClient.post(
-        endpoints.branchAgreement.create(), 
-        requestBody,
-        // {
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //   }
-        // }
+        endpoints.branchAgreement.create(),
+        requestBody
       );
-      console.log('response data --->', requestBody);
-      
-      return response;
   
+      // Log response for debugging
+      console.log('API Response:', response);
+  
+      // Only show success and navigate if we get here (no error thrown)
       showNotification('success', 'Branch agreement created successfully');
       navigate('/branch-agreements');
+  
     } catch (error: any) {
       console.error('Failed to submit form:', error);
       
+      // More detailed error logging
+      console.error('Error details:', {
+        status: error.response?.status,
+        data: error.response?.data,
+        message: error.message
+      });
+  
       if (error.response?.data?.message && Array.isArray(error.response.data.message)) {
         error.response.data.message.forEach((message: string) => {
           showNotification('danger', message);
