@@ -795,6 +795,7 @@ const usernav: NavigationTree[] = [
     //     ],
     // },
 ]
+console.log('auth')
 const type = login.user.type || ''
 const navigationConfig = type == 'admin' ? adminnav : usernav
 export default navigationConfig
