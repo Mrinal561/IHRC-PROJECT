@@ -185,19 +185,25 @@ const [subCategoryInput, setSubCategoryInput] = useState('');
       showNotification('danger', 'Failed to load branches');
     }
   };
-
   const handleCompanySelect = (selectedOption: SelectOption, setFieldValue: any) => {
+    // Check if selectedOption is valid
+    if (!selectedOption) return;
+  
+    // Update both the field value and load branches
     setFieldValue('company', selectedOption.value);
     setCurrentBranchData(null);
     setFieldValue('branch', '');
     loadBranches(selectedOption);
   };
-
+  
   const handleBranchSelect = (selectedOption: SelectOption, setFieldValue: any) => {
+    // Check if selectedOption is valid
+    if (!selectedOption) return;
+  
     const branch = branchData.find(b => b.value === selectedOption.value);
     if (branch) {
-      setFieldValue('branch', selectedOption.value);
       setCurrentBranchData(branch);
+      setFieldValue('branch', selectedOption.value);
     }
   };
 
@@ -341,7 +347,7 @@ const [subCategoryInput, setSubCategoryInput] = useState('');
                 <OutlinedSelect
                   label="Select Company"
                   options={companies}
-                  value={values.company}
+                  value={companies.find(option => option.value === values.company) || null}
                   onChange={(selectedOption) => handleCompanySelect(selectedOption, setFieldValue)}
                 />
                 {errors.company && touched.company && (
@@ -355,7 +361,7 @@ const [subCategoryInput, setSubCategoryInput] = useState('');
                 <OutlinedSelect
                   label="Select Branch"
                   options={branchData}
-                  value={values.branch}
+                  value={branchData.find(option => option.value === values.branch) || null}
                   onChange={(selectedOption) => handleBranchSelect(selectedOption, setFieldValue)}
                 />
                 {errors.branch && touched.branch && (
