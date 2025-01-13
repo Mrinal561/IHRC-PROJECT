@@ -146,6 +146,16 @@ const navigationConfig: NavigationTree[] = [
                         type: NAV_ITEM_TYPE_ITEM,
                         authority: [],
                         subMenu: [],
+                    },
+                    {
+                        key: 'entitySetup.collapse.branchagreement',
+                        path: '/branch-agreements',
+                        title: 'Branch Agreement',
+                        translateKey: 'nav.entitySetup.collapse.branchagreement',
+                        icon: '',
+                        type: NAV_ITEM_TYPE_ITEM,
+                        authority: [],
+                        subMenu: [],
                     }
                 ]
             },
