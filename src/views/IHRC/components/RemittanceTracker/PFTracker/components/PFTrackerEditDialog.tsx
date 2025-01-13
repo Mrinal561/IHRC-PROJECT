@@ -77,29 +77,29 @@ const validationSchema = Yup.object().shape({
     .integer('Number of Employees must be an integer')
     .min(1, 'Number of Employees must be at least 1')
     .typeError('Number of Employees must be a number'),
-    difference_reason: Yup.string().test({
-      name: 'difference-check',
-      test: function(diffReason, context) {
-        const { total_challan_amt, total_paid_amt } = context.parent;
-        if (Number(total_challan_amt) !== Number(total_paid_amt)) {
-          return diffReason ? diffReason.length >= 3 : false;
-        }
-        return true;
-      },
-      message: 'Difference reason is required when amounts differ and must be at least 3 characters'
-    }),
+    // difference_reason: Yup.string().test({
+    //   name: 'difference-check',
+    //   test: function(diffReason, context) {
+    //     const { total_challan_amt, total_paid_amt } = context.parent;
+    //     if (Number(total_challan_amt) !== Number(total_paid_amt)) {
+    //       return diffReason ? diffReason.length >= 3 : false;
+    //     }
+    //     return true;
+    //   },
+    //   message: 'Difference reason is required when amounts differ and must be at least 3 characters'
+    // }),
     
-    delay_reason: Yup.string().test({
-      name: 'delay-check',
-      test: function(delayReason, context) {
-        const { payment_date } = context.parent;
-        if (payment_date && Yup.date().isValidSync(payment_date)) {
-          return delayReason ? delayReason.length >= 3 : false;
-        }
-        return true;
-      },
-      message: 'Delay reason is required when payment date is provided and must be at least 3 characters'
-    })
+    // delay_reason: Yup.string().test({
+    //   name: 'delay-check',
+    //   test: function(delayReason, context) {
+    //     const { payment_date } = context.parent;
+    //     if (payment_date && Yup.date().isValidSync(payment_date)) {
+    //       return delayReason ? delayReason.length >= 3 : false;
+    //     }
+    //     return true;
+    //   },
+    //   message: 'Delay reason is required when payment date is provided and must be at least 3 characters'
+    // })
 });
 
 
