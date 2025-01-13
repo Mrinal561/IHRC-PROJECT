@@ -35,6 +35,7 @@ import { HiMinusCircle, HiPlusCircle } from 'react-icons/hi'
 import * as yup from 'yup'
 import { Formik, Field, Form, ErrorMessage } from 'formik'
 import { Eye } from 'lucide-react'
+import moment from 'moment'
 
 interface AgreementSection {
     agreement_type: string
@@ -103,14 +104,10 @@ const validationSchema = yup.object().shape({
         .number()
         .required('State ID is required')
         .min(1, 'State ID must be greater than or equal to 1'),
-    district: yup
-        .string()
-        .required('District is required')
-        .min(2, 'District must be at least 2 characters'),
-    location: yup
-        .string()
-        .required('Location is required')
-        .min(2, 'Location must be at least 2 characters'),
+    district: yup.string().required('District is required'),
+    // .min(2, 'District must be at least 2 characters'),
+    location: yup.string().required('Location is required'),
+    // .min(2, 'Location must be at least 2 characters'),
     name: yup
         .string()
         .required('Name is required')
@@ -349,19 +346,31 @@ const AddBranchForm: React.FC = () => {
     ]
 
     const handleDocumentView = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
+        e.preventDefault()
         if (formData.se_document) {
-            const fullPath = `${import.meta.env.VITE_API_GATEWAY}/${formData.se_document}`;
-            window.open(fullPath, '_blank');
+            const fullPath = `${import.meta.env.VITE_API_GATEWAY}/${formData.se_document}`
+            window.open(fullPath, '_blank')
         }
-     };
-     const handleLeaseDocumentView = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        if (formData.se_document) {
-            const fullPath = `${import.meta.env.VITE_API_GATEWAY}/${formData.lease_document}`;
-            window.open(fullPath, '_blank');
+    }
+    const handleLeaseDocumentView = (
+        e: React.MouseEvent<HTMLButtonElement>,
+    ) => {
+        e.preventDefault()
+        if (formData.lease_document) {
+            const fullPath = `${import.meta.env.VITE_API_GATEWAY}/${formData.lease_document}`
+            window.open(fullPath, '_blank')
         }
-     };
+    }
+
+    // handleSeDocumentView = (
+    //     e: React.MouseEvent<HTMLButtonElement>,
+    // ) => {
+    //     e.preventDefault()
+    //     if (formData.se_document) {
+    //         const fullPath = `${import.meta.env.VITE_API_GATEWAY}/${formData.se_document}`
+    //         window.open(fullPath, '_blank')
+    //     }
+    // }
     const handleSeValidityChange = (date: Date | null) => {
         console.log('Current seValidityType:', seValidityType)
         console.log('Date:', date)
@@ -584,27 +593,37 @@ const AddBranchForm: React.FC = () => {
                 group_id: response.group_id || 0,
                 company_id: response.company_id || 0,
                 state_id: response.state_id || 0,
-                district: response.District?.id || '', // Use nested object for district name
-                location: response.Location?.id || '', // Use nested object for location name
+                district: String(response.District?.id) || '', // Use nested object for district name
+                location: String(response.Location?.id) || '', // Use nested object for location name
                 name: response.name || '',
-                opening_date: formatInitialDate(response.opening_date) || null,
                 head_count: response.head_count || '',
                 address: response.address || '',
                 type: response.type || '',
                 office_mode: response.office_mode || 'physical',
                 office_type: response.office_type || '',
                 other_office: response.OtherBrancOffice?.name || '',
-                lease_status: response.lease_status || '',
+                lease_status: response.lease_status || null,
                 lease_document: response.lease_document || '',
                 se_document: response.se_document || '',
                 document_validity_type:
                     response.document_validity_type || 'fixed',
-                se_validity: formatInitialDate(response.se_validity) || null, // Convert to YYYY-MM-DD format
-                lease_validity:
-                    formatInitialDate(response.lease_validity) || null,
+                opening_date: response.opening_date
+                    ? formatInitialDate(response.opening_date)
+                    : '',
+                se_validity: response.se_validity
+                    ? formatInitialDate(response.se_validity)
+                    : null,
+                lease_validity: response.lease_validity
+                    ? formatInitialDate(response.lease_validity)
+                    : null,
                 se_status: response.se_status || '',
                 gst_number: response.gst_number || '',
+                register_number: response.register_number || '',
             })
+            setSeRegistrationNumberExists(response.se_status)
+            await setSelectedDistrict(response.District?.name || '')
+            await setSelectedDistrictId(response.District?.id || '')
+            setSelectedLocation(response.Location?.name || '')
             // Clear validation errors when loading new data
         } catch (error) {
             // setError('Failed to load User details')
@@ -789,15 +808,16 @@ const AddBranchForm: React.FC = () => {
             }
         })
     }, [formData])
-    const validateFormData = async () => {
+    const validateFormData = async (data: any) => {
         try {
-            await validationSchema.validate(formData, { abortEarly: false }) // Validate all fields
+            await validationSchema.validate(data, { abortEarly: false }) // Validate all fields
             setErrors({}) // Clear any previous errors
         } catch (err) {
             const newErrors: any = {}
             err.inner.forEach((error: any) => {
                 newErrors[error.path] = error.message // Collect error messages
             })
+            console.log(newErrors)
             setErrors(newErrors) // Set errors to display
             return false // Return false to indicate validation failure
         }
@@ -805,21 +825,40 @@ const AddBranchForm: React.FC = () => {
     }
     const handleUpdateBranch = async (values: BranchFormData) => {
         console.log(formData)
+        const editdata = {
+            ...formData,
+            opening_date: formData.opening_date
+                ? moment(formData.opening_date).format('YYYY-MM-DD')
+                : null,
+            se_validity: formData.se_validity
+                ? moment(formData.se_validity).format('YYYY-MM-DD')
+                : null, // Convert to YYYY-MM-DD format
+            lease_validity: formData.lease_validity
+                ? moment(formData.lease_validity).format('YYYY-MM-DD')
+                : null,
+            se_document: formData.se_document?.includes('upload')
+                ? null
+                : formData.se_document,
+            lease_document: formData.lease_document?.includes('upload')
+                ? null
+                : formData.lease_document,
+        }
         //check validation here all
-        await validateFormData() // This validates all fields at once
-        const isValid = await validateFormData()
+        await validateFormData(editdata) // This validates all fields at once
+        const isValid = await validateFormData(editdata)
+        console.log(isValid)
         if (!isValid) {
             return // Don't proceed if validation failed
         }
 
-        const data = formData.filter((v) => String(v).length)
+        // const data = editdata.filter((v) => String(v).length)
 
         // Dispatch update branch action
         try {
             const res = await dispatch(
                 updateBranch({
                     id: branchId,
-                    data: data,
+                    data: editdata,
                 }),
             )
                 .unwrap()
@@ -940,6 +979,7 @@ const AddBranchForm: React.FC = () => {
                                 )}
                             </div>
                             <div>
+                                {/* {JSON.stringify(selectedDistrict)} */}
                                 <DistrictAutosuggest
                                     value={selectedDistrict}
                                     onChange={setSelectedDistrict}
@@ -1273,7 +1313,24 @@ const AddBranchForm: React.FC = () => {
                                                         label: 'Applied For',
                                                     },
                                                 ]}
-                                                value={null}
+                                                value={[
+                                                    {
+                                                        value: 'valid',
+                                                        label: 'Have Valid License',
+                                                    },
+                                                    {
+                                                        value: 'expired',
+                                                        label: 'Expired',
+                                                    },
+                                                    {
+                                                        value: 'applied',
+                                                        label: 'Applied For',
+                                                    },
+                                                ].find(
+                                                    (v) =>
+                                                        formData.se_status ==
+                                                        v.value,
+                                                )}
                                                 onChange={(
                                                     selectedOption: any,
                                                 ) => {
@@ -1432,16 +1489,30 @@ const AddBranchForm: React.FC = () => {
                                                         *
                                                     </span>
                                                 </label>
-                                                <Input
-                                                    id="file-upload"
-                                                    size="sm"
-                                                    type="file"
-                                                    accept=".pdf"
-                                                    className="py-[5px]"
-                                                    onChange={
-                                                        handleSeDocumentUpload
-                                                    }
-                                                />
+                                                <div className="flex items-center gap-2">
+                                                    <Input
+                                                        id="file-upload"
+                                                        size="sm"
+                                                        type="file"
+                                                        accept=".pdf"
+                                                        className="py-[5px]"
+                                                        onChange={
+                                                            handleSeDocumentUpload
+                                                        }
+                                                    />
+                                                    {formData.se_document && (
+                                                        <button
+                                                            onClick={
+                                                                handleDocumentView
+                                                            }
+                                                            className="p-2 hover:bg-gray-100 rounded-full flex-shrink-0"
+                                                            title="View Document"
+                                                        >
+                                                            <Eye size={20} />
+                                                        </button>
+                                                    )}
+                                                </div>
+
                                                 {errors?.se_document && (
                                                     <span className="text-red-500 text-sm">
                                                         {
@@ -1531,34 +1602,44 @@ const AddBranchForm: React.FC = () => {
                                                 </div>
                                             )}
                                             <div>
-                                            <div className="flex flex-col gap-4">
-                                                <label>
-                                                    Please upload Lease deed copy
-                                                    <span className="text-red-500">*</span>
-                                                </label>
-                                                <div className="flex items-center gap-2">
-                                                    <Input
-                                                    id="file-upload"
-                                                    type="file"
-                                                    accept=".pdf"
-                                                    onChange={handleLeaseDocumentUpload}
-                                                    />
-                                                    
-                                                    {formData.lease_document && (
-                                                        <button
-                                                            onClick={handleLeaseDocumentView}
-                                                            className="p-2 hover:bg-gray-100 rounded-full flex-shrink-0"
-                                                            title="View Document"
-                                                        >
-                                                            <Eye size={20} />
-                                                        </button>
+                                                <div className="flex flex-col gap-4">
+                                                    <label>
+                                                        Please upload Lease deed
+                                                        copy
+                                                        <span className="text-red-500">
+                                                            *
+                                                        </span>
+                                                    </label>
+                                                    <div className="flex items-center gap-2">
+                                                        <Input
+                                                            id="file-upload"
+                                                            type="file"
+                                                            accept=".pdf"
+                                                            onChange={
+                                                                handleLeaseDocumentUpload
+                                                            }
+                                                        />{' '}
+                                                        {formData.lease_document && (
+                                                            <button
+                                                                onClick={
+                                                                    handleLeaseDocumentView
+                                                                }
+                                                                className="p-2 hover:bg-gray-100 rounded-full flex-shrink-0"
+                                                                title="View Document"
+                                                            >
+                                                                <Eye
+                                                                    size={20}
+                                                                />
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                    {errors?.lease_document && (
+                                                        <span className="text-red-500 text-sm">
+                                                            {
+                                                                errors?.lease_document as String
+                                                            }
+                                                        </span>
                                                     )}
-                                                </div>
-                                                {errors?.lease_document && (
-                                                    <span className="text-red-500 text-sm">
-                                                    {errors?.lease_document as String}
-                                                    </span>
-                                                )}
                                                 </div>
                                             </div>
                                         </div>
@@ -1750,7 +1831,8 @@ const AddBranchForm: React.FC = () => {
                                                             : 'Please upload the S&E Registration certificate'}
                                                         <span className="text-red-500">
                                                             *
-                                                        </span>
+                                                        </span>{' '}
+                                                        {}
                                                     </label>
                                                     <div className="flex items-center gap-2">
                                                         <Input
@@ -1763,17 +1845,19 @@ const AddBranchForm: React.FC = () => {
                                                                 handleSeDocumentUpload
                                                             }
                                                         />
-                                                         {formData.se_document && (
-                                                        <button
-                                                            onClick={
-                                                                handleDocumentView
-                                                            }
-                                                            className="p-2 hover:bg-gray-100 rounded-full flex-shrink-0"
-                                                            title="View Document"
-                                                        >
-                                                            <Eye size={20} />
-                                                        </button>
-                                                         )}
+                                                        {formData.se_document && (
+                                                            <button
+                                                                onClick={
+                                                                    handleDocumentView
+                                                                }
+                                                                className="p-2 hover:bg-gray-100 rounded-full flex-shrink-0"
+                                                                title="View Document"
+                                                            >
+                                                                <Eye
+                                                                    size={20}
+                                                                />
+                                                            </button>
+                                                        )}
                                                     </div>
                                                     {errors?.se_document && (
                                                         <span className="text-red-500 text-sm">
@@ -1856,7 +1940,7 @@ const AddBranchForm: React.FC = () => {
                                 size="sm"
                                 onClick={handleUpdateBranch}
                             >
-                                Add Branch
+                                Update Branch
                             </Button>
                             <Button
                                 type="button"
