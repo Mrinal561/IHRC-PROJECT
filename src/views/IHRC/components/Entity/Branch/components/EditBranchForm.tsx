@@ -917,11 +917,12 @@ const AddBranchForm: React.FC = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                             <div>
                                 <p className="mb-2">
-                                    Select Company Group{' '}
+                                     Company Group{' '}
                                     <span className="text-red-500">*</span>
                                 </p>
                                 <OutlinedSelect
-                                    label="Select Company Group"
+                                isDisabled={true}
+                                    label="Company Group"
                                     options={companyGroups}
                                     value={companyGroups.find(
                                         (value) =>
@@ -1494,7 +1495,7 @@ const AddBranchForm: React.FC = () => {
                                                         id="file-upload"
                                                         size="sm"
                                                         type="file"
-                                                        accept=".pdf"
+                                                        accept='.pdf, .zip, .jpg'
                                                         className="py-[5px]"
                                                         onChange={
                                                             handleSeDocumentUpload
@@ -1614,7 +1615,7 @@ const AddBranchForm: React.FC = () => {
                                                         <Input
                                                             id="file-upload"
                                                             type="file"
-                                                            accept=".pdf"
+                                                           accept='.pdf, .zip, .jpg'
                                                             onChange={
                                                                 handleLeaseDocumentUpload
                                                             }
@@ -1839,7 +1840,7 @@ const AddBranchForm: React.FC = () => {
                                                             id="file-upload"
                                                             size="sm"
                                                             type="file"
-                                                            accept=".pdf"
+                                                            accept='.pdf, .zip, .jpg'
                                                             className="py-[5px]"
                                                             onChange={
                                                                 handleSeDocumentUpload
