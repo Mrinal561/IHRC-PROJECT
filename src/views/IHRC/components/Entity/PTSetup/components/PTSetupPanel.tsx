@@ -159,7 +159,7 @@ const PTSetupPanel: React.FC<PTSetupSidePanelProps> = ({
             </div>
           </div>
           <div className='flex flex-col gap-2 w-full'>
-            <label>Enter State</label>
+            <label>Enter State <span className="text-red-500">*</span></label>
             <div className='w-full'>
               <OutlinedInput
                 label="State"
@@ -173,7 +173,7 @@ const PTSetupPanel: React.FC<PTSetupSidePanelProps> = ({
       <div className='flex gap-8 items-center'>
        
         <div className='flex flex-col gap-2'>
-          <label>Enter the PT Location</label>
+          <label>Enter the PT Location <span className="text-red-500">*</span></label>
           <div className='w-full'>
           <OutlinedInput
             label="Location"
@@ -183,7 +183,7 @@ const PTSetupPanel: React.FC<PTSetupSidePanelProps> = ({
             </div>
         </div>
         <div className='flex flex-col gap-2'>
-          <label>PT Registration Number</label>
+          <label>PT Registration Number <span className="text-red-500">*</span></label>
           <div className='w-full'>
           <OutlinedInput
             label="Registration Number"
@@ -194,7 +194,7 @@ const PTSetupPanel: React.FC<PTSetupSidePanelProps> = ({
         </div>
 
         <div className='flex flex-col gap-2'>
-          <label>PT Enrollment Number</label>
+          <label>PT Enrollment Number <span className="text-red-500">*</span></label>
           <div className='w-full'>
           <OutlinedInput
             label="Enrollment Number"
@@ -205,7 +205,7 @@ const PTSetupPanel: React.FC<PTSetupSidePanelProps> = ({
         </div>
 
         <div className='flex flex-col gap-2'>
-          <label>PT Registration Date</label>
+          <label>PT Registration Date <span className="text-red-500">*</span></label>
           <div className='w-full'>
           <DatePicker
             placeholder="Select Date"
@@ -226,7 +226,7 @@ const PTSetupPanel: React.FC<PTSetupSidePanelProps> = ({
         
 
         <div className='flex flex-col gap-2 w-full'>
-          <label>Select Remittance Mode</label>
+          <label>Select Remittance Mode <span className="text-red-500">*</span></label>
           <div className='w-full'>
           <OutlinedSelect
             label="Mode"
@@ -311,7 +311,7 @@ const PTSetupPanel: React.FC<PTSetupSidePanelProps> = ({
       <div className='flex gap-4 items-center'>
 
       <div className='flex flex-col gap-2 w-full'>
-        <label>Upload the PT EC certificate</label>
+        <label>Upload the PT EC certificate <span className="text-red-500">*</span></label>
         <Input
           id="file-upload"
           type="file"
@@ -322,7 +322,7 @@ const PTSetupPanel: React.FC<PTSetupSidePanelProps> = ({
         />
       </div>
       <div className='flex flex-col gap-2 w-full'>
-        <label>Upload the PT RC certificate</label>
+        <label>Upload the PT RC certificate <span className="text-red-500">*</span></label>
         <Input
           id="file-upload"
           type="file"

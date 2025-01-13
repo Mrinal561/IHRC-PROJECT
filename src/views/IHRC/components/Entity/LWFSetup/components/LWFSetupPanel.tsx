@@ -491,7 +491,7 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
 
       <div className="grid grid-cols-3 gap-4 mb-4">
         <div>
-          <p className="mb-2">State</p>
+          <p className="mb-2">State <span className="text-red-500">*</span></p>
           <OutlinedSelect
             label="Select State"
             options={states}
@@ -534,7 +534,7 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
 
       <div className="grid grid-cols-3 gap-4 mb-2">
         <div>
-          <p className="mb-2">LWF   Registration Number</p>
+          <p className="mb-2">LWF   Registration Number <span className="text-red-500">*</span></p>
           <OutlinedInput
             label="Registration Number"
             value={formData.register_number}
@@ -547,7 +547,7 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
           </div>
         </div>
         <div>
-          <p className="mb-2">LWF Registration Date</p>
+          <p className="mb-2">LWF Registration Date <span className="text-red-500">*</span></p>
           <DatePicker
           size='sm'
         placeholder="Registration Date"
@@ -562,7 +562,7 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
       
         </div>
         <div>
-          <p className="mb-2">Remittance Mode</p>
+          <p className="mb-2">Remittance Mode <span className="text-red-500">*</span></p>
           <OutlinedSelect
             label="Select Mode"
             options={remittanceModeOptions}
@@ -579,7 +579,7 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
 
       <div className="grid grid-cols-2 gap-4 mb-2">
         <div>
-          <p className="mb-2">User ID</p>
+          <p className="mb-2">User ID </p>
           <OutlinedInput
             label="User ID"
             value={formData.username}
@@ -608,7 +608,7 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
 
 <div className='grid grid-cols-2 gap-4 mb-2'>
       <div className="mb-4">
-        <p className="mb-2">Signatory</p>
+        <p className="mb-2">Signatory <span className="text-red-500">*</span></p>
         <Select
           isMulti
           options={users.map(user => ({
@@ -625,7 +625,7 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
       </div>
 
       <div className="mb-2">
-        <p className="mb-2">Upload Certificate</p>
+        <p className="mb-2">Upload Certificate <span className="text-red-500">*</span></p>
         <Input
           type="file"
           onChange={handleFileUpload}
