@@ -30,6 +30,8 @@ export const endpoints = {
         state: () => api('/states'),
         district: () => api('/district'),
         location: () => api('/location'),
+        getSubCategory: () => api('/subcategory-suggestions'),
+        createSubCategory: () => api('/subcategory')
     },
     user: {
         getAll: () => api('companyadmin/user'),
@@ -203,5 +205,13 @@ export const endpoints = {
     },
     permission:{
         approve:(id:any)=> api(`companyadmin/company/tracker-edit-permission/${id}`)
+    },
+    branchAgreement: {
+        list: () => api('/companyadmin/branch-agreement'),
+        create: () => api('/companyadmin/branch/branch-agreement/'),
+        update: (id: any) => api(`/companyadmin/branch-agreement/${id}`),
+        detail: (id: any) => api(`/companyadmin/branch-agreement/${id}`),
+        delete: (id: any) => api(`/companyadmin/branch-agreement/${id}`)
+
     }
 }
