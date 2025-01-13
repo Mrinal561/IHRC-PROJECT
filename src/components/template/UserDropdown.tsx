@@ -183,7 +183,7 @@ const _UserDropdown = ({ className }: CommonProps) => {
                                 <span className="text-xl opacity-50">
                                     {item.icon}
                                 </span>
-                                <span>{item.label}</span>
+                                <span>{item.label}</span>       
                             </span>
                         </Link>
                     </Dropdown.Item>

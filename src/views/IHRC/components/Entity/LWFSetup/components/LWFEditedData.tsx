@@ -8,6 +8,7 @@ import { useDispatch } from 'react-redux';
 import { showErrorNotification } from '@/components/ui/ErrorMessage';
 import { fetchLwfById, updateLwf } from '@/store/slices/lwfSetup/lwfTrackerSlice';
 import * as yup from 'yup';
+import { Eye } from 'lucide-react';
 
 interface ValidationErrors {
   register_number?: string;
@@ -99,6 +100,21 @@ const LWFEditedData: React.FC<LWFEditedDataProps> = ({
     { value: 'online', label: 'Online' },
     { value: 'offline', label: 'Offline' }
   ];
+
+  const handleDocumentView = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (formData.certificate) {
+        const fullPath = `${import.meta.env.VITE_API_GATEWAY}/${formData.certificate}`;
+        window.open(fullPath, '_blank');
+    }
+ };
+ const handleLeaseDocumentView = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (formData.certificate) {
+        const fullPath = `${import.meta.env.VITE_API_GATEWAY}/${formData.certificate}`;
+        window.open(fullPath, '_blank');
+    }
+ };
 
   useEffect(() => {
     if (id) {
@@ -410,15 +426,25 @@ const handleRemitModeChange = (option: { value: string; label: string } | null) 
     </div>
   </div>
 
-  {/* ESI Certificate Section */}
-  <div className="flex flex-col">
+  <div>
     <label className="block text-sm font-medium text-gray-700 mb-2">LWF Certificate</label>
+    <div className="flex items-center gap-2">
     <Input
       type="file"
       onChange={handleFileChange}
       className="w-full"
       accept=".pdf" 
     />
+     {formData.certificate && (
+            <button
+                onClick={handleDocumentView}
+                className="p-2 hover:bg-gray-100 rounded-full flex-shrink-0"
+                title="View Document"
+            >
+                <Eye size={20} />
+            </button>
+        )}
+  </div>
   </div>
 </div>
 

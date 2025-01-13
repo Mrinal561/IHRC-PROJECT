@@ -15,6 +15,7 @@ import { fetchptsetupById, updatePT } from '@/store/slices/ptSetup/ptSetupSlice'
 import * as yup from 'yup'
 import OutlinedSelect from '@/components/ui/Outlined/Outlined'
 import OutlinedPasswordInput from '@/components/ui/OutlinedInput/OutlinedPasswordInput'
+import { Eye } from 'lucide-react'
 
 interface ValidationErrors {
     register_number?: string
@@ -95,7 +96,20 @@ const PTEditedData: React.FC<PTEditedDataProps> = ({
     const [error, setError] = useState<string | null>(null)
     const dispatch = useDispatch()
     const [errors, setErrors] = useState<ValidationErrors>({})
-
+    const handleRCDocumentView = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        if (formData.rc_certificate) {
+            const fullPath = `${import.meta.env.VITE_API_GATEWAY}/${formData.rc_certificate}`;
+            window.open(fullPath, '_blank');
+        }
+     };
+     const handleECDocumentView = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        if (formData.rc_certificate) {
+            const fullPath = `${import.meta.env.VITE_API_GATEWAY}/${formData.rc_certificate}`;
+            window.open(fullPath, '_blank');
+        }
+     };
     useEffect(() => {
         if (id) {
             fetchPTData()
@@ -507,23 +521,45 @@ const validateForm = async () => {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                       EC Certificate
                   </label>
+                  <div className="flex items-center gap-2">
                   <Input
                       type="file"
                       onChange={(e) => handleFileChange(e, 'ec_certificate')}
                       className="w-full"
                       accept=".pdf"
                   />
+                  {formData.rc_certificate && (
+            <button
+                onClick={handleECDocumentView}
+                className="p-2 hover:bg-gray-100 rounded-full flex-shrink-0"
+                title="View Document"
+            >
+                <Eye size={20} />
+            </button>
+        )}
+              </div>
               </div>
               <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                       RC Certificate
                   </label>
+                  <div className="flex items-center gap-2">
                   <Input
                       type="file"
                       onChange={(e) => handleFileChange(e, 'rc_certificate')}
                       className="w-full"
                       accept=".pdf"
                   />
+                  {formData.ec_certificate && (
+            <button
+                onClick={handleRCDocumentView}
+                className="p-2 hover:bg-gray-100 rounded-full flex-shrink-0"
+                title="View Document"
+            >
+                <Eye size={20} />
+            </button>
+        )}
+              </div>
               </div>
           </div>
   
