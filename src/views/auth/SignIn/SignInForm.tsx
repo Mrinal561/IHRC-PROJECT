@@ -16,6 +16,7 @@ import { AxiosError } from 'axios'
 import { Notification, toast } from '@/components/ui'
 import {
     fetchAuthUser,
+    login,
     setIsAuthenticated,
 } from '@/store/slices/login/loginSlice'
 import { useAppDispatch } from '@/store'
@@ -25,6 +26,7 @@ import { useState } from 'react'
 import { REDIRECT_URL_KEY } from '@/constants/app.constant'
 import useQuery from '@/utils/hooks/useQuery'
 import appConfig from '@/configs/app.config'
+import { showErrorNotification } from '@/components/ui/ErrorMessage'
  
 interface SignInFormProps extends CommonProps {
     disableSubmit?: boolean
@@ -63,32 +65,34 @@ const SignInForm = (props: SignInFormProps) => {
     const onSignIn = async (values: SignInFormSchema) => {
         setLoading(true)
         try {
-            console.log('Attempting API call...') // Check if this logs
-            const { data } = await httpClient.post(endpoints.auth.login(), {
-                email: values.userName,
-                password: values.password,
-            })
-            console.log('API call succeeded:', data) // Check if this logs
- 
-            console.log(data)
- 
-            Cookies.set('token', data.access_token, { path: '/' })
- 
+            console.log('Attempting API call...') // Your existing log
+            const result = await dispatch(login(values)).unwrap() .catch((error: any) => {
+                // Handle different error formats
+                if (error.response?.data?.message) {
+                    // API error response
+                    showErrorNotification(error.response.data.message);
+                } else if (error.message) {
+                    // Regular error object
+                    showErrorNotification(error.message);
+                } else if (Array.isArray(error)) {
+                    // Array of error messages
+                    showErrorNotification(error);
+                } else {
+                    // Fallback error message
+                    showErrorNotification(error);
+                }
+                throw error; // Re-throw to prevent navigation
+            });
+            console.log('API call succeeded:', result) // Your existing log
+    
+            Cookies.set('token', result.access_token, { path: '/' })
+    
+            // Your existing fetchAuthUser logic
             dispatch(fetchAuthUser()).then(({ payload }) => {
                 if (payload) {
                     dispatch(setIsAuthenticated(true))
-                    //   if (localStorage.getItem("platform")) {
-                    //     const platform = (payload as AuthUser).platforms.find(
-                    //       (v) => v.uuid == localStorage.getItem("platform")
-                    //     );
-                    //     if (platform) {
-                    //       dispatch(settingActions.setPlatform(platform));
-                    //     } else {
-                    //       localStorage.removeItem("platform");
-                    //     }
-                    //   }
                     toast.push(
-                        <Notification title="succes" type="success">
+                        <Notification title="success" type="success">
                             Login successful
                         </Notification>,
                         {
@@ -96,26 +100,20 @@ const SignInForm = (props: SignInFormProps) => {
                         },
                     )
                     const redirectUrl = query.get(REDIRECT_URL_KEY)
-                    console.log(
-                        redirectUrl,
-                        redirectUrl
-                            ? redirectUrl
-                            : appConfig.authenticatedEntryPath,
-                    )
                     navigate(
                         redirectUrl
                             ? redirectUrl
                             : appConfig.authenticatedEntryPath,
                     )
-                } else {
-                    // showErrorNotification()
+                    // navigate(
+                    // appConfig.authenticatedEntryPath,
+                    // )
                 }
             })
- 
+    
             setLoading(false)
-        } catch (error) {
-            const err = error as AxiosError
-            if (err.response?.status == 401) {
+        } catch (error: any) {
+            if (error?.response?.status === 401) {
                 toast.push(
                     <Notification title="error" type="danger">
                         Invalid email or password{' '}
@@ -125,18 +123,18 @@ const SignInForm = (props: SignInFormProps) => {
                     },
                 )
             } else {
-                toast.push(
-                    <Notification title="error" type="danger">
-                        Something went wrong! Please Try again.{' '}
-                    </Notification>,
-                    {
-                        placement: 'top-end',
-                    },
-                )
+                // toast.push(
+                //     <Notification title="error" type="danger">
+                //         Something went wrong! Please Try again.{' '}
+                //     </Notification>,
+                //     {
+                //         placement: 'top-end',
+                //     },
+                // )
+                console.log("error")
             }
+            setLoading(false)
         }
- 
-        setLoading(false)
     }
  
     return (

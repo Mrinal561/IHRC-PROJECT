@@ -529,6 +529,12 @@ const AddBranchForm: React.FC = () => {
                     value: String(v.id),
                 })),
             )
+            setSelectedCompanyGroup(
+                data.data.map((v: any) => ({
+                    label: v.name,
+                    value: String(v.id),
+                }))[0],
+            )
         } catch (error) {
             console.error('Failed to load company groups:', error)
             showNotification('danger', 'Failed to load company groups')
@@ -780,6 +786,7 @@ const AddBranchForm: React.FC = () => {
                             <span className="text-red-500">*</span>
                         </p>
                         <OutlinedSelect
+                        isDisabled={true}
                             label="Select Company Group"
                             options={companyGroups}
                             value={selectedCompanyGroup}
@@ -1276,7 +1283,7 @@ const AddBranchForm: React.FC = () => {
                                             id="file-upload"
                                             size="sm"
                                             type="file"
-                                            accept=".pdf"
+                                            accept='.pdf, .zip, .jpg'
                                             className="py-[5px]"
                                             onChange={handleSeDocumentUpload}
                                         />
@@ -1367,7 +1374,7 @@ const AddBranchForm: React.FC = () => {
                                             <Input
                                                 id="file-upload"
                                                 type="file"
-                                                accept=".pdf"
+                                               accept='.pdf, .zip, .jpg'
                                                 onChange={
                                                     handleLeaseDocumentUpload
                                                 }
@@ -1556,7 +1563,7 @@ const AddBranchForm: React.FC = () => {
                                                 id="file-upload"
                                                 size="sm"
                                                 type="file"
-                                                accept=".pdf"
+                                                accept='.pdf, .zip, .jpg'
                                                 className="py-[5px]"
                                                 onChange={
                                                     handleSeDocumentUpload
