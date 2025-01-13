@@ -38,7 +38,8 @@
                         "item4": "District",
                         "item5": "Location",
                         "item6": "Branch",
-                        "item7": "Edit Permission"
+                        "item7": "Edit Permission",
+                        "item8": "Branch Agreement"
                     }
                 },
                 "userSetup": "User Setup",

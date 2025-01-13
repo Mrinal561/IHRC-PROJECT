@@ -47,12 +47,11 @@ const pfSetupSchema = yup.object().shape({
         .min(2, 'Location must be at least 2 characters'),
     
     pf_user: yup
-        .string()
-        .min(3, 'Username must be at least 3 characters'),
+        .string(),
     
     password: yup
-        .string()
-        .min(8, 'Password must be at least 8 characters'),
+        .string(),
+
     
     register_date: yup
         .date()
@@ -907,9 +906,8 @@ useEffect(()=>{
                         PF Registration Certificate
                     </label>
                     <Input
-                    accept='.pdf,.zip,.jpg'
                         type="file"
-                        accept=".pdf"
+                        accept='.pdf,.zip,.jpg'
                         onChange={handleRegistrationCertificateUpload}
                     />
                     {getErrorMessage('register_certificate')}

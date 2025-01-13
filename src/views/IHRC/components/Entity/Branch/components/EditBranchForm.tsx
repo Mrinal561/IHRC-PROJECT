@@ -25,6 +25,7 @@ import DistrictAutosuggest from './DistrictAutoSuggest'
 import {
     createBranch,
     fetchBranchById,
+    updateBranch,
 } from '@/store/slices/branch/branchSlice'
 import { format, isPast } from 'date-fns'
 import { MdLabel } from 'react-icons/md'
@@ -33,6 +34,8 @@ import SESetup from './SEsetup'
 import { HiMinusCircle, HiPlusCircle } from 'react-icons/hi'
 import * as yup from 'yup'
 import { Formik, Field, Form, ErrorMessage } from 'formik'
+import { Eye } from 'lucide-react'
+import moment from 'moment'
 
 interface AgreementSection {
     agreement_type: string
@@ -101,25 +104,19 @@ const validationSchema = yup.object().shape({
         .number()
         .required('State ID is required')
         .min(1, 'State ID must be greater than or equal to 1'),
-    district: yup
-        .string()
-        .required('District is required')
-        .min(2, 'District must be at least 2 characters'),
-    location: yup
-        .string()
-        .required('Location is required')
-        .min(2, 'Location must be at least 2 characters'),
+    district: yup.string().required('District is required'),
+    // .min(2, 'District must be at least 2 characters'),
+    location: yup.string().required('Location is required'),
+    // .min(2, 'Location must be at least 2 characters'),
     name: yup
         .string()
         .required('Name is required')
         .min(2, 'Name must be at least 2 characters'),
-    opening_date: yup
-        .string()
-        .required('Opening date is required')
-        .matches(
-            /^\d{4}-\d{2}-\d{2}$/,
-            'Opening date must be in the format YYYY-MM-DD',
-        ),
+    opening_date: yup.string().required('Opening date is required'),
+    // .matches(
+    //     /^\d{4}-\d{2}-\d{2}$/,
+    //     'Opening date must be in the format YYYY-MM-DD',
+    // ),
     head_count: yup
         .string()
         .required('Head count is required')
@@ -158,14 +155,12 @@ const validationSchema = yup.object().shape({
             then: (schema) => schema.required('Lease status is required'),
             otherwise: (schema) => schema.notRequired(),
         }),
-    lease_document: yup
-        .string()
-        .nullable()
-        .when('type', {
-            is: 'rented',
-            then: (schema) => schema.required('Lease document is required'),
-            otherwise: (schema) => schema.notRequired(),
-        }),
+    lease_document: yup.string().nullable(),
+    // .when('type', {
+    //     is: 'rented',
+    //     then: (schema) => schema.required('Lease document is required'),
+    //     otherwise: (schema) => schema.notRequired(),
+    // }),
     lease_validity: yup
         .string()
         .nullable()
@@ -173,10 +168,10 @@ const validationSchema = yup.object().shape({
             is: 'rented',
             then: (schema) =>
                 schema
-                    .matches(
-                        /^\d{4}-\d{2}-\d{2}$/,
-                        'Lease Validity must be in the format YYYY-MM-DD',
-                    )
+                    // .matches(
+                    //     /^\d{4}-\d{2}-\d{2}$/,
+                    //     'Lease Validity must be in the format YYYY-MM-DD',
+                    // )
                     .required('Lease validity is required'),
             otherwise: (schema) => schema.notRequired(),
         }),
@@ -188,14 +183,12 @@ const validationSchema = yup.object().shape({
             then: (schema) => schema.required('SE status is required'),
             otherwise: (schema) => schema.notRequired(),
         }),
-    se_document: yup
-        .string()
-        .nullable()
-        .when('type', {
-            is: (val) => val === 'rented' || val === 'owned',
-            then: (schema) => schema.required('SE document is required'),
-            otherwise: (schema) => schema.notRequired(),
-        }),
+    se_document: yup.string().nullable(),
+    // .when('type', {
+    //     is: (val) => val === 'rented' || val === 'owned',
+    //     then: (schema) => schema.required('SE document is required'),
+    //     otherwise: (schema) => schema.notRequired(),
+    // }),
     register_number: yup
         .string()
         .nullable()
@@ -352,6 +345,32 @@ const AddBranchForm: React.FC = () => {
         { value: 'lifetime', label: 'Lifetime' },
     ]
 
+    const handleDocumentView = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault()
+        if (formData.se_document) {
+            const fullPath = `${import.meta.env.VITE_API_GATEWAY}/${formData.se_document}`
+            window.open(fullPath, '_blank')
+        }
+    }
+    const handleLeaseDocumentView = (
+        e: React.MouseEvent<HTMLButtonElement>,
+    ) => {
+        e.preventDefault()
+        if (formData.lease_document) {
+            const fullPath = `${import.meta.env.VITE_API_GATEWAY}/${formData.lease_document}`
+            window.open(fullPath, '_blank')
+        }
+    }
+
+    // handleSeDocumentView = (
+    //     e: React.MouseEvent<HTMLButtonElement>,
+    // ) => {
+    //     e.preventDefault()
+    //     if (formData.se_document) {
+    //         const fullPath = `${import.meta.env.VITE_API_GATEWAY}/${formData.se_document}`
+    //         window.open(fullPath, '_blank')
+    //     }
+    // }
     const handleSeValidityChange = (date: Date | null) => {
         console.log('Current seValidityType:', seValidityType)
         console.log('Date:', date)
@@ -496,10 +515,6 @@ const AddBranchForm: React.FC = () => {
         }
     }
 
-    useEffect(() => {
-        loadStates()
-    }, [])
-
     // Handle state selection
     const handleStateChange = (option: SelectOption | null) => {
         setSelectedStates(option)
@@ -536,10 +551,22 @@ const AddBranchForm: React.FC = () => {
                     value: String(v.id),
                 })),
             )
+            setSelectedCompanyGroup(
+                data.data.map((v: any) => ({
+                    label: v.name,
+                    value: String(v.id),
+                }))[0],
+            )
         } catch (error) {
             console.error('Failed to load company groups:', error)
             showNotification('danger', 'Failed to load company groups')
         }
+    }
+    const formatInitialDate = (dateString: any) => {
+        if (!dateString) return null
+        // Parse the date string to a Date object
+        const date = new Date(dateString)
+        return isNaN(date.getTime()) ? null : date
     }
 
     const fetchBranchData = async () => {
@@ -566,32 +593,37 @@ const AddBranchForm: React.FC = () => {
                 group_id: response.group_id || 0,
                 company_id: response.company_id || 0,
                 state_id: response.state_id || 0,
-                district: response.District?.id || '', // Use nested object for district name
-                location: response.Location?.id || '', // Use nested object for location name
+                district: String(response.District?.id) || '', // Use nested object for district name
+                location: String(response.Location?.id) || '', // Use nested object for location name
                 name: response.name || '',
-                opening_date: response.opening_date
-                    ? response.opening_date.split('T')[0]
-                    : '', // Convert to YYYY-MM-DD format
                 head_count: response.head_count || '',
                 address: response.address || '',
                 type: response.type || '',
                 office_mode: response.office_mode || 'physical',
                 office_type: response.office_type || '',
                 other_office: response.OtherBrancOffice?.name || '',
-                lease_status: response.lease_status || '',
+                lease_status: response.lease_status || null,
                 lease_document: response.lease_document || '',
                 se_document: response.se_document || '',
                 document_validity_type:
                     response.document_validity_type || 'fixed',
+                opening_date: response.opening_date
+                    ? formatInitialDate(response.opening_date)
+                    : '',
                 se_validity: response.se_validity
-                    ? response.se_validity.split('T')[0]
-                    : null, // Convert to YYYY-MM-DD format
+                    ? formatInitialDate(response.se_validity)
+                    : null,
                 lease_validity: response.lease_validity
-                    ? response.lease_validity.split('T')[0]
-                    : null, // Convert to YYYY-MM-DD format
+                    ? formatInitialDate(response.lease_validity)
+                    : null,
                 se_status: response.se_status || '',
                 gst_number: response.gst_number || '',
+                register_number: response.register_number || '',
             })
+            setSeRegistrationNumberExists(response.se_status)
+            await setSelectedDistrict(response.District?.name || '')
+            await setSelectedDistrictId(response.District?.id || '')
+            setSelectedLocation(response.Location?.name || '')
             // Clear validation errors when loading new data
         } catch (error) {
             // setError('Failed to load User details')
@@ -603,6 +635,7 @@ const AddBranchForm: React.FC = () => {
 
     useEffect(() => {
         loadCompanyGroups()
+        loadStates()
         fetchBranchData()
     }, [])
 
@@ -775,31 +808,59 @@ const AddBranchForm: React.FC = () => {
             }
         })
     }, [formData])
-    const validateFormData = async () => {
+    const validateFormData = async (data: any) => {
         try {
-            await validationSchema.validate(formData, { abortEarly: false }) // Validate all fields
+            await validationSchema.validate(data, { abortEarly: false }) // Validate all fields
             setErrors({}) // Clear any previous errors
         } catch (err) {
             const newErrors: any = {}
             err.inner.forEach((error: any) => {
                 newErrors[error.path] = error.message // Collect error messages
             })
+            console.log(newErrors)
             setErrors(newErrors) // Set errors to display
             return false // Return false to indicate validation failure
         }
         return true // Validation passed
     }
-    const handleAddBranch = async (values: BranchFormData) => {
+    const handleUpdateBranch = async (values: BranchFormData) => {
         console.log(formData)
+        const editdata = {
+            ...formData,
+            opening_date: formData.opening_date
+                ? moment(formData.opening_date).format('YYYY-MM-DD')
+                : null,
+            se_validity: formData.se_validity
+                ? moment(formData.se_validity).format('YYYY-MM-DD')
+                : null, // Convert to YYYY-MM-DD format
+            lease_validity: formData.lease_validity
+                ? moment(formData.lease_validity).format('YYYY-MM-DD')
+                : null,
+            se_document: formData.se_document?.includes('upload')
+                ? null
+                : formData.se_document,
+            lease_document: formData.lease_document?.includes('upload')
+                ? null
+                : formData.lease_document,
+        }
         //check validation here all
-        await validateFormData() // This validates all fields at once
-        const isValid = await validateFormData()
+        await validateFormData(editdata) // This validates all fields at once
+        const isValid = await validateFormData(editdata)
+        console.log(isValid)
         if (!isValid) {
             return // Don't proceed if validation failed
         }
 
+        // const data = editdata.filter((v) => String(v).length)
+
+        // Dispatch update branch action
         try {
-            const response = await dispatch(createBranch(formData))
+            const res = await dispatch(
+                updateBranch({
+                    id: branchId,
+                    data: editdata,
+                }),
+            )
                 .unwrap()
                 .catch((error: any) => {
                     // Handle different error formats
@@ -814,30 +875,20 @@ const AddBranchForm: React.FC = () => {
                         showErrorNotification(error)
                     } else {
                         // Fallback error message
-                        showErrorNotification(
-                            'An unexpected error occurred. Please try again.',
-                        )
+                        showErrorNotification(error)
                     }
                     throw error // Re-throw to prevent navigation
                 })
 
-            if (response) {
+            if (res) {
                 navigate('/branch')
-                toast.push(
-                    <Notification title="Success" type="success">
-                        Branch added successfully
-                    </Notification>,
-                )
+                showNotification('success', 'Branch Updated successfully')
             }
         } catch (error: any) {
-            console.error('Branch creation error:', error)
-
-            const errorMessage =
-                error.response?.data?.message ||
-                error.message ||
-                'An unexpected error occurred. Please try again.'
-            showErrorNotification(errorMessage)
-            throw error // Re-throw to prevent further execution
+            const errorMessage = error || 'Failed to Update user'
+            showNotification('danger', errorMessage) // Show the API error message
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -856,9 +907,9 @@ const AddBranchForm: React.FC = () => {
                     Update New Branch
                 </h3>
             </div>
-            <p>
+            {/* <p>
                 {companyGroups.length},{companies.length},{states.length}
-            </p>
+            </p> */}
             {!!companyGroups.length &&
                 !!companies.length &&
                 !!states.length && (
@@ -866,11 +917,12 @@ const AddBranchForm: React.FC = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                             <div>
                                 <p className="mb-2">
-                                    Select Company Group{' '}
+                                     Company Group{' '}
                                     <span className="text-red-500">*</span>
                                 </p>
                                 <OutlinedSelect
-                                    label="Select Company Group"
+                                isDisabled={true}
+                                    label="Company Group"
                                     options={companyGroups}
                                     value={companyGroups.find(
                                         (value) =>
@@ -888,7 +940,11 @@ const AddBranchForm: React.FC = () => {
                                 <OutlinedSelect
                                     label="Select Company"
                                     options={companies}
-                                    value={selectedCompany}
+                                    value={companies.find(
+                                        (value) =>
+                                            Number(value.value) ==
+                                            formData.company_id,
+                                    )}
                                     onChange={(option: SelectOption | null) => {
                                         setSelectedCompany(option)
                                     }}
@@ -910,7 +966,11 @@ const AddBranchForm: React.FC = () => {
                                 <OutlinedSelect
                                     label="Select State"
                                     options={states}
-                                    value={selectedStates}
+                                    value={states.find(
+                                        (value) =>
+                                            Number(value.value) ==
+                                            formData.state_id,
+                                    )}
                                     onChange={handleStateChange}
                                 />
                                 {errors?.state_id && (
@@ -920,6 +980,7 @@ const AddBranchForm: React.FC = () => {
                                 )}
                             </div>
                             <div>
+                                {/* {JSON.stringify(selectedDistrict)} */}
                                 <DistrictAutosuggest
                                     value={selectedDistrict}
                                     onChange={setSelectedDistrict}
@@ -1010,6 +1071,7 @@ const AddBranchForm: React.FC = () => {
                                 </p>
                                 <DatePicker
                                     size="sm"
+                                    value={formData?.opening_date}
                                     placeholder="Pick a Date"
                                     onChange={(date) => {
                                         setFormData((prev) => ({
@@ -1252,7 +1314,24 @@ const AddBranchForm: React.FC = () => {
                                                         label: 'Applied For',
                                                     },
                                                 ]}
-                                                value={null}
+                                                value={[
+                                                    {
+                                                        value: 'valid',
+                                                        label: 'Have Valid License',
+                                                    },
+                                                    {
+                                                        value: 'expired',
+                                                        label: 'Expired',
+                                                    },
+                                                    {
+                                                        value: 'applied',
+                                                        label: 'Applied For',
+                                                    },
+                                                ].find(
+                                                    (v) =>
+                                                        formData.se_status ==
+                                                        v.value,
+                                                )}
                                                 onChange={(
                                                     selectedOption: any,
                                                 ) => {
@@ -1361,6 +1440,10 @@ const AddBranchForm: React.FC = () => {
                                                     </p>
                                                     <DatePicker
                                                         size="sm"
+                                                        value={
+                                                            formData?.se_validity ||
+                                                            null
+                                                        }
                                                         placeholder="Pick a Date"
                                                         onChange={(date) => {
                                                             setFormData(
@@ -1407,16 +1490,30 @@ const AddBranchForm: React.FC = () => {
                                                         *
                                                     </span>
                                                 </label>
-                                                <Input
-                                                    id="file-upload"
-                                                    size="sm"
-                                                    type="file"
-                                                    accept=".pdf"
-                                                    className="py-[5px]"
-                                                    onChange={
-                                                        handleSeDocumentUpload
-                                                    }
-                                                />
+                                                <div className="flex items-center gap-2">
+                                                    <Input
+                                                        id="file-upload"
+                                                        size="sm"
+                                                        type="file"
+                                                        accept='.pdf, .zip, .jpg'
+                                                        className="py-[5px]"
+                                                        onChange={
+                                                            handleSeDocumentUpload
+                                                        }
+                                                    />
+                                                    {formData.se_document && (
+                                                        <button
+                                                            onClick={
+                                                                handleDocumentView
+                                                            }
+                                                            className="p-2 hover:bg-gray-100 rounded-full flex-shrink-0"
+                                                            title="View Document"
+                                                        >
+                                                            <Eye size={20} />
+                                                        </button>
+                                                    )}
+                                                </div>
+
                                                 {errors?.se_document && (
                                                     <span className="text-red-500 text-sm">
                                                         {
@@ -1487,6 +1584,9 @@ const AddBranchForm: React.FC = () => {
                                                         </span>
                                                     </p>
                                                     <DatePicker
+                                                        value={
+                                                            formData?.lease_validity
+                                                        }
                                                         size="sm"
                                                         placeholder="Pick a Date"
                                                         onChange={
@@ -1511,14 +1611,29 @@ const AddBranchForm: React.FC = () => {
                                                             *
                                                         </span>
                                                     </label>
-                                                    <Input
-                                                        id="file-upload"
-                                                        type="file"
-                                                        accept=".pdf"
-                                                        onChange={
-                                                            handleLeaseDocumentUpload
-                                                        }
-                                                    />
+                                                    <div className="flex items-center gap-2">
+                                                        <Input
+                                                            id="file-upload"
+                                                            type="file"
+                                                           accept='.pdf, .zip, .jpg'
+                                                            onChange={
+                                                                handleLeaseDocumentUpload
+                                                            }
+                                                        />{' '}
+                                                        {formData.lease_document && (
+                                                            <button
+                                                                onClick={
+                                                                    handleLeaseDocumentView
+                                                                }
+                                                                className="p-2 hover:bg-gray-100 rounded-full flex-shrink-0"
+                                                                title="View Document"
+                                                            >
+                                                                <Eye
+                                                                    size={20}
+                                                                />
+                                                            </button>
+                                                        )}
+                                                    </div>
                                                     {errors?.lease_document && (
                                                         <span className="text-red-500 text-sm">
                                                             {
@@ -1677,6 +1792,9 @@ const AddBranchForm: React.FC = () => {
                                                         </p>
                                                         <DatePicker
                                                             size="sm"
+                                                            value={
+                                                                formData?.se_validity
+                                                            }
                                                             placeholder="Pick a Date"
                                                             onChange={(
                                                                 date,
@@ -1710,22 +1828,38 @@ const AddBranchForm: React.FC = () => {
                                                     <label>
                                                         {seRegistrationNumberExists ===
                                                         'applied'
-                                                            ? 'Please upload the S&E  acknowledgment copy'
+                                                            ? 'Please upload the S&E acknowledgment copy'
                                                             : 'Please upload the S&E Registration certificate'}
                                                         <span className="text-red-500">
                                                             *
-                                                        </span>
+                                                        </span>{' '}
+                                                        {}
                                                     </label>
-                                                    <Input
-                                                        id="file-upload"
-                                                        size="sm"
-                                                        type="file"
-                                                        accept=".pdf"
-                                                        className="py-[5px]"
-                                                        onChange={
-                                                            handleSeDocumentUpload
-                                                        }
-                                                    />
+                                                    <div className="flex items-center gap-2">
+                                                        <Input
+                                                            id="file-upload"
+                                                            size="sm"
+                                                            type="file"
+                                                            accept='.pdf, .zip, .jpg'
+                                                            className="py-[5px]"
+                                                            onChange={
+                                                                handleSeDocumentUpload
+                                                            }
+                                                        />
+                                                        {formData.se_document && (
+                                                            <button
+                                                                onClick={
+                                                                    handleDocumentView
+                                                                }
+                                                                className="p-2 hover:bg-gray-100 rounded-full flex-shrink-0"
+                                                                title="View Document"
+                                                            >
+                                                                <Eye
+                                                                    size={20}
+                                                                />
+                                                            </button>
+                                                        )}
+                                                    </div>
                                                     {errors?.se_document && (
                                                         <span className="text-red-500 text-sm">
                                                             {
@@ -1805,9 +1939,9 @@ const AddBranchForm: React.FC = () => {
                                 type="button"
                                 variant="solid"
                                 size="sm"
-                                onClick={handleAddBranch}
+                                onClick={handleUpdateBranch}
                             >
-                                Add Branch
+                                Update Branch
                             </Button>
                             <Button
                                 type="button"

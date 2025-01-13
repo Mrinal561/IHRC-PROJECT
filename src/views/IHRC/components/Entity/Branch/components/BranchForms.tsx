@@ -1247,7 +1247,7 @@ const AddBranchForm: React.FC = () => {
                                                 id="file-upload"
                                                 size="sm"
                                                 type="file"
-                                                accept=".pdf"
+                                                accept='.pdf, .zip, jpg'
                                                 className="py-[5px]"
                                                 onChange={
                                                     handleSeDocumentUpload

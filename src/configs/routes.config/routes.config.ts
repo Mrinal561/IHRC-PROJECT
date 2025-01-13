@@ -103,6 +103,17 @@ export const protectedRoutes = [
         ),
         authority: [],
     },
+    {
+        key: 'branchAgreement.item',
+        path: '/branch-agreement-form',
+        component: lazy(
+            () => 
+                import (
+                    '@/views/IHRC/components/Entity/BranchAgreements/components/BranchAgreementForm'
+                )
+        ),
+        authority: [],
+    },
 
     {
         key: 'userEntity.add',
@@ -340,6 +351,17 @@ export const protectedRoutes = [
             () =>
                 import(
                     '@/views/IHRC/components/Entity/CompanyName/components/EditPermission'
+                ),
+        ),
+        authority: [],
+    },
+    {
+        key: 'entityMenu.collapse.item8',
+        path: '/branch-agreements',
+        component: lazy(
+            () =>
+                import(
+                    '@/views/IHRC/components/Entity/BranchAgreements/BranchAgreements'
                 ),
         ),
         authority: [],
