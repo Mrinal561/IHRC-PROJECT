@@ -27,13 +27,11 @@ const pfSchema = yup.object().shape({
     .string()
     .required('PF Code is required'),
     pf_user: yup
-    .string()
-    .required('PF User is required')
-    .min(3, 'Username must be at least 3 characters'),
+    .string(),
     password: yup
-    .string()
+    .string(),
     // .required('Password is required')
-    .min(8, 'Password must be at least 8 characters'),
+    // .min(8, 'Password must be at least 8 characters'),
     register_date: yup
     .date()
     .required('Registration date is required')
@@ -619,7 +617,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
               type="file"
               onChange={handleFileChange}
               className="w-full"
-              accept=".pdf"
+              accept=".pdf, .zip, .jpg"
             />
             {formData.register_certificate && (
               <button
