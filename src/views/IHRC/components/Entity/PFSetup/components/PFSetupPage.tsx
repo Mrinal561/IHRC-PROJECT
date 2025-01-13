@@ -907,9 +907,8 @@ useEffect(()=>{
                         PF Registration Certificate
                     </label>
                     <Input
-                    accept='.pdf,.zip,.jpg'
                         type="file"
-                        accept=".pdf"
+                        accept='.pdf,.zip,.jpg'
                         onChange={handleRegistrationCertificateUpload}
                     />
                     {getErrorMessage('register_certificate')}

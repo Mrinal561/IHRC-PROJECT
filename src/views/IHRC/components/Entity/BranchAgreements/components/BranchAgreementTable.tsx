@@ -68,22 +68,22 @@ const BranchAgreementTable = () => {
         
         try {
             const params = {
-                page: tableData.pageIndex,
-                page_size: tableData.pageSize,
-                company_id: user?.company_id,
-                sort: tableData.sort.order,
-                sort_by: tableData.sort.key,
-                ...(filters.search && { search: filters.search }),
-                ...(filters.branch_id && { branch_id: filters.branch_id }),
-                ...(filters.group_id?.length > 0 && { group_id: filters.group_id }),
-                ...(filters.sub_category && { sub_category: filters.sub_category }),
+                // page: tableData.pageIndex,
+                // page_size: tableData.pageSize,
+                // company_id: user?.company_id,
+                // sort: tableData.sort.order,
+                // sort_by: tableData.sort.key,
+                // ...(filters.search && { search: filters.search }),
+                // ...(filters.branch_id && { branch_id: filters.branch_id }),
+                // ...(filters.group_id?.length > 0 && { group_id: filters.group_id }),
+                // ...(filters.sub_category && { sub_category: filters.sub_category }),
                 ignorePlatform: true
             };
     
             console.log("Request params:", params);
     
             const response = await httpClient.get(endpoints.branchAgreement.list(), {
-                params
+                // params
             });
             console.log("API Response:", response);
     
