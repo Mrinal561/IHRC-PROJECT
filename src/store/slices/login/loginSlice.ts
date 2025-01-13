@@ -3,13 +3,13 @@
 // import { AuthUser } from '@/interface/interface'
 // import httpClient from '@/api/http-client'
 // import { endpoints } from '@/api/endpoint'
- 
+
 // export type LoginState = {
 //     loading: boolean
 //     user?: AuthUser
 //     authenticated: boolean
 // }
- 
+
 // const initialState: LoginState = {
 //     loading: true,
 //     authenticated: false,
@@ -21,7 +21,7 @@
 //         return data
 //     },
 // )
- 
+
 // const loginSlice = createSlice({
 //     name: `auth`,
 //     initialState,
@@ -32,7 +32,7 @@
 //         ) => {
 //             state.authenticated = action.payload
 //         },
- 
+
 //         setLoginUser(
 //             state,
 //             action: PayloadAction<LoginState['user'] | undefined>,
@@ -58,7 +58,7 @@
 //             })
 //     },
 // })
- 
+
 // export const { setLoginUser, setIsAuthenticated } = loginSlice.actions
 // export default loginSlice.reducer
 
@@ -73,6 +73,7 @@ interface LoginCredentials {
 }
 
 export type LoginState = {
+    type: string
     loading: boolean
     user?: AuthUser
     authenticated: boolean
@@ -81,6 +82,7 @@ export type LoginState = {
 }
 
 const initialState: LoginState = {
+    type: '',
     loading: true,
     authenticated: false,
     loginLoading: false,
@@ -104,9 +106,11 @@ export const login = createAsyncThunk(
             })
             return data
         } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || 'Login failed')
+            return rejectWithValue(
+                error.response?.data?.message || 'Login failed',
+            )
         }
-    }
+    },
 )
 
 const loginSlice = createSlice({
@@ -138,10 +142,12 @@ const loginSlice = createSlice({
                     return
                 }
                 state.user = action.payload
+                state.type = action.payload.type
             })
             .addCase(fetchAuthUser.rejected, (state) => {
                 state.loading = false
                 state.user = undefined
+                state.type = ''
             })
             .addCase(login.pending, (state) => {
                 state.loginLoading = true
