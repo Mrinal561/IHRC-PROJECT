@@ -115,67 +115,68 @@ const BranchAgreementTable = () => {
         fetchGroups();
     }, []);
 
+    
     // useEffect(() => {
     //     fetchBranchAgreementData();
     // }, [tableData.pageIndex, tableData.pageSize, filters]);
 
     const columns = useMemo(() => [
         {
-            Header: 'Company',
-            enableSorting: false,
+            header: 'Company',
             accessorKey: 'Branch.Company.name',
+            enableSorting: false,
             Cell: ({ value }) => <div className="w-52 truncate">{value}</div>,
         },
         {
-            Header: 'Branch',
+            header: 'Branch',
             enableSorting: false,
             accessorKey: 'Branch.name',
             Cell: ({ value }) => <div className="w-52 truncate">{value}</div>,
         },
         {
-            Header: 'Agreement Type',
-            enableSorting: true,
+            header: 'Agreement Type',
+            enableSorting: false,
             accessorKey: 'agreement_type',
             Cell: ({ value }) => <div className="w-52 truncate">{value}</div>,
         },
         {
-            Header: 'Sub Category',
-            enableSorting: true,
+            header: 'Sub Category',
+            enableSorting: false,
             accessorKey: 'sub_category',
             Cell: ({ value }) => <div className="w-40 truncate">{value}</div>,
         },
         {
-            Header: 'Owner',
-            enableSorting: true,
+            header: 'Owner',
+            enableSorting: false,
             accessorKey: 'owner_name',
             Cell: ({ value }) => <div className="w-40 truncate">{value}</div>,
         },
         {
-            Header: 'Partner',
-            enableSorting: true,
+            header: 'Partner',
+            enableSorting: false,
             accessorKey: 'partner_name',
             Cell: ({ value }) => <div className="w-40 truncate">{value}</div>,
         },
         {
-            Header: 'Start Date',
-            enableSorting: true,
+            header: 'Start Date',
+            enableSorting: false,
             accessorKey: 'start_date',
-            Cell: ({ value }) => (
+            cell: ({ value }) => (
                 <div className="w-44">{dayjs(value).format('DD-MM-YYYY')}</div>
             ),
         },
         {
-            Header: 'End Date',
+            header: 'End Date',
             accessorKey: 'end_date',
-            enableSorting: true,
-            Cell: ({ value }) => (
+            enableSorting: false,
+            cell: ({ value }) => (
                 <div className="w-44">{dayjs(value).format('DD-MM-YYYY')}</div>
             ),
         },
         {
-            Header: 'Actions',
-            id: 'action',
-            Cell: ({ row }) => (
+            header: 'Actions',
+            id: 'actions',
+            cell: ({ row }) => (
                 <div className="flex items-center gap-2">
                     <Tooltip title="Edit">
                         <Button
