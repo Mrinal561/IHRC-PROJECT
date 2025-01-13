@@ -31,18 +31,18 @@ interface ValidationErrors {
 const ptSchema = yup.object().shape({
     register_number: yup.string().required('Register Number is required'),
     enroll_number: yup.string().required('Enrollment Number is required'),
-    username: yup
-        .string()
-        .required('PF User is required')
-        .min(3, 'Username must be at least 3 characters'),
-    password: yup
-        .string()
-        .required('Password is required')
-        .min(8, 'Password must be at least 8 characters')
-        .matches(
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
-            'Must include A-Z, a-z, 0-9, @$!%*?& (Weak Password)',
-        ),
+    // username: yup
+    //     .string()
+    //     .required('PF User is required')
+    //     .min(3, 'Username must be at least 3 characters'),
+    // password: yup
+    //     .string()
+    //     .required('Password is required')
+    //     .min(8, 'Password must be at least 8 characters')
+    //     .matches(
+    //         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+    //         'Must include A-Z, a-z, 0-9, @$!%*?& (Weak Password)',
+    //     ),
     email: yup
         .string()
         .required('Email is required')

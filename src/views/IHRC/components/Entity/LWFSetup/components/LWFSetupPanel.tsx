@@ -40,14 +40,14 @@ const validationSchema = yup.object().shape({
     .max(new Date(), 'Registration date cannot be in the future'),
   remmit_mode: yup.string().required('Remittance mode is required')
     .oneOf(['online', 'offline'], 'Invalid remittance mode'),
-  username: yup.string().required('User ID is required')
-    .min(4, 'User ID must be at least 4 characters'),
-  password: yup.string().required('Password is required')
-    .min(6, 'Password must be at least 6 characters')
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
-      'Must include A-Z, a-z, 0-9, @$!%*?& (Weak Password)'
-  ),
+  // username: yup.string().required('User ID is required')
+  //   .min(4, 'User ID must be at least 4 characters'),
+  // password: yup.string().required('Password is required')
+  //   .min(6, 'Password must be at least 6 characters')
+  //   .matches(
+  //     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+  //     'Must include A-Z, a-z, 0-9, @$!%*?& (Weak Password)'
+  // ),
   signatory_data: yup.array().min(1, 'At least one signatory is required'),
   certificate: yup.string().required('Certificate is required'),
 });

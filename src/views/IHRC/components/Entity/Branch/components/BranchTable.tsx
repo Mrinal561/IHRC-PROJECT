@@ -104,15 +104,15 @@ const BranchTable: React.FC<BranchTableProps> = ({
 
     const columns = useMemo(
         () => [
-            {
-                header: 'Company Group',
-                accessorKey: 'CompanyGroup.name',
-                cell: (props) => (
-                    <div className="w-52 truncate">
-                        {props.getValue() as string}
-                    </div>
-                ),
-            },
+            // {
+            //     header: 'Company Group',
+            //     accessorKey: 'CompanyGroup.name',
+            //     cell: (props) => (
+            //         <div className="w-52 truncate">
+            //             {props.getValue() as string}
+            //         </div>
+            //     ),
+            // },
             {
                 header: 'Company',
                 accessorKey: 'Company.name',
