@@ -27,11 +27,12 @@ httpClient.interceptors.response.use(
     (response) => response,
     (error) => {
         if (
-            error.response?.status === 401 &&
-            !error.request.responseURL.includes('companyadmin/profile')
+            (error.response?.status === 401 &&
+                !error.request.responseURL.includes('companyadmin/profile')) ||
+            error.response?.status === 403
         ) {
             // store.dispatch(loginUser());
-            window.location.reload();
+            window.location.reload()
         }
         return Promise.reject(error)
     },
