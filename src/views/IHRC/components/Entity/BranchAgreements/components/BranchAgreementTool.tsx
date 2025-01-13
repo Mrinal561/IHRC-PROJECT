@@ -12,7 +12,7 @@ const BranchAgreementTool = () => {
         navigate(`/branch-agreement-form`)
     }
   return (
-    <div className='flex gap-2 items-center w-full'>
+    <div className='flex gap-2 items-center w- pb-6'>
         <div>
             <Button variant='solid' onClick={handleBranchAgreement} icon={<HiPlusCircle />} size="sm" >Add Agreement</Button>
         </div>

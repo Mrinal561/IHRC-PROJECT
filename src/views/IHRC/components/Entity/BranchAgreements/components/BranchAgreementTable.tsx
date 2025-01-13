@@ -1,32 +1,33 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import useAuth from '@/utils/hooks/useAuth';
 import DataTable from '@/components/shared/DataTable';
-import { Button, Tooltip, Input, Select, DatePicker } from '@/components/ui';
-import { MdEdit, MdFilterList } from 'react-icons/md';
+import { Button, Tooltip } from '@/components/ui';
+import OutlinedInput from '@/components/ui/OutlinedInput';
+import OutlinedSelect from '@/components/ui/Outlined/Outlined';
+import { MdEdit } from 'react-icons/md';
 import { FiTrash } from 'react-icons/fi';
-import { Search } from 'lucide-react';
 import dayjs from 'dayjs';
 import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
 import { useNavigate } from 'react-router-dom';
 
 const BranchAgreementTable = () => {
-    const { user } = useAuth(); // Get authenticated user
+    const { user } = useAuth();
     const navigate = useNavigate();
     
-    // Data states
+    // State Management
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [isBranchLoading, setIsBranchLoading] = useState(false);
     const [branches, setBranches] = useState([]);
-    const [groups, setGroups] = useState([]);
+    const [companies, setCompanies] = useState([]);
     
-    // Filter states
+    // Filter and Table State
     const [filters, setFilters] = useState({
         search: '',
         branch_id: '',
-        group_id: [],
-        sub_category: '',
-        company_id: user?.company_id // Set company_id from auth user
+        company_id: user?.company_id || '',
+        sub_category: ''
     });
     
     const [tableData, setTableData] = useState({
@@ -36,56 +37,91 @@ const BranchAgreementTable = () => {
         sort: { order: 'desc', key: 'id' },
     });
 
-    // Fetch branch options for filter
-    const fetchBranches = async () => {
+    // Fetch Companies
+    const fetchCompanies = async () => {
         try {
+            const response = await httpClient.get(endpoints.company.getAll());
+            const formattedCompanies = response.data?.data?.map(company => ({
+                value: company.id,
+                label: company.name
+            })) || [];
+            setCompanies(formattedCompanies);
+        } catch (error) {
+            console.error('Failed to fetch companies', error);
+            setCompanies([]);
+        }
+    };
+
+    const fetchBranches = async (companyId) => {
+        if (!companyId) {
+            setBranches([]);
+            return;
+        }
+        
+        setIsBranchLoading(true);
+        try {
+            // Extract just the ID value if it's an object and put it in an array
+            const id = typeof companyId === 'object' ? companyId.value : companyId;
+            
             const response = await httpClient.get(endpoints.branch.getAll(), {
-                params: { company_id: user?.company_id }
+                params: { 
+                    company_id: [id] // Pass as array since API expects company_id[]
+                }
             });
-            setBranches(response.data?.data || []);
+            const formattedBranches = response.data?.data?.map(branch => ({
+                value: branch.id,
+                label: branch.name
+            })) || [];
+            setBranches(formattedBranches);
         } catch (error) {
             console.error('Failed to fetch branches', error);
+            setBranches([]);
+        } finally {
+            setIsBranchLoading(false);
         }
     };
-
-    // Fetch group options for filter
-    const fetchGroups = async () => {
-        try {
-            const response = await httpClient.get(endpoints.companyGroup.getAll(), {
-                params: { company_id: user?.company_id }
-            });
-            setGroups(response.data?.data || []);
-        } catch (error) {
-            console.error('Failed to fetch groups', error);
-        }
-    };
-
+    
     const fetchBranchAgreementData = async () => {
         setIsLoading(true);
-        console.log("Fetching branch agreement data...");
-        console.log("Current user:", user);
-        console.log("Endpoint:", endpoints.branchAgreement.list());
         
         try {
-            const params = {
-                // page: tableData.pageIndex,
-                // page_size: tableData.pageSize,
-                // company_id: user?.company_id,
-                // sort: tableData.sort.order,
-                // sort_by: tableData.sort.key,
-                // ...(filters.search && { search: filters.search }),
-                // ...(filters.branch_id && { branch_id: filters.branch_id }),
-                // ...(filters.group_id?.length > 0 && { group_id: filters.group_id }),
-                // ...(filters.sub_category && { sub_category: filters.sub_category }),
-                ignorePlatform: true
-            };
-    
-            console.log("Request params:", params);
-    
+            let params = {};
+            
+            if (filters.search) {
+                params.search = filters.search;
+            }
+            
+            // Handle company_id - extract just the ID if it's an object
+            if (filters.company_id) {
+                const companyId = typeof filters.company_id === 'object' 
+                    ? filters.company_id.value 
+                    : filters.company_id;
+                
+                if (companyId && !isNaN(parseInt(companyId))) {
+                    params.company_id = parseInt(companyId);
+                }
+            }
+            
+            // Handle branch_id - extract just the ID if it's an object
+            if (filters.branch_id) {
+                const branchId = typeof filters.branch_id === 'object'
+                    ? filters.branch_id.value
+                    : filters.branch_id;
+                    
+                if (branchId && !isNaN(parseInt(branchId))) {
+                    params.branch_id = parseInt(branchId);
+                }
+            }
+            
+            if (filters.sub_category) {
+                params.sub_category = filters.sub_category;
+            }
+            
+            console.log('Final Request params:', params);
+            
             const response = await httpClient.get(endpoints.branchAgreement.list(), {
-                // params
+                params
             });
-            console.log("API Response:", response);
     
             setData(response.data?.data || []);
             setTableData(prev => ({
@@ -94,32 +130,65 @@ const BranchAgreementTable = () => {
             }));
         } catch (error) {
             console.error('Failed to fetch branch agreement data', error);
-            console.error('Error details:', error.response?.data);
-            console.error('Error status:', error.response?.status);
+            setData([]);
         } finally {
             setIsLoading(false);
         }
     };
     
-    // Make sure useEffect is triggered
+    const handleFilterChange = (key, value) => {
+        setFilters(prev => {
+            const newFilters = { ...prev };
+            
+            if (key === 'company_id') {
+                // Store the entire selected option object
+                newFilters.company_id = value;
+                // Reset branch when company changes
+                newFilters.branch_id = '';
+            } else if (key === 'branch_id') {
+                // Store the entire selected option object
+                newFilters.branch_id = value;
+            } else {
+                newFilters[key] = value || '';
+            }
+            
+            console.log('New filters:', newFilters);
+            
+            return newFilters;
+        });
+    };
+    
+    // Initial data fetch
     useEffect(() => {
-        console.log("useEffect triggered");
-        console.log("User:", user);
-        console.log("Company ID:", user?.company_id);
-        
-        fetchBranchAgreementData();
-    }, [tableData.pageIndex, tableData.pageSize]); // Removed filters dependency for now to test basic fetching
-
-    useEffect(() => {
-        fetchBranches();
-        fetchGroups();
+        fetchCompanies();
+        if (filters.company_id) {
+            fetchBranches(filters.company_id);
+        }
     }, []);
 
-    
-    // useEffect(() => {
-    //     fetchBranchAgreementData();
-    // }, [tableData.pageIndex, tableData.pageSize, filters]);
+    // Fetch data when filters or pagination changes
+    useEffect(() => {
+        fetchBranchAgreementData();
+    }, [
+        filters.search,
+        filters.branch_id,
+        filters.company_id,
+        filters.sub_category,
+        tableData.pageIndex,
+        tableData.pageSize,
+        tableData.sort
+    ]);
 
+    // Update branches when company changes
+    useEffect(() => {
+        if (filters.company_id) {
+            fetchBranches(filters.company_id);
+        } else {
+            setBranches([]);
+        }
+    }, [filters.company_id]);
+
+    // Table Columns
     const columns = useMemo(() => [
         {
             header: 'Company',
@@ -203,61 +272,29 @@ const BranchAgreementTable = () => {
     return (
         <div className="space-y-4">
             {/* Filters Section */}
-            {/* <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-white rounded-lg shadow">
-                <div className="relative">
-                    <Input
-                        prefix={<Search className="text-gray-400" />}
-                        placeholder="Search..."
-                        value={filters.search}
-                        onChange={(e) => setFilters(prev => ({ 
-                            ...prev, 
-                            search: e.target.value 
-                        }))}
-                    />
-                </div>
-                
-                <Select
-                    placeholder="Select Branch"
-                    value={filters.branch_id}
-                    onChange={(value) => setFilters(prev => ({ 
-                        ...prev, 
-                        branch_id: value 
-                    }))}
-                >
-                    {branches.map((branch) => (
-                        <Select.Option key={branch.id} value={branch.id}>
-                            {branch.name}
-                        </Select.Option>
-                    ))}
-                </Select>
+            <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <OutlinedSelect
+    label="Select Company"
+    value={filters.company_id} // This will now be the full option object
+    options={companies}
+    onChange={(value) => handleFilterChange('company_id', value)}
+/>
 
-                <Select
-                    placeholder="Select Groups"
-                    mode="multiple"
-                    value={filters.group_id}
-                    onChange={(value) => setFilters(prev => ({ 
-                        ...prev, 
-                        group_id: value 
-                    }))}
-                >
-                    {groups.map((group) => (
-                        <Select.Option key={group.id} value={group.id}>
-                            {group.name}
-                        </Select.Option>
-                    ))}
-                </Select>
+<OutlinedSelect
+    label="Select Branch"
+    value={filters.branch_id} // This will now be the full option object
+    options={branches}
+    onChange={(value) => handleFilterChange('branch_id', value)}
+/>
 
-                <Input
-                    placeholder="Sub Category"
+                <OutlinedInput
+                    label="Sub Category"
                     value={filters.sub_category}
-                    onChange={(e) => setFilters(prev => ({ 
-                        ...prev, 
-                        sub_category: e.target.value 
-                    }))}
+                    onChange={(value) => handleFilterChange('sub_category', value)}
                 />
-            </div> */}
+            </div>
 
-            {/* Table Section */}
+            {/* Data Table */}
             <DataTable
                 columns={columns}
                 data={data}
