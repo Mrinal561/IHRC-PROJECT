@@ -747,7 +747,7 @@ useEffect(()=>{
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-4">
                     <div>
-                        <p className="mb-2">PF User <span className="text-red-500">*</span></p>
+                        <p className="mb-2">PF User</p>
                         <OutlinedInput
                             label="Username"
                             value={pfSetupData.pf_user}
@@ -761,7 +761,7 @@ useEffect(()=>{
                         {getErrorMessage('pf_user')}
                     </div>
                     <div>
-                        <p className="mb-2">Password <span className="text-red-500">*</span></p>
+                        <p className="mb-2">Password</p>
                         <OutlinedInput
                             label="Password"
                             value={pfSetupData.password}

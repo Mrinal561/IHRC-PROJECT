@@ -121,7 +121,7 @@ const PFTrackerFilter: React.FC<PFTrackerFilterProps> = ({ onFilterChange }) => 
 
         setPfCodeOptions(formattedPFCodes);
         if (formattedPFCodes.length === 0) {
-          showNotification('info', 'No PF Codes found for this company');
+          // showNotification('info', 'No PF Codes found for this company');
         }
       } else {
         setPfCodeOptions([]);

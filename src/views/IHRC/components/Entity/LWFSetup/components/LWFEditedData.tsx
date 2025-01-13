@@ -44,18 +44,18 @@ const lwfSchema = yup.object().shape({
   register_number: yup
     .string()
     .required('Register Number is required'),
-  username: yup
-    .string()
-    .required('User is required')
-    .min(3, 'Username must be at least 3 characters'),
-  password: yup
-    .string()
-    .required('Password is required')
-    .min(8, 'Password must be at least 8 characters')
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
-      'Must include A-Z, a-z, 0-9, @$!%*?& (Weak Password)'
-    ),
+  // username: yup
+  //   .string()
+  //   .required('User is required')
+  //   .min(3, 'Username must be at least 3 characters'),
+  // password: yup
+  //   .string()
+  //   .required('Password is required')
+  //   .min(8, 'Password must be at least 8 characters')
+  //   .matches(
+  //     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+  //     'Must include A-Z, a-z, 0-9, @$!%*?& (Weak Password)'
+  //   ),
   register_date: yup
     .date()
     .required('Registration date is required')

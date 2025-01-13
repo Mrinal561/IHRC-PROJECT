@@ -215,7 +215,7 @@ const ESIWTrackerFilter: React.FC<ESIWTrackerFilterProps> = ({ onFilterChange })
 
         setEsiCodeOptions(formattedESICodes);
         if (formattedESICodes.length === 0) {
-          showNotification('info', 'No ESI Codes found for this company');
+          // showNotification('info', 'No ESI Codes found for this company');
         }
       } else {
         setEsiCodeOptions([]);

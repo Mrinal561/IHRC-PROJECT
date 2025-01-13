@@ -48,20 +48,20 @@ const ptSetupSchema = yup.object().shape({
         .required('Remittance mode is required')
         .oneOf(['online', 'offline'], 'Invalid remittance mode'),
     
-    username: yup
-        .string()
-        .required('Username is required')
-        .min(4, 'Username must be at least 4 characters')
-        .matches(/^[A-Za-z0-9_]+$/, 'Username can only contain letters, numbers, and underscores'),
+    // username: yup
+    //     .string()
+    //     .required('Username is required')
+    //     .min(4, 'Username must be at least 4 characters')
+    //     .matches(/^[A-Za-z0-9_]+$/, 'Username can only contain letters, numbers, and underscores'),
     
-    password: yup
-        .string()
-        .required('Password is required')
-        .min(8, 'Password must be at least 8 characters')
-        .matches(
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
-           'Must include A-Z, a-z, 0-9, @$!%*?& (Weak Password)'
-        ),
+    // password: yup
+    //     .string()
+    //     .required('Password is required')
+    //     .min(8, 'Password must be at least 8 characters')
+    //     .matches(
+    //         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+    //        'Must include A-Z, a-z, 0-9, @$!%*?& (Weak Password)'
+    //     ),
     
     email: yup
         .string()

@@ -249,7 +249,7 @@ const UserAddForm = () => {
                             {/* Company Group (Read-only) */}
                             <div className="flex flex-col gap-2">
                                 <p className="mb-2">
-                                    Select the company group{' '}
+                                    company group{' '}
                                     <span className="text-red-500">*</span>
                                 </p>
                                 <input

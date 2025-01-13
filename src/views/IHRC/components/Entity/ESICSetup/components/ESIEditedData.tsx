@@ -63,18 +63,18 @@ const esiSchema = yup.object().shape({
     .string()
     .required('ESI code is required')
     .matches(/^[0-9]+$/, 'ESI code must contain only numbers'),
-  esi_user: yup
-    .string()
-    .required('ESI user is required')
-    .min(3, 'ESI user must be at least 3 characters'),
-  password: yup
-    .string()
-    .required('Password is required')
-    .min(6, 'Password must be at least 6 characters')
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
-      'Must include A-Z, a-z, 0-9, @$!%*?& (Weak Password)'
-    ),
+  // esi_user: yup
+  //   .string()
+  //   .required('ESI user is required')
+  //   .min(3, 'ESI user must be at least 3 characters'),
+  // password: yup
+  //   .string()
+  //   .required('Password is required')
+  //   .min(6, 'Password must be at least 6 characters')
+  //   .matches(
+  //     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+  //     'Must include A-Z, a-z, 0-9, @$!%*?& (Weak Password)'
+  //   ),
 });
 
 const ESIEditedData: React.FC<ESIEditedDataProps> = ({

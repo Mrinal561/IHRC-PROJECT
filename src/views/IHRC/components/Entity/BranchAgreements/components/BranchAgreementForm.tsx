@@ -558,6 +558,7 @@ const [subCategoryInput, setSubCategoryInput] = useState('');
             <div className="flex justify-end">
               <Button 
                 type="submit" 
+                variant='solid'
                 disabled={isSubmitting}
               >
                 {isSubmitting ? 'Submitting...' : 'Confirm'}

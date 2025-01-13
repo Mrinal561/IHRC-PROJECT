@@ -210,7 +210,7 @@ const LWFTrackerFilter: React.FC<LWFTrackerFilterProps> = ({ onFilterChange }) =
 
         setLwfCodeOptions(formattedLWFCodes);
         if (formattedLWFCodes.length === 0) {
-          showNotification('info', 'No LWF Codes found for this company');
+          // showNotification('info', 'No LWF Codes found for this company');
         }
       } else {
         setLwfCodeOptions([]);

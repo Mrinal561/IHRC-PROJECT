@@ -211,7 +211,7 @@ const PTECTrackerFilter: React.FC<PTECTrackerFilterProps> = ({ onFilterChange })
 
         setPtCodeOptions(formattedPTCodes);
         if (formattedPTCodes.length === 0) {
-          showNotification('info', 'No PT Codes found for this company');
+          // showNotification('info', 'No PT Codes found for this company');
         }
       } else {
         setPtCodeOptions([]);
