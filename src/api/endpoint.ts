@@ -207,7 +207,7 @@ export const endpoints = {
         approve:(id:any)=> api(`companyadmin/company/tracker-edit-permission/${id}`)
     },
     branchAgreement: {
-        list: () => api('/companyadmin/branch-agreement'),
+        list: () => api('companyadmin/branch/branchagreement/'),
         create: () => api('/companyadmin/branch/branch-agreement/'),
         update: (id: any) => api(`/companyadmin/branch-agreement/${id}`),
         detail: (id: any) => api(`/companyadmin/branch-agreement/${id}`),
