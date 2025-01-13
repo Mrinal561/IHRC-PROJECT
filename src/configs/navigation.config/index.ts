@@ -1,12 +1,16 @@
-
 import {
     NAV_ITEM_TYPE_TITLE,
     NAV_ITEM_TYPE_ITEM,
-    NAV_ITEM_TYPE_COLLAPSE
+    NAV_ITEM_TYPE_COLLAPSE,
 } from '@/constants/navigation.constant'
 import type { NavigationTree } from '@/@types/navigation'
+import { useAppDispatch } from '@/store'
+import { fetchAuthUser } from '@/store/slices/login'
+import store from '../../store'
 
-const navigationConfig: NavigationTree[] = [
+const { login } = store.getState()
+
+const adminnav: NavigationTree[] = [
     {
         key: 'home',
         path: '/dashboard',
@@ -146,8 +150,8 @@ const navigationConfig: NavigationTree[] = [
                         type: NAV_ITEM_TYPE_ITEM,
                         authority: [],
                         subMenu: [],
-                    }
-                ]
+                    },
+                ],
             },
             {
                 key: 'userSetup.collapse',
@@ -177,13 +181,12 @@ const navigationConfig: NavigationTree[] = [
                         type: NAV_ITEM_TYPE_ITEM,
                         authority: [],
                         subMenu: [],
-                    }
-                ]
-            }
-        ]
+                    },
+                ],
+            },
+        ],
     },
 
-    
     // {
     //     key: 'collapseMenu',
     //     path: '',
@@ -266,9 +269,6 @@ const navigationConfig: NavigationTree[] = [
     //     ],
     // },
 
-
-
-
     {
         key: 'remittanceTracker.collapse',
         path: '/remittanceTracker',
@@ -287,7 +287,7 @@ const navigationConfig: NavigationTree[] = [
                 type: NAV_ITEM_TYPE_ITEM,
                 authority: [],
                 subMenu: [],
-            }, 
+            },
             {
                 key: 'remittanceTracker.collapse.item6',
                 path: '/pfiw-tracker',
@@ -297,7 +297,7 @@ const navigationConfig: NavigationTree[] = [
                 type: NAV_ITEM_TYPE_ITEM,
                 authority: [],
                 subMenu: [],
-            }, 
+            },
             {
                 key: 'remittanceTracker.collapse.item2',
                 path: '/esi-tracker',
@@ -307,7 +307,7 @@ const navigationConfig: NavigationTree[] = [
                 type: NAV_ITEM_TYPE_ITEM,
                 authority: [],
                 subMenu: [],
-            }, 
+            },
             {
                 key: 'remittanceTracker.collapse.item3',
                 path: '/lwf-tracker',
@@ -317,7 +317,7 @@ const navigationConfig: NavigationTree[] = [
                 type: NAV_ITEM_TYPE_ITEM,
                 authority: [],
                 subMenu: [],
-            }, 
+            },
             {
                 key: 'remittanceTracker.collapse.item4',
                 path: '/ptrc-tracker',
@@ -327,7 +327,7 @@ const navigationConfig: NavigationTree[] = [
                 type: NAV_ITEM_TYPE_ITEM,
                 authority: [],
                 subMenu: [],
-            }, 
+            },
             {
                 key: 'remittanceTracker.collapse.item5',
                 path: '/ptec-tracker',
@@ -337,7 +337,7 @@ const navigationConfig: NavigationTree[] = [
                 type: NAV_ITEM_TYPE_ITEM,
                 authority: [],
                 subMenu: [],
-            }, 
+            },
             {
                 key: 'remittanceTracker.collapse.item7',
                 path: '/notice-tracker',
@@ -347,11 +347,9 @@ const navigationConfig: NavigationTree[] = [
                 type: NAV_ITEM_TYPE_ITEM,
                 authority: [],
                 subMenu: [],
-            }, 
-          
+            },
         ],
     },
-
 
     // {
     //     key: 'register.collapse',
@@ -379,7 +377,7 @@ const navigationConfig: NavigationTree[] = [
     //                     icon: '',
     //                     type: NAV_ITEM_TYPE_ITEM,
     //                     authority: [],
-    //                     subMenu: [], 
+    //                     subMenu: [],
     //                 },
     //                 {
     //                     key: 'register.collapse.inputSetup.collapse.item2',
@@ -389,7 +387,7 @@ const navigationConfig: NavigationTree[] = [
     //                     icon: '',
     //                     type: NAV_ITEM_TYPE_ITEM,
     //                     authority: [],
-    //                     subMenu: [], 
+    //                     subMenu: [],
     //                 },
     //                 {
     //                     key: 'register.collapse.inputSetup.collapse.item3',
@@ -399,7 +397,7 @@ const navigationConfig: NavigationTree[] = [
     //                     icon: '',
     //                     type: NAV_ITEM_TYPE_ITEM,
     //                     authority: [],
-    //                     subMenu: [], 
+    //                     subMenu: [],
     //                 },
     //                 {
     //                     key: 'register.collapse.inputSetup.collapse.item4',
@@ -409,7 +407,7 @@ const navigationConfig: NavigationTree[] = [
     //                     icon: '',
     //                     type: NAV_ITEM_TYPE_ITEM,
     //                     authority: [],
-    //                     subMenu: [], 
+    //                     subMenu: [],
     //                 },
     //                 {
     //                     key: 'register.collapse.inputSetup.collapse.item5',
@@ -419,7 +417,7 @@ const navigationConfig: NavigationTree[] = [
     //                     icon: '',
     //                     type: NAV_ITEM_TYPE_ITEM,
     //                     authority: [],
-    //                     subMenu: [], 
+    //                     subMenu: [],
     //                 },
     //             ],
     //         },
@@ -440,7 +438,7 @@ const navigationConfig: NavigationTree[] = [
     //                     icon: '',
     //                     type: NAV_ITEM_TYPE_ITEM,
     //                     authority: [],
-    //                     subMenu: [], 
+    //                     subMenu: [],
     //                 },
     //                 // {
     //                 //     key: 'register.collapse.outputSetup.collapse.item2',
@@ -450,7 +448,7 @@ const navigationConfig: NavigationTree[] = [
     //                 //     icon: '',
     //                 //     type: NAV_ITEM_TYPE_ITEM,
     //                 //     authority: [],
-    //                 //     subMenu: [], 
+    //                 //     subMenu: [],
     //                 // },
     //                 // {
     //                 //     key: 'register.collapse.outputSetup.collapse.item3',
@@ -460,7 +458,7 @@ const navigationConfig: NavigationTree[] = [
     //                 //     icon: '',
     //                 //     type: NAV_ITEM_TYPE_ITEM,
     //                 //     authority: [],
-    //                 //     subMenu: [], 
+    //                 //     subMenu: [],
     //                 // },
     //                 // {
     //                 //     key: 'register.collapse.outputSetup.collapse.item4',
@@ -470,7 +468,7 @@ const navigationConfig: NavigationTree[] = [
     //                 //     icon: '',
     //                 //     type: NAV_ITEM_TYPE_ITEM,
     //                 //     authority: [],
-    //                 //     subMenu: [], 
+    //                 //     subMenu: [],
     //                 // },
     //                 // {
     //                 //     key: 'register.collapse.outputSetup.collapse.item5',
@@ -480,12 +478,324 @@ const navigationConfig: NavigationTree[] = [
     //                 //     icon: '',
     //                 //     type: NAV_ITEM_TYPE_ITEM,
     //                 //     authority: [],
-    //                 //     subMenu: [], 
+    //                 //     subMenu: [],
     //                 // },
     //             ],
     //         },
     //     ],
     // },
 ]
+const usernav: NavigationTree[] = [
+    {
+        key: 'home',
+        path: '/dashboard',
+        title: 'Dashboard',
+        translateKey: 'nav.home',
+        icon: 'home',
+        type: NAV_ITEM_TYPE_ITEM,
+        authority: [],
+        subMenu: [],
+    },
 
+    // {
+    //     key: 'collapseMenu',
+    //     path: '',
+    //     title: 'Audit Checklist',
+    //     translateKey: 'nav.collapseMenu.collapseMenu',
+    //     icon: 'auditCollapse',
+    //     type: NAV_ITEM_TYPE_COLLAPSE,
+    //     authority: [],
+    //     subMenu: [
+    //         {
+    //             key: 'recommendedList.item1',
+    //             path: '/recommended-checklist',
+    //             title: 'Recommended Checklist',
+    //             translateKey: 'nav.collapseMenu.item1',
+    //             icon: '',
+    //             type: NAV_ITEM_TYPE_ITEM,
+    //             authority: [],
+    //             subMenu: [],
+    //         },
+    //         {
+    //             key: 'assignChecklist.item3',
+    //             path: '/assigned-checklist',
+    //             title: 'Assigned Checklist',
+    //             translateKey: 'nav.collapseMenu.item3',
+    //             icon: '',
+    //             type: NAV_ITEM_TYPE_ITEM,
+    //             authority: [],
+    //             subMenu: [],
+    //         },
+    //         {
+    //             key: 'customChecklist.item4',
+    //             path: '/custom-checklist',
+    //             title: 'Custom Checklist',
+    //             translateKey: 'nav.collapseMenu.item4',
+    //             icon: '',
+    //             type: NAV_ITEM_TYPE_ITEM,
+    //             authority: [],
+    //             subMenu: [],
+    //         },
+    //         {
+    //             key: 'dueCompliance.item5',
+    //             path: '/due-compliance',
+    //             title: 'Due Compliances',
+    //             translateKey: 'nav.collapseMenu.item5',
+    //             icon: '',
+    //             type: NAV_ITEM_TYPE_ITEM,
+    //             authority: [],
+    //             subMenu: [],
+    //         },
+    //         {
+    //             key: 'status.item6',
+    //             path: '/status',
+    //             title: 'Status',
+    //             translateKey: 'nav.collapseMenu.item6',
+    //             icon: '',
+    //             type: NAV_ITEM_TYPE_ITEM,
+    //             authority: [],
+    //             subMenu: [],
+    //         },
+    //         {
+    //             key: 'complianceCertificate.item7',
+    //             path: '/compliance-certificate',
+    //             title: 'Compliance Certificate',
+    //             translateKey: 'nav.collapseMenu.item7',
+    //             icon: '',
+    //             type: NAV_ITEM_TYPE_ITEM,
+    //             authority: [],
+    //             subMenu: [],
+    //         },
+    //         {
+    //             key: 'history.item8',
+    //             path: '/history',
+    //             title: 'History',
+    //             translateKey: 'nav.collapseMenu.item8',
+    //             icon: '',
+    //             type: NAV_ITEM_TYPE_ITEM,
+    //             authority: [],
+    //             subMenu: [],
+    //         },
+    //     ],
+    // },
+
+    {
+        key: 'remittanceTracker.collapse',
+        path: '/remittanceTracker',
+        title: 'Remittance Tracker',
+        translateKey: 'nav.remittanceTracker.collapse.collapse',
+        icon: 'remittanceCollapse',
+        type: NAV_ITEM_TYPE_COLLAPSE,
+        authority: [],
+        subMenu: [
+            {
+                key: 'remittanceTracker.collapse.item1',
+                path: '/pf-tracker',
+                title: 'PF Tracker',
+                translateKey: 'nav.remittanceTracker.collapse.item1',
+                icon: '',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [],
+                subMenu: [],
+            },
+            {
+                key: 'remittanceTracker.collapse.item6',
+                path: '/pfiw-tracker',
+                title: 'PF IW Tracker',
+                translateKey: 'nav.remittanceTracker.collapse.item6',
+                icon: '',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [],
+                subMenu: [],
+            },
+            {
+                key: 'remittanceTracker.collapse.item2',
+                path: '/esi-tracker',
+                title: 'ESI Tracker',
+                translateKey: 'nav.remittanceTracker.collapse.item2',
+                icon: '',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [],
+                subMenu: [],
+            },
+            {
+                key: 'remittanceTracker.collapse.item3',
+                path: '/lwf-tracker',
+                title: 'LWF Tracker',
+                translateKey: 'nav.remittanceTracker.collapse.item3',
+                icon: '',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [],
+                subMenu: [],
+            },
+            {
+                key: 'remittanceTracker.collapse.item4',
+                path: '/ptrc-tracker',
+                title: 'PT RC Tracker',
+                translateKey: 'nav.remittanceTracker.collapse.item4',
+                icon: '',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [],
+                subMenu: [],
+            },
+            {
+                key: 'remittanceTracker.collapse.item5',
+                path: '/ptec-tracker',
+                title: 'PT EC Tracker',
+                translateKey: 'nav.remittanceTracker.collapse.item5',
+                icon: '',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [],
+                subMenu: [],
+            },
+            {
+                key: 'remittanceTracker.collapse.item7',
+                path: '/notice-tracker',
+                title: 'Notice Tracker',
+                translateKey: 'nav.remittanceTracker.collapse.item7',
+                icon: '',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [],
+                subMenu: [],
+            },
+        ],
+    },
+
+    // {
+    //     key: 'register.collapse',
+    //     path: '/register&return',
+    //     title: 'Register & Return',
+    //     translateKey: 'nav.register.collapse.collapse',
+    //     icon: 'remittanceCollapse',
+    //     type: NAV_ITEM_TYPE_COLLAPSE,
+    //     authority: [],
+    //     subMenu: [
+    //         {
+    //             key: 'register.collapse.inputSetup.collapse',
+    //             path: '',
+    //             title: 'Input',
+    //             translateKey: 'nav.register.collapse.inputSetup.collapse.collapse',
+    //             icon: '',
+    //             type: NAV_ITEM_TYPE_COLLAPSE,
+    //             authority: [],
+    //             subMenu: [
+    //                 {
+    //                     key: 'register.collapse.inputSetup.collapse.item1',
+    //                     path: '/salary-register-input',
+    //                     title: 'Salary Register',
+    //                     translateKey: 'nav.register.collapse.item1',
+    //                     icon: '',
+    //                     type: NAV_ITEM_TYPE_ITEM,
+    //                     authority: [],
+    //                     subMenu: [],
+    //                 },
+    //                 {
+    //                     key: 'register.collapse.inputSetup.collapse.item2',
+    //                     path: '/attendance-register-input',
+    //                     title: 'Attendance Register',
+    //                     translateKey: 'nav.register.collapse.item2',
+    //                     icon: '',
+    //                     type: NAV_ITEM_TYPE_ITEM,
+    //                     authority: [],
+    //                     subMenu: [],
+    //                 },
+    //                 {
+    //                     key: 'register.collapse.inputSetup.collapse.item3',
+    //                     path: '/leave-register-input',
+    //                     title: 'Leave Register',
+    //                     translateKey: 'nav.register.collapse.item3',
+    //                     icon: '',
+    //                     type: NAV_ITEM_TYPE_ITEM,
+    //                     authority: [],
+    //                     subMenu: [],
+    //                 },
+    //                 {
+    //                     key: 'register.collapse.inputSetup.collapse.item4',
+    //                     path: '/bonus-register-input',
+    //                     title: 'Bonus Register',
+    //                     translateKey: 'nav.register.collapse.item4',
+    //                     icon: '',
+    //                     type: NAV_ITEM_TYPE_ITEM,
+    //                     authority: [],
+    //                     subMenu: [],
+    //                 },
+    //                 {
+    //                     key: 'register.collapse.inputSetup.collapse.item5',
+    //                     path: '/maternity-register-input',
+    //                     title: 'Maternity Register',
+    //                     translateKey: 'nav.register.collapse.item5',
+    //                     icon: '',
+    //                     type: NAV_ITEM_TYPE_ITEM,
+    //                     authority: [],
+    //                     subMenu: [],
+    //                 },
+    //             ],
+    //         },
+    //         {
+    //             key: 'register.collapse.outputSetup.collapse',
+    //             path: '',
+    //             title: 'Output',
+    //             translateKey: 'nav.register.collapse.outputSetup.collapse.collapse',
+    //             icon: '',
+    //             type: NAV_ITEM_TYPE_COLLAPSE,
+    //             authority: [],
+    //             subMenu: [
+    //                 {
+    //                     key: 'register.collapse.outputSetup.collapse.item1',
+    //                     path: '/output-register',
+    //                     title: 'Output Registers',
+    //                     translateKey: 'nav.register.collapse.item1',
+    //                     icon: '',
+    //                     type: NAV_ITEM_TYPE_ITEM,
+    //                     authority: [],
+    //                     subMenu: [],
+    //                 },
+    //                 // {
+    //                 //     key: 'register.collapse.outputSetup.collapse.item2',
+    //                 //     path: '/attendance-register-output',
+    //                 //     title: 'Attendance Register',
+    //                 //     translateKey: 'nav.register.collapse.item2',
+    //                 //     icon: '',
+    //                 //     type: NAV_ITEM_TYPE_ITEM,
+    //                 //     authority: [],
+    //                 //     subMenu: [],
+    //                 // },
+    //                 // {
+    //                 //     key: 'register.collapse.outputSetup.collapse.item3',
+    //                 //     path: '/leave-register-output',
+    //                 //     title: 'Leave Register',
+    //                 //     translateKey: 'nav.register.collapse.item3',
+    //                 //     icon: '',
+    //                 //     type: NAV_ITEM_TYPE_ITEM,
+    //                 //     authority: [],
+    //                 //     subMenu: [],
+    //                 // },
+    //                 // {
+    //                 //     key: 'register.collapse.outputSetup.collapse.item4',
+    //                 //     path: '/bonus-register-output',
+    //                 //     title: 'Bonus Register',
+    //                 //     translateKey: 'nav.register.collapse.item4',
+    //                 //     icon: '',
+    //                 //     type: NAV_ITEM_TYPE_ITEM,
+    //                 //     authority: [],
+    //                 //     subMenu: [],
+    //                 // },
+    //                 // {
+    //                 //     key: 'register.collapse.outputSetup.collapse.item5',
+    //                 //     path: '/maternity-register-output',
+    //                 //     title: 'Maternity Register',
+    //                 //     translateKey: 'nav.register.collapse.item5',
+    //                 //     icon: '',
+    //                 //     type: NAV_ITEM_TYPE_ITEM,
+    //                 //     authority: [],
+    //                 //     subMenu: [],
+    //                 // },
+    //             ],
+    //         },
+    //     ],
+    // },
+]
+const type = login.user.type || ''
+const navigationConfig = type == 'admin' ? adminnav : usernav
+console.log('auth', login.user.type, navigationConfig)
 export default navigationConfig
