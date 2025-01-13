@@ -190,18 +190,18 @@ const BranchAgreementTable = () => {
 
     // Table Columns
     const columns = useMemo(() => [
-        {
-            header: 'Company',
-            accessorKey: 'Branch.Company.name',
-            enableSorting: false,
-            Cell: ({ value }) => <div className="w-52 truncate">{value}</div>,
-        },
-        {
-            header: 'Branch',
-            enableSorting: false,
-            accessorKey: 'Branch.name',
-            Cell: ({ value }) => <div className="w-52 truncate">{value}</div>,
-        },
+        // {
+        //     header: 'Company',
+        //     accessorKey: 'Branch.Company.name',
+        //     enableSorting: false,
+        //     Cell: ({ value }) => <div className="w-52 truncate">{value}</div>,
+        // },
+        // {
+        //     header: 'Branch',
+        //     enableSorting: false,
+        //     accessorKey: 'Branch.name',
+        //     Cell: ({ value }) => <div className="w-52 truncate">{value}</div>,
+        // },
         {
             header: 'Agreement Type',
             enableSorting: false,
