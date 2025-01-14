@@ -15,6 +15,7 @@ import { deletePtrcTracker } from '@/store/slices/ptSetup/ptrcTrackerSlice';
 import { useDispatch } from 'react-redux';
 import { FaUserShield } from 'react-icons/fa';
 import { requestCompanyEdit } from '@/store/slices/request/requestSLice';
+import store from '@/store';
 
 interface PTTrackerTableProps {
   dataSent: PTTrackerData[];
@@ -32,6 +33,8 @@ interface PTTrackerTableProps {
   canEdit:boolean;
   canDelete:boolean;
 }
+
+const { login } = store.getState()
 
 const PTRCTrackerTable: React.FC<PTTrackerTableProps> = ({
   dataSent,
@@ -54,6 +57,8 @@ const PTRCTrackerTable: React.FC<PTTrackerTableProps> = ({
     setTrackerToDelete(trackerId);
     setDeleteConfirmOpen(true);
   };
+  const userId = login?.user?.user?.id;
+  const type = login?.user?.user?.type;
 
   const confirmDelete = () => {
     if (trackerToDelete) {
@@ -310,7 +315,14 @@ const PTRCTrackerTable: React.FC<PTTrackerTableProps> = ({
         header: 'Actions',
         id: 'actions',
         cell: ({ row }) => {
-          const {iseditable} = row.original;
+          const { iseditable, uploaded_by } = row.original;
+      
+          // Check if user is admin or if they're the uploader
+          const canShowActions = type === 'admin' || (type === 'user' && userId === uploaded_by);
+      
+          if (!canShowActions) {
+            return null; // Don't show any actions
+          }
           return(
           <div className="flex items-center gap-2">
             {iseditable ? (

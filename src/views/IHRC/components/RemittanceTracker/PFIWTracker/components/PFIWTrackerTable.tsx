@@ -15,6 +15,7 @@ import { useDispatch } from 'react-redux';
 import { deletePfiwTracker } from '@/store/slices/pftracker/pfTrackerSlice';
 import { FaUserShield } from 'react-icons/fa';
 import { requestCompanyEdit } from '@/store/slices/request/requestSLice';
+import store from '@/store';
 
 const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
@@ -49,6 +50,8 @@ export interface PFIWTrackerData {
   challan_document: string | null;
   upload_status?: string;
   payroll_month: string;
+  iseditable?:boolean;
+  uploaded_by?:any;
 }
 
 interface PFIWTrackerTableProps {
@@ -67,6 +70,7 @@ interface PFIWTrackerTableProps {
     canEdit: boolean;
     canDelete: boolean;
 }
+const { login } = store.getState()
 
 const PFIWTrackerTable: React.FC<PFIWTrackerTableProps> =({ 
   dataSent, 
@@ -85,7 +89,8 @@ const PFIWTrackerTable: React.FC<PFIWTrackerTableProps> =({
 const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
 const [trackerToDelete, setTrackerToDelete] = useState<string | null>(null);
   const dispatch = useDispatch();
-  
+  const userId = login?.user?.user?.id;
+  const type = login?.user?.user?.type;
 
   
 const handleDeleteConfirmation = (trackerId: string) => {
@@ -277,7 +282,14 @@ const handleRequestToAdmin = async (id: any) => {
         header: 'Actions',
         id: 'actions',
         cell: ({ row }) => {
-          const { iseditable } = row.original;
+          const { iseditable, uploaded_by } = row.original;
+      
+          // Check if user is admin or if they're the uploader
+          const canShowActions = type === 'admin' || (type === 'user' && userId === uploaded_by);
+      
+          if (!canShowActions) {
+            return null; // Don't show any actions
+          }
         
           return (
             <div className="flex items-center gap-2">

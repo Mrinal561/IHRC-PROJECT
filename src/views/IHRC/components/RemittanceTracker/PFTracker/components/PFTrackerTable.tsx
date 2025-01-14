@@ -15,6 +15,7 @@ import { deleteTracker } from '@/store/slices/pftracker/pfTrackerSlice';
 import { VscGitPullRequestGoToChanges } from 'react-icons/vsc';
 import { FaUserShield } from 'react-icons/fa';
 import { requestCompanyEdit } from '@/store/slices/request/requestSLice';
+import store from '@/store';
 const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
 interface PfTrackerTableProps {
@@ -33,6 +34,7 @@ interface PfTrackerTableProps {
     canEdit: boolean;
     canDelete: boolean;
 }
+const { login } = store.getState()
 
 const PFTrackerTable: React.FC<PfTrackerTableProps> =({ 
   dataSent, 
@@ -52,8 +54,10 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> =({
   const [pfTrackerData, setPfTrackerData] = useState<PfChallanData[]>([]);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [trackerToDelete, setTrackerToDelete] = useState<string | null>(null);
-
+ const userId = login?.user?.user?.id;
+ const type = login?.user?.user?.type;
   const handleDeleteConfirmation = (trackerId: string) => {
+    console.log(userId, type)
     setTrackerToDelete(trackerId);
     setDeleteConfirmOpen(true);
   };
@@ -288,8 +292,15 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> =({
         header: 'Actions',
         id: 'actions',
         cell: ({ row }) => {
-          const { iseditable } = row.original;
-          
+          const { iseditable, uploaded_by } = row.original;
+      
+          // Check if user is admin or if they're the uploader
+          const canShowActions = type === 'admin' || (type === 'user' && userId === uploaded_by);
+      
+          if (!canShowActions) {
+            return null; // Don't show any actions
+          }
+      
           return (
             <div className="flex items-center gap-2">
               {iseditable ? (
@@ -326,7 +337,7 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> =({
               ) : (
                 // Show only Request to Admin button when iseditable is false
                 <>
-                  {canEdit && (
+                  {/* {canEdit && ( */}
                     <Tooltip title="Request to Admin">
                       <Button
                         size="sm"
@@ -335,7 +346,7 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> =({
                         className="text-blue-500"
                       />
                     </Tooltip>
-                  )}
+                  {/* // )} */}
                 </>
               )}
             </div>

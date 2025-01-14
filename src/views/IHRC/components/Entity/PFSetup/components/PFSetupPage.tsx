@@ -790,6 +790,18 @@ useEffect(()=>{
                         {getErrorMessage('register_date')}
                     </div>
                     <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                        PF Registration Certificate
+                    </label>
+                    <Input
+                    accept='.pdf,.zip,.jpg'
+                        type="file"
+                        onChange={handleRegistrationCertificateUpload}
+                    />
+                    {getErrorMessage('register_certificate')}
+                </div>
+                </div>
+                <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Choose the Signatories
                         </label>
@@ -803,7 +815,6 @@ useEffect(()=>{
                         />
                          {getErrorMessage('signatory_data')}
                     </div>
-                </div>
                 {selectedSignatories.length > 0 && (
                     <div className="space-y-4 border rounded-lg p-4">
                         <h6 className="font-semibold">Selected Signatories</h6>
@@ -901,17 +912,7 @@ useEffect(()=>{
                         ))}
                     </div>
                 )}
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                        PF Registration Certificate
-                    </label>
-                    <Input
-                    accept='.pdf,.zip,.jpg'
-                        type="file"
-                        onChange={handleRegistrationCertificateUpload}
-                    />
-                    {getErrorMessage('register_certificate')}
-                </div>
+               
                 <div className="flex justify-end space-x-2">
                     <Button onClick={() => navigate(-1)}>Cancel</Button>
                     <Button

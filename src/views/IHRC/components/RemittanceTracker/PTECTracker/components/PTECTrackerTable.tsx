@@ -17,6 +17,7 @@ import { useDispatch } from 'react-redux';
 import { deletePtecTracker } from '@/store/slices/ptSetup/ptecTrackerSlice';
 import { FaUserShield } from 'react-icons/fa';
 import { requestCompanyEdit } from '@/store/slices/request/requestSLice';
+import store from '@/store';
 
 const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
@@ -36,6 +37,7 @@ interface PTTrackerTableProps {
   canEdit:boolean;
   canDelete:boolean;
 }
+const { login } = store.getState()
 
 const PTECTrackerTable: React.FC<PTTrackerTableProps> = ({
   dataSent,
@@ -54,7 +56,8 @@ const PTECTrackerTable: React.FC<PTTrackerTableProps> = ({
   const [editingData, setEditingData] = useState<PTTrackerData | null>(null);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [trackerToDelete, setTrackerToDelete] = useState<string | null>(null);
-
+  const userId = login?.user?.user?.id;
+  const type = login?.user?.user?.type;
     const handleDeleteConfirmation = (trackerId: string) => {
     setTrackerToDelete(trackerId);
     setDeleteConfirmOpen(true);
@@ -334,7 +337,12 @@ const PTECTrackerTable: React.FC<PTTrackerTableProps> = ({
         header: 'Actions',
         id: 'actions',
         cell: ({ row }) => {
-          const {iseditable} = row.original;
+          const { iseditable, uploaded_by } = row.original;
+          const canShowActions = type === 'admin' || (type === 'user' && userId === uploaded_by);
+      
+          if (!canShowActions) {
+            return null; // Don't show any actions
+          }
           return(
           <div className="flex items-center gap-2">
             {iseditable ? (

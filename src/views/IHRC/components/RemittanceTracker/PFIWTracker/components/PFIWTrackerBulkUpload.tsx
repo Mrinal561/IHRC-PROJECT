@@ -24,7 +24,7 @@ const generateMonthOptions = (financialYear: string | null) => {
   
   // Parse the financial year (format: "2023-24")
   const [startYear] = financialYear.split('-');
-  const fullStartYear = parseInt(`20${startYear}`);
+  const fullStartYear = parseInt(`${startYear}`);
   
   const months = [];
   // Start from April of start year

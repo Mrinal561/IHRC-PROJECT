@@ -15,6 +15,7 @@ import { deleteLwfTracker } from '@/store/slices/lwfTracker/lwfTracker';
 import { useDispatch } from 'react-redux';
 import { FaUserShield } from 'react-icons/fa';
 import { requestCompanyEdit } from '@/store/slices/request/requestSLice';
+import store from '@/store';
 
 export interface Company {
   id: number;
@@ -85,6 +86,8 @@ interface LWFTrackerTableProps {
   canEdit: boolean;
 }
 
+const { login } = store.getState()
+
 const LWFTrackerTable: React.FC<LWFTrackerTableProps> = ({ 
   dataSent, 
   loading = false, 
@@ -102,7 +105,8 @@ const LWFTrackerTable: React.FC<LWFTrackerTableProps> = ({
   const [editingData, setEditingData] = useState<LWFTrackerData | null>(null);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [trackerToDelete, setTrackerToDelete] = useState<string | null>(null);
-
+  const userId = login?.user?.user?.id;
+  const type = login?.user?.user?.type;
     const handleDeleteConfirmation = (trackerId: string) => {
     setTrackerToDelete(trackerId);
     setDeleteConfirmOpen(true);
@@ -295,7 +299,15 @@ const LWFTrackerTable: React.FC<LWFTrackerTableProps> = ({
         header: 'Actions',
         id: 'actions',
         cell: ({ row }) => {
-            const { iseditable } = row.original;
+          const { iseditable, uploaded_by } = row.original;
+      
+          // Check if user is admin or if they're the uploader
+          const canShowActions = type === 'admin' || (type === 'user' && userId === uploaded_by);
+      
+          if (!canShowActions) {
+            return null; // Don't show any actions
+          }
+      
             
             return (
               <div className="flex items-center gap-2">

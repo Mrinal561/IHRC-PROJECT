@@ -14,6 +14,7 @@ import Lottie from 'lottie-react';
 import { useDispatch } from 'react-redux';
 import { FaUserShield } from 'react-icons/fa';
 import { requestCompanyEdit } from '@/store/slices/request/requestSLice';
+import store from '@/store';
 
 interface EsiTrackerTableProps {
     dataSent: esiChallanData[];
@@ -31,6 +32,8 @@ interface EsiTrackerTableProps {
   canEdit:boolean;
   canDelete:boolean;
   }
+
+  const { login } = store.getState()
 
 const ESITrackerTable: React.FC<EsiTrackerTableProps> =({ 
   dataSent, 
@@ -51,7 +54,8 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> =({
     const [editingData, setEditingData] = useState<esiChallanData | null>(null);
     const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
     const [trackerToDelete, setTrackerToDelete] = useState<string | null>(null);
-  
+    const userId = login?.user?.user?.id;
+    const type = login?.user?.user?.type;
     const handleEdit = (row: esiChallanData) => {
         setEditingData(row);
         setEditDialogOpen(true);
@@ -327,7 +331,15 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> =({
               header: 'Actions',
               id: 'actions',
               cell: ({ row }) => {
-                const { iseditable } = row.original;
+                const { iseditable, uploaded_by } = row.original;
+      
+                // Check if user is admin or if they're the uploader
+                const canShowActions = type === 'admin' || (type === 'user' && userId === uploaded_by);
+            
+                if (!canShowActions) {
+                  return null; // Don't show any actions
+                }
+            
                 
                 return (
                   <div className="flex items-center gap-2">
