@@ -30,16 +30,16 @@ const esiSetupSchema = yup.object().shape({
   location: yup.string()
     .required('Location is required')
     .min(2, 'Please Select a location'),
-  esi_user: yup.string()
-    .required('ESI user is required')
-    .min(3, 'ESI user must be at least 3 characters'),
-  password: yup.string()
-    .required('Password is required')
-    .min(6, 'Password must be at least 6 characters')
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
-      'Must include A-Z, a-z, 0-9, @$!%*?& (Weak Password)'
-  ),
+  // esi_user: yup.string()
+  //   .required('ESI user is required')
+  //   .min(3, 'ESI user must be at least 3 characters'),
+  // password: yup.string()
+  //   .required('Password is required')
+  //   .min(6, 'Password must be at least 6 characters')
+  //   .matches(
+  //     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+  //     'Must include A-Z, a-z, 0-9, @$!%*?& (Weak Password)'
+  // ),
   signatory_data: yup.array()
     .of(
       yup.object().shape({
