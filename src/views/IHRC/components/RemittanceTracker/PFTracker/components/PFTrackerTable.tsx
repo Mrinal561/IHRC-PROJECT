@@ -292,10 +292,10 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> =({
           
           return (
             <div className="flex items-center gap-2">
-              {/* Edit/Request Button */}
-              {canEdit && (
+              {iseditable ? (
+                // Show all actions when iseditable is true
                 <>
-                  {iseditable ? (
+                  {canEdit && (
                     <Tooltip title="Edit">
                       <Button
                         size="sm"
@@ -303,7 +303,30 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> =({
                         icon={<MdEdit />}
                       />
                     </Tooltip>
-                  ) : (
+                  )}
+                  
+                  {canDelete && (
+                    <Tooltip title="Delete">
+                      <Button
+                        size="sm"
+                        onClick={() => handleDeleteConfirmation(row.original.id)}
+                        icon={<FiTrash />}
+                        className="text-red-500"
+                      />
+                    </Tooltip>
+                  )}
+                  
+                  <ConfigDropdown 
+                    companyName={row.original.PfSetup.Company.name} 
+                    companyGroupName={row.original.PfSetup.CompanyGroup.name} 
+                    trackerId={row.original.id} 
+                    onRefresh={onRefresh}
+                  />
+                </>
+              ) : (
+                // Show only Request to Admin button when iseditable is false
+                <>
+                  {canEdit && (
                     <Tooltip title="Request to Admin">
                       <Button
                         size="sm"
@@ -315,26 +338,6 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> =({
                   )}
                 </>
               )}
-              
-              {/* Delete Button */}
-              {canDelete && (
-                <Tooltip title="Delete">
-                  <Button
-                    size="sm"
-                    onClick={() => handleDeleteConfirmation(row.original.id)}
-                    icon={<FiTrash />}
-                    className="text-red-500"
-                  />
-                </Tooltip>
-              )}
-              
-              {/* Config Dropdown is always visible */}
-              <ConfigDropdown 
-                companyName={row.original.PfSetup.Company.name} 
-                companyGroupName={row.original.PfSetup.CompanyGroup.name} 
-                trackerId={row.original.id} 
-                onRefresh={onRefresh}
-              />
             </div>
           );
         },

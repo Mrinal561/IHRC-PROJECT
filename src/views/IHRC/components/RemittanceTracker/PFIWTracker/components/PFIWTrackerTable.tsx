@@ -13,6 +13,8 @@ import loadingAnimation from '@/assets/lotties/system-regular-716-spinner-three-
 import Lottie from 'lottie-react';
 import { useDispatch } from 'react-redux';
 import { deletePfiwTracker } from '@/store/slices/pftracker/pfTrackerSlice';
+import { FaUserShield } from 'react-icons/fa';
+import { requestCompanyEdit } from '@/store/slices/request/requestSLice';
 
 const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
@@ -98,6 +100,27 @@ const confirmDelete = () => {
     if (onRefresh) {
       onRefresh();
     }
+  }
+};
+const handleRequestToAdmin = async (id: any) => {
+  try {
+    // Dispatch the request with the required type
+    const res = await dispatch(requestCompanyEdit({
+      id: id,
+      payload: {
+        type: "pfiw" 
+      }
+    })).unwrap(); 
+
+    if (res) {
+      console.log('Requested Successfully')
+        if (onRefresh) {
+            onRefresh()
+        }
+    }
+
+  } catch (error) {
+    console.log("Admin request error:", error);
   }
 };
   const handleEdit = (row: PFIWTrackerData) => {
@@ -253,40 +276,56 @@ const confirmDelete = () => {
       {
         header: 'Actions',
         id: 'actions',
-        cell: ({ row }) => (
-          <div className="flex items-center gap-2">
-            {/* Edit Button - Only show if canEdit is true */}
-            {canEdit && (
-              <Tooltip title="Edit">
-                <Button
-                  size="sm"
-                  onClick={() => handleEdit(row.original)}
-                  icon={<MdEdit />}
-                />
-              </Tooltip>
-            )}
-            
-            {/* Delete Button - Only show if canDelete is true */}
-            {canDelete && (
-              <Tooltip title="Delete">
-                <Button
-                  size="sm"
-                  onClick={() => handleDeleteConfirmation(row.original.id)}
-                  icon={<FiTrash />}
-                  className="text-red-500"
-                />
-              </Tooltip>
-            )}
-            
-            {/* ConfigDropdown is always visible */}
-            <ConfigDropdown 
-              companyName={row.original.PfSetup.Company.name} 
-              companyGroupName={row.original.PfSetup.CompanyGroup.name} 
-              trackerId={row.original.id}  
-              onRefresh={onRefresh}
-            />
-          </div>
-        ),
+        cell: ({ row }) => {
+          const { iseditable } = row.original;
+        
+          return (
+            <div className="flex items-center gap-2">
+              {iseditable ? (
+                // Show all actions when iseditable is true
+                <>
+                  {canEdit && (
+                    <Tooltip title="Edit">
+                      <Button
+                        size="sm"
+                        onClick={() => handleEdit(row.original)}
+                        icon={<MdEdit />}
+                      />
+                    </Tooltip>
+                  )}
+                  
+                  {canDelete && (
+                    <Tooltip title="Delete">
+                      <Button
+                        size="sm"
+                        onClick={() => handleDeleteConfirmation(row.original.id)}
+                        icon={<FiTrash />}
+                        className="text-red-500"
+                      />
+                    </Tooltip>
+                  )}
+                  
+                  <ConfigDropdown 
+                    companyName={row.original.PfSetup.Company.name} 
+                    companyGroupName={row.original.PfSetup.CompanyGroup.name} 
+                    trackerId={row.original.id}  
+                    onRefresh={onRefresh}
+                  />
+                </>
+              ) : (
+                // Show only Request to Admin button when iseditable is false
+                <Tooltip title="Request to Admin">
+                  <Button
+                    size="sm"
+                    onClick={() => handleRequestToAdmin(row.original.id)}
+                    icon={<FaUserShield />}
+                    className="text-blue-500"
+                  />
+                </Tooltip>
+              )}
+            </div>
+          );
+        }
       },
     ],
     [onRefresh]

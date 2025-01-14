@@ -15,6 +15,8 @@ import Lottie from 'lottie-react';
 import { HiOutlineViewGrid } from 'react-icons/hi';
 import { useDispatch } from 'react-redux';
 import { deletePtecTracker } from '@/store/slices/ptSetup/ptecTrackerSlice';
+import { FaUserShield } from 'react-icons/fa';
+import { requestCompanyEdit } from '@/store/slices/request/requestSLice';
 
 const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
@@ -77,6 +79,27 @@ const PTECTrackerTable: React.FC<PTTrackerTableProps> = ({
     setEditingData(null);
     if (onRefresh) {
       onRefresh();
+    }
+  };
+  const handleRequestToAdmin = async (id: any) => {
+    try {
+      // Dispatch the request with the required type
+      const res = await dispatch(requestCompanyEdit({
+        id: id,
+        payload: {
+          type: "ptec" 
+        }
+      })).unwrap(); 
+  
+      if (res) {
+        console.log('Requested Successfully')
+          if (onRefresh) {
+              onRefresh()
+          }
+      }
+  
+    } catch (error) {
+      console.log("Admin request error:", error);
     }
   };
 
@@ -310,19 +333,23 @@ const PTECTrackerTable: React.FC<PTTrackerTableProps> = ({
       {
         header: 'Actions',
         id: 'actions',
-        cell: ({ row }) => (
+        cell: ({ row }) => {
+          const {iseditable} = row.original;
+          return(
           <div className="flex items-center gap-2">
-            {canEdit && (
-            <Tooltip title="Edit">
-              <Button
-                size="sm"
-                onClick={() => handleEdit(row.original)}
-                icon={<MdEdit />}
-              />
-            </Tooltip>
-              )}
-              
-              {canDelete && (
+            {iseditable ? (
+              <>
+              {canEdit && (
+              <Tooltip title="Edit">
+                <Button
+                  size="sm"
+                  onClick={() => handleEdit(row.original)}
+                  icon={<MdEdit />}
+                />
+              </Tooltip>
+                )}
+
+                 {canDelete && (
             <Tooltip title="Delete">
               <Button
                 size="sm"
@@ -332,14 +359,29 @@ const PTECTrackerTable: React.FC<PTTrackerTableProps> = ({
               />
             </Tooltip>
               )}
+
             <ConfigDropdown 
               companyName={row.original.PtSetup.Company.name}
               companyGroupName={row.original.PtSetup.CompanyGroup.name}
               trackerId={row.original.id}
               onRefresh={onRefresh}
             />
+              </>
+            ) : (
+              <Tooltip title="Request to Admin">
+              <Button
+                size="sm"
+                onClick={() => handleRequestToAdmin(row.original.id)}
+                icon={<FaUserShield />}
+                className="text-blue-500"
+              />
+            </Tooltip>
+            )}
+              
+             
           </div>
-        ),
+          )
+        },
       },
     ],
     [onRefresh]

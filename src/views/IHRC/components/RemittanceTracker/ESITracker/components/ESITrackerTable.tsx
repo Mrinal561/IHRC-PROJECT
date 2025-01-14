@@ -324,60 +324,59 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> =({
                 },
             },
             {
-                header: 'Actions',
-                id: 'actions',
-                cell: ({ row }) => {
-                  const { iseditable } = row.original;
-                  
-                  return (
-                    <div className="flex items-center gap-2">
-                      {/* Edit/Request Button */}
-                      {canEdit && (
-                        <>
-                          {iseditable ? (
-                            <Tooltip title="Edit">
-                              <Button
-                                size="sm"
-                                onClick={() => handleEdit(row.original)}
-                                icon={<MdEdit />}
-                              />
-                            </Tooltip>
-                          ) : (
-                            <Tooltip title="Request to Admin">
-                              <Button
-                                size="sm"
-                                onClick={() => handleRequestToAdmin(row.original.id)}
-                                icon={<FaUserShield />}
-                                className="text-blue-500"
-                              />
-                            </Tooltip>
-                          )}
-                        </>
-                      )}
-                      
-                      {/* Delete Button */}
-                      {canDelete && (
-                        <Tooltip title="Delete">
-                          <Button
-                            size="sm"
-                            onClick={() => handleDeleteConfirmation(row.original.id)}
-                            icon={<FiTrash />}
-                            className="text-red-500"
-                          />
-                        </Tooltip>
-                      )}
-                      
-                      {/* Config Dropdown is always visible */}
-                      <ESIConfigDropdown
-                        companyName={row.original.EsiSetup.Company.name}
-                        companyGroupName={row.original.EsiSetup.CompanyGroup.name}
-                        trackerId={row.original.id}
-                        onRefresh={onRefresh}
-                      />
-                    </div>
-                  );
-                },
-            },
+              header: 'Actions',
+              id: 'actions',
+              cell: ({ row }) => {
+                const { iseditable } = row.original;
+                
+                return (
+                  <div className="flex items-center gap-2">
+                    {iseditable ? (
+                      // Show all actions when iseditable is true
+                      <>
+                        {canEdit && (
+                          <Tooltip title="Edit">
+                            <Button
+                              size="sm"
+                              onClick={() => handleEdit(row.original)}
+                              icon={<MdEdit />}
+                            />
+                          </Tooltip>
+                        )}
+                        
+                        {canDelete && (
+                          <Tooltip title="Delete">
+                            <Button
+                              size="sm"
+                              onClick={() => handleDeleteConfirmation(row.original.id)}
+                              icon={<FiTrash />}
+                              className="text-red-500"
+                            />
+                          </Tooltip>
+                        )}
+                        
+                        <ESIConfigDropdown
+                          companyName={row.original.EsiSetup.Company.name}
+                          companyGroupName={row.original.EsiSetup.CompanyGroup.name}
+                          trackerId={row.original.id}
+                          onRefresh={onRefresh}
+                        />
+                      </>
+                    ) : (
+                      // Show only Request to Admin button when iseditable is false
+                      <Tooltip title="Request to Admin">
+                        <Button
+                          size="sm"
+                          onClick={() => handleRequestToAdmin(row.original.id)}
+                          icon={<FaUserShield />}
+                          className="text-blue-500"
+                        />
+                      </Tooltip>
+                    )}
+                  </div>
+                );
+              },
+            }
             // {
             //     header: 'Actions',
             //     id: 'actions',

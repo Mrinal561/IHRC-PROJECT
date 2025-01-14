@@ -298,83 +298,53 @@ const LWFTrackerTable: React.FC<LWFTrackerTableProps> = ({
             const { iseditable } = row.original;
             
             return (
-                <div className="flex items-center gap-2">
-                    {/* Edit/Request Button */}
+              <div className="flex items-center gap-2">
+                {iseditable ? (
+                  // Show all actions when iseditable is true
+                  <>
                     {canEdit && (
-                        <>
-                            {iseditable ? (
-                                <Tooltip title="Edit">
-                                    <Button
-                                        size="sm"
-                                        onClick={() => handleEdit(row.original)}
-                                        icon={<MdEdit />}
-                                    />
-                                </Tooltip>
-                            ) : (
-                                <Tooltip title="Request to Admin">
-                                    <Button
-                                        size="sm"
-                                        onClick={() => handleRequestToAdmin(row.original.id)}
-                                        icon={<FaUserShield />}
-                                        className="text-blue-500"
-                                    />
-                                </Tooltip>
-                            )}
-                        </>
+                      <Tooltip title="Edit">
+                        <Button
+                          size="sm"
+                          onClick={() => handleEdit(row.original)}
+                          icon={<MdEdit />}
+                        />
+                      </Tooltip>
                     )}
                     
-                    {/* Delete Button */}
                     {canDelete && (
-                        <Tooltip title="Delete">
-                            <Button
-                                size="sm"
-                                onClick={() => handleDeleteConfirmation(row.original.id)}
-                                icon={<FiTrash />}
-                                className="text-red-500"
-                            />
-                        </Tooltip>
+                      <Tooltip title="Delete">
+                        <Button
+                          size="sm"
+                          onClick={() => handleDeleteConfirmation(row.original.id)}
+                          icon={<FiTrash />}
+                          className="text-red-500"
+                        />
+                      </Tooltip>
                     )}
                     
-                    {/* Config Dropdown */}
                     <ConfigDropdown
-                        companyName={row.original.LwfSetup.Company.name}
-                        companyGroupName={row.original.LwfSetup.CompanyGroup.name}
-                        trackerId={row.original.id}
-                        onRefresh={onRefresh}
+                      companyName={row.original.LwfSetup.Company.name}
+                      companyGroupName={row.original.LwfSetup.CompanyGroup.name}
+                      trackerId={row.original.id}
+                      onRefresh={onRefresh}
                     />
-                </div>
+                  </>
+                ) : (
+                  // Show only Request to Admin button when iseditable is false
+                  <Tooltip title="Request to Admin">
+                    <Button
+                      size="sm"
+                      onClick={() => handleRequestToAdmin(row.original.id)}
+                      icon={<FaUserShield />}
+                      className="text-blue-500"
+                    />
+                  </Tooltip>
+                )}
+              </div>
             );
         },
     }
-      // {
-      //   header: 'Actions',
-      //   id: 'actions',
-      //   cell: ({ row }) => (
-      //     <div className="flex items-center gap-2">
-      //       <Tooltip title="Edit">
-      //         <Button
-      //           size="sm"
-      //           onClick={() => handleEdit(row.original)}
-      //           icon={<MdEdit />}
-      //         />
-      //       </Tooltip>
-      //       <Tooltip title="Delete">
-      //         <Button
-      //           size="sm"
-      //           onClick={() => handleDeleteConfirmation(row.original.id)}
-      //           icon={<FiTrash />}
-      //           className="text-red-500"
-      //         />
-      //       </Tooltip>
-      //       <ConfigDropdown 
-      //         companyName={row.original.LwfSetup.Company.name} 
-      //         companyGroupName={row.original.LwfSetup.CompanyGroup.name} 
-      //         trackerId={row.original.id}
-      //         onRefresh={onRefresh}
-      //       />
-      //     </div>
-      //   ),
-      // },
     ],
     [onRefresh]
   );
