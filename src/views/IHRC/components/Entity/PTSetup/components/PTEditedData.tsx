@@ -43,10 +43,12 @@ const ptSchema = yup.object().shape({
     //         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
     //         'Must include A-Z, a-z, 0-9, @$!%*?& (Weak Password)',
     //     ),
-    email: yup
-        .string()
-        .required('Email is required')
-        .email('Invalid email format'),
+    //     email: yup
+    //     .string()
+    //     .matches(
+    //         /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|in|org|net|edu|gov)$/,
+    //         'Invalid email address. Please use a valid email with a.com,.in,.org,.net,.edu, or.gov domain.',
+    //     ),
     mobile: yup
         .string()
         .required('Mobile number is required')
