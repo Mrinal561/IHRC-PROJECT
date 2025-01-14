@@ -481,7 +481,9 @@ useEffect(()=>{
 
             if (response.data) {
                 // Format the users data to only include name and id
-                const formattedUsers = response.data.data.map((user: any) => ({
+                const formattedUsers = response.data.data
+                .filter((user: any) => user.user_details.auth_signatory)
+                .map((user: any) => ({
                     id: user.user_details.id,
                     name: `${user.user_details.name}`,
                 }))

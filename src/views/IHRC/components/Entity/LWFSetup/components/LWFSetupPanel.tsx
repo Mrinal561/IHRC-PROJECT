@@ -244,7 +244,7 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
     try {
       const response = await httpClient.get(endpoints.user.getAll());
       if(response.data){
-        const authorizedSignatories = response.data.data;
+        const authorizedSignatories = response.data.data.filter(user => user.user_details.auth_signatory);
         setUsers(authorizedSignatories);
       }
     } catch (error) {
