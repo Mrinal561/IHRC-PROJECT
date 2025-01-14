@@ -26,10 +26,10 @@ const pfSchema = yup.object().shape({
     pf_code: yup
     .string()
     .required('PF Code is required'),
-    pf_user: yup
-    .string(),
-    password: yup
-    .string(),
+    // pf_user: yup
+    // .string(),
+    // password: yup
+    // .string(),
     // .required('Password is required')
     // .min(8, 'Password must be at least 8 characters'),
     register_date: yup
