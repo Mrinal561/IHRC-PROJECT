@@ -61,7 +61,7 @@ const userValidationSchema = yup.object().shape({
         .string()
         .matches(
             /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|in|org|net|edu|gov)$/,
-            'Invalid email address. Please use a valid email with a.com,.in,.org,.net,.edu, or.gov domain.',
+            'Invalid email address.',
         )
         .required('Email is required'),
     password: yup
