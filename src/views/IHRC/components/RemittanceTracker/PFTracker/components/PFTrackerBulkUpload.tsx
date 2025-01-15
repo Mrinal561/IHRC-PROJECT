@@ -1,6 +1,6 @@
 
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Button, Dialog, Input, Notification, toast} from '@/components/ui';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 import { HiDownload, HiUpload } from 'react-icons/hi';
@@ -14,24 +14,35 @@ import { addMonths, format, parse, startOfYear } from 'date-fns';
 
 const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
+
+const FINANCIAL_YEAR_KEY = 'selectedFinancialYear';
+const FINANCIAL_YEAR_CHANGE_EVENT = 'financialYearChanged';
+
+
 interface PFTrackerBulkUploadProps {
   onUploadConfirm: () => void;
   canCreate:boolean;
 }
 
-const generateMonthOptions = () => {
-  const currentYear = new Date().getFullYear();
-  const twoDigitYear = String(currentYear) // Gets last 2 digits of year
-  const months = [];
+const generateMonthOptions = (financialYear: string | null) => {
+  if (!financialYear) return [];
   
-  // Generate options for current year only
-  const startDate = startOfYear(new Date(currentYear, 0));
+  // Parse the financial year (format: "2023-24")
+  const [startYear] = financialYear.split('-');
+  const fullStartYear = parseInt(`${startYear}`);
+  
+  const months = [];
+  // Start from April of start year
+  let startDate = new Date(fullStartYear, 3, 1); // Month is 0-based, so 3 is April
+  
+  // Generate 12 months starting from April
   for (let i = 0; i < 12; i++) {
-    const date = addMonths(startDate, i);
-    months.push({
-      value: format(date, 'yyyy-MM'),
-      label: `${format(date, 'MMM')} ${twoDigitYear}`  // Shows "Jan 25", "Feb 25", etc.
-    });
+      const date = addMonths(startDate, i);
+      const twoDigitYear = format(date, 'yy'); // Get last two digits of the year
+      months.push({
+          value: format(date, 'yyyy-MM'),
+          label: `${format(date, 'MMM')} ${twoDigitYear}` // Always shows format like "Jan 25"
+      });
   }
   
   return months;
@@ -44,9 +55,32 @@ const PFTrackerBulkUpload: React.FC<PFTrackerBulkUploadProps> = ({ onUploadConfi
   const [file, setFile] = useState<File | null>(null);
   const [currentGroup, setCurrentGroup] = useState('');
   const navigate = useNavigate();
-  const groupOptions = useMemo(() => generateMonthOptions(), []);
   const [loading, setLoading] = useState(false);
+  const [financialYear, setFinancialYear] = useState<string | null>(
+    sessionStorage.getItem(FINANCIAL_YEAR_KEY)
+);
+const groupOptions = useMemo(() => generateMonthOptions(financialYear), [financialYear]);
 
+useEffect(() => {
+  const handleFinancialYearChange = (event: CustomEvent) => {
+      const newFinancialYear = event.detail;
+      setFinancialYear(newFinancialYear);
+      // Reset current selection when financial year changes
+      setCurrentGroup('');
+  };
+
+  window.addEventListener(
+      FINANCIAL_YEAR_CHANGE_EVENT,
+      handleFinancialYearChange as EventListener
+  );
+
+  return () => {
+      window.removeEventListener(
+          FINANCIAL_YEAR_CHANGE_EVENT,
+          handleFinancialYearChange as EventListener
+      );
+  };
+}, []);
 
   const handleUploadClick = () => {
     setIsDialogOpen(true);

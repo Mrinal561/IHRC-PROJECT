@@ -12,12 +12,13 @@ import { useNavigate } from 'react-router-dom'
 import toast from '@/components/ui/toast'
 import { Notification } from '@/components/ui'
 import Loading from '@/components/shared/Loading'
+import store from '@/store'
 // import Loading from '@/components/ui/Loading'
 
 
 const FINANCIAL_YEAR_KEY = 'selectedFinancialYear'
 const FINANCIAL_YEAR_CHANGE_EVENT = 'financialYearChanged';
-
+const { login } = store.getState()
 // Interface for permissions
 interface Permissions {
     canList: boolean;
@@ -89,6 +90,7 @@ const PFTracker: React.FC = () => {
     }, []);
 
     useEffect(() => {
+        console.log(login,"33333")
         const initializeAuth = async () => {
             try {
                 const response = await dispatch(fetchAuthUser())

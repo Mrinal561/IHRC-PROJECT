@@ -335,6 +335,7 @@ const ConfigDropdown: React.FC<ConfigDropdownProps> = ({
             type="file"
             onChange={handleFileChange}
             className="mb-4"
+            accept='.pdf, .zip, .jpg'
           />
         </div>
         <div className="mt-6 text-right">

@@ -1,120 +1,5 @@
-// import React, { useState } from 'react';
-// import { Button, Dialog, Input, Notification, toast } from '@/components/ui';
-// import { HiDownload, HiUpload } from 'react-icons/hi';
-// import { useNavigate } from 'react-router-dom';
 
-// const documentPath = "../store/AllMappedCompliancesDetails.xls";
-
-
-// interface LWFTrackerBulkUploadProps {
-//     onUploadConfirm: () => void;
-//   }
-
-
-// const LWFTrackerBulkUpload: React.FC<LWFTrackerBulkUploadProps> = ({ onUploadConfirm }) => {
-//   const [isDialogOpen, setIsDialogOpen] = useState(false);
-//   const [remark, setRemark] = useState('');
-//   const [file, setFile] = useState<File | null>(null);
-//   const navigate = useNavigate();
-
-//   const handleUploadClick = () => {
-//     setIsDialogOpen(true);
-//   };
-
-//   const handleConfirm = () => {
-//     setIsDialogOpen(false);
-//     navigate('/uploadedLWFdetails')
-//   };
-
-
-//   const handleCancel = () => {
-//     setIsDialogOpen(false);
-//     setRemark('');
-//     setFile(null);
-//   };
-
-//   const handleDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
-//     e.preventDefault();
-//     // Implement the download functionality here
-//     // For example, you could use the `fetch` API to download the file
-//     fetch(documentPath)
-//       .then(response => response.blob())
-//       .then(blob => {
-//         const url = window.URL.createObjectURL(blob);
-//         const a = document.createElement('a');
-//         a.style.display = 'none';
-//         a.href = url;
-//         a.download = 'AllMappedCompliancesDetails.xls';
-//         document.body.appendChild(a);
-//         a.click();
-//         window.URL.revokeObjectURL(url);
-//       })
-//       .catch(() => console.error('Download failed'));
-//   };
-
-//   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-//     if (event.target.files) {
-//       setFile(event.target.files[0]);
-//     }
-//   };
-
-//   return (
-//     <>
-//       <Button
-//         variant="solid"
-//         size="sm"
-//         icon={<HiUpload />}
-//         onClick={handleUploadClick}
-//       >
-//         Upload LWF
-//       </Button>
-
-//       <Dialog
-//         isOpen={isDialogOpen}
-//         onClose={handleCancel}
-//         width={450}
-//       >
-//         <h5 className="mb-4">Upload LWF</h5>
-       
-//         <div className="flex flex-col gap-2">
-//           <p>Upload LWF File:</p>
-//           <Input
-//             type="file"
-//             onChange={handleFileChange}
-//             className="mb-4"
-//           />
-//         </div>
-//         <div className="my-4 flex gap-2 items-center">
-//           {/* <p>Download LWF Upload Format</p> */}
-//           <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
-//             <Button size="sm" icon={<HiDownload />}>Download Format</Button>
-//           </a>
-//         </div>
-//         <div className="mt-6 text-right">
-//           <Button
-//             size="sm"
-//             className="mr-2"
-//             onClick={handleCancel}
-//           >
-//             Cancel
-//           </Button>
-//           <Button
-//             variant="solid"
-//             size="sm"
-//             onClick={handleConfirm}
-//           >
-//             Confirm
-//           </Button>
-//         </div>
-//       </Dialog>
-//     </>
-//   );
-// };
-
-// export default LWFTrackerBulkUpload;
-
-
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Button, Dialog, Input, Notification, toast } from '@/components/ui';
 import { HiDownload, HiUpload } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
@@ -127,24 +12,34 @@ import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 import { createLwfTracker } from '@/store/slices/lwfSetup/lwfTrackerSlice';
 import { addMonths, format, parse, startOfYear } from 'date-fns';
 
+const FINANCIAL_YEAR_KEY = 'selectedFinancialYear';
+const FINANCIAL_YEAR_CHANGE_EVENT = 'financialYearChanged';
+
+
 interface LWFTrackerBulkUploadProps {
   onUploadConfirm: () => void;
   canCreate: boolean;
 }
 
-const generateMonthOptions = () => {
-  const currentYear = new Date().getFullYear();
-  const twoDigitYear = String(currentYear) // Gets last 2 digits of year
-  const months = [];
+const generateMonthOptions = (financialYear: string | null) => {
+  if (!financialYear) return [];
   
-  // Generate options for current year only
-  const startDate = startOfYear(new Date(currentYear, 0));
+  // Parse the financial year (format: "2023-24")
+  const [startYear] = financialYear.split('-');
+  const fullStartYear = parseInt(`${startYear}`);
+  
+  const months = [];
+  // Start from April of start year
+  let startDate = new Date(fullStartYear, 3, 1); // Month is 0-based, so 3 is April
+  
+  // Generate 12 months starting from April
   for (let i = 0; i < 12; i++) {
-    const date = addMonths(startDate, i);
-    months.push({
-      value: format(date, 'yyyy-MM'),
-      label: `${format(date, 'MMM')} ${twoDigitYear}`  // Shows "Jan 25", "Feb 25", etc.
-    });
+      const date = addMonths(startDate, i);
+      const twoDigitYear = format(date, 'yy'); // Get last two digits of the year
+      months.push({
+          value: format(date, 'yyyy-MM'),
+          label: `${format(date, 'MMM')} ${twoDigitYear}` // Always shows format like "Jan 25"
+      });
   }
   
   return months;
@@ -157,8 +52,33 @@ const LWFTrackerBulkUpload: React.FC<LWFTrackerBulkUploadProps> = ({ onUploadCon
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const groupOptions = useMemo(() => generateMonthOptions(), []);
   const [loading, setLoading] = useState(false);
+  const [financialYear, setFinancialYear] = useState<string | null>(
+    sessionStorage.getItem(FINANCIAL_YEAR_KEY)
+);
+
+const groupOptions = useMemo(() => generateMonthOptions(financialYear), [financialYear]);
+
+useEffect(() => {
+  const handleFinancialYearChange = (event: CustomEvent) => {
+      const newFinancialYear = event.detail;
+      setFinancialYear(newFinancialYear);
+      // Reset current selection when financial year changes
+      setCurrentGroup('');
+  };
+
+  window.addEventListener(
+      FINANCIAL_YEAR_CHANGE_EVENT,
+      handleFinancialYearChange as EventListener
+  );
+
+  return () => {
+      window.removeEventListener(
+          FINANCIAL_YEAR_CHANGE_EVENT,
+          handleFinancialYearChange as EventListener
+      );
+  };
+}, []);
 
   const handleUploadClick = () => {
     setIsDialogOpen(true);
