@@ -57,11 +57,11 @@ const userValidationSchema = yup.object().shape({
             /^\S.*\S$|^\S$/,
             'The input must not have leading or trailing spaces',
         ),
-    email: yup
+        email: yup
         .string()
         .matches(
-            /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|in|org|net|edu|gov)$/,
-            'Invalid email address.',
+            /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]+$/,
+            'Invalid email address.'
         )
         .required('Email is required'),
     password: yup

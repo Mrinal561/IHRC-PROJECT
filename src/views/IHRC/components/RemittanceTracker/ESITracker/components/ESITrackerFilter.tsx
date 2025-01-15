@@ -1,103 +1,12 @@
-// import React, { useState, useMemo } from 'react';
-// import { EntityData, entityDataSet } from '../../../../store/dummyEntityData';
-// import OutlinedSelect from '@/components/ui/Outlined/Outlined';
-
-// // Define the structure of your ESITrackerData
-// interface ESITrackerData {
-//   companyName: string;
-//   esiCode: string;
-//   location: string;
-//   month: string;
-//   noOfEmployees: number;
-//   wages: string;
-//   esiContribution: string;
-//   totalChallanAmount: number;
-//   dueDate: string;
-//   dateOfPayment: string;
-//   delay: string;
-//   delayReason: string;
-//   typeOfChallan: string;
-//   challanNo: string;
-// }
-
-// type Option = {
-//   value: string;
-//   label: string;
-// };
-
-// const getUniqueValues = (data: any[], key: string): string[] => {
-//   const values = data.map(item => item[key]);
-//   return Array.from(new Set(values)).filter((value): value is string => value !== undefined);
-// };
-
-// const createOptions = (values: string[]): Option[] =>
-//   values.map(value => ({ value, label: value }));
-
-// interface ESITrackerFilterProps {
-//   data: ESITrackerData[];
-//   onFilterChange: (filters: { groupName: string; companyName: string; esiCode: string }) => void;
-// }
-
-// const ESITrackerFilter: React.FC<ESITrackerFilterProps> = ({ data, onFilterChange }) => {
-//   const groupOptions = useMemo(() => createOptions(getUniqueValues(entityDataSet, 'Company_Group_Name')), []);
-//   const nameOptions = useMemo(() => createOptions(getUniqueValues(entityDataSet, 'Company_Name')), []);
-//   const esiCodeOptions = useMemo(() => createOptions(getUniqueValues(data, 'esiCode')), [data]);
-
-//   const [currentGroup, setCurrentGroup] = useState<string>(groupOptions[0]?.value || '');
-//   const [groupName, setGroupName] = useState<string>(nameOptions[0]?.value || '');
-//   const [currentEsiCode, setCurrentEsiCode] = useState<string>(esiCodeOptions[0]?.value || '');
-
-//   const handleChange = (setter: React.Dispatch<React.SetStateAction<string>>, filterType: string) =>
-//     (selectedOption: Option | null) => {
-//       if (selectedOption) {
-//         setter(selectedOption.value);
-//         onFilterChange({
-//           groupName: filterType === 'groupName' ? selectedOption.value : currentGroup,
-//           companyName: filterType === 'companyName' ? selectedOption.value : groupName,
-//           esiCode: filterType === 'esiCode' ? selectedOption.value : currentEsiCode,
-//         });
-//       }
-//     };
-
-//   return (
-//     <div className="flex gap-3">
-//       <div className='w-full'>
-//         <OutlinedSelect
-//           label="Company Group"
-//           options={groupOptions}
-//           value={groupOptions.find((option) => option.value === currentGroup)}
-//           onChange={handleChange(setCurrentGroup, 'groupName')}
-//         />
-//       </div>
-//       <div className='w-full'>
-//         <OutlinedSelect
-//           label="Company"
-//           options={nameOptions}
-//           value={nameOptions.find((option) => option.value === groupName)}
-//           onChange={handleChange(setGroupName, 'companyName')}
-//         />
-//       </div>
-//       <div className='w-full z-20'>
-//         <OutlinedSelect
-//           label="ESI Code"
-//           options={esiCodeOptions}
-//           value={esiCodeOptions.find((option) => option.value === currentEsiCode)}
-//           onChange={handleChange(setCurrentEsiCode, 'esiCode')}
-//         />
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default ESITrackerFilter;
-
-
 
 import React, { useState, useEffect } from 'react';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 import { endpoints } from '@/api/endpoint';
 import httpClient from '@/api/http-client';
 import { Notification, toast } from '@/components/ui';
+
+const FINANCIAL_YEAR_KEY = 'selectedFinancialYear';
+const FINANCIAL_YEAR_CHANGE_EVENT = 'financialYearChanged';
 
 type Option = {
   value: string;
@@ -118,6 +27,9 @@ const ESIWTrackerFilter: React.FC<ESIWTrackerFilterProps> = ({ onFilterChange })
   const [isLoading, setIsLoading] = useState(true);
   const [companyGroupName, setCompanyGroupName] = useState('');
   const [companyGroupId, setCompanyGroupId] = useState('');
+  const [financialYear, setFinancialYear] = useState<string | null>(
+    sessionStorage.getItem(FINANCIAL_YEAR_KEY)
+  );
   
   const [selectedCompanyGroup, setSelectedCompanyGroup] = useState<Option | null>(null);
   const [selectedCompany, setSelectedCompany] = useState<Option | null>(null);
@@ -127,6 +39,47 @@ const ESIWTrackerFilter: React.FC<ESIWTrackerFilterProps> = ({ onFilterChange })
   const [companies, setCompanies] = useState<Option[]>([]);
   const [esiCodeOptions, setEsiCodeOptions] = useState<Option[]>([]);
 
+  // Listen for financial year changes
+  useEffect(() => {
+    const handleFinancialYearChange = (event: CustomEvent) => {
+      const newFinancialYear = event.detail;
+      setFinancialYear(newFinancialYear);
+      
+      // Only reset company and ESI code selections
+      setSelectedCompany(null);
+      setSelectedEsiCode(null);
+      setCompanies([]);
+      setEsiCodeOptions([]);
+      
+      // If there's a selected company group, reload its companies
+      if (selectedCompanyGroup?.value) {
+        loadCompanies(selectedCompanyGroup.value);
+      }
+      
+      // Update filters while preserving group
+      onFilterChange({
+        groupName: selectedCompanyGroup?.label || '',
+        groupId: selectedCompanyGroup?.value || '',
+        companyName: '',
+        companyId: '',
+        esiCode: ''
+      });
+    };
+
+    window.addEventListener(
+      FINANCIAL_YEAR_CHANGE_EVENT,
+      handleFinancialYearChange as EventListener
+    );
+
+    return () => {
+      window.removeEventListener(
+        FINANCIAL_YEAR_CHANGE_EVENT,
+        handleFinancialYearChange as EventListener
+      );
+    };
+  }, [selectedCompanyGroup, onFilterChange]);
+
+  
   const showNotification = (type: 'success' | 'info' | 'danger' | 'warning', message: string) => {
     toast.push(
       <Notification
@@ -199,20 +152,21 @@ const ESIWTrackerFilter: React.FC<ESIWTrackerFilterProps> = ({ onFilterChange })
   // Load ESI Codes based on selected Company
   const loadESICodes = async (companyId: string) => {
     try {
-      const { data } = await httpClient.get(endpoints.esiSetup.getAll(), {
+      const { data } = await httpClient.get(endpoints.esiSetup.getAllCodes(), {
         params: {
           'company_id[]': [companyId]
         }
       });
-
-      if (data?.data) {
-        const formattedESICodes = data.data.map((esisetup: any) => ({
+  
+      if (data) {
+        const formattedESICodes = data.map((esisetup: any) => ({
           label: esisetup.code,
           value: esisetup.code,
-          companyId: String(esisetup.company_id),
-          groupId: String(esisetup.group_id)
+          companyId: String(esisetup.Company.id),
+          groupId: String(esisetup.CompanyGroup.id),
+          location: esisetup.Location.name
         }));
-
+  
         setEsiCodeOptions(formattedESICodes);
         if (formattedESICodes.length === 0) {
           showNotification('info', 'No ESI Codes found for this company');

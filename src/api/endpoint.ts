@@ -86,21 +86,25 @@ export const endpoints = {
         create: () => api('companyadmin/esisetup'),
         // download: () => api(`companyadmin/esisetup/esi-tracker/export`)
          update: (id: any) => api(`/companyadmin/esisetup/${id}`),
-         delete: (id:any) => api(`companyadmin/esisetup/${id}`)
+         delete: (id:any) => api(`companyadmin/esisetup/${id}`),
+         getAllCodes:()=> api('esi-code')
     },
     pfSetup: {
         getAll: () => api('companyadmin/pfsetup'),
         create: () => api('companyadmin/pfsetup'),
         getById: (id: any) => api(`companyadmin/pfsetup/${id}`),
         update: (id: any) => api(`/companyadmin/pfsetup/${id}`),
-        delete: (id:any) => api(`companyadmin/pfsetup/${id}`)   
+        delete: (id:any) => api(`companyadmin/pfsetup/${id}`),
+        getAllCodes:()=> api('pf-code')
     },
     ptSetup: {
         getAll: () => api('companyadmin/ptsetup'),
         create: () => api('companyadmin/ptsetup'),
         getById: (id: any) => api(`companyadmin/ptsetup/${id}`),
         update: (id: any) => api(`companyadmin/ptsetup/${id}`),
-        delete: (id:any) => api(`companyadmin/ptsetup/${id}`)
+        delete: (id:any) => api(`companyadmin/ptsetup/${id}`),
+        getAllCodes:()=> api('ptec-code'),
+        rcCodes:()=>  api('ptrc-code'),
     },
     tracker: {
         downloadFormat: () => api('/companyadmin/pfsetup/pf-tracker/exportdata'),
@@ -184,7 +188,8 @@ export const endpoints = {
         create: () => api('/companyadmin/lwfsetup'),
         getById: (id: any) => api(`companyadmin/lwfsetup/${id}`),
           update: (id: any) => api(`companyadmin/lwfsetup/${id}`),
-          delete: (id:any) => api(`companyadmin/lwfsetup/${id}`)
+          delete: (id:any) => api(`companyadmin/lwfsetup/${id}`),
+          getAllCodes:()=> api('lwf-code')
     },
     request: {
         request: (id: any) => api(`companyadmin/company/edit-request/${id}`),
