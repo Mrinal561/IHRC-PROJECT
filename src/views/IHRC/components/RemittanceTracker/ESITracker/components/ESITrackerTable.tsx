@@ -222,6 +222,8 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> =({
                         ₹{(props.getValue() as number).toLocaleString()}
                     </div>
                 ),
+
+                
             },
             {
                 header: 'Reason For Difference',
