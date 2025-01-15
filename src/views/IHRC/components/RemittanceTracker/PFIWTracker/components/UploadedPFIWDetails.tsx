@@ -246,21 +246,25 @@ const UploadedPFIWDetails: React.FC<UploadedPFIWDetailsProps> = ({ onBack }) => 
     () => [
       {
         header: 'Company',
+        enableSorting: false,
         accessorKey: 'PfSetup.Company.name',
         cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
       },
       {
         header: 'PF Code',
+        enableSorting: false,
         accessorKey: 'PfSetup.pf_code',
         cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
       },
       {
         header: 'Location',
+        enableSorting: false,
         accessorKey: 'PfSetup.Location.name',
         cell: (props) => <div className="w-32 truncate">{props.getValue() as string}</div>,
       },
       {
         header: 'Month',
+        enableSorting: false,
         accessorKey: 'payroll_month',
         cell: (props) => {
           const date = new Date(props.getValue() as string);
@@ -273,21 +277,25 @@ const UploadedPFIWDetails: React.FC<UploadedPFIWDetailsProps> = ({ onBack }) => 
       },
       {
         header: 'Due Date',
+        enableSorting: false,
         accessorKey: 'payment_due_date',
         cell: (props) => <div className="w-28 truncate">{dayjs(props.getValue() as string).format('DD-MM-YYYY')}</div>,
       },
       {
         header: 'Date of Payment',
+        enableSorting: false,
         accessorKey: 'payment_date',
         cell: (props) => <div className="w-40 truncate">{dayjs(props.getValue() as string).format('DD-MM-YYYY')}</div>,
       },
       {
         header: 'Delay in Days',
+        enableSorting: false,
         accessorKey: 'delay_in_days',
         cell: (props) => <div className="w-28 truncate">{props.getValue() ? `${props.getValue()} Days` : '-'}</div>,
       },
       {
         header: 'Delay Reason',
+        enableSorting: false,
         accessorKey: 'delay_reason',
         cell: (props) => {
           const value = props.getValue() as string;
@@ -300,6 +308,7 @@ const UploadedPFIWDetails: React.FC<UploadedPFIWDetailsProps> = ({ onBack }) => 
       },
       {
   header: 'Challan',
+  enableSorting: false,
   accessorKey: 'challan_document',
   cell: (props) => {
     const challanDocument = props.getValue() as string | null;
