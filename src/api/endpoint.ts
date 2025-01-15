@@ -209,9 +209,9 @@ export const endpoints = {
     branchAgreement: {
         list: () => api('companyadmin/branch/branchagreement'),
         create: () => api('/companyadmin/branch/branch-agreement/'),
-        update: (id: any) => api(`/companyadmin/branch-agreement/${id}`),
-        detail: (id: any) => api(`/companyadmin/branch-agreement/${id}`),
-        delete: (id: any) => api(`/companyadmin/branch-agreement/${id}`)
+        update: (id: any) => api(`/companyadmin/branch/branchagreement/${id}`),
+        detail: (id: any) => api(`/companyadmin/branch/branchagreement/${id}`),
+        delete: (id: any) => api(`/companyadmin/branch/branchagreement/${id}`)
 
     }
 }
