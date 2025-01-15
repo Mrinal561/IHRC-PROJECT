@@ -199,10 +199,12 @@ const BranchAgreementEditForm = () => {
     loadCompanyGroups();
   }, []);
 
-  const handleDocumentView = (values: FormValues) => {
-    if (values.existingDocument) {
-      // Open document in new tab or handle view logic
-      window.open(values.existingDocument, '_blank');
+  const handleDocumentView = (existingDocument: string) => (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    
+    if (existingDocument) {
+      const fullPath = `${import.meta.env.VITE_API_GATEWAY}/${existingDocument}`;
+      window.open(fullPath, '_blank');
     }
   };
 
@@ -402,7 +404,7 @@ const BranchAgreementEditForm = () => {
                 />
                 {values.existingDocument && ( 
                   <button
-                    onClick={() => handleDocumentView(values)} 
+                  onClick={handleDocumentView(values.existingDocument)}
                     className="p-2 hover:bg-gray-100 rounded-full flex-shrink-0"
                     title="View Document"
                     type="button"
