@@ -231,7 +231,7 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> =({
                     return(
                         <Tooltip title={value}>
                         <div className="w-40 truncate">
-                        {(props.getValue() as number).toLocaleString()}
+                        {(props.getValue() as number)}
                     </div>
                         </Tooltip>
                     )
