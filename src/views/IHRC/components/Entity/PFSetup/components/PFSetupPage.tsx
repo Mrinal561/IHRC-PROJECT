@@ -476,12 +476,18 @@ useEffect(()=>{
 
     const loadUsers = async () => {
         try {
-            const response = await httpClient.get(endpoints.user.getAll())
+            const response = await httpClient.get(endpoints.user.getAll(), {
+                params: {
+                  'company_id[]': companyId
+                }
+              });
             console.log('Users API Response:', response.data)
 
             if (response.data) {
                 // Format the users data to only include name and id
-                const formattedUsers = response.data.data.map((user: any) => ({
+                const formattedUsers = response.data.data
+                .filter((user: any) => user.user_details.auth_signatory)
+                .map((user: any) => ({
                     id: user.user_details.id,
                     name: `${user.user_details.name}`,
                 }))
@@ -790,8 +796,20 @@ useEffect(()=>{
                         {getErrorMessage('register_date')}
                     </div>
                     <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                        PF Registration Certificate
+                    </label>
+                    <Input
+                    accept='.pdf,.zip,.jpg'
+                        type="file"
+                        onChange={handleRegistrationCertificateUpload}
+                    />
+                    {getErrorMessage('register_certificate')}
+                </div>
+                </div>
+                <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Choose the Signatories <span className="text-red-500">*</span>
+                            Choose the Signatories
                         </label>
                         <Select
                             isMulti
@@ -803,7 +821,6 @@ useEffect(()=>{
                         />
                          {getErrorMessage('signatory_data')}
                     </div>
-                </div>
                 {selectedSignatories.length > 0 && (
                     <div className="space-y-4 border rounded-lg p-4">
                         <h6 className="font-semibold">Selected Signatories</h6>
@@ -901,17 +918,7 @@ useEffect(()=>{
                         ))}
                     </div>
                 )}
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                        PF Registration Certificate
-                    </label>
-                    <Input
-                        type="file"
-                        accept='.pdf,.zip,.jpg'
-                        onChange={handleRegistrationCertificateUpload}
-                    />
-                    {getErrorMessage('register_certificate')}
-                </div>
+               
                 <div className="flex justify-end space-x-2">
                     <Button onClick={() => navigate(-1)}>Cancel</Button>
                     <Button
