@@ -267,9 +267,6 @@ const [subCategoryInput, setSubCategoryInput] = useState('');
         end_date: endDate.toISOString(),
         applicable_for_all: values.applicableForAllCompany,
         agreement_document: base64Document,
-        // Uncomment if your API needs these
-        // file_name: values.agreementDocument.name,
-        // file_type: values.agreementDocument.type
       };
   
       const response = await httpClient.post(

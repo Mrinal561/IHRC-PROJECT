@@ -10,22 +10,25 @@ import * as Yup from 'yup';
 import DatePicker from '@/components/ui/DatePicker/DatePicker';
 import { format } from 'date-fns';
 import SubCategoryAutosuggest from './SubCategoryAutosuggest';
+import { Eye } from 'lucide-react';
+
 
 interface FormValues {
-  agreementType: string;
-  ownerName: string;
-  partnerName: string;
-  partnerContact: string;
-  startDate: string;
-  endDate: string;
-  agreementDocument: File | null;
-  subCategory: string;
-  // Non-editable fields
-  companyGroup: string;
-  company: string;
-  branch: string;
-  applicableForAllCompany: boolean;
-}
+    agreementType: string;
+    ownerName: string;
+    partnerName: string;
+    partnerContact: string;
+    startDate: string;
+    endDate: string;
+    agreementDocument: File | null;
+    existingDocument: string; // Added this
+    subCategory: string;
+    // Non-editable fields
+    companyGroup: string;
+    company: string;
+    branch: string;
+    applicableForAllCompany: boolean;
+  }
 
 const validationSchema = Yup.object().shape({
   agreementType: Yup.string().required('Agreement Type is required'),
@@ -68,6 +71,7 @@ const BranchAgreementEditForm = () => {
     startDate: '',
     endDate: '',
     agreementDocument: null,
+    existingDocument: '', // Added this
     subCategory: '',
     companyGroup: '',
     company: '',
@@ -87,7 +91,7 @@ const BranchAgreementEditForm = () => {
     try {
       const agreementResponse = await httpClient.get(endpoints.branchAgreement.detail(id));
       const agreement = agreementResponse.data.main_agreement;
-
+  
       setBranchOfficeType(agreement.Branch.office_type);
       
       setInitialValues({
@@ -95,16 +99,17 @@ const BranchAgreementEditForm = () => {
         ownerName: agreement.owner_name || '',
         partnerName: agreement.partner_name || '',
         partnerContact: agreement.partner_number || '',
-        startDate: agreement.start_date ? format(new Date(agreement.start_date), 'yyyy-MM-dd') : '',
-        endDate: agreement.end_date ? format(new Date(agreement.end_date), 'yyyy-MM-dd') : '',
+        startDate: agreement.start_date || '',
+        endDate: agreement.end_date || '',
         agreementDocument: null,
+        existingDocument: agreement.agreement_document || '',
         subCategory: agreement.sub_category || '',
-        // Non-editable fields
         companyGroup: agreement.Branch.Company.group_name || '',
         company: agreement.Branch.Company.name || '',
         branch: agreement.Branch.name || '',
         applicableForAllCompany: agreement.applicable_for_all || false,
       });
+  
       setLoading(false);
     } catch (error) {
       console.error('Failed to load initial data:', error);
@@ -118,47 +123,59 @@ const BranchAgreementEditForm = () => {
     }
   }, [id]);
 
-    const handleFormSubmit = async (
-      values: FormValues,
-      { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }
-    ) => {
-      try {
-        const formData = new FormData();
-        formData.append('agreement_type', values.agreementType);
-        formData.append('owner_name', values.ownerName);
-        formData.append('partner_name', values.partnerName);
-        // Convert partner_number to number
-        formData.append('partner_number', String(parseInt(values.partnerContact, 10)));
-        formData.append('start_date', format(new Date(values.startDate), 'yyyy-MM-dd'));
-        formData.append('end_date', format(new Date(values.endDate), 'yyyy-MM-dd'));
-        formData.append('sub_category', values.subCategory);
-        // Ensure applicable_for_all is boolean
-        formData.append('applicable_for_all', values.applicableForAllCompany ? 'true' : 'false');
-  
-        if (values.agreementDocument instanceof File) {
-          formData.append('agreement_document', values.agreementDocument);
-        }
-  
-        await httpClient.put(
-          endpoints.branchAgreement.update(id),
-          formData,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          }
-        );
-  
-        showNotification('success', 'Agreement updated successfully');
-        navigate('/branch-agreements');
-      } catch (error) {
-        console.error('Failed to update agreement:', error);
-        showNotification('danger', 'Failed to update agreement');
-      } finally {
-        setSubmitting(false);
+  const handleFormSubmit = async (
+    values: FormValues,
+    { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }
+  ) => {
+    try {
+      let base64Document = '';
+      if (values.agreementDocument instanceof File) {
+        base64Document = await convertFileToBase64(values.agreementDocument);
       }
+  
+      const requestBody = {
+        agreement_type: values.agreementType,
+        owner_name: values.ownerName,
+        partner_name: values.partnerName,
+        partner_number: parseInt(values.partnerContact, 10),
+        start_date: format(new Date(values.startDate), 'yyyy-MM-dd'),
+        end_date: format(new Date(values.endDate), 'yyyy-MM-dd'),
+        sub_category: values.subCategory,
+        applicable_for_all: values.applicableForAllCompany
+      };
+  
+      // Only include document if a new one was uploaded
+      if (base64Document) {
+        requestBody['agreement_document'] = base64Document;
+      }
+  
+      await httpClient.put(
+        endpoints.branchAgreement.update(id),
+        requestBody
+      );
+  
+      showNotification('success', 'Agreement updated successfully');
+      navigate('/branch-agreements');
+    } catch (error) {
+      console.error('Failed to update agreement:', error);
+      showNotification('danger', 'Failed to update agreement');
+    } finally {
+      setSubmitting(false);
     }
-    
+  };
+  
+  // Add the convertFileToBase64 function if it's not already there
+  const convertFileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const base64Data = (reader.result as string).split(',')[1];
+        resolve(base64Data);
+      };
+      reader.onerror = (error) => reject(error);
+    });
+  };
   
 
   const loadCompanyGroups = async () => {
@@ -181,6 +198,13 @@ const BranchAgreementEditForm = () => {
   useEffect(() => {
     loadCompanyGroups();
   }, []);
+
+  const handleDocumentView = (values: FormValues) => {
+    if (values.existingDocument) {
+      // Open document in new tab or handle view logic
+      window.open(values.existingDocument, '_blank');
+    }
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -208,7 +232,7 @@ const BranchAgreementEditForm = () => {
             <div className="grid grid-cols-2 gap-6">
               {/* Non-editable fields */}
               <div className="space-y-2">
-                <label>Company Group</label>
+                <label>Company Group <span className="text-red-500">*</span></label>
                 <OutlinedInput 
                   value={companyGroups}
                   disabled 
@@ -216,7 +240,7 @@ const BranchAgreementEditForm = () => {
               </div>
 
               <div className="space-y-2">
-                <label>Company</label>
+                <label>Company <span className="text-red-500">*</span></label>
                 <OutlinedInput 
                   value={values.company}
                   disabled 
@@ -224,7 +248,7 @@ const BranchAgreementEditForm = () => {
               </div>
 
               <div className="space-y-2">
-                <label>Branch</label>
+                <label>Branch <span className="text-red-500">*</span></label>
                 <OutlinedInput 
                   value={values.branch}
                   disabled 
@@ -331,32 +355,35 @@ const BranchAgreementEditForm = () => {
               
 
               <div className="space-y-2">
-                <label htmlFor="startDate">Start Date <span className="text-red-500">*</span></label>
-                <DatePicker
-                  label="Start Date"
-                  value={values.startDate}
-                  onChange={(date) => setFieldValue('startDate', date ? format(date, 'yyyy-MM-dd') : '')}
-                />
-                {errors.startDate && touched.startDate && (
-                  <p className="text-red-500 text-sm">{errors.startDate}</p>
-                )}
-              </div>
+  <label htmlFor="startDate">Start Date <span className="text-red-500">*</span></label>
+  <DatePicker
+    placeholder="Start Date"
+    value={values.startDate ? new Date(values.startDate) : null}
+    onChange={(date) => setFieldValue('startDate', date ? format(date, 'yyyy-MM-dd') : '')}
+  />
+  {errors.startDate && touched.startDate && (
+    <p className="text-red-500 text-sm">{errors.startDate}</p>
+  )}
+</div>
 
-              <div className="space-y-2">
-                <label htmlFor="endDate">End Date <span className="text-red-500">*</span></label>
-                <DatePicker
-                  label="End Date"
-                  value={values.endDate}
-                  onChange={(date) => setFieldValue('endDate', date ? format(date, 'yyyy-MM-dd') : '')}
-                  minDate={values.startDate ? new Date(values.startDate) : undefined}
-                />
-                {errors.endDate && touched.endDate && (
-                  <p className="text-red-500 text-sm">{errors.endDate}</p>
-                )}
-              </div>
+<div className="space-y-2">
+  <label htmlFor="endDate">End Date <span className="text-red-500">*</span></label>
+  <DatePicker
+    placeholder="End Date"
+    value={values.endDate ? new Date(values.endDate) : null}
+    onChange={(date) => setFieldValue('endDate', date ? format(date, 'yyyy-MM-dd') : '')}
+    minDate={values.startDate ? new Date(values.startDate) : undefined}
+  />
+  {errors.endDate && touched.endDate && (
+    <p className="text-red-500 text-sm">{errors.endDate}</p>
+  )}
+</div>
 
-              <div className="space-y-2">
-                <label htmlFor="agreementDocument">Agreement Document</label>
+<div className="space-y-2">
+              <label htmlFor="agreementDocument" className="block text-sm font-medium text-gray-700 mb-2">
+                Agreement Document
+              </label>
+              <div className="flex items-center gap-2">
                 <Input
                   type="file"
                   accept=".pdf,.zip,.jpeg,.jpg,.png,.gif"
@@ -371,11 +398,23 @@ const BranchAgreementEditForm = () => {
                       setFieldValue('agreementDocument', file);
                     }
                   }}
+                  className="w-full"
                 />
-                {errors.agreementDocument && touched.agreementDocument && (
-                  <p className="text-red-500 text-sm">{errors.agreementDocument}</p>
+                {values.existingDocument && ( 
+                  <button
+                    onClick={() => handleDocumentView(values)} 
+                    className="p-2 hover:bg-gray-100 rounded-full flex-shrink-0"
+                    title="View Document"
+                    type="button"
+                  >
+                    <Eye size={20} />
+                  </button>
                 )}
               </div>
+              {errors.agreementDocument && touched.agreementDocument && (
+                <p className="text-red-500 text-sm">{errors.agreementDocument}</p>
+              )}
+            </div>
             </div>
 
             {/* Applicable for all company checkbox */}
