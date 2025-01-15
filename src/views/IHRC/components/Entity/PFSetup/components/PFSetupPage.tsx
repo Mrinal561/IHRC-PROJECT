@@ -476,7 +476,11 @@ useEffect(()=>{
 
     const loadUsers = async () => {
         try {
-            const response = await httpClient.get(endpoints.user.getAll())
+            const response = await httpClient.get(endpoints.user.getAll(), {
+                params: {
+                  'company_id[]': companyId
+                }
+              });
             console.log('Users API Response:', response.data)
 
             if (response.data) {

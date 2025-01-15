@@ -242,7 +242,11 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
   // Load Users/Signatories
   const loadUsers = async () => {
     try {
-      const response = await httpClient.get(endpoints.user.getAll());
+      const response = await httpClient.get(endpoints.user.getAll(),{
+        params: {
+          'company_id[]': companyId
+        }
+      });
       if(response.data){
         const authorizedSignatories = response.data.data.filter(user => user.user_details.auth_signatory);
         setUsers(authorizedSignatories);
