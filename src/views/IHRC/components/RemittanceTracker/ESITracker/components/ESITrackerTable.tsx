@@ -222,7 +222,6 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> =({
                         ₹{(props.getValue() as number).toLocaleString()}
                     </div>
                 ),
-
                 
             },
             {
