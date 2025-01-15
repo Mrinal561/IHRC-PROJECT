@@ -111,7 +111,7 @@ const ESITrackerBulkUpload: React.FC<ESITrackerBulkUploadProps> = ({ onUploadCon
             const formData = new FormData();
             formData.append('document', file);
             formData.append('month', currentGroup);
-            formData.append('financial_year', financialYear);
+            // formData.append('financial_year', financialYear);
 
             const res = await dispatch(createEsiTracker(formData))
                 .unwrap()
