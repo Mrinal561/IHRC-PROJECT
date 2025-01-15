@@ -565,21 +565,25 @@ const UploadedLWFDetails: React.FC<UploadedLWFDetailsProps> = ({ onBack }) => {
     () => [
       {
         header: 'Company',
+        enableSorting: false,
         accessorKey: 'LwfSetup.Company.name',
         cell: (props) => <div className="w-52 truncate">{props.getValue() as string}</div>,
       },
       {
         header: 'Location',
+        enableSorting: false,
         accessorKey: 'LwfSetup.Location.name',
         cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
       },
       {
         header: 'Registration Number',
+        enableSorting: false,
         accessorKey: 'LwfSetup.register_number',
         cell: (props) => <div className="w-52 truncate">{props.getValue() as string}</div>,
       },
       {
         header: 'Period',
+        enableSorting: false,
         accessorKey: 'period',
         cell: (props) => {
           const date = new Date(props.getValue() as string);
@@ -592,6 +596,7 @@ const UploadedLWFDetails: React.FC<UploadedLWFDetailsProps> = ({ onBack }) => {
       },
       {
         header: 'Salary Register Amt',
+        enableSorting: false,
         accessorKey: 'salary_register_amt',
         cell: (props) => <div className="w-52 truncate">
           ₹{(props.getValue() as number)?.toLocaleString() || '-'}
@@ -599,6 +604,7 @@ const UploadedLWFDetails: React.FC<UploadedLWFDetailsProps> = ({ onBack }) => {
       },
       {
         header: 'Total Paid Amt',
+        enableSorting: false,
         accessorKey: 'total_paid_amt',
         cell: (props) => <div className="w-52 truncate">
           ₹{(props.getValue() as number)?.toLocaleString() || '-'}
@@ -606,6 +612,7 @@ const UploadedLWFDetails: React.FC<UploadedLWFDetailsProps> = ({ onBack }) => {
       },
       {
         header: 'Difference Amt',
+        enableSorting: false,
         accessorKey: 'difference_amt',
         cell: (props) => <div className="w-52 truncate">
           ₹{(props.getValue() as number)?.toLocaleString() || '-'}
@@ -613,6 +620,7 @@ const UploadedLWFDetails: React.FC<UploadedLWFDetailsProps> = ({ onBack }) => {
       },
       {
         header: 'Difference Reason',
+        enableSorting: false,
         accessorKey: 'difference_reason',
         cell: (props) => {
           const value = props.getValue() as string;
@@ -625,6 +633,7 @@ const UploadedLWFDetails: React.FC<UploadedLWFDetailsProps> = ({ onBack }) => {
       },
       {
         header: 'Due Date',
+        enableSorting: false,
         accessorKey: 'payment_due_date',
         cell: (props) => <div className="w-28 truncate">
           {dayjs(props.getValue() as string).format('DD-MM-YYYY')}
@@ -632,6 +641,7 @@ const UploadedLWFDetails: React.FC<UploadedLWFDetailsProps> = ({ onBack }) => {
       },
       {
         header: 'Payment Date',
+        enableSorting: false,
         accessorKey: 'payment_date',
         cell: (props) => <div className="w-28 truncate">
           {dayjs(props.getValue() as string).format('DD-MM-YYYY')}
@@ -639,6 +649,7 @@ const UploadedLWFDetails: React.FC<UploadedLWFDetailsProps> = ({ onBack }) => {
       },
       {
         header: 'Delay in Days',
+        enableSorting: false,
         accessorKey: 'delay_in_days',
         cell: (props) => <div className="w-28 truncate">
           {props.getValue() ? `${props.getValue()} Days` : '-'}
@@ -646,6 +657,7 @@ const UploadedLWFDetails: React.FC<UploadedLWFDetailsProps> = ({ onBack }) => {
       },
       {
         header: 'Delay Reason',
+        enableSorting: false,
         accessorKey: 'delay_reason',
         cell: (props) => {
           const value = props.getValue() as string;
@@ -658,6 +670,7 @@ const UploadedLWFDetails: React.FC<UploadedLWFDetailsProps> = ({ onBack }) => {
       },
       {
         header: 'Receipt No',
+        enableSorting: false,
         accessorKey: 'receipt_no',
         cell: (props) => <div className="w-52 truncate">
           {props.getValue() as string || '-'}
@@ -665,6 +678,7 @@ const UploadedLWFDetails: React.FC<UploadedLWFDetailsProps> = ({ onBack }) => {
       },
        {
   header: 'Payment Receipt',
+  enableSorting: false,
   accessorKey: 'receipt_document',
   cell: (props) => {
     const paymentReceiptDocument = props.getValue() as string | null;

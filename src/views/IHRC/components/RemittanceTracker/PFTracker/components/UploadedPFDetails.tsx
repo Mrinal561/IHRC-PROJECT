@@ -49,31 +49,37 @@ const UploadedPFDetails: React.FC<UploadedPFDetailsProps> = ({ onBack }) => {
     () => [
       {
         header: 'PF Code',
+        enableSorting: false,
         accessorKey: 'PfSetup.pf_code',
         cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
       },
       {
         header: 'Company Group',
+        enableSorting: false,
         accessorKey: 'PfSetup.CompanyGroup.name',
         cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
       },
       {
         header: 'Company',
+        enableSorting: false,
         accessorKey: 'PfSetup.Company.name',
         cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
       },
       {
         header: 'Location',
+        enableSorting: false,
         accessorKey: 'PfSetup.Location.name',
         cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
       },
       {
         header: 'No. of Employees',
+        enableSorting: false,
         accessorKey: 'no_of_emp',
         cell: (props) => <div className="w-28 truncate  text-center">{props.getValue() as number}</div>,
       },
       {
         header: 'Month',
+        enableSorting: false,
         accessorKey: 'payroll_month',
         cell: (props) => {
           const date = new Date(props.getValue() as string);
@@ -86,76 +92,91 @@ const UploadedPFDetails: React.FC<UploadedPFDetailsProps> = ({ onBack }) => {
       },
       {
         header: 'EPF Wage',
+        enableSorting: false,
         accessorKey: 'epf_wage',
         cell: (props) => <div className="w-28 truncate">₹{(props.getValue() as number).toLocaleString()}</div>,
       },
       {
         header: 'EPS Wage',
+        enableSorting: false,
         accessorKey: 'eps_wage',
         cell: (props) => <div className="w-28 truncate">₹{(props.getValue() as number).toLocaleString()}</div>,
       },
       {
         header: 'EDLI Wage',
+        enableSorting: false,
         accessorKey: 'edli_wage',
         cell: (props) => <div className="w-28 truncate">₹{(props.getValue() as number).toLocaleString()}</div>,
       },
       {
         header: 'Total Challan Amount',
+        enableSorting: false,
         accessorKey: 'total_challan_amt',
         cell: (props) => <div className="w-52 truncate">₹{(props.getValue() as number).toLocaleString()}</div>,
       },
       {
         header: 'Total Paid Amount',
+        enableSorting: false,
         accessorKey: 'total_paid_amt',
         cell: (props) => <div className="w-52 truncate">₹{(props.getValue() as number).toLocaleString()}</div>,
       },
       {
         header: 'Difference Amount',
+        enableSorting: false,
         accessorKey: 'difference_amt',
         cell: (props) => <div className="w-52 truncate">₹{(props.getValue() as number).toLocaleString()}</div>,
       },
       {
         header: 'Difference Reason',
+        enableSorting: false,
         accessorKey: 'difference_reason',
         cell: (props) => <div className="w-52 truncate">{props.getValue() as string}</div>,
       },
       {
         header: 'Payment Due Date',
+        enableSorting: false,
         accessorKey: 'payment_due_date',
         cell: (props) => <div className="w-28 truncate">{dayjs(props.getValue() as string).format('DD-MM-YYYY')}</div>,
       },
       {
         header: 'Payment Date',
+        enableSorting: false,
         accessorKey: 'payment_date',
         cell: (props) => <div className="w-40 truncate">{dayjs(props.getValue() as string).format('DD-MM-YYYY')}</div>,
       },
       {
         header: 'Delay in Days',
+        enableSorting: false,
         accessorKey: 'delay_in_days',
         cell: (props) => <div className="w-28 truncate">{props.getValue() as number || '-'}</div>,
       },
       {
         header: 'Delay Reason',
+        enableSorting: false,
         accessorKey: 'delay_reason',
         cell: (props) => <div className="w-40 truncate">{props.getValue() as string || '-'}</div>,
       },
       {
         header: 'Challan Type',
+        enableSorting: false,
         accessorKey: 'challan_type',
         cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
       },
       {
         header: 'TRRN No',
+        enableSorting: false,
         accessorKey: 'trrn_no',
         cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
       },
       {
         header: 'CRN No',
+        enableSorting: false,
         accessorKey: 'crn_no',
         cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
       },
       {
         header: 'Remark',
+        enableSorting: false,
         accessorKey: 'remark',
         cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
       },
@@ -166,11 +187,13 @@ const UploadedPFDetails: React.FC<UploadedPFDetailsProps> = ({ onBack }) => {
       // },
       {
         header: 'Status',
+        enableSorting: false,
         accessorKey: 'status',
         cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
       },
       {
         header: 'Uploaded By',
+        enableSorting: false,
         accessorKey: 'UploadBy.name',
         cell: (props) => (
           <div className="w-40 truncate">
@@ -180,6 +203,7 @@ const UploadedPFDetails: React.FC<UploadedPFDetailsProps> = ({ onBack }) => {
       },
      {
   header: 'Challan',
+  enableSorting: false,
   accessorKey: 'challan_document',
   cell: (props) => {
     const challanDocument = props.getValue() as string | null;

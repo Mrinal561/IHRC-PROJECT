@@ -44,6 +44,7 @@ const [isLoading, setIsLoading] = useState(false);
     () => [
       {
         header: 'Company',
+        enableSorting: false,
         accessorKey: 'EsiSetup.Company.name',
         cell: (props) => (
             <div className="w-52 truncate">
@@ -53,6 +54,7 @@ const [isLoading, setIsLoading] = useState(false);
     },
     {
         header: 'ESI Code',
+        enableSorting: false,
         accessorKey: 'EsiSetup.code',
         cell: (props) => (
             <div className="w-40 truncate">
@@ -71,6 +73,7 @@ const [isLoading, setIsLoading] = useState(false);
     // },
     {
         header: 'ESI Code Location',
+        enableSorting: false,
         accessorKey: 'EsiSetup.Location.name',
         cell: (props) => (
             <div className="w-40 truncate">
@@ -80,6 +83,7 @@ const [isLoading, setIsLoading] = useState(false);
     },
     {
         header: 'Month',
+        enableSorting: false,
         accessorKey: 'payroll_month',
         cell: (props) => {
             const date = new Date(props.getValue() as string);
@@ -92,6 +96,7 @@ const [isLoading, setIsLoading] = useState(false);
     },
     {
         header: 'No. of Employees',
+        enableSorting: false,
         accessorKey: 'no_of_emp',
         cell: (props) => (
             <div className="w-40 truncate">
@@ -101,6 +106,7 @@ const [isLoading, setIsLoading] = useState(false);
     },
     {
         header: 'ESI Gross Wages',
+        enableSorting: false,
         accessorKey: 'gross_wage',
         cell: (props) => (
             <div className="w-40 truncate">
@@ -110,6 +116,7 @@ const [isLoading, setIsLoading] = useState(false);
     },
     {
         header: 'EE ESI',
+        enableSorting: false,
         accessorKey: 'employee_esi',
         cell: (props) => (
             <div className="w-28 truncate">
@@ -119,6 +126,7 @@ const [isLoading, setIsLoading] = useState(false);
     },
     {
         header: 'ER ESI',
+        enableSorting: false,
         accessorKey: 'employer_esi',
         cell: (props) => (
             <div className="w-28 truncate">
@@ -128,6 +136,7 @@ const [isLoading, setIsLoading] = useState(false);
     },
     {
         header: 'Total ESI',
+        enableSorting: false,
         accessorKey: 'total_esi',
         cell: (props) => (
             <div className="w-28 truncate">
@@ -137,6 +146,7 @@ const [isLoading, setIsLoading] = useState(false);
     },
     {
         header: 'Total Amount As per Challan',
+        enableSorting: false,
         accessorKey: 'challan_amt',
         cell: (props) => (
             <div className="w-52 truncate">
@@ -146,6 +156,7 @@ const [isLoading, setIsLoading] = useState(false);
     },
     {
         header: 'Difference in Amount',
+        enableSorting: false,
         accessorKey: 'difference_amt',
         cell: (props) => (
             <div className="w-40 truncate">
@@ -155,6 +166,7 @@ const [isLoading, setIsLoading] = useState(false);
     },
     {
         header: 'Reason For Difference',
+        enableSorting: false,
         accessorKey: 'difference_reason',
         cell: (props) => (
             <div className="w-40 truncate">
@@ -166,16 +178,19 @@ const [isLoading, setIsLoading] = useState(false);
    
     {
         header: 'Due Date',
+        enableSorting: false,
         accessorKey: 'payment_due_date',
         cell: (props) => <div className="w-28 truncate">{dayjs(props.getValue() as string).format('DD-MM-YYYY')}</div>,
     },
     {
         header: 'Date of Payment',
+        enableSorting: false,
         accessorKey: 'payment_date',
         cell: (props) => <div className="w-40 truncate">{dayjs(props.getValue() as string).format('DD-MM-YYYY')}</div>,
     },
     {
       header: 'Delay',
+      enableSorting: false,
       accessorKey: 'delay_in_days',
       cell: (props) => (
           <div className="w-40 truncate">
@@ -185,6 +200,7 @@ const [isLoading, setIsLoading] = useState(false);
   },
   {
       header: 'Delay Reason',
+      enableSorting: false,
       accessorKey: 'delay_reason',
       cell: (props) => (
           <div className="w-40 truncate">
@@ -194,6 +210,7 @@ const [isLoading, setIsLoading] = useState(false);
   },
     {
         header: 'Challan No',
+        enableSorting: false,
         accessorKey: 'challan_no',
         cell: (props) => (
             <div className="w-40 truncate">
@@ -203,6 +220,7 @@ const [isLoading, setIsLoading] = useState(false);
     },
     {
         header: 'Challan Type',
+        enableSorting: false,
         accessorKey: 'challan_type',
         cell: (props) => (
             <div className="w-40 truncate">
@@ -212,6 +230,7 @@ const [isLoading, setIsLoading] = useState(false);
     },
          {
   header: 'Challan',
+  enableSorting: false,
   accessorKey: 'challan_document',
   cell: (props) => {
     const challanDocument = props.getValue() as string | null;
