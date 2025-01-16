@@ -300,6 +300,7 @@ const handleRemitModeChange = (option: { value: string; label: string } | null) 
         onRequestClose={onClose}
         width={800}
         height={600}
+        shouldCloseOnOverlayClick={false} 
       >
         <div className="flex justify-center items-center h-full">
           <p className="text-red-500">{error}</p>

@@ -166,6 +166,7 @@ const DownloadCertificateButton = () => {
             isOpen={isDialogOpen}
             onClose={handleCancel}
             width={400}
+            shouldCloseOnOverlayClick={false} 
         >
             <h5 className="mb-4">Confirm Download</h5>
             <p>Are you sure you want to download certificate?</p>

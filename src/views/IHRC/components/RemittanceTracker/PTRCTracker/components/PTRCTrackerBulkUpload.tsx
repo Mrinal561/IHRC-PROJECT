@@ -211,7 +211,7 @@ const PTRCTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({ onUploadCon
       <Dialog
         isOpen={isDialogOpen}
         onClose={handleCancel}
-        width={500}
+        width={500}  shouldCloseOnOverlayClick={false} 
       >
         <h5 className="mb-4">Upload PT RC</h5>
         <div className='flex gap-3 w-full items-center mb-4'>

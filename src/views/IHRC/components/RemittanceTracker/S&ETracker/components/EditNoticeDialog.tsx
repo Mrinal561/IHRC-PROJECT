@@ -385,7 +385,7 @@ const EditNoticeDialog: React.FC<EditNoticeDialogProps> = ({
     <Dialog
       isOpen={isOpen}
       onClose={onClose}
-      width={800}
+      width={800}  shouldCloseOnOverlayClick={false} 
     >
       <div className="p-6">
         <h5 className="text-lg font-semibold mb-6">Edit Notice Details</h5>

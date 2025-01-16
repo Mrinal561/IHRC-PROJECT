@@ -165,7 +165,7 @@ const Role = () => {
       <Dialog
         isOpen={isDialogOpen}
         onClose={handleDialogClose}
-        onRequestClose={handleDialogClose}
+        onRequestClose={handleDialogClose}  shouldCloseOnOverlayClick={false} 
       >
         <h5 className="mb-6">Add Role</h5>
         <div className="flex flex-col gap-6">

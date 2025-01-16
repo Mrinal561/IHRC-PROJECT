@@ -343,7 +343,7 @@ const PTSetupPanel: React.FC<PTSetupSidePanelProps> = ({
 
       <Dialog
         isOpen={showAddSignatoryDialog}
-        onClose={() => setShowAddSignatoryDialog(false)}
+        onClose={() => setShowAddSignatoryDialog(false)}  shouldCloseOnOverlayClick={false} 
       >
         <h5 className="mb-4">Add New Signatory</h5>
         <div className="space-y-4">

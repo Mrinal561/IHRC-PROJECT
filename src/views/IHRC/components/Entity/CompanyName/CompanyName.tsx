@@ -213,6 +213,7 @@ const CompanyName = () => {
         isOpen={dialogIsOpen}
         onClose={onDialogClose}
         onRequestClose={onDialogClose}
+        shouldCloseOnOverlayClick={false} 
       >
         <form onSubmit={formik.handleSubmit}>
           <h5 className="mb-4">Add Company</h5>

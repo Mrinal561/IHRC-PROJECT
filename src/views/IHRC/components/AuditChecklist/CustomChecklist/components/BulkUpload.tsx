@@ -76,6 +76,7 @@ const BulkUpload = () => {
         isOpen={isDialogOpen}
         onClose={handleCancel}
         width={450}
+        shouldCloseOnOverlayClick={false} 
       >
         <h5 className="mb-4"> Add Custom Compliances</h5>
         <div className="my-4 flex gap-2 items-center">

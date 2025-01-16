@@ -221,7 +221,7 @@ const PFIWTrackerBulkUpload: React.FC<PFIWTrackerBulkUploadProps> = ({ onUploadC
       <Dialog
         isOpen={isDialogOpen}
         onClose={handleCancel}
-        width={450}
+        width={450}  shouldCloseOnOverlayClick={false} 
       >
         <h5 className="mb-4">Upload PF IW</h5>
         <div className='flex gap-3 w-full items-center'>

@@ -211,6 +211,7 @@ const CompanyESISetupPage: React.FC = () => {
         onRequestClose={() => setIsOpen(false)}
         width={800}
         height={640}
+        shouldCloseOnOverlayClick={false} 
       >
         <h4 className="mb-1">Add ESI Setup</h4>
         <ESISetupPanel

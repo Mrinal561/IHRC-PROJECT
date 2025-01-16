@@ -732,6 +732,7 @@ export const BulkSetOwnerApproverButton: React.FC<BulkSetOwnerApproverButtonProp
         onClose={handleCancel}
         onRequestClose={handleCancel}
         width={700}
+        shouldCloseOnOverlayClick={false} 
       >
         <h5 className="mb-2 text-lg font-semibold">
           Set Owner & Approver for Compliances

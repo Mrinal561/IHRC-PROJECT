@@ -67,7 +67,7 @@ const BulkUpload: React.FC<BulkUploadProps> = ({ isOpen, onClose, company }) => 
     };
 
     return (
-        <Dialog isOpen={isOpen}>
+        <Dialog isOpen={isOpen}  shouldCloseOnOverlayClick={false} >
             <h5 className="mb-4">
                 Upload Attendance Register
             </h5>

@@ -58,6 +58,7 @@ const BulkAlertButton = () => {
         onClose={() => setIsBulkReminderDialogOpen(false)}
         onRequestClose={() => setIsBulkReminderDialogOpen(false)}
         className="max-w-md p-6"
+        shouldCloseOnOverlayClick={false} 
       >
         <h5 className="mb-4 text-lg font-semibold">Set Bulk Reminder</h5>
         <div className="space-y-4">

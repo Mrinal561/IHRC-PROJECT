@@ -398,6 +398,7 @@ const CustomChecklistTable = () => {
                 isOpen={dialogIsOpen}
                 onClose={handleCancelDelete}
                 onRequestClose={handleCancelDelete}
+                shouldCloseOnOverlayClick={false} 
             >
                 <h5 className="mb-4">Confirm Delete</h5>
                 <p>

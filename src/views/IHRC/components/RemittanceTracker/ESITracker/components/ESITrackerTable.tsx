@@ -532,7 +532,7 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> =({
             )}
              <Dialog
         isOpen={deleteConfirmOpen}
-        onClose={() => setDeleteConfirmOpen(false)}
+        onClose={() => setDeleteConfirmOpen(false)}  shouldCloseOnOverlayClick={false} 
       >
         <div className="p-2">
           <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>
