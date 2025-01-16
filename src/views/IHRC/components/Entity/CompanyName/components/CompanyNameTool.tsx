@@ -117,6 +117,7 @@ const CompanyNameTool: React.FC<CompanyToolProps> = ({ onDataChange }) => {
         isOpen={dialogIsOpen}
         onClose={onDialogClose}
         onRequestClose={onDialogClose}
+        shouldCloseOnOverlayClick={false} 
       >
         <h5 className="mb-4">Add Company</h5>
         <div className="mb-4 flex flex-col gap-3">

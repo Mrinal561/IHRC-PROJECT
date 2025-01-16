@@ -230,6 +230,7 @@ const BranchEditDialog: React.FC<BranchEditDialogProps> = ({
         onClose={onClose}
         onRequestClose={onClose}
         width={600}
+        shouldCloseOnOverlayClick={false} 
       >
         <div className="flex justify-center items-center h-full">
           <p>Loading...</p>

@@ -75,7 +75,7 @@ const BU = () => {
       <Dialog
         isOpen={isDialogOpen}
         onClose={handleCancel}
-        width={450}
+        width={450}  shouldCloseOnOverlayClick={false} 
       >
         <h5 className="mb-4"> Add States</h5>
         <div className="my-4 flex gap-2 items-center">

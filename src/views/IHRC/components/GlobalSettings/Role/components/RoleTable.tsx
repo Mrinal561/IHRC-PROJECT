@@ -432,7 +432,7 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
             <Dialog
                 isOpen={editDialogIsOpen}
                 onClose={handleDialogClose}
-                onRequestClose={handleDialogClose}
+                onRequestClose={handleDialogClose}  shouldCloseOnOverlayClick={false} 
             >
                 <h5 className="mb-4">Edit Role Name</h5>
                 <div className="mb-4">

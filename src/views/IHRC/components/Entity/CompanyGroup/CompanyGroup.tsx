@@ -192,6 +192,7 @@ const CompanyGroup = () => {
                 onRequestClose={onDialogClose}
                 width={500}
                 height={260}
+                shouldCloseOnOverlayClick={false} 
             >
                 <div className="flex flex-col h-full justify-between">
                     <h5 className="mb-4">Add Company Group</h5>

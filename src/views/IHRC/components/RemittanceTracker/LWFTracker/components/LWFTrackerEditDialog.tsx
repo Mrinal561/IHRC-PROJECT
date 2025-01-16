@@ -338,7 +338,7 @@ const LWFTrackerEditDialog: React.FC<LWFTrackerEditDialogProps> = ({
         onClose={onClose}
         onRequestClose={onClose}
         width={800}
-        height={450}
+        height={450}  shouldCloseOnOverlayClick={false} 
       >
         <div className="flex justify-center items-center h-full">
           <p className="text-red-500">{error}</p>

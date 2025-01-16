@@ -149,7 +149,7 @@ const PTRCTrackerEditDialog: React.FC<PTRCTrackerEditDialogProps> = ({
       onClose={onClose}
       onRequestClose={onClose}
       width={800}
-      height={420}
+      height={420}  shouldCloseOnOverlayClick={false} 
     >
       <h5 className="mb-4">Edit PT RC Tracker Detail</h5>
 

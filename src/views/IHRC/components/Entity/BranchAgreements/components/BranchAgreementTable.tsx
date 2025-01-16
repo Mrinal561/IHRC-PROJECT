@@ -356,6 +356,7 @@ const BranchAgreementTable = () => {
 <Dialog
   isOpen={deleteDialogOpen}
   onClose={() => setDeleteDialogOpen(false)}
+  shouldCloseOnOverlayClick={false} 
 >
   <h5 className="mb-4">Confirm Deletion</h5>
                   <p>

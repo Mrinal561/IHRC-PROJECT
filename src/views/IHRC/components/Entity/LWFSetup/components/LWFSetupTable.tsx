@@ -321,6 +321,7 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
                 isOpen={dialogIsOpen}
                 onClose={handleDialogClose}
                 onRequestClose={handleDialogClose}
+                shouldCloseOnOverlayClick={false} 
             >
                 <h5 className="mb-4">Confirm Deletion</h5>
                 <p>

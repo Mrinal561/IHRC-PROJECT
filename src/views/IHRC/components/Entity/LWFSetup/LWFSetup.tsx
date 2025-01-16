@@ -116,6 +116,7 @@ const LWFSetupPage: React.FC = () => {
         onRequestClose={() => setIsOpen(false)}
         width={800}
         height={650}
+        shouldCloseOnOverlayClick={false} 
       >
         <h4 className="mb-2">Add LWF Setup</h4>
         <LWFSetupPanel

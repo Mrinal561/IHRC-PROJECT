@@ -703,6 +703,7 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
                 onRequestClose={handleDialogClose}
                 className="p-4"
                 width={700}
+                shouldCloseOnOverlayClick={false} 
             >
                 <h5 className="mb-2 text-lg font-semibold">
                     Set Owner & Approver 

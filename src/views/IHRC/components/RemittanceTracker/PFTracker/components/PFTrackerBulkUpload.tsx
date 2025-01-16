@@ -238,7 +238,7 @@ useEffect(() => {
       <Dialog
         isOpen={isDialogOpen}
         onClose={handleCancel}
-        width={450}
+        width={450}  shouldCloseOnOverlayClick={false} 
       >
         <h5 className="mb-4">Upload PF</h5>
         <div className='flex gap-3 w-full items-center'>

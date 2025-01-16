@@ -301,7 +301,7 @@ const [editFormData, setEditFormData] = useState<PFData | null>(null);
       <Dialog
         isOpen={dialogIsOpen}
         onClose={handleDialogClose}
-        onRequestClose={handleDialogClose}
+        onRequestClose={handleDialogClose}  shouldCloseOnOverlayClick={false} 
       >
         <h5 className="mb-4">Confirm Deletion</h5>
         <p>

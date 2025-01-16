@@ -443,7 +443,7 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
         isOpen={isOpen}
         onClose={onClose}
         onRequestClose={onClose}
-        width={600}
+        width={600}  shouldCloseOnOverlayClick={false} 
       >
         <div className="flex justify-center items-center h-full">
           <p>Loading...</p>

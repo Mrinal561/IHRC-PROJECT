@@ -125,6 +125,7 @@ const DistrictTool: React.FC = () => {
         isOpen={dialogIsOpen}
         onClose={onDialogClose}
         onRequestClose={onDialogClose}
+        shouldCloseOnOverlayClick={false} 
       >
         <h5 className="mb-4">Add Districts</h5>
         <div className="flex flex-col gap-6">

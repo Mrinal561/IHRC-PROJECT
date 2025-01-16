@@ -292,7 +292,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
   if (error) {
     return (
-      <Dialog isOpen={true} onClose={onClose} onRequestClose={onClose}>
+      <Dialog isOpen={true} onClose={onClose} onRequestClose={onClose}  shouldCloseOnOverlayClick={false} >
         <div className="flex justify-center items-center h-full">
           <p className="text-red-500">{error}</p>
         </div>
