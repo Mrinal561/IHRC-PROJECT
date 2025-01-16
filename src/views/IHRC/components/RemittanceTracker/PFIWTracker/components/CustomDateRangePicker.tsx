@@ -172,6 +172,16 @@ const CustomDateRangePicker = ({ onApply }) => {
     }
   }
 
+  const handleReset = () => {
+    setStartDate(null);
+    setEndDate(null);
+    setDayCount(0);
+    setActiveTab('Current');
+    setActivePeriod('Month');
+    setFromInputFocused(false);
+    setToInputFocused(false);
+  };
+
   return (
     <div className="relative z-20">
       <div className="flex space-x-3">
@@ -290,6 +300,12 @@ const CustomDateRangePicker = ({ onApply }) => {
               className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
             >
               Cancel
+            </button>
+            <button
+              onClick={handleReset}
+              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+            >
+              Reset
             </button>
           </div>
         </div>
