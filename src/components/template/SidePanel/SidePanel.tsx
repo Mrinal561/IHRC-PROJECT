@@ -1,458 +1,231 @@
-// // import classNames from 'classnames'
-// // import Drawer from '@/components/ui/Drawer'
-// // import { HiOutlineCog } from 'react-icons/hi'
-// // import SidePanelContent, { SidePanelContentProps } from './SidePanelContent'
-// // import withHeaderItem from '@/utils/hoc/withHeaderItem'
-// // import { setPanelExpand, useAppSelector, useAppDispatch } from '@/store'
-// // import type { CommonProps } from '@/@types/common'
-// // import Notification from '../Notification'
-// // import { Select } from '@/components/ui'
-// // import { useEffect, useState } from 'react'
-// // import OutlinedSelect from '@/components/ui/Outlined'
-// // import {Badge} from '@/components/ui'
-// // import OutlinedBadgeSelect from '@/components/ui/OutlinedBadgeSelect'
+// // // // import classNames from 'classnames'
+// // // // import Drawer from '@/components/ui/Drawer'
+// // // // import { HiOutlineCog } from 'react-icons/hi'
+// // // // import SidePanelContent, { SidePanelContentProps } from './SidePanelContent'
+// // // // import withHeaderItem from '@/utils/hoc/withHeaderItem'
+// // // // import { setPanelExpand, useAppSelector, useAppDispatch } from '@/store'
+// // // // import type { CommonProps } from '@/@types/common'
+// // // // import Notification from '../Notification'
+// // // // import { Select } from '@/components/ui'
+// // // // import { useEffect, useState } from 'react'
+// // // // import OutlinedSelect from '@/components/ui/Outlined'
+// // // // import {Badge} from '@/components/ui'
+// // // // import OutlinedBadgeSelect from '@/components/ui/OutlinedBadgeSelect'
 
-// // type SidePanelProps = SidePanelContentProps & CommonProps
-
-
+// // // // type SidePanelProps = SidePanelContentProps & CommonProps
 
 
 
 
-// // interface Option {
-// //     value: string;
-// //     label: React.ReactNode;
-// //   }
+
+
+// // // // interface Option {
+// // // //     value: string;
+// // // //     label: React.ReactNode;
+// // // //   }
   
-// //   interface FinancialYearFilterProps {
-// //     onChange: (year: string) => void;
-// //   }
+// // // //   interface FinancialYearFilterProps {
+// // // //     onChange: (year: string) => void;
+// // // //   }
   
-// //   const FinancialYearFilter: React.FC<FinancialYearFilterProps> = ({ onChange }) => {
-// //       const currentYear = new Date().getFullYear();
-// //       const years = Array.from({ length: 5 }, (_, i) => `${currentYear - i}-${currentYear - i + 1}`);
+// // // //   const FinancialYearFilter: React.FC<FinancialYearFilterProps> = ({ onChange }) => {
+// // // //       const currentYear = new Date().getFullYear();
+// // // //       const years = Array.from({ length: 5 }, (_, i) => `${currentYear - i}-${currentYear - i + 1}`);
       
-// //       const [selectedYear, setSelectedYear] = useState<string>(years[0]);
+// // // //       const [selectedYear, setSelectedYear] = useState<string>(years[0]);
   
-// //       useEffect(() => {
-// //           onChange(selectedYear);
-// //       }, []);
+// // // //       useEffect(() => {
+// // // //           onChange(selectedYear);
+// // // //       }, []);
   
-// //       const options: Option[] = years.map(year => ({
-// //           value: year,
-// //           label: year
-// //       }));
+// // // //       const options: Option[] = years.map(year => ({
+// // // //           value: year,
+// // // //           label: year
+// // // //       }));
   
-// //       const handleChange = (selectedOption: Option | null) => {
-// //           if (selectedOption) {
-// //               setSelectedYear(selectedOption.value);
-// //               onChange(selectedOption.value);
-// //           }
-// //       };
-// //       useEffect(()=>{
-// //         console.log(selectedYear)
-// //       },[selectedYear])
+// // // //       const handleChange = (selectedOption: Option | null) => {
+// // // //           if (selectedOption) {
+// // // //               setSelectedYear(selectedOption.value);
+// // // //               onChange(selectedOption.value);
+// // // //           }
+// // // //       };
+// // // //       useEffect(()=>{
+// // // //         console.log(selectedYear)
+// // // //       },[selectedYear])
   
-// //       return (
-// //           <div className='w-52'>
-// //               <OutlinedBadgeSelect
-// //                   label="Financial Year"
-// //                   value={options.find(option => option.value === selectedYear)}
-// //                   options={options}
-// //                   onChange={handleChange}
-// //                   optionRenderer={(option, isSelected) => (
-// //                       <div className="flex items-center justify-between w-full">
-// //                           <span>{option.label}</span>
-// //                           {isSelected && (
-// //                               <Badge className="w-2 h-2 rounded-full bg-emerald-500" />
-// //                           )}
-// //                       </div>
-// //                   )}
-// //               />
-// //           </div>
-// //       );
-// //   };
+// // // //       return (
+// // // //           <div className='w-52'>
+// // // //               <OutlinedBadgeSelect
+// // // //                   label="Financial Year"
+// // // //                   value={options.find(option => option.value === selectedYear)}
+// // // //                   options={options}
+// // // //                   onChange={handleChange}
+// // // //                   optionRenderer={(option, isSelected) => (
+// // // //                       <div className="flex items-center justify-between w-full">
+// // // //                           <span>{option.label}</span>
+// // // //                           {isSelected && (
+// // // //                               <Badge className="w-2 h-2 rounded-full bg-emerald-500" />
+// // // //                           )}
+// // // //                       </div>
+// // // //                   )}
+// // // //               />
+// // // //           </div>
+// // // //       );
+// // // //   };
 
-// // const _SidePanel = (props: SidePanelProps) => {
-// //     const dispatch = useAppDispatch()
+// // // // const _SidePanel = (props: SidePanelProps) => {
+// // // //     const dispatch = useAppDispatch()
 
-// //     const { className, ...rest } = props
+// // // //     const { className, ...rest } = props
 
-// //     const panelExpand = useAppSelector((state) => state.theme.panelExpand)
+// // // //     const panelExpand = useAppSelector((state) => state.theme.panelExpand)
 
-// //     const direction = useAppSelector((state) => state.theme.direction)
+// // // //     const direction = useAppSelector((state) => state.theme.direction)
 
-// //     const [selectedFinancialYear, setSelectedFinancialYear] = useState(null)
-
-
-// //     const openPanel = () => {
-// //         dispatch(setPanelExpand(true))
-// //     }
-
-// //     const closePanel = () => {
-// //         dispatch(setPanelExpand(false))
-// //         const bodyClassList = document.body.classList
-// //         if (bodyClassList.contains('drawer-lock-scroll')) {
-// //             bodyClassList.remove('drawer-lock-scroll', 'drawer-open')
-// //         }
-// //     }
-
-// //     const handleFinancialYearChange = (year) => {
-// //         setSelectedFinancialYear(year)
-// //         // You can add any additional logic here, such as fetching data for the selected year
-// //       }
-
-// //     return (
-// //         <div className='flex items-center'>
-// //             <div className='flex items-center gap-6'>
-// //             <FinancialYearFilter onChange={handleFinancialYearChange} />
-// //                 <Notification />
-// //             </div>
-// //             <Drawer
-// //                 title="Side Panel"
-// //                 isOpen={panelExpand}
-// //                 placement={direction === 'rtl' ? 'left' : 'right'}
-// //                 width={375}
-// //                 onClose={closePanel}
-// //                 onRequestClose={closePanel}
-// //             >
-// //                 <SidePanelContent callBackClose={closePanel} />
-// //             </Drawer>
-// //         </div>
-// //     )
-// // }
-
-// // const SidePanel = withHeaderItem(_SidePanel)
-
-// // export default SidePanel
+// // // //     const [selectedFinancialYear, setSelectedFinancialYear] = useState(null)
 
 
+// // // //     const openPanel = () => {
+// // // //         dispatch(setPanelExpand(true))
+// // // //     }
 
-// // import Drawer from '@/components/ui/Drawer'
-// // import { HiOutlineCog } from 'react-icons/hi'
-// // import SidePanelContent, { SidePanelContentProps } from './SidePanelContent'
-// // import withHeaderItem from '@/utils/hoc/withHeaderItem'
-// // import { setPanelExpand, useAppSelector, useAppDispatch } from '@/store'
-// // import type { CommonProps } from '@/@types/common'
-// // import Notification from '../Notification'
-// // import { Select } from '@/components/ui'
-// // import { useEffect, useState } from 'react'
-// // import OutlinedSelect from '@/components/ui/Outlined'
-// // import {Badge} from '@/components/ui'
-// // import OutlinedBadgeSelect from '@/components/ui/OutlinedBadgeSelect'
+// // // //     const closePanel = () => {
+// // // //         dispatch(setPanelExpand(false))
+// // // //         const bodyClassList = document.body.classList
+// // // //         if (bodyClassList.contains('drawer-lock-scroll')) {
+// // // //             bodyClassList.remove('drawer-lock-scroll', 'drawer-open')
+// // // //         }
+// // // //     }
 
-// // type SidePanelProps = SidePanelContentProps & CommonProps
+// // // //     const handleFinancialYearChange = (year) => {
+// // // //         setSelectedFinancialYear(year)
+// // // //         // You can add any additional logic here, such as fetching data for the selected year
+// // // //       }
 
-// // interface Option {
-// //     value: string;
-// //     label: React.ReactNode;
-// // }
-  
-// // interface FinancialYearFilterProps {
-// //     onChange: (year: string) => void;
-// // }
-  
-// // const FinancialYearFilter: React.FC<FinancialYearFilterProps> = ({ onChange }) => {
-// //     const currentYear = new Date().getFullYear();
-    
-// //     // Create years array with different formats for value and label
-// //     const years = Array.from({ length: 5 }, (_, i) => ({
-// //         value: `${currentYear - i}-${(currentYear - i + 1).toString().slice(-2)}`,
-// //         display: `${currentYear - i}-${currentYear - i + 1}`
-// //     }));
-    
-// //     const [selectedYear, setSelectedYear] = useState<string>(years[0].value);
+// // // //     return (
+// // // //         <div className='flex items-center'>
+// // // //             <div className='flex items-center gap-6'>
+// // // //             <FinancialYearFilter onChange={handleFinancialYearChange} />
+// // // //                 <Notification />
+// // // //             </div>
+// // // //             <Drawer
+// // // //                 title="Side Panel"
+// // // //                 isOpen={panelExpand}
+// // // //                 placement={direction === 'rtl' ? 'left' : 'right'}
+// // // //                 width={375}
+// // // //                 onClose={closePanel}
+// // // //                 onRequestClose={closePanel}
+// // // //             >
+// // // //                 <SidePanelContent callBackClose={closePanel} />
+// // // //             </Drawer>
+// // // //         </div>
+// // // //     )
+// // // // }
 
-// //     useEffect(() => {
-// //         onChange(selectedYear);
-// //     }, []);
+// // // // const SidePanel = withHeaderItem(_SidePanel)
 
-// //     const options: Option[] = years.map(year => ({
-// //         value: year.value,
-// //         label: year.display
-// //     }));
+// // // // export default SidePanel
 
-// //     const handleChange = (selectedOption: Option | null) => {
-// //         if (selectedOption) {
-// //             setSelectedYear(selectedOption.value);
-// //             onChange(selectedOption.value);
-// //         }
-// //     };
 
-// //     useEffect(() => {
-// //         console.log(selectedYear); // This will now log in format "2024-25"
-// //     }, [selectedYear]);
+import React, { useState, useEffect } from 'react';
+import Drawer from '@/components/ui/Drawer';
+import { HiOutlineCog } from 'react-icons/hi';
+import SidePanelContent, { SidePanelContentProps } from './SidePanelContent';
+import withHeaderItem from '@/utils/hoc/withHeaderItem';
+import { setPanelExpand, useAppSelector, useAppDispatch } from '@/store';
+import type { CommonProps } from '@/@types/common';
+import Notification from '../Notification';
+import { Badge } from '@/components/ui';
+import OutlinedBadgeSelect from '@/components/ui/OutlinedBadgeSelect';
 
-// //     return (
-// //         <div className='w-52'>
-// //             <OutlinedBadgeSelect
-// //                 label="Financial Year"
-// //                 value={options.find(option => option.value === selectedYear)}
-// //                 options={options}
-// //                 onChange={handleChange}
-// //                 optionRenderer={(option, isSelected) => (
-// //                     <div className="flex items-center justify-between w-full">
-// //                         <span>{option.label}</span>
-// //                         {isSelected && (
-// //                             <Badge className="w-2 h-2 rounded-full bg-emerald-500" />
-// //                         )}
-// //                     </div>
-// //                 )}
-// //             />
-// //         </div>
-// //     );
-// // };
-
-// // const _SidePanel = (props: SidePanelProps) => {
-// //     const dispatch = useAppDispatch()
-
-// //     const { className, ...rest } = props
-
-// //     const panelExpand = useAppSelector((state) => state.theme.panelExpand)
-
-// //     const direction = useAppSelector((state) => state.theme.direction)
-
-// //     const [selectedFinancialYear, setSelectedFinancialYear] = useState(null)
-
-// //     const openPanel = () => {
-// //         dispatch(setPanelExpand(true))
-// //     }
-
-// //     const closePanel = () => {
-// //         dispatch(setPanelExpand(false))
-// //         const bodyClassList = document.body.classList
-// //         if (bodyClassList.contains('drawer-lock-scroll')) {
-// //             bodyClassList.remove('drawer-lock-scroll', 'drawer-open')
-// //         }
-// //     }
-
-// //     const handleFinancialYearChange = (year) => {
-// //         setSelectedFinancialYear(year)
-// //         // You can add any additional logic here, such as fetching data for the selected year
-// //     }
-
-// //     return (
-// //         <div className='flex items-center'>
-// //             <div className='flex items-center gap-6'>
-// //                 <FinancialYearFilter onChange={handleFinancialYearChange} />
-// //                 <Notification />
-// //             </div>
-// //             <Drawer
-// //                 title="Side Panel"
-// //                 isOpen={panelExpand}
-// //                 placement={direction === 'rtl' ? 'left' : 'right'}
-// //                 width={375}
-// //                 onClose={closePanel}
-// //                 onRequestClose={closePanel}
-// //             >
-// //                 <SidePanelContent callBackClose={closePanel} />
-// //             </Drawer>
-// //         </div>
-// //     )
-// // }
-
-// // const SidePanel = withHeaderItem(_SidePanel)
-
-// // export default SidePanel
-
-// import Drawer from '@/components/ui/Drawer'
-// import { HiOutlineCog } from 'react-icons/hi'
-// import SidePanelContent, { SidePanelContentProps } from './SidePanelContent'
-// import withHeaderItem from '@/utils/hoc/withHeaderItem'
-// import { setPanelExpand, useAppSelector, useAppDispatch } from '@/store'
-// import type { CommonProps } from '@/@types/common'
-// import Notification from '../Notification'
-// import { Select } from '@/components/ui'
-// import { useEffect, useState } from 'react'
-// import OutlinedSelect from '@/components/ui/Outlined'
-// import {Badge} from '@/components/ui'
-// import OutlinedBadgeSelect from '@/components/ui/OutlinedBadgeSelect'
-
-// type SidePanelProps = SidePanelContentProps & CommonProps
-
-// interface Option {
-//     value: string;
-//     label: React.ReactNode;
-// }
-  
-// interface FinancialYearFilterProps {
-//     onChange: (year: string) => void;
-// }
-
-// const FINANCIAL_YEAR_KEY = 'selectedFinancialYear';
-
-// // Custom event name
-// const FINANCIAL_YEAR_CHANGE_EVENT = 'financialYearChanged';
-
-// const FinancialYearFilter: React.FC<FinancialYearFilterProps> = ({ onChange }) => {
-//     const currentYear = new Date().getFullYear();
-    
-//     const years = Array.from({ length: 5 }, (_, i) => ({
-//         value: `${currentYear - i}-${(currentYear - i + 1).toString().slice(-2)}`,
-//         display: `${currentYear - i}-${currentYear - i + 1}`
-//     }));
-    
-//     const [selectedYear, setSelectedYear] = useState<string>(() => {
-//         const savedYear = sessionStorage.getItem(FINANCIAL_YEAR_KEY);
-//         return savedYear || years[0].value;
-//     });
-
-//     useEffect(() => {
-//         onChange(selectedYear);
-//     }, []);
-
-//     const options: Option[] = years.map(year => ({
-//         value: year.value,
-//         label: year.display
-//     }));
-
-//     const handleChange = (selectedOption: Option | null) => {
-//         if (selectedOption) {
-//             setSelectedYear(selectedOption.value);
-//             // Store in session storage
-//             sessionStorage.setItem(FINANCIAL_YEAR_KEY, selectedOption.value);
-//             onChange(selectedOption.value);
-//             // window.location.reload()
-//             // Dispatch custom event
-//             window.dispatchEvent(new CustomEvent(FINANCIAL_YEAR_CHANGE_EVENT, {
-//                 detail: selectedOption.value
-//             }));
-//         }
-//     };
-
-//     return (
-//         <div className='w-52'>
-//             <OutlinedBadgeSelect
-//                 label="Financial Year"
-//                 value={options.find(option => option.value === selectedYear)}
-//                 options={options}
-//                 onChange={handleChange}
-//                 optionRenderer={(option, isSelected) => (
-//                     <div className="flex items-center justify-between w-full">
-//                         <span>{option.label}</span>
-//                         {isSelected && (
-//                             <Badge className="w-2 h-2 rounded-full bg-emerald-500" />
-//                         )}
-//                     </div>
-//                 )}
-//             />
-//         </div>
-//     );
-// };
-
-// const _SidePanel = (props: SidePanelProps) => {
-//     const dispatch = useAppDispatch()
-//     const { className, ...rest } = props
-//     const panelExpand = useAppSelector((state) => state.theme.panelExpand)
-//     const direction = useAppSelector((state) => state.theme.direction)
-    
-//     // Update to use session storage for initial state
-//     const [selectedFinancialYear, setSelectedFinancialYear] = useState(() => 
-//         sessionStorage.getItem(FINANCIAL_YEAR_KEY)
-//     );
-
-//     const openPanel = () => {
-//         dispatch(setPanelExpand(true))
-//     }
-
-//     const closePanel = () => {
-//         dispatch(setPanelExpand(false))
-//         const bodyClassList = document.body.classList
-//         if (bodyClassList.contains('drawer-lock-scroll')) {
-//             bodyClassList.remove('drawer-lock-scroll', 'drawer-open')
-//         }
-//     }
-
-//     const handleFinancialYearChange = (year: string) => {
-//         setSelectedFinancialYear(year);
-//         // You can add any additional logic here, such as fetching data for the selected year
-//     }
-
-//     return (
-//         <div className='flex items-center'>
-//             <div className='flex items-center gap-6'>
-//                 <FinancialYearFilter onChange={handleFinancialYearChange} />
-//                 <Notification />
-//             </div>
-//             <Drawer
-//                 title="Side Panel"
-//                 isOpen={panelExpand}
-//                 placement={direction === 'rtl' ? 'left' : 'right'}
-//                 width={375}
-//                 onClose={closePanel}
-//                 onRequestClose={closePanel}
-//             >
-//                 <SidePanelContent callBackClose={closePanel} />
-//             </Drawer>
-//         </div>
-//     )
-// }
-
-// const SidePanel = withHeaderItem(_SidePanel)
-
-// export default SidePanel
-
-import Drawer from '@/components/ui/Drawer'
-import { HiOutlineCog } from 'react-icons/hi'
-import SidePanelContent, { SidePanelContentProps } from './SidePanelContent'
-import withHeaderItem from '@/utils/hoc/withHeaderItem'
-import { setPanelExpand, useAppSelector, useAppDispatch } from '@/store'
-import type { CommonProps } from '@/@types/common'
-import Notification from '../Notification'
-import { Select } from '@/components/ui'
-import { useEffect, useState } from 'react'
-import OutlinedSelect from '@/components/ui/Outlined'
-import {Badge} from '@/components/ui'
-import OutlinedBadgeSelect from '@/components/ui/OutlinedBadgeSelect'
-
-type SidePanelProps = SidePanelContentProps & CommonProps
+type SidePanelProps = SidePanelContentProps & CommonProps;
 
 interface Option {
     value: string;
     label: React.ReactNode;
 }
-  
+
 interface FinancialYearFilterProps {
     onChange: (year: string) => void;
 }
 
 const FINANCIAL_YEAR_KEY = 'selectedFinancialYear';
 const FINANCIAL_YEAR_CHANGE_EVENT = 'financialYearChanged';
-const DEFAULT_YEAR = '2025-26';
-const DEFAULT_YEAR_DISPLAY = '2025-2026';
+
+// Standalone function for getting current financial year
+const getCurrentFinancialYear = () => {
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const isAfterApril = today.getMonth() >= 3; // 3 represents April (0-based months)
+    
+    const fyYear = isAfterApril ? currentYear : currentYear - 1;
+    return `${fyYear}-${(fyYear + 1).toString().slice(-2)}`;
+};
 
 const FinancialYearFilter: React.FC<FinancialYearFilterProps> = ({ onChange }) => {
-    const currentYear = new Date().getFullYear();
-    
-    const years = Array.from({ length: 5 }, (_, i) => ({
-        value: `${currentYear - i}-${(currentYear - i + 1).toString().slice(-2)}`,
-        display: `${currentYear - i}-${currentYear - i + 1}`
-    }));
-    
+    // Function to get display format of year
+    const getYearDisplay = (yearValue: string) => {
+        const [startYear] = yearValue.split('-');
+        return `${startYear}-${Number(startYear) + 1}`;
+    };
+
+    // Get available years based on current date
+    const getAvailableYears = () => {
+        const today = new Date();
+        const isAfterApril = today.getMonth() >= 3;
+        const currentFY = getCurrentFinancialYear();
+        
+        if (isAfterApril) {
+            // After April 1st, show current and previous FY
+            return [
+                { value: currentFY, label: getYearDisplay(currentFY) },
+                { 
+                    value: `${Number(currentFY.split('-')[0]) - 1}-${currentFY.split('-')[0].slice(-2)}`, 
+                    label: `${Number(currentFY.split('-')[0]) - 1}-${currentFY.split('-')[0]}` 
+                }
+            ];
+        } else {
+            // Before April 1st, show only current FY
+            return [
+                { value: currentFY, label: getYearDisplay(currentFY) }
+            ];
+        }
+    };
+
     const [selectedYear, setSelectedYear] = useState<string>(() => {
         const savedYear = sessionStorage.getItem(FINANCIAL_YEAR_KEY);
-        if (!savedYear) {
-            // Set the default year in session storage on first load
-            sessionStorage.setItem(FINANCIAL_YEAR_KEY, DEFAULT_YEAR);
-            return DEFAULT_YEAR;
+        const currentFY = getCurrentFinancialYear();
+        if (!savedYear || !getAvailableYears().some(year => year.value === savedYear)) {
+            sessionStorage.setItem(FINANCIAL_YEAR_KEY, currentFY);
+            return currentFY;
         }
         return savedYear;
     });
 
+    // Check for financial year change every day
     useEffect(() => {
-        onChange(selectedYear);
-    }, []);
+        const checkFinancialYear = () => {
+            const currentFY = getCurrentFinancialYear();
+            if (selectedYear !== currentFY) {
+                setSelectedYear(currentFY);
+                sessionStorage.setItem(FINANCIAL_YEAR_KEY, currentFY);
+                onChange(currentFY);
+                window.dispatchEvent(new CustomEvent(FINANCIAL_YEAR_CHANGE_EVENT, {
+                    detail: currentFY
+                }));
+            }
+        };
 
-    const options: Option[] = [
-        { value: DEFAULT_YEAR, label: DEFAULT_YEAR_DISPLAY },
-        ...years.map(year => ({
-            value: year.value,
-            label: year.display
-        }))
-    ].filter((option, index, self) => 
-        // Remove duplicates if DEFAULT_YEAR happens to be in the generated years
-        index === self.findIndex(o => o.value === option.value)
-    );
+        // Check on component mount
+        checkFinancialYear();
+
+        // Set up daily check at midnight
+        const interval = setInterval(() => {
+            checkFinancialYear();
+        }, 24 * 60 * 60 * 1000); // 24 hours
+
+        return () => clearInterval(interval);
+    }, [selectedYear, onChange]);
 
     const handleChange = (selectedOption: Option | null) => {
         if (selectedOption) {
@@ -466,11 +239,11 @@ const FinancialYearFilter: React.FC<FinancialYearFilterProps> = ({ onChange }) =
     };
 
     return (
-        <div className='w-52'>
+        <div className="w-52">
             <OutlinedBadgeSelect
                 label="Financial Year"
-                value={options.find(option => option.value === selectedYear)}
-                options={options}
+                value={getAvailableYears().find(option => option.value === selectedYear)}
+                options={getAvailableYears()}
                 onChange={handleChange}
                 optionRenderer={(option, isSelected) => (
                     <div className="flex items-center justify-between w-full">
@@ -486,34 +259,54 @@ const FinancialYearFilter: React.FC<FinancialYearFilterProps> = ({ onChange }) =
 };
 
 const _SidePanel = (props: SidePanelProps) => {
-    const dispatch = useAppDispatch()
-    const { className, ...rest } = props
-    const panelExpand = useAppSelector((state) => state.theme.panelExpand)
-    const direction = useAppSelector((state) => state.theme.direction)
+    const dispatch = useAppDispatch();
+    const { className, ...rest } = props;
+    const panelExpand = useAppSelector((state) => state.theme.panelExpand);
+    const direction = useAppSelector((state) => state.theme.direction);
     
-    const [selectedFinancialYear, setSelectedFinancialYear] = useState(() => 
-        sessionStorage.getItem(FINANCIAL_YEAR_KEY) || DEFAULT_YEAR
-    );
+    const [selectedFinancialYear, setSelectedFinancialYear] = useState(() => {
+        const savedYear = sessionStorage.getItem(FINANCIAL_YEAR_KEY);
+        if (!savedYear) {
+            const currentFY = getCurrentFinancialYear();
+            sessionStorage.setItem(FINANCIAL_YEAR_KEY, currentFY);
+            return currentFY;
+        }
+        return savedYear;
+    });
 
     const openPanel = () => {
-        dispatch(setPanelExpand(true))
-    }
+        dispatch(setPanelExpand(true));
+    };
 
     const closePanel = () => {
-        dispatch(setPanelExpand(false))
-        const bodyClassList = document.body.classList
+        dispatch(setPanelExpand(false));
+        const bodyClassList = document.body.classList;
         if (bodyClassList.contains('drawer-lock-scroll')) {
-            bodyClassList.remove('drawer-lock-scroll', 'drawer-open')
+            bodyClassList.remove('drawer-lock-scroll', 'drawer-open');
         }
-    }
+    };
 
     const handleFinancialYearChange = (year: string) => {
         setSelectedFinancialYear(year);
-    }
+        // You can add any additional logic here that needs to run when the financial year changes
+    };
+
+    // Listen for financial year change events
+    useEffect(() => {
+        const handleFinancialYearChangeEvent = (event: CustomEvent) => {
+            setSelectedFinancialYear(event.detail);
+        };
+
+        window.addEventListener(FINANCIAL_YEAR_CHANGE_EVENT, handleFinancialYearChangeEvent as EventListener);
+
+        return () => {
+            window.removeEventListener(FINANCIAL_YEAR_CHANGE_EVENT, handleFinancialYearChangeEvent as EventListener);
+        };
+    }, []);
 
     return (
-        <div className='flex items-center'>
-            <div className='flex items-center gap-6'>
+        <div className="flex items-center">
+            <div className="flex items-center gap-6">
                 <FinancialYearFilter onChange={handleFinancialYearChange} />
                 <Notification />
             </div>
@@ -528,9 +321,9 @@ const _SidePanel = (props: SidePanelProps) => {
                 <SidePanelContent callBackClose={closePanel} />
             </Drawer>
         </div>
-    )
-}
+    );
+};
 
-const SidePanel = withHeaderItem(_SidePanel)
+const SidePanel = withHeaderItem(_SidePanel);
 
-export default SidePanel
+export default SidePanel;

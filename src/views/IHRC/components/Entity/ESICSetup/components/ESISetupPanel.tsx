@@ -47,8 +47,8 @@ const esiSetupSchema = yup.object().shape({
       })
     )
     .min(1, 'At least one signatory must be selected'),
-  certificate: yup.string()
-    .required('Certificate is required')
+  // certificate: yup.string()
+  //   .required('Certificate is required')
 });
 
 interface ValidationErrors {

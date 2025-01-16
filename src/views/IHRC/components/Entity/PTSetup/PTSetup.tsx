@@ -31,20 +31,49 @@ const PTSetupPage: React.FC = () => {
   const actualCompanyName = locationState?.companyName;
   const actualGroupName = locationState?.companyGroupName;
   const actualGroupId = locationState?.groupId;
+
+  const [pagination, setPagination] = useState({
+    total: 0,
+    pageIndex: 1,
+    pageSize: 10,
+});
+
+
   const fetchPTSetupData = async () => {
     try {
       const response = await await httpClient.get(endpoints.ptSetup.getAll(), {
         params: {
-          'company_id[]' : actualCompanyId,
-        }
+          'company_id[]': actualCompanyId,
+          page: pagination.pageIndex,
+          page_size: pagination.pageSize
+      }
       });
+      if (response?.data.data) {
+        setPTSetupData(response.data.data);
+        setPagination(prev => ({
+          ...prev,
+          total: response.data.paginate_data.totalResults
+      }));
+      }
       console.log('Fetched PT Setup data:', response.data.data);
-      setPTSetupData(response.data.data);
     } catch (error) {
       console.error('Error fetching PT Setup data:', error);
       throw error;
     }
   };
+
+  const handlePaginationChange = (page: number) => {
+    setPagination(prev => ({ ...prev, pageIndex: page }));
+};
+
+const handlePageSizeChange = (newPageSize: number) => {
+    setPagination(prev => ({
+        ...prev,
+        pageSize: newPageSize,
+        pageIndex: 1, // Reset to first page when changing page size
+    }));
+};
+
 
        const refreshPTSetupData = () => {
     fetchPTSetupData();
@@ -53,8 +82,10 @@ const PTSetupPage: React.FC = () => {
 
   useEffect(() => {
     console.log(actualCompanyId,actualCompanyName, actualGroupId, actualGroupName)
-    fetchPTSetupData();
-  }, []);
+    if(actualCompanyName){
+      fetchPTSetupData();
+    }
+  }, [actualCompanyName, pagination.pageIndex, pagination.pageSize]);
 
   const handleBack = () => {
     navigate(-1);
@@ -105,7 +136,11 @@ const PTSetupPage: React.FC = () => {
         </Button>
       </div>
 
-      <PTSetupTable data={ptSetupData}  onRefresh={refreshPTSetupData} />
+      <PTSetupTable data={ptSetupData}  onRefresh={refreshPTSetupData} 
+      pagination={pagination}
+      onPaginationChange={handlePaginationChange}
+      onPageSizeChange={handlePageSizeChange}
+      />
     </div>
   );
 };

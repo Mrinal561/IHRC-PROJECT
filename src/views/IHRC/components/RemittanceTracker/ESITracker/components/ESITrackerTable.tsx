@@ -34,7 +34,6 @@ interface EsiTrackerTableProps {
   }
 
   const { login } = store.getState()
-
 const ESITrackerTable: React.FC<EsiTrackerTableProps> =({ 
   dataSent, 
   loading = false, 
@@ -62,6 +61,8 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> =({
     };
 
     const handleDeleteConfirmation = (trackerId: string) => {
+
+      console.log(login, type)
         setTrackerToDelete(trackerId);
         setDeleteConfirmOpen(true);
       };

@@ -1,98 +1,14 @@
-// import React, { useState } from 'react';
-// import OutlinedSelect from '@/components/ui/Outlined/Outlined';
-// import { EntityData, entityDataSet } from '../../../../store/dummyEntityData';
-
-// type Option = {
-//   value: string;
-//   label: string;
-// };
-
-
-// const getUniqueGroup = (data: EntityData[]): string[] => {
-//     const companyGroupName = data.map(item => item.Company_Group_Name);
-//     return Array.from(new Set(companyGroupName)).filter((companyGroupName): companyGroupName is string => companyGroupName !== undefined);
-//   };
-  
-//   const groupOptions: Option[] = getUniqueGroup(entityDataSet).map(companyGroupName => ({
-//     value: companyGroupName,
-//     label: companyGroupName,
-//   }));
-
-//   const getUniqueName = (data: EntityData[]): string[] => {
-//     const companyName = data.map(item => item.Company_Name);
-//     return Array.from(new Set(companyName)).filter((companyName): companyName is string => companyName !== undefined);
-//   };
-  
-//   const nameOptions: Option[] = getUniqueName(entityDataSet).map(companyName => ({
-//     value: companyName,
-//     label: companyName,
-//   }));
-// const getUniqueDistricts = (data: EntityData[]): string[] => {
-//   const state = data.map(item => item.State);
-//   return Array.from(new Set(state)).filter((state): state is string => state !== undefined);
-// };
-
-// const options: Option[] = getUniqueDistricts(entityDataSet).map(state => ({
-//   value: state,
-//   label: state,
-// }));
-
-// const LWFTrackerFilter: React.FC = () => {
-//   const [currentFilter, setCurrentFilter] = useState<string>(options[0]?.value ||'');
-//   const [currentGroup, setCurrentGroup] = useState<string>(groupOptions[0]?.value||'');
-//   const [groupName, setGroupName] = useState<string>(nameOptions[0]?.value||'');
-
-//   const handleFilterChange = (selectedOption: Option | null) => {
-//     if (selectedOption) {
-//       setCurrentFilter(selectedOption.value);
-      
-//       // You can add any additional logic here that needs to happen when the filter changes
-//     }
-//   };
-//   const handleGroupChange = (selectedOption: Option | null) => {
-//     if (selectedOption) {
-//         setCurrentGroup(selectedOption.value)
-      
-//       // You can add any additional logic here that needs to happen when the filter changes
-//     }
-//   };
-//   const handleNameChange = (selectedOption: Option | null) => {
-//     if (selectedOption) {
-//         setGroupName(selectedOption.value)
-      
-//       // You can add any additional logic here that needs to happen when the filter changes
-//     }
-//   };
-
-//   return (
-//     <div className=" flex gap-3">
-//         <div>
-//         <OutlinedSelect
-//         label="Company Group"
-//         options={groupOptions}
-//         value={groupOptions.find((option) => option.value === currentGroup)}
-//         onChange={handleGroupChange}
-//       />
-//         </div>
-//         <div>
-//         <OutlinedSelect
-//         label="Company"
-//         options={nameOptions}
-//         value={nameOptions.find((option) => option.value === groupName)}
-//         onChange={handleNameChange}
-//       />
-//         </div>
-//     </div>
-//   );
-// };
-// export default LWFTrackerFilter;
-
 
 import React, { useState, useEffect } from 'react';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 import { endpoints } from '@/api/endpoint';
 import httpClient from '@/api/http-client';
 import { Notification, toast } from '@/components/ui';
+
+
+const FINANCIAL_YEAR_KEY = 'selectedFinancialYear';
+const FINANCIAL_YEAR_CHANGE_EVENT = 'financialYearChanged';
+
 
 type Option = {
   value: string;
@@ -113,7 +29,10 @@ const LWFTrackerFilter: React.FC<LWFTrackerFilterProps> = ({ onFilterChange }) =
   const [isLoading, setIsLoading] = useState(true);
   const [companyGroupName, setCompanyGroupName] = useState('');
   const [companyGroupId, setCompanyGroupId] = useState('');
-  
+  const [financialYear, setFinancialYear] = useState<string | null>(
+    sessionStorage.getItem(FINANCIAL_YEAR_KEY)
+  );
+
   const [selectedCompanyGroup, setSelectedCompanyGroup] = useState<Option | null>(null);
   const [selectedCompany, setSelectedCompany] = useState<Option | null>(null);
   const [selectedLwfCode, setSelectedLwfCode] = useState<Option | null>(null);
@@ -122,6 +41,44 @@ const LWFTrackerFilter: React.FC<LWFTrackerFilterProps> = ({ onFilterChange }) =
   const [companies, setCompanies] = useState<Option[]>([]);
   const [lwfCodeOptions, setLwfCodeOptions] = useState<Option[]>([]);
 
+  useEffect(() => {
+    const handleFinancialYearChange = (event: CustomEvent) => {
+      const newFinancialYear = event.detail;
+      setFinancialYear(newFinancialYear);
+      
+      // Reset selections
+      setSelectedCompany(null);
+      setSelectedLwfCode(null);
+      setCompanies([]);
+      setLwfCodeOptions([]);
+      
+      // Reload companies if group selected
+      if (selectedCompanyGroup?.value) {
+        loadCompanies(selectedCompanyGroup.value);
+      }
+      
+      // Update filters
+      onFilterChange({
+        groupName: selectedCompanyGroup?.label || '',
+        groupId: selectedCompanyGroup?.value || '',
+        companyName: '',
+        companyId: '',
+        lwfCode: ''
+      });
+    };
+  
+    window.addEventListener(
+      FINANCIAL_YEAR_CHANGE_EVENT,
+      handleFinancialYearChange as EventListener
+    );
+  
+    return () => {
+      window.removeEventListener(
+        FINANCIAL_YEAR_CHANGE_EVENT,
+        handleFinancialYearChange as EventListener
+      );
+    };
+  }, [selectedCompanyGroup, onFilterChange]);
   const showNotification = (type: 'success' | 'info' | 'danger' | 'warning', message: string) => {
     toast.push(
       <Notification
@@ -194,14 +151,14 @@ const LWFTrackerFilter: React.FC<LWFTrackerFilterProps> = ({ onFilterChange }) =
   // Load LWF Codes based on selected Company
   const loadLWFCodes = async (companyId: string) => {
     try {
-      const { data } = await httpClient.get(endpoints.lwfSetup.getAll(), {
+      const { data } = await httpClient.get(endpoints.lwfSetup.getAllCodes(), {
         params: {
           'company_id[]': [companyId]
         }
       });
 
-      if (data?.data) {
-        const formattedLWFCodes = data.data.map((lwfSetup: any) => ({
+      if (data) {
+        const formattedLWFCodes = data.map((lwfSetup: any) => ({
           label: lwfSetup.register_number,
           value: lwfSetup.register_number,
           companyId: String(lwfSetup.company_id),
