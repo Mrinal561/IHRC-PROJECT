@@ -34,31 +34,58 @@ const CompanyPFSetupPage: React.FC = () => {
   const actualCompanyName = locationState?.companyName;
   const actualGroupName = locationState?.companyGroupName;
   const actualGroupId = locationState?.groupId;
+  const [pagination, setPagination] = useState({
+    total: 0,
+    pageIndex: 1,
+    pageSize: 10,
+});
 
   const fetchPFSetupData = async () => {
     try {
       console.log(actualCompanyId)
       const response = await httpClient.get(endpoints.pfSetup.getAll(), {
         params: {
-          'company_id[]' : actualCompanyId,
-        }
+          'company_id[]': actualCompanyId,
+          page: pagination.pageIndex,
+          page_size: pagination.pageSize
+      }
       });
+      if (response?.data.data) {
+        setPfSetupData(response.data.data);
+        setPagination(prev => ({
+          ...prev,
+          total: response.data.paginate_data.totalResults
+      }));
+      }
+
       console.log('Fetched PF Setup data:', response.data.data);
-      setPfSetupData(response.data.data);
     } catch (error) {
       console.error('Error fetching PF Setup data:', error);
       throw error;
     }
   };
-  
+  const handlePaginationChange = (page: number) => {
+    setPagination(prev => ({ ...prev, pageIndex: page }));
+};
+
+const handlePageSizeChange = (newPageSize: number) => {
+    setPagination(prev => ({
+        ...prev,
+        pageSize: newPageSize,
+        pageIndex: 1, // Reset to first page when changing page size
+    }));
+};
+
    const refreshPFSetupData = () => {
     fetchPFSetupData();
     // showNotification('PF Setup data refreshed successfully');
   };
 
   useEffect(() => {
-    fetchPFSetupData();
-  }, []);
+    if(actualCompanyName){
+      fetchPFSetupData();
+    }
+  }, [actualCompanyName, pagination.pageIndex, pagination.pageSize]);
 
   const handleBack = () => {
     navigate(-1);
@@ -110,7 +137,11 @@ const CompanyPFSetupPage: React.FC = () => {
         </Button>
       </div>
 
-      <PFSetupTable data={pfSetupData}  onRefresh={refreshPFSetupData}/>
+      <PFSetupTable data={pfSetupData}  onRefresh={refreshPFSetupData}
+      pagination={pagination}
+      onPaginationChange={handlePaginationChange}
+      onPageSizeChange={handlePageSizeChange}
+      />
     </div>
   );
 };

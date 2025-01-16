@@ -31,22 +31,44 @@ const LWFSetupPage: React.FC = () => {
   const actualCompanyName = locationState?.companyName;
   const actualGroupName = locationState?.companyGroupName;
   const actualGroupId = locationState?.groupId;
-
+  const [pagination, setPagination] = useState({
+    total: 0,
+    pageIndex: 1,
+    pageSize: 10,
+});
 
   const fetchLWFSetupData = async () => {
     try {
       const response = await httpClient.get(endpoints.lwfSetup.getAll(), {
         params: {
-          'company_id[]' : actualCompanyId,
+         'company_id[]': actualCompanyId,
+                page: pagination.pageIndex,
+                page_size: pagination.pageSize
         }
       });
-      console.log('Fetched LWF Setup data:', response.data.data);
-      setLWFSetupData(response.data.data);
+      if (response?.data.data) {
+        setLWFSetupData(response.data.data);
+        setPagination(prev => ({
+          ...prev,
+          total: response.data.paginate_data.totalResults
+      }));
+      }
     } catch (error) {
       console.error('Error fetching LWF Setup data:', error);
       showNotification('Failed to fetch LWF Setup data');
     }
   };
+  const handlePaginationChange = (page: number) => {
+    setPagination(prev => ({ ...prev, pageIndex: page }));
+};
+
+const handlePageSizeChange = (newPageSize: number) => {
+    setPagination(prev => ({
+        ...prev,
+        pageSize: newPageSize,
+        pageIndex: 1, // Reset to first page when changing page size
+    }));
+};
 
      const refreshLWFSetupData = () => {
     fetchLWFSetupData();
@@ -54,8 +76,11 @@ const LWFSetupPage: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchLWFSetupData();
-  }, []);
+    if(actualCompanyName){
+      fetchLWFSetupData();
+
+    }
+  }, [actualCompanyName, pagination.pageIndex, pagination.pageSize]);
 
   const handleBack = () => {
     navigate(-1);
@@ -108,7 +133,11 @@ const LWFSetupPage: React.FC = () => {
         </Button>
       </div>
 
-      <LWFSetupTable data={lwfSetupData}  onRefresh={refreshLWFSetupData}/>
+      <LWFSetupTable data={lwfSetupData}  onRefresh={refreshLWFSetupData}
+      pagination={pagination}
+      onPaginationChange={handlePaginationChange}
+      onPageSizeChange={handlePageSizeChange}
+      />
 
       <Dialog
         isOpen={isOpen}

@@ -17,6 +17,13 @@ interface ESISetupTableProps {
   onEdit?: (index: number, newData: EsiSetupData) => void;
     loading?: boolean;
      onRefresh?: () => void;
+     pagination: {
+        total: number;
+        pageIndex: number;
+        pageSize: number;
+    };
+     onPaginationChange: (page: number) => void;
+     onPageSizeChange: (pageSize: number) => void;
 }
 
 const ESISetupTable: React.FC<ESISetupTableProps> = ({ 
@@ -24,7 +31,10 @@ const ESISetupTable: React.FC<ESISetupTableProps> = ({
     loading = false,
     onDelete,
     onEdit,
-    onRefresh
+    onRefresh,
+    onPageSizeChange,
+    onPaginationChange,
+    pagination
 }) => {
     const dispatch = useDispatch()
     const [dialogIsOpen, setDialogIsOpen] = useState(false);
@@ -217,10 +227,12 @@ const ESISetupTable: React.FC<ESISetupTableProps> = ({
                     skeletonAvatarProps={{ className: 'rounded-md' }}
                     loading={loading}
                     pagingData={{
-                        total: data.length,
-                        pageIndex: 1,
-                        pageSize: 10,
+                        total: pagination.total,
+                        pageIndex: pagination.pageIndex,
+                        pageSize: pagination.pageSize,
                     }}
+                    onPaginationChange={onPaginationChange}
+                    onSelectChange={onPageSizeChange}
                     stickyHeader={true}
                     stickyFirstColumn={true}
                     stickyLastColumn={true}

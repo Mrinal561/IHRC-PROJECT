@@ -351,7 +351,7 @@ const SignInForm = (props: SignInFormProps) => {
             } else {
                 toast.push(
                     <Notification title="error" type="danger">
-                        Something went wrong! Please Try again.{' '}
+                        Invalid email or password
                     </Notification>,
                     {
                         placement: 'top-end',
