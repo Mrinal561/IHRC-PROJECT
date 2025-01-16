@@ -15,9 +15,16 @@ import { useDispatch } from 'react-redux';
 interface PTSetupTableProps {
   data: PTSetupData[];
     onRefresh?: () => void;
+    pagination: {
+      total: number;
+      pageIndex: number;
+      pageSize: number;
+  };
+  onPaginationChange: (page: number) => void;
+  onPageSizeChange: (pageSize: number) => void;
 }
 
-const PTSetupTable: React.FC<PTSetupTableProps> = ({ data , onRefresh}) => {
+const PTSetupTable: React.FC<PTSetupTableProps> = ({ data , onRefresh, pagination,onPageSizeChange,onPaginationChange}) => {
   const dispatch = useDispatch()
   const [dialogIsOpen, setDialogIsOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<number | null>(null);
@@ -265,10 +272,12 @@ const PTSetupTable: React.FC<PTSetupTableProps> = ({ data , onRefresh}) => {
           skeletonAvatarProps={{ className: 'rounded-md' }}
           loading={false}
           pagingData={{
-            total: data.length,
-            pageIndex: 1,
-            pageSize: 10,
-          }}
+            total: pagination.total,
+            pageIndex: pagination.pageIndex,
+            pageSize: pagination.pageSize,
+        }}
+        onPaginationChange={onPaginationChange}
+        onSelectChange={onPageSizeChange}
           stickyHeader
           stickyFirstColumn
           stickyLastColumn

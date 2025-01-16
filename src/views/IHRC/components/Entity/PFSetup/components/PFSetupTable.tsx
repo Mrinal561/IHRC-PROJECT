@@ -22,11 +22,18 @@ interface PFSetupTableProps {
   onRefresh?: () => void;
   companyName: string;
   groupName: string;
+  pagination: {
+    total: number;
+    pageIndex: number;
+    pageSize: number;
+};
+onPaginationChange: (page: number) => void;
+onPageSizeChange: (pageSize: number) => void;
   // onDelete: (index: number) => void;
   // onEdit: (index: number, newData: Partial<PFSetupData>) => void;
 }
 
-const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh , companyName, groupName}) => {
+const PFSetupTable: React.FC<PFSetupTableProps> =  ({ data, onRefresh , companyName, groupName,pagination,onPageSizeChange,onPaginationChange}) => {
   const dispatch = useDispatch()
   const [dialogIsOpen, setDialogIsOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<number | null>(null);
@@ -279,10 +286,12 @@ const [editFormData, setEditFormData] = useState<PFData | null>(null);
           skeletonAvatarProps={{ className: 'rounded-md' }}
           loading={false}
           pagingData={{
-            total: data.length,
-            pageIndex: 1,
-            pageSize: 10,
-          }}
+            total: pagination.total,
+            pageIndex: pagination.pageIndex,
+            pageSize: pagination.pageSize,
+        }}
+        onPaginationChange={onPaginationChange}
+        onSelectChange={onPageSizeChange}
           stickyHeader={true}
           stickyFirstColumn={true}
           stickyLastColumn={true}
