@@ -629,7 +629,7 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
       </div>
 
       <div className="mb-2">
-        <p className="mb-2">Upload Certificate</p>
+        <p className="mb-2">Upload Certificate(Accepted : Pdf/Zip/Image(Max Size: 20mb))</p>
         <Input
           type="file"
           onChange={handleFileUpload}

@@ -1275,8 +1275,8 @@ const AddBranchForm: React.FC = () => {
                                         <label>
                                             {seRegistrationNumberExists ===
                                             'applied'
-                                                ? 'Please upload the S&E  acknowledgment copy'
-                                                : 'Please upload the S&E Registration certificate'}
+                                                ? 'Please upload the S&E  acknowledgment copy(Accepted : Pdf/Zip/Image(Max Size: 20mb))'
+                                                : 'Please upload the S&E Registration certificate(Accepted : Pdf/Zip/Image(Max Size: 20mb))'}
                                             <span className="text-red-500">
                                                 *
                                             </span>
@@ -1368,7 +1368,7 @@ const AddBranchForm: React.FC = () => {
                                     <div>
                                         <div className="flex flex-col gap-4">
                                             <label>
-                                                Please upload Lease deed copy
+                                                Please upload Lease deed copy(Accepted : Pdf/Zip/Image(Max Size: 20mb))
                                                 <span className="text-red-500">
                                                     *
                                                 </span>
@@ -1555,8 +1555,8 @@ const AddBranchForm: React.FC = () => {
                                             <label>
                                                 {seRegistrationNumberExists ===
                                                 'applied'
-                                                    ? 'Please upload the S&E  acknowledgment copy'
-                                                    : 'Please upload the S&E Registration certificate'}
+                                                    ? 'Please upload the S&E  acknowledgment copy (Accepted : Pdf/Zip/Image(Max Size: 20mb))'
+                                                    : 'Please upload the S&E Registration certificate (Accepted : Pdf/Zip/Image(Max Size: 20mb))'}
                                                 <span className="text-red-500">
                                                     *
                                                 </span>

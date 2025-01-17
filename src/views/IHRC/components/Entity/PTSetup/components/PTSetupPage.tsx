@@ -806,7 +806,7 @@ const loadStates = async () => {
                 {/* Certificates */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
     <div>
-        <p className="mb-2">RC Certificate</p>
+        <p className="mb-2">RC Certificate(Accepted : Pdf/Zip/Image(Max Size: 20mb))</p>
         <div className="space-y-2">
             <Input
                 type="file"
@@ -824,7 +824,7 @@ const loadStates = async () => {
     </div>
 
     <div>
-        <p className="mb-2">EC Certificate</p>
+        <p className="mb-2">EC Certificate(Accepted : Pdf/Zip/Image(Max Size: 20mb))</p>
         <div className="space-y-2">
             <Input
                 type="file"

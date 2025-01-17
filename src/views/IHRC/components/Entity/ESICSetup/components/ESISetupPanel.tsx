@@ -746,7 +746,7 @@ return (
         </div>
       </div>
       <div className="space-y-2">
-        <p className="text-sm font-medium">Upload Certificate</p>
+        <p className="text-sm font-medium">Upload Certificate(Accepted : Pdf/Zip/Image(Max Size: 20mb))</p>
         <Input
           type="file"
           onChange={handleFileUpload}

@@ -426,7 +426,7 @@ const handleRemitModeChange = (option: { value: string; label: string } | null) 
   </div>
 
   <div>
-    <label className="block text-sm font-medium text-gray-700 mb-2">LWF Certificate</label>
+    <label className="block text-sm font-medium text-gray-700 mb-2">LWF Certificate(Accepted : Pdf/Zip/Image(Max Size: 20mb))</label>
     <div className="flex items-center gap-2">
     <Input
       type="file"

@@ -520,7 +520,7 @@ const validateForm = async () => {
               </div>
               <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                      EC Certificate
+                      EC Certificate(Accepted : Pdf/Zip/Image(Max Size: 20mb))
                   </label>
                   <div className="flex items-center gap-2">
                   <Input
@@ -542,7 +542,7 @@ const validateForm = async () => {
               </div>
               <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                      RC Certificate
+                      RC Certificate(Accepted : Pdf/Zip/Image(Max Size: 20mb))
                   </label>
                   <div className="flex items-center gap-2">
                   <Input

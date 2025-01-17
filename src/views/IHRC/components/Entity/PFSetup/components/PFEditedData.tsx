@@ -612,7 +612,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
       {/* Certificate Upload Section */}
       <div className="grid grid-cols-1 gap-3">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">PF Certificate</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">PF Certificate(Accepted : Pdf/Zip/Image(Max Size: 20mb))</label>
           <div className="flex items-center gap-2">
             <Input
               type="file"
