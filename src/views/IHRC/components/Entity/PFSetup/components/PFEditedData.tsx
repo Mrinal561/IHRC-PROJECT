@@ -25,7 +25,8 @@ interface ValidationErrors {
 const pfSchema = yup.object().shape({
     pf_code: yup
     .string()
-    .required('PF Code is required'),
+    .required('PF Code is required')
+    .matches(/^[A-Za-z0-9]+$/, 'ESI code must contain only letters and numbers'),
     // pf_user: yup
     // .string(),
     // password: yup
@@ -612,7 +613,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
       {/* Certificate Upload Section */}
       <div className="grid grid-cols-1 gap-3">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">PF Certificate</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">PF Certificate(Accepted : Pdf/Zip/Image(Max Size: 20mb))</label>
           <div className="flex items-center gap-2">
             <Input
               type="file"

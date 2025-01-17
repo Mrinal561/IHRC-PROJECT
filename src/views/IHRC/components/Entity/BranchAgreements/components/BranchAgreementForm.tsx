@@ -365,13 +365,14 @@ return (
 
               {/* Office Type */}
               {currentBranchData?.office_type && (
-                <div className="space-y-2">
-                  <OutlinedInput
-                    label="Office Type"
-                    value={currentBranchData.office_type}
-                    onChange={() => {}}
-                  />
-                </div>
+              <div className="space-y-2">
+              <label htmlFor="officeType">Office Type</label>
+                <OutlinedInput
+                  label="Office Type"
+                  value={currentBranchData.office_type}
+                  onChange={() => {}}
+                />
+            </div>
               )}
 
               {/* Agreement Type */}

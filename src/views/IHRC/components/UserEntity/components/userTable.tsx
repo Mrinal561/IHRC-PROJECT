@@ -146,8 +146,7 @@ const UserTable: React.FC = () => {
             // },
             {
                 header: 'Date of Joining',
-                enableSorting: false,
-                accessorKey: 'joining_date',
+                accessorKey: 'user_details.joining_date',
                 cell: (props) => (
                     <div className="w-32 truncate">
                         {dayjs(props.getValue() as string).format('DD-MM-YYYY')}

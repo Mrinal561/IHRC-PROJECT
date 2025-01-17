@@ -136,6 +136,7 @@ const PFIWTrackerBulkUpload: React.FC<PFIWTrackerBulkUploadProps> = ({ onUploadC
         navigate('/uploadedpfiwdetail');
       }
     } catch (error) {
+      setIsDialogOpen(false);
       // toast.push(
       //   <Notification title="Error" type="danger">
       //     Upload failed. Please try again.

@@ -140,6 +140,7 @@ const ESITrackerBulkUpload: React.FC<ESITrackerBulkUploadProps> = ({ onUploadCon
             }
         } catch (error) {
             console.error('Upload error:', error);
+            setIsDialogOpen(false)
         } finally {
             setIsUploading(false);
             setLoading(false);
