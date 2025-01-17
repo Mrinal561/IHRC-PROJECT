@@ -103,44 +103,42 @@ const BranchTable: React.FC<BranchTableProps> = ({
         )
     }, [data])
 
-    const handleDialogOk = () => {
-        try{
-
-      
+    const handleDialogOk = async () => {
         if (itemToDelete) {
-           const res = dispatch(deleteBranch(itemToDelete))
-                .unwrap().catch((error: any) => {
-                    // Handle different error formats
-                    if (error.response?.data?.message) {
-                        // API error response
-                        showErrorNotification(error.response.data.message);
-                    } else if (error.message) {
-                        // Regular error object
-                        showErrorNotification(error.message);
-                    } else if (Array.isArray(error)) {
-                        // Array of error messages
-                        showErrorNotification(error);
-                    } else {
-                        // Fallback error message
-                        showErrorNotification(error);
-                    }
-                    throw error; // Re-throw to prevent navigation
-                });
-
-                if(res){
-                    toast.push(
-                        <Notification title="Copy Success" type="success">
-                      Branch Added Successfully
+            try {
+                const res = await dispatch(deleteBranch(itemToDelete)).unwrap();
+                
+                // Only show success message if we get here (no error was thrown)
+                toast.push(
+                    <Notification title="Deleted" type="success">
+                        Branch Deleted Successfully
                     </Notification>
-                    )
+                );
+                
+                handleRefreshData();
+                handleDialogClose();
+                
+            } catch (error: any) {
+                // Handle different error formats
+                if (error.response?.data?.message) {
+                    // API error response
+                    showErrorNotification(error.response.data.message);
+                } else if (error.message) {
+                    // Regular error object
+                    showErrorNotification(error.message);
+                } else if (Array.isArray(error)) {
+                    // Array of error messages
+                    showErrorNotification(error);
+                } else {
+                    // Fallback error message
+                    showErrorNotification(error);
                 }
+                console.log(error);
+            } finally{
+                handleDialogClose();
+            }
         }
-        handleRefreshData();
-        handleDialogClose();
-    } catch(error:any){
-        console.log(error)
-    }
-    }
+    };
     
     const openDeleteDialog = (branchId: number) => {
         setItemToDelete(branchId)
