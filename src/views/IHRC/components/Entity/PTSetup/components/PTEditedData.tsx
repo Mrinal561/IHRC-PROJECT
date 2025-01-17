@@ -296,13 +296,13 @@ const validateForm = async () => {
         )
 
         // Additional custom validations
-        if (formData.password === formData.username) {
-            setErrors(prev => ({
-                ...prev,
-                password: 'Password cannot be same as username'
-            }))
-            return false
-        }
+        // if (formData.password === formData.username) {
+        //     setErrors(prev => ({
+        //         ...prev,
+        //         password: 'Password cannot be same as username'
+        //     }))
+        //     return false
+        // }
 
         setErrors({})
         return true

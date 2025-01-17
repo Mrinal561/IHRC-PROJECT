@@ -105,7 +105,7 @@ const BranchTable: React.FC<BranchTableProps> = ({
 
     const handleDialogOk = () => {
         if (itemToDelete) {
-            dispatch(deleteBranch(itemToDelete))
+           const res = dispatch(deleteBranch(itemToDelete))
                 .unwrap().catch((error: any) => {
                     // Handle different error formats
                     if (error.response?.data?.message) {
@@ -123,6 +123,14 @@ const BranchTable: React.FC<BranchTableProps> = ({
                     }
                     throw error; // Re-throw to prevent navigation
                 });
+
+                if(res){
+                    toast.push(
+                        <Notification title="Copy Success" type="success">
+                      Branch Added Successfully
+                    </Notification>
+                    )
+                }
         }
         handleRefreshData();
         handleDialogClose();
