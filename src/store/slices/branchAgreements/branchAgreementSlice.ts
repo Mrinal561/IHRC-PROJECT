@@ -7,6 +7,8 @@ import {
   deleteBranchAgreement
 } from '@/services/BranchAgreementService'
 import { BranchAgreementData, BranchAgreementResponseData } from '@/@types/branchAgreement'
+import httpClient from '@/api/http-client'
+import { endpoints } from '@/api/endpoint'
 
 export interface BranchAgreementState {
     agreements: BranchAgreementResponseData[]
@@ -42,7 +44,9 @@ export const createNewBranchAgreement = createAsyncThunk(
     'branchAgreement/create',
     async (agreementData: any, { rejectWithValue }) => {
         try {
-            const { data } = await createBranchAgreement(agreementData)
+            const { data } = await httpClient.post(endpoints.branchAgreement.create(),
+            agreementData,
+        )
             return data
         } catch (error: any) {
             return rejectWithValue(error.response?.data?.message)
