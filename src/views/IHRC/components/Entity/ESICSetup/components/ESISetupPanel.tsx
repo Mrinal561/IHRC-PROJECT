@@ -19,8 +19,8 @@ import OutlinedPasswordInput from '@/components/ui/OutlinedInput/OutlinedPasswor
 const esiSetupSchema = yup.object().shape({
   code_Type: yup.string().required('Code type is required'),
   code: yup.string()
-    .required('ESI code is required')
-    .matches(/^[0-9]+$/, 'ESI code must contain only numbers'),
+  .required('ESI code is required')
+  .matches(/^[A-Za-z0-9]+$/, 'ESI code must contain only letters and numbers'),
     state_id: yup
         .number()
         .min(1, 'Please select a state'),
@@ -730,7 +730,7 @@ return (
     {/* Authorized Signatory and Certificate Section */}
     <div className="grid grid-cols-2 gap-4 mb-3">
       <div className="space-y-2">
-        <p className="text-sm font-medium">Authorized Signatory</p>
+        <p className="text-sm font-medium">Select Authorized Signatory</p>
         <Select
           isMulti
           options={users.map(user => ({

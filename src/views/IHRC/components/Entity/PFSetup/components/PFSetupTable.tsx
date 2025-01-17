@@ -250,11 +250,11 @@ const [editFormData, setEditFormData] = useState<PFData | null>(null);
           }
         }
       } catch (error) {
-        toast.push(
-          <Notification title="Error" type="danger">
-            Failed to delete PF Setup
-          </Notification>
-        );
+        // toast.push(
+        //   <Notification title="Error" type="danger">
+        //     Failed to delete PF Setup
+        //   </Notification>
+        // );
       }
     }
   };

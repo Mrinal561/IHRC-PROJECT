@@ -18,6 +18,7 @@ import { createUser } from '@/store/slices/userEntity/UserEntitySlice'
 import { format } from 'date-fns'
 import * as yup from 'yup'
 import { Formik, Field, Form, ErrorMessage } from 'formik'
+import OutlinedPasswordInput from '@/components/ui/OutlinedInput/OutlinedPasswordInput'
 interface LocationState {
     companyName?: string
     companyId?: string
@@ -363,7 +364,7 @@ const UserAddForm = () => {
                                 <Field
                                     name="password"
                                     render={({ field }) => (
-                                        <OutlinedInput
+                                        <OutlinedPasswordInput
                                             {...field}
                                             label="Password"
                                             type="password"

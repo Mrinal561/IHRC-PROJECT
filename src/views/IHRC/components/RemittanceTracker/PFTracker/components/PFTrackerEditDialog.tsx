@@ -143,7 +143,7 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
                     showErrorNotification(error);
                 } else {
                     // Fallback error message
-                    // showErrorNotification('An unexpected error occurred. Please try again.');
+                    showErrorNotification(error);
                 }
                 throw error; // Re-throw to prevent navigation
             });
@@ -153,9 +153,9 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
         setLoading(false);
     } catch (err) {
       console.error('Error fetching tracker data:', err);
-      setError('Failed to load tracker details');
+      // setError('Failed to load tracker details');
       setLoading(false);
-      openNotification('danger', 'Failed to load tracker details');
+      // openNotification('danger', 'Failed to load tracker details');
     }
   };
 
@@ -207,7 +207,24 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
     const resultAction =  await dispatch(updatePfTracker({
       id: trackerId,
       data: updateData
-    }));
+    })).unwrap()
+    .catch((error: any) => {
+        // Handle different error formats
+        if (error.response?.data?.message) {
+            // API error response
+            showErrorNotification(error.response.data.message);
+        } else if (error.message) {
+            // Regular error object
+            showErrorNotification(error.message);
+        } else if (Array.isArray(error)) {
+            // Array of error messages
+            showErrorNotification(error);
+        } else {
+            // Fallback error message
+            showErrorNotification(error);
+        }
+        throw error; // Re-throw to prevent navigation
+    });
 
     onClose();
     openNotification('success', 'PF Tracker edited successfully');
@@ -227,7 +244,7 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
       openNotification('danger', 'Please fix validation errors');
     } else {
       console.error('Error submitting tracker data:', err);
-      openNotification('danger', 'Failed to update PF Tracker');
+      // openNotification('danger', 'Failed to update PF Tracker');
     }
   }
 };

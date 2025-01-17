@@ -136,6 +136,7 @@ useEffect(() => {
       }
     } catch (error) {
       console.error('Upload error:', error);
+      setIsDialogOpen(false);
     } finally {
       setLoading(false);
     }

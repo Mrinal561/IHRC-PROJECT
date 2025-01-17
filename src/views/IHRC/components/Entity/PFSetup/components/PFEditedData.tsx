@@ -25,7 +25,8 @@ interface ValidationErrors {
 const pfSchema = yup.object().shape({
     pf_code: yup
     .string()
-    .required('PF Code is required'),
+    .required('PF Code is required')
+    .matches(/^[A-Za-z0-9]+$/, 'ESI code must contain only letters and numbers'),
     // pf_user: yup
     // .string(),
     // password: yup

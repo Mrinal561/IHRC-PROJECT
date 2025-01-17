@@ -136,11 +136,7 @@ const PTECTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({ onUploadCon
       //   await refreshTable();
       }
     } catch (error : any ) {
-      toast.push(
-        <Notification title="Error" type="danger">
-          {error}
-        </Notification>
-      );
+      setIsDialogOpen(false);
       console.error('Upload error:', error);
     } finally {
       setIsUploading(false);

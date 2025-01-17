@@ -75,13 +75,13 @@ const ptSetupSchema = yup.object().shape({
         .required('Mobile number is required')
         .matches(/^[0-9]{10}$/, 'Mobile number must be exactly 10 digits'),
     
-    ec_certificate: yup
-        .string()
-        .required('EC Certificate is required'),
+    // ec_certificate: yup
+    //     .string()
+    //     .required('EC Certificate is required'),
     
-    rc_certificate: yup
-        .string()
-        .required('RC Certificate is required'),
+    // rc_certificate: yup
+    //     .string()
+    //     .required('RC Certificate is required'),
     
     ptec_frequency: yup
         .string()

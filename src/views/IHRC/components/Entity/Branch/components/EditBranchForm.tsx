@@ -221,11 +221,11 @@ const validationSchema = yup.object().shape({
                     .required('SE validity is required'),
             otherwise: (schema) => schema.notRequired(),
         }),
-    gst_number: yup
+        gst_number: yup
         .string()
         .nullable()
         .required('GST Number is required')
-        .matches(/^\d{15}$/, 'GST number must be 15 digits'),
+        .matches(/^[0-9A-Z]{15}$/, 'GST number must be 15 characters and can contain only numbers and uppercase letters'),
     document: yup.string().nullable(),
     document_validity_type: yup
         .string()
@@ -825,14 +825,14 @@ const AddBranchForm: React.FC = () => {
     }
     const handleUpdateBranch = async (values: BranchFormData) => {
         console.log(formData)
-        const editdata = {
+        let editdata = {
             ...formData,
             opening_date: formData.opening_date
                 ? moment(formData.opening_date).format('YYYY-MM-DD')
                 : null,
             se_validity: formData.se_validity
                 ? moment(formData.se_validity).format('YYYY-MM-DD')
-                : null, // Convert to YYYY-MM-DD format
+                : null,
             lease_validity: formData.lease_validity
                 ? moment(formData.lease_validity).format('YYYY-MM-DD')
                 : null,
@@ -843,6 +843,18 @@ const AddBranchForm: React.FC = () => {
                 ? null
                 : formData.lease_document,
         }
+    
+        // Remove specific keys if office_mode is virtual
+        if (editdata.office_mode === 'virtual') {
+            const {
+                type,
+                office_type,
+                se_status,
+                ...rest
+            } = editdata
+            editdata = rest
+        }
+    
         //check validation here all
         await validateFormData(editdata) // This validates all fields at once
         const isValid = await validateFormData(editdata)
@@ -850,10 +862,7 @@ const AddBranchForm: React.FC = () => {
         if (!isValid) {
             return // Don't proceed if validation failed
         }
-
-        // const data = editdata.filter((v) => String(v).length)
-
-        // Dispatch update branch action
+    
         try {
             const res = await dispatch(
                 updateBranch({
@@ -863,30 +872,24 @@ const AddBranchForm: React.FC = () => {
             )
                 .unwrap()
                 .catch((error: any) => {
-                    // Handle different error formats
                     if (error.response?.data?.message) {
-                        // API error response
                         showErrorNotification(error.response.data.message)
                     } else if (error.message) {
-                        // Regular error object
                         showErrorNotification(error.message)
                     } else if (Array.isArray(error)) {
-                        // Array of error messages
                         showErrorNotification(error)
                     } else {
-                        // Fallback error message
                         showErrorNotification(error)
                     }
-                    throw error // Re-throw to prevent navigation
+                    throw error
                 })
-
+    
             if (res) {
                 navigate('/branch')
                 showNotification('success', 'Branch Updated successfully')
             }
         } catch (error: any) {
             const errorMessage = error || 'Failed to Update user'
-            showNotification('danger', errorMessage) // Show the API error message
         } finally {
             setLoading(false)
         }

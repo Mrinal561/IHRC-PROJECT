@@ -41,9 +41,8 @@ interface LWFSetupData {
 }
 
 const lwfSchema = yup.object().shape({
-  register_number: yup
-    .string()
-    .required('Register Number is required'),
+  register_number: yup.string().required('Registration number is required')
+    .matches(/^[A-Za-z0-9-]+$/, 'Registration number can only contain letters, numbers, and hyphens'),
   // username: yup
   //   .string()
   //   .required('User is required')

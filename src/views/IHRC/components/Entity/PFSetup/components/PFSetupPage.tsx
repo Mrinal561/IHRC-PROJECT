@@ -28,8 +28,8 @@ import OutlinedPasswordInput from '@/components/ui/OutlinedInput/OutlinedPasswor
 const pfSetupSchema = yup.object().shape({
     pf_code: yup
         .string()
-        .required('PF Code is required'),
-        // .matches(/^[A-Z]{2}\/[A-Z]{2}\/\d{5}\/\d{3}$/, 'Invalid PF Code format. Format should be XX/XX/12345/123'),
+        .required('PF Code is required')
+        .matches(/^[A-Za-z0-9]+$/, 'ESI code must contain only letters and numbers'),
     
     state_id: yup
         .number()
@@ -58,9 +58,9 @@ const pfSetupSchema = yup.object().shape({
         .required('Registration date is required')
         .max(new Date(), 'Registration date cannot be in the future'),
     
-    register_certificate: yup
-        .string()
-        .required('Registration certificate is required'),
+    // register_certificate: yup
+    //     .string()
+    //     .required('Registration certificate is required'),
     
     signatory_data: yup.array().of(
         yup.object().shape({
@@ -809,7 +809,7 @@ useEffect(()=>{
                 </div>
                 <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Choose the Signatories
+                            Select Authorised Signatories
                         </label>
                         <Select
                             isMulti

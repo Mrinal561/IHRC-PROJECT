@@ -225,11 +225,11 @@ const validationSchema = yup.object().shape({
                     .required('SE validity is required'),
             otherwise: (schema) => schema.notRequired(),
         }),
-    gst_number: yup
+        gst_number: yup
         .string()
         .nullable()
         .required('GST Number is required')
-        .matches(/^\d{15}$/, 'GST number must be 15 digits'),
+        .matches(/^[0-9A-Z]{15}$/, 'GST number must be 15 characters and can contain only numbers and uppercase letters'),
     document: yup.string().nullable(),
     document_validity_type: yup
         .string()
@@ -496,6 +496,8 @@ const AddBranchForm: React.FC = () => {
     // Handle state selection
     const handleStateChange = (option: SelectOption | null) => {
         setSelectedStates(option)
+        setSelectedDistrict('') // Reset district selection
+        setSelectedLocation('')
         if (option) {
             setFormData((prev) => ({
                 ...prev,

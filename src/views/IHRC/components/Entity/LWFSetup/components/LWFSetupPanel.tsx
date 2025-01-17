@@ -49,7 +49,7 @@ const validationSchema = yup.object().shape({
   //     'Must include A-Z, a-z, 0-9, @$!%*?& (Weak Password)'
   // ),
   signatory_data: yup.array().min(1, 'At least one signatory is required'),
-  certificate: yup.string().required('Certificate is required'),
+  // certificate: yup.string().required('Certificate is required'),
 });
 
 
@@ -612,7 +612,7 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
 
 <div className='grid grid-cols-2 gap-4 mb-2'>
       <div className="mb-4">
-        <p className="mb-2">Signatory</p>
+        <p className="mb-2">Select Authorised Signatory</p>
         <Select
           isMulti
           options={users.map(user => ({

@@ -262,7 +262,7 @@ const ESISetupTable: React.FC<ESISetupTableProps> = ({
                 onClose={handleDialogClose}
                 onRequestClose={handleDialogClose}
                 width={800}
-                height={560}
+                height={480}
             >
                 <h5 className="mb-4">Edit ESI Setup</h5>
                 {itemToEdit && (

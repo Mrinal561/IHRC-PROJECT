@@ -132,6 +132,7 @@ const PTRCTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({ onUploadCon
         navigate('/uploadedptrcdetail');
       }
     } catch (error) {
+      setIsDialogOpen(false);
       console.error('Upload error:', error);
     } finally {
       setIsUploading(false);
