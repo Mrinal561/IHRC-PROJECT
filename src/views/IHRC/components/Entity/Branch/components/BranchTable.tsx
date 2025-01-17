@@ -104,6 +104,9 @@ const BranchTable: React.FC<BranchTableProps> = ({
     }, [data])
 
     const handleDialogOk = () => {
+        try{
+
+      
         if (itemToDelete) {
            const res = dispatch(deleteBranch(itemToDelete))
                 .unwrap().catch((error: any) => {
@@ -134,6 +137,9 @@ const BranchTable: React.FC<BranchTableProps> = ({
         }
         handleRefreshData();
         handleDialogClose();
+    } catch(error:any){
+        console.log(error)
+    }
     }
     
     const openDeleteDialog = (branchId: number) => {
