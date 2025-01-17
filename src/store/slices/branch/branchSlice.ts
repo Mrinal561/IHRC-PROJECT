@@ -86,10 +86,14 @@ export const updateBranch = createAsyncThunk(
 
 export const deleteBranch = createAsyncThunk(
     'branch/deleteBranch',
-    async (id: string) => {
-        console.log(id)
-        await httpClient.delete(endpoints.branch.delete(id))
-        return id
+    async (id: string, {rejectWithValue}) => {
+        try{
+            console.log(id)
+           const {data} = await httpClient.delete(endpoints.branch.delete(id))
+            return data;
+        } catch (error:any){
+            return rejectWithValue(error.response?.data?.message || 'Failed to delete Branch');
+        }
     },
 )
 
