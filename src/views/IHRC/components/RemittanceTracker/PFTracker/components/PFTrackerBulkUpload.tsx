@@ -139,6 +139,7 @@ useEffect(() => {
         navigate('/uploadedpfdetail');
       }
     } catch (error) {
+      setIsDialogOpen(false);
       // toast.push(
       //   // <Notification title="Error" type="danger">
       //   //   Upload failed. Please try again.

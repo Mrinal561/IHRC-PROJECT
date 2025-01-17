@@ -29,8 +29,10 @@ interface ValidationErrors {
 }
 
 const ptSchema = yup.object().shape({
-    register_number: yup.string().required('Register Number is required'),
-    enroll_number: yup.string().required('Enrollment Number is required'),
+    register_number: yup.string().required('Register Number is required')
+    .matches(/^[A-Za-z0-9]+$/, 'ESI code must contain only letters and numbers'),
+    enroll_number: yup.string().required('Enrollment Number is required')
+    .matches(/^[A-Za-z0-9]+$/, 'ESI code must contain only letters and numbers'),
     // username: yup
     //     .string()
     //     .required('PF User is required')
@@ -50,13 +52,10 @@ const ptSchema = yup.object().shape({
     //         'Invalid email address. Please use a valid email with a.com,.in,.org,.net,.edu, or.gov domain.',
     //     ),
     mobile: yup
-        .string()
-        .required('Mobile number is required')
-        // .positive('Mobile number must be positive')
-        // .integer('Mobile number must be an integer')
-        .test('len', 'Mobile number must be exactly 10 digits', (val) =>
-            val ? val.toString().length === 10 : false,
-        ),
+    .string()
+    .test('len', 'Mobile number must be exactly 10 digits', (val) => 
+        !val || val.toString().length === 10
+    ),
     register_date: yup
         .date()
         .required('Registration date is required')
@@ -257,25 +256,25 @@ const handleChange = async (field: keyof PTSetupData, value: string) => {
     await validateField(field, value)
 
     // Special validation for password to check against username
-    if (field === 'password' || field === 'username') {
-        const newFormData = { ...formData, [field]: value }
-        if (newFormData.password === newFormData.username) {
-            setErrors(prev => ({
-                ...prev,
-                password: 'Password cannot be same as username'
-            }))
-        }
-    }
+    // if (field === 'password' || field === 'username') {
+    //     const newFormData = { ...formData, [field]: value }
+    //     if (newFormData.password === newFormData.username) {
+    //         setErrors(prev => ({
+    //             ...prev,
+    //             password: 'Password cannot be same as username'
+    //         }))
+    //     }
+    // }
 
     // Special validation for mobile number to check for numeric only
-    if (field === 'mobile') {
-        if (!/^\d*$/.test(value)) {
-            setErrors(prev => ({
-                ...prev,
-                mobile: 'Mobile number must contain only digits'
-            }))
-        }
-    }
+    // if (field === 'mobile') {
+    //     if (!/^\d*$/.test(value)) {
+    //         setErrors(prev => ({
+    //             ...prev,
+    //             mobile: 'Mobile number must contain only digits'
+    //         }))
+    //     }
+    // }
 }
 
 // Modify validateForm to check for custom validations as well
@@ -521,7 +520,7 @@ const validateForm = async () => {
               </div>
               <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                      EC Certificate
+                      EC Certificate(Accepted : Pdf/Zip/Image(Max Size: 20mb))
                   </label>
                   <div className="flex items-center gap-2">
                   <Input
@@ -543,7 +542,7 @@ const validateForm = async () => {
               </div>
               <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                      RC Certificate
+                      RC Certificate(Accepted : Pdf/Zip/Image(Max Size: 20mb))
                   </label>
                   <div className="flex items-center gap-2">
                   <Input

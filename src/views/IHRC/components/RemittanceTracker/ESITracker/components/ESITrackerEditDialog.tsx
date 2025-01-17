@@ -102,8 +102,7 @@ payment_date: yup
   .max(new Date(), 'Payment date cannot be in the future'),
 challan_no: yup
   .string()
-  .required('Challan number is required')
-  .matches(/^[0-9]+$/, 'Challan number must contain only digits'),
+  .required('Challan number is required'),
 delay_reason: yup.string().nullable(),
 difference_reason: yup.string().nullable()
 });

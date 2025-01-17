@@ -49,7 +49,7 @@ const validationSchema = yup.object().shape({
   //     'Must include A-Z, a-z, 0-9, @$!%*?& (Weak Password)'
   // ),
   signatory_data: yup.array().min(1, 'At least one signatory is required'),
-  certificate: yup.string().required('Certificate is required'),
+  // certificate: yup.string().required('Certificate is required'),
 });
 
 
@@ -612,7 +612,7 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
 
 <div className='grid grid-cols-2 gap-4 mb-2'>
       <div className="mb-4">
-        <p className="mb-2">Signatory <span className="text-red-500">*</span></p>
+        <p className="mb-2">Select Authorised Signatory</p>
         <Select
           isMulti
           options={users.map(user => ({
@@ -629,7 +629,7 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
       </div>
 
       <div className="mb-2">
-        <p className="mb-2">Upload Certificate <span className="text-red-500">*</span></p>
+        <p className="mb-2">Upload Certificate(Accepted : Pdf/Zip/Image(Max Size: 20mb))</p>
         <Input
           type="file"
           onChange={handleFileUpload}

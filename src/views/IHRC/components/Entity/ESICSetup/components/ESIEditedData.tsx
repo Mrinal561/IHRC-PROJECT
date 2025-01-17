@@ -59,10 +59,9 @@ interface ESIEditedDataProps {
 
 const esiSchema = yup.object().shape({
   code_Type: yup.string().required('Code type is required'),
-  code: yup
-    .string()
-    .required('ESI code is required')
-    .matches(/^[0-9]+$/, 'ESI code must contain only numbers'),
+  code: yup.string()
+  .required('ESI code is required')
+  .matches(/^[A-Za-z0-9]+$/, 'ESI code must contain only letters and numbers'),
   // esi_user: yup
   //   .string()
   //   .required('ESI user is required')
@@ -374,7 +373,7 @@ return (
       {/* ESI Certificate */}
       <div className="grid grid-cols-1 gap-3">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">ESI Certificate</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">ESI Certificate(Accepted : Pdf/Zip/Image(Max Size: 20mb))</label>
           <div className="flex items-center gap-2">
             <Input
               type="file"
