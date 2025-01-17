@@ -241,13 +241,13 @@ const [editFormData, setEditFormData] = useState<PFData | null>(null);
               showErrorNotification(error);
           } else {
               // Fallback error message
-              showErrorNotification('An unexpected error occurred. Please try again.');
+              showErrorNotification(error);
           }
           throw error; // Re-throw to prevent navigation
       });
         
-      setDialogIsOpen(false);
-        if (res) {
+      if (res) {
+          setDialogIsOpen(false);
           toast.push(
             <Notification title="Success" type="success">
               PF Setup deleted successfully

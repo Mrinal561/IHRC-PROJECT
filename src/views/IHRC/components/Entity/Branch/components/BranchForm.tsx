@@ -278,7 +278,7 @@ const AddBranchForm: React.FC = () => {
     const [leaseDocument, setLeaseDocument] = useState<File | null>(null)
     const [seRegistrationNumberExists, setSeRegistrationNumberExists] =
         useState('no')
-    const [formData, setFormData] = useState<BranchFormData>({
+    let [formData, setFormData] = useState<BranchFormData>({
         group_id: 0,
         company_id: selectedCompany?.value
             ? parseInt(selectedCompany.value)
@@ -717,6 +717,10 @@ const AddBranchForm: React.FC = () => {
     }
     const handleAddBranch = async (values: BranchFormData) => {
         console.log(formData)
+        if (formData.se_status === "expired") {
+            const { se_validity, ...restFormData } = formData
+            formData = restFormData
+        }
         //check validation here all
         await validateFormData() // This validates all fields at once
         const isValid = await validateFormData()
