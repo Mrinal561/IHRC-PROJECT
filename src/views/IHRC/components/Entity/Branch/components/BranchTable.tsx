@@ -195,6 +195,23 @@ const BranchTable: React.FC<BranchTableProps> = ({
                                 className="text-blue-500"
                             />
                         </Tooltip>
+                        <Tooltip title="Agreements">
+                <Button
+                    size="sm"
+                    onClick={() => {
+                        navigate('/branch-agreements', {
+                            state: {
+                                branchId: row.original?.id,
+                                companyId: row.original?.Company?.id,
+                                companyName: row.original?.Company?.name,
+                                branchName: row.original?.name
+                            }
+                        })
+                    }}
+                >
+                    Agreements
+                </Button>
+            </Tooltip>
                         <Tooltip title="Delete">
                             <Button
                                 size="sm"
