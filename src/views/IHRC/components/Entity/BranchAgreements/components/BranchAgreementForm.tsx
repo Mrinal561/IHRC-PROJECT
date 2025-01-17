@@ -543,11 +543,11 @@ return (
                 {errors.agreementDocument && touched.agreementDocument && (
                   <p className="text-red-500 text-sm">{errors.agreementDocument}</p>
                 )}
-                {values.agreementDocument && (
+                {/* {values.agreementDocument && (
                   <div className="text-sm text-gray-600">
                     Selected file: {values.agreementDocument.name}
                   </div>
-                )}
+                )} */}
               </div>
             </div>
 
