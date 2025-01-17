@@ -9,11 +9,13 @@ import { FiTrash } from 'react-icons/fi';
 import dayjs from 'dayjs';
 import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const BranchAgreementTable = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
+    const { branchId, companyId, companyName, branchName } = location.state || {};
     
     // State Management
     const [data, setData] = useState([]);
@@ -26,9 +28,16 @@ const BranchAgreementTable = () => {
     // Filter and Table State
     const [filters, setFilters] = useState({
         search: '',
-        branch_id: '',
-        company_id: user?.company_id || '',
-        sub_category: ''
+        branch_id: branchId ? {
+            value: branchId,
+            label: branchName
+        } : '',
+        company_id: companyId ? {
+            value: companyId,
+            label: companyName
+        } : (user?.company_id || ''),
+        sub_category: '',
+        isFromBranch: !!branchId // Flag to check if coming from branch table
     });
     
     const [tableData, setTableData] = useState({
@@ -316,6 +325,7 @@ const BranchAgreementTable = () => {
     value={filters.branch_id} // This will now be the full option object
     options={branches}
     onChange={(value) => handleFilterChange('branch_id', value)}
+    disabled={filters.isFromBranch}
 />
 
                 <OutlinedInput
