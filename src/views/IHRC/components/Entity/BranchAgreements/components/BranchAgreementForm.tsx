@@ -32,7 +32,7 @@ interface BranchAgreement {
     sub_category?: string;
     owner_name?: string;
     partner_name?: string;
-    partner_number?: number;
+    partner_number?: string;
     start_date?: string;
     end_date?: string;
     applicable_for_all?: boolean;
@@ -109,7 +109,7 @@ const [subCategoryInput, setSubCategoryInput] = useState('');
     sub_category: '',
     owner_name: '',
     partner_name: '',
-    partner_number: 0,
+    partner_number: '',
     start_date: '',
     end_date: '',
     applicable_for_all: false,
@@ -262,7 +262,7 @@ const [subCategoryInput, setSubCategoryInput] = useState('');
         sub_category: values.subCategory,
         owner_name: values.ownerName,
         partner_name: values.partnerName,
-        partner_number: parseInt(values.partnerContact, 10),
+        partner_number: values.partnerContact,
         start_date: startDate.toISOString(),
         end_date: endDate.toISOString(),
         applicable_for_all: values.applicableForAllCompany,
