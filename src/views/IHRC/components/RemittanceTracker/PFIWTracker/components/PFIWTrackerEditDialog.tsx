@@ -153,7 +153,24 @@ const PFIWTrackerEditDialog: React.FC<PFIWTrackerEditDialogProps> = ({
       const resultAction =  await dispatch(updatePfiwTracker({
         id: trackerid,
         data: updateData
-      }));
+      })).unwrap()
+      .catch((error: any) => {
+          // Handle different error formats
+          if (error.response?.data?.message) {
+              // API error response
+              showErrorNotification(error.response.data.message);
+          } else if (error.message) {
+              // Regular error object
+              showErrorNotification(error.message);
+          } else if (Array.isArray(error)) {
+              // Array of error messages
+              showErrorNotification(error);
+          } else {
+              // Fallback error message
+              showErrorNotification(error);
+          }
+          throw error; // Re-throw to prevent navigation
+      });
 
       onClose();
       openNotification('success', 'PFIW Tracker edited successfully');

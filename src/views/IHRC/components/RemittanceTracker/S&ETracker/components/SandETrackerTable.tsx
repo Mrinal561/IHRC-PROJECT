@@ -537,6 +537,8 @@ interface NoticeTrackerTableProps {
   };
   onPaginationChange: (page: number) => void;
   onPageSizeChange: (pageSize: number) => void;
+  canEdit:boolean;
+  canDelete: boolean;
 }
 
 const NoticeTrackerTable: React.FC<NoticeTrackerTableProps> = ({
@@ -547,6 +549,8 @@ const NoticeTrackerTable: React.FC<NoticeTrackerTableProps> = ({
   onPaginationChange,
   onPageSizeChange,
   companyName,
+  canEdit,
+  canDelete
 }) => {
   const dispatch = useDispatch();
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -660,6 +664,7 @@ const NoticeTrackerTable: React.FC<NoticeTrackerTableProps> = ({
         id: 'actions',
         cell: ({ row }) => (
           <div className="flex items-center gap-2">
+            {canEdit && (
             <Tooltip title="Edit">
               <Button
                 size="sm"
@@ -667,6 +672,8 @@ const NoticeTrackerTable: React.FC<NoticeTrackerTableProps> = ({
                 icon={<MdEdit />}
               />
             </Tooltip>
+            )}
+            {canDelete && (
             <Tooltip title="Delete">
               <Button
                 size="sm"
@@ -675,6 +682,7 @@ const NoticeTrackerTable: React.FC<NoticeTrackerTableProps> = ({
                 className="text-red-500"
               />
             </Tooltip>
+            )}
           </div>
         ),
       },
