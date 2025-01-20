@@ -9,26 +9,49 @@ import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
 import dayjs from 'dayjs';
 import { FiFile } from 'react-icons/fi';
+import store from '@/store';
 const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
 
 interface UploadedESIDetailsProps {
   onBack: () => void;
-  loading: boolean
+  loading: boolean;
+  groupId: string;
+  companyId:string;
 }
 
-const UploadedESIDetails: React.FC<UploadedESIDetailsProps> = ({ onBack, loading }) => {
+const UploadedESIDetails: React.FC<UploadedESIDetailsProps> = ({ onBack, loading, groupId, companyId }) => {
   const navigate = useNavigate();
   const [data, setData] = useState<esiChallanData[]>([]);
 const [isLoading, setIsLoading] = useState(false);
-
-
-  const fetchEsiTrackerData = useCallback(async () => {
+const {login} = store.getState();
+const [pagination, setPagination] = useState({
+  total: 0,
+  pageIndex: 1,
+  pageSize: 10,
+});
+const params: any = {
+  'group_id[]': login.user.user?.group_id,
+  'company_id[]': login.user.user?.company_id,
+};
+  const fetchEsiTrackerData = useCallback(async  (page: number, pageSize: number) => {
+    console.log(login)
     try {
         setIsLoading(true)
-      const res = await httpClient.get(endpoints.esiTracker.getAll())
+      const res = await httpClient.get(endpoints.esiTracker.getAll(), {
+        params: {
+          page,
+          page_size: pageSize,
+          'group_id[]': login.user.user?.group_id,
+          'company_id[]': login.user.user?.company_id,
+        },
+      });
       console.log(res.data.data)
       setData(res.data.data);
+      setPagination((prev) => ({
+        ...prev,
+        total: res.data.paginate_data.totalResults,
+      }));
     } catch (error) {
       console.error('Error fetching PF tracker data:', error);
     } finally{
@@ -36,9 +59,20 @@ const [isLoading, setIsLoading] = useState(false);
     }
   }, []);
       useEffect(() => {
-    fetchEsiTrackerData();
-  }, [fetchEsiTrackerData]);
+    fetchEsiTrackerData(pagination.pageIndex, pagination.pageSize);
+  }, [fetchEsiTrackerData, pagination.pageIndex, pagination.pageSize]);
 
+  const handlePaginationChange = (page: number) => {
+    setPagination((prev) => ({ ...prev, pageIndex: page }));
+  };
+
+  const handlePageSizeChange = (newPageSize: number) => {
+    setPagination((prev) => ({
+      ...prev,
+      pageSize: newPageSize,
+      pageIndex: 1,
+    }));
+  };
 
   const columns: ColumnDef<esiChallanData>[] = useMemo(
     () => [
@@ -301,6 +335,13 @@ const [isLoading, setIsLoading] = useState(false);
         stickyHeader={true}
         stickyFirstColumn={true}
         stickyLastColumn={true}
+        pagingData={{
+          total: pagination.total,
+          pageIndex: pagination.pageIndex,
+          pageSize: pagination.pageSize,
+        }}
+        onPaginationChange={handlePaginationChange}
+        onSelectChange={handlePageSizeChange}
       />
     </div>
   );

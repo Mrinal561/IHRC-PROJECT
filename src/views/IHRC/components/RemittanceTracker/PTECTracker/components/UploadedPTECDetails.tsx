@@ -10,6 +10,7 @@ import { endpoints } from '@/api/endpoint';
 import { PTTrackerData } from '@/@types/PTTracker';
 import { FiFile } from 'react-icons/fi';
 import dayjs from 'dayjs';
+import store from '@/store';
 
 interface UploadedPTDetailsProps {
   onBack: () => void;
@@ -24,6 +25,11 @@ const UploadedPTECDetails: React.FC<UploadedPTDetailsProps> = ({ onBack }) => {
     pageIndex: 1,
     pageSize: 10,
   });
+  const {login} = store.getState();
+const params: any = {
+  'group_id[]': login.user.user?.group_id,
+  'company_id[]': login.user.user?.company_id,
+};
 
   const fetchPTTrackerData = useCallback(
     async (page: number, pageSize: number) => {
@@ -33,6 +39,8 @@ const UploadedPTECDetails: React.FC<UploadedPTDetailsProps> = ({ onBack }) => {
           params: {
             page,
             page_size: pageSize,
+            'group_id[]': login.user.user?.group_id,
+            'company_id[]': login.user.user?.company_id,
           },
         });
         setData(res.data.data);
