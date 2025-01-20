@@ -239,7 +239,24 @@ const handleSubmit = async () => {
     const resultAction = await dispatch(updateTracker({
       id: trackerId, 
       data: updateData // Note: data, not formData
-    }));
+    })) .unwrap()
+    .catch((error: any) => {
+        // Handle different error formats
+        if (error.response?.data?.message) {
+            // API error response
+            showErrorNotification(error.response.data.message);
+        } else if (error.message) {
+            // Regular error object
+            showErrorNotification(error.message);
+        } else if (Array.isArray(error)) {
+            // Array of error messages
+            showErrorNotification(error);
+        } else {
+            // Fallback error message
+            showErrorNotification(error);
+        }
+        throw error; // Re-throw to prevent navigation
+    });
 
     onClose();
     openNotification('success', 'ESI Tracker edited successfully');
@@ -248,7 +265,7 @@ const handleSubmit = async () => {
     }
   } catch (err) {
     console.error('Error submitting tracker data:', err);
-    openNotification('danger', 'Failed to save changes');
+    // openNotification('danger', 'Failed to save changes');
   }
 };
   const handleDateChange = (field: 'dueDate' | 'amountPaidOn' | 'month', date: Date | null) => {
