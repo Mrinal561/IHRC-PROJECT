@@ -160,7 +160,6 @@ const PFEditedData: React.FC<PFEditedDataProps> = ({
     }
   };
 
-
   const fetchPFData = async () => {
     try {
       setLoading(true);
@@ -177,17 +176,21 @@ const PFEditedData: React.FC<PFEditedDataProps> = ({
           throw error;
         });
 
+      // Transform the signatory data to include details
+      const transformedSignatoryData = response.signatory_data.map((signatory: any) => ({
+        signatory_id: signatory.signatory_id,
+        dsc_validity: signatory.dsc_validity,
+        e_sign: '',
+        e_sign_status: signatory.e_sign_status,
+        details: signatory.details // Keep the details for display
+      }));
+
       // Transform the data including company group and company names
       const transformedData = {
         ...response,
         Company_Group_Name: response.CompanyGroup?.name || '',
         Company_Name: response.Company?.name || '',
-        signatory_data: [{
-          signatory_id: response.signatory_id,
-          dsc_validity: response.dsc_validity,
-          e_sign: '',
-          e_sign_status: response.e_sign_status
-        }]
+        signatory_data: transformedSignatoryData
       };
 
       setFormData(transformedData);
@@ -218,14 +221,14 @@ const PFEditedData: React.FC<PFEditedDataProps> = ({
         handleChange('location', response.Location.name);
       }
       
-      // Update signatory selection with complete data
-      if (response.Signatory) {
-        const signatoryUser = {
-          id: response.Signatory.id,
-          name: response.Signatory.name
-        };
-        setSelectedSignatories([signatoryUser]);
-      }
+      // Update signatory selection with complete data from signatory_data
+      const signatoryUsers = response.signatory_data.map((signatory: any) => ({
+        id: signatory.signatory_id,
+        name: signatory.details.name,
+        email: signatory.details.email,
+        role: signatory.details.Role?.name
+      }));
+      setSelectedSignatories(signatoryUsers);
       
       setLoading(false);
     } catch (err) {
@@ -463,6 +466,8 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     );
   }
 
+  
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -557,7 +562,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
       </div>
 
       {/* Selected Signatories Details */}
-      {selectedSignatories.length > 0 && (
+      {/* {selectedSignatories.length > 0 && (
         <div className="border rounded-lg p-2 space-y-2">
           <h6 className="font-semibold text-sm">Selected Signatories</h6>
           {selectedSignatories.map((signatory, index) => (
@@ -608,7 +613,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
             </div>
           ))}
         </div>
-      )}
+      )} */}
 
       {/* Certificate Upload Section */}
       <div className="grid grid-cols-1 gap-3">

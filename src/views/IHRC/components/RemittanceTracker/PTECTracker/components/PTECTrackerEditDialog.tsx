@@ -8,7 +8,30 @@ import OutlinedSelect from '@/components/ui/Outlined';
 import { showErrorNotification } from '@/components/ui/ErrorMessage';
 import { useDispatch } from 'react-redux';
 import { fetchPtecTrackerById, updatePtecTracker } from '@/store/slices/ptSetup/ptecTrackerSlice';
+import * as yup from 'yup';
 
+const validationSchema = yup.object().shape({
+  receipt_no: yup
+    .string()
+    .required('Receipt number is required'),
+  total_paid_amt: yup
+    .number()
+    .typeError("Total paid amount cannot be zero")
+    .required('Total paid amount is required')
+    .positive('Total paid amount must be positive'),
+  total_challan_amt: yup
+    .number()
+    .typeError("Total challan amount cannot be zero")
+    .required('Total challan amount is required')
+    .positive('Total challan amount must be positive'),
+  payment_date: yup
+    .date()
+    .required('Payment date is required')
+    .max(new Date(), 'Payment date cannot be in the future'),
+  delay_reason: yup
+    .string()
+    .nullable()
+});
 interface PTTrackerData {
   id: number;
   noOfEmployees?: number;
@@ -24,6 +47,13 @@ interface PTTrackerData {
   delay_in_days?: string;
   delay_reason?: string;
   payment_date?: string;
+}
+interface ValidationErrors {
+  receipt_no?: string;
+  total_paid_amt?: string;
+  total_challan_amt?: string;
+  payment_date?: string;
+  delay_reason?: string;
 }
 
 interface PTTrackerEditDialogProps {
@@ -47,6 +77,7 @@ const PTECTrackerEditDialog: React.FC<PTTrackerEditDialogProps> = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const dispatch = useDispatch();
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
 
   useEffect(() => {
     if (isOpen && trackerId) {
@@ -80,12 +111,44 @@ const PTECTrackerEditDialog: React.FC<PTTrackerEditDialogProps> = ({
     }
   };
 
-  const handleChange = (field: keyof PTTrackerData, value: string | number) => {
-    setEditedData((prev) => ({ ...prev, [field]: value }));
-  };
+const handleChange = (field: keyof PTTrackerData, value: string | number) => {
+  setEditedData((prev) => ({ ...prev, [field]: value }));
+  
+  validationSchema.validateAt(field, { [field]: value }).catch((err) => {
+    setValidationErrors((prev) => ({
+      ...prev,
+      [field]: err.message
+    }));
+  });
+};
+
+const validateForm = async (): Promise<boolean> => {
+  try {
+    await validationSchema.validate(editedData, { abortEarly: false });
+    setValidationErrors({});
+    return true;
+  } catch (err) {
+    if (err instanceof yup.ValidationError) {
+      const errors: ValidationErrors = {};
+      err.inner.forEach((e) => {
+        if (e.path) {
+          errors[e.path as keyof ValidationErrors] = e.message;
+        }
+      });
+      setValidationErrors(errors);
+    }
+    return false;
+  }
+};
 
   const handleSubmit = async () => {
     try {
+
+      const isValid = await validateForm();
+      if (!isValid) {
+        openNotification('danger', 'Please fix the validation errors');
+        return;
+      }
     // Create updateData object (matching the original updateTracker data expectation)
     const updateData = {
       payment_date: editedData.payment_date || '',
@@ -99,7 +162,24 @@ const PTECTrackerEditDialog: React.FC<PTTrackerEditDialogProps> = ({
     const resultAction = await dispatch(updatePtecTracker({
       id: trackerId, 
       data: updateData // Note: data, not formData
-    }));
+    })) .unwrap()
+    .catch((error: any) => {
+        // Handle different error formats
+        if (error.response?.data?.message) {
+            // API error response
+            showErrorNotification(error.response.data.message);
+        } else if (error.message) {
+            // Regular error object
+            showErrorNotification(error.message);
+        } else if (Array.isArray(error)) {
+            // Array of error messages
+            showErrorNotification(error);
+        } else {
+            // Fallback error message
+            showErrorNotification(error);
+        }
+        throw error; // Re-throw to prevent navigation
+    });
 
     onClose();
     openNotification('success', 'PTEC Tracker edited successfully');
@@ -108,7 +188,7 @@ const PTECTrackerEditDialog: React.FC<PTTrackerEditDialogProps> = ({
     }
   } catch (err) {
     console.error('Error submitting tracker data:', err);
-    openNotification('danger', 'Failed to save changes');
+    // openNotification('danger', 'Failed to save changes');
   }
   };
   
@@ -162,7 +242,7 @@ const PTECTrackerEditDialog: React.FC<PTTrackerEditDialogProps> = ({
       onClose={onClose}
       onRequestClose={onClose}
       width={800}
-      height={420}
+      height={480}
     >
       <h5 className="mb-4">Edit PT EC Tracker Detail</h5>
 
@@ -176,15 +256,18 @@ const PTECTrackerEditDialog: React.FC<PTTrackerEditDialogProps> = ({
               onChange={(value) => handleChange('noOfEmployees', parseInt(value, 10))}
             />
           </div> */}
-          <div className="flex flex-col gap-2 w-full">
+          <div className="flex flex-col gap-2 w-full  min-h-[90px]">
             <label>Receipt No/Ack no</label>
             <OutlinedInput
               label="Receipt No"
               value={editedData.receipt_no || ''}
               onChange={(value) => handleChange('receipt_no', value)}
             />
+            {validationErrors.receipt_no && (
+    <p className="text-red-500 text-sm mt-1">{validationErrors.receipt_no}</p>
+  )}
           </div>
-           <div className="flex flex-col gap-2 w-full">
+           <div className="flex flex-col gap-2 w-full  min-h-[90px]">
             <label>Date of Payment</label>
             <DatePicker
               size='sm'
@@ -192,25 +275,34 @@ const PTECTrackerEditDialog: React.FC<PTTrackerEditDialogProps> = ({
               value={editedData.payment_date ? new Date(editedData.payment_date) : undefined}
               onChange={(date) => handleDateChange('payment_date', date)}
             />
+            {validationErrors.payment_date && (
+    <p className="text-red-500 text-sm mt-1">{validationErrors.payment_date}</p>
+  )}
           </div>
         </div>
 
         <div className="flex gap-4 items-center">
-          <div className="flex flex-col gap-2 w-full">
+          <div className="flex flex-col gap-2 w-full  min-h-[90px]">
             <label>Total Challan Amount</label>
             <OutlinedInput
               label="Total Challan Amount"
               value={editedData.total_challan_amt?.toString() || ''}
               onChange={(value) => handleChange('total_challan_amt', parseFloat(value))}
             />
+            {validationErrors.total_challan_amt && (
+    <p className="text-red-500 text-sm mt-1">{validationErrors.total_challan_amt}</p>
+  )}
           </div>
-          <div className="flex flex-col gap-2 w-full">
+          <div className="flex flex-col gap-2 w-full  min-h-[90px]">
             <label>Total Amount Paid</label>
             <OutlinedInput
               label="Total Amount Paid"
               value={editedData.total_paid_amt?.toString() || ''}
               onChange={(value) => handleChange('total_paid_amt', parseFloat(value))}
             />
+            {validationErrors.total_paid_amt && (
+    <p className="text-red-500 text-sm mt-1">{validationErrors.total_paid_amt}</p>
+  )}
           </div>
           {/* <div className="flex flex-col gap-2 w-full">
             <label>Difference in Amount</label>
@@ -279,13 +371,16 @@ const PTECTrackerEditDialog: React.FC<PTTrackerEditDialogProps> = ({
               onChange={(value) => handleChange('delay_in_days', value)}
             />
           </div> */}
-          <div className="flex flex-col gap-2 w-full">
+          <div className="flex flex-col gap-2 w-full  min-h-[90px]">
             <label>Delay Reason</label>
             <OutlinedInput
               label="Delay Reason"
               value={editedData.delay_reason || ''}
               onChange={(value) => handleChange('delay_reason', value)}
             />
+            {validationErrors.delay_reason && (
+    <p className="text-red-500 text-sm mt-1">{validationErrors.delay_reason}</p>
+  )}
           </div>
         </div>
       </div>

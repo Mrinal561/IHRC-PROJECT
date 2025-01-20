@@ -3,4 +3,5 @@ export interface AuthUser {
     name: string
     email: string
     type?: string
+    company_id?: any
 }

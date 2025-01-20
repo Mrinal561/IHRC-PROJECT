@@ -12,6 +12,7 @@ import { PfChallanData } from '@/@types/pfTracker';
 import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
 import dayjs from 'dayjs';
+import store from '@/store';
 
 const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
@@ -25,16 +26,36 @@ const UploadedPFDetails: React.FC<UploadedPFDetailsProps> = ({ onBack }) => {
   const navigate = useNavigate();
   const [data, setData] = useState<PfChallanData[]>([]);
   const [loading, setLoading] = useState(true);
+  const {login} = store.getState();
+  const [pagination, setPagination] = useState({
+    total: 0,
+    pageIndex: 1,
+    pageSize: 10,
+  });
+const params: any = {
+  'group_id[]': login.user.user?.group_id,
+  'company_id[]': login.user.user?.company_id,
+};
 
 
 
-
-  const fetchPFTrackerData =  useCallback(async () => {
+  const fetchPFTrackerData =  useCallback(async (page: number, pageSize: number) => {
     try {
       setLoading(true);
-      const res = await httpClient.get(endpoints.tracker.pfGetALl());
+      const res = await httpClient.get(endpoints.tracker.pfGetALl(), {
+        params: {
+          page,
+          page_size: pageSize,
+          'group_id[]': login.user.user?.group_id,
+          'company_id[]': login.user.user?.company_id,
+        },
+      });
       console.log(res.data.data);
       setData(res.data.data);
+      setPagination((prev) => ({
+        ...prev,
+        total: res.data.paginate_data.totalResults,
+      }));
     } catch (error) {
       console.error('Error fetching PF tracker data:', error);
     } finally {
@@ -43,8 +64,20 @@ const UploadedPFDetails: React.FC<UploadedPFDetailsProps> = ({ onBack }) => {
   }, []);
   
     useEffect(() => {
-    fetchPFTrackerData();
-  }, [fetchPFTrackerData]);
+    fetchPFTrackerData(pagination.pageIndex, pagination.pageSize);
+  }, [fetchPFTrackerData,pagination.pageIndex, pagination.pageSize]);
+
+  const handlePaginationChange = (page: number) => {
+    setPagination((prev) => ({ ...prev, pageIndex: page }));
+  };
+
+  const handlePageSizeChange = (newPageSize: number) => {
+    setPagination((prev) => ({
+      ...prev,
+      pageSize: newPageSize,
+      pageIndex: 1,
+    }));
+  };
   const columns: ColumnDef<PFTrackerData>[] = useMemo(
     () => [
       {
@@ -354,6 +387,13 @@ const UploadedPFDetails: React.FC<UploadedPFDetailsProps> = ({ onBack }) => {
         stickyHeader={true}
         stickyFirstColumn={true}
         stickyLastColumn={true}
+        pagingData={{
+          total: pagination.total,
+          pageIndex: pagination.pageIndex,
+          pageSize: pagination.pageSize,
+        }}
+        onPaginationChange={handlePaginationChange}
+        onSelectChange={handlePageSizeChange}
       />
     </div>
   );

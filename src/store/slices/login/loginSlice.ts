@@ -75,7 +75,7 @@ interface LoginCredentials {
 export type LoginState = {
     type: string
     loading: boolean
-    user?: AuthUser
+    user?: any
     authenticated: boolean
     loginLoading: boolean
     error?: string
