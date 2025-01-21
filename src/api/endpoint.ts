@@ -218,5 +218,11 @@ export const endpoints = {
         detail: (id: any) => api(`/companyadmin/branch/branchagreement/${id}`),
         delete: (id: any) => api(`/companyadmin/branch/branchagreement/${id}`)
 
-    }
+    },
+        notification:{
+            notification:() => api('notifications/settings'),
+            unmarkedlist:()=> api('/notifications?unmarked=true'),
+            allList:()=> api(`/notifications`),
+            markRead:(id:any)=> api(`notification/read/${id}`)
+        }
 }
