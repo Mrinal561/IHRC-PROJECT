@@ -1,6 +1,7 @@
 import React, { useState, ChangeEvent, useEffect } from 'react';
 import { Switcher, Checkbox, Button, Avatar } from '@/components/ui';
 import OutlinedInput from '@/components/ui/OutlinedInput';
+import { Dialog, Input, Notification, toast } from '@/components/ui';
 import {
     HiOutlineBell,
     HiOutlineCalendar,
@@ -12,6 +13,20 @@ import {
     HiOutlineExclamationCircle,
     HiOutlineBadgeCheck
 } from 'react-icons/hi'
+import { useDispatch } from 'react-redux';
+import { createNotificationSettings, fetchUnmarkedNotifications } from '@/store/slices/notification/notificationSlice';
+import { showErrorNotification } from '@/components/ui/ErrorMessage';
+import Lottie from 'lottie-react';
+import loadingAnimation from '@/assets/lotties/system-regular-716-spinner-three-dots-loop-scale.json'
+
+
+
+interface FormData {
+  daysBeforeNotify: number;
+  totalTimes: number;
+  pushEnabled: boolean;
+  emailEnabled: boolean;
+}
 
 const NotificationContent: React.FC = () => {
     const [selectAll, setSelectAll] = useState(false);
@@ -27,7 +42,23 @@ const NotificationContent: React.FC = () => {
     CertificationExpirationsNotification: false,
 
   });
+  const dispatch = useDispatch();
+  const [formData, setFormData] = useState<FormData>({
+    daysBeforeNotify: 0,
+    totalTimes: 0,
+    pushEnabled: false,
+    emailEnabled: false
+});
+const [isLoading, setIsLoading] = useState(false);
   const [deadlineReminder, setDeadlineReminder] = useState('');
+
+
+  const handleInputChange = (field: keyof FormData, value: string | boolean) => {
+    setFormData(prev => ({
+        ...prev,
+        [field]: typeof value === 'string' ? parseInt(value) || 0 : value
+    }));
+};
 
   useEffect(() => {
     const allChecked = Object.values(notificationTypes).every(value => value === true);
@@ -58,13 +89,87 @@ const NotificationContent: React.FC = () => {
   const onDeadlineReminderChange = (value: string) => {
     setDeadlineReminder(value);
   };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await dispatch(fetchUnmarkedNotifications());
+        console.log(data.payload);
+      } catch (error) {
+        console.error('Error fetching notifications:', error);
+      }
+    };
+  
+    fetchData();
+  }, []);
+  const onSaveChanges = async () => {
+    try {
+        if (!formData) {
+            toast.push(
+                <Notification title="Error" type="danger">
+                    Please fill in the required fields
+                </Notification>
+            );
+            return;
+        }
+        
+        // Set loading to true before the API call
+        setIsLoading(true);
+       
+        
+        const res = await dispatch(createNotificationSettings(formData))
+            .unwrap()
+            .catch((error: any) => {
+                if (error.response?.data?.message) {
+                    showErrorNotification(error.response.data.message);
+                } else if (error.message) {
+                    showErrorNotification(error.message);
+                } else if (Array.isArray(error)) {
+                    showErrorNotification(error);
+                } else {
+                    showErrorNotification(error);
+                }
+                throw error;
+            });
 
-  const onSaveChanges = () => {
-    console.log('Saving changes:', {
-      notificationTypes,
-      deadlineReminder,
-    });
-  };
+        if (res) {
+            toast.push(
+                <Notification title="Success" type="success">
+                    Settings saved successfully!
+                </Notification>
+            );
+            
+            // Reset form data
+            setFormData({
+                daysBeforeNotify: 0,
+                totalTimes: 0,
+                pushEnabled: false,
+                emailEnabled: false
+            });
+            
+            // Reset notification types
+            setNotificationTypes({
+                ComplianceApproved: false,
+                ComplianceRejected: false,
+                ComplianceUpdateRequired: false,
+                ComplianceDeadlineReminder: false,
+                NewComplianceAdded: false,
+                PolicyUpdate: false,
+                AuditNotification: false,
+                ViolationsNotification: false,
+                CertificationExpirationsNotification: false,
+            });
+            
+            // Reset select all
+            setSelectAll(false);
+        }
+    } catch (error) {
+        console.error('Save error:', error);
+    } finally {
+        // Set loading back to false after everything is done
+        setIsLoading(false);
+        console.log("done");
+    }
+};
 
 
     const getIcon = (type: string) => {
@@ -199,6 +304,24 @@ const NotificationContent: React.FC = () => {
     </div>
 );
 
+if (isLoading) {
+  console.log("Loading....................");
+  
+  return (
+      <div className="flex flex-col items-center justify-center h-96 text-gray-500 rounded-xl">
+          <div className="w-28 h-28">
+              <Lottie 
+                  animationData={loadingAnimation} 
+                  loop 
+                  className="w-24 h-24"
+              />
+          </div>
+          <p className="text-lg font-semibold">
+              Loading Data...
+          </p>
+      </div>
+  );
+}
 
   return (
    <div className='space-y-8'>
@@ -241,28 +364,90 @@ const NotificationContent: React.FC = () => {
         </div>
       </div>
 
-      <div className='pt-4'>
-        <h2 className="text-lg font-semibold text-gray-700 mb-2">Compliance Deadline Reminder</h2>
-        <div className="flex items-center space-x-2">
-          <span className="text-gray-600">Notify me</span>
-          <div>
-            <OutlinedInput 
-              label={'Enter Days'} 
-              value={deadlineReminder} 
-              onChange={onDeadlineReminderChange}
-            />
-          </div>
-          <span className="text-gray-600">days before deadline</span>
-        </div>
-      </div>
-
-      <div className='flex justify-end'>
-        <Button variant='solid' className="" onClick={onSaveChanges}>
-          Confirm
-        </Button>
-      </div>
+      <div className="w-full max-w-lg bg-white rounded-lg shadow-sm p-6 space-y-6">
+    {/* Header */}
+    <div className="border-b pb-4">
+        <h2 className="text-2xl font-semibold text-gray-900">
+            Compliance Deadline Reminder
+        </h2>
+        <p className="mt-1 text-sm text-gray-500">
+            Configure your reminder preferences for compliance deadlines
+        </p>
     </div>
-  );
+    
+    {/* Form Content */}
+    <div className="space-y-6">
+        {/* Days before notify */}
+        <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-700">
+                Advance Notice Period
+            </label>
+            <div className="flex items-center space-x-3">
+                <OutlinedInput 
+                    label="Enter Days"
+                    value={formData.daysBeforeNotify.toString()}
+                    onChange={(value) => handleInputChange('daysBeforeNotify', value)}
+                    className="w-24"
+                />
+                <span className="text-gray-600">days before deadline</span>
+            </div>
+        </div>
+
+        {/* Number of times */}
+        <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-700">
+                Reminder Frequency
+            </label>
+            <div className="flex items-center space-x-3">
+                <OutlinedInput 
+                    label="Number of Times"
+                    value={formData.totalTimes.toString()}
+                    onChange={(value) => handleInputChange('totalTimes', value)}
+                    className="w-24"
+                />
+                <span className="text-gray-600">times</span>
+            </div>
+        </div>
+
+        {/* Notification preferences */}
+        <div className="space-y-3">
+            <label className="text-sm font-medium text-gray-700">
+                Notification Channels
+            </label>
+            <div className="grid grid-cols-2 gap-4">
+                <div className="flex items-center space-x-3 rounded-lg border p-3 hover:bg-gray-50">
+                    <Checkbox 
+                        checked={formData.pushEnabled}
+                        onChange={(checked) => handleInputChange('pushEnabled', checked)}
+                    />
+                    <label className="text-sm text-gray-600">
+                        Push Notifications
+                    </label>
+                </div>
+                <div className="flex items-center space-x-3 rounded-lg border p-3 hover:bg-gray-50">
+                    <Checkbox 
+                        checked={formData.emailEnabled}
+                        onChange={(checked) => handleInputChange('emailEnabled', checked)}
+                    />
+                    <label className="text-sm text-gray-600">
+                        Email Notifications
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {/* Confirm Button */}
+   
+</div>
+
+            <div className='flex justify-end'>
+                <Button variant='solid' onClick={onSaveChanges}>
+                    Confirm
+                </Button>
+            </div>
+        </div>
+    );
 };
 
 export default NotificationContent;

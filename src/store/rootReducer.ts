@@ -26,6 +26,7 @@ import esitracker, { ESITrackersState } from './slices/esitracker/esitrackerSlic
 import certificate, { CertificateState } from './slices/certificate/certificateSlice'
 import role,{ RoleState } from './slices/role/roleSlice'
 import notice,{ NoticeTrackerState } from './slices/noticeTracker/noticeTrackerSlice'
+import notification,{ NotificationState } from './slices/notification/notificationSlice'
 export type RootState = CombinedState<{
     auth: CombinedState<AuthState>
     base: CombinedState<BaseState>
@@ -53,6 +54,7 @@ export type RootState = CombinedState<{
     certificate: CertificateState
     role: RoleState
     noticeTracker: NoticeTrackerState
+    notification : NotificationState
     /* eslint-disable @typescript-eslint/no-explicit-any */
     [RtkQueryService.reducerPath]: any
 }>
@@ -88,6 +90,7 @@ const staticReducers = {
     certificate,
     role,
     notice,
+    notification,
     [RtkQueryService.reducerPath]: RtkQueryService.reducer,
 }
  

@@ -208,5 +208,11 @@ export const endpoints = {
     },
     permission:{
         approve:(id:any)=> api(`companyadmin/company/tracker-edit-permission/${id}`)
-    }
+    },
+        notification:{
+            notification:() => api('notifications/settings'),
+            unmarkedlist:()=> api('/notifications?unmarked=true'),
+            allList:()=> api(`/notifications`),
+            markRead:(id:any)=> api(`notification/read/${id}`)
+        }
 }
