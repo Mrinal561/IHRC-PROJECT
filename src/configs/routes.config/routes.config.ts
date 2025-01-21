@@ -256,6 +256,17 @@ export const protectedRoutes = [
     },
     {
         key: 'groupMenu.collapse.item3',
+        path: '/all-notification',
+        component: lazy(
+            () =>
+                import(
+                    '@/views/IHRC/components/GlobalSettings/NotificationSettings/components/AllNotification'
+                ),
+        ),
+        authority: [],
+    },
+    {
+        key: 'groupMenu.collapse.item3',
         path: '/global-status',
         component: lazy(
             () =>
