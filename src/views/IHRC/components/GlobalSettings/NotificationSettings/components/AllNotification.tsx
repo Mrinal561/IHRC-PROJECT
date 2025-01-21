@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { Card } from '@/components/ui/card';
+import { Card } from '@/components/ui';
 import Avatar from '@/components/ui/Avatar';
 import Badge from '@/components/ui/Badge';
 import Spinner from '@/components/ui/Spinner';
