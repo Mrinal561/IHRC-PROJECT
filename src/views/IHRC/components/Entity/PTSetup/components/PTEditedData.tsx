@@ -97,6 +97,14 @@ const PTEditedData: React.FC<PTEditedDataProps> = ({
     const [error, setError] = useState<string | null>(null)
     const dispatch = useDispatch()
     const [errors, setErrors] = useState<ValidationErrors>({})
+
+
+    const remittanceModeOptions = [
+        { value: 'online', label: 'Online' },
+        { value: 'offline', label: 'Offline' }
+      ];
+
+
     const handleRCDocumentView = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         if (formData.rc_certificate) {
@@ -320,6 +328,11 @@ const validateForm = async () => {
     }
 }
 
+const handleRemitModeChange = (option: { value: string; label: string } | null) => {
+    const value = option ? option.value : '';
+    handleChange('remmit_mode', value);
+  };
+
 
     if (error) {
         return (
@@ -493,21 +506,14 @@ const validateForm = async () => {
                   <label>Remit Mode</label>
                   <div className="w-full">
                       <OutlinedSelect
-                          isDisabled
                           label="Select Mode"
-                          options={[
-                              { value: 'online', label: 'Online' },
-                              { value: 'offline', label: 'Offline' },
-                          ]}
+                          options={remittanceModeOptions}
+
                           value={formData.remmit_mode ? {
                               value: formData.remmit_mode,
                               label: formData.remmit_mode.charAt(0).toUpperCase() + formData.remmit_mode.slice(1),
                           } : null}
-                          onChange={(option) => {
-                              if (option) {
-                                  handleChange('remmit_mode', option.value)
-                              }
-                          }}
+                          onChange={handleRemitModeChange}
                       />
                       <div className="h-5">
                           {errors.remmit_mode && (

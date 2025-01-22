@@ -117,7 +117,7 @@ const UserTable: React.FC = () => {
                 ),
             },
             {
-                header: 'Job Role',
+                header: 'Designation',
                 enableSorting: false,
                 accessorKey: 'role_details.name',
                 cell: (props) => (

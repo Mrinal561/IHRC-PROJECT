@@ -453,7 +453,7 @@ const UserAddForm = () => {
                             {/* Role field with validation */}
                             <div className="flex flex-col gap-2">
                                 <p className="mb-2">
-                                    Select Role{' '}
+                                    Select Designation{' '}
                                     <span className="text-red-500">*</span>
                                 </p>
                                 <Field name="role_id">

@@ -275,7 +275,7 @@ const PTECTrackerTable: React.FC<PTTrackerTableProps> = ({
       //   },
       // },
       {
-        header: 'Payment',
+        header: 'Payment Receipt',
         enableSorting: false,
         accessorKey: 'payment_document',
         cell: (props) => {
