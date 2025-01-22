@@ -559,7 +559,7 @@ return (
                     checked={values.applicableForAllCompany}
                     onChange={(checked) => setFieldValue('applicableForAllCompany', checked)}
                   />
-                  <span>Applicable for all company</span>
+                  <span>Applicable for all branches</span>
                 </label>
               </div>
             )}

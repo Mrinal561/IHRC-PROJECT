@@ -253,7 +253,7 @@ const PTRCTrackerTable: React.FC<PTTrackerTableProps> = ({
         cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
       },
       {
-        header: 'Payment',
+        header: 'Payment Receipt',
         enableSorting: false,
         accessorKey: 'ptrc_document',
         cell: (props) => {
