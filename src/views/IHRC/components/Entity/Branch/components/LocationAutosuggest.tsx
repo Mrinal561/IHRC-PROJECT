@@ -217,7 +217,7 @@ const LocationAutosuggest: React.FC<LocationAutosuggestProps> = ({
     onChange,
     districtId,
     label = 'Location',
-    placeholder = 'Enter location',
+    placeholder = 'Enter Location',
 }) => {
     const [isOpen, setIsOpen] = useState(false)
     const [locations, setLocations] = useState<Location[]>([])

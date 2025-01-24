@@ -565,7 +565,7 @@ return (
             )}
 
             {/* Submit Button */}
-            <div className="flex justify-end">
+            <div className="flex justify-end gap-2">
               <Button 
                 type="submit" 
                 variant='solid'
@@ -573,6 +573,14 @@ return (
               >
                 {isSubmitting ? 'Submitting...' : 'Confirm'}
               </Button>
+              <Button
+                        type="button"
+                        variant="plain"
+                        // size="sm"
+                        onClick={() => navigate(-1)}
+                    >
+                        Cancel
+                    </Button>
             </div>
           </Form>
         )}

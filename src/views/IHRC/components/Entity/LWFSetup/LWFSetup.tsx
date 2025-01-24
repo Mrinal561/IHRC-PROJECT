@@ -144,7 +144,7 @@ const handlePageSizeChange = (newPageSize: number) => {
         onClose={() => setIsOpen(false)}
         onRequestClose={() => setIsOpen(false)}
         width={800}
-        height={650}
+        height={570}
         shouldCloseOnOverlayClick={false} 
       >
         <h4 className="mb-2">Add LWF Setup</h4>

@@ -61,6 +61,7 @@
                 "item7": "Notice Tracker"
             }
         },
+            "notice": "Notice Tracker",
         "register": {
             "register": "Register & Return",
             "collapse": {

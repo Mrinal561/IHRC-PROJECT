@@ -603,8 +603,8 @@ useEffect(() => {
 
 return (
   <div className="p-4">
-    {/* Company Group and Company Section */}
-    <div className="grid grid-cols-2 gap-4 mb-3">
+    <div className="grid grid-cols-3 gap-4 mb-3">
+      {/* Company Information Section */}
       <div className="space-y-2">
         <p className="text-sm font-medium">Company Group</p>
         <OutlinedInput
@@ -621,12 +621,10 @@ return (
           disabled
         />
       </div>
-    </div>
 
-    {/* Code Type and ESI Code Section */}
-    <div className="grid grid-cols-2 gap-4 mb-3">
+      {/* Code and Type Section */}
       <div className="space-y-2">
-        <p className="text-sm font-medium">Code Type</p>
+        <p className="text-sm font-medium">Code Type <span className="text-red-500">*</span></p>
         <OutlinedSelect
           label="Select Code Type"
           options={codeTypeOptions}
@@ -640,7 +638,7 @@ return (
         </div>
       </div>
       <div className="space-y-2">
-        <p className="text-sm font-medium">ESI Code</p>
+        <p className="text-sm font-medium">ESI Code <span className="text-red-500">*</span></p>
         <OutlinedInput
           label="ESI Code"
           value={formData.code}
@@ -652,12 +650,10 @@ return (
           )}
         </div>
       </div>
-    </div>
 
-    {/* Location Fields Section */}
-    <div className="grid grid-cols-3 gap-4 mb-3">
+      {/* Location Section */}
       <div className="space-y-2">
-        <p className="text-sm font-medium">State</p>
+        <p className="text-sm font-medium">State <span className="text-red-500">*</span></p>
         <OutlinedSelect
           label="Select State"
           options={states}
@@ -695,10 +691,8 @@ return (
           )}
         </div>
       </div>
-    </div>
 
-    {/* ESI User and Password Section */}
-    <div className="grid grid-cols-2 gap-4 mb-3">
+      {/* User Credentials Section */}
       <div className="space-y-2">
         <p className="text-sm font-medium">ESI User</p>
         <OutlinedInput
@@ -725,12 +719,9 @@ return (
           )}
         </div>
       </div>
-    </div>
 
-    {/* Authorized Signatory and Certificate Section */}
-    <div className="grid grid-cols-2 gap-4 mb-3">
-      <div className="space-y-2">
-        <p className="text-sm font-medium">Select Authorized Signatory</p>
+      <div className="col-span-1 space-y-2">
+        <p className="text-sm font-medium">Select Authorized Signatory<span className="text-red-500">*</span></p>
         <Select
           isMulti
           options={users.map(user => ({
@@ -745,8 +736,8 @@ return (
           )}
         </div>
       </div>
-      <div className="space-y-2">
-        <p className="text-sm font-medium">Upload Certificate(Accepted : Pdf/Zip/Image(Max Size: 20mb))</p>
+      <div className="col-span-2 space-y-2">
+        <p className="text-sm font-medium">Upload Certificate(Accepted : Pdf/Zip/Image(Max Size: 20mb))<span className="text-red-500">*</span></p>
         <Input
           type="file"
           onChange={handleFileUpload}
@@ -758,25 +749,25 @@ return (
           )}
         </div>
       </div>
-    </div>
 
-    {/* Buttons Section */}
-    <div className="flex justify-end gap-2">
-      <Button
-        variant="solid"
-        size="sm"
-        onClick={handleSubmit}
-        loading={isLoading}
-      >
-        Create ESI Setup
-      </Button>
-      <Button
-        variant="plain"
-        size="sm"
-        onClick={onClose}
-      >
-        Cancel
-      </Button>
+      {/* Action Buttons */}
+      <div className="col-span-3 flex justify-end space-x-2">
+        <Button
+          variant="solid"
+          size="sm"
+          onClick={handleSubmit}
+          loading={isLoading}
+        >
+          Confirm
+        </Button>
+        <Button
+          variant="plain"
+          size="sm"
+          onClick={onClose}
+        >
+          Cancel
+        </Button>
+      </div>
     </div>
   </div>
 );

@@ -685,20 +685,32 @@ const _Notification = ({ className, notificationData }: { className?: string, no
     const { larger } = useResponsive()
     const direction = useAppSelector((state) => state.theme.direction)
     const dispatch = useDispatch()
-
+    const {login} = store.getState();
+    const currentUserId = login.user?.user.id;
     useEffect(() => {
         if (notificationData && notificationData.length > 0) {
-            const formattedNotifications = notificationData.map(item => ({
-                id: item.id,
-                title: item.title,
-                content: replaceTemplateVariables(item.content, item),
-                date: new Date(item.created_at).toLocaleString(),
-                type: 'reminder' as const,
-                is_read: item.is_read,
-                due_date: new Date(item.due_date).toLocaleDateString(),
-                module_reference: item.module_reference,
-                company_name: item.Company?.name || 'N/A'
-            }));
+            // Filter notifications to only include those for the current user
+            const userSpecificNotifications = notificationData.filter(item => 
+                item.users.some(user => user.id === currentUserId)
+            );
+    
+            const formattedNotifications = userSpecificNotifications.map(item => {
+                // Find the read status for the current user
+                const userNotification = item.users.find(user => user.id === currentUserId);
+                
+                return {
+                    id: item.id,
+                    title: item.title,
+                    content: replaceTemplateVariables(item.content, item),
+                    date: new Date(item.created_at).toLocaleString(),
+                    type: 'reminder' as const,
+                    is_read: userNotification ? userNotification.is_read : false,
+                    due_date: new Date(item.due_date).toLocaleDateString(),
+                    module_reference: item.module_reference,
+                    company_name: item.Company?.name || 'N/A'
+                };
+            });
+    
             setNotificationList(formattedNotifications);
             updateUnreadStatus(formattedNotifications);
             setLoading(false);

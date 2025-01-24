@@ -114,6 +114,7 @@ const ESITrackerTool: React.FC<{
     startdate:'',
     endDate:''
   });
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
 
@@ -193,7 +194,7 @@ const ESITrackerTool: React.FC<{
     }
   };
   return (
-    <div>
+    <div className='w-full'>
       <div className="flex gap-4 items-center mb-4 w-full">
         <ESITrackerFilter 
           onFilterChange={handleFilterChange} 

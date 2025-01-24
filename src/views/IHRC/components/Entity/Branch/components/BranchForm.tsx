@@ -1656,7 +1656,7 @@ const AddBranchForm: React.FC = () => {
                         size="sm"
                         onClick={handleAddBranch}
                     >
-                        Add Branch
+                        Confirm
                     </Button>
                     <Button
                         type="button"

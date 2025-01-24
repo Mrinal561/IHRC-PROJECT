@@ -374,18 +374,28 @@ const adminnav: NavigationTree[] = [
                 authority: [],
                 subMenu: [],
             },
-            {
-                key: 'remittanceTracker.collapse.item7',
-                path: '/notice-tracker',
-                title: 'Notice Tracker',
-                translateKey: 'nav.remittanceTracker.collapse.item7',
-                icon: '',
-                type: NAV_ITEM_TYPE_ITEM,
-                authority: [],
-                subMenu: [],
-            },
+            // {
+            //     key: 'remittanceTracker.collapse.item7',
+            //     path: '/notice-tracker',
+            //     title: 'Notice Tracker',
+            //     translateKey: 'nav.remittanceTracker.collapse.item7',
+            //     icon: '',
+            //     type: NAV_ITEM_TYPE_ITEM,
+            //     authority: [],
+            //     subMenu: [],
+            // },
         ],
     },
+    {
+        key: 'notice',
+        path: '/notice-tracker',
+        title: 'Notice Tracker',
+        translateKey: 'nav.collapseMenu.notice',
+        icon: 'remittanceCollapse',
+        type: NAV_ITEM_TYPE_ITEM,
+        authority: [],
+        subMenu:[]
+    }
 
     // {
     //     key: 'register.collapse',
@@ -684,18 +694,28 @@ const usernav: NavigationTree[] = [
                 authority: [],
                 subMenu: [],
             },
-            {
-                key: 'remittanceTracker.collapse.item7',
-                path: '/notice-tracker',
-                title: 'Notice Tracker',
-                translateKey: 'nav.remittanceTracker.collapse.item7',
-                icon: '',
-                type: NAV_ITEM_TYPE_ITEM,
-                authority: [],
-                subMenu: [],
-            },
+            // {
+            //     key: 'remittanceTracker.collapse.item7',
+            //     path: '/notice-tracker',
+            //     title: 'Notice Tracker',
+            //     translateKey: 'nav.remittanceTracker.collapse.item7',
+            //     icon: '',
+            //     type: NAV_ITEM_TYPE_ITEM,
+            //     authority: [],
+            //     subMenu: [],
+            // },
         ],
     },
+    {
+        key: 'notice',
+        path: '/notice-tracker',
+        title: 'Notice Tracker',
+        translateKey: 'nav.collapseMenu.notice',
+        icon: 'remittanceCollapse',
+        type: NAV_ITEM_TYPE_ITEM,
+        authority: [],
+        subMenu:[]
+    }
 
     // {
     //     key: 'register.collapse',
