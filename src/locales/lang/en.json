@@ -61,6 +61,8 @@
                 "item7": "Notice Tracker"
             }
         },
+            "notice": "Notice Tracker",
+            "externaluser": "External User",
         "register": {
             "register": "Register & Return",
             "collapse": {

@@ -18,6 +18,7 @@ import { createUser } from '@/store/slices/userEntity/UserEntitySlice'
 import { format } from 'date-fns'
 import * as yup from 'yup'
 import { Formik, Field, Form, ErrorMessage } from 'formik'
+import OutlinedPasswordInput from '@/components/ui/OutlinedInput/OutlinedPasswordInput'
 interface LocationState {
     companyName?: string
     companyId?: string
@@ -57,11 +58,11 @@ const userValidationSchema = yup.object().shape({
             /^\S.*\S$|^\S$/,
             'The input must not have leading or trailing spaces',
         ),
-    email: yup
+        email: yup
         .string()
         .matches(
-            /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|in|org|net|edu|gov)$/,
-            'Invalid email address. Please use a valid email with a.com,.in,.org,.net,.edu, or.gov domain.',
+            /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]+$/,
+            'Invalid email address.'
         )
         .required('Email is required'),
     password: yup
@@ -364,7 +365,7 @@ const UserAddForm = () => {
                                 <Field
                                     name="password"
                                     render={({ field }) => (
-                                        <OutlinedInput
+                                        <OutlinedPasswordInput
                                             {...field}
                                             label="Password"
                                             type="password"
@@ -452,7 +453,7 @@ const UserAddForm = () => {
                             {/* Role field with validation */}
                             <div className="flex flex-col gap-2">
                                 <p className="mb-2">
-                                    Select Role{' '}
+                                    Select Designation{' '}
                                     <span className="text-red-500">*</span>
                                 </p>
                                 <Field name="role_id">

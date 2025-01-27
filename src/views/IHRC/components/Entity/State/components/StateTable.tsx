@@ -171,7 +171,7 @@ const StateTable: React.FC = () => {
                 />
             </div>
 
-            <Dialog isOpen={dialogIsOpen} onClose={handleDialogClose}>
+            <Dialog isOpen={dialogIsOpen} onClose={handleDialogClose}  shouldCloseOnOverlayClick={false} >
                 <h5 className="mb-4">Confirm Deleting Item</h5>
                 <p>
                     Are you sure you want to delete this item? This action cannot be undone.

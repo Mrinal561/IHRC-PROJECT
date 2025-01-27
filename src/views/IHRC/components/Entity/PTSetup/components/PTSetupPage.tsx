@@ -63,23 +63,24 @@ const ptSetupSchema = yup.object().shape({
     //        'Must include A-Z, a-z, 0-9, @$!%*?& (Weak Password)'
     //     ),
     
-    email: yup
-        .string()
-        .required('Email is required')
-        .email('Invalid email format'),
+    //     email: yup
+    //     .string()
+    //     .matches(
+    //         /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|in|org|net|edu|gov)$/,
+    //         'Invalid email address. Please use a valid email with a.com,.in,.org,.net,.edu, or.gov domain.',
+    //     ),
     
     mobile: yup
-        .string()
-        .required('Mobile number is required')
-        .matches(/^[0-9]{10}$/, 'Mobile number must be exactly 10 digits'),
+    .string()
+    .required()
+    .matches(/^[0-9]{10}$/, 'Mobile number must be exactly 10 digits'),
+    // ec_certificate: yup
+    //     .string()
+    //     .required('EC Certificate is required'),
     
-    ec_certificate: yup
-        .string()
-        .required('EC Certificate is required'),
-    
-    rc_certificate: yup
-        .string()
-        .required('RC Certificate is required'),
+    // rc_certificate: yup
+    //     .string()
+    //     .required('RC Certificate is required'),
     
     ptec_frequency: yup
         .string()
@@ -397,13 +398,13 @@ const loadStates = async () => {
           return false;
         }
       };
-      const validateFileType = (file: File) => {
-        const acceptedTypes = ['application/pdf'];
-        if (!acceptedTypes.includes(file.type)) {
-            return 'Only PDF files are allowed';
-        }
-        return null;
-    };
+    //   const validateFileType = (file: File) => {
+    //     const acceptedTypes = ['application/pdf'];
+    //     if (!acceptedTypes.includes(file.type)) {
+    //         return 'Only PDF files are allowed';
+    //     }
+    //     return null;
+    // };
     
     const validateFileSize = (file: File) => {
         const maxSize = 5 * 1024 * 1024; // 5MB in bytes
@@ -417,14 +418,14 @@ const loadStates = async () => {
     const handleCertificateUpload = async (type: 'ec' | 'rc', file: File) => {
         try {
             // Validate file type
-            const typeError = validateFileType(file);
-            if (typeError) {
-                setErrors(prev => ({
-                    ...prev,
-                    [`${type}_certificate`]: typeError
-                }));
-                return;
-            }
+            // const typeError = validateFileType(file);
+            // if (typeError) {
+            //     setErrors(prev => ({
+            //         ...prev,
+            //         [`${type}_certificate`]: typeError
+            //     }));
+            //     return;
+            // }
     
             // Validate file size
             const sizeError = validateFileSize(file);
@@ -508,7 +509,7 @@ const loadStates = async () => {
             showErrorNotification(error);
         } else {
             // Fallback error message
-            showErrorNotification('An unexpected error occurred. Please try again.');
+            showErrorNotification(error);
         }
         throw error; // Re-throw to prevent navigation
     });
@@ -522,7 +523,8 @@ const loadStates = async () => {
             )
             navigate(-1)
         } catch (error: any) {
-            showErrorNotification(error.message || 'Failed to create PT Setup')
+            // showErrorNotification(error.message || 'Failed to create PT Setup')
+            console.log(error)
         }
     }
 
@@ -600,7 +602,7 @@ const loadStates = async () => {
                 {/* Location Details */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                        <p className="mb-2">State</p>
+                        <p className="mb-2">State <span className="text-red-500">*</span></p>
                          <OutlinedSelect
                             label="Select State"
                             options={states}
@@ -662,7 +664,7 @@ const loadStates = async () => {
                 {/* Registration Details */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                        <p className="mb-2">PT RC Registration Number</p>
+                        <p className="mb-2">PT RC Registration Number <span className="text-red-500">*</span></p>
                        <OutlinedInput
                         label="Registration Number"
                         value={ptSetupData.register_number}
@@ -673,7 +675,7 @@ const loadStates = async () => {
           )}
                     </div>
                     <div>
-                        <p className="mb-2">PT EC Enrollment Number</p>
+                        <p className="mb-2">PT EC Enrollment Number <span className="text-red-500">*</span></p>
                         <OutlinedInput
                         label="Enrollment Number"
                         value={ptSetupData.enroll_number}
@@ -684,7 +686,7 @@ const loadStates = async () => {
           )}
                     </div>
                     <div>
-                        <p className="mb-2">Registration Date</p>
+                        <p className="mb-2">Registration Date <span className="text-red-500">*</span></p>
                         <DatePicker
                             size='sm'
                             placeholder="Select Date"
@@ -766,7 +768,7 @@ const loadStates = async () => {
                 {/* Additional Details */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <p className="mb-2">Mobile Number</p>
+                        <p className="mb-2">Mobile Number  <span className="text-red-500">*</span></p>
                         <OutlinedInput
                         label="Mobile Number"
                         value={ptSetupData.mobile}
@@ -777,7 +779,7 @@ const loadStates = async () => {
           )}
             </div>
                     <div>
-                        <p className="mb-2">Remittance Mode</p>
+                        <p className="mb-2">Remittance Mode <span className="text-red-500">*</span></p>
                         <OutlinedSelect
                 label="Select Mode"
                 options={[
@@ -804,7 +806,7 @@ const loadStates = async () => {
                 {/* Certificates */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
     <div>
-        <p className="mb-2">RC Certificate</p>
+        <p className="mb-2">RC Certificate(Accepted : Pdf/Zip/Image(Max Size: 20mb)) <span className="text-red-500">*</span></p>
         <div className="space-y-2">
             <Input
                 type="file"
@@ -822,7 +824,7 @@ const loadStates = async () => {
     </div>
 
     <div>
-        <p className="mb-2">EC Certificate</p>
+        <p className="mb-2">EC Certificate(Accepted : Pdf/Zip/Image(Max Size: 20mb)) <span className="text-red-500">*</span></p>
         <div className="space-y-2">
             <Input
                 type="file"

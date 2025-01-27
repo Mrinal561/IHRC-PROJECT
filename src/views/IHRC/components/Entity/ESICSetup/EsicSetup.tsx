@@ -47,7 +47,11 @@ const CompanyESISetupPage: React.FC = () => {
    const actualCompanyName = locationState?.companyName;
   const actualGroupName = locationState?.companyGroupName;
   const actualGroupId = locationState?.groupId;
-
+  const [pagination, setPagination] = useState({
+    total: 0,
+    pageIndex: 1,
+    pageSize: 10,
+});
   // Function to fetch ESI setups and refresh table data
   const refreshData = async () => {
     setLoading(true);
@@ -91,22 +95,40 @@ const CompanyESISetupPage: React.FC = () => {
   // Fetch ESI setup data
   const fetchESISetupData = async () => {
     try {
-      setIsLoading(true);
-      const response = await httpClient.get(endpoints.esiSetup.getAll(), {
-        params: {
-           'company_id[]' : actualCompanyId,
+        setIsLoading(true);
+        const response = await httpClient.get(endpoints.esiSetup.getAll(), {
+            params: {
+                'company_id[]': actualCompanyId,
+                page: pagination.pageIndex,
+                page_size: pagination.pageSize
+            }
+        });
+        if (response?.data.data) {
+            setESISetupData(response.data.data);
+            setPagination(prev => ({
+                ...prev,
+                total: response.data.paginate_data.totalResults
+            }));
         }
-      });
-      if(response?.data.data){
-        setESISetupData(response.data.data);
-      }
     } catch (error: any) {
-      console.error('Error fetching ESI setup data:', error);
-      showNotification('danger', error.response?.data?.message || 'Failed to fetch ESI setup data');
+        console.error('Error fetching ESI setup data:', error);
+        showNotification('danger', error.response?.data?.message || 'Failed to fetch ESI setup data');
     } finally {
-      setIsLoading(false);
+        setIsLoading(false);
     }
-  };
+};
+
+const handlePaginationChange = (page: number) => {
+  setPagination(prev => ({ ...prev, pageIndex: page }));
+};
+
+const handlePageSizeChange = (newPageSize: number) => {
+  setPagination(prev => ({
+      ...prev,
+      pageSize: newPageSize,
+      pageIndex: 1, // Reset to first page when changing page size
+  }));
+};
        const refreshESISetupData = () => {
     fetchESISetupData();
     // showNotification('PF Setup data refreshed successfully');
@@ -115,10 +137,9 @@ const CompanyESISetupPage: React.FC = () => {
 
   useEffect(() => {
     if (actualCompanyName) {
-      fetchCompanyData();
-      fetchESISetupData();
+        fetchESISetupData();
     }
-  }, [actualCompanyName]);
+}, [actualCompanyName, pagination.pageIndex, pagination.pageSize]);
 
   const handleBack = () => {
     navigate(-1);
@@ -203,6 +224,9 @@ const CompanyESISetupPage: React.FC = () => {
         isLoading={isLoading}
         onRefresh={refreshESISetupData}
         // refreshData={fetchESISetupData}
+        pagination={pagination}
+        onPaginationChange={handlePaginationChange}
+        onPageSizeChange={handlePageSizeChange}
       />
 
       <Dialog
@@ -210,7 +234,8 @@ const CompanyESISetupPage: React.FC = () => {
         onClose={handleClose}
         onRequestClose={() => setIsOpen(false)}
         width={800}
-        height={640}
+        height={570}
+        shouldCloseOnOverlayClick={false} 
       >
         <h4 className="mb-1">Add ESI Setup</h4>
         <ESISetupPanel

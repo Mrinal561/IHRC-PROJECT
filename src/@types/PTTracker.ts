@@ -20,6 +20,8 @@ export type PTTrackerData = {
     challan: string;
     payment: string;
     ret:string;
+    iseditable?:boolean;
+    uploaded_by?:any;
     UploadBy: {
         id: number;
         first_name: string;

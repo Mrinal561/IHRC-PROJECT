@@ -14,6 +14,8 @@ import Lottie from 'lottie-react';
 import { useDispatch } from 'react-redux';
 import { FaUserShield } from 'react-icons/fa';
 import { requestCompanyEdit } from '@/store/slices/request/requestSLice';
+import store from '@/store';
+import { showErrorNotification } from '@/components/ui/ErrorMessage';
 
 interface EsiTrackerTableProps {
     dataSent: esiChallanData[];
@@ -32,6 +34,7 @@ interface EsiTrackerTableProps {
   canDelete:boolean;
   }
 
+  const { login } = store.getState()
 const ESITrackerTable: React.FC<EsiTrackerTableProps> =({ 
   dataSent, 
   loading = false, 
@@ -51,20 +54,40 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> =({
     const [editingData, setEditingData] = useState<esiChallanData | null>(null);
     const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
     const [trackerToDelete, setTrackerToDelete] = useState<string | null>(null);
-  
+    const userId = login?.user?.user?.id;
+    const type = login?.user?.user?.type;
     const handleEdit = (row: esiChallanData) => {
         setEditingData(row);
         setEditDialogOpen(true);
     };
 
     const handleDeleteConfirmation = (trackerId: string) => {
+
+      console.log(login, type)
         setTrackerToDelete(trackerId);
         setDeleteConfirmOpen(true);
       };
 
       const confirmDelete = () => {
         if (trackerToDelete) {
-          dispatch(deleteTracker(trackerToDelete));
+          dispatch(deleteTracker(trackerToDelete)).unwrap().catch((error: any) => {
+            // Handle different error formats
+            if (error.response?.data?.message) {
+                // API error response
+                showErrorNotification(error.response.data.message);
+            } else if (error.message) {
+                // Regular error object
+                showErrorNotification(error.message);
+            } else if (Array.isArray(error)) {
+                // Array of error messages
+                showErrorNotification(error);
+            } else {
+                // Fallback error message
+                showErrorNotification(error);
+            }
+            throw error; // Re-throw to prevent navigation
+        });
+
           setDeleteConfirmOpen(false);
           if (onRefresh) {
             onRefresh();
@@ -229,6 +252,8 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> =({
                         ₹{(props.getValue() as number).toLocaleString()}
                     </div>
                 ),
+               
+                
             },
             {
                 header: 'Reason For Difference',
@@ -239,7 +264,7 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> =({
                     return(
                         <Tooltip title={value}>
                         <div className="w-40 truncate">
-                        {(props.getValue() as number).toLocaleString()}
+                        {(props.getValue() as number)}
                     </div>
                         </Tooltip>
                     )
@@ -344,60 +369,67 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> =({
                 },
             },
             {
-                header: 'Actions',
-                id: 'actions',
-                cell: ({ row }) => {
-                  const { iseditable } = row.original;
-                  
-                  return (
-                    <div className="flex items-center gap-2">
-                      {/* Edit/Request Button */}
-                      {canEdit && (
-                        <>
-                          {iseditable ? (
-                            <Tooltip title="Edit">
-                              <Button
-                                size="sm"
-                                onClick={() => handleEdit(row.original)}
-                                icon={<MdEdit />}
-                              />
-                            </Tooltip>
-                          ) : (
-                            <Tooltip title="Request to Admin">
-                              <Button
-                                size="sm"
-                                onClick={() => handleRequestToAdmin(row.original.id)}
-                                icon={<FaUserShield />}
-                                className="text-blue-500"
-                              />
-                            </Tooltip>
-                          )}
-                        </>
-                      )}
-                      
-                      {/* Delete Button */}
-                      {canDelete && (
-                        <Tooltip title="Delete">
-                          <Button
-                            size="sm"
-                            onClick={() => handleDeleteConfirmation(row.original.id)}
-                            icon={<FiTrash />}
-                            className="text-red-500"
-                          />
-                        </Tooltip>
-                      )}
-                      
-                      {/* Config Dropdown is always visible */}
-                      <ESIConfigDropdown
-                        companyName={row.original.EsiSetup.Company.name}
-                        companyGroupName={row.original.EsiSetup.CompanyGroup.name}
-                        trackerId={row.original.id}
-                        onRefresh={onRefresh}
-                      />
-                    </div>
-                  );
-                },
-            },
+              header: 'Actions',
+              id: 'actions',
+              cell: ({ row }) => {
+                const { iseditable, uploaded_by } = row.original;
+      
+                // Check if user is admin or if they're the uploader
+                const canShowActions = type === 'admin' || (type === 'user' && userId === uploaded_by);
+            
+                if (!canShowActions) {
+                  return null; // Don't show any actions
+                }
+            
+                
+                return (
+                  <div className="flex items-center gap-2">
+                    {iseditable ? (
+                      // Show all actions when iseditable is true
+                      <>
+                        {canEdit && (
+                          <Tooltip title="Edit">
+                            <Button
+                              size="sm"
+                              onClick={() => handleEdit(row.original)}
+                              icon={<MdEdit />}
+                            />
+                          </Tooltip>
+                        )}
+                        
+                        {canDelete && (
+                          <Tooltip title="Delete">
+                            <Button
+                              size="sm"
+                              onClick={() => handleDeleteConfirmation(row.original.id)}
+                              icon={<FiTrash />}
+                              className="text-red-500"
+                            />
+                          </Tooltip>
+                        )}
+                        
+                        <ESIConfigDropdown
+                          companyName={row.original.EsiSetup.Company.name}
+                          companyGroupName={row.original.EsiSetup.CompanyGroup.name}
+                          trackerId={row.original.id}
+                          onRefresh={onRefresh}
+                        />
+                      </>
+                    ) : (
+                      // Show only Request to Admin button when iseditable is false
+                      <Tooltip title="Request to Admin">
+                        <Button
+                          size="sm"
+                          onClick={() => handleRequestToAdmin(row.original.id)}
+                          icon={<FaUserShield />}
+                          className="text-blue-500"
+                        />
+                      </Tooltip>
+                    )}
+                  </div>
+                );
+              },
+            }
             // {
             //     header: 'Actions',
             //     id: 'actions',
@@ -519,7 +551,7 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> =({
             )}
              <Dialog
         isOpen={deleteConfirmOpen}
-        onClose={() => setDeleteConfirmOpen(false)}
+        onClose={() => setDeleteConfirmOpen(false)}  shouldCloseOnOverlayClick={false} 
       >
         <div className="p-2">
           <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>

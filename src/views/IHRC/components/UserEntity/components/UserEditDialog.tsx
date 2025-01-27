@@ -287,9 +287,12 @@ const validationSchema = yup.object().shape({
   .matches(/^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/, 'Name can only contain letters with single spaces between words')
   .matches(/^\S.*\S$|^\S$/,'The input must not have leading or trailing spaces'),
   email: yup
-    .string()
-    .required('Email is required')
-    .email('Please enter a valid email'),
+  .string()
+  .matches(
+      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]+$/,
+      'Invalid email address.'
+  )
+  .required('Email is required'),
   mobile: yup
     .string()
     .required('Mobile number is required')
@@ -443,7 +446,7 @@ const UserEditDialog: React.FC<UserEditDialogProps> = ({
         isOpen={isOpen}
         onClose={onClose}
         onRequestClose={onClose}
-        width={600}
+        width={600}  shouldCloseOnOverlayClick={false} 
       >
         <div className="flex justify-center items-center h-full">
           <p>Loading...</p>

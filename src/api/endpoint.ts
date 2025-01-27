@@ -22,7 +22,7 @@ export const endpoints = {
         create: () => api('companyadmin/company'),
         update: (id: string) => api(`companyadmin/company/${id}`),
         delete: (id: string) => api(`companyadmin/company/${id}`),
-        downloadFormat: () => api(`upload/sample_files/export-template`),
+        downloadFormat: () => api(`/companyadmin/company/export-template`),
         bulkCreate: () => api(`/companyadmin/company/bulk-upload`),
     },
     common: {
@@ -88,21 +88,25 @@ export const endpoints = {
         create: () => api('companyadmin/esisetup'),
         // download: () => api(`companyadmin/esisetup/esi-tracker/export`)
          update: (id: any) => api(`/companyadmin/esisetup/${id}`),
-         delete: (id:any) => api(`companyadmin/esisetup/${id}`)
+         delete: (id:any) => api(`companyadmin/esisetup/${id}`),
+         getAllCodes:()=> api('esi-code')
     },
     pfSetup: {
         getAll: () => api('companyadmin/pfsetup'),
         create: () => api('companyadmin/pfsetup'),
         getById: (id: any) => api(`companyadmin/pfsetup/${id}`),
         update: (id: any) => api(`/companyadmin/pfsetup/${id}`),
-        delete: (id:any) => api(`companyadmin/pfsetup/${id}`)   
+        delete: (id:any) => api(`companyadmin/pfsetup/${id}`),
+        getAllCodes:()=> api('pf-code')
     },
     ptSetup: {
         getAll: () => api('companyadmin/ptsetup'),
         create: () => api('companyadmin/ptsetup'),
         getById: (id: any) => api(`companyadmin/ptsetup/${id}`),
         update: (id: any) => api(`companyadmin/ptsetup/${id}`),
-        delete: (id:any) => api(`companyadmin/ptsetup/${id}`)
+        delete: (id:any) => api(`companyadmin/ptsetup/${id}`),
+        getAllCodes:()=> api('ptec-code'),
+        rcCodes:()=>  api('ptrc-code'),
     },
     tracker: {
         downloadFormat: () => api('/companyadmin/pfsetup/pf-tracker/exportdata'),
@@ -186,7 +190,8 @@ export const endpoints = {
         create: () => api('/companyadmin/lwfsetup'),
         getById: (id: any) => api(`companyadmin/lwfsetup/${id}`),
           update: (id: any) => api(`companyadmin/lwfsetup/${id}`),
-          delete: (id:any) => api(`companyadmin/lwfsetup/${id}`)
+          delete: (id:any) => api(`companyadmin/lwfsetup/${id}`),
+          getAllCodes:()=> api('lwf-code')
     },
     request: {
         request: (id: any) => api(`companyadmin/company/edit-request/${id}`),
@@ -208,10 +213,20 @@ export const endpoints = {
     },
     branchAgreement: {
         list: () => api('companyadmin/branch/branchagreement'),
-        create: () => api('/companyadmin/branch/branch-agreement/'),
-        update: (id: any) => api(`/companyadmin/branch-agreement/${id}`),
-        detail: (id: any) => api(`/companyadmin/branch-agreement/${id}`),
-        delete: (id: any) => api(`/companyadmin/branch-agreement/${id}`)
+        create: () => api('companyadmin/branch/branchagreement'),
+        update: (id: any) => api(`/companyadmin/branch/branchagreement/${id}`),
+        detail: (id: any) => api(`/companyadmin/branch/branchagreement/${id}`),
+        delete: (id: any) => api(`/companyadmin/branch/branchagreement/${id}`)
 
-    }
+    },
+        notification:{
+            notification:() => api('notifications/settings'),
+            unmarkedlist:()=> api('/notifications?unmarked=true'),
+            allList:()=> api(`/notifications`),
+            markRead:(id:any)=> api(`notification/read/${id}`)
+        },
+        forgotpassword:{
+            forgot:()=> api('forgot-password'),
+            reset:() => api(`reset-password`)
+        }
 }

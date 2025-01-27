@@ -415,6 +415,7 @@ const ComplianceDetailTable: React.FC<ComplianceDetailTableProps> = ({
 <Dialog
         isOpen={isStatusDialogOpen}
         onClose={() => setIsStatusDialogOpen(false)}
+        shouldCloseOnOverlayClick={false} 
       >
         <h5 className="mb-4">Change Compliance Status</h5>
         <div className='flex items-center gap-3 mb-4'>

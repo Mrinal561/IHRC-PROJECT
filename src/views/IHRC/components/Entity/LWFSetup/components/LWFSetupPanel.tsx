@@ -49,7 +49,7 @@ const validationSchema = yup.object().shape({
   //     'Must include A-Z, a-z, 0-9, @$!%*?& (Weak Password)'
   // ),
   signatory_data: yup.array().min(1, 'At least one signatory is required'),
-  certificate: yup.string().required('Certificate is required'),
+  // certificate: yup.string().required('Certificate is required'),
 });
 
 
@@ -242,9 +242,13 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
   // Load Users/Signatories
   const loadUsers = async () => {
     try {
-      const response = await httpClient.get(endpoints.user.getAll());
+      const response = await httpClient.get(endpoints.user.getAll(),{
+        params: {
+          'company_id[]': companyId
+        }
+      });
       if(response.data){
-        const authorizedSignatories = response.data.data;
+        const authorizedSignatories = response.data.data.filter(user => user.user_details.auth_signatory);
         setUsers(authorizedSignatories);
       }
     } catch (error) {
@@ -469,191 +473,184 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
 
   return (
     <div className="p-4">
-      <div className="grid grid-cols-2 gap-4 mb-4">
-        <div>
-          <p className="mb-2">Company Group</p>
-           <OutlinedInput
+      <div className="grid grid-cols-3 gap-4 mb-4">
+        <div className="space-y-2">
+          <p className="text-sm font-medium">Company Group</p>
+          <OutlinedInput
             label="Company Group"
             value={groupName}
             disabled
-            />
+          />
         </div>
-        <div>
-          <p className="mb-2">Company</p>
-         
+        <div className="space-y-2">
+          <p className="text-sm font-medium">Company</p>
           <OutlinedInput
-                            label="Company"
-                            value={companyName}
-                            disabled
-                            />
+            label="Company"
+            value={companyName}
+            disabled
+          />
         </div>
-      </div>
-
-      <div className="grid grid-cols-3 gap-4 mb-4">
-        <div>
-          <p className="mb-2">State <span className="text-red-500">*</span></p>
+        <div className="space-y-2">
+          <p className="text-sm font-medium">State <span className="text-red-500">*</span></p>
           <OutlinedSelect
             label="Select State"
             options={states}
             value={selectedStates}
             onChange={handleStateChange}
           />
-           <div className="min-h-[20px]">
+          <div className="min-h-[20px]">
             {errors.state_id && (
               <p className="text-red-500 text-xs mt-1">{errors.state_id}</p>
             )}
           </div>
-          
         </div>
-        <div>
-        <DistrictAutosuggest 
-        value={selectedDistrict}
-        onChange={handleDistrictChange}
-        stateId={selectedStates?.value ? parseInt(selectedStates.value) : undefined}
-        onDistrictSelect={(id) => setSelectedDistrictId(id)}  // Add this prop
-      />
-      <div className="min-h-[20px]">
+
+        <div className="space-y-2">
+          <DistrictAutosuggest 
+            value={selectedDistrict}
+            onChange={handleDistrictChange}
+            stateId={selectedStates?.value ? parseInt(selectedStates.value) : undefined}
+            onDistrictSelect={(id) => setSelectedDistrictId(id)}
+          />
+          <div className="min-h-[20px]">
             {errors.district_id && (
               <p className="text-red-500 text-xs mt-1">{errors.district_id}</p>
             )}
           </div>
         </div>
-        <div>
+        <div className="space-y-2">
           <LocationAutosuggest
             value={selectedLocation}
             onChange={handleLocationChange}
             districtId={selectedDistrictId}
           />
-           <div className="min-h-[20px]">
+          <div className="min-h-[20px]">
             {errors.location && (
               <p className="text-red-500 text-xs mt-1">{errors.location}</p>
             )}
           </div>
         </div>
-      </div>
-
-      <div className="grid grid-cols-3 gap-4 mb-2">
-        <div>
-          <p className="mb-2">LWF   Registration Number <span className="text-red-500">*</span></p>
+        <div className="space-y-2">
+          <p className="text-sm font-medium">LWF Registration Number <span className="text-red-500">*</span></p>
           <OutlinedInput
             label="Registration Number"
             value={formData.register_number}
             onChange={handleRegisterNumberChange}
           />
-           <div className="min-h-[20px]">
+          <div className="min-h-[20px]">
             {errors.register_number && (
               <p className="text-red-500 text-xs mt-1">{errors.register_number}</p>
             )}
           </div>
         </div>
-        <div>
-          <p className="mb-2">LWF Registration Date <span className="text-red-500">*</span></p>
-          <DatePicker
-          size='sm'
-        placeholder="Registration Date"
-        value={formData.register_date}
-        onChange={handleRegisterDateChange}
-      />
-       <div className="min-h-[20px]">
-            {errors.register_date && (
-              <p className="text-red-500 text-xs mt-1">{errors.register_date}</p>
-            )}
+
+        <div className="grid grid-cols-4 gap-4 col-span-3">
+          <div className="space-y-2">
+            <p className="text-sm font-medium">LWF Registration Date <span className="text-red-500">*</span></p>
+            <DatePicker
+              size='sm'
+              placeholder="Registration Date"
+              value={formData.register_date}
+              onChange={handleRegisterDateChange}
+            />
+            <div className="min-h-[20px]">
+              {errors.register_date && (
+                <p className="text-red-500 text-xs mt-1">{errors.register_date}</p>
+              )}
+            </div>
           </div>
-      
-        </div>
-        <div>
-          <p className="mb-2">Remittance Mode <span className="text-red-500">*</span></p>
+ <div className="space-y-2">
+          <p className="text-sm font-medium">Remittance Mode <span className="text-red-500">*</span></p>
           <OutlinedSelect
             label="Select Mode"
             options={remittanceModeOptions}
             value={remittanceModeOptions.find(option => option.value === formData.remmit_mode)}
             onChange={handleRemitModeChange}
           />
-           <div className="min-h-[20px]">
+          <div className="min-h-[20px]">
             {errors.remmit_mode && (
               <p className="text-red-500 text-xs mt-1">{errors.remmit_mode}</p>
             )}
           </div>
         </div>
-      </div>
 
-      <div className="grid grid-cols-2 gap-4 mb-2">
-        <div>
-          <p className="mb-2">User ID </p>
-          <OutlinedInput
-            label="User ID"
-            value={formData.username}
-            onChange={handleUsernameChange}
-          />
-          <div className="min-h-[20px]">
-            {errors.username && (
-              <p className="text-red-500 text-xs mt-1">{errors.username}</p>
-            )}
+          <div className="space-y-2">
+            <p className="text-sm font-medium">User ID</p>
+            <OutlinedInput
+              label="User ID"
+              value={formData.username}
+              onChange={handleUsernameChange}
+            />
+            <div className="min-h-[20px]">
+              {errors.username && (
+                <p className="text-red-500 text-xs mt-1">{errors.username}</p>
+              )}
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <p className="text-sm font-medium">Password</p>
+            <OutlinedPasswordInput
+              label="Password"
+              value={formData.password}
+              onChange={handlePasswordChange}
+            />
+            <div className="min-h-[20px]">
+              {errors.password && (
+                <p className="text-red-500 text-xs mt-1">{errors.password}</p>
+              )}
+            </div>
           </div>
         </div>
-        <div>
-          <p className="mb-2">Password</p>
-          <OutlinedPasswordInput
-            label="Password"
-            value={formData.password}
-            onChange={handlePasswordChange}
+
+        <div className="space-y-2">
+          <p className="text-sm font-medium">Select Authorized Signatory <span className="text-red-500">*</span></p>
+          <Select
+            isMulti
+            options={users.map(user => ({
+              value: String(user.user_details.id),
+              label: `${user.user_details.name}`,
+            }))}
+            onChange={handleSignatoryChange}
           />
           <div className="min-h-[20px]">
-            {errors.password && (
-              <p className="text-red-500 text-xs mt-1">{errors.password}</p>
-            )}
-          </div>
-        </div>
-      </div>
-
-<div className='grid grid-cols-2 gap-4 mb-2'>
-      <div className="mb-4">
-        <p className="mb-2">Signatory <span className="text-red-500">*</span></p>
-        <Select
-          isMulti
-          options={users.map(user => ({
-            value: String(user.user_details.id),                           
-            label: `${user.user_details.name}`,
-          }))}
-          onChange={handleSignatoryChange}
-        />
-        <div className="min-h-[20px]">
             {errors.signatory_data && (
               <p className="text-red-500 text-xs mt-1">{errors.signatory_data}</p>
             )}
           </div>
-      </div>
+        </div>
 
-      <div className="mb-2">
-        <p className="mb-2">Upload Certificate <span className="text-red-500">*</span></p>
-        <Input
-          type="file"
-          onChange={handleFileUpload}
-          accept=".pdf, .zip , .jpg"
-        />
-         <div className="min-h-[20px]">
+        <div className="col-span-2 space-y-2">
+          <p className="text-sm font-medium">Upload Certificate (Accepted: Pdf/Zip/Image, Max Size: 20mb) <span className="text-red-500">*</span></p>
+          <Input
+            type="file"
+            onChange={handleFileUpload}
+            accept=".pdf, .zip, .jpg"
+          />
+          <div className="min-h-[20px]">
             {errors.certificate && (
               <p className="text-red-500 text-xs mt-1">{errors.certificate}</p>
             )}
           </div>
-      </div>
-  </div>
-      <div className="flex justify-end gap-2">
-        <Button
-          variant="solid"
-          size="sm"
-          onClick={handleSubmit}
-          loading={isLoading}
-        >
-          Create LWF Setup
-        </Button>
-        <Button
-          variant="plain"
-          size="sm"
-          onClick={onClose}
-        >
-          Cancel
-        </Button>
+        </div>
+
+        <div className="col-span-3 flex justify-end space-x-2">
+          <Button
+            variant="solid"
+            size="sm"
+            onClick={handleSubmit}
+            loading={isLoading}
+          >
+           Confirm
+          </Button>
+          <Button
+            variant="plain"
+            size="sm"
+            onClick={onClose}
+          >
+            Cancel
+          </Button>
+        </div>
       </div>
     </div>
   );

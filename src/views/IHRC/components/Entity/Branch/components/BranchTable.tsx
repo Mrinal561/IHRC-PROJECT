@@ -16,7 +16,7 @@ import { EntityData, entityDataSet } from '../../../../store/dummyEntityData'
 import { AppDispatch } from '@/store'
 import { useDispatch, useSelector } from 'react-redux'
 import { BranchData } from '@/@types/branch'
-import { fetchBranches } from '@/store/slices/branch/branchSlice'
+import { deleteBranch, fetchBranches } from '@/store/slices/branch/branchSlice'
 import httpClient from '@/api/http-client'
 import { endpoints } from '@/api/endpoint'
 import dayjs from 'dayjs'
@@ -26,6 +26,7 @@ import loadingAnimation from '@/assets/lotties/system-regular-716-spinner-three-
 import Lottie from 'lottie-react'
 import BranchEditDialog from './BranchEditDialog'
 import { useNavigate } from 'react-router-dom'
+import { showErrorNotification } from '@/components/ui/ErrorMessage'
 
 interface SelectOption {
     value: string
@@ -101,6 +102,53 @@ const BranchTable: React.FC<BranchTableProps> = ({
             uniqueStates.map((state) => ({ value: state!, label: state! })),
         )
     }, [data])
+
+    const handleDialogOk = async () => {
+        if (itemToDelete) {
+            try {
+                const res = await dispatch(deleteBranch(itemToDelete)).unwrap();
+                
+                // Only show success message if we get here (no error was thrown)
+                toast.push(
+                    <Notification title="Deleted" type="success">
+                        Branch Deleted Successfully
+                    </Notification>
+                );
+                
+                handleRefreshData();
+                handleDialogClose();
+                
+            } catch (error: any) {
+                // Handle different error formats
+                if (error.response?.data?.message) {
+                    // API error response
+                    showErrorNotification(error.response.data.message);
+                } else if (error.message) {
+                    // Regular error object
+                    showErrorNotification(error.message);
+                } else if (Array.isArray(error)) {
+                    // Array of error messages
+                    showErrorNotification(error);
+                } else {
+                    // Fallback error message
+                    showErrorNotification(error);
+                }
+                console.log(error);
+            } finally{
+                handleDialogClose();
+            }
+        }
+    };
+    
+    const openDeleteDialog = (branchId: number) => {
+        setItemToDelete(branchId)
+        setDialogIsOpen(true)
+    }
+
+    const handleDialogClose = () => {
+        setDialogIsOpen(false)
+        setItemToDelete(null)
+    }
 
     const columns = useMemo(
         () => [
@@ -195,13 +243,30 @@ const BranchTable: React.FC<BranchTableProps> = ({
                                 className="text-blue-500"
                             />
                         </Tooltip>
+                        <Tooltip title="Agreements">
+                <Button
+                    size="sm"
+                    onClick={() => {
+                        navigate('/branch-agreements', {
+                            state: {
+                                branchId: row.original?.id,
+                                companyId: row.original?.Company?.id,
+                                companyName: row.original?.Company?.name,
+                                branchName: row.original?.name
+                            }
+                        })
+                    }}
+                >
+                    Agreements
+                </Button>
+            </Tooltip>
                         <Tooltip title="Delete">
-                            <Button
-                                size="sm"
-                                // onClick={() => openDeleteDialog(row.index)}
-                                icon={<FiTrash />}
-                                className="text-red-500"
-                            />
+                        <Button
+                            size="sm"
+                            onClick={() => openDeleteDialog(row.original.id)}
+                            icon={<FiTrash />}
+                            className="text-red-500"
+                        />
                         </Tooltip>
                     </div>
                 ),
@@ -357,7 +422,7 @@ const BranchTable: React.FC<BranchTableProps> = ({
                 onRefresh={handleRefreshData}
             />
 
-            {/* <Dialog
+            <Dialog
                 isOpen={dialogIsOpen}
                 onClose={handleDialogClose}
                 onRequestClose={handleDialogClose}
@@ -381,7 +446,7 @@ const BranchTable: React.FC<BranchTableProps> = ({
                 </div>
             </Dialog>
 
-            <Dialog
+            {/* <Dialog
                 isOpen={editDialogIsOpen}
                 onClose={handleDialogClose}
                 onRequestClose={handleDialogClose}

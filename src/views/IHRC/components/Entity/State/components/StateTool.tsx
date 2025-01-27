@@ -138,7 +138,7 @@ const StateTool: React.FC = () => {
       <Dialog
         isOpen={dialogIsOpen}
         onClose={onDialogClose}
-        onRequestClose={onDialogClose}
+        onRequestClose={onDialogClose}  shouldCloseOnOverlayClick={false} 
       >
         <h5 className="mb-4">Assign State</h5>
         <div className="flex flex-col gap-6">

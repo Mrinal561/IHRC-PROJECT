@@ -19,8 +19,8 @@ import OutlinedPasswordInput from '@/components/ui/OutlinedInput/OutlinedPasswor
 const esiSetupSchema = yup.object().shape({
   code_Type: yup.string().required('Code type is required'),
   code: yup.string()
-    .required('ESI code is required'),
-    // .matches(/^[0-9]+$/, 'ESI code must contain only numbers'),
+  .required('ESI code is required')
+  .matches(/^[A-Za-z0-9]+$/, 'ESI code must contain only letters and numbers'),
     state_id: yup
         .number()
         .min(1, 'Please select a state'),
@@ -47,8 +47,8 @@ const esiSetupSchema = yup.object().shape({
       })
     )
     .min(1, 'At least one signatory must be selected'),
-  certificate: yup.string()
-    .required('Certificate is required')
+  // certificate: yup.string()
+  //   .required('Certificate is required')
 });
 
 interface ValidationErrors {
@@ -305,7 +305,11 @@ useEffect(() => {
   // Load Signatories
   const loadUsers = async () => {
     try {
-      const response = await httpClient.get(endpoints.user.getAll());
+      const response = await httpClient.get(endpoints.user.getAll(), {
+        params: {
+          'company_id[]': companyId
+        }
+      });
       console.log('Users API Response:', response.data)
       if(response.data){
         const authorizedSignatories = response.data.data.filter(user => user.user_details.auth_signatory);
@@ -599,8 +603,8 @@ useEffect(() => {
 
 return (
   <div className="p-4">
-    {/* Company Group and Company Section */}
-    <div className="grid grid-cols-2 gap-4 mb-3">
+    <div className="grid grid-cols-3 gap-4 mb-3">
+      {/* Company Information Section */}
       <div className="space-y-2">
         <p className="text-sm font-medium">Company Group</p>
         <OutlinedInput
@@ -617,12 +621,10 @@ return (
           disabled
         />
       </div>
-    </div>
 
-    {/* Code Type and ESI Code Section */}
-    <div className="grid grid-cols-2 gap-4 mb-3">
+      {/* Code and Type Section */}
       <div className="space-y-2">
-        <p className="text-sm font-medium">Code Type</p>
+        <p className="text-sm font-medium">Code Type <span className="text-red-500">*</span></p>
         <OutlinedSelect
           label="Select Code Type"
           options={codeTypeOptions}
@@ -636,7 +638,7 @@ return (
         </div>
       </div>
       <div className="space-y-2">
-        <p className="text-sm font-medium">ESI Code</p>
+        <p className="text-sm font-medium">ESI Code <span className="text-red-500">*</span></p>
         <OutlinedInput
           label="ESI Code"
           value={formData.code}
@@ -648,12 +650,10 @@ return (
           )}
         </div>
       </div>
-    </div>
 
-    {/* Location Fields Section */}
-    <div className="grid grid-cols-3 gap-4 mb-3">
+      {/* Location Section */}
       <div className="space-y-2">
-        <p className="text-sm font-medium">State</p>
+        <p className="text-sm font-medium">State <span className="text-red-500">*</span></p>
         <OutlinedSelect
           label="Select State"
           options={states}
@@ -691,10 +691,8 @@ return (
           )}
         </div>
       </div>
-    </div>
 
-    {/* ESI User and Password Section */}
-    <div className="grid grid-cols-2 gap-4 mb-3">
+      {/* User Credentials Section */}
       <div className="space-y-2">
         <p className="text-sm font-medium">ESI User</p>
         <OutlinedInput
@@ -721,12 +719,9 @@ return (
           )}
         </div>
       </div>
-    </div>
 
-    {/* Authorized Signatory and Certificate Section */}
-    <div className="grid grid-cols-2 gap-4 mb-3">
-      <div className="space-y-2">
-        <p className="text-sm font-medium">Authorized Signatory</p>
+      <div className="col-span-1 space-y-2">
+        <p className="text-sm font-medium">Select Authorized Signatory<span className="text-red-500">*</span></p>
         <Select
           isMulti
           options={users.map(user => ({
@@ -741,8 +736,8 @@ return (
           )}
         </div>
       </div>
-      <div className="space-y-2">
-        <p className="text-sm font-medium">Upload Certificate</p>
+      <div className="col-span-2 space-y-2">
+        <p className="text-sm font-medium">Upload Certificate(Accepted : Pdf/Zip/Image(Max Size: 20mb))<span className="text-red-500">*</span></p>
         <Input
           type="file"
           onChange={handleFileUpload}
@@ -754,25 +749,25 @@ return (
           )}
         </div>
       </div>
-    </div>
 
-    {/* Buttons Section */}
-    <div className="flex justify-end gap-2">
-      <Button
-        variant="solid"
-        size="sm"
-        onClick={handleSubmit}
-        loading={isLoading}
-      >
-        Create ESI Setup
-      </Button>
-      <Button
-        variant="plain"
-        size="sm"
-        onClick={onClose}
-      >
-        Cancel
-      </Button>
+      {/* Action Buttons */}
+      <div className="col-span-3 flex justify-end space-x-2">
+        <Button
+          variant="solid"
+          size="sm"
+          onClick={handleSubmit}
+          loading={isLoading}
+        >
+          Confirm
+        </Button>
+        <Button
+          variant="plain"
+          size="sm"
+          onClick={onClose}
+        >
+          Cancel
+        </Button>
+      </div>
     </div>
   </div>
 );

@@ -82,6 +82,7 @@ const CompanyGroupTool: React.FC<CompanyGroupToolProps> = ({setLoader, onDataCha
                 onRequestClose={onDialogClose}
                 width={500}
                 height={250}
+                shouldCloseOnOverlayClick={false} 
             >
                 <div className="flex flex-col h-full justify-between">
                     <h5 className="mb-4">Add Company Group</h5>

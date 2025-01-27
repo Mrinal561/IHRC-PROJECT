@@ -61,6 +61,7 @@ import { HiDownload } from 'react-icons/hi';
 import NoticeUploadDialog from './SandETrackerBulkUpload';
 
 interface SandETrackerToolProps {
+  canCreate:boolean;
   onRefresh: () => void;
   onFilterChange: (filters: {
     groupName: string;
@@ -72,7 +73,7 @@ interface SandETrackerToolProps {
   }) => void;
 }
 
-const SandETrackerTool: React.FC<SandETrackerToolProps> = ({ onRefresh, onFilterChange }) => {
+const SandETrackerTool: React.FC<SandETrackerToolProps> = ({ onRefresh, onFilterChange, canCreate }) => {
   const [showUploadedDetails, setShowUploadedDetails] = useState(false);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
@@ -110,7 +111,7 @@ const SandETrackerTool: React.FC<SandETrackerToolProps> = ({ onRefresh, onFilter
   };
 
   return (
-    <div>
+    <div className='w-full'>
       <div className='flex gap-3 items-center mb-4'>
         <SandETrackerFilter onFilterChange={handleFilterChange} />
         <CustomDateRangePicker onApply={handleDateRangeApply} />
@@ -121,7 +122,7 @@ const SandETrackerTool: React.FC<SandETrackerToolProps> = ({ onRefresh, onFilter
         >
           Download Notice Data
         </Button>
-        <NoticeUploadDialog onSuccess={onRefresh} />
+        <NoticeUploadDialog onSuccess={onRefresh} canCreate={canCreate}/>
       </div>
     </div>
   )

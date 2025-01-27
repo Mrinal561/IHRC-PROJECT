@@ -16,7 +16,7 @@ const roleSchema = yup.object().shape({
   name: yup
     .string()
     .required('Role name is required')
-    .min(3, 'Role name must be at least 3 characters')
+    // .min(3, 'Role name must be at least 3 characters')/
     .max(50, 'Role name must not exceed 50 characters')
     .matches(/^\S.*\S$|^\S$/,'The input must not have leading or trailing spaces')
   });
@@ -31,7 +31,7 @@ const Role = () => {
   const [roleData, setRoleData] = useState([]);
   const [key, setKey] = useState(0);
   const [formData, setFormData] = useState({
-    name: ' '
+    name: ''
   });
   const [errors, setErrors] = useState({
     name: ''
@@ -165,7 +165,7 @@ const Role = () => {
       <Dialog
         isOpen={isDialogOpen}
         onClose={handleDialogClose}
-        onRequestClose={handleDialogClose}
+        onRequestClose={handleDialogClose}  shouldCloseOnOverlayClick={false} 
       >
         <h5 className="mb-6">Add Role</h5>
         <div className="flex flex-col gap-6">

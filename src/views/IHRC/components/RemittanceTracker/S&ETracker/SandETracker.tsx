@@ -371,7 +371,7 @@ const SandETracker = () => {
                 <SandETrackerTool 
                     onFilterChange={handleFilterChange}
                     onRefresh={() => fetchNoticeTrackerData(pagination.pageIndex, pagination.pageSize)}
-                    // canCreate={permissions.canCreate}
+                    canCreate={permissions.canCreate}
                 />
             </div>
             <NoticeTrackerTable
@@ -382,8 +382,8 @@ const SandETracker = () => {
                 pagination={pagination}
                 onPaginationChange={handlePaginationChange}
                 onPageSizeChange={handlePageSizeChange}
-                // canEdit={permissions.canEdit}
-                // canDelete={permissions.canDelete}
+                canEdit={permissions.canEdit}
+                canDelete={permissions.canDelete}
             />
         </AdaptableCard>
     )

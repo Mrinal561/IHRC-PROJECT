@@ -263,7 +263,7 @@ const DetailPopup = ({ item, isOpen, onClose }) => {
       closable={true}
       width={800} // Adjust as needed
       height="auto"
-      contentClassName="p-6"
+      contentClassName="p-6"  shouldCloseOnOverlayClick={false} 
     >
       <div className="max-h-[80vh] overflow-y-auto">
         <h2 className="text-2xl font-bold mb-4">{item.title}</h2>

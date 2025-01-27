@@ -9,26 +9,49 @@ import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
 import dayjs from 'dayjs';
 import { FiFile } from 'react-icons/fi';
+import store from '@/store';
 const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
 
 interface UploadedESIDetailsProps {
   onBack: () => void;
-  loading: boolean
+  loading: boolean;
+  groupId: string;
+  companyId:string;
 }
 
-const UploadedESIDetails: React.FC<UploadedESIDetailsProps> = ({ onBack, loading }) => {
+const UploadedESIDetails: React.FC<UploadedESIDetailsProps> = ({ onBack, loading, groupId, companyId }) => {
   const navigate = useNavigate();
   const [data, setData] = useState<esiChallanData[]>([]);
 const [isLoading, setIsLoading] = useState(false);
-
-
-  const fetchEsiTrackerData = useCallback(async () => {
+const {login} = store.getState();
+const [pagination, setPagination] = useState({
+  total: 0,
+  pageIndex: 1,
+  pageSize: 10,
+});
+const params: any = {
+  'group_id[]': login.user.user?.group_id,
+  'company_id[]': login.user.user?.company_id,
+};
+  const fetchEsiTrackerData = useCallback(async  (page: number, pageSize: number) => {
+    console.log(login)
     try {
         setIsLoading(true)
-      const res = await httpClient.get(endpoints.esiTracker.getAll())
+      const res = await httpClient.get(endpoints.esiTracker.getAll(), {
+        params: {
+          page,
+          page_size: pageSize,
+          'group_id[]': login.user.user?.group_id,
+          'company_id[]': login.user.user?.company_id,
+        },
+      });
       console.log(res.data.data)
       setData(res.data.data);
+      setPagination((prev) => ({
+        ...prev,
+        total: res.data.paginate_data.totalResults,
+      }));
     } catch (error) {
       console.error('Error fetching PF tracker data:', error);
     } finally{
@@ -36,14 +59,26 @@ const [isLoading, setIsLoading] = useState(false);
     }
   }, []);
       useEffect(() => {
-    fetchEsiTrackerData();
-  }, [fetchEsiTrackerData]);
+    fetchEsiTrackerData(pagination.pageIndex, pagination.pageSize);
+  }, [fetchEsiTrackerData, pagination.pageIndex, pagination.pageSize]);
 
+  const handlePaginationChange = (page: number) => {
+    setPagination((prev) => ({ ...prev, pageIndex: page }));
+  };
+
+  const handlePageSizeChange = (newPageSize: number) => {
+    setPagination((prev) => ({
+      ...prev,
+      pageSize: newPageSize,
+      pageIndex: 1,
+    }));
+  };
 
   const columns: ColumnDef<esiChallanData>[] = useMemo(
     () => [
       {
         header: 'Company',
+        enableSorting: false,
         accessorKey: 'EsiSetup.Company.name',
         cell: (props) => (
             <div className="w-52 truncate">
@@ -53,6 +88,7 @@ const [isLoading, setIsLoading] = useState(false);
     },
     {
         header: 'ESI Code',
+        enableSorting: false,
         accessorKey: 'EsiSetup.code',
         cell: (props) => (
             <div className="w-40 truncate">
@@ -71,6 +107,7 @@ const [isLoading, setIsLoading] = useState(false);
     // },
     {
         header: 'ESI Code Location',
+        enableSorting: false,
         accessorKey: 'EsiSetup.Location.name',
         cell: (props) => (
             <div className="w-40 truncate">
@@ -80,6 +117,7 @@ const [isLoading, setIsLoading] = useState(false);
     },
     {
         header: 'Month',
+        enableSorting: false,
         accessorKey: 'payroll_month',
         cell: (props) => {
             const date = new Date(props.getValue() as string);
@@ -92,6 +130,7 @@ const [isLoading, setIsLoading] = useState(false);
     },
     {
         header: 'No. of Employees',
+        enableSorting: false,
         accessorKey: 'no_of_emp',
         cell: (props) => (
             <div className="w-40 truncate">
@@ -101,6 +140,7 @@ const [isLoading, setIsLoading] = useState(false);
     },
     {
         header: 'ESI Gross Wages',
+        enableSorting: false,
         accessorKey: 'gross_wage',
         cell: (props) => (
             <div className="w-40 truncate">
@@ -110,6 +150,7 @@ const [isLoading, setIsLoading] = useState(false);
     },
     {
         header: 'EE ESI',
+        enableSorting: false,
         accessorKey: 'employee_esi',
         cell: (props) => (
             <div className="w-28 truncate">
@@ -119,6 +160,7 @@ const [isLoading, setIsLoading] = useState(false);
     },
     {
         header: 'ER ESI',
+        enableSorting: false,
         accessorKey: 'employer_esi',
         cell: (props) => (
             <div className="w-28 truncate">
@@ -128,6 +170,7 @@ const [isLoading, setIsLoading] = useState(false);
     },
     {
         header: 'Total ESI',
+        enableSorting: false,
         accessorKey: 'total_esi',
         cell: (props) => (
             <div className="w-28 truncate">
@@ -137,6 +180,7 @@ const [isLoading, setIsLoading] = useState(false);
     },
     {
         header: 'Total Amount As per Challan',
+        enableSorting: false,
         accessorKey: 'challan_amt',
         cell: (props) => (
             <div className="w-52 truncate">
@@ -146,6 +190,7 @@ const [isLoading, setIsLoading] = useState(false);
     },
     {
         header: 'Difference in Amount',
+        enableSorting: false,
         accessorKey: 'difference_amt',
         cell: (props) => (
             <div className="w-40 truncate">
@@ -155,6 +200,7 @@ const [isLoading, setIsLoading] = useState(false);
     },
     {
         header: 'Reason For Difference',
+        enableSorting: false,
         accessorKey: 'difference_reason',
         cell: (props) => (
             <div className="w-40 truncate">
@@ -166,16 +212,19 @@ const [isLoading, setIsLoading] = useState(false);
    
     {
         header: 'Due Date',
+        enableSorting: false,
         accessorKey: 'payment_due_date',
         cell: (props) => <div className="w-28 truncate">{dayjs(props.getValue() as string).format('DD-MM-YYYY')}</div>,
     },
     {
         header: 'Date of Payment',
+        enableSorting: false,
         accessorKey: 'payment_date',
         cell: (props) => <div className="w-40 truncate">{dayjs(props.getValue() as string).format('DD-MM-YYYY')}</div>,
     },
     {
       header: 'Delay',
+      enableSorting: false,
       accessorKey: 'delay_in_days',
       cell: (props) => (
           <div className="w-40 truncate">
@@ -185,6 +234,7 @@ const [isLoading, setIsLoading] = useState(false);
   },
   {
       header: 'Delay Reason',
+      enableSorting: false,
       accessorKey: 'delay_reason',
       cell: (props) => (
           <div className="w-40 truncate">
@@ -194,6 +244,7 @@ const [isLoading, setIsLoading] = useState(false);
   },
     {
         header: 'Challan No',
+        enableSorting: false,
         accessorKey: 'challan_no',
         cell: (props) => (
             <div className="w-40 truncate">
@@ -203,6 +254,7 @@ const [isLoading, setIsLoading] = useState(false);
     },
     {
         header: 'Challan Type',
+        enableSorting: false,
         accessorKey: 'challan_type',
         cell: (props) => (
             <div className="w-40 truncate">
@@ -212,6 +264,7 @@ const [isLoading, setIsLoading] = useState(false);
     },
          {
   header: 'Challan',
+  enableSorting: false,
   accessorKey: 'challan_document',
   cell: (props) => {
     const challanDocument = props.getValue() as string | null;
@@ -301,6 +354,13 @@ const [isLoading, setIsLoading] = useState(false);
         stickyHeader={true}
         stickyFirstColumn={true}
         stickyLastColumn={true}
+        pagingData={{
+          total: pagination.total,
+          pageIndex: pagination.pageIndex,
+          pageSize: pagination.pageSize,
+        }}
+        onPaginationChange={handlePaginationChange}
+        onSelectChange={handlePageSizeChange}
       />
     </div>
   );

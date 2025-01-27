@@ -37,6 +37,7 @@ export type PFData = {
             };
         };
     };
+    signatory_data:any;
     
     Signatory: {
         id: number;

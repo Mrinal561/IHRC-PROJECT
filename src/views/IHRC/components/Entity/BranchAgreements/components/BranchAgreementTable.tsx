@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import useAuth from '@/utils/hooks/useAuth';
 import DataTable from '@/components/shared/DataTable';
-import { Button, Tooltip } from '@/components/ui';
+import { Button, toast, Tooltip, Notification, Dialog } from '@/components/ui';
 import OutlinedInput from '@/components/ui/OutlinedInput';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 import { MdEdit } from 'react-icons/md';
@@ -9,11 +9,13 @@ import { FiTrash } from 'react-icons/fi';
 import dayjs from 'dayjs';
 import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const BranchAgreementTable = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
+    const { branchId, companyId, companyName, branchName } = location.state || {};
     
     // State Management
     const [data, setData] = useState([]);
@@ -21,13 +23,21 @@ const BranchAgreementTable = () => {
     const [isBranchLoading, setIsBranchLoading] = useState(false);
     const [branches, setBranches] = useState([]);
     const [companies, setCompanies] = useState([]);
-    
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [selectedAgreementId, setSelectedAgreementId] = useState(null);
     // Filter and Table State
     const [filters, setFilters] = useState({
         search: '',
-        branch_id: '',
-        company_id: user?.company_id || '',
-        sub_category: ''
+        branch_id: branchId ? {
+            value: branchId,
+            label: branchName
+        } : '',
+        company_id: companyId ? {
+            value: companyId,
+            label: companyName
+        } : (user?.company_id || ''),
+        sub_category: '',
+        isFromBranch: !!branchId // Flag to check if coming from branch table
     });
     
     const [tableData, setTableData] = useState({
@@ -188,6 +198,32 @@ const BranchAgreementTable = () => {
         }
     }, [filters.company_id]);
 
+    const showNotification = (
+        type: 'success' | 'info' | 'danger' | 'warning',
+        message: string,
+    ) => {
+        toast.push(
+            <Notification
+                title={type.charAt(0).toUpperCase() + type.slice(1)}
+                type={type}
+            >
+                {message}
+            </Notification>,
+        )
+    }
+
+    const handleDelete = async () => {
+        try {
+          await httpClient.delete(endpoints.branchAgreement.delete(selectedAgreementId));
+          showNotification('success', 'Branch agreement deleted successfully');
+          fetchBranchAgreementData(); // Refresh the table
+          setDeleteDialogOpen(false);
+        } catch (error) {
+          console.error('Failed to delete agreement:', error);
+          showNotification('danger', 'Failed to delete agreement');
+        }
+      };
+
     // Table Columns
     const columns = useMemo(() => [
         // {
@@ -258,12 +294,16 @@ const BranchAgreementTable = () => {
                         />
                     </Tooltip>
                     <Tooltip title="Delete">
-                        <Button
-                            size="sm"
-                            icon={<FiTrash />}
-                            className="text-red-500"
-                        />
-                    </Tooltip>
+        <Button
+          size="sm"
+          icon={<FiTrash />}
+          className="text-red-500"
+          onClick={() => {
+            setSelectedAgreementId(row.original.id);
+            setDeleteDialogOpen(true);
+          }}
+        />
+      </Tooltip>
                 </div>
             ),
         },
@@ -285,6 +325,7 @@ const BranchAgreementTable = () => {
     value={filters.branch_id} // This will now be the full option object
     options={branches}
     onChange={(value) => handleFilterChange('branch_id', value)}
+    disabled={filters.isFromBranch}
 />
 
                 <OutlinedInput
@@ -321,6 +362,29 @@ const BranchAgreementTable = () => {
                     }
                 }))}
             />
+
+<Dialog
+  isOpen={deleteDialogOpen}
+  onClose={() => setDeleteDialogOpen(false)}
+  shouldCloseOnOverlayClick={false} 
+>
+  <h5 className="mb-4">Confirm Deletion</h5>
+                  <p>
+                      Are you sure you want to delete this Branch Agreement?
+                  </p>
+                  <div className="text-right mt-6">
+                      <Button
+                          className="ltr:mr-2 rtl:ml-2"
+                          variant="plain"
+                          onClick={() => setDeleteDialogOpen(false)}
+                      >
+                          Cancel
+                      </Button>
+                      <Button variant="solid" onClick={handleDelete}>
+                          Delete
+                      </Button>
+                  </div>
+</Dialog>
         </div>
     );
 };

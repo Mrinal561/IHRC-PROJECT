@@ -4,7 +4,7 @@ export type BranchAgreementData = {
     sub_category?: string;
     owner_name?: string;
     partner_name?: string;
-    partner_number?: number;
+    partner_number?: string;
     start_date?: string;
     end_date?: string;
     applicable_for_all?: boolean;
@@ -18,7 +18,7 @@ export  type BranchAgreementResponseData = {
     sub_category?: string;
     owner_name?: string;
     partner_name?: string;
-    partner_number?: number;
+    partner_number?: string;
     start_date: string;
     end_date: string;
     agreement_document?: string;

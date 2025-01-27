@@ -39,6 +39,13 @@ interface LWFSetupTableProps {
     // onEdit?: (index: number, newData: LWFSetupData) => void;
     onSuspend?: (index: number) => void;
      onRefresh?: () => void;
+     pagination: {
+        total: number;
+        pageIndex: number;
+        pageSize: number;
+    };
+    onPaginationChange: (page: number) => void;
+    onPageSizeChange: (pageSize: number) => void;
 }
 
 const LWFSetupTable: React.FC<LWFSetupTableProps> = ({ 
@@ -46,7 +53,10 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
     // onDelete,
     // onEdit,
     onSuspend,
-    onRefresh
+    onRefresh,
+    pagination,
+    onPageSizeChange,
+    onPaginationChange
 }) => {
     const dispatch = useDispatch();
     const [dialogIsOpen, setDialogIsOpen] = useState(false);
@@ -307,10 +317,12 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
                     skeletonAvatarProps={{ className: 'rounded-md' }}
                     loading={false}
                     pagingData={{
-                        total: data.length,
-                        pageIndex: 1,
-                        pageSize: 10,
+                        total: pagination.total,
+                        pageIndex: pagination.pageIndex,
+                        pageSize: pagination.pageSize,
                     }}
+                    onPaginationChange={onPaginationChange}
+                    onSelectChange={onPageSizeChange}
                     stickyHeader={true}
                     stickyFirstColumn={true}
                     stickyLastColumn={true}
@@ -321,6 +333,7 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
                 isOpen={dialogIsOpen}
                 onClose={handleDialogClose}
                 onRequestClose={handleDialogClose}
+                shouldCloseOnOverlayClick={false} 
             >
                 <h5 className="mb-4">Confirm Deletion</h5>
                 <p>

@@ -184,6 +184,7 @@ const ESIConfigDropdown: React.FC<ConfigDropdownProps> = ({
             type="file"
             onChange={handleFileChange} // Updated
             className="mb-4"
+             accept='.pdf, .zip, .jpg'
           />
         </div>
         <div className="mt-6 text-right">

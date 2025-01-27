@@ -15,6 +15,9 @@ import Lottie from 'lottie-react';
 import { HiOutlineViewGrid } from 'react-icons/hi';
 import { useDispatch } from 'react-redux';
 import { deletePtecTracker } from '@/store/slices/ptSetup/ptecTrackerSlice';
+import { FaUserShield } from 'react-icons/fa';
+import { requestCompanyEdit } from '@/store/slices/request/requestSLice';
+import store from '@/store';
 
 const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
@@ -34,6 +37,7 @@ interface PTTrackerTableProps {
   canEdit:boolean;
   canDelete:boolean;
 }
+const { login } = store.getState()
 
 const PTECTrackerTable: React.FC<PTTrackerTableProps> = ({
   dataSent,
@@ -52,7 +56,8 @@ const PTECTrackerTable: React.FC<PTTrackerTableProps> = ({
   const [editingData, setEditingData] = useState<PTTrackerData | null>(null);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [trackerToDelete, setTrackerToDelete] = useState<string | null>(null);
-
+  const userId = login?.user?.user?.id;
+  const type = login?.user?.user?.type;
     const handleDeleteConfirmation = (trackerId: string) => {
     setTrackerToDelete(trackerId);
     setDeleteConfirmOpen(true);
@@ -77,6 +82,27 @@ const PTECTrackerTable: React.FC<PTTrackerTableProps> = ({
     setEditingData(null);
     if (onRefresh) {
       onRefresh();
+    }
+  };
+  const handleRequestToAdmin = async (id: any) => {
+    try {
+      // Dispatch the request with the required type
+      const res = await dispatch(requestCompanyEdit({
+        id: id,
+        payload: {
+          type: "ptec" 
+        }
+      })).unwrap(); 
+  
+      if (res) {
+        console.log('Requested Successfully')
+          if (onRefresh) {
+              onRefresh()
+          }
+      }
+  
+    } catch (error) {
+      console.log("Admin request error:", error);
     }
   };
 
@@ -249,7 +275,7 @@ const PTECTrackerTable: React.FC<PTTrackerTableProps> = ({
       //   },
       // },
       {
-        header: 'Payment',
+        header: 'Payment Receipt',
         enableSorting: false,
         accessorKey: 'payment_document',
         cell: (props) => {
@@ -325,19 +351,28 @@ const PTECTrackerTable: React.FC<PTTrackerTableProps> = ({
       {
         header: 'Actions',
         id: 'actions',
-        cell: ({ row }) => (
+        cell: ({ row }) => {
+          const { iseditable, uploaded_by } = row.original;
+          const canShowActions = type === 'admin' || (type === 'user' && userId === uploaded_by);
+      
+          if (!canShowActions) {
+            return null; // Don't show any actions
+          }
+          return(
           <div className="flex items-center gap-2">
-            {canEdit && (
-            <Tooltip title="Edit">
-              <Button
-                size="sm"
-                onClick={() => handleEdit(row.original)}
-                icon={<MdEdit />}
-              />
-            </Tooltip>
-              )}
-              
-              {canDelete && (
+            {iseditable ? (
+              <>
+              {canEdit && (
+              <Tooltip title="Edit">
+                <Button
+                  size="sm"
+                  onClick={() => handleEdit(row.original)}
+                  icon={<MdEdit />}
+                />
+              </Tooltip>
+                )}
+
+                 {canDelete && (
             <Tooltip title="Delete">
               <Button
                 size="sm"
@@ -347,14 +382,29 @@ const PTECTrackerTable: React.FC<PTTrackerTableProps> = ({
               />
             </Tooltip>
               )}
+
             <ConfigDropdown 
               companyName={row.original.PtSetup.Company.name}
               companyGroupName={row.original.PtSetup.CompanyGroup.name}
               trackerId={row.original.id}
               onRefresh={onRefresh}
             />
+              </>
+            ) : (
+              <Tooltip title="Request to Admin">
+              <Button
+                size="sm"
+                onClick={() => handleRequestToAdmin(row.original.id)}
+                icon={<FaUserShield />}
+                className="text-blue-500"
+              />
+            </Tooltip>
+            )}
+              
+             
           </div>
-        ),
+          )
+        },
       },
     ],
     [onRefresh]
@@ -431,7 +481,7 @@ const PTECTrackerTable: React.FC<PTTrackerTableProps> = ({
 
        <Dialog
         isOpen={deleteConfirmOpen}
-        onClose={() => setDeleteConfirmOpen(false)}
+        onClose={() => setDeleteConfirmOpen(false)}  shouldCloseOnOverlayClick={false} 
       >
         <div className="p-2">
           <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>

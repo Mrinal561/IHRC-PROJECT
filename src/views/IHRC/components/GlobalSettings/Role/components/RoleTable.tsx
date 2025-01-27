@@ -19,7 +19,7 @@ const roleSchema = yup.object().shape({
     name: yup
         .string()
         .required('Role name is required')
-        .min(3, 'Role name must be at least 3 characters')
+        // .min(3, 'Role name must be at least 3 characters')
         .max(50, 'Role name must not exceed 50 characters')
         .matches(/^\S.*\S$|^\S$/,'The input must not have leading or trailing spaces')
     });
@@ -432,7 +432,7 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
             <Dialog
                 isOpen={editDialogIsOpen}
                 onClose={handleDialogClose}
-                onRequestClose={handleDialogClose}
+                onRequestClose={handleDialogClose}  shouldCloseOnOverlayClick={false} 
             >
                 <h5 className="mb-4">Edit Role Name</h5>
                 <div className="mb-4">

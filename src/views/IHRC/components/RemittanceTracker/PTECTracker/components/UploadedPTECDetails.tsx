@@ -10,6 +10,7 @@ import { endpoints } from '@/api/endpoint';
 import { PTTrackerData } from '@/@types/PTTracker';
 import { FiFile } from 'react-icons/fi';
 import dayjs from 'dayjs';
+import store from '@/store';
 
 interface UploadedPTDetailsProps {
   onBack: () => void;
@@ -24,6 +25,11 @@ const UploadedPTECDetails: React.FC<UploadedPTDetailsProps> = ({ onBack }) => {
     pageIndex: 1,
     pageSize: 10,
   });
+  const {login} = store.getState();
+const params: any = {
+  'group_id[]': login.user.user?.group_id,
+  'company_id[]': login.user.user?.company_id,
+};
 
   const fetchPTTrackerData = useCallback(
     async (page: number, pageSize: number) => {
@@ -33,6 +39,8 @@ const UploadedPTECDetails: React.FC<UploadedPTDetailsProps> = ({ onBack }) => {
           params: {
             page,
             page_size: pageSize,
+            'group_id[]': login.user.user?.group_id,
+            'company_id[]': login.user.user?.company_id,
           },
         });
         setData(res.data.data);
@@ -68,6 +76,7 @@ const UploadedPTECDetails: React.FC<UploadedPTDetailsProps> = ({ onBack }) => {
   const columns: ColumnDef<PTTrackerData>[] = [
     {
         header: 'Company',
+        enableSorting: false,
         accessorKey: 'PtSetup.Company.name',
         cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
       },
@@ -78,11 +87,13 @@ const UploadedPTECDetails: React.FC<UploadedPTDetailsProps> = ({ onBack }) => {
       // },
       {
         header: 'PT EC Location',
+        enableSorting: false,
         accessorKey: 'PtSetup.Location.name',
         cell: (props) => <div className="w-36 truncate">{props.getValue() as string}</div>,
       },
       {
         header: 'PT EC Number',
+        enableSorting: false,
         accessorKey: 'PtSetup.enroll_number',
         cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
       },
@@ -119,6 +130,7 @@ const UploadedPTECDetails: React.FC<UploadedPTDetailsProps> = ({ onBack }) => {
       // },
       {
         header: 'Period',
+        enableSorting: false,
         accessorKey: 'period',
          cell: (props) => (
           <div className="w-28 truncate">
@@ -128,6 +140,7 @@ const UploadedPTECDetails: React.FC<UploadedPTDetailsProps> = ({ onBack }) => {
       },
       {
         header: 'Total Amount (Challan)',
+        enableSorting: false,
         accessorKey: 'total_challan_amt',
         cell: (props) => (
           <div className="w-40 truncate">
@@ -137,6 +150,7 @@ const UploadedPTECDetails: React.FC<UploadedPTDetailsProps> = ({ onBack }) => {
       },
       {
         header: 'Total Amount Paid',
+        enableSorting: false,
         accessorKey: 'total_paid_amt',
         cell: (props) => (
           <div className="w-40 truncate">
@@ -146,6 +160,7 @@ const UploadedPTECDetails: React.FC<UploadedPTDetailsProps> = ({ onBack }) => {
       },
       {
         header: 'Due Date',
+        enableSorting: false,
         accessorKey: 'payment_due_date',
         cell: (props) => (
           <div className="w-28 truncate">
@@ -155,6 +170,7 @@ const UploadedPTECDetails: React.FC<UploadedPTDetailsProps> = ({ onBack }) => {
       },
       {
         header: 'Date of Payment',
+        enableSorting: false,
         accessorKey: 'payment_date',
         cell: (props) => (
           <div className="w-36 truncate">
@@ -164,16 +180,19 @@ const UploadedPTECDetails: React.FC<UploadedPTDetailsProps> = ({ onBack }) => {
       },
       {
         header: 'Delay',
+        enableSorting: false,
         accessorKey: 'delay_in_days',
         cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
       },
       {
         header: 'Delay Reason',
+        enableSorting: false,
         accessorKey: 'delay_reason',
         cell: (props) => <div className="w-36 truncate">{props.getValue() as string}</div>,
       },
       {
         header: 'Receipt No',
+        enableSorting: false,
         accessorKey: 'receipt_no',
         cell: (props) => <div className="w-28 truncate">{props.getValue() as number}</div>,
       },
@@ -210,6 +229,7 @@ const UploadedPTECDetails: React.FC<UploadedPTDetailsProps> = ({ onBack }) => {
       // },
       {
         header: 'Payment',
+        enableSorting: false,
         accessorKey: 'payment_document',
         cell: (props) => {
           const paymentDocument = props.getValue() as string | null;

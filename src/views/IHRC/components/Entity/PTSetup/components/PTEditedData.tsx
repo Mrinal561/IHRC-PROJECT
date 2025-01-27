@@ -29,8 +29,10 @@ interface ValidationErrors {
 }
 
 const ptSchema = yup.object().shape({
-    register_number: yup.string().required('Register Number is required'),
-    enroll_number: yup.string().required('Enrollment Number is required'),
+    register_number: yup.string().required('Register Number is required')
+    .matches(/^[A-Za-z0-9]+$/, 'ESI code must contain only letters and numbers'),
+    enroll_number: yup.string().required('Enrollment Number is required')
+    .matches(/^[A-Za-z0-9]+$/, 'ESI code must contain only letters and numbers'),
     // username: yup
     //     .string()
     //     .required('PF User is required')
@@ -43,18 +45,17 @@ const ptSchema = yup.object().shape({
     //         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
     //         'Must include A-Z, a-z, 0-9, @$!%*?& (Weak Password)',
     //     ),
-    email: yup
-        .string()
-        .required('Email is required')
-        .email('Invalid email format'),
+    //     email: yup
+    //     .string()
+    //     .matches(
+    //         /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|in|org|net|edu|gov)$/,
+    //         'Invalid email address. Please use a valid email with a.com,.in,.org,.net,.edu, or.gov domain.',
+    //     ),
     mobile: yup
-        .string()
-        .required('Mobile number is required')
-        // .positive('Mobile number must be positive')
-        // .integer('Mobile number must be an integer')
-        .test('len', 'Mobile number must be exactly 10 digits', (val) =>
-            val ? val.toString().length === 10 : false,
-        ),
+    .string()
+    .test('len', 'Mobile number must be exactly 10 digits', (val) => 
+        !val || val.toString().length === 10
+    ),
     register_date: yup
         .date()
         .required('Registration date is required')
@@ -96,6 +97,14 @@ const PTEditedData: React.FC<PTEditedDataProps> = ({
     const [error, setError] = useState<string | null>(null)
     const dispatch = useDispatch()
     const [errors, setErrors] = useState<ValidationErrors>({})
+
+
+    const remittanceModeOptions = [
+        { value: 'online', label: 'Online' },
+        { value: 'offline', label: 'Offline' }
+      ];
+
+
     const handleRCDocumentView = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         if (formData.rc_certificate) {
@@ -255,25 +264,25 @@ const handleChange = async (field: keyof PTSetupData, value: string) => {
     await validateField(field, value)
 
     // Special validation for password to check against username
-    if (field === 'password' || field === 'username') {
-        const newFormData = { ...formData, [field]: value }
-        if (newFormData.password === newFormData.username) {
-            setErrors(prev => ({
-                ...prev,
-                password: 'Password cannot be same as username'
-            }))
-        }
-    }
+    // if (field === 'password' || field === 'username') {
+    //     const newFormData = { ...formData, [field]: value }
+    //     if (newFormData.password === newFormData.username) {
+    //         setErrors(prev => ({
+    //             ...prev,
+    //             password: 'Password cannot be same as username'
+    //         }))
+    //     }
+    // }
 
     // Special validation for mobile number to check for numeric only
-    if (field === 'mobile') {
-        if (!/^\d*$/.test(value)) {
-            setErrors(prev => ({
-                ...prev,
-                mobile: 'Mobile number must contain only digits'
-            }))
-        }
-    }
+    // if (field === 'mobile') {
+    //     if (!/^\d*$/.test(value)) {
+    //         setErrors(prev => ({
+    //             ...prev,
+    //             mobile: 'Mobile number must contain only digits'
+    //         }))
+    //     }
+    // }
 }
 
 // Modify validateForm to check for custom validations as well
@@ -295,13 +304,13 @@ const validateForm = async () => {
         )
 
         // Additional custom validations
-        if (formData.password === formData.username) {
-            setErrors(prev => ({
-                ...prev,
-                password: 'Password cannot be same as username'
-            }))
-            return false
-        }
+        // if (formData.password === formData.username) {
+        //     setErrors(prev => ({
+        //         ...prev,
+        //         password: 'Password cannot be same as username'
+        //     }))
+        //     return false
+        // }
 
         setErrors({})
         return true
@@ -319,6 +328,11 @@ const validateForm = async () => {
     }
 }
 
+const handleRemitModeChange = (option: { value: string; label: string } | null) => {
+    const value = option ? option.value : '';
+    handleChange('remmit_mode', value);
+  };
+
 
     if (error) {
         return (
@@ -327,7 +341,7 @@ const validateForm = async () => {
                 onClose={onClose}
                 onRequestClose={onClose}
                 width={800}
-                height={600}
+                height={600}  shouldCloseOnOverlayClick={false} 
             >
                 <div className="flex justify-center items-center h-full">
                     <p className="text-red-500">{error}</p>
@@ -492,21 +506,14 @@ const validateForm = async () => {
                   <label>Remit Mode</label>
                   <div className="w-full">
                       <OutlinedSelect
-                          isDisabled
                           label="Select Mode"
-                          options={[
-                              { value: 'online', label: 'Online' },
-                              { value: 'offline', label: 'Offline' },
-                          ]}
+                          options={remittanceModeOptions}
+
                           value={formData.remmit_mode ? {
                               value: formData.remmit_mode,
                               label: formData.remmit_mode.charAt(0).toUpperCase() + formData.remmit_mode.slice(1),
                           } : null}
-                          onChange={(option) => {
-                              if (option) {
-                                  handleChange('remmit_mode', option.value)
-                              }
-                          }}
+                          onChange={handleRemitModeChange}
                       />
                       <div className="h-5">
                           {errors.remmit_mode && (
@@ -519,7 +526,7 @@ const validateForm = async () => {
               </div>
               <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                      EC Certificate
+                      EC Certificate(Accepted:Pdf/Zip/Image(Max Size: 20mb))
                   </label>
                   <div className="flex items-center gap-2">
                   <Input
@@ -541,7 +548,7 @@ const validateForm = async () => {
               </div>
               <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                      RC Certificate
+                      RC Certificate(Accepted : Pdf/Zip/Image(Max Size: 20mb))
                   </label>
                   <div className="flex items-center gap-2">
                   <Input

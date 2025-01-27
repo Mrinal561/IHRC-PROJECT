@@ -25,11 +25,12 @@ interface ValidationErrors {
 const pfSchema = yup.object().shape({
     pf_code: yup
     .string()
-    .required('PF Code is required'),
-    pf_user: yup
-    .string(),
-    password: yup
-    .string(),
+    .required('PF Code is required')
+    .matches(/^[A-Za-z0-9]+$/, 'ESI code must contain only letters and numbers'),
+    // pf_user: yup
+    // .string(),
+    // password: yup
+    // .string(),
     // .required('Password is required')
     // .min(8, 'Password must be at least 8 characters'),
     register_date: yup
@@ -159,7 +160,6 @@ const PFEditedData: React.FC<PFEditedDataProps> = ({
     }
   };
 
-
   const fetchPFData = async () => {
     try {
       setLoading(true);
@@ -176,17 +176,21 @@ const PFEditedData: React.FC<PFEditedDataProps> = ({
           throw error;
         });
 
+      // Transform the signatory data to include details
+      const transformedSignatoryData = response.signatory_data.map((signatory: any) => ({
+        signatory_id: signatory.signatory_id,
+        dsc_validity: signatory.dsc_validity,
+        e_sign: '',
+        e_sign_status: signatory.e_sign_status,
+        details: signatory.details // Keep the details for display
+      }));
+
       // Transform the data including company group and company names
       const transformedData = {
         ...response,
         Company_Group_Name: response.CompanyGroup?.name || '',
         Company_Name: response.Company?.name || '',
-        signatory_data: [{
-          signatory_id: response.signatory_id,
-          dsc_validity: response.dsc_validity,
-          e_sign: '',
-          e_sign_status: response.e_sign_status
-        }]
+        signatory_data: transformedSignatoryData
       };
 
       setFormData(transformedData);
@@ -217,14 +221,14 @@ const PFEditedData: React.FC<PFEditedDataProps> = ({
         handleChange('location', response.Location.name);
       }
       
-      // Update signatory selection with complete data
-      if (response.Signatory) {
-        const signatoryUser = {
-          id: response.Signatory.id,
-          name: response.Signatory.name
-        };
-        setSelectedSignatories([signatoryUser]);
-      }
+      // Update signatory selection with complete data from signatory_data
+      const signatoryUsers = response.signatory_data.map((signatory: any) => ({
+        id: signatory.signatory_id,
+        name: signatory.details.name,
+        email: signatory.details.email,
+        role: signatory.details.Role?.name
+      }));
+      setSelectedSignatories(signatoryUsers);
       
       setLoading(false);
     } catch (err) {
@@ -453,6 +457,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         onRequestClose={onClose}
         width={800}
         height={600}
+        shouldCloseOnOverlayClick={false} 
       >
         <div className="flex justify-center items-center h-full">
           <p className="text-red-500">{error}</p>
@@ -460,6 +465,8 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
       </Dialog>
     );
   }
+
+  
 
   if (loading) {
     return <div>Loading...</div>;
@@ -555,7 +562,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
       </div>
 
       {/* Selected Signatories Details */}
-      {selectedSignatories.length > 0 && (
+      {/* {selectedSignatories.length > 0 && (
         <div className="border rounded-lg p-2 space-y-2">
           <h6 className="font-semibold text-sm">Selected Signatories</h6>
           {selectedSignatories.map((signatory, index) => (
@@ -606,12 +613,12 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
             </div>
           ))}
         </div>
-      )}
+      )} */}
 
       {/* Certificate Upload Section */}
       <div className="grid grid-cols-1 gap-3">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">PF Certificate</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">PF Certificate(Accepted : Pdf/Zip/Image(Max Size: 20mb))</label>
           <div className="flex items-center gap-2">
             <Input
               type="file"

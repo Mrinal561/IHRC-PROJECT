@@ -32,7 +32,7 @@ interface BranchAgreement {
     sub_category?: string;
     owner_name?: string;
     partner_name?: string;
-    partner_number?: number;
+    partner_number?: string;
     start_date?: string;
     end_date?: string;
     applicable_for_all?: boolean;
@@ -109,7 +109,7 @@ const [subCategoryInput, setSubCategoryInput] = useState('');
     sub_category: '',
     owner_name: '',
     partner_name: '',
-    partner_number: 0,
+    partner_number: '',
     start_date: '',
     end_date: '',
     applicable_for_all: false,
@@ -262,14 +262,11 @@ const [subCategoryInput, setSubCategoryInput] = useState('');
         sub_category: values.subCategory,
         owner_name: values.ownerName,
         partner_name: values.partnerName,
-        partner_number: parseInt(values.partnerContact, 10),
+        partner_number: values.partnerContact,
         start_date: startDate.toISOString(),
         end_date: endDate.toISOString(),
         applicable_for_all: values.applicableForAllCompany,
         agreement_document: base64Document,
-        // Uncomment if your API needs these
-        // file_name: values.agreementDocument.name,
-        // file_type: values.agreementDocument.type
       };
   
       const response = await httpClient.post(
@@ -306,271 +303,6 @@ const [subCategoryInput, setSubCategoryInput] = useState('');
       setSubmitting(false);
     }
   };
-  
-
-//   return (
-//     <div className="p-2 bg-white rounded-lg">
-//       <div className="flex gap-2 items-center mb-3">
-//         <Button
-//           size="sm"
-//           variant="plain"
-//           icon={<IoArrowBack className="text-gray-500 hover:text-gray-700" />}
-//           onClick={() => navigate('/branch-agreements')}
-//         />
-//         <h3 className="text-2xl font-semibold">Add Branch Agreement</h3>
-//       </div>
-
-//       <Formik<FormValues>
-//        initialValues={initialValues}
-//        validationSchema={validationSchema}
-//        onSubmit={handleFormSubmit}
-//        enableReinitialize={true}
-//       >
-//         {({ errors, touched, values, setFieldValue, isSubmitting }) => (
-//           <Form className="space-y-6">
-//             <div className="grid grid-cols-2 gap-6">
-//               {/* Company Group - Read only */}
-//               <div className="space-y-2">
-//                 <label htmlFor="companyGroup">Company Group</label>
-//                 <OutlinedInput
-//                                   label="Company Group"
-//                                   value={companyGroups} onChange={function (value: string): void {
-//                                       throw new Error('Function not implemented.');
-//                                   } }                //   readOnly
-//                 //   disabled
-//                 />
-//               </div>
-
-//               {/* Company Select */}
-//               <div className="space-y-2">
-//                 <label htmlFor="company">Company</label>
-//                 <OutlinedSelect
-//                   label="Select Company"
-//                   options={companies}
-//                   value={companies.find(option => option.value === values.company) || null}
-//                   onChange={(selectedOption) => handleCompanySelect(selectedOption, setFieldValue)}
-//                 />
-//                 {errors.company && touched.company && (
-//                   <p className="text-red-500 text-sm">{errors.company}</p>
-//                 )}
-//               </div>
-
-//               {/* Branch Select */}
-//               <div className="space-y-2">
-//                 <label htmlFor="branch">Branch</label>
-//                 <OutlinedSelect
-//                   label="Select Branch"
-//                   options={branchData}
-//                   value={branchData.find(option => option.value === values.branch) || null}
-//                   onChange={(selectedOption) => handleBranchSelect(selectedOption, setFieldValue)}
-//                 />
-//                 {errors.branch && touched.branch && (
-//                   <p className="text-red-500 text-sm">{errors.branch}</p>
-//                 )}
-//               </div>
-
-//               {/* Office Type - Only shown if branch has office_type */}
-//               {currentBranchData?.office_type && (
-//                 <div className="space-y-2">
-//                   <label htmlFor="branchOfficeType">Branch Office Type</label>
-//                   <OutlinedInput
-//                                       label="Office Type"
-//                                       value={currentBranchData.office_type} onChange={function (value: string): void {
-//                                           throw new Error('Function not implemented.');
-//                                       } }                    // readOnly
-//                     // disabled
-//                   />
-//                 </div>
-//               )}
-
-//               {/* Agreement Type */}
-//               <div className="space-y-2">
-//                 <label htmlFor="agreementType">Agreement Type</label>
-//                 <OutlinedInput
-//                   label="Agreement Type"
-//                   value={values.agreementType}
-//                   onChange={(value) => setFieldValue('agreementType', value)}
-//                 />
-//                 {errors.agreementType && touched.agreementType && (
-//                   <p className="text-red-500 text-sm">{errors.agreementType}</p>
-//                 )}
-//               </div>
-
-//               {/* Sub Category with create option */}
-//               <div className="space-y-2">
-//   <SubCategoryAutosuggest
-//     value={values.subCategory}
-//     onChange={(value) => setFieldValue('subCategory', value)}
-//     onSubCategorySelect={(value) => {
-//       // If you need to store the ID separately
-//       setFieldValue('subCategoryId', value);
-//     }}
-//     isDisabled={isSubmitting}
-//   />
-//   {errors.subCategory && touched.subCategory && (
-//     <p className="text-red-500 text-sm">{errors.subCategory}</p>
-//   )}
-// </div>
-
-//               {/* Owner Name */}
-//               <div className="space-y-2">
-//                 <label htmlFor="ownerName">Owner Name</label>
-//                 <Field
-//                   as={Input}
-//                   id="ownerName"
-//                   name="ownerName"
-//                   type="text"
-//                 />
-//                 {errors.ownerName && touched.ownerName && (
-//                   <p className="text-red-500 text-sm">{errors.ownerName}</p>
-//                 )}
-//               </div>
-
-//               {/* Partner Name */}
-//               <div className="space-y-2">
-//                 <label htmlFor="partnerName">Partner Name</label>
-//                 <Field
-//                   as={Input}
-//                   id="partnerName"
-//                   name="partnerName"
-//                   type="text"
-//                 />
-//                 {errors.partnerName && touched.partnerName && (
-//                   <p className="text-red-500 text-sm">{errors.partnerName}</p>
-//                 )}
-//               </div>
-
-//               {/* Partner Contact */}
-//               <div className="space-y-2">
-//                 <label htmlFor="partnerContact">Partner Contact</label>
-//                 <Field
-//                   as={Input}
-//                   id="partnerContact"
-//                   name="partnerContact"
-//                   type="tel"
-//                 />
-//                 {errors.partnerContact && touched.partnerContact && (
-//                   <p className="text-red-500 text-sm">{errors.partnerContact}</p>
-//                 )}
-//               </div>
-
-            
-//               {/* <div className="space-y-2">
-//                 <label htmlFor="startDate">Start Date</label>
-//                 <DatePicker
-//                 size='sm'
-//                 placeholder='Pick a Start Date'
-//                   as={Input}
-//                   id="startDate"
-//                   name="startDate"
-//                   type="date"
-//                 />
-//                 {errors.startDate && touched.startDate && (
-//                   <p className="text-red-500 text-sm">{errors.startDate}</p>
-//                 )}
-//               </div> */}
-//               <div className="space-y-2">
-//   <label htmlFor="startDate">Start Date</label>
-//   <DatePicker
-//     size="sm"
-//     placeholder="Pick Start Date"
-//     onChange={(date) => {
-//       setFieldValue('startDate', date ? format(date, 'yyyy-MM-dd') : '');
-//     }}
-//   />
-//   {errors.startDate && touched.startDate && (
-//     <p className="text-red-500 text-sm">{errors.startDate}</p>
-//   )}
-// </div>
-
-// {/* End Date */}
-// <div className="space-y-2">
-//   <label htmlFor="endDate">End Date</label>
-//   <DatePicker
-//     size="sm"
-//     placeholder="Pick End Date"
-//     onChange={(date) => {
-//       setFieldValue('endDate', date ? format(date, 'yyyy-MM-dd') : '');
-//     }}
-//     minDate={values.startDate ? new Date(values.startDate) : undefined}  // To prevent selecting end date before start date
-//   />
-//   {errors.endDate && touched.endDate && (
-//     <p className="text-red-500 text-sm">{errors.endDate}</p>
-//   )}
-// </div>
-
-//               {/* Agreement Document */}
-//             <div className="space-y-2">
-//   <label htmlFor="agreementDocument">Agreement Document</label>
-//   <Input
-//     id="agreementDocument"
-//     name="agreementDocument"
-//     type="file"
-//     accept=".pdf,.zip,.jpeg,.jpg,.png,.gif"
-//     onChange={(event) => {
-//       const file = event.target.files?.[0];
-//       if (file) {
-//         // Check file size (20MB)
-//         if (file.size > 20 * 1024 * 1024) {
-//           showNotification('danger', 'File size exceeds 20MB limit');
-//           event.target.value = ''; // Clear the input
-//           return;
-//         }
-//         // Set the file value
-//         setFieldValue('agreementDocument', file);
-//       }
-//     }}
-//     onClick={(event) => {
-//       // Clear the input value when clicking to ensure onChange triggers even if selecting the same file
-//       (event.target as HTMLInputElement).value = '';
-//     }}
-//   />
-//   {errors.agreementDocument && touched.agreementDocument && (
-//     <p className="text-red-500 text-sm">{errors.agreementDocument}</p>
-//   )}
-//   {values.agreementDocument && (
-//     <div className="text-sm text-gray-600">
-//       Selected file: {values.agreementDocument.name}
-//     </div>
-//   )}
-// </div>
-
-//             </div>
-
-//             {/* Applicable for all company - Only show if branch office type is corporate office */}
-//             {currentBranchData?.office_type === 'coorporate_office' && (
-//   <div className="col-span-2">
-//     <label className="flex items-center space-x-2">
-//       <Checkbox
-//         checked={values.applicableForAllCompany}
-//         onChange={(checked) => setFieldValue('applicableForAllCompany', checked)}
-//       />
-//       <span>Applicable for all company</span>
-//     </label>
-//   </div>
-// )}
-
-
-            
-
-
-//             {/* Submit Button */}
-//             <div className="flex justify-end">
-//               <Button 
-//                 type="submit" 
-//                 variant='solid'
-//                 disabled={isSubmitting}
-//               >
-//                 {isSubmitting ? 'Submitting...' : 'Confirm'}
-//               </Button>
-//             </div>
-//           </Form>
-//         )}
-//       </Formik>
-//     </div>
-//   )
-// }
-
 return (
     <div className="p-2 bg-white rounded-lg">
       <div className="flex gap-2 items-center mb-3">
@@ -633,13 +365,14 @@ return (
 
               {/* Office Type */}
               {currentBranchData?.office_type && (
-                <div className="space-y-2">
-                  <OutlinedInput
-                    label="Office Type"
-                    value={currentBranchData.office_type}
-                    onChange={() => {}}
-                  />
-                </div>
+              <div className="space-y-2">
+              <label htmlFor="officeType">Office Type</label>
+                <OutlinedInput
+                  label="Office Type"
+                  value={currentBranchData.office_type}
+                  onChange={() => {}}
+                />
+            </div>
               )}
 
               {/* Agreement Type */}
@@ -810,11 +543,11 @@ return (
                 {errors.agreementDocument && touched.agreementDocument && (
                   <p className="text-red-500 text-sm">{errors.agreementDocument}</p>
                 )}
-                {values.agreementDocument && (
+                {/* {values.agreementDocument && (
                   <div className="text-sm text-gray-600">
                     Selected file: {values.agreementDocument.name}
                   </div>
-                )}
+                )} */}
               </div>
             </div>
 
@@ -826,13 +559,13 @@ return (
                     checked={values.applicableForAllCompany}
                     onChange={(checked) => setFieldValue('applicableForAllCompany', checked)}
                   />
-                  <span>Applicable for all company</span>
+                  <span>Applicable for all branches</span>
                 </label>
               </div>
             )}
 
             {/* Submit Button */}
-            <div className="flex justify-end">
+            <div className="flex justify-end gap-2">
               <Button 
                 type="submit" 
                 variant='solid'
@@ -840,6 +573,14 @@ return (
               >
                 {isSubmitting ? 'Submitting...' : 'Confirm'}
               </Button>
+              <Button
+                        type="button"
+                        variant="plain"
+                        // size="sm"
+                        onClick={() => navigate(-1)}
+                    >
+                        Cancel
+                    </Button>
             </div>
           </Form>
         )}

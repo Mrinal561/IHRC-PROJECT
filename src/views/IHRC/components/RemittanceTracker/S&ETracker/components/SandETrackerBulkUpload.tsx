@@ -64,7 +64,7 @@ const noticeValidationSchema = yup.object().shape({
 
 
 
-const NoticeUploadDialog = ({onSuccess}) => {
+const NoticeUploadDialog = ({onSuccess, canCreate}) => {
   const dispatch = useDispatch();
   const [companyGroups, setCompanyGroups] = useState<SelectOption[]>([]);
   const [selectedCompanyGroup, setSelectedCompanyGroup] = useState<SelectOption | null>(null);
@@ -347,6 +347,7 @@ const NoticeUploadDialog = ({onSuccess}) => {
 
   return (
     <>
+    {canCreate && (
       <Button
         variant="solid"
         size="sm"
@@ -355,7 +356,7 @@ const NoticeUploadDialog = ({onSuccess}) => {
       >
         Add Notice
       </Button>
-
+  )}
       <Dialog
         isOpen={isOpen}
         onClose={handleClose}

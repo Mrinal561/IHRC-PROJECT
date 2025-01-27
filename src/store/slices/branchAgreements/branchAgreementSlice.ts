@@ -7,6 +7,8 @@ import {
   deleteBranchAgreement
 } from '@/services/BranchAgreementService'
 import { BranchAgreementData, BranchAgreementResponseData } from '@/@types/branchAgreement'
+import httpClient from '@/api/http-client'
+import { endpoints } from '@/api/endpoint'
 
 export interface BranchAgreementState {
     agreements: BranchAgreementResponseData[]
@@ -25,7 +27,9 @@ const initialState: BranchAgreementState = {
 export const fetchBranchAgreements = createAsyncThunk(
     'branchAgreement/fetchAll',
     async (params: BranchAgreementData) => {
-        const { data } = await getBranchAgreement(params)
+        const { data } = await httpClient.get(endpoints.branchAgreement.list(), {
+            params: params,
+        })
         return data
     }
 )
@@ -33,7 +37,7 @@ export const fetchBranchAgreements = createAsyncThunk(
 export const fetchBranchAgreementById = createAsyncThunk(
     'branchAgreement/fetchById',
     async (id: string) => {
-        const { data } = await getBranchAgreementById(id)
+        const { data } = await httpClient.get(endpoints.branchAgreement.detail(id))
         return data
     }
 )
@@ -42,7 +46,9 @@ export const createNewBranchAgreement = createAsyncThunk(
     'branchAgreement/create',
     async (agreementData: any, { rejectWithValue }) => {
         try {
-            const { data } = await createBranchAgreement(agreementData)
+            const { data } = await httpClient.post(endpoints.branchAgreement.create(),
+            agreementData,
+        )
             return data
         } catch (error: any) {
             return rejectWithValue(error.response?.data?.message)
@@ -54,7 +60,8 @@ export const updateExistingBranchAgreement = createAsyncThunk(
     'branchAgreement/update',
     async ({ id, data }: { id: string; data: any }, { rejectWithValue }) => {
         try {
-            const response = await updateBranchAgreement(id, data)
+            // const response = await updateBranchAgreement(id, data)
+            const response = await httpClient.put(endpoints.branchAgreement.update(id), data)
             return response.data
         } catch (error: any) {
             return rejectWithValue(error.response?.data?.message)
@@ -66,8 +73,8 @@ export const deleteExistingBranchAgreement = createAsyncThunk(
     'branchAgreement/delete',
     async (id: string, { rejectWithValue }) => {
         try {
-            await deleteBranchAgreement(id)
-            return id
+           const {data} =  await httpClient.delete(endpoints.branchAgreement.delete(id))
+            return data;
         } catch (error: any) {
             return rejectWithValue(error.response?.data?.message)
         }

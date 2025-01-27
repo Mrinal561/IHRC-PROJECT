@@ -246,6 +246,7 @@ const DistrictTable: React.FC = () => {
                 isOpen={dialogIsOpen}
                 onClose={handleDialogClose}
                 onRequestClose={handleDialogClose}
+                shouldCloseOnOverlayClick={false} 
             >
                 <h5 className="mb-4">Confirm Deleting Item</h5>
                 <p>

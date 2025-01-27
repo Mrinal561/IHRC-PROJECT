@@ -67,7 +67,7 @@ const UploadDownload: React.FC = () => {
           </Card>
           <Dialog
               isOpen={isUploadDialogOpen}
-              onClose={() => setIsUploadDialogOpen(false)}
+              onClose={() => setIsUploadDialogOpen(false) }  shouldCloseOnOverlayClick={false} 
           >
               <h5 className="mb-4">Upload Certificate Template</h5>
               <p className="mb-2">Please upload the certificate template</p>

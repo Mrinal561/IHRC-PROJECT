@@ -7,7 +7,42 @@ import OutlinedSelect from '@/components/ui/Outlined';
 import { fetchPtrcTrackerById, updatePtrcTracker } from '@/store/slices/ptSetup/ptrcTrackerSlice';
 import { useDispatch } from 'react-redux';
 import { showErrorNotification } from '@/components/ui/ErrorMessage';
+import * as yup from 'yup';
 
+// Add this interface for validation errors
+interface ValidationErrors {
+  no_of_emp?: string;
+  gross_salary?: string;
+  total_paid_amt?: string;
+  payment_date?: string;
+  delay_reason?: string;
+  difference_reason?: string;
+}
+
+// Add the validation schema
+const validationSchema = yup.object().shape({
+  no_of_emp: yup
+    .number()
+    .typeError("Number of employees cannot be zero")
+    .required('Number of employees is required')
+    .positive('Number of employees must be positive'),
+  gross_salary: yup
+    .number()
+    .typeError("Gross salary cannot be zero")
+    .required('Gross salary is required')
+    .positive('Gross salary must be positive'),
+  total_paid_amt: yup
+    .number()
+    .typeError("Total paid amount cannot be zero")
+    .required('Total paid amount is required')
+    .positive('Total paid amount must be positive'),
+  payment_date: yup
+    .date()
+    .required('Payment date is required')
+    .max(new Date(), 'Payment date cannot be in the future'),
+  delay_reason: yup.string().nullable(),
+  difference_reason: yup.string().nullable()
+});
 
 
 
@@ -45,7 +80,7 @@ const PTRCTrackerEditDialog: React.FC<PTRCTrackerEditDialogProps> = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const dispatch = useDispatch();
-
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
 
   useEffect(() => {
     if (isOpen && trackerId) {
@@ -84,10 +119,43 @@ const PTRCTrackerEditDialog: React.FC<PTRCTrackerEditDialogProps> = ({
 
   const handleChange = (field: keyof PTRCTrackerData, value: string | number) => {
     setEditedData((prev) => ({ ...prev, [field]: value }));
+    
+    validationSchema.validateAt(field, { [field]: value }).catch((err) => {
+      setValidationErrors((prev) => ({
+        ...prev,
+        [field]: err.message
+      }));
+    });
   };
 
+
+  const validateForm = async (): Promise<boolean> => {
+    try {
+      await validationSchema.validate(editedData, { abortEarly: false });
+      setValidationErrors({});
+      return true;
+    } catch (err) {
+      if (err instanceof yup.ValidationError) {
+        const errors: ValidationErrors = {};
+        err.inner.forEach((e) => {
+          if (e.path) {
+            errors[e.path as keyof ValidationErrors] = e.message;
+          }
+        });
+        setValidationErrors(errors);
+      }
+      return false;
+    }
+  };
+
+  
   const handleSubmit = async () => {
        try {
+        const isValid = await validateForm();
+        if (!isValid) {
+          openNotification('danger', 'Please fix the validation errors');
+          return;
+        }
     // Create updateData object (matching the original updateTracker data expectation)
     const updateData = {
       payment_date: editedData.payment_date || '',
@@ -102,7 +170,24 @@ const PTRCTrackerEditDialog: React.FC<PTRCTrackerEditDialogProps> = ({
     const resultAction = await dispatch(updatePtrcTracker({
       id: trackerId, 
       data: updateData // Note: data, not formData
-    }));
+    })) .unwrap()
+    .catch((error: any) => {
+        // Handle different error formats
+        if (error.response?.data?.message) {
+            // API error response
+            showErrorNotification(error.response.data.message);
+        } else if (error.message) {
+            // Regular error object
+            showErrorNotification(error.message);
+        } else if (Array.isArray(error)) {
+            // Array of error messages
+            showErrorNotification(error);
+        } else {
+            // Fallback error message
+            showErrorNotification(error);
+        }
+        throw error; // Re-throw to prevent navigation
+    });
 
     onClose();
     openNotification('success', 'PTRC Tracker edited successfully');
@@ -111,7 +196,7 @@ const PTRCTrackerEditDialog: React.FC<PTRCTrackerEditDialogProps> = ({
     }
   } catch (err) {
     console.error('Error submitting tracker data:', err);
-    openNotification('danger', 'Failed to save changes');
+    // openNotification('danger', 'Failed to save changes');
   }
   };
   
@@ -149,41 +234,50 @@ const PTRCTrackerEditDialog: React.FC<PTRCTrackerEditDialogProps> = ({
       onClose={onClose}
       onRequestClose={onClose}
       width={800}
-      height={420}
+      height={480}
     >
       <h5 className="mb-4">Edit PT RC Tracker Detail</h5>
 
       <div className="p-4 space-y-4">
         <div className='flex gap-4 items-center'>
-          <div className='flex flex-col gap-2 w-full'>
+          <div className='flex flex-col gap-2 w-full min-h-[90px]'>
             <label>No. of Employees</label>
             <OutlinedInput
               label="No. of Employees"
               value={editedData.no_of_emp?.toString() || '' }
               onChange={(value) => handleChange('no_of_emp', parseInt(value, 10))}
             />
+             {validationErrors.no_of_emp && (
+    <p className="text-red-500 text-sm mt-1">{validationErrors.no_of_emp}</p>
+  )}
           </div>
-          <div className='flex flex-col gap-2 w-full'>
+          <div className='flex flex-col gap-2 w-full min-h-[90px]'>
             <label>Gross Salary</label>
             <OutlinedInput
               label="Gross Salary"
               value={editedData.gross_salary?.toString() || '' }
               onChange={(value) => handleChange('gross_salary', value)}
             />
+             {validationErrors.no_of_emp && (
+    <p className="text-red-500 text-sm mt-1">{validationErrors.no_of_emp}</p>
+  )}
           </div>
         </div>
 
         <div className='flex gap-4 items-center'>
          
-          <div className='flex flex-col gap-2 w-full'>
+          <div className='flex flex-col gap-2 w-full min-h-[90px]'>
             <label>Total Amount Paid</label>
             <OutlinedInput
               label="Total Amount Paid"
               value={editedData.total_paid_amt?.toString() || ''  }
               onChange={(value) => handleChange('total_paid_amt', parseFloat(value))}
             />
+             {validationErrors.no_of_emp && (
+    <p className="text-red-500 text-sm mt-1">{validationErrors.no_of_emp}</p>
+  )}
           </div>
-          <div className='flex flex-col gap-2 w-full'>
+          <div className='flex flex-col gap-2 w-full min-h-[90px]'>
             <label>Date of Payment</label>
             <DatePicker
             size='sm'
@@ -191,33 +285,34 @@ const PTRCTrackerEditDialog: React.FC<PTRCTrackerEditDialogProps> = ({
               value={editedData.payment_date ? new Date(editedData.payment_date) : undefined}
               onChange={(date) => handleDateChange('payment_date', date)}
             />
+             {validationErrors.no_of_emp && (
+    <p className="text-red-500 text-sm mt-1">{validationErrors.no_of_emp}</p>
+  )}
           </div>
-          <div className='flex flex-col gap-2 w-full'>
+          <div className='flex flex-col gap-2 w-full min-h-[90px]'>
             <label>Delay Reason</label>
             <OutlinedInput
               label="Delay Reason"
               value={editedData.delay_reason?.toString() || ''  }
               onChange={(value) => handleChange('delay_reason', value)}
             />
+             {validationErrors.no_of_emp && (
+    <p className="text-red-500 text-sm mt-1">{validationErrors.no_of_emp}</p>
+  )}
           </div>
         </div>
 
         <div className='flex gap-4 items-center'>
-        <div className='flex flex-col gap-2 w-full'>
+        <div className='flex flex-col gap-2 w-full min-h-[90px]'>
             <label>Difference Amount Reason</label>
             <OutlinedInput
               label="Reason"
               value={editedData.difference_reason?.toString() || ''  }
               onChange={(value) => handleChange('difference_reason', value)}
             />
-          </div>
-        <div className='flex flex-col gap-2 w-full'>
-            {/* <label>Difference Amount Reason</label>
-            <OutlinedInput
-              label="Reason"
-              value={editedData.differenceInAmount?.toString() || ''  }
-              onChange={(value) => handleChange('differenceInAmount', value)}
-            /> */}
+             {validationErrors.no_of_emp && (
+    <p className="text-red-500 text-sm mt-1">{validationErrors.no_of_emp}</p>
+  )}
           </div>
         </div>
       </div>

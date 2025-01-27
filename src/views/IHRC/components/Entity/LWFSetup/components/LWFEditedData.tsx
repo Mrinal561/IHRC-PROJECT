@@ -41,9 +41,8 @@ interface LWFSetupData {
 }
 
 const lwfSchema = yup.object().shape({
-  register_number: yup
-    .string()
-    .required('Register Number is required'),
+  register_number: yup.string().required('Registration number is required')
+    .matches(/^[A-Za-z0-9-]+$/, 'Registration number can only contain letters, numbers, and hyphens'),
   // username: yup
   //   .string()
   //   .required('User is required')
@@ -300,6 +299,7 @@ const handleRemitModeChange = (option: { value: string; label: string } | null) 
         onRequestClose={onClose}
         width={800}
         height={600}
+        shouldCloseOnOverlayClick={false} 
       >
         <div className="flex justify-center items-center h-full">
           <p className="text-red-500">{error}</p>
@@ -427,7 +427,7 @@ const handleRemitModeChange = (option: { value: string; label: string } | null) 
   </div>
 
   <div>
-    <label className="block text-sm font-medium text-gray-700 mb-2">LWF Certificate</label>
+    <label className="block text-sm font-medium text-gray-700 mb-2">LWF Certificate(Accepted : Pdf/Zip/Image(Max Size: 20mb))</label>
     <div className="flex items-center gap-2">
     <Input
       type="file"
