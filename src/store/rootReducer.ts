@@ -27,6 +27,7 @@ import certificate, { CertificateState } from './slices/certificate/certificateS
 import role,{ RoleState } from './slices/role/roleSlice'
 import notice,{ NoticeTrackerState } from './slices/noticeTracker/noticeTrackerSlice'
 import notification,{ NotificationState } from './slices/notification/notificationSlice'
+import password,{ PasswordRecoveryState } from './slices/password/passwordSlice'
 export type RootState = CombinedState<{
     auth: CombinedState<AuthState>
     base: CombinedState<BaseState>
@@ -55,6 +56,7 @@ export type RootState = CombinedState<{
     role: RoleState
     noticeTracker: NoticeTrackerState
     notification : NotificationState
+    password: PasswordRecoveryState
     /* eslint-disable @typescript-eslint/no-explicit-any */
     [RtkQueryService.reducerPath]: any
 }>
@@ -91,6 +93,7 @@ const staticReducers = {
     role,
     notice,
     notification,
+    password,
     [RtkQueryService.reducerPath]: RtkQueryService.reducer,
 }
  

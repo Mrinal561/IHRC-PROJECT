@@ -62,6 +62,7 @@
             }
         },
             "notice": "Notice Tracker",
+            "externaluser": "External User",
         "register": {
             "register": "Register & Return",
             "collapse": {
