@@ -1,7 +1,8 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
 import { COLORS } from '@/constants/chart.constant';
-import Card from '@/components/ui/Card';
+// import Card from '@/components/ui/Card';
+import Card from '@/components/ui/Card'
 
 const ChallanChart = () => {
     const data = [

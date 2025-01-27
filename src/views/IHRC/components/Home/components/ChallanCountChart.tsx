@@ -1,4 +1,5 @@
-import { Card } from '@/components/ui';
+// import { Card } from '@/components/ui';
+import Card from '@/components/ui/Card'
 import React from 'react';
 import Chart from 'react-apexcharts';
 
