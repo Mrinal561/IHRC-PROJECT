@@ -41,7 +41,7 @@ export const createptsetup = createAsyncThunk(
             const { data } = await httpClient.post(endpoints.ptSetup.create(), ptData);
             return data;
         } catch (error: any) {
-            return rejectWithValue(error.response?.data?.message || 'Failed to create PT setup');
+            return rejectWithValue(error.response?.data?.message);
         }
     }
 );

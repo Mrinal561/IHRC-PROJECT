@@ -312,7 +312,7 @@ return (
           icon={<IoArrowBack className="text-gray-500 hover:text-gray-700" />}
           onClick={() => navigate('/branch-agreements')}
         />
-        <h3 className="text-2xl font-semibold">Add Branch Agreement</h3>
+        <h3 className="text-2xl font-semibold">Add Agreement</h3>
       </div>
 
       <Formik<FormValues>
@@ -565,7 +565,7 @@ return (
             )}
 
             {/* Submit Button */}
-            <div className="flex justify-end">
+            <div className="flex justify-end gap-2">
               <Button 
                 type="submit" 
                 variant='solid'
@@ -573,6 +573,14 @@ return (
               >
                 {isSubmitting ? 'Submitting...' : 'Confirm'}
               </Button>
+              <Button
+                        type="button"
+                        variant="plain"
+                        // size="sm"
+                        onClick={() => navigate(-1)}
+                    >
+                        Cancel
+                    </Button>
             </div>
           </Form>
         )}

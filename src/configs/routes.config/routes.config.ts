@@ -12,6 +12,23 @@ export const protectedRoutes = [
         component: lazy(() => import('@/views/IHRC/components/Home/Home')),
         authority: [],
     },
+    {
+        key: 'nav.externaluser',
+        path: '/external-user',
+        component: lazy(
+            () =>
+                import(
+                    '@/views/IHRC/components/ExternalUser/ExternalUser'
+                ),
+        ),
+        authority: [],
+    },
+    // {
+    //     key: 'Reset Password',
+    //     path: '/reset-password',
+    //     component: lazy(() => import('@/views/auth/ResetPassword/ResetPassword')),
+    //     authority: [],
+    // },
 
     {
         key: 'recommendedList.item1',

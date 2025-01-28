@@ -1,3 +1,4 @@
+import { ResetPassword } from '@/@types/auth'
 import ApiService from './ApiService'
 import type {
     LogInCredential,
@@ -35,10 +36,10 @@ export async function loginApiSignIn(data: LogInCredential) {
 //     })
 // }
 
-// export async function apiResetPassword(data: ResetPassword) {
-//     return ApiService.fetchData({
-//         url: '/reset-password',
-//         method: 'post',
-//         data,
-//     })
-// }
+export async function apiResetPassword(data: ResetPassword) {
+    return ApiService.fetchData({
+        url: '/reset-password',
+        method: 'post',
+        data,
+    })
+}

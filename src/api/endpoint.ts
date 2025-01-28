@@ -224,5 +224,9 @@ export const endpoints = {
             unmarkedlist:()=> api('/notifications?unmarked=true'),
             allList:()=> api(`/notifications`),
             markRead:(id:any)=> api(`notification/read/${id}`)
+        },
+        forgotpassword:{
+            forgot:()=> api('forgot-password'),
+            reset:() => api(`reset-password`)
         }
 }

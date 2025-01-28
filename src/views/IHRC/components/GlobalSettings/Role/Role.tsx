@@ -31,7 +31,7 @@ const Role = () => {
   const [roleData, setRoleData] = useState([]);
   const [key, setKey] = useState(0);
   const [formData, setFormData] = useState({
-    name: ' '
+    name: ''
   });
   const [errors, setErrors] = useState({
     name: ''

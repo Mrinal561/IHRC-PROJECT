@@ -61,9 +61,9 @@ export const fetchUnmarkedNotifications = createAsyncThunk(
 
 export const fetchAllNotifications = createAsyncThunk(
     'notification/fetchAll',
-    async (_, { rejectWithValue }) => {
+    async (params: { unchecked?: string }, { rejectWithValue }) => {
         try {
-            const { data } = await httpClient.get(endpoints.notification.allList());
+            const { data } = await httpClient.get(endpoints.notification.allList(),{params});
             return data;
         } catch (error: any) {
             return rejectWithValue(error.response?.data?.message || 'Failed to fetch all notifications');

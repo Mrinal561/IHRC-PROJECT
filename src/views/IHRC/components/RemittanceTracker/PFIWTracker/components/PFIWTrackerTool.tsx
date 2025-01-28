@@ -110,7 +110,7 @@ const PFIWTrackerTool: React.FC<{
   }
 
   return (
-    <div>
+    <div className='w-full'>
       <div className="flex gap-4 items-center mb-4 w-full">
         <PFIWTrackerFilter 
           onFilterChange={handleFilterChange} 
