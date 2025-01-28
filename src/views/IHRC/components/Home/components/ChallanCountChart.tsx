@@ -1,6 +1,6 @@
 // import { Card } from '@/components/ui';
 import Card from '@/components/ui/Card'
-import React from 'react';
+import React, { useState } from 'react';
 import Chart from 'react-apexcharts';
 
 const ChallanCountChart = () => {
