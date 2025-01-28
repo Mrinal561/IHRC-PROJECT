@@ -1,7 +1,7 @@
 
 import React from 'react';
 import Chart from 'react-apexcharts';
-import { Card } from '@/components/ui/card';
+import Card from '@/components/ui/Card';
 
 const PaymentDatesChart = () => {
     const data = [

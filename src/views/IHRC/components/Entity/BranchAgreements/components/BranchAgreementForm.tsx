@@ -312,7 +312,7 @@ return (
           icon={<IoArrowBack className="text-gray-500 hover:text-gray-700" />}
           onClick={() => navigate('/branch-agreements')}
         />
-        <h3 className="text-2xl font-semibold">Add Branch Agreement</h3>
+        <h3 className="text-2xl font-semibold">Add Agreement</h3>
       </div>
 
       <Formik<FormValues>

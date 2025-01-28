@@ -105,7 +105,7 @@ const complianceDeadlines = [
 const DashboardBody = () => {
   return (
     <div className='flex flex-col gap-6 mt-6'>
-      <Statistic />
+      {/* <Statistic /> */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* PaymentDatesChart takes full width */}
         <div className="col-span-1 lg:col-span-2">

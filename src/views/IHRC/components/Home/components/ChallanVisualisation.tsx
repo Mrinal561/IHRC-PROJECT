@@ -1,5 +1,7 @@
+// import { Card } from '@/components/ui';
 import React from 'react';
 import Chart from 'react-apexcharts';
+import Card from '@/components/ui/Card';
 
 const ChallanVisualization = () => {
   const months = [
@@ -125,6 +127,7 @@ const ChallanVisualization = () => {
   });
 
   return (
+    <Card>
     <div className="w-full max-w-6xl mx-auto p-4">
       <Chart
         options={options}
@@ -133,6 +136,7 @@ const ChallanVisualization = () => {
         height={500}
       />
     </div>
+    </Card>
   );
 };
 
