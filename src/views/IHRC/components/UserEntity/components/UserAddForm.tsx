@@ -38,6 +38,7 @@ interface UserFormData {
     auth_signatory: boolean
     suspend: boolean
     disable: boolean
+    branch_id: number[];
 }
 
 interface SelectOption {
@@ -97,9 +98,11 @@ const userValidationSchema = yup.object().shape({
     auth_signatory: yup.boolean(),
     suspend: yup.boolean(),
     disable: yup.boolean(),
+    branch_id: yup.array().of(yup.number()).min(1, 'Please select at least one branch'),
 })
 
 const UserAddForm = () => {
+    const [branches, setBranches] = useState<SelectOption[]>([])
     const dispatch = useDispatch<AppDispatch>()
     const navigate = useNavigate()
     const location = useLocation()
@@ -117,6 +120,28 @@ const UserAddForm = () => {
     const [selectedUserRole, setSelectedUserRole] =
         useState<SelectOption | null>(null)
     const [isAuthorizedSignatory, setIsAuthorizedSignatory] = useState(false)
+
+
+    const loadBranches = async (companyId: string) => {
+        try {
+            console.log('Loading branches for company:', companyId)
+            const { data } = await httpClient.get(endpoints.branch.getAll(), {
+                params: {
+                    'company_id[]': companyId
+                }
+            })
+            console.log('Branches data:', data)
+            const formattedBranches = data?.data?.map((branch: any) => ({
+                label: branch.name,
+                value: String(branch.id)
+            }))
+            console.log('Formatted branches:', formattedBranches)
+            setBranches(formattedBranches || [])
+        } catch (error) {
+            console.error('Failed to load branches:', error)
+            showNotification('danger', 'Failed to load branches')
+        }
+    }
 
     const loadCompanyGroups = async () => {
         try {
@@ -227,355 +252,360 @@ const UserAddForm = () => {
             </div>
 
             <Formik
-                initialValues={{
-                    company_id: 0,
-                    name: '',
-                    email: '',
-                    password: '',
-                    mobile: '',
-                    joining_date: '',
-                    role_id: 0,
-                    aadhar_no: '',
-                    pan_card: '',
-                    auth_signatory: false,
-                    suspend: false,
-                    disable: false,
-                }}
-                validationSchema={userValidationSchema}
-                onSubmit={handleAddUser}
-            >
-                {({ setFieldValue, values, errors, touched }) => (
-                    <Form>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 my-8">
-                            {/* Company Group (Read-only) */}
-                            <div className="flex flex-col gap-2">
-                                <p className="mb-2">
-                                    company group{' '}
-                                    <span className="text-red-500">*</span>
-                                </p>
-                                <input
-                                    type="text"
-                                    value={companyName}
-                                    disabled
-                                    className="p-2 border rounded"
-                                />
-                            </div>
+    initialValues={{
+        company_id: 0,
+        name: '',
+        email: '',
+        password: '',
+        mobile: '',
+        joining_date: '',
+        role_id: 0,
+        aadhar_no: '',
+        pan_card: '',
+        auth_signatory: false,
+        suspend: false,
+        disable: false,
+        branch_id: [],
+    }}
+    validationSchema={userValidationSchema}
+    onSubmit={handleAddUser}
+>
+    {({ setFieldValue, values, errors, touched }) => (
+        <Form>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 my-8">
+                {/* Company Group (Read-only) */}
+                <div className="flex flex-col gap-2">
+                    <p className="mb-2">
+                        company group{' '}
+                        <span className="text-red-500">*</span>
+                    </p>
+                    <input
+                        type="text"
+                        value={companyName}
+                        disabled
+                        className="p-2 border rounded"
+                    />
+                </div>
 
-                            {/* Select Company */}
-                            <div className="flex flex-col gap-2">
-                                <p className="mb-2">
-                                    Select the company{' '}
-                                    <span className="text-red-500">*</span>
-                                </p>
-                                <Field name="company_id">
-                                    {({ field }: any) => (
-                                        <OutlinedSelect
-                                            label="Select Company"
-                                            options={companies} // Assuming `companies` is an array of options
-                                            value={companies.find(
-                                                (company) =>
-                                                    Number(company.value) ===
-                                                    values.company_id,
-                                            )} // Find selected company
-                                            onChange={(
-                                                selectedOption: SelectOption | null,
-                                            ) => {
-                                                setFieldValue(
-                                                    'company_id',
-                                                    selectedOption
-                                                        ? selectedOption.value
-                                                        : null,
-                                                )
-                                            }}
-                                            isMulti={false} // Single select
-                                            isDisabled={false}
-                                        />
-                                    )}
-                                </Field>
-                                {/* Show error message if any */}
-                                {touched.company_id && errors.company_id && (
-                                    <span className="text-red-500 text-sm">
-                                        {errors.company_id}
-                                    </span>
+                {/* Select Company */}
+                <div className="flex flex-col gap-2">
+                    <p className="mb-2">
+                        Select the company{' '}
+                        <span className="text-red-500">*</span>
+                    </p>
+                    <Field name="company_id">
+                        {({ field }: any) => (
+                            <OutlinedSelect
+                                label="Select Company"
+                                options={companies}
+                                value={companies.find(
+                                    (company) =>
+                                        Number(company.value) ===
+                                        values.company_id,
                                 )}
-                            </div>
+                                onChange={(selectedOption: SelectOption | null) => {
+                                    setFieldValue('company_id', selectedOption ? selectedOption.value : null)
+                                    if (selectedOption) {
+                                        loadBranches(selectedOption.value)
+                                    } else {
+                                        setBranches([])
+                                    }
+                                }}
+                                isMulti={false}
+                                isDisabled={false}
+                            />
+                        )}
+                    </Field>
+                    {touched.company_id && errors.company_id && (
+                        <span className="text-red-500 text-sm">
+                            {errors.company_id}
+                        </span>
+                    )}
+                </div>
 
-                            {/* Name */}
-                            <div className="flex flex-col gap-2">
-                                <p className="mb-2">
-                                    Enter Name{' '}
-                                    <span className="text-red-500">*</span>
-                                </p>
-                                <Field
-                                    name="name"
-                                    render={({ field }) => (
-                                        <OutlinedInput
-                                            {...field}
-                                            label="Name"
-                                            value={values.name}
-                                            onChange={(value: string) =>
-                                                setFieldValue('name', value)
-                                            }
-                                            error={touched.name && errors.name}
-                                        />
-                                    )}
-                                />
-                                {touched.name && errors.name && (
-                                    <span className="text-red-500 text-sm">
-                                        {errors.name}
-                                    </span>
+                {/* Branch Selection */}
+                <div className="flex flex-col gap-2">
+                    <p className="mb-2">
+                        Select Branch(es) <span className="text-red-500">*</span>
+                    </p>
+                    <Field name="branch_id">
+                        {({ field }: any) => (
+                            <OutlinedSelect
+                                label="Select Branches"
+                                options={branches}
+                                value={branches.filter(branch => 
+                                    values.branch_id?.includes(Number(branch.value))
                                 )}
-                            </div>
+                                onChange={(selectedOptions: SelectOption[] | null) => {
+                                    const branchIds = selectedOptions 
+                                        ? selectedOptions.map(option => Number(option.value))
+                                        : [];
+                                    setFieldValue('branch_id', branchIds);
+                                }}
+                                isMulti={true}
+                                // isDisabled={!values.company_id}
+                            />
+                        )}
+                    </Field>
+                    {touched.branch_id && errors.branch_id && (
+                        <span className="text-red-500 text-sm">
+                            {errors.branch_id}
+                        </span>
+                    )}
+                </div>
 
-                            {/* Email */}
-                            <div className="flex flex-col gap-2">
-                                <p className="mb-2">
-                                    Enter Email{' '}
-                                    <span className="text-red-500">*</span>
-                                </p>
-                                <Field
-                                    name="email"
-                                    render={({ field }) => (
-                                        <OutlinedInput
-                                            {...field}
-                                            label="Email"
-                                            value={values.email}
-                                            onChange={(value: string) =>
-                                                setFieldValue('email', value)
-                                            }
-                                            error={
-                                                touched.email && errors.email
-                                            }
-                                        />
-                                    )}
-                                />
-                                {touched.email && errors.email && (
-                                    <span className="text-red-500 text-sm">
-                                        {errors.email}
-                                    </span>
+                {/* Name */}
+                <div className="flex flex-col gap-2">
+                    <p className="mb-2">
+                        Enter Name{' '}
+                        <span className="text-red-500">*</span>
+                    </p>
+                    <Field
+                        name="name"
+                        render={({ field }) => (
+                            <OutlinedInput
+                                {...field}
+                                label="Name"
+                                value={values.name}
+                                onChange={(value: string) =>
+                                    setFieldValue('name', value)
+                                }
+                                error={touched.name && errors.name}
+                            />
+                        )}
+                    />
+                    {touched.name && errors.name && (
+                        <span className="text-red-500 text-sm">
+                            {errors.name}
+                        </span>
+                    )}
+                </div>
+
+                {/* Email */}
+                <div className="flex flex-col gap-2">
+                    <p className="mb-2">
+                        Enter Email{' '}
+                        <span className="text-red-500">*</span>
+                    </p>
+                    <Field
+                        name="email"
+                        render={({ field }) => (
+                            <OutlinedInput
+                                {...field}
+                                label="Email"
+                                value={values.email}
+                                onChange={(value: string) =>
+                                    setFieldValue('email', value)
+                                }
+                                error={touched.email && errors.email}
+                            />
+                        )}
+                    />
+                    {touched.email && errors.email && (
+                        <span className="text-red-500 text-sm">
+                            {errors.email}
+                        </span>
+                    )}
+                </div>
+
+                {/* Password */}
+                <div className="flex flex-col gap-2">
+                    <p className="mb-2">
+                        Password{' '}
+                        <span className="text-red-500">*</span>
+                    </p>
+                    <Field
+                        name="password"
+                        render={({ field }) => (
+                            <OutlinedPasswordInput
+                                {...field}
+                                label="Password"
+                                type="password"
+                                value={values.password}
+                                onChange={(value: string) =>
+                                    setFieldValue('password', value)
+                                }
+                                error={touched.password && errors.password}
+                            />
+                        )}
+                    />
+                    {touched.password && errors.password && (
+                        <span className="text-red-500 text-sm">
+                            {errors.password}
+                        </span>
+                    )}
+                </div>
+
+                {/* Mobile */}
+                <div className="flex flex-col gap-2">
+                    <p className="mb-2">
+                        Mobile{' '}
+                        <span className="text-red-500">*</span>
+                    </p>
+                    <Field
+                        name="mobile"
+                        render={({ field }) => (
+                            <OutlinedInput
+                                {...field}
+                                label="Mobile"
+                                value={values.mobile}
+                                onChange={(value: string) =>
+                                    setFieldValue('mobile', value)
+                                }
+                                error={touched.mobile && errors.mobile}
+                            />
+                        )}
+                    />
+                    {touched.mobile && errors.mobile && (
+                        <span className="text-red-500 text-sm">
+                            {errors.mobile}
+                        </span>
+                    )}
+                </div>
+
+                {/* Joining Date */}
+                <div className="flex flex-col gap-2">
+                    <p className="mb-2">
+                        Joining Date{' '}
+                        <span className="text-red-500">*</span>
+                    </p>
+                    <Field
+                        name="joining_date"
+                        render={({ field }) => (
+                            <DatePicker
+                                {...field}
+                                selected={values.joining_date}
+                                onChange={(date) =>
+                                    setFieldValue('joining_date', date)
+                                }
+                                placeholder="Select Joining Date"
+                                error={touched.joining_date && errors.joining_date}
+                            />
+                        )}
+                    />
+                    {touched.joining_date && errors.joining_date && (
+                        <span className="text-red-500 text-sm">
+                            {errors.joining_date}
+                        </span>
+                    )}
+                </div>
+
+                {/* Role field */}
+                <div className="flex flex-col gap-2">
+                    <p className="mb-2">
+                        Select Designation{' '}
+                        <span className="text-red-500">*</span>
+                    </p>
+                    <Field name="role_id">
+                        {({ field }: any) => (
+                            <OutlinedSelect
+                                label="Select Role"
+                                options={userRole}
+                                value={userRole.find(
+                                    (role) =>
+                                        Number(role.value) == values.role_id,
                                 )}
-                            </div>
+                                onChange={(selectedOption: SelectOption | null) => {
+                                    setFieldValue(
+                                        'role_id',
+                                        selectedOption ? selectedOption.value : null,
+                                    )
+                                }}
+                                isMulti={false}
+                                isDisabled={false}
+                            />
+                        )}
+                    </Field>
+                    {touched.role_id && errors.role_id && (
+                        <span className="text-red-500 text-sm">
+                            {errors.role_id}
+                        </span>
+                    )}
+                </div>
 
-                            {/* Password */}
-                            <div className="flex flex-col gap-2">
-                                <p className="mb-2">
-                                    Password{' '}
-                                    <span className="text-red-500">*</span>
-                                </p>
-                                <Field
-                                    name="password"
-                                    render={({ field }) => (
-                                        <OutlinedPasswordInput
-                                            {...field}
-                                            label="Password"
-                                            type="password"
-                                            value={values.password}
-                                            onChange={(value: string) =>
-                                                setFieldValue('password', value)
-                                            }
-                                            error={
-                                                touched.password &&
-                                                errors.password
-                                            }
-                                        />
-                                    )}
-                                />
-                                {touched.password && errors.password && (
-                                    <span className="text-red-500 text-sm">
-                                        {errors.password}
-                                    </span>
-                                )}
-                            </div>
+              {/* Aadhar */}
+<div className="flex flex-col gap-2">
+    <p className="mb-2">Aadhar</p>
+    <Field
+        name="aadhar"
+        render={({ field }) => (
+            <OutlinedInput
+                {...field}
+                label="Aadhar No"
+                value={values.aadhar_no}
+                onChange={(value: string) =>
+                    setFieldValue('aadhar_no', value)
+                }
+                error={touched.aadhar_no && errors.aadhar_no}
+            />
+        )}
+    />
+    {touched.aadhar_no && errors.aadhar_no && (
+        <span className="text-red-500 text-sm">
+            {errors.aadhar_no}
+        </span>
+    )}
+</div>
 
-                            {/* Mobile */}
-                            <div className="flex flex-col gap-2">
-                                <p className="mb-2">
-                                    Mobile{' '}
-                                    <span className="text-red-500">*</span>
-                                </p>
-                                <Field
-                                    name="mobile"
-                                    render={({ field }) => (
-                                        <OutlinedInput
-                                            {...field}
-                                            label="Mobile"
-                                            value={values.mobile}
-                                            onChange={(value: string) =>
-                                                setFieldValue('mobile', value)
-                                            }
-                                            error={
-                                                touched.mobile && errors.mobile
-                                            }
-                                        />
-                                    )}
-                                />
-                                {touched.mobile && errors.mobile && (
-                                    <span className="text-red-500 text-sm">
-                                        {errors.mobile}
-                                    </span>
-                                )}
-                            </div>
+{/* PAN Field */}
+<div className="flex flex-col gap-2">
+    <p className="mb-2">PAN</p>
+    <Field
+        name="pan"
+        render={({ field }) => (
+            <OutlinedInput
+                {...field}
+                label="PAN"
+                value={values.pan_card}
+                onChange={(value: string) =>
+                    setFieldValue('pan', value)
+                }
+                error={touched.pan_card && errors.pan_card}
+            />
+        )}
+    />
+    {touched.pan_card && errors.pan_card && (
+        <span className="text-red-500 text-sm">
+            {errors.pan_card}
+        </span>
+    )}
+    {/* Authorized Signatory Checkbox - Nested within PAN div */}
+    <div className="mt-8">
+        <label className="flex items-center">
+            <Checkbox
+                checked={values.auth_signatory}
+                onChange={() =>
+                    setFieldValue(
+                        'auth_signatory',
+                        !values.auth_signatory,
+                    )
+                }
+            />
+            <span className="ml-2">
+                Authorized Signatory
+            </span>
+        </label>
+    </div>
+</div>
 
-                            {/* Joining Date */}
-                            <div className="flex flex-col gap-2">
-                                <p className="mb-2">
-                                    Joining Date{' '}
-                                    <span className="text-red-500">*</span>
-                                </p>
-                                <Field
-                                    name="joining_date"
-                                    render={({ field }) => (
-                                        <DatePicker
-                                            {...field}
-                                            selected={values.joining_date}
-                                            onChange={(date) =>
-                                                setFieldValue(
-                                                    'joining_date',
-                                                    date,
-                                                )
-                                            }
-                                            placeholder="Select Joining Date"
-                                            error={
-                                                touched.joining_date &&
-                                                errors.joining_date
-                                            }
-                                        />
-                                    )}
-                                />
-                                {touched.joining_date &&
-                                    errors.joining_date && (
-                                        <span className="text-red-500 text-sm">
-                                            {errors.joining_date}
-                                        </span>
-                                    )}
-                            </div>
+{/* Add a full-width empty div to maintain grid layout */}
+<div className="col-span-full"></div>
+            </div>
 
-                            {/* Role field with validation */}
-                            <div className="flex flex-col gap-2">
-                                <p className="mb-2">
-                                    Select Designation{' '}
-                                    <span className="text-red-500">*</span>
-                                </p>
-                                <Field name="role_id">
-                                    {({ field }: any) => (
-                                        <OutlinedSelect
-                                            label="Select Role"
-                                            options={userRole} // assuming `userRole` is available
-                                            value={userRole.find(
-                                                (role) =>
-                                                    Number(role.value) ==
-                                                    values.role_id,
-                                            )} // Find the selected option by role_id
-                                            onChange={(
-                                                selectedOption: SelectOption | null,
-                                            ) => {
-                                                setFieldValue(
-                                                    'role_id',
-                                                    selectedOption
-                                                        ? selectedOption.value
-                                                        : null,
-                                                )
-                                            }}
-                                            isMulti={false} // Single select
-                                            isDisabled={false}
-                                        />
-                                    )}
-                                </Field>
-                                {touched.role_id && errors.role_id && (
-                                    <span className="text-red-500 text-sm">
-                                        {errors.role_id}
-                                    </span>
-                                )}
-                            </div>
-                            <div className="flex flex-col gap-2">
-                                <p className="mb-2">Aadhar </p>
-                                <Field
-                                    name="aadhar"
-                                    render={({ field }) => (
-                                        <OutlinedInput
-                                            {...field}
-                                            label="Aadhar No"
-                                            value={values.aadhar_no}
-                                            onChange={(value: string) =>
-                                                setFieldValue(
-                                                    'aadhar_no',
-                                                    value,
-                                                )
-                                            }
-                                            error={
-                                                touched.aadhar_no &&
-                                                errors.aadhar_no
-                                            }
-                                        />
-                                    )}
-                                />
-                                {touched.aadhar_no && errors.aadhar_no && (
-                                    <span className="text-red-500 text-sm">
-                                        {errors.aadhar_no}
-                                    </span>
-                                )}
-                            </div>
-
-                            {/* PAN Field */}
-                            <div className="flex flex-col gap-2">
-                                <p className="mb-2">PAN</p>
-                                <Field
-                                    name="pan"
-                                    render={({ field }) => (
-                                        <OutlinedInput
-                                            {...field}
-                                            label="PAN"
-                                            value={values.pan_card}
-                                            onChange={(value: string) =>
-                                                setFieldValue('pan', value)
-                                            }
-                                            error={
-                                                touched.pan_card &&
-                                                errors.pan_card
-                                            }
-                                        />
-                                    )}
-                                />
-                                {touched.pan_card && errors.pan_card && (
-                                    <span className="text-red-500 text-sm">
-                                        {errors.pan_card}
-                                    </span>
-                                )}
-                            </div>
-
-                            {/* Checkbox (Auth Signatory) */}
-                            <div className="flex flex-col gap-2">
-                                <label className="flex items-center">
-                                    <Checkbox
-                                        checked={values.auth_signatory}
-                                        onChange={() =>
-                                            setFieldValue(
-                                                'auth_signatory',
-                                                !values.auth_signatory,
-                                            )
-                                        }
-                                    />
-                                    <span className="ml-2">
-                                        Authorized Signatory
-                                    </span>
-                                </label>
-                            </div>
-
-                            {/* Submit Button */}
-                            <div className="col-span-2 flex justify-end gap-2 mt-4">
-                                    <Button
-                                        variant="plain"
-                                        onClick={() => navigate(-1)}
-                                        type='button'
-                                    >
-                                        Cancel
-                                    </Button>
-                                <Button type="submit" variant='solid'>Save User</Button>
-                            </div>
-                        </div>
-                    </Form>
-                )}
-            </Formik>
+            {/* Submit Button */}
+            <div className="flex justify-end gap-2 mt-4">
+                <Button
+                    variant="plain"
+                    onClick={() => navigate(-1)}
+                    type='button'
+                >
+                    Cancel
+                </Button>
+                <Button type="submit" variant='solid'>Save User</Button>
+            </div>
+        </Form>
+    )}
+</Formik>
         </div>
     )
 }
