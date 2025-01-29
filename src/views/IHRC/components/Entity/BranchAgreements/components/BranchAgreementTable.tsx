@@ -250,12 +250,12 @@ const BranchAgreementTable = () => {
             accessorKey: 'sub_category',
             Cell: ({ value }) => <div className="w-40 truncate">{value}</div>,
         },
-        {
-            header: 'Owner',
-            enableSorting: false,
-            accessorKey: 'owner_name',
-            Cell: ({ value }) => <div className="w-40 truncate">{value}</div>,
-        },
+        // {
+        //     header: 'Owner',
+        //     enableSorting: false,
+        //     accessorKey: 'owner_name',
+        //     Cell: ({ value }) => <div className="w-40 truncate">{value}</div>,
+        // },
         {
             header: 'Partner',
             enableSorting: false,
