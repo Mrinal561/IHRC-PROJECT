@@ -311,7 +311,6 @@
 // export default RolePermission;
 
 //DO NOT DELETE THE CODE ABOVE !!!
-
 import React, { useState, useMemo, useEffect } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import Table from '@/components/ui/Table/Table';
@@ -342,41 +341,41 @@ const RolePermission = () => {
   const navigate = useNavigate();
 
   const transformModuleData = (moduleAccess) => {
-    console.log(role)
     return moduleAccess?.map(module => {
-      // Only include the Remittance Tracker and its relevant submenus
-      if (module.name === 'Remittance Tracker') {
-        return {
-          id: module.id,
-          module_id: module.id,
-          menu: module.name,
-          view: module.access.can_list,
-          create: module.access.can_create,
-          edit: module.access.can_edit,
-          delete: module.access.can_delete,
-          subRows: module.menus?.map(menu => ({
-            id: menu.id,
-            module_id: module.id,
-            menu_id: menu.id,
-            menu: menu.name,
-            view: menu.access.can_list,
-            create: menu.access.can_create,
-            edit: menu.access.can_edit,
-            delete: menu.access.can_delete,
-            subRows: menu.children?.map(child => ({
-              id: child.id,
-              module_id: module.id,
-              menu_id: child.id,
-              menu: child.name,
-              view: child.access.can_list,
-              create: child.access.can_create,
-              edit: child.access.can_edit,
-              delete: child.access.can_delete
-            }))
-          }))
-        };
+      // Skip the Company Setup module
+      if (module.name === 'Company Setup') {
+        return null;
       }
-      return null;
+
+      return {
+        id: module.id,
+        module_id: module.id,
+        menu: module.name,
+        view: module.access.can_list,
+        create: module.access.can_create,
+        edit: module.access.can_edit,
+        delete: module.access.can_delete,
+        subRows: module.menus?.map(menu => ({
+          id: menu.id,
+          module_id: module.id,
+          menu_id: menu.id,
+          menu: menu.name,
+          view: menu.access.can_list,
+          create: menu.access.can_create,
+          edit: menu.access.can_edit,
+          delete: menu.access.can_delete,
+          subRows: menu.children?.map(child => ({
+            id: child.id,
+            module_id: module.id,
+            menu_id: child.id,
+            menu: child.name,
+            view: child.access.can_list,
+            create: child.access.can_create,
+            edit: child.access.can_edit,
+            delete: child.access.can_delete
+          }))
+        }))
+      };
     }).filter(Boolean) || [];
   };
 
@@ -579,7 +578,6 @@ const RolePermission = () => {
     getExpandedRowModel: getExpandedRowModel(),
   });
 
-  // We don't need the filter here anymore since we're already filtering in transformModuleData
   const filteredRows = tableModel.getRowModel().rows;
 
   return (

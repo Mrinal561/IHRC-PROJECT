@@ -45,7 +45,7 @@ interface FormValues {
     branch: string;
     agreementType: string;
     subCategory: string;
-    ownerName: string;
+    owner_id: string;
     partnerName: string;
     partnerContact: string;
     startDate: string;
@@ -92,7 +92,7 @@ const BranchAgreementForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const locationState = location.state as LocationState;
-  
+  const [users, setUsers] = useState<SelectOption[]>([]);
   const [companyGroups, setCompanyGroups] = useState('');
   const [companies, setCompanies] = useState<SelectOption[]>([]);
   const [branchData, setBranchData] = useState<BranchData[]>([]);
@@ -204,6 +204,23 @@ const [subCategoryInput, setSubCategoryInput] = useState('');
     if (branch) {
       setCurrentBranchData(branch);
       setFieldValue('branch', selectedOption.value);
+      loadUsers(selectedOption.value);
+
+    }
+  };
+  const loadUsers = async (branchId: string) => {
+    try {
+      const { data } = await httpClient.get(endpoints.user.getAll(), {
+        params: { 'branch_id[]': branchId }
+      });
+      const formattedUsers = data?.data?.map((user: any) => ({
+        label: user.user_details.name,
+        value: user.user_details.id.toString()
+      }));
+      setUsers(formattedUsers || []);
+    } catch (error) {
+      console.error('Failed to load users:', error);
+      showNotification('danger', 'Failed to load users');
     }
   };
 
@@ -213,7 +230,7 @@ const [subCategoryInput, setSubCategoryInput] = useState('');
     branch: '',
     agreementType: '',
     subCategory: '',
-    ownerName: '',
+    owner_id: '',
     partnerName: '',
     partnerContact: '',
     startDate: '',
@@ -260,7 +277,7 @@ const [subCategoryInput, setSubCategoryInput] = useState('');
         branch_id: parseInt(values.branch, 10),
         agreement_type: values.agreementType,
         sub_category: values.subCategory,
-        owner_name: values.ownerName,
+        owner_id: parseInt(values.owner_id, 10),
         partner_name: values.partnerName,
         partner_number: values.partnerContact,
         start_date: startDate.toISOString(),
@@ -414,29 +431,24 @@ return (
                 )}
               </div>
 
-              {/* Owner Name */}
-              <div className="space-y-2">
-              <label htmlFor="ownerName">Owner Name <span className="text-red-500">*</span></label>
-                <Field name="ownerName">
-                  {({ field, form }) => (
-                    <OutlinedInput
-                      label="Owner Name"
-                      value={field.value}
-                      onChange={(value) => {
-                        if (typeof value === 'string') {
-                          form.setFieldValue('ownerName', value);
-                        } else if (value?.target?.value) {
-                          form.setFieldValue('ownerName', value.target.value);
-                        }
-                      }}
-                      onBlur={field.onBlur}
-                    />
-                  )}
-                </Field>
-                {errors.ownerName && touched.ownerName && (
-                  <p className="text-red-500 text-sm">{errors.ownerName}</p>
-                )}
-              </div>
+             
+{/* Owner Name */}
+          <div className="space-y-2">
+            <label htmlFor="owner_id">Owner Name <span className="text-red-500">*</span></label>
+            <OutlinedSelect
+              label="Select Owner"
+              options={users}
+              value={users.find(option => option.value === values.owner_id) || null}
+              onChange={(selectedOption) => {
+                if (selectedOption) {
+                  setFieldValue('owner_id', selectedOption.value);
+                }
+              }}
+            />
+            {/* {errors.owner_id && touched.owner_id && (
+              <p className="text-red-500 text-sm">{errors.owner_id}</p>
+            )} */}
+          </div>
 
               {/* Partner Name */}
               <div className="space-y-2">
