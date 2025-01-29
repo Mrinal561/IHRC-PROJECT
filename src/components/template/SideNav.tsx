@@ -396,16 +396,16 @@ const adminnav: NavigationTree[] = [
         authority: [],
         subMenu:[]
     },
-    {
-        key: 'externalUser',
-        path: '/external-user',
-        title: 'External user',
-        translateKey: 'nav.externaluser',
-        icon: 'remittanceCollapse',
-        type: NAV_ITEM_TYPE_ITEM,
-        authority: [],
-        subMenu:[]
-    }
+    // {
+    //     key: 'externalUser',
+    //     path: '/external-user',
+    //     title: 'External user',
+    //     translateKey: 'nav.externaluser',
+    //     icon: 'remittanceCollapse',
+    //     type: NAV_ITEM_TYPE_ITEM,
+    //     authority: [],
+    //     subMenu:[]
+    // }
 
     // {
     //     key: 'register.collapse',
