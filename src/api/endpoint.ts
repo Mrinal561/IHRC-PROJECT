@@ -212,11 +212,11 @@ export const endpoints = {
         approve:(id:any)=> api(`companyadmin/company/tracker-edit-permission/${id}`)
     },
     branchAgreement: {
-        list: () => api('companyadmin/branch/branchagreement'),
-        create: () => api('companyadmin/branch/branchagreement'),
-        update: (id: any) => api(`/companyadmin/branch/branchagreement/${id}`),
-        detail: (id: any) => api(`/companyadmin/branch/branchagreement/${id}`),
-        delete: (id: any) => api(`/companyadmin/branch/branchagreement/${id}`)
+        list: () => api('companyadmin/agreement/agreement'),
+        create: () => api('companyadmin/agreement/agreement'),
+        update: (id: any) => api(`/companyadmin/agreement/agreement/${id}`),
+        detail: (id: any) => api(`/companyadmin/agreement/agreement/${id}`),
+        delete: (id: any) => api(`/companyadmin/agreement/agreement/${id}`)
 
     },
         notification:{
