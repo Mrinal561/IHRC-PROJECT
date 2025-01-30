@@ -132,8 +132,9 @@ const UserAddForm = () => {
             })
             console.log('Branches data:', data)
             const formattedBranches = data?.data?.map((branch: any) => ({
-                label: branch.name,
-                value: String(branch.id)
+                label: `${branch.name} (${branch.Location?.name}/${branch.District?.name}/${branch.State?.name})`,
+                value: String(branch.id),
+                displayValue: branch.name 
             }))
             console.log('Formatted branches:', formattedBranches)
             setBranches(formattedBranches || [])
@@ -248,7 +249,7 @@ const UserAddForm = () => {
                     }
                     onClick={() => navigate('/user-entity')}
                 />
-                <h3 className="text-2xl font-semibold">User Form</h3>
+                <h3 className="text-2xl font-semibold">Add User</h3>
             </div>
 
             <Formik
@@ -276,7 +277,7 @@ const UserAddForm = () => {
                 {/* Company Group (Read-only) */}
                 <div className="flex flex-col gap-2">
                     <p className="mb-2">
-                        company group{' '}
+                        Company Group{' '}
                         <span className="text-red-500">*</span>
                     </p>
                     <input
@@ -290,7 +291,7 @@ const UserAddForm = () => {
                 {/* Select Company */}
                 <div className="flex flex-col gap-2">
                     <p className="mb-2">
-                        Select the company{' '}
+                        Select Company{' '}
                         <span className="text-red-500">*</span>
                     </p>
                     <Field name="company_id">
@@ -357,7 +358,7 @@ const UserAddForm = () => {
                 {/* Name */}
                 <div className="flex flex-col gap-2">
                     <p className="mb-2">
-                        Enter Name{' '}
+                         Name{' '}
                         <span className="text-red-500">*</span>
                     </p>
                     <Field
@@ -365,7 +366,7 @@ const UserAddForm = () => {
                         render={({ field }) => (
                             <OutlinedInput
                                 {...field}
-                                label="Name"
+                                label="Enter Name"
                                 value={values.name}
                                 onChange={(value: string) =>
                                     setFieldValue('name', value)
@@ -384,7 +385,7 @@ const UserAddForm = () => {
                 {/* Email */}
                 <div className="flex flex-col gap-2">
                     <p className="mb-2">
-                        Enter Email{' '}
+                         Email{' '}
                         <span className="text-red-500">*</span>
                     </p>
                     <Field
@@ -392,7 +393,7 @@ const UserAddForm = () => {
                         render={({ field }) => (
                             <OutlinedInput
                                 {...field}
-                                label="Email"
+                                label="Enter Email"
                                 value={values.email}
                                 onChange={(value: string) =>
                                     setFieldValue('email', value)
@@ -419,7 +420,7 @@ const UserAddForm = () => {
                         render={({ field }) => (
                             <OutlinedPasswordInput
                                 {...field}
-                                label="Password"
+                                label="Enter Password"
                                 type="password"
                                 value={values.password}
                                 onChange={(value: string) =>
@@ -447,7 +448,7 @@ const UserAddForm = () => {
                         render={({ field }) => (
                             <OutlinedInput
                                 {...field}
-                                label="Mobile"
+                                label="Enter Mobile"
                                 value={values.mobile}
                                 onChange={(value: string) =>
                                     setFieldValue('mobile', value)
@@ -473,6 +474,7 @@ const UserAddForm = () => {
                         name="joining_date"
                         render={({ field }) => (
                             <DatePicker
+                            size='sm'
                                 {...field}
                                 selected={values.joining_date}
                                 onChange={(date) =>
@@ -499,7 +501,7 @@ const UserAddForm = () => {
                     <Field name="role_id">
                         {({ field }: any) => (
                             <OutlinedSelect
-                                label="Select Role"
+                                label="Select Designation"
                                 options={userRole}
                                 value={userRole.find(
                                     (role) =>
@@ -525,13 +527,13 @@ const UserAddForm = () => {
 
               {/* Aadhar */}
 <div className="flex flex-col gap-2">
-    <p className="mb-2">Aadhar</p>
+    <p className="mb-2">Aadhaar</p>
     <Field
         name="aadhar"
         render={({ field }) => (
             <OutlinedInput
                 {...field}
-                label="Aadhar No"
+                label="Enter Aadhaar No"
                 value={values.aadhar_no}
                 onChange={(value: string) =>
                     setFieldValue('aadhar_no', value)
@@ -555,7 +557,7 @@ const UserAddForm = () => {
         render={({ field }) => (
             <OutlinedInput
                 {...field}
-                label="PAN"
+                label="Enter PAN"
                 value={values.pan_card}
                 onChange={(value: string) =>
                     setFieldValue('pan', value)
@@ -601,7 +603,7 @@ const UserAddForm = () => {
                 >
                     Cancel
                 </Button>
-                <Button type="submit" variant='solid'>Save User</Button>
+                <Button type="submit" variant='solid'>Confirm</Button>
             </div>
         </Form>
     )}

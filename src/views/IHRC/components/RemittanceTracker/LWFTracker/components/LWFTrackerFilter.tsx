@@ -4,6 +4,7 @@ import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 import { endpoints } from '@/api/endpoint';
 import httpClient from '@/api/http-client';
 import { Notification, toast } from '@/components/ui';
+import OutlinedInput from '@/components/ui/OutlinedInput';
 
 
 const FINANCIAL_YEAR_KEY = 'selectedFinancialYear';
@@ -21,7 +22,8 @@ interface LWFTrackerFilterProps {
     groupId: string;
     companyName: string; 
     companyId: string;
-    lwfCode: string 
+    lwfCode: string ;
+    search: string;
   }) => void;
 }
 
@@ -40,7 +42,20 @@ const LWFTrackerFilter: React.FC<LWFTrackerFilterProps> = ({ onFilterChange }) =
   const [companyGroups, setCompanyGroups] = useState<Option[]>([]);
   const [companies, setCompanies] = useState<Option[]>([]);
   const [lwfCodeOptions, setLwfCodeOptions] = useState<Option[]>([]);
-
+  const [searchValue, setSearchValue] = useState('');
+  const handleSearchChange = (value: string) => {
+    setSearchValue(value);
+    
+    // Trigger filter change with updated search value
+    onFilterChange({
+      groupName: selectedCompanyGroup?.label || '',
+      groupId: selectedCompanyGroup?.value || '',
+      companyName: selectedCompany?.label || '',
+      companyId: selectedCompany?.value || '',
+      lwfCode: selectedLwfCode?.value || '',
+      search: value
+    });
+  };
   useEffect(() => {
     const handleFinancialYearChange = (event: CustomEvent) => {
       const newFinancialYear = event.detail;
@@ -63,7 +78,8 @@ const LWFTrackerFilter: React.FC<LWFTrackerFilterProps> = ({ onFilterChange }) =
         groupId: selectedCompanyGroup?.value || '',
         companyName: '',
         companyId: '',
-        lwfCode: ''
+        lwfCode: '',
+        search:''
       });
     };
   
@@ -208,7 +224,8 @@ const LWFTrackerFilter: React.FC<LWFTrackerFilterProps> = ({ onFilterChange }) =
         groupId: selectedCompanyGroup?.value || '',
         companyName: selectedCompany.label,
         companyId: selectedCompany.value,
-        lwfCode: ''
+        lwfCode: '',
+        search:''
       });
     } else {
       setLwfCodeOptions([]);
@@ -235,7 +252,8 @@ const LWFTrackerFilter: React.FC<LWFTrackerFilterProps> = ({ onFilterChange }) =
       groupId: selectedCompanyGroup?.value || '',
       companyName: selectedCompany?.label || '',
       companyId: selectedCompany?.value || '',
-      lwfCode: value?.value || ''
+      lwfCode: value?.value || '',
+      search: searchValue
     });
   };
 
@@ -267,6 +285,13 @@ const LWFTrackerFilter: React.FC<LWFTrackerFilterProps> = ({ onFilterChange }) =
           onChange={handleLwfCodeChange}
         />
       </div> 
+      <div className='flex-1 min-w-[140px]'>
+        <OutlinedInput
+          label="Search"
+          value={searchValue}
+          onChange={(e) => handleSearchChange(e)}
+        />
+      </div>
     </div>
   );
 };

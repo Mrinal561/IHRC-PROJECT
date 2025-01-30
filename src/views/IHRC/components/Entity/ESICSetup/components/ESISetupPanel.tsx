@@ -640,7 +640,7 @@ return (
       <div className="space-y-2">
         <p className="text-sm font-medium">ESI Code <span className="text-red-500">*</span></p>
         <OutlinedInput
-          label="ESI Code"
+          label="Enter ESI Code"
           value={formData.code}
           onChange={handleCodeChange}
         />
@@ -696,7 +696,7 @@ return (
       <div className="space-y-2">
         <p className="text-sm font-medium">ESI User</p>
         <OutlinedInput
-          label="ESI User"
+          label="Enter ESI User"
           value={formData.esi_user}
           onChange={handleESIUserChange}
         />
@@ -709,7 +709,7 @@ return (
       <div className="space-y-2">
         <p className="text-sm font-medium">Password</p>
         <OutlinedPasswordInput
-          label="Password"
+          label="Enter Password"
           value={formData.password}
           onChange={handlePasswordChange}
         />

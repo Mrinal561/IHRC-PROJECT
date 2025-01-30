@@ -4,6 +4,7 @@ import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 import { endpoints } from '@/api/endpoint';
 import httpClient from '@/api/http-client';
 import { Notification, toast } from '@/components/ui';
+import OutlinedInput from '@/components/ui/OutlinedInput';
 
 const FINANCIAL_YEAR_KEY = 'selectedFinancialYear';
 const FINANCIAL_YEAR_CHANGE_EVENT = 'financialYearChanged';
@@ -19,7 +20,8 @@ interface ESIWTrackerFilterProps {
     groupId: string;
     companyName: string; 
     companyId: string;
-    esiCode: string 
+    esiCode: string ;
+    search: string;
   }) => void;
 }
 
@@ -38,6 +40,21 @@ const ESIWTrackerFilter: React.FC<ESIWTrackerFilterProps> = ({ onFilterChange })
   const [companyGroups, setCompanyGroups] = useState<Option[]>([]);
   const [companies, setCompanies] = useState<Option[]>([]);
   const [esiCodeOptions, setEsiCodeOptions] = useState<Option[]>([]);
+  const [searchValue, setSearchValue] = useState('');
+
+  const handleSearchChange = (value: string) => {
+    setSearchValue(value);
+    
+    // Trigger filter change with updated search value
+    onFilterChange({
+      groupName: selectedCompanyGroup?.label || '',
+      groupId: selectedCompanyGroup?.value || '',
+      companyName: selectedCompany?.label || '',
+      companyId: selectedCompany?.value || '',
+      esiCode: selectedEsiCode?.value || '',
+      search: value
+    });
+  };
 
   // Listen for financial year changes
   useEffect(() => {
@@ -62,7 +79,8 @@ const ESIWTrackerFilter: React.FC<ESIWTrackerFilterProps> = ({ onFilterChange })
         groupId: selectedCompanyGroup?.value || '',
         companyName: '',
         companyId: '',
-        esiCode: ''
+        esiCode: '',
+        search:''
       });
     };
 
@@ -210,7 +228,8 @@ const ESIWTrackerFilter: React.FC<ESIWTrackerFilterProps> = ({ onFilterChange })
         groupId: selectedCompanyGroup?.value || '',
         companyName: selectedCompany.label,
         companyId: selectedCompany.value,
-        esiCode: ''
+        esiCode: '',
+        search:''
       });
     } else {
       setEsiCodeOptions([]);
@@ -237,7 +256,8 @@ const ESIWTrackerFilter: React.FC<ESIWTrackerFilterProps> = ({ onFilterChange })
       groupId: selectedCompanyGroup?.value || '',
       companyName: selectedCompany?.label || '',
       companyId: selectedCompany?.value || '',
-      esiCode: value?.value || ''
+      esiCode: value?.value || '',
+      search: searchValue
     });
   };
 
@@ -269,6 +289,13 @@ const ESIWTrackerFilter: React.FC<ESIWTrackerFilterProps> = ({ onFilterChange })
           onChange={handleEsiCodeChange}
         />
       </div> 
+      <div className='flex-1 min-w-[140px]'>
+        <OutlinedInput
+          label="Search"
+          value={searchValue}
+          onChange={(e) => handleSearchChange(e)}
+        />
+      </div>
     </div>
   );
 };

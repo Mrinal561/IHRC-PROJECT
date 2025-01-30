@@ -20,7 +20,7 @@ import { deleteBranch, fetchBranches } from '@/store/slices/branch/branchSlice'
 import httpClient from '@/api/http-client'
 import { endpoints } from '@/api/endpoint'
 import dayjs from 'dayjs'
-import { HiOutlineViewGrid } from 'react-icons/hi'
+import { HiOutlineBookOpen, HiOutlineViewGrid } from 'react-icons/hi'
 // import {lo}
 import loadingAnimation from '@/assets/lotties/system-regular-716-spinner-three-dots-loop-scale.json'
 import Lottie from 'lottie-react'
@@ -40,6 +40,7 @@ interface BranchTableProps {
         stateId?: string
         districtId?: string
         locationId?: string
+        search?:any
     }
 
     onRefreshMethodAvailable?: (refreshFn: () => void) => void
@@ -165,7 +166,7 @@ const BranchTable: React.FC<BranchTableProps> = ({
                 header: 'Company',
                 accessorKey: 'Company.name',
                 cell: (props) => (
-                    <div className="w-52 truncate">
+                    <div className="w-32 truncate">
                         {props.getValue() as string}
                     </div>
                 ),
@@ -174,7 +175,7 @@ const BranchTable: React.FC<BranchTableProps> = ({
                 header: 'State',
                 accessorKey: 'State.name',
                 cell: (props) => (
-                    <div className="w-52 truncate">
+                    <div className="w-32 truncate">
                         {props.getValue() as string}
                     </div>
                 ),
@@ -183,7 +184,7 @@ const BranchTable: React.FC<BranchTableProps> = ({
                 header: 'District',
                 accessorKey: 'District.name',
                 cell: (props) => (
-                    <div className="w-52 truncate">
+                    <div className="w-32 truncate">
                         {props.getValue() as string}
                     </div>
                 ),
@@ -192,7 +193,7 @@ const BranchTable: React.FC<BranchTableProps> = ({
                 header: 'Location',
                 accessorKey: 'Location.name',
                 cell: (props) => (
-                    <div className="w-40 truncate">
+                    <div className="w-32 truncate">
                         {props.getValue() as string}
                     </div>
                 ),
@@ -246,6 +247,7 @@ const BranchTable: React.FC<BranchTableProps> = ({
                         <Tooltip title="Agreements">
                 <Button
                     size="sm"
+                    icon={<HiOutlineBookOpen />}
                     onClick={() => {
                         navigate('/branch-agreements', {
                             state: {
@@ -257,7 +259,7 @@ const BranchTable: React.FC<BranchTableProps> = ({
                         })
                     }}
                 >
-                    Agreements
+                    {/* Agreements */}
                 </Button>
             </Tooltip>
                         <Tooltip title="Delete">
@@ -300,6 +302,7 @@ const BranchTable: React.FC<BranchTableProps> = ({
                     'state_id[]': filterValues.stateId || undefined,
                     'district_id[]': filterValues.districtId || undefined,
                     'location_id[]': filterValues.locationId || undefined,
+                    'search' : filterValues.search || undefined
                 },
             })
 
@@ -349,6 +352,7 @@ const BranchTable: React.FC<BranchTableProps> = ({
         filterValues.stateId,
         filterValues.districtId,
         filterValues.locationId,
+        filterValues.search
     ])
 
     const [tableData, setTableData] = useState({

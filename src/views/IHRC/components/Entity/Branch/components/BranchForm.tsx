@@ -878,7 +878,7 @@ const AddBranchForm: React.FC = () => {
                             Branch Name <span className="text-red-500">*</span>
                         </p>
                         <OutlinedInput
-                            label="Branch Name"
+                            label="Enter Branch Name"
                             value={formData.name}
                             onChange={(value: string) => {
                                 setFormData((prev) => ({
@@ -900,7 +900,7 @@ const AddBranchForm: React.FC = () => {
                         Branch Address <span className="text-red-500">*</span>
                     </p>
                     <OutlinedInput
-                        label="Branch Address"
+                        label=" Enter Branch Address"
                         value={formData.address}
                         onChange={(value: string) => {
                             setFormData((prev) => ({
@@ -947,7 +947,7 @@ const AddBranchForm: React.FC = () => {
                             <span className="text-red-500">*</span>
                         </p>
                         <OutlinedInput
-                            label="Branch Head Count"
+                            label="Enter Branch Head Count"
                             value={formData.head_count}
                             onChange={(value: string) => {
                                 setFormData((prev) => ({
@@ -967,7 +967,7 @@ const AddBranchForm: React.FC = () => {
                             GST Number <span className="text-red-500">*</span>
                         </p>
                         <OutlinedInput
-                            label="Gst Number"
+                            label="Enter Gst Number"
                             value={formData.gst_number}
                             onChange={(value: string) => {
                                 setFormData((prev) => ({
@@ -1067,7 +1067,7 @@ const AddBranchForm: React.FC = () => {
                                         <span className="text-red-500">*</span>
                                     </p>
                                     <OutlinedInput
-                                        label="Office Type (Others)"
+                                        label="Enter Office Type (Others)"
                                         value={formData.other_office}
                                         onChange={(value: string) => {
                                             setFormData((prev) => ({
@@ -1131,7 +1131,7 @@ const AddBranchForm: React.FC = () => {
                                         S&E Registration Status
                                     </p>
                                     <OutlinedSelect
-                                        label="S&E Registration Status"
+                                        label="Select S&E Registration Status"
                                         options={[
                                             {
                                                 value: 'valid',
@@ -1201,7 +1201,7 @@ const AddBranchForm: React.FC = () => {
                                             </span>
                                         </p>
                                         <OutlinedInput
-                                            label="S&E Registration Number"
+                                            label="Enter S&E Registration Number"
                                             value={
                                                 formData.register_number || ''
                                             }
@@ -1416,7 +1416,7 @@ const AddBranchForm: React.FC = () => {
                                             S&E Registration Status
                                         </p>
                                         <OutlinedSelect
-                                            label="S&E Registration Status"
+                                            label="Select S&E Registration Status"
                                             options={[
                                                 {
                                                     value: 'valid',
@@ -1498,7 +1498,7 @@ const AddBranchForm: React.FC = () => {
                                                 </span>
                                             </p>
                                             <OutlinedInput
-                                                label="S&E Registration Number"
+                                                label="Enter S&E Registration Number"
                                                 value={
                                                     formData.register_number ||
                                                     ''

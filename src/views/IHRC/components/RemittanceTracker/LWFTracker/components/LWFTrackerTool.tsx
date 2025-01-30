@@ -11,13 +11,14 @@ import { endpoints } from '@/api/endpoint';
 
 const LWFTrackerTool: React.FC<{ 
   onFilterChange: (filters: { 
-    groupName: string; 
-    groupId: string;
-    companyName: string; 
-    companyId: string;
-    lwfCode: string;
-    startDate: string | null;
-    endDate: string | null;
+    groupName?: string; 
+    groupId?: string;
+    companyName?: string; 
+    companyId?: string;
+    lwfCode?: string;
+    startDate?: string | null;
+    endDate?: string | null;
+    search?: string;
   }) => void ;
   canCreate:boolean;
 }> = ({ onFilterChange, canCreate }) => {
@@ -29,7 +30,8 @@ const LWFTrackerTool: React.FC<{
     companyId: '',
     lwfCode: '' ,
     startDate:'',
-    endDate:''
+    endDate:'',
+    string:''
   });
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);

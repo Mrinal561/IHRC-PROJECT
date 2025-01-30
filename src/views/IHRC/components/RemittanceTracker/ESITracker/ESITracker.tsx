@@ -43,7 +43,8 @@ const ESITracker: React.FC = () => {
         companyId: '',
         esiCode: '',
         startDate:'',
-        endDate:''
+        endDate:'',
+        search:''
     });
 
     // Use a ref to store the latest filters
@@ -200,6 +201,7 @@ const ESITracker: React.FC = () => {
                     'company_id[]': currentFilters.companyId || '',
                     'from_date': filters.startDate,
                     'to_date': filters.endDate,
+                    'search' : filters.search,
                 };
 
                 // Only add esi_code[] to params if it's selected
@@ -228,7 +230,7 @@ const ESITracker: React.FC = () => {
                 setIsLoading(false);
             }
         },
-         [filters.groupId, filters.companyId, filters.esiCode, filters.startDate,filters.endDate, financialYear]// Remove dependencies to prevent unnecessary re-creations
+         [filters.groupId, filters.companyId, filters.esiCode, filters.startDate,filters.endDate, financialYear, filters.search]// Remove dependencies to prevent unnecessary re-creations
     );
 
     useEffect(() => {
@@ -237,6 +239,7 @@ const ESITracker: React.FC = () => {
 
     const handleFilterChange = (newFilters) => {
         setFilters(newFilters);
+        console.log(filters)
         // Reset pagination to first page when filters change
         setPagination((prev) => ({
             ...prev,

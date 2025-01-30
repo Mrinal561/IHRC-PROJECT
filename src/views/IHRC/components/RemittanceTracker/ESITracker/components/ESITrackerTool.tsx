@@ -100,6 +100,7 @@ const ESITrackerTool: React.FC<{
     esiCode: string ;
     startDate: string | null;
     endDate: string | null;
+    search: string | null;
   }) => void ,
   canCreate:boolean;
 }> = ({ onFilterChange, canCreate }) => {
@@ -112,7 +113,8 @@ const ESITrackerTool: React.FC<{
     companyId: '',
     esiCode: '' ,
     startdate:'',
-    endDate:''
+    endDate:'',
+    search: ''
   });
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
   const [startDate, setStartDate] = useState<Date | null>(null);

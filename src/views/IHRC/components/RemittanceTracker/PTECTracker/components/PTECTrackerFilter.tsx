@@ -4,6 +4,7 @@ import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 import { endpoints } from '@/api/endpoint';
 import httpClient from '@/api/http-client';
 import { Notification, toast } from '@/components/ui';
+import OutlinedInput from '@/components/ui/OutlinedInput';
 
 const FINANCIAL_YEAR_KEY = 'selectedFinancialYear';
 const FINANCIAL_YEAR_CHANGE_EVENT = 'financialYearChanged';
@@ -20,7 +21,8 @@ interface PTECTrackerFilterProps {
     groupId: string;
     companyName: string; 
     companyId: string;
-    ptCode: string 
+    ptCode: string ;
+    search:string;
   }) => void;
 }
 
@@ -36,6 +38,21 @@ const PTECTrackerFilter: React.FC<PTECTrackerFilterProps> = ({ onFilterChange })
   const [companyGroups, setCompanyGroups] = useState<Option[]>([]);
   const [companies, setCompanies] = useState<Option[]>([]);
   const [ptCodeOptions, setPtCodeOptions] = useState<Option[]>([]);
+  const [searchValue, setSearchValue] = useState('');
+
+  const handleSearchChange = (value: string) => {
+    setSearchValue(value);
+    
+    // Trigger filter change with updated search value
+    onFilterChange({
+      groupName: selectedCompanyGroup?.label || '',
+      groupId: selectedCompanyGroup?.value || '',
+      companyName: selectedCompany?.label || '',
+      companyId: selectedCompany?.value || '',
+      ptCode: selectedPtCode?.value || '',
+      search: value
+    });
+  };
 
   useEffect(() => {
     const handleFinancialYearChange = (event: CustomEvent) => {
@@ -59,7 +76,8 @@ const PTECTrackerFilter: React.FC<PTECTrackerFilterProps> = ({ onFilterChange })
         groupId: selectedCompanyGroup?.value || '',
         companyName: '',
         companyId: '',
-        ptCode: ''
+        ptCode: '',
+        search:''
       });
     };
 
@@ -205,7 +223,8 @@ const PTECTrackerFilter: React.FC<PTECTrackerFilterProps> = ({ onFilterChange })
         groupId: selectedCompanyGroup?.value || '',
         companyName: selectedCompany.label,
         companyId: selectedCompany.value,
-        ptCode: ''
+        ptCode: '',
+        search:''
       });
     } else {
       setPtCodeOptions([]);
@@ -230,7 +249,8 @@ const PTECTrackerFilter: React.FC<PTECTrackerFilterProps> = ({ onFilterChange })
       groupId: selectedCompanyGroup?.value || '',
       companyName: selectedCompany?.label || '',
       companyId: selectedCompany?.value || '',
-      ptCode: value?.value || ''
+      ptCode: value?.value || '',
+      search:''
     });
   };
 
@@ -262,6 +282,13 @@ const PTECTrackerFilter: React.FC<PTECTrackerFilterProps> = ({ onFilterChange })
           onChange={handlePtCodeChange}
         />
       </div> 
+      <div className='flex-1 min-w-[140px]'>
+        <OutlinedInput
+          label="Search"
+          value={searchValue}
+          onChange={(e) => handleSearchChange(e)}
+        />
+      </div>
     </div>
   );
 };

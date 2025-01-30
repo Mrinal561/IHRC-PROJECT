@@ -46,6 +46,7 @@ const CompanyName = () => {
   const [tableKey, setTableKey] = useState(0);
   const navigate = useNavigate();
   const [companyGroup, setCompanyGroup] = useState({ id: 0, name: '' });
+  const [searchTerm, setSearchTerm] = useState('');
 
   // Load default company group
   const loadDefaultCompanyGroup = async () => {
@@ -75,12 +76,13 @@ const CompanyName = () => {
     }
   };
 
-  const fetchCompanyDataTable = async (page = 1, pageSize = 10) => {
+  const fetchCompanyDataTable = async (page = 1, pageSize = 10, search = '') => {
     setIsLoading(true);
     try {
       const { payload: data }: any = await dispatch(fetchCompanies({
         page,
-        page_size: pageSize
+        page_size: pageSize,
+        search
       }));
       
       if (data && data.data) {
@@ -91,6 +93,7 @@ const CompanyName = () => {
           })) || []
         );
       }
+      // console.log(companyData)
     } catch (error) {
       console.error('Failed to fetch companies:', error);
       toast.push(
@@ -101,6 +104,15 @@ const CompanyName = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleSearch = (value: string) => {
+    setSearchTerm(value);
+    // Debounce the API call to avoid too many requests
+    const timeoutId = setTimeout(() => {
+      fetchCompanyDataTable(1, 10, value);
+    }, 300);
+    return () => clearTimeout(timeoutId);
   };
 
   const handleDataChange = async () => {
@@ -156,6 +168,10 @@ const CompanyName = () => {
   });
 
   useEffect(() => {
+    console.log(companyData);
+  }, [handleSearch]);
+
+  useEffect(() => {
     loadDefaultCompanyGroup();
   }, []);
 
@@ -189,7 +205,12 @@ const CompanyName = () => {
           <h3 className="text-2xl font-bold">Company Manager</h3>
         </div>
         <div className="flex gap-3 items-center">
-          <Filter />
+          {/* <Filter /> */}
+          <OutlinedInput
+            label="Search Company"
+            value={searchTerm}
+            onChange={(e) => handleSearch(e)}
+          />
           <Bu onUploadSuccess={handleDataChange} />
           <Button
             size="sm"
@@ -229,7 +250,7 @@ const CompanyName = () => {
             )}
           </div>
           <div className="mb-4 flex flex-col gap-3">
-            <label>Enter company name <span className="text-red-500">*</span></label>
+            <label>Company Name <span className="text-red-500">*</span></label>
             <OutlinedInput
               label="Company Name"
               value={formik.values.name}

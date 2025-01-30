@@ -4,6 +4,7 @@ import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 import { endpoints } from '@/api/endpoint';
 import httpClient from '@/api/http-client';
 import { Notification, toast } from '@/components/ui';
+import OutlinedInput from '@/components/ui/OutlinedInput';
 
 
 const FINANCIAL_YEAR_KEY = 'selectedFinancialYear';
@@ -20,7 +21,8 @@ interface PFTrackerFilterProps {
     groupId: string;
     companyName: string; 
     companyId: string;
-    pfCode: string 
+    pfCode: string ;
+    search: string;
   }) => void;
 }
 
@@ -39,7 +41,21 @@ const PFTrackerFilter: React.FC<PFTrackerFilterProps> = ({ onFilterChange }) => 
   const [companyGroups, setCompanyGroups] = useState<Option[]>([]);
   const [companies, setCompanies] = useState<Option[]>([]);
   const [pfCodeOptions, setPfCodeOptions] = useState<Option[]>([]);
+  const [searchValue, setSearchValue] = useState('');
 
+  const handleSearchChange = (value: string) => {
+    setSearchValue(value);
+    
+    // Trigger filter change with updated search value
+    onFilterChange({
+      groupName: selectedCompanyGroup?.label || '',
+      groupId: selectedCompanyGroup?.value || '',
+      companyName: selectedCompany?.label || '',
+      companyId: selectedCompany?.value || '',
+      pfCode: selectedPfCode?.value || '',
+      search: value
+    });
+  };
 
   useEffect(() => {
     const handleFinancialYearChange = (event: CustomEvent) => {
@@ -63,7 +79,8 @@ const PFTrackerFilter: React.FC<PFTrackerFilterProps> = ({ onFilterChange }) => 
         groupId: selectedCompanyGroup?.value || '',
         companyName: '',
         companyId: '',
-        pfCode: ''
+        pfCode: '',
+        search:''
       });
     };
 
@@ -209,7 +226,8 @@ const PFTrackerFilter: React.FC<PFTrackerFilterProps> = ({ onFilterChange }) => 
         groupId: selectedCompanyGroup?.value || '',
         companyName: selectedCompany.label,
         companyId: selectedCompany.value,
-        pfCode: ''
+        pfCode: '',
+        search:''
       });
     } else {
       setPfCodeOptions([]);
@@ -236,7 +254,8 @@ const PFTrackerFilter: React.FC<PFTrackerFilterProps> = ({ onFilterChange }) => 
       groupId: selectedCompanyGroup?.value || '',
       companyName: selectedCompany?.label || '',
       companyId: selectedCompany?.value || '',
-      pfCode: value?.value || ''
+      pfCode: value?.value || '',
+      search:''
     });
   };
 
@@ -270,6 +289,13 @@ const PFTrackerFilter: React.FC<PFTrackerFilterProps> = ({ onFilterChange }) => 
           // disabled={!selectedCompany}
         />
       </div> 
+      <div className='flex-1 min-w-[140px]'>
+        <OutlinedInput
+          label="Search"
+          value={searchValue}
+          onChange={(e) => handleSearchChange(e)}
+        />
+      </div>
     </div>
   );
 };

@@ -20,6 +20,7 @@ const PFIWTrackerTool: React.FC<{
     pfCode: string ;
     startDate: string | null;
     endDate:string | null;
+    search?: string;
   }) => void ;
   canCreate:boolean
 }> = ({ onFilterChange, canCreate }) => {
@@ -31,7 +32,8 @@ const PFIWTrackerTool: React.FC<{
     companyId: '',
     pfCode: '' ,
     startDate: '',
-    endDate: ''
+    endDate: '',
+    search:''
   });
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);

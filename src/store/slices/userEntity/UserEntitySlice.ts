@@ -31,10 +31,18 @@ const initialState: UserState = {
 
 export const fetchUsers = createAsyncThunk(
     'user/fetchAll',
-    async () => {
-            const { data } = await httpClient.get(endpoints.user.getAll());
-            return data ;
-       
+    async ({ page, page_size, search }: { page: number; page_size: number; search?: string }) => {
+        const params = {
+            page,
+            page_size,
+            search: search || ''
+        };
+        
+        const { data } = await httpClient.get(endpoints.user.getAll(), { 
+            params 
+        });
+        
+        return data;
     }
 );
 
