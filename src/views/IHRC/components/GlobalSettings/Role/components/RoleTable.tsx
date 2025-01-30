@@ -279,7 +279,7 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
     const columns = useMemo(
         () => [
             {
-                header: 'Role Name',
+                header: 'Designation Name',
                 accessorKey: 'name',
                 enableSorting: false,
 
@@ -470,7 +470,7 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
             >
                 <h5 className="mb-4">Delete Role</h5>
                 <div className="mb-4">
-                    <p>Are you sure you want to delete the role "{itemToDelete?.name}"?</p>
+                    <p>Are you sure you want to delete the designation "{itemToDelete?.name}"?</p>
                     {/* <p className="text-red-500 mt-2">This action cannot be undone.</p> */}
                 </div>
                 <div className="text-right mt-6">

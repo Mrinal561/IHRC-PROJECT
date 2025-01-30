@@ -44,7 +44,8 @@ const PFIWTracker: React.FC = () => {
         companyId: '',
         pfCode: '',
         startDate: '',
-        endDate:''
+        endDate:'',
+        search:''
     })
     const [financialYear, setFinancialYear] = useState(sessionStorage.getItem(FINANCIAL_YEAR_KEY));
     const [data, setData] = useState([])
@@ -192,6 +193,7 @@ const PFIWTracker: React.FC = () => {
                     'company_id[]': filters.companyId,
                     'from_date': filters.startDate,
                     'to_date': filters.endDate,
+                    'search' : filters.search,
                 }
 
                 // Only add pf_code[] to params if it's selected
@@ -219,7 +221,7 @@ const PFIWTracker: React.FC = () => {
                 setIsLoading(false)
             }
         },
-        [filters.groupId, filters.companyId, filters.pfCode, filters.startDate, filters.endDate,financialYear]
+        [filters.groupId, filters.companyId, filters.pfCode, filters.startDate, filters.endDate,financialYear, filters.search]
     )
 
     useEffect(() => {

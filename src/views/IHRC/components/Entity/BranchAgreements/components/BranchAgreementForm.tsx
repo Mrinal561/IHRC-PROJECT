@@ -173,7 +173,7 @@ const [subCategoryInput, setSubCategoryInput] = useState('');
       });
       
       const formattedBranches = data?.data?.map((branch: any) => ({
-        label: branch.name,
+        label: `${branch.name} (${branch.Location?.name}/${branch.District?.name}/${branch.State?.name})`,
         value: String(branch.id),
         officeType: branch.office_type,
         ...branch // Keep all branch data
@@ -398,7 +398,7 @@ return (
                 <Field name="agreementType">
                   {({ field, form }) => (
                     <OutlinedInput
-                      label="Agreement Type"
+                      label="Enter Agreement Type"
                       value={field.value}
                       onChange={(value) => {
                         if (typeof value === 'string') {
@@ -456,7 +456,7 @@ return (
                 <Field name="partnerName">
                   {({ field, form }) => (
                     <OutlinedInput
-                      label="Partner Name"
+                      label="Enter Partner Name"
                       value={field.value}
                       onChange={(value) => {
                         if (typeof value === 'string') {
@@ -480,7 +480,7 @@ return (
                 <Field name="partnerContact">
                   {({ field, form }) => (
                     <OutlinedInput
-                      label="Partner Contact"
+                      label="Enter Partner Contact"
                       value={field.value}
                       onChange={(value) => {
                         if (typeof value === 'string') {
@@ -578,13 +578,7 @@ return (
 
             {/* Submit Button */}
             <div className="flex justify-end gap-2">
-              <Button 
-                type="submit" 
-                variant='solid'
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? 'Submitting...' : 'Confirm'}
-              </Button>
+             
               <Button
                         type="button"
                         variant="plain"
@@ -593,6 +587,13 @@ return (
                     >
                         Cancel
                     </Button>
+                    <Button 
+                type="submit" 
+                variant='solid'
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? 'Submitting...' : 'Confirm'}
+              </Button>
             </div>
           </Form>
         )}

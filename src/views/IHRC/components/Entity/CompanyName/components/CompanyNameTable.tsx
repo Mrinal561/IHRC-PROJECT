@@ -403,7 +403,7 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({
             ) : (
       <DataTable
         columns={columns}
-        data={companyTableData}
+        data={companyData}
         skeletonAvatarColumns={[0]}
         skeletonAvatarProps={{ className: 'rounded-md' }}
         loading={isLoading}

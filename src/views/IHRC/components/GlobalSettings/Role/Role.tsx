@@ -142,7 +142,7 @@ const Role = () => {
     <AdaptableCard className="h-full" bodyClass="h-full">
       <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-6">
         <div className="mb-4 lg:mb-0">
-          <h3 className="text-2xl font-bold">Role Management</h3>
+          <h3 className="text-2xl font-bold">Designation Management</h3>
         </div>
         <div className="flex gap-2">
           <Button
@@ -151,7 +151,7 @@ const Role = () => {
             icon={<HiPlusCircle />}
             onClick={() => setIsDialogOpen(true)}
           >
-            Add Role
+            Add Designation
           </Button>
         </div>
       </div>
@@ -167,7 +167,7 @@ const Role = () => {
         onClose={handleDialogClose}
         onRequestClose={handleDialogClose}  shouldCloseOnOverlayClick={false} 
       >
-        <h5 className="mb-6">Add Role</h5>
+        <h5 className="mb-6">Add Designation</h5>
         <div className="flex flex-col gap-6">
           <div className="w-full">
             <label className="text-gray-600 mb-2 block">Role Name <span className="text-red-500">*</span></label>

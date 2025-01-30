@@ -34,7 +34,7 @@ import UserEditDialog from './UserEditDialog'
 import { fetchCompanyGroups } from '@/store/slices/companyGroup/companyGroupSlice'
 import { useNavigate } from 'react-router-dom'
 
-const UserTable: React.FC = () => {
+const UserTable: React.FC<{search:any}> = ({search}) => {
     const dispatch = useDispatch<AppDispatch>()
     const [isLoading, setIsLoading] = useState(false)
     const [userTableData, setUserTableData] = useState([])
@@ -90,6 +90,32 @@ const UserTable: React.FC = () => {
             //     accessorKey: 'last_name',
             //     cell: (props) => <div className="w-32 truncate">{props.getValue() as string}</div>,
             // },
+            {
+                header: 'Branch',
+                enableSorting: false,
+                accessorKey: 'branch_details',
+                cell: (props) => {
+                    const branches = props.getValue() as Array<{
+                        name: string;
+                        state: { name: string };
+                        district: { name: string };
+                    }>;
+                    
+                    if (!branches || branches.length === 0) {
+                        return <div className="w-40 truncate">No Branch Assigned</div>;
+                    }
+            
+                    const branchNames = branches.map(branch => branch.name).join(', ');
+                    
+                    return (
+                        <Tooltip title={branchNames}>
+                        <div className="w-40 truncate" >
+                            {branchNames}
+                        </div>
+                        </Tooltip>
+                    );
+                },
+            },
             {
                 header: 'Email',
                 enableSorting: false,
@@ -382,14 +408,14 @@ const UserTable: React.FC = () => {
     // };
 
     useEffect(() => {
-        fetchUserData(1, 10)
-    }, [])
+        fetchUserData(1, 10,search)
+    }, [search])
 
-    const fetchUserData = async (page: number, size: number) => {
+    const fetchUserData = async (page: number, size: number, searchQuery?: string) => {
         setIsLoading(true)
         try {
             const { payload: data } = await dispatch(
-                fetchUsers({ page: page, page_size: size }),
+                fetchUsers({ page: page, page_size: size, search: searchQuery }),
             )
             //     .unwrap()
             //     .catch((error: any) => {
@@ -439,7 +465,7 @@ const UserTable: React.FC = () => {
 
     const onPaginationChange = (page: number) => {
         setTableData((prev) => ({ ...prev, pageIndex: page }))
-        fetchUserData(page, tableData.pageSize)
+        fetchUserData(page, tableData.pageSize,search)
     }
 
     const onSelectChange = (value: number) => {
@@ -448,7 +474,7 @@ const UserTable: React.FC = () => {
             pageSize: Number(value),
             pageIndex: 1,
         }))
-        fetchUserData(1, value)
+        fetchUserData(1, value, search)
     }
 
     if (isLoading) {

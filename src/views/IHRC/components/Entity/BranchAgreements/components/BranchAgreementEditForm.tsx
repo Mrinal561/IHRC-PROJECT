@@ -11,6 +11,7 @@ import DatePicker from '@/components/ui/DatePicker/DatePicker';
 import { format } from 'date-fns';
 import SubCategoryAutosuggest from './SubCategoryAutosuggest';
 import { Eye } from 'lucide-react';
+import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 
 
 interface FormValues {
@@ -29,7 +30,10 @@ interface FormValues {
     branch: string;
     applicableForAllCompany: boolean;
   }
-
+  interface SelectOption {
+    value: string;
+    label: string;
+  }
 const validationSchema = Yup.object().shape({
   agreementType: Yup.string().required('Agreement Type is required'),
   ownerName: Yup.string().required('Owner Name is required'),
@@ -62,7 +66,8 @@ const BranchAgreementEditForm = () => {
   const [branchOfficeType, setBranchOfficeType] = useState('');
   const [companyGroups, setCompanyGroups] = useState<string[]>([]);
   const [companyGroupId, setCompanyGroupId] = useState('');
-
+  const [branchData, setBranchData] = useState([]);
+  const [currentBranchData, setCurrentBranchData] = useState<any>(null);
   const [initialValues, setInitialValues] = useState<FormValues>({
     agreementType: '',
     ownerName: '',
@@ -79,6 +84,36 @@ const BranchAgreementEditForm = () => {
     applicableForAllCompany: false,
   });
 
+  const loadBranches = async (companyId: string) => {
+    try {
+      const { data } = await httpClient.get(endpoints.branch.getAll(), {
+        params: {
+          'company_id[]': companyId
+        }
+      });
+      
+      const formattedBranches = data?.data?.map((branch: any) => ({
+        label: `${branch.name} (${branch.Location?.name}/${branch.District?.name}/${branch.State?.name})`,
+        value: String(branch.id),
+        officeType: branch.office_type,
+        ...branch
+      }));
+
+      setBranchData(formattedBranches || []);
+
+      // Find and set current branch data
+      const currentBranch = formattedBranches?.find(
+        (b: any) => b.value === String(id)
+      );
+      if (currentBranch) {
+        setCurrentBranchData(currentBranch);
+      }
+    } catch (error) {
+      console.error('Failed to load branches:', error);
+      showNotification('danger', 'Failed to load branches');
+    }
+  };
+
   const showNotification = (type: 'success' | 'info' | 'danger' | 'warning', message: string) => {
     toast.push(
       <Notification title={type.charAt(0).toUpperCase() + type.slice(1)} type={type}>
@@ -90,13 +125,13 @@ const BranchAgreementEditForm = () => {
   const loadInitialData = async () => {
     try {
       const agreementResponse = await httpClient.get(endpoints.branchAgreement.detail(id));
-      const agreement = agreementResponse.data.main_agreement;
-  
+      const agreement = agreementResponse.data.agreement;
+      await loadBranches(agreement.Branch.Company.id);
       setBranchOfficeType(agreement.Branch.office_type);
       
       setInitialValues({
         agreementType: agreement.agreement_type || '',
-        ownerName: agreement.owner_name || '',
+        ownerName: agreement.owner?.name || '', 
         partnerName: agreement.partner_name || '',
         partnerContact: agreement.partner_number || '',
         startDate: agreement.start_date || '',
@@ -106,10 +141,15 @@ const BranchAgreementEditForm = () => {
         subCategory: agreement.sub_category || '',
         companyGroup: agreement.Branch.Company.group_name || '',
         company: agreement.Branch.Company.name || '',
-        branch: agreement.Branch.name || '',
+        branch: String(agreement.Branch.id),
         applicableForAllCompany: agreement.applicable_for_all || false,
       });
-  
+      setCurrentBranchData({
+        value: String(agreement.Branch.id),
+        label: `${agreement.Branch.name} (${agreement.Branch.Location?.name}/${agreement.Branch.District?.name}/${agreement.Branch.State?.name})`,
+        officeType: agreement.Branch.office_type,
+        ...agreement.Branch
+      });
       setLoading(false);
     } catch (error) {
       console.error('Failed to load initial data:', error);
@@ -134,10 +174,11 @@ const BranchAgreementEditForm = () => {
       }
   
       const requestBody = {
+        branch_id: parseInt(values.branch, 10), 
         agreement_type: values.agreementType,
         owner_name: values.ownerName,
         partner_name: values.partnerName,
-        partner_number: parseInt(values.partnerContact, 10),
+        partner_number: values.partnerContact,
         start_date: format(new Date(values.startDate), 'yyyy-MM-dd'),
         end_date: format(new Date(values.endDate), 'yyyy-MM-dd'),
         sub_category: values.subCategory,
@@ -220,7 +261,7 @@ const BranchAgreementEditForm = () => {
           icon={<IoArrowBack className="text-gray-500 hover:text-gray-700" />}
           onClick={() => navigate('/branch-agreements')}
         />
-        <h3 className="text-2xl font-semibold">Edit Branch Agreement</h3>
+        <h3 className="text-2xl font-semibold">Edit Agreement</h3>
       </div>
 
       <Formik
@@ -250,12 +291,29 @@ const BranchAgreementEditForm = () => {
               </div>
 
               <div className="space-y-2">
-                <label>Branch <span className="text-red-500">*</span></label>
-                <OutlinedInput 
-                  value={values.branch}
-                  disabled 
-                />
-              </div>
+      <label>Branch <span className="text-red-500">*</span></label>
+      <Field name="branch">
+        {({ field }) => (
+          <OutlinedSelect
+          label="Select Branch"
+            value={branchData.find(option => option.value === field.value) || null}
+            options={branchData}
+            onChange={(selectedOption) => {
+              const branch = branchData.find(b => b.value === selectedOption.value);
+              if (branch) {
+                setCurrentBranchData(branch);
+                setFieldValue('branch', selectedOption.value);
+                setBranchOfficeType(branch.officeType || '');
+              }
+            }}
+            // isDisabled={true} // Since it's edit form, we keep it disabled
+          />
+        )}
+      </Field>
+      {errors.branch && touched.branch && (
+        <p className="text-red-500 text-sm">{errors.branch}</p>
+      )}
+    </div>
 
               {branchOfficeType && (
                 <div className="space-y-2">
@@ -308,7 +366,7 @@ const BranchAgreementEditForm = () => {
                       {...field}
                       label="Owner Name"
                       value={field.value}
-                      onChange={(value) => setFieldValue('ownerName', value)}
+                      // onChange={(value) => setFieldValue('ownerName', value)}
                       error={errors.ownerName && touched.ownerName}
                     />
                   )}
@@ -433,14 +491,15 @@ const BranchAgreementEditForm = () => {
             )}
 
             <div className="flex gap-4 justify-end">
-              <Button type="submit" disabled={isSubmitting} variant="solid">
-                {isSubmitting ? 'Confirming....' : 'Confirm'}
-              </Button>
+             
               <Button
-                variant="solid"
+                variant="plain"
                 onClick={() => navigate('/branch-agreements')}
               >
                 Cancel
+              </Button>
+              <Button type="submit" disabled={isSubmitting} variant="solid">
+                {isSubmitting ? 'Confirming....' : 'Confirm'}
               </Button>
             </div>
           </Form>
@@ -451,3 +510,4 @@ const BranchAgreementEditForm = () => {
 };
 
 export default BranchAgreementEditForm;
+

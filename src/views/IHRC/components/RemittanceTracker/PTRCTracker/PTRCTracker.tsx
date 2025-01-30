@@ -45,7 +45,8 @@ const PTRCTracker: React.FC = () => {
         companyId: '',
         ptCode: '',
         startDate:'',
-        endDate:''
+        endDate:'',
+        search:''
     })
     const [data, setData] = useState<PTTrackerData[]>([])
     const [isLoading, setIsLoading] = useState(false)
@@ -191,6 +192,7 @@ const PTRCTracker: React.FC = () => {
                         'company_id[]': filters.companyId,
                         'from_date': filters.startDate,
                         'to_date': filters.endDate,
+                        'search' : filters.search
                     }
                     if (filters.ptCode) {
                         params['pt_code[]'] = filters.ptCode;
@@ -212,7 +214,7 @@ const PTRCTracker: React.FC = () => {
                 setIsLoading(false)
             }
         },
-        [filters.groupId, filters.companyId, filters.ptCode,filters.startDate,filters.endDate, financialYear],
+        [filters.groupId,filters.search, filters.companyId, filters.ptCode,filters.startDate,filters.endDate, financialYear],
     )
 
     useEffect(() => {

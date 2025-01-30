@@ -552,7 +552,16 @@ const usernav: NavigationTree[] = [
         authority: [],
         subMenu: [],
     },
-
+    {
+        key: 'agreement',
+        path: '/branch-agreements',
+        title: 'Agreement',
+        translateKey: 'nav.agreement',
+        icon: 'remittanceCollapse',
+        type: NAV_ITEM_TYPE_ITEM,
+        authority: [],
+        subMenu: [],
+    },
     // {
     //     key: 'collapseMenu',
     //     path: '',
@@ -725,7 +734,8 @@ const usernav: NavigationTree[] = [
         type: NAV_ITEM_TYPE_ITEM,
         authority: [],
         subMenu:[]
-    }
+    },
+   
 
     // {
     //     key: 'register.collapse',

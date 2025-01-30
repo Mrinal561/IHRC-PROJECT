@@ -146,7 +146,8 @@ const LWFTracker: React.FC = () => {
         companyId: '',
         lwfCode: '',
         startDate:'',
-        endDate:''
+        endDate:'',
+          search:''
     });
     const [data, setData] = useState<LWFTrackerData[]>([]);
     const dispatch = useDispatch()
@@ -293,6 +294,7 @@ const LWFTracker: React.FC = () => {
                     'company_id[]': filters.companyId,
                     'from_date': filters.startDate,
                     'to_date': filters.endDate,
+                    'search' : filters.search,
                 };
 
                 // Only add lwf_code[] to params if it's selected
@@ -320,7 +322,7 @@ const LWFTracker: React.FC = () => {
                 setIsLoading(false);
             }
         },
-        [filters.groupId, filters.companyId, filters.lwfCode, filters.startDate, filters.endDate, financialYear]
+        [filters.groupId, filters.companyId, filters.lwfCode, filters.startDate, filters.endDate, financialYear, filters.search]
     );
 
     useEffect(() => {

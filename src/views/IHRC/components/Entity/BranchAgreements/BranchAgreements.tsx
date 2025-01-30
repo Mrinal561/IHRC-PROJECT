@@ -15,7 +15,7 @@ const BranchAgreements = () => {
             <div className="mb-4 lg:mb-0 flex justify-between">
                 <h3 className='text-2xl font-bold'>Agreements</h3>
                 <div className='flex-shrink-0'>
-                    {!branchId && <BranchAgreementTool />}
+                    <BranchAgreementTool />
                 </div>
             </div>
         </div>

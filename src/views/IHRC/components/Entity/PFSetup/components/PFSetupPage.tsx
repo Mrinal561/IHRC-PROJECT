@@ -691,7 +691,7 @@ useEffect(()=>{
                     <div>
                         <p className="mb-2"> PF code <span className="text-red-500">*</span></p>
                         <OutlinedInput
-                            label="PF Code"
+                            label="Enter PF Code"
                             value={pfSetupData.pf_code}
                             onChange={(value: string) =>
                                 handleInputChange('pf_code', value)
@@ -755,7 +755,7 @@ useEffect(()=>{
                     <div>
                         <p className="mb-2">PF User</p>
                         <OutlinedInput
-                            label="Username"
+                            label="Enter Username"
                             value={pfSetupData.pf_user}
                             onChange={(value: string) => {
                                 setPfSetupData((prev) => ({
@@ -769,7 +769,7 @@ useEffect(()=>{
                     <div>
                         <p className="mb-2">Password</p>
                         <OutlinedInput
-                            label="Password"
+                            label="Enter Password"
                             value={pfSetupData.password}
                             onChange={(value: string) => {
                                 setPfSetupData((prev) => ({

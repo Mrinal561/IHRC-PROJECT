@@ -533,7 +533,7 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
         <div className="space-y-2">
           <p className="text-sm font-medium">LWF Registration Number <span className="text-red-500">*</span></p>
           <OutlinedInput
-            label="Registration Number"
+            label="Enter Registration Number"
             value={formData.register_number}
             onChange={handleRegisterNumberChange}
           />
@@ -549,7 +549,7 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
             <p className="text-sm font-medium">LWF Registration Date <span className="text-red-500">*</span></p>
             <DatePicker
               size='sm'
-              placeholder="Registration Date"
+              placeholder="Select Registration Date"
               value={formData.register_date}
               onChange={handleRegisterDateChange}
             />
@@ -577,7 +577,7 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
           <div className="space-y-2">
             <p className="text-sm font-medium">User ID</p>
             <OutlinedInput
-              label="User ID"
+              label=" Enter Username"
               value={formData.username}
               onChange={handleUsernameChange}
             />
@@ -591,7 +591,7 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
           <div className="space-y-2">
             <p className="text-sm font-medium">Password</p>
             <OutlinedPasswordInput
-              label="Password"
+              label="Enter Password"
               value={formData.password}
               onChange={handlePasswordChange}
             />

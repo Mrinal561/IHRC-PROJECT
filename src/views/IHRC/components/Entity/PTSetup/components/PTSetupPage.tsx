@@ -666,7 +666,7 @@ const loadStates = async () => {
                     <div>
                         <p className="mb-2">PT RC Registration Number <span className="text-red-500">*</span></p>
                        <OutlinedInput
-                        label="Registration Number"
+                        label="Enter Registration Number"
                         value={ptSetupData.register_number}
                         onChange={(value) => handleInputChange('register_number', value)}
                     />
@@ -677,7 +677,7 @@ const loadStates = async () => {
                     <div>
                         <p className="mb-2">PT EC Enrollment Number <span className="text-red-500">*</span></p>
                         <OutlinedInput
-                        label="Enrollment Number"
+                        label="Enter Enrollment Number"
                         value={ptSetupData.enroll_number}
                         onChange={(value) => handleInputChange('enroll_number', value)}
                     />
@@ -731,7 +731,7 @@ const loadStates = async () => {
                     <div>
                         <p className="mb-2">Username</p>
                         <OutlinedInput
-                            label="Username"
+                            label="Enter Username"
                             value={ptSetupData.username}
                             onChange={(value) => handleInputChange('username', value)}
                         />
@@ -743,7 +743,7 @@ const loadStates = async () => {
                     <div>
                         <p className="mb-2">Password</p>
                         <OutlinedPasswordInput
-                            label="Password"
+                            label="Enter Password"
                             // type="password"
                             value={ptSetupData.password}
                             onChange={(value) => handleInputChange('password', value)}

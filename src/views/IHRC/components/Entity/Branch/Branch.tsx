@@ -9,6 +9,7 @@ import { useAppDispatch } from '@/store'
 import { BranchData } from '@/@types/branch'
 import { toast, Notification } from '@/components/ui'
 import Company from '../../Home/components/Company'
+import OutlinedInput from '@/components/ui/OutlinedInput';
 
 interface SelectOption {
     label: string
@@ -16,6 +17,12 @@ interface SelectOption {
 }
 
 const Branch = () => {
+    const [searchTerm, setSearchTerm] = useState('')
+
+    const handleSearch = (value: string) => {
+        setSearchTerm(value)
+    }
+
     const [selectedBranch, setSelectedBranch] = useState<SelectOption | null>(
         null,
     )
@@ -33,7 +40,6 @@ const Branch = () => {
         useState<SelectOption | null>(null)
 
     const tableRefreshRef = useRef<(() => void) | null>(null)
-
     // Method to set the refresh function
     const setTableRefresh = useCallback((refreshFn: () => void) => {
         tableRefreshRef.current = refreshFn
@@ -53,6 +59,7 @@ const Branch = () => {
         stateId: selectedState?.value,
         districtId: selectedDistrict?.value,
         locationId: selectedLocation?.value,
+        search: searchTerm,
     }
 
     return (
@@ -60,8 +67,15 @@ const Branch = () => {
             <div className="flex flex-col justify-between gap-8 mb-2">
                 <div className="mb-4 lg:mb-0 flex justify-between">
                     <h3 className="text-2xl font-bold">Branch Manager</h3>
-                    <div className="flex-shrink-0">
-                        <BranchTool onTableRefresh={handleTableRefresh} />
+                    <div className="flex items-center gap-4">
+                        <OutlinedInput
+                            label="Search Branch"
+                            value={searchTerm}
+                            onChange={(e) => handleSearch(e)}
+                        />
+                        <div className="flex-shrink-0">
+                            <BranchTool onTableRefresh={handleTableRefresh} />
+                        </div>
                     </div>
                 </div>
                 {/* Modified this div to be more flexible */}

@@ -31,6 +31,7 @@ interface LocationState {
 }
 
 interface UserFormData {
+    branch_id: any
     group_id: number
     company_id: number
     name: string
@@ -61,6 +62,7 @@ interface UserDetails {
     disable?: boolean
     email?: string
     mobile?: string
+    branch_id?: number[]
 }
 
 const userValidationSchema = yup.object().shape({
@@ -139,6 +141,28 @@ const UserEditForm = () => {
         disable: false,
     })
     const [loading, setLoading] = useState(false)
+    const [branches, setBranches] = useState<SelectOption[]>([])
+
+const loadBranches = async (companyId: string) => {
+    try {
+        const { data } = await httpClient.get(endpoints.branch.getAll(), {
+            params: {
+                'company_id[]': companyId
+            }
+        })
+        console.log('Branches data:', data)
+        const formattedBranches = data?.data?.map((branch: any) => ({
+            label: `${branch.name} (${branch.Location?.name}/${branch.District?.name}/${branch.State?.name})`,
+            value: String(branch.id)
+        }))
+        console.log('Formatted branches:', formattedBranches)
+        setBranches(formattedBranches || [])
+    } catch (error) {
+        console.error('Failed to load branches:', error)
+        showNotification('danger', 'Failed to load branches')
+    }
+}
+
 
     const formatInitialDate = (dateString) => {
         if (!dateString) return null
@@ -183,7 +207,17 @@ const UserEditForm = () => {
                     throw error
                 })
 
-            setEditedData(response)
+                const branchIds = response.branch_details?.map(branch => branch.id) || []
+        
+                setEditedData({
+                    ...response,
+                    branch_id: branchIds
+                })
+                
+                // Load branches for the company
+                if (response.company_id) {
+                    await loadBranches(String(response.company_id))
+                }
             // Clear validation errors when loading new data
         } catch (error) {
             // setError('Failed to load User details')
@@ -287,7 +321,7 @@ const UserEditForm = () => {
                     onClick={() => navigate('/user-entity')}
                 />
                 <h3 className="text-2xl font-semibold">
-                    User Form -( {editedData?.name || ''})
+                    User -( {editedData?.name || ''})
                 </h3>
             </div>
 
@@ -307,6 +341,7 @@ const UserEditForm = () => {
                         auth_signatory: editedData?.auth_signatory || false,
                         suspend: editedData?.suspend || false,
                         disable: editedData?.disable || false,
+                        branch_id: editedData?.branch_id || [],
                     }}
                     validationSchema={userValidationSchema}
                     onSubmit={handleAddUser}
@@ -317,7 +352,7 @@ const UserEditForm = () => {
                                 {/* Company Group (Read-only) */}
                                 <div className="flex flex-col gap-2">
                                     <p className="mb-2">
-                                        Company group{' '}
+                                        Company Group{' '}
                                         <span className="text-red-500">*</span>
                                     </p>
                                     <input
@@ -356,7 +391,7 @@ const UserEditForm = () => {
                                                     )
                                                 }}
                                                 isMulti={false}
-                                                isDisabled={true}
+                                                // isDisabled={true}
                                             />
                                         )}
                                     </Field>
@@ -371,7 +406,7 @@ const UserEditForm = () => {
                                 {/* Name */}
                                 <div className="flex flex-col gap-2">
                                     <p className="mb-2">
-                                        Enter Name{' '}
+                                         Name{' '}
                                         <span className="text-red-500">*</span>
                                     </p>
                                     <Field
@@ -379,7 +414,7 @@ const UserEditForm = () => {
                                         render={({ field }) => (
                                             <OutlinedInput
                                                 {...field}
-                                                label="Name"
+                                                label="Enter Name"
                                                 value={values.name}
                                                 onChange={(value: string) =>
                                                     setFieldValue('name', value)
@@ -400,7 +435,7 @@ const UserEditForm = () => {
                                 {/* Email */}
                                 <div className="flex flex-col gap-2">
                                     <p className="mb-2">
-                                        Enter Email{' '}
+                                         Email{' '}
                                         <span className="text-red-500">*</span>
                                     </p>
                                     <Field
@@ -408,7 +443,7 @@ const UserEditForm = () => {
                                         render={({ field }) => (
                                             <OutlinedInput
                                                 {...field}
-                                                label="Email"
+                                                label="Enter Email"
                                                 value={values.email}
                                                 onChange={(value: string) =>
                                                     setFieldValue(
@@ -441,7 +476,7 @@ const UserEditForm = () => {
                                         render={({ field }) => (
                                             <OutlinedInput
                                                 {...field}
-                                                label="Mobile"
+                                                label="Enter Mobile"
                                                 value={values.mobile}
                                                 onChange={(value: string) =>
                                                     setFieldValue(
@@ -500,13 +535,13 @@ const UserEditForm = () => {
                                 {/* Role field */}
                                 <div className="flex flex-col gap-2">
                                     <p className="mb-2">
-                                        Select Role{' '}
+                                        Select Designation{' '}
                                         <span className="text-red-500">*</span>
                                     </p>
                                     <Field name="role_id">
                                         {({ field }: any) => (
                                             <OutlinedSelect
-                                                label="Select Role"
+                                                label="Select Designation"
                                                 options={userRole}
                                                 value={userRole.find(
                                                     (role) =>
@@ -537,13 +572,13 @@ const UserEditForm = () => {
 
                                 {/* Aadhar */}
                                 <div className="flex flex-col gap-2">
-                                    <p className="mb-2">Aadhar</p>
+                                    <p className="mb-2">Aadhaar</p>
                                     <Field
                                         name="aadhar"
                                         render={({ field }) => (
                                             <OutlinedInput
                                                 {...field}
-                                                label="Aadhar No"
+                                                label="Enter Aadhaar No"
                                                 value={values.aadhar_no}
                                                 onChange={(value: string) =>
                                                     setFieldValue(
@@ -573,7 +608,7 @@ const UserEditForm = () => {
                                         render={({ field }) => (
                                             <OutlinedInput
                                                 {...field}
-                                                label="PAN"
+                                                label="Enter PAN"
                                                 value={values.pan_card}
                                                 onChange={(value: string) =>
                                                     setFieldValue('pan', value)
@@ -591,7 +626,31 @@ const UserEditForm = () => {
                                         </span>
                                     )}
                                 </div>
-
+                                    {/* Branch Selection */}
+<div className="flex flex-col gap-2">
+    <p className="mb-2">
+        Select Branch(es) <span className="text-red-500">*</span>
+    </p>
+    <Field name="branch_id">
+        {({ field }: any) => (
+            <OutlinedSelect
+                label="Select Branches"
+                options={branches}
+                value={branches.filter(branch => 
+                    values.branch_id?.includes(Number(branch.value))
+                )}
+                onChange={(selectedOptions: SelectOption[] | null) => {
+                    const branchIds = selectedOptions 
+                        ? selectedOptions.map(option => Number(option.value))
+                        : [];
+                    setFieldValue('branch_id', branchIds);
+                }}
+                isMulti={true}
+                isDisabled={!values.company_id}
+            />
+        )}
+    </Field>
+</div>
                                 {/* Auth Signatory (moved to full width) */}
                                 <div className="col-span-2 flex flex-col gap-2">
                                     <label className="flex items-center">
@@ -609,6 +668,7 @@ const UserEditForm = () => {
                                         </span>
                                     </label>
                                 </div>
+                                
 
                                 {/* Buttons (moved to right) */}
                                 <div className="col-span-2 flex justify-end gap-2 mt-4">
@@ -620,7 +680,7 @@ const UserEditForm = () => {
                                         Cancel
                                     </Button>
                                     <Button type="submit" variant="solid">
-                                        Save User
+                                       Confirm
                                     </Button>
                                 </div>
                             </div>
