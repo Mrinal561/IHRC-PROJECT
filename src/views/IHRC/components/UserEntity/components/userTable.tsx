@@ -172,6 +172,7 @@ const UserTable: React.FC<{search:any}> = ({search}) => {
             // },
             {
                 header: 'Date of Joining',
+                enableSorting: false,
                 accessorKey: 'user_details.joining_date',
                 cell: (props) => (
                     <div className="w-32 truncate">

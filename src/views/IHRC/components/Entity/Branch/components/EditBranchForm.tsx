@@ -236,6 +236,7 @@ const validationSchema = yup.object().shape({
 const AddBranchForm: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>()
     const navigate = useNavigate()
+    const [isSubmitting, setIsSubmitting] = useState(false);
     //   const [locationData, setLocationData] = useState([]);
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
@@ -865,6 +866,7 @@ const AddBranchForm: React.FC = () => {
         }
     
         try {
+            setIsSubmitting(true);
             const res = await dispatch(
                 updateBranch({
                     id: branchId,
@@ -893,6 +895,7 @@ const AddBranchForm: React.FC = () => {
             const errorMessage = error || 'Failed to Update user'
         } finally {
             setLoading(false)
+            setIsSubmitting(false);
         }
     }
 
@@ -908,7 +911,7 @@ const AddBranchForm: React.FC = () => {
                     onClick={() => navigate('/branch')}
                 />
                 <h3 className="text-2xl font-semibold mb-2">
-                    Update New Branch
+                    Edit Branch
                 </h3>
             </div>
             {/* <p>
@@ -1939,21 +1942,21 @@ const AddBranchForm: React.FC = () => {
                 </div> */}
 
                         <div className="flex justify-end gap-2">
-                            <Button
-                                type="button"
-                                variant="solid"
-                                size="sm"
-                                onClick={handleUpdateBranch}
-                            >
-                                Update Branch
-                            </Button>
+                            
                             <Button
                                 type="button"
                                 variant="plain"
-                                size="sm"
                                 onClick={() => navigate(-1)}
                             >
                                 Cancel
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="solid"
+                                loading={isSubmitting}
+                                onClick={handleUpdateBranch}
+                            >
+                               Confirm
                             </Button>
                         </div>
                     </div>

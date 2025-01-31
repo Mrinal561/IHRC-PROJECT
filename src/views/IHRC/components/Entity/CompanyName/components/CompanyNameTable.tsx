@@ -64,6 +64,7 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({
 }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const [dialogLoading, setDialogLoading] = useState(false);
   const [companyTableData, setCompanyTableData] = useState<CompanyData[]>([]);
   const [dialogIsOpen, setDialogIsOpen] = useState(false);
   const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
@@ -304,6 +305,7 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({
   const handleEditConfirm = async () => {
     // if (itemToEdit?.id && editedName.trim()) {
       try {
+        setDialogLoading(true);
         const isValid = await validateForm();
         if(!isValid) return;
         const groupId = selectedCompanyGroup 
@@ -350,8 +352,10 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({
       } catch (error) {
         console.error(error);
         showNotification('danger', 'Failed to update company');
+      }finally{
+        setDialogLoading(false);
+        handleDialogClose();
       }
-      handleDialogClose();
     // } else {
     //   showNotification('danger', 'Please fill in all required fields');
     // }
@@ -479,10 +483,12 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({
             className="ltr:mr-2 rtl:ml-2"
             variant="plain"
             onClick={handleDialogClose}
+            //  disabled={dialogLoading}
+              type="button"
           >
             Cancel
           </Button>
-          <Button variant="solid" onClick={handleEditConfirm}>
+          <Button variant="solid" onClick={handleEditConfirm} loading={dialogLoading}>
             Confirm
           </Button>
         </div>

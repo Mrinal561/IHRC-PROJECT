@@ -80,7 +80,7 @@ const Bu = () => {
       >
         <h5 className="mb-4"> Add Locations</h5>
         <div className="my-4 flex gap-2 items-center">
-          <p>Download Bulk Upload Format</p>
+          <p>Download Format</p>
           <a href={documentPath} onClick={handleDownload} className="text-blue-600 hover:underline">
             <Button size="xs" icon={<HiDownload />} >Download</Button>
           </a>

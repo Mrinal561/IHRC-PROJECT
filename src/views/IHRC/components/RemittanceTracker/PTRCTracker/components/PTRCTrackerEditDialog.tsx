@@ -77,7 +77,7 @@ const PTRCTrackerEditDialog: React.FC<PTRCTrackerEditDialogProps> = ({
   const [editedData, setEditedData] = useState<PTRCTrackerData>({
     id: trackerId,
   });
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const dispatch = useDispatch();
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
@@ -90,7 +90,7 @@ const PTRCTrackerEditDialog: React.FC<PTRCTrackerEditDialogProps> = ({
 
   const fetchTrackerData = async () => {
     try {
-      setLoading(true);
+      // setLoading(true);
       const response = await dispatch(fetchPtrcTrackerById(trackerId))
         .unwrap()
         .catch((error: any) => {
@@ -151,6 +151,7 @@ const PTRCTrackerEditDialog: React.FC<PTRCTrackerEditDialogProps> = ({
   
   const handleSubmit = async () => {
        try {
+        setLoading(true);
         const isValid = await validateForm();
         if (!isValid) {
           openNotification('danger', 'Please fix the validation errors');
@@ -197,6 +198,8 @@ const PTRCTrackerEditDialog: React.FC<PTRCTrackerEditDialogProps> = ({
   } catch (err) {
     console.error('Error submitting tracker data:', err);
     // openNotification('danger', 'Failed to save changes');
+  } finally {
+    setLoading(false);
   }
   };
   
@@ -236,7 +239,7 @@ const PTRCTrackerEditDialog: React.FC<PTRCTrackerEditDialogProps> = ({
       width={800}
       height={480}
     >
-      <h5 className="mb-4">Edit PT RC Tracker Detail</h5>
+      <h5 className="mb-4">Edit PT RC Tracker</h5>
 
       <div className="p-4 space-y-4">
         <div className='flex gap-4 items-center'>
@@ -321,7 +324,7 @@ const PTRCTrackerEditDialog: React.FC<PTRCTrackerEditDialogProps> = ({
         <Button variant="plain" onClick={onClose} className="mr-2">
           Cancel
         </Button>
-        <Button variant="solid" onClick={handleSubmit}>
+        <Button variant="solid" onClick={handleSubmit} loading={loading}>
           Confirm
         </Button>
       </div>

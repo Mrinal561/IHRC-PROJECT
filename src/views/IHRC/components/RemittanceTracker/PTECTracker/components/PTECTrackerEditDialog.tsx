@@ -87,7 +87,7 @@ const PTECTrackerEditDialog: React.FC<PTTrackerEditDialogProps> = ({
 
   const fetchTrackerData = async () => {
     try {
-      setLoading(true);
+      // setLoading(true);
       const response = await dispatch(fetchPtecTrackerById(trackerId))
         .unwrap()
         .catch((error: any) => {
@@ -143,7 +143,7 @@ const validateForm = async (): Promise<boolean> => {
 
   const handleSubmit = async () => {
     try {
-
+      setLoading(true);
       const isValid = await validateForm();
       if (!isValid) {
         openNotification('danger', 'Please fix the validation errors');
@@ -189,6 +189,8 @@ const validateForm = async (): Promise<boolean> => {
   } catch (err) {
     console.error('Error submitting tracker data:', err);
     // openNotification('danger', 'Failed to save changes');
+  } finally{
+    setLoading(false)
   }
   };
   
@@ -244,7 +246,7 @@ const validateForm = async (): Promise<boolean> => {
       width={800}
       height={480}
     >
-      <h5 className="mb-4">Edit PT EC Tracker Detail</h5>
+      <h5 className="mb-4">Edit PT EC Tracker</h5>
 
       <div className="p-4 space-y-4">
         <div className="flex gap-4 items-center">
@@ -389,7 +391,7 @@ const validateForm = async (): Promise<boolean> => {
         <Button variant="plain" onClick={onClose} className="mr-2">
           Cancel
         </Button>
-        <Button variant="solid" onClick={handleSubmit}>
+        <Button variant="solid" onClick={handleSubmit} loading={loading}>
           Confirm
         </Button>
       </div>

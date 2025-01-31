@@ -106,6 +106,7 @@ const UserAddForm = () => {
     const dispatch = useDispatch<AppDispatch>()
     const navigate = useNavigate()
     const location = useLocation()
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const locationState = location.state as LocationState
     const companyName = locationState?.companyName
     const companyId = locationState?.companyId
@@ -227,6 +228,7 @@ const UserAddForm = () => {
             role_id: Number(values.role_id),
         }
         try {
+            setIsSubmitting(true)
             const resultAction = await dispatch(createUser(data)).unwrap()
             if (resultAction) {
                 navigate('/user-entity')
@@ -235,6 +237,8 @@ const UserAddForm = () => {
         } catch (error: any) {
             const errorMessage = error || 'Failed to add user'
             showNotification('danger', errorMessage) // Show the API error message
+        } finally {
+            setIsSubmitting(false)
         }
     }
 
@@ -603,7 +607,7 @@ const UserAddForm = () => {
                 >
                     Cancel
                 </Button>
-                <Button type="submit" variant='solid'>Confirm</Button>
+                <Button type="submit" variant='solid' loading={isSubmitting}>Confirm</Button>
             </div>
         </Form>
     )}

@@ -201,7 +201,7 @@ const adminnav: NavigationTree[] = [
                     {
                         key: 'userSetup.collapse.role',
                         path: '/role',
-                        title: 'Roles',
+                        title: 'Designation',
                         translateKey: 'nav.userSetup.collapse.role',
                         icon: '',
                         type: NAV_ITEM_TYPE_ITEM,

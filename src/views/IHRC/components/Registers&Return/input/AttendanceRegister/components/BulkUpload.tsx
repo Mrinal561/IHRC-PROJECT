@@ -89,7 +89,7 @@ const BulkUpload: React.FC<BulkUploadProps> = ({ isOpen, onClose, company }) => 
             
             <div className="flex flex-col gap-4">
             <div className="my-4 flex gap-2 items-center">
-          <p>Download Attendance Register Format</p>
+          <p>Download Format</p>
           <a className="text-blue-600 hover:underline">
             <Button size="xs" icon={<HiDownload />} >Download</Button>
           </a>

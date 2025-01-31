@@ -131,8 +131,7 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
         name: ''
     });
     const [isTouched, setIsTouched] = useState(false);
-
-    
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const moduleColorMap = new Map();
 
@@ -169,6 +168,7 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
         if (!isValid) return;
 
         try {
+            setIsSubmitting(true)
             const result = await dispatch(updateRole({
                 id: itemToEdit.id,
                 name: editedRoleName.trim() 
@@ -182,6 +182,8 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
         } catch (error) {
             console.error(error);
             showErrorNotification('Failed to update role');
+        } finally {
+            setIsSubmitting(false)
         }
     };
 
@@ -290,7 +292,7 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
                 ),
             },
             {
-                header: 'Module Access',
+                header: 'Module',
                 enableSorting: false,
                 id: 'moduleAccess',
                 cell: ({ row }) => (
@@ -309,7 +311,7 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
                 ),
             },
             {
-                header: 'Menu Access',
+                header: 'Menu',
                 enableSorting: false,
                 id: 'menuAccess',
                 cell: ({ row }) => (
@@ -458,6 +460,7 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
                     <Button 
                         variant="solid" 
                         onClick={handleEditConfirm}
+                        loading={isSubmitting}
                     >
                         Confirm
                     </Button>

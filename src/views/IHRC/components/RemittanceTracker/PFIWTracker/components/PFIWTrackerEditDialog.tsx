@@ -63,6 +63,7 @@ const PFIWTrackerEditDialog: React.FC<PFIWTrackerEditDialogProps> = ({
     id:trackerid
   });
   const [loading, setLoading] = useState(false);
+  const [loader, setLoader] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
     const dispatch = useDispatch();
@@ -136,7 +137,7 @@ const PFIWTrackerEditDialog: React.FC<PFIWTrackerEditDialogProps> = ({
 
   const handleSubmit = async () => {
   try {
-
+    setLoader(true);
     const isValid = await validateForm();
       if (!isValid) {
         return;
@@ -179,6 +180,8 @@ const PFIWTrackerEditDialog: React.FC<PFIWTrackerEditDialogProps> = ({
       }
     } catch (err) {
       console.error('Error submitting tracker data:', err);
+    } finally {
+      setLoader(false)
     }
   };
 
@@ -193,35 +196,35 @@ const PFIWTrackerEditDialog: React.FC<PFIWTrackerEditDialogProps> = ({
     );
   };
 
-  if (loading) {
-    return (
-      <Dialog
-        isOpen={isOpen}
-        onClose={onClose}
-        onRequestClose={onClose}
-        width={600}  shouldCloseOnOverlayClick={false} 
-      >
-        <div className="flex justify-center items-center h-full">
-          <p>Loading...</p>
-        </div>
-      </Dialog>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <Dialog
+  //       isOpen={isOpen}
+  //       onClose={onClose}
+  //       onRequestClose={onClose}
+  //       width={600}  shouldCloseOnOverlayClick={false} 
+  //     >
+  //       <div className="flex justify-center items-center h-full">
+  //         <p>Loading...</p>
+  //       </div>
+  //     </Dialog>
+  //   );
+  // }
 
-  if (error) {
-    return (
-      <Dialog
-        isOpen={isOpen}
-        onClose={onClose}
-        onRequestClose={onClose}
-        width={600}
-      >
-        <div className="flex justify-center items-center h-full">
-          <p className="text-red-500">{error}</p>
-        </div>
-      </Dialog>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <Dialog
+  //       isOpen={isOpen}
+  //       onClose={onClose}
+  //       onRequestClose={onClose}
+  //       width={600}
+  //     >
+  //       <div className="flex justify-center items-center h-full">
+  //         <p className="text-red-500">{error}</p>
+  //       </div>
+  //     </Dialog>
+  //   );
+  // }
 
   return (
     <Dialog
@@ -230,7 +233,7 @@ const PFIWTrackerEditDialog: React.FC<PFIWTrackerEditDialogProps> = ({
       onRequestClose={onClose}
       width={600}
     >
-      <h5 className="mb-4">Edit PFIW Tracker Detail</h5>
+      <h5 className="mb-4">Edit PFIW Tracker</h5>
       
       <div className="p-4 space-y-4">
         <div className='flex gap-4 items-center'>
@@ -296,7 +299,7 @@ const PFIWTrackerEditDialog: React.FC<PFIWTrackerEditDialogProps> = ({
         <Button variant="plain" onClick={onClose} className="mr-2">
           Cancel
         </Button>
-        <Button variant="solid" onClick={handleSubmit}>
+        <Button variant="solid" onClick={handleSubmit} loading={loader}>
           Confirm
         </Button>
       </div>

@@ -1,12 +1,23 @@
+import { useState } from 'react';
 import Company from './Company';
+import DashBoardCompany from './DashBoardCompany';
 
 interface OptionType {
     value: string;
     label: string;
 }
+interface IhrcDashboardHeaderProps {
+    onCompanyChange: (companyId: string) => void;
+}
 
-const IhrcDashboardHeader = () => {
-
+const IhrcDashboardHeader = ({ onCompanyChange }: IhrcDashboardHeaderProps) => {
+    const handleCompanyChange = (option: OptionType | null) => {
+        if (option) {
+            console.log(option.value)
+            onCompanyChange(option.value);
+        }
+    };
+  
 
   
     return (
@@ -17,7 +28,8 @@ const IhrcDashboardHeader = () => {
                     <p className="text-gray-600">View your company's compliance statistics</p>
                 </div>
             </div>
-                <Company />
+                <DashBoardCompany
+                onCompanyChange={handleCompanyChange} />
         </div>
     );
 };

@@ -239,6 +239,7 @@ const validationSchema = yup.object().shape({
 const AddBranchForm: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>()
     const navigate = useNavigate()
+    const [isSubmitting, setIsSubmitting] = useState(false);
     //   const [locationData, setLocationData] = useState([]);
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
@@ -729,6 +730,7 @@ const AddBranchForm: React.FC = () => {
         }
 
         try {
+            setIsSubmitting(true);
             const response = await dispatch(createBranch(formData))
                 .unwrap()
                 .catch((error: any) => {
@@ -768,6 +770,8 @@ const AddBranchForm: React.FC = () => {
                 'An unexpected error occurred. Please try again.'
             showErrorNotification(errorMessage)
             throw error // Re-throw to prevent further execution
+        } finally {
+            setIsSubmitting(false);
         }
     }
 
@@ -1650,22 +1654,23 @@ const AddBranchForm: React.FC = () => {
                 </div> */}
 
                 <div className="flex justify-end gap-2">
-                    <Button
-                        type="button"
-                        variant="solid"
-                        size="sm"
-                        onClick={handleAddBranch}
-                    >
-                        Confirm
-                    </Button>
-                    <Button
+                <Button
                         type="button"
                         variant="plain"
-                        size="sm"
+                        // size="sm"
                         onClick={() => navigate(-1)}
                     >
                         Cancel
                     </Button>
+                        <Button
+                            type="button"
+                            variant="solid"
+                            loading={isSubmitting}
+                            onClick={handleAddBranch}
+                        >
+                            Confirm
+                        </Button>
+                   
                 </div>
             </div>
         </div>

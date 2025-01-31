@@ -113,7 +113,7 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
   const [editedData, setEditedData] = useState<PfChallanData>({
     id: trackerId,
   });
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const dispatch = useDispatch();
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
@@ -127,7 +127,7 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
   const fetchTrackerData = async () => {
     try {
       // console.log(trackerId)
-      setLoading(true);
+      // setLoading(true);
       const response = await dispatch((fetchTrackerById(trackerId)))
             .unwrap()
             .catch((error: any) => {
@@ -184,6 +184,7 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
 
   const handleSubmit = async () => {
     try {
+      setLoading(true)
       await validationSchema.validate(editedData, { abortEarly: false });
     // Create updateData object (matching the original updateTracker data expectation)
     const updateData = {
@@ -246,6 +247,8 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
       console.error('Error submitting tracker data:', err);
       // openNotification('danger', 'Failed to update PF Tracker');
     }
+  } finally {
+    setLoading(false)
   }
 };
   
@@ -312,7 +315,7 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
       width={800}
       height={600}
     >
-      <h5 className="mb-4">Edit PF Tracker Detail</h5>
+      <h5 className="mb-4">Edit PF Tracker</h5>
 
       <div className="p-4 space-y-4">
         <div className='flex gap-4 items-center'>
@@ -481,8 +484,8 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
         <Button variant="plain" onClick={onClose} className="mr-2">
           Cancel
         </Button>
-        <Button variant="solid" onClick={handleSubmit}>
-          Save Changes
+        <Button variant="solid" onClick={handleSubmit} loading={loading}>
+         Confirm
         </Button>
       </div>
     </Dialog>

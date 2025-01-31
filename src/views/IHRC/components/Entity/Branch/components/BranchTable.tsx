@@ -164,6 +164,7 @@ const BranchTable: React.FC<BranchTableProps> = ({
             // },
             {
                 header: 'Company',
+                 enableSorting: false,
                 accessorKey: 'Company.name',
                 cell: (props) => (
                     <div className="w-32 truncate">
@@ -173,6 +174,7 @@ const BranchTable: React.FC<BranchTableProps> = ({
             },
             {
                 header: 'State',
+                 enableSorting: false,
                 accessorKey: 'State.name',
                 cell: (props) => (
                     <div className="w-32 truncate">
@@ -182,6 +184,7 @@ const BranchTable: React.FC<BranchTableProps> = ({
             },
             {
                 header: 'District',
+                 enableSorting: false,
                 accessorKey: 'District.name',
                 cell: (props) => (
                     <div className="w-32 truncate">
@@ -191,6 +194,7 @@ const BranchTable: React.FC<BranchTableProps> = ({
             },
             {
                 header: 'Location',
+                 enableSorting: false,
                 accessorKey: 'Location.name',
                 cell: (props) => (
                     <div className="w-32 truncate">
@@ -200,6 +204,7 @@ const BranchTable: React.FC<BranchTableProps> = ({
             },
             {
                 header: 'Branch',
+                 enableSorting: false,
                 accessorKey: 'name',
                 cell: (props) => (
                     <div className="w-40 truncate">
@@ -209,6 +214,7 @@ const BranchTable: React.FC<BranchTableProps> = ({
             },
             {
                 header: 'Branch Address',
+                 enableSorting: false,
                 accessorKey: 'address',
                 cell: (props) => (
                     <div className="w-40 truncate">
@@ -218,6 +224,7 @@ const BranchTable: React.FC<BranchTableProps> = ({
             },
             {
                 header: 'Branch Opening Date',
+                 enableSorting: false,
                 accessorKey: 'opening_date',
                 cell: (props) => (
                     <div className="w-44 ">
@@ -227,6 +234,7 @@ const BranchTable: React.FC<BranchTableProps> = ({
             },
             {
                 header: 'Actions',
+                 enableSorting: false,
                 id: 'actions',
                 cell: ({ row }) => (
                     <div className="flex items-center gap-2">
