@@ -147,7 +147,7 @@
 // // export default ChallanVisualization;
 import React, { useEffect, useState } from 'react'
 import Chart from 'react-apexcharts'
-import { Card } from '@/components/ui/card'
+import { Card } from '@/components/ui';
 import OutlinedSelect from '@/components/ui/Outlined'
 import { endpoints } from '@/api/endpoint'
 import httpClient from '@/api/http-client'
