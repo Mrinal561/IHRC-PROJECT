@@ -520,6 +520,8 @@ const AddBranchForm: React.FC = () => {
     // Handle state selection
     const handleStateChange = (option: SelectOption | null) => {
         setSelectedStates(option)
+        setSelectedDistrict('') // Reset district selection
+        setSelectedLocation('')
         if (option) {
             setFormData((prev) => ({
                 ...prev,
@@ -927,7 +929,7 @@ const AddBranchForm: React.FC = () => {
                                      Company Group{' '}
                                     <span className="text-red-500">*</span>
                                 </p>
-                                <OutlinedSelect
+                                {/* <OutlinedSelect
                                 isDisabled={true}
                                     label="Company Group"
                                     options={companyGroups}
@@ -937,7 +939,12 @@ const AddBranchForm: React.FC = () => {
                                             formData.group_id,
                                     )}
                                     onChange={setSelectedCompanyGroup}
-                                />
+                                /> */}
+                                <OutlinedInput
+                             label="Select Company Group"
+                             value={selectedCompanyGroup?.label}
+                             onChange={()=>{}}
+                        />
                             </div>
                             <div>
                                 <p className="mb-2">
@@ -1491,8 +1498,8 @@ const AddBranchForm: React.FC = () => {
                                                 <label>
                                                     {seRegistrationNumberExists ===
                                                     'applied'
-                                                        ? 'Please upload the S&E  acknowledgment copy(Accepted : Pdf/Zip/Image(Max Size: 20mb))'
-                                                        : 'Please upload the S&E Registration certificate(Accepted : Pdf/Zip/Image(Max Size: 20mb))'}
+                                                        ? 'Upload S&E Acknowledgment Copy (Accepted: PDF/Zip/Image, Max 20MB)'
+                                                        : 'Upload The S&E Registration Certificate (Accepted: PDF/Zip/Image, Max 20MB)'}
                                                     <span className="text-red-500">
                                                         *
                                                     </span>
@@ -1612,8 +1619,8 @@ const AddBranchForm: React.FC = () => {
                                             <div>
                                                 <div className="flex flex-col gap-4">
                                                     <label>
-                                                        Please upload Lease deed
-                                                        copy(Accepted : Pdf/Zip/Image(Max Size: 20mb))
+                                                        Upload Lease deed
+                                                        copy (Accepted: PDF/Zip/Image, Max 20MB)
                                                         <span className="text-red-500">
                                                             *
                                                         </span>
@@ -1835,8 +1842,8 @@ const AddBranchForm: React.FC = () => {
                                                     <label>
                                                         {seRegistrationNumberExists ===
                                                         'applied'
-                                                            ? 'Please upload the S&E acknowledgment copy(Accepted : Pdf/Zip/Image(Max Size: 20mb))'
-                                                            : 'Please upload the S&E Registration certificate(Accepted : Pdf/Zip/Image(Max Size: 20mb))'}
+                                                            ? 'Upload S&E Acknowledgment Copy (Accepted: PDF/Zip/Image, Max 20MB)'
+                                                            : 'Upload The S&E Registration Certificate  (Accepted: PDF/Zip/Image, Max 20MB)'}
                                                         <span className="text-red-500">
                                                             *
                                                         </span>{' '}

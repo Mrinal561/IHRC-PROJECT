@@ -203,7 +203,7 @@ const BranchTable: React.FC<BranchTableProps> = ({
                 ),
             },
             {
-                header: 'Branch',
+                header: 'Branch Name',
                  enableSorting: false,
                 accessorKey: 'name',
                 cell: (props) => (
@@ -257,7 +257,7 @@ const BranchTable: React.FC<BranchTableProps> = ({
                     size="sm"
                     icon={<HiOutlineBookOpen />}
                     onClick={() => {
-                        navigate('/branch-agreements', {
+                        navigate('/agreements', {
                             state: {
                                 branchId: row.original?.id,
                                 companyId: row.original?.Company?.id,

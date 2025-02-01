@@ -218,7 +218,7 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
   // Load States
   const loadStates = async () => {
     try {
-      setIsLoading(true);
+      // setIsLoading(true);
       const response = await httpClient.get(endpoints.common.state());
       
       if (response.data) {
@@ -234,9 +234,7 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
     } catch (error) {
       console.error('Failed to load states:', error);
       showNotification('danger', 'Failed to load states');
-    } finally {
-      setIsLoading(false);
-    }
+    } 
   };
 
   // Load Users/Signatories
@@ -472,8 +470,9 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
 
 
   return (
-    <div className="p-4">
-      <div className="grid grid-cols-3 gap-4 mb-4">
+    <div className="p-2">
+      <div className="grid grid-cols-4 gap-4 mb-4">
+        {/* First Row - 4 fields */}
         <div className="space-y-2">
           <p className="text-sm font-medium">Company Group</p>
           <OutlinedInput
@@ -482,6 +481,7 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
             disabled
           />
         </div>
+  
         <div className="space-y-2">
           <p className="text-sm font-medium">Company</p>
           <OutlinedInput
@@ -490,6 +490,7 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
             disabled
           />
         </div>
+  
         <div className="space-y-2">
           <p className="text-sm font-medium">State <span className="text-red-500">*</span></p>
           <OutlinedSelect
@@ -498,68 +499,71 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
             value={selectedStates}
             onChange={handleStateChange}
           />
-          <div className="min-h-[20px]">
+          <div className="min-h-[10px]">
             {errors.state_id && (
               <p className="text-red-500 text-xs mt-1">{errors.state_id}</p>
             )}
           </div>
         </div>
-
-        <div className="space-y-2">
-          <DistrictAutosuggest 
+  
+        <div className="space-y-1">
+          <DistrictAutosuggest
             value={selectedDistrict}
             onChange={handleDistrictChange}
             stateId={selectedStates?.value ? parseInt(selectedStates.value) : undefined}
             onDistrictSelect={(id) => setSelectedDistrictId(id)}
           />
-          <div className="min-h-[20px]">
+          <div className="min-h-[10px]">
             {errors.district_id && (
               <p className="text-red-500 text-xs mt-1">{errors.district_id}</p>
             )}
           </div>
         </div>
-        <div className="space-y-2">
+  
+        {/* Second Row - 4 fields */}
+        <div className="space-y-1">
           <LocationAutosuggest
             value={selectedLocation}
             onChange={handleLocationChange}
             districtId={selectedDistrictId}
           />
-          <div className="min-h-[20px]">
+          <div className="min-h-[10px]">
             {errors.location && (
               <p className="text-red-500 text-xs mt-1">{errors.location}</p>
             )}
           </div>
         </div>
+  
         <div className="space-y-2">
-          <p className="text-sm font-medium">LWF Registration Number <span className="text-red-500">*</span></p>
+          <p className="text-sm font-medium">Registration Number <span className="text-red-500">*</span></p>
           <OutlinedInput
-            label="Enter Registration Number"
+            label="Enter Registration No."
             value={formData.register_number}
             onChange={handleRegisterNumberChange}
           />
-          <div className="min-h-[20px]">
+          <div className="min-h-[10px]">
             {errors.register_number && (
               <p className="text-red-500 text-xs mt-1">{errors.register_number}</p>
             )}
           </div>
         </div>
-
-        <div className="grid grid-cols-4 gap-4 col-span-3">
-          <div className="space-y-2">
-            <p className="text-sm font-medium">LWF Registration Date <span className="text-red-500">*</span></p>
-            <DatePicker
-              size='sm'
-              placeholder="Select Registration Date"
-              value={formData.register_date}
-              onChange={handleRegisterDateChange}
-            />
-            <div className="min-h-[20px]">
-              {errors.register_date && (
-                <p className="text-red-500 text-xs mt-1">{errors.register_date}</p>
-              )}
-            </div>
+  
+        <div className="space-y-2">
+          <p className="text-sm font-medium">LWF Registration Date <span className="text-red-500">*</span></p>
+          <DatePicker
+            size="sm"
+            placeholder="Select Registration Date"
+            value={formData.register_date}
+            onChange={handleRegisterDateChange}
+          />
+          <div className="min-h-[10px]">
+            {errors.register_date && (
+              <p className="text-red-500 text-xs mt-1">{errors.register_date}</p>
+            )}
           </div>
- <div className="space-y-2">
+        </div>
+  
+        <div className="space-y-2">
           <p className="text-sm font-medium">Remittance Mode <span className="text-red-500">*</span></p>
           <OutlinedSelect
             label="Select Mode"
@@ -567,43 +571,59 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
             value={remittanceModeOptions.find(option => option.value === formData.remmit_mode)}
             onChange={handleRemitModeChange}
           />
-          <div className="min-h-[20px]">
+          <div className="min-h-[10px]">
             {errors.remmit_mode && (
               <p className="text-red-500 text-xs mt-1">{errors.remmit_mode}</p>
             )}
           </div>
         </div>
-
-          <div className="space-y-2">
-            <p className="text-sm font-medium">User ID</p>
-            <OutlinedInput
-              label=" Enter Username"
-              value={formData.username}
-              onChange={handleUsernameChange}
-            />
-            <div className="min-h-[20px]">
-              {errors.username && (
-                <p className="text-red-500 text-xs mt-1">{errors.username}</p>
-              )}
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <p className="text-sm font-medium">Password</p>
-            <OutlinedPasswordInput
-              label="Enter Password"
-              value={formData.password}
-              onChange={handlePasswordChange}
-            />
-            <div className="min-h-[20px]">
-              {errors.password && (
-                <p className="text-red-500 text-xs mt-1">{errors.password}</p>
-              )}
-            </div>
+  
+        {/* Rest of the form - Username and Password */}
+        <div className="space-y-2">
+          <p className="text-sm font-medium">User Name</p>
+          <OutlinedInput
+            label="Enter Username"
+            value={formData.username}
+            onChange={handleUsernameChange}
+          />
+          <div className="min-h-[10px]">
+            {errors.username && (
+              <p className="text-red-500 text-xs mt-1">{errors.username}</p>
+            )}
           </div>
         </div>
-
+  
         <div className="space-y-2">
+          <p className="text-sm font-medium">Password</p>
+          <OutlinedPasswordInput
+            label="Enter Password"
+            value={formData.password}
+            onChange={handlePasswordChange}
+          />
+          <div className="min-h-[10px]">
+            {errors.password && (
+              <p className="text-red-500 text-xs mt-1">{errors.password}</p>
+            )}
+          </div>
+        </div>
+  
+        {/* Upload Document */}
+        <div className="col-span-2 space-y-1">
+          <p className="text-sm font-medium">Certificate Upload (PDF/ZIP/IMG • 20MB) <span className="text-red-500">*</span></p>
+          <Input
+            type="file"
+            onChange={handleFileUpload}
+            accept=".pdf, .zip, .jpg"
+          />
+          <div className="min-h-[10px]">
+            {errors.certificate && (
+              <p className="text-red-500 text-xs mt-1">{errors.certificate}</p>
+            )}
+          </div>
+        </div>
+  
+        {/* Authorized Signatory */}
+        <div className="col-span-4 space-y-1">
           <p className="text-sm font-medium">Select Authorized Signatory <span className="text-red-500">*</span></p>
           <Select
             isMulti
@@ -613,42 +633,29 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
             }))}
             onChange={handleSignatoryChange}
           />
-          <div className="min-h-[20px]">
+          <div className="min-h-[10px]">
             {errors.signatory_data && (
               <p className="text-red-500 text-xs mt-1">{errors.signatory_data}</p>
             )}
           </div>
         </div>
-
-        <div className="col-span-2 space-y-2">
-          <p className="text-sm font-medium">Upload Certificate (Accepted: Pdf/Zip/Image, Max Size: 20mb) <span className="text-red-500">*</span></p>
-          <Input
-            type="file"
-            onChange={handleFileUpload}
-            accept=".pdf, .zip, .jpg"
-          />
-          <div className="min-h-[20px]">
-            {errors.certificate && (
-              <p className="text-red-500 text-xs mt-1">{errors.certificate}</p>
-            )}
-          </div>
-        </div>
-
-        <div className="col-span-3 flex justify-end space-x-2">
-          <Button
-            variant="solid"
-            size="sm"
-            onClick={handleSubmit}
-            loading={isLoading}
-          >
-           Confirm
-          </Button>
+  
+        {/* Buttons */}
+        <div className="col-span-4 flex justify-end space-x-2">
           <Button
             variant="plain"
             size="sm"
             onClick={onClose}
           >
             Cancel
+          </Button>
+          <Button
+            variant="solid"
+            size="sm"
+            onClick={handleSubmit}
+            loading={isLoading}
+          >
+            Confirm
           </Button>
         </div>
       </div>

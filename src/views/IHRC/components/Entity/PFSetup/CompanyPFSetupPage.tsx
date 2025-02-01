@@ -19,6 +19,7 @@ interface LocationState {
 
 const CompanyPFSetupPage: React.FC = () => {
   const { companyName } = useParams<{ companyName: string }>();
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const [pfSetupData, setPfSetupData] = useState<PFData[]>([]);
@@ -41,6 +42,7 @@ const CompanyPFSetupPage: React.FC = () => {
 });
 
   const fetchPFSetupData = async () => {
+    setIsLoading(true);
     try {
       console.log(actualCompanyId)
       const response = await httpClient.get(endpoints.pfSetup.getAll(), {
@@ -62,6 +64,8 @@ const CompanyPFSetupPage: React.FC = () => {
     } catch (error) {
       console.error('Error fetching PF Setup data:', error);
       throw error;
+    } finally{
+      setIsLoading(false)
     }
   };
   const handlePaginationChange = (page: number) => {
@@ -141,6 +145,7 @@ const handlePageSizeChange = (newPageSize: number) => {
       pagination={pagination}
       onPaginationChange={handlePaginationChange}
       onPageSizeChange={handlePageSizeChange}
+      isLoading={isLoading}
       />
     </div>
   );

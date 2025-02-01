@@ -196,7 +196,7 @@ const BranchAgreementEditForm = () => {
       );
   
       showNotification('success', 'Agreement updated successfully');
-      navigate('/branch-agreements');
+      navigate('/agreements');
     } catch (error) {
       console.error('Failed to update agreement:', error);
       showNotification('danger', 'Failed to update agreement');
@@ -259,7 +259,7 @@ const BranchAgreementEditForm = () => {
           size="sm"
           variant="plain"
           icon={<IoArrowBack className="text-gray-500 hover:text-gray-700" />}
-          onClick={() => navigate('/branch-agreements')}
+          onClick={() => navigate('/agreements')}
         />
         <h3 className="text-2xl font-semibold">Edit Agreement</h3>
       </div>
@@ -494,7 +494,7 @@ const BranchAgreementEditForm = () => {
              
               <Button
                 variant="plain"
-                onClick={() => navigate('/branch-agreements')}
+                onClick={() => navigate('/agreements')}
               >
                 Cancel
               </Button>

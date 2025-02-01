@@ -15,9 +15,9 @@ import * as yup from 'yup';
 const roleSchema = yup.object().shape({
   name: yup
     .string()
-    .required('Role name is required')
+    .required('Designation name is required')
     // .min(3, 'Role name must be at least 3 characters')/
-    .max(50, 'Role name must not exceed 50 characters')
+    .max(50, 'Designation name must not exceed 50 characters')
     .matches(/^\S.*\S$|^\S$/,'The input must not have leading or trailing spaces')
   });
 
@@ -62,7 +62,7 @@ const Role = () => {
       console.log('Role Data:', data.payload);
     } catch (error) {
       console.error('Error fetching role data:', error);
-      showErrorNotification('Failed to fetch role data');
+      showErrorNotification('Failed to fetch Designation data');
     } finally {
       setIsLoading(false);
     }
@@ -170,9 +170,9 @@ const Role = () => {
         <h5 className="mb-6">Add Designation</h5>
         <div className="flex flex-col gap-6">
           <div className="w-full">
-            <label className="text-gray-600 mb-2 block">Role Name <span className="text-red-500">*</span></label>
+            <label className="text-gray-600 mb-2 block">Designation Name <span className="text-red-500">*</span></label>
             <OutlinedInput
-              label="Role Name"
+              label="Designation Name"
               value={formData.name}
               onChange={(value: string) => handleInputChange('name', value)}
             />

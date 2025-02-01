@@ -102,7 +102,7 @@ const PFEditedData: React.FC<PFEditedDataProps> = ({
   const [users, setUsers] = useState<Array<{ id: number; name: string }>>([]);
   const [selectedSignatories, setSelectedSignatories] = useState<Array<{ id: number; name: string }>>([]);
   const [selectedLocationId, setSelectedLocationId] = useState<number>();
-  
+  const [loader, setLoader] = useState(false)
   const handleDocumentView = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (formData.register_certificate) {
@@ -354,6 +354,7 @@ const PFEditedData: React.FC<PFEditedDataProps> = ({
 
 const handleSubmit = async () => {
   try {
+    setLoader(true)
     const isValid = await validateForm();
     if (!isValid) return;
 
@@ -404,6 +405,8 @@ const handleSubmit = async () => {
   } catch (err) {
     console.error('Error submitting PF data:', err);
     openNotification('danger', 'Failed to save changes');
+  } finally {
+    setLoader(false)
   }
 };
 
@@ -642,8 +645,8 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
       {/* Action Buttons */}
       <div className="flex justify-end space-x-3 mt-4">
         <Button variant="plain" onClick={onClose}>Cancel</Button>
-        <Button variant="solid" onClick={handleSubmit} disabled={loading}>
-          {loading ? 'Updating...' : 'Update PF Setup'}
+        <Button variant="solid" onClick={handleSubmit} disabled={loading} loading={loader}>
+          Confirm
         </Button>
       </div>
     </div>

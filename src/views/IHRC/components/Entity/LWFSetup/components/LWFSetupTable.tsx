@@ -1,5 +1,4 @@
 
-
 import React, { useMemo, useState } from 'react';
 import { Button, Dialog, toast, Tooltip, Notification } from '@/components/ui';
 import { FiTrash } from 'react-icons/fi';
@@ -11,6 +10,8 @@ import dayjs from 'dayjs';
 import { showErrorNotification } from '@/components/ui/ErrorMessage';
 import { deleteLwf } from '@/store/slices/lwfSetup/lwfTrackerSlice';
 import { useDispatch } from 'react-redux';
+import Lottie from 'lottie-react';
+import loadingAnimation from '@/assets/lotties/system-regular-716-spinner-three-dots-loop-scale.json';
 
 export interface LWFSetupData {
     Company_Group_Name: string;
@@ -31,32 +32,36 @@ export interface LWFSetupData {
     lwfPaymentDueDate: string;
     lwfApplicableState: string;
     lwfRegistrationCertificate?: File | null;
+    signatories?: Array<{
+        name: string;
+        Role: { name: string };
+        email: string;
+        mobile: string;
+    }>;
 }
 
 interface LWFSetupTableProps {
     data: LWFSetupData[];
-    // onDelete?: (index: number) => void;
-    // onEdit?: (index: number, newData: LWFSetupData) => void;
     onSuspend?: (index: number) => void;
-     onRefresh?: () => void;
-     pagination: {
+    onRefresh?: () => void;
+    pagination: {
         total: number;
         pageIndex: number;
         pageSize: number;
     };
     onPaginationChange: (page: number) => void;
     onPageSizeChange: (pageSize: number) => void;
+    isLoading: boolean;
 }
 
 const LWFSetupTable: React.FC<LWFSetupTableProps> = ({ 
     data,
-    // onDelete,
-    // onEdit,
     onSuspend,
     onRefresh,
     pagination,
     onPageSizeChange,
-    onPaginationChange
+    onPaginationChange,
+    isLoading
 }) => {
     const dispatch = useDispatch();
     const [dialogIsOpen, setDialogIsOpen] = useState(false);
@@ -64,40 +69,43 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
     const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
     const [itemToEdit, setItemToEdit] = useState<LWFSetupData | null>(null);
     const [suspendDialogIsOpen, setSuspendDialogIsOpen] = useState(false);
-  const [editingId, setEditingId] = useState<number | null>(null);
+    const [editingId, setEditingId] = useState<number | null>(null);
+    const [loading, setLoading] = useState(false)
+    const maxSignatories = useMemo(() => {
+        return data.reduce((max, item) => {
+            const signatoryCount = item.signatories?.length || 0;
+            return Math.max(max, signatoryCount);
+        }, 0);
+    }, [data]);
 
-    const openSuspendDialog = (index: number) => {
-        setSuspendDialogIsOpen(true);
-        onSuspend?.(index);
-    };
+    const transformedData = useMemo(() => {
+        return data.map(item => {
+            const transformed = {
+                ...item,
+                lwfState: item.lwfState,
+                lwfLocation: item.lwfLocation,
+                lwfRegistrationNumber: item.lwfRegistrationNumber,
+                lwfRegistrationDate: item.lwfRegistrationDate,
+                lwfRemmitanceMode: item.lwfRemmitanceMode,
+                lwfRemmitanceFrequency: item.lwfRemmitanceFrequency,
+                lwfUserId: item.lwfUserId,
+                lwfPassword: item.lwfPassword,
+            };
 
-    const openNotification = (type: 'success' | 'info' | 'danger' | 'warning', message: string) => {
-        toast.push(
-            <Notification
-                title={type.charAt(0).toUpperCase() + type.slice(1)}
-                type={type}
-            >
-                {message}
-            </Notification>
-        );
-    };
+            for (let i = 0; i < maxSignatories; i++) {
+                const signatory = item.signatories?.[i];
+                transformed[`signatory_name_${i + 1}`] = signatory?.name || '';
+                transformed[`signatory_role_${i + 1}`] = signatory?.Role?.name || '';
+                transformed[`signatory_email_${i + 1}`] = signatory?.email || '';
+                transformed[`signatory_mobile_${i + 1}`] = signatory?.mobile || '';
+            }
 
-    const columns: ColumnDef<LWFSetupData>[] = useMemo(
-        () => [
-            // {
-            //     header: 'Company Group',
-            //     accessorKey: 'CompanyGroup.name',
-            //     cell: (props) => (
-            //         <div className="w-36 text-start">{props.getValue() as string}</div>
-            //     ),
-            // },
-            // {
-            //     header: 'Company',
-            //     accessorKey: 'Company.name',
-            //     cell: (props) => (
-            //         <div className="w-36 text-start">{props.getValue() as string}</div>
-            //     ),
-            // },
+            return transformed;
+        });
+    }, [data, maxSignatories]);
+
+    const columns = useMemo(() => {
+        const baseColumns = [
             {
                 header: 'LWF State',
                 enableSorting: false,
@@ -114,13 +122,6 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
                     <div className="w-36 text-start">{props.getValue() as string}</div>
                 ),
             },
-            // {
-            //     header: 'LWF Frequency',
-            //     accessorKey: 'lwfFrequency',
-            //     cell: (props) => (
-            //         <div className="w-36 text-start">{props.getValue() as string}</div>
-            //     ),
-            // },
             {
                 header: 'LWF Registration Number',
                 enableSorting: false,
@@ -132,7 +133,7 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
             {
                 header: 'LWF Registration Date',
                 enableSorting: false,
-                accessorKey: 'register_date',
+                accessorKey: 'lwfRegistrationDate',
                 cell: (props) => (
                     <div className="w-32 flex items-center justify-center">{dayjs(props.getValue() as string).format('DD-MM-YYYY')}</div>
                 ),
@@ -146,7 +147,7 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
                 ),
             },
             {
-                header: 'User ID',
+                header: 'User Name',
                 enableSorting: false,
                 accessorKey: 'username',
                 cell: (props) => (
@@ -161,76 +162,72 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
                     <div className="w-48 truncate">{props.getValue() as string}</div>
                 ),
             },
-            {
-                header: 'Authorised Signatory',
-                enableSorting: false,
-                accessorKey: 'Signatory.name',
-                cell: (props) => (
-                    <div className="w-48 truncate">{props.getValue() as string}</div>
-                ),
-            },
-            {
-                header: 'Designation',
-                enableSorting: false,
-                accessorKey: 'Signatory.Role.name',
-                cell: (props) => (
-                    <div className="w-48 truncate">{props.getValue() as string}</div>
-                ),
-            },
-            {
-                header: 'Mobile',
-                enableSorting: false,
-                accessorKey: 'Signatory.mobile',
-                cell: (props) => (
-                    <div className="w-48 truncate">{props.getValue() as string}</div>
-                ),
-            },
-            {
-                header: 'Email',
-                enableSorting: false,
-                accessorKey: 'Signatory.email',
-                cell: (props) => (
-                    <div className="w-48 truncate">{props.getValue() as string}</div>
-                ),
-            },
-            {
-                header: 'Actions',
-                id: 'actions',
-                cell: ({ row }) => (
-                    <div className="flex items-center gap-2">
-                        <Tooltip title="Edit">
-                            <Button
-                                size="sm"
-                                onClick={() => openEditDialog(row.original)}
-                                icon={<MdEdit />}
-                                className="text-blue-500"
-                            />
-                        </Tooltip>
-                        <Tooltip title="Delete">
-                            <Button
-                                size="sm"
-                                onClick={() => openDialog(row.original)}
-                                icon={<FiTrash />}
-                                className="text-red-500"
-                            />
-                        </Tooltip>
-                        {/* <Tooltip title="Suspend User">
-                            <Button
-                                size="sm"
-                                onClick={() => openSuspendDialog(row.index)}
-                                icon={<IoPersonRemoveOutline />}
-                                className="text-blue-500"
-                            />
-                        </Tooltip> */}
-                    </div>
-                ),
-            },
-        ],
-        []
-    );
+        ];
 
-    const openDialog = (index: number) => {
-        setItemToDelete(index);
+        for (let i = 0; i < maxSignatories; i++) {
+            const signatoryNum = i + 1;
+            baseColumns.push(
+                {
+                    header: `Authorized Signatory ${signatoryNum}`,
+                    accessorKey: `signatory_name_${signatoryNum}`,
+                    cell: (props) => (
+                        <div className="w-48 truncate">{props.getValue()}</div>
+                    ),
+                },
+                {
+                    header: `Designation ${signatoryNum}`,
+                    accessorKey: `signatory_role_${signatoryNum}`,
+                    cell: (props) => (
+                        <div className="w-48 truncate">{props.getValue()}</div>
+                    ),
+                },
+                {
+                    header: `Email ${signatoryNum}`,
+                    accessorKey: `signatory_email_${signatoryNum}`,
+                    cell: (props) => (
+                        <div className="w-48 truncate">{props.getValue()}</div>
+                    ),
+                },
+                {
+                    header: `Mobile ${signatoryNum}`,
+                    accessorKey: `signatory_mobile_${signatoryNum}`,
+                    cell: (props) => (
+                        <div className="w-48 truncate">{props.getValue()}</div>
+                    ),
+                }
+            );
+        }
+
+        baseColumns.push({
+            header: 'Actions',
+            id: 'actions',
+            cell: ({ row }) => (
+                <div className="flex items-center gap-2">
+                    <Tooltip title="Edit">
+                        <Button
+                            size="sm"
+                            onClick={() => openEditDialog(row.original)}
+                            icon={<MdEdit />}
+                            className="text-blue-500"
+                        />
+                    </Tooltip>
+                    <Tooltip title="Delete">
+                        <Button
+                            size="sm"
+                            onClick={() => openDialog(row.original)}
+                            icon={<FiTrash />}
+                            className="text-red-500"
+                        />
+                    </Tooltip>
+                </div>
+            ),
+        });
+
+        return baseColumns;
+    }, [maxSignatories]);
+
+    const openDialog = (item: LWFSetupData) => {
+        setItemToDelete(item.id);
         setDialogIsOpen(true);
     };
 
@@ -249,48 +246,37 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
 
     const handleDialogOk = async () => {
         if (itemToDelete) {
-          try {
-            const res = await dispatch(deleteLwf(itemToDelete.id)).unwrap()
-            .catch((error: any) => {
-              // Handle different error formats
-              if (error.response?.data?.message) {
-                  // API error response
-                  showErrorNotification(error.response.data.message);
-              } else if (error.message) {
-                  // Regular error object
-                  showErrorNotification(error.message);
-              } else if (Array.isArray(error)) {
-                  // Array of error messages
-                  showErrorNotification(error);
-              } else {
-                  // Fallback error message
-                  showErrorNotification(error);
-              }
-              throw error; // Re-throw to prevent navigation
-          });
-            
-            if (res) {
-              toast.push(
-                <Notification title="Success" type="success">
-                  LWF Setup deleted successfully
-                </Notification>
-              );
-              setDialogIsOpen(false);
-              setItemToDelete(null);
-              if (onRefresh) {
-                onRefresh(); // Refresh the data after successful deletion
-              }
+            try {
+                setLoading(true)
+                const res = await dispatch(deleteLwf(itemToDelete)).unwrap();
+                if (res) {
+                    toast.push(
+                        <Notification title="Success" type="success">
+                            LWF Setup deleted successfully
+                        </Notification>
+                    );
+                    setDialogIsOpen(false);
+                    setItemToDelete(null);
+                    if (onRefresh) {
+                        onRefresh();
+                    }
+                }
+            } catch (error) {
+                if (error.response?.data?.message) {
+                    showErrorNotification(error.response.data.message);
+                } else if (error.message) {
+                    showErrorNotification(error.message);
+                } else if (Array.isArray(error)) {
+                    showErrorNotification(error);
+                } else {
+                    showErrorNotification(error);
+                }
+            } finally {
+                setLoading(false)
             }
-          } catch (error) {
-            // toast.push(
-            //   <Notification title="Error" type="danger">
-            //     Failed to delete PF Setup
-            //   </Notification>
-            // );
-            console.log(error)
-          }
         }
-      };
+    };
+
     const handleEditConfirm = (editedData: LWFSetupData) => {
         if (itemToEdit !== null) {
             const index = data.findIndex(item => item === itemToEdit);
@@ -298,24 +284,45 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
                 onEdit?.(index, editedData);
                 setEditDialogIsOpen(false);
                 setItemToEdit(null);
-                openNotification('success', 'LWF Setup updated successfully');
+                toast.push(
+                    <Notification title="Success" type="success">
+                        LWF Setup updated successfully
+                    </Notification>
+                );
             }
         }
     };
 
+    if (isLoading) {
+        return (
+            <div className="flex flex-col items-center justify-center h-96 text-gray-500 rounded-xl">
+                <div className="w-28 h-28">
+                    <Lottie 
+                        animationData={loadingAnimation} 
+                        loop 
+                        className="w-24 h-24"
+                    />
+                </div>
+                <p className="text-lg font-semibold">
+                    Loading Data...
+                </p>
+            </div>
+        );
+    }
+
     return (
         <div className="relative">
-            {data.length === 0 ? (
+            {transformedData.length === 0 ? (
                 <div className="text-center py-8 text-gray-500">
                     No LWF setup data available
                 </div>
             ) : (
                 <DataTable
                     columns={columns}
-                    data={data}
+                    data={transformedData}
                     skeletonAvatarColumns={[0]}
                     skeletonAvatarProps={{ className: 'rounded-md' }}
-                    loading={false}
+                    loading={isLoading}
                     pagingData={{
                         total: pagination.total,
                         pageIndex: pagination.pageIndex,
@@ -333,12 +340,9 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
                 isOpen={dialogIsOpen}
                 onClose={handleDialogClose}
                 onRequestClose={handleDialogClose}
-                shouldCloseOnOverlayClick={false} 
             >
                 <h5 className="mb-4">Confirm Deletion</h5>
-                <p>
-                    Are you sure you want to delete this LWF Setup?
-                </p>
+                <p>Are you sure you want to delete this LWF Setup?</p>
                 <div className="text-right mt-6">
                     <Button
                         className="ltr:mr-2 rtl:ml-2"
@@ -347,7 +351,7 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
                     >
                         Cancel
                     </Button>
-                    <Button variant="solid" onClick={handleDialogOk}>
+                    <Button variant="solid" onClick={handleDialogOk} loading={loading}>
                         Delete
                     </Button>
                 </div>
@@ -358,7 +362,7 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
                 onClose={handleDialogClose}
                 onRequestClose={handleDialogClose}
                 width={800}
-                height={550}
+                height={510}
             >
                 <h5 className="mb-4">Edit LWF Setup</h5>
                 {itemToEdit && (

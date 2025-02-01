@@ -336,7 +336,6 @@ useEffect(()=>{
             )
             return
         }
-
         const formData = {
             ...pfSetupData,
             register_date: pfSetupData.register_date?.toISOString() || '',
@@ -657,7 +656,7 @@ useEffect(()=>{
             <div className="space-y-6">
                 <div className="grid grid-cols-2 gap-4 mb-4">
                     <div>
-                        <p className="mb-2"> Company</p>
+                        <p className="mb-2"> Company Group</p>
                         {/* <OutlinedSelect
                             label="Select Company Group"
                             options={companyGroups}
@@ -797,7 +796,7 @@ useEffect(()=>{
                     </div>
                     <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                        PF Registration Certificate(Accepted : Pdf/Zip/Image(Max Size: 20mb))
+                        PF Registration Certificate(Accepted : Pdf/Zip/Image(Max Size: 20mb))<span className="text-red-500">*</span>
                     </label>
                     <Input
                     accept='.pdf,.zip,.jpg'

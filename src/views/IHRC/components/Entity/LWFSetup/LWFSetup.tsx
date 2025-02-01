@@ -19,6 +19,7 @@ const LWFSetupPage: React.FC = () => {
   const { companyName } = useParams<{ companyName: string }>();
   const navigate = useNavigate();
   const location = useLocation();
+  const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [lwfSetupData, setLWFSetupData] = useState<LWFSetupData[]>([]);
   const locationState = location.state as { 
@@ -39,6 +40,7 @@ const LWFSetupPage: React.FC = () => {
 
   const fetchLWFSetupData = async () => {
     try {
+      setIsLoading(true);
       const response = await httpClient.get(endpoints.lwfSetup.getAll(), {
         params: {
          'company_id[]': actualCompanyId,
@@ -56,6 +58,8 @@ const LWFSetupPage: React.FC = () => {
     } catch (error) {
       console.error('Error fetching LWF Setup data:', error);
       showNotification('Failed to fetch LWF Setup data');
+    } finally{
+      setIsLoading(false);
     }
   };
   const handlePaginationChange = (page: number) => {
@@ -88,6 +92,7 @@ const handlePageSizeChange = (newPageSize: number) => {
 
   const handleAddLWFSetup = (newLWFSetup: LWFSetupData) => {
     try {
+      setIsLoading(true);
       // Implement create logic here
       console.log("New LWF Setup:", newLWFSetup);
       setIsOpen(false);
@@ -96,6 +101,8 @@ const handlePageSizeChange = (newPageSize: number) => {
     } catch (error) {
       console.error('Error adding LWF setup:', error);
       showNotification('Failed to create LWF setup');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -133,7 +140,9 @@ const handlePageSizeChange = (newPageSize: number) => {
         </Button>
       </div>
 
-      <LWFSetupTable data={lwfSetupData}  onRefresh={refreshLWFSetupData}
+      <LWFSetupTable data={lwfSetupData} 
+       isLoading={isLoading}
+      onRefresh={refreshLWFSetupData}
       pagination={pagination}
       onPaginationChange={handlePaginationChange}
       onPageSizeChange={handlePageSizeChange}
@@ -144,7 +153,7 @@ const handlePageSizeChange = (newPageSize: number) => {
         onClose={() => setIsOpen(false)}
         onRequestClose={() => setIsOpen(false)}
         width={800}
-        height={570}
+        height={510}
         shouldCloseOnOverlayClick={false} 
       >
         <h4 className="mb-2">Add LWF Setup</h4>

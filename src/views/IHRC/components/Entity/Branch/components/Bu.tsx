@@ -132,7 +132,7 @@ const Bu: React.FC<BuProps> = ({ onUploadSuccess }) => {
         width={450}
         shouldCloseOnOverlayClick={false} 
       >
-        <h5 className="mb-4"> Add Bulk Uploads</h5>
+        <h5 className="mb-4">Bulk Upload</h5>
         <div className="my-4 flex gap-2 items-center">
           <p>Download Format</p>
           <a onClick={handleDownload} className="text-blue-600 hover:underline">

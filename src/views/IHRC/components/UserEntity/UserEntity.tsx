@@ -19,7 +19,7 @@ const UserEntity = () => {
                 </h3>
                 <div className="flex items-center gap-4">
                     <OutlinedInput
-                        label="Search User"
+                        label="Search By User/Email"
                         value={searchTerm}
                         onChange={(e) => handleSearch(e)}
                     />

@@ -69,7 +69,7 @@ const Branch = () => {
                     <h3 className="text-2xl font-bold">Branches</h3>
                     <div className="flex items-center gap-4">
                         <OutlinedInput
-                            label="Search Branch"
+                            label="Search By Branch Name"
                             value={searchTerm}
                             onChange={(e) => handleSearch(e)}
                         />

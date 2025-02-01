@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { Button, Tooltip } from '@/components/ui';
@@ -9,41 +10,26 @@ interface ConfigDropdownProps {
   companyName: string;
   companyGroupName?: string;
   companyId: string;
-  groupId:string;
+  groupId: string;
 }
 
 const ConfigDropdown: React.FC<ConfigDropdownProps> = ({ 
   companyName, 
   companyGroupName, 
-  companyId ,
+  companyId,
   groupId
-}) =>{
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const buttonRef = useRef(null);
   const dropdownRef = useRef(null);
+  const containerRef = useRef(null);
   const navigate = useNavigate();
-
-
-  // console.log('ConfigDropdown Props:', { companyName, companyGroupName, companyId });
-  
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (buttonRef.current && !buttonRef.current.contains(event.target) &&
-          dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
 
   const handleSetupClick = (setupType) => {
     const urlSafeCompanyName = encodeURIComponent(companyName.replace(/\s+/g, '-').toLowerCase());
-    navigate(`${APP_PREFIX_PATH}/IHRC/${setupType.toLowerCase()}-setup/${urlSafeCompanyName}`, { state: { companyName, companyGroupName,  companyId, groupId } });
+    navigate(`${APP_PREFIX_PATH}/IHRC/${setupType.toLowerCase()}-setup/${urlSafeCompanyName}`, 
+      { state: { companyName, companyGroupName, companyId, groupId } }
+    );
     setIsOpen(false);
   };
 
@@ -54,32 +40,25 @@ const ConfigDropdown: React.FC<ConfigDropdownProps> = ({
     { key: 'LWF', label: 'LWF Setup' },
   ];
 
-  const updateDropdownPosition = () => {
-    if (buttonRef.current && dropdownRef.current) {
-      const rect = buttonRef.current.getBoundingClientRect();
-      const dropdownWidth = dropdownRef.current.offsetWidth;
-      dropdownRef.current.style.position = 'fixed';
-      dropdownRef.current.style.top = `${rect.bottom + window.scrollY}px`;
-      // Adjust the left position to move the dropdown more to the left
-      dropdownRef.current.style.left = `${rect.left + window.scrollX - dropdownWidth + rect.width}px`;
-    }
-  };
-
-
   useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (buttonRef.current && !buttonRef.current.contains(event.target) &&
+          dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
     if (isOpen) {
-      updateDropdownPosition();
-      window.addEventListener('scroll', updateDropdownPosition);
-      window.addEventListener('resize', updateDropdownPosition);
+      document.addEventListener('mousedown', handleClickOutside);
     }
+
     return () => {
-      window.removeEventListener('scroll', updateDropdownPosition);
-      window.removeEventListener('resize', updateDropdownPosition);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isOpen]);
 
   return (
-    <>
+    <div ref={containerRef} className="relative">
       <Tooltip title="Click to Configure">
         <Button
           ref={buttonRef}
@@ -91,8 +70,14 @@ const ConfigDropdown: React.FC<ConfigDropdownProps> = ({
       {isOpen && ReactDOM.createPortal(
         <div 
           ref={dropdownRef}
-          className="py-2 w-40 h-40 bg-white rounded-md shadow-xl mt-2 border border-gray-200 z-50"
-        //   style={{ position: 'relative', }}
+          className="py-2 w-40 bg-white rounded-md shadow-xl border border-gray-200 z-50 absolute"
+          style={{
+            position: 'absolute',
+            top: buttonRef.current ? buttonRef.current.getBoundingClientRect().bottom + 'px' : '0',
+            left: buttonRef.current ? 
+              (buttonRef.current.getBoundingClientRect().left - 160 + buttonRef.current.getBoundingClientRect().width) + 'px' : '0',
+            transform: 'translateY(8px)'
+          }}
         >
           {options.map((option) => (
             <button
@@ -106,7 +91,7 @@ const ConfigDropdown: React.FC<ConfigDropdownProps> = ({
         </div>,
         document.body
       )}
-    </>
+    </div>
   );
 };
 

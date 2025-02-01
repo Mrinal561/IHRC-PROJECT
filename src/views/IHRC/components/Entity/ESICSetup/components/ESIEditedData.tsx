@@ -86,6 +86,7 @@ const ESIEditedData: React.FC<ESIEditedDataProps> = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [errors, setErrors] = useState<ValidationErrors>({});
+  const [loader, setLoader] = useState(false)
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [formData, setFormData] = useState<ESISetupData>({
     id: 0,
@@ -199,6 +200,7 @@ const ESIEditedData: React.FC<ESIEditedDataProps> = ({
 const handleSubmit = async () => {
     try {
       // Mark all fields as touched
+      setLoader(true)
       const allFields = ['code_Type', 'code', 'esi_user', 'password'];
       setTouched(allFields.reduce((acc, field) => ({ ...acc, [field]: true }), {}));
 
@@ -251,6 +253,8 @@ const handleSubmit = async () => {
           Failed to update ESI data
         </Notification>
       );
+    } finally {
+      setLoader(false)
     }
   };
   const convertToBase64 = (file: File): Promise<string> => {
@@ -379,7 +383,7 @@ return (
               type="file"
               onChange={handleFileChange}
               className="w-full"
-              accept=".pdf"
+              accept=".pdf, .zip , .jpg"
             />
             {formData.certificate && (
               <button
@@ -399,8 +403,8 @@ return (
         <Button variant="plain" onClick={onClose}>
           Cancel
         </Button>
-        <Button variant="solid" onClick={handleSubmit}>
-          Update
+        <Button variant="solid" onClick={handleSubmit} loading={loader}>
+          Confirm
         </Button>
       </div>
     </div>

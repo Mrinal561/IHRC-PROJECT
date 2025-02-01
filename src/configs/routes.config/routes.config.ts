@@ -396,7 +396,7 @@ export const protectedRoutes = [
     },
     {
         key: 'entityMenu.collapse.item8',
-        path: '/branch-agreements',
+        path: '/agreements',
         component: lazy(
             () =>
                 import(

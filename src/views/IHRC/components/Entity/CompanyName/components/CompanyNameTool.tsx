@@ -152,7 +152,7 @@ const CompanyNameTool: React.FC<CompanyToolProps> = ({ onDataChange }) => {
             onClick={onDialogOk}
             loading={isSubmitting}
           >
-            {isSubmitting ? 'Adding...' : 'Confirm'}
+            Confirm
           </Button>
         </div>
       </Dialog>
