@@ -439,9 +439,9 @@ const handleRequestToAdmin = async (id: any) => {
           <Button 
             onClick={confirmDelete}
             variant="solid"
-            color="blue"
+            // color="blue"
           >
-            Delete
+            Confirm
           </Button>
         </div>
       </div>

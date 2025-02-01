@@ -567,9 +567,9 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> =({
             <Button 
               onClick={confirmDelete}
               variant="solid"
-              color="blue"
+              // color="blue"
             >
-              Delete
+              Confirm
             </Button>
           </div>
         </div>

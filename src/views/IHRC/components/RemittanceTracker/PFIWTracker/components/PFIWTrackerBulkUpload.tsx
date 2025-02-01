@@ -137,6 +137,8 @@ const PFIWTrackerBulkUpload: React.FC<PFIWTrackerBulkUploadProps> = ({ onUploadC
       }
     } catch (error) {
       setIsDialogOpen(false);
+      handleCancel();
+
       // toast.push(
       //   <Notification title="Error" type="danger">
       //     Upload failed. Please try again.
@@ -145,6 +147,8 @@ const PFIWTrackerBulkUpload: React.FC<PFIWTrackerBulkUploadProps> = ({ onUploadC
       console.error('Upload error:', error);
     }  finally {
       setLoading(false);
+      handleCancel();
+
     }
   };
 
@@ -250,7 +254,7 @@ const PFIWTrackerBulkUpload: React.FC<PFIWTrackerBulkUploadProps> = ({ onUploadC
             <Button size="sm" icon={<HiDownload />}>Download Format</Button>
           </a>
         </div>
-        <div className="mt-6 text-right">
+        <div className="mt-6 text-right flex gap-2 justify-end items-center">
           <Button
             size="sm"
             className="mr-2"

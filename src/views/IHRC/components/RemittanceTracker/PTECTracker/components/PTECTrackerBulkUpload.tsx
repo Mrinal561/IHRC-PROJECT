@@ -138,9 +138,11 @@ const PTECTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({ onUploadCon
     } catch (error : any ) {
       setIsDialogOpen(false);
       console.error('Upload error:', error);
+      handleCancel();
     } finally {
       setIsUploading(false);
       setLoading(false);
+      handleCancel();
     }
   };
 
@@ -252,7 +254,7 @@ const PTECTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({ onUploadCon
           </a>
         </div>
      
-        <div className="mt-6 text-right">
+        <div className="mt-6 text-right flex gap-2 justify-end items-center">
           <Button
             size="sm"
             className="mr-2"

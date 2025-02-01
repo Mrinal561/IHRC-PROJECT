@@ -137,8 +137,12 @@ useEffect(() => {
     } catch (error) {
       console.error('Upload error:', error);
       setIsDialogOpen(false);
+      handleCancel();
+
     } finally {
       setLoading(false);
+      handleCancel();
+
     }
   };
 
@@ -244,7 +248,7 @@ useEffect(() => {
             <Button size="sm" icon={<HiDownload />}>Download Format</Button>
           </a>
         </div>
-        <div className="mt-6 text-right">
+        <div className="mt-6 text-right flex gap-2 justify-end items-center">
           <Button
             size="sm"
             className="mr-2"
