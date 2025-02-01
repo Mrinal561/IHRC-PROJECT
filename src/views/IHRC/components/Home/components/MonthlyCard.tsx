@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import Chart from 'react-apexcharts'
-import Card from '@/components/ui/Card'
+import { Card } from '@/components/ui';
 import { COLORS } from '@/constants/chart.constant'
 
 const MonthlyCard = () => {
