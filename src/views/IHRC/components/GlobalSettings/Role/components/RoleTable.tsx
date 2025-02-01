@@ -131,8 +131,8 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
         name: ''
     });
     const [isTouched, setIsTouched] = useState(false);
-
-    
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const moduleColorMap = new Map();
 
@@ -169,6 +169,7 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
         if (!isValid) return;
 
         try {
+            setIsSubmitting(true)
             const result = await dispatch(updateRole({
                 id: itemToEdit.id,
                 name: editedRoleName.trim() 
@@ -182,6 +183,8 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
         } catch (error) {
             console.error(error);
             showErrorNotification('Failed to update role');
+        } finally {
+            setIsSubmitting(false)
         }
     };
 
@@ -230,6 +233,7 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
         // console.log(itemToDelete)
         if (itemToDelete?.id) {
             try {
+                setLoading(true)
                 const result = await dispatch(deleteRole(itemToDelete.id)) .unwrap()
                 .catch((error: any) => {
                   // Handle different error formats
@@ -259,6 +263,7 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
                 // showErrorNotification('Failed to delete role');
             } finally {
                 handleDeleteDialogClose();
+                setLoading(false)
             }
         }
     };
@@ -290,7 +295,7 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
                 ),
             },
             {
-                header: 'Module Access',
+                header: 'Module',
                 enableSorting: false,
                 id: 'moduleAccess',
                 cell: ({ row }) => (
@@ -309,7 +314,7 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
                 ),
             },
             {
-                header: 'Menu Access',
+                header: 'Menu',
                 enableSorting: false,
                 id: 'menuAccess',
                 cell: ({ row }) => (
@@ -434,10 +439,10 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
                 onClose={handleDialogClose}
                 onRequestClose={handleDialogClose}  shouldCloseOnOverlayClick={false} 
             >
-                <h5 className="mb-4">Edit Role Name</h5>
+                <h5 className="mb-4">Edit Designation Name</h5>
                 <div className="mb-4">
                     <OutlinedInput
-                        label="Role Name"
+                        label="Designation Name"
                         value={editedRoleName}
                         onChange={handleInputChange}
                     />
@@ -458,6 +463,7 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
                     <Button 
                         variant="solid" 
                         onClick={handleEditConfirm}
+                        loading={isSubmitting}
                     >
                         Confirm
                     </Button>
@@ -482,6 +488,7 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
                         Cancel
                     </Button>
                     <Button 
+                    loading={loading}
                         variant="solid"
                         // color="red"
                         onClick={handleDeleteConfirm}

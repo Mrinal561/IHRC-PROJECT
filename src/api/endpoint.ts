@@ -228,5 +228,12 @@ export const endpoints = {
         forgotpassword:{
             forgot:()=> api('forgot-password'),
             reset:() => api(`reset-password`)
+        },
+        graph:{
+            dueDate:(type:any,code:any,financialYear:any)=> api(`companyadmin/graph/graph-data?type=${type}&code=${code}&financial_year=${financialYear}`),
+            challanamount:(type:any,code:any,financialYear:any)=> api(`companyadmin/graph/challan-amount?type=${type}&code=${code}&financialYear=${financialYear}`),
+            challancounts:(type:any,code:any,financialYear:any)=> api(`companyadmin/graph/challan-counts?type=${type}&code=${code}&financial_year=${financialYear}`),
+            analytics:(type:any,code:any,financialYear:any)=> api(`companyadmin/graph/challan-analytics?type=${type}&code=${code}&financialYear=${financialYear}`),
+
         }
 }

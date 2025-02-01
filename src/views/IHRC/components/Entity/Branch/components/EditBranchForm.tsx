@@ -236,6 +236,7 @@ const validationSchema = yup.object().shape({
 const AddBranchForm: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>()
     const navigate = useNavigate()
+    const [isSubmitting, setIsSubmitting] = useState(false);
     //   const [locationData, setLocationData] = useState([]);
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
@@ -519,6 +520,8 @@ const AddBranchForm: React.FC = () => {
     // Handle state selection
     const handleStateChange = (option: SelectOption | null) => {
         setSelectedStates(option)
+        setSelectedDistrict('') // Reset district selection
+        setSelectedLocation('')
         if (option) {
             setFormData((prev) => ({
                 ...prev,
@@ -865,6 +868,7 @@ const AddBranchForm: React.FC = () => {
         }
     
         try {
+            setIsSubmitting(true);
             const res = await dispatch(
                 updateBranch({
                     id: branchId,
@@ -893,6 +897,7 @@ const AddBranchForm: React.FC = () => {
             const errorMessage = error || 'Failed to Update user'
         } finally {
             setLoading(false)
+            setIsSubmitting(false);
         }
     }
 
@@ -908,7 +913,7 @@ const AddBranchForm: React.FC = () => {
                     onClick={() => navigate('/branch')}
                 />
                 <h3 className="text-2xl font-semibold mb-2">
-                    Update New Branch
+                    Edit Branch
                 </h3>
             </div>
             {/* <p>
@@ -924,7 +929,7 @@ const AddBranchForm: React.FC = () => {
                                      Company Group{' '}
                                     <span className="text-red-500">*</span>
                                 </p>
-                                <OutlinedSelect
+                                {/* <OutlinedSelect
                                 isDisabled={true}
                                     label="Company Group"
                                     options={companyGroups}
@@ -934,7 +939,12 @@ const AddBranchForm: React.FC = () => {
                                             formData.group_id,
                                     )}
                                     onChange={setSelectedCompanyGroup}
-                                />
+                                /> */}
+                                <OutlinedInput
+                             label="Select Company Group"
+                             value={selectedCompanyGroup?.label}
+                             onChange={()=>{}}
+                        />
                             </div>
                             <div>
                                 <p className="mb-2">
@@ -1488,8 +1498,8 @@ const AddBranchForm: React.FC = () => {
                                                 <label>
                                                     {seRegistrationNumberExists ===
                                                     'applied'
-                                                        ? 'Please upload the S&E  acknowledgment copy(Accepted : Pdf/Zip/Image(Max Size: 20mb))'
-                                                        : 'Please upload the S&E Registration certificate(Accepted : Pdf/Zip/Image(Max Size: 20mb))'}
+                                                        ? 'Upload S&E Acknowledgment Copy (Accepted: PDF/Zip/Image, Max 20MB)'
+                                                        : 'Upload The S&E Registration Certificate (Accepted: PDF/Zip/Image, Max 20MB)'}
                                                     <span className="text-red-500">
                                                         *
                                                     </span>
@@ -1609,8 +1619,8 @@ const AddBranchForm: React.FC = () => {
                                             <div>
                                                 <div className="flex flex-col gap-4">
                                                     <label>
-                                                        Please upload Lease deed
-                                                        copy(Accepted : Pdf/Zip/Image(Max Size: 20mb))
+                                                        Upload Lease deed
+                                                        copy (Accepted: PDF/Zip/Image, Max 20MB)
                                                         <span className="text-red-500">
                                                             *
                                                         </span>
@@ -1832,8 +1842,8 @@ const AddBranchForm: React.FC = () => {
                                                     <label>
                                                         {seRegistrationNumberExists ===
                                                         'applied'
-                                                            ? 'Please upload the S&E acknowledgment copy(Accepted : Pdf/Zip/Image(Max Size: 20mb))'
-                                                            : 'Please upload the S&E Registration certificate(Accepted : Pdf/Zip/Image(Max Size: 20mb))'}
+                                                            ? 'Upload S&E Acknowledgment Copy (Accepted: PDF/Zip/Image, Max 20MB)'
+                                                            : 'Upload The S&E Registration Certificate  (Accepted: PDF/Zip/Image, Max 20MB)'}
                                                         <span className="text-red-500">
                                                             *
                                                         </span>{' '}
@@ -1939,21 +1949,21 @@ const AddBranchForm: React.FC = () => {
                 </div> */}
 
                         <div className="flex justify-end gap-2">
-                            <Button
-                                type="button"
-                                variant="solid"
-                                size="sm"
-                                onClick={handleUpdateBranch}
-                            >
-                                Update Branch
-                            </Button>
+                            
                             <Button
                                 type="button"
                                 variant="plain"
-                                size="sm"
                                 onClick={() => navigate(-1)}
                             >
                                 Cancel
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="solid"
+                                loading={isSubmitting}
+                                onClick={handleUpdateBranch}
+                            >
+                               Confirm
                             </Button>
                         </div>
                     </div>

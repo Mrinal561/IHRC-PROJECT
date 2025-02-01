@@ -179,7 +179,7 @@ const adminnav: NavigationTree[] = [
                     },
                     {
                         key: 'entitySetup.collapse.branchagreement',
-                        path: '/branch-agreements',
+                        path: '/agreements',
                         title: 'Agreements',
                         translateKey: 'nav.entitySetup.collapse.branchagreement',
                         icon: '',
@@ -201,7 +201,7 @@ const adminnav: NavigationTree[] = [
                     {
                         key: 'userSetup.collapse.role',
                         path: '/role',
-                        title: 'Roles',
+                        title: 'Designation',
                         translateKey: 'nav.userSetup.collapse.role',
                         icon: '',
                         type: NAV_ITEM_TYPE_ITEM,
@@ -554,7 +554,7 @@ const usernav: NavigationTree[] = [
     },
     {
         key: 'agreement',
-        path: '/branch-agreements',
+        path: '/agreements',
         title: 'Agreement',
         translateKey: 'nav.agreement',
         icon: 'remittanceCollapse',

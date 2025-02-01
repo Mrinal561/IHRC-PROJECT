@@ -61,7 +61,8 @@ const validationSchema = Yup.object().shape({
     branch: Yup.string().required('Branch is required'),
     agreementType: Yup.string().required('Agreement Type is required'),
     subCategory: Yup.string().required('Sub Category is required'),
-    ownerName: Yup.string().required('Owner Name is required'),
+    // ownerName: Yup.string().required('Owner Name is required'),
+    owner_id: Yup.string().required('Owner Name is required'),
     partnerName: Yup.string().required('Partner Name is required'),
     partnerContact: Yup.string()
       .matches(/^[0-9]{10}$/, 'Phone number must be 10 digits')
@@ -258,6 +259,7 @@ const [subCategoryInput, setSubCategoryInput] = useState('');
     values: FormValues, 
     { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }
   ) => {
+    console.log("form submisiion")
     try {
       if (!values.agreementDocument) {
         showNotification('danger', 'Agreement document is required');
@@ -296,7 +298,7 @@ const [subCategoryInput, setSubCategoryInput] = useState('');
   
       // Only show success and navigate if we get here (no error thrown)
       showNotification('success', 'Branch agreement created successfully');
-      navigate('/branch-agreements');
+      navigate('/agreements');
   
     } catch (error: any) {
       console.error('Failed to submit form:', error);
@@ -327,7 +329,7 @@ return (
           size="sm"
           variant="plain"
           icon={<IoArrowBack className="text-gray-500 hover:text-gray-700" />}
-          onClick={() => navigate('/branch-agreements')}
+          onClick={() => navigate('/agreements')}
         />
         <h3 className="text-2xl font-semibold">Add Agreement</h3>
       </div>
@@ -445,9 +447,9 @@ return (
                 }
               }}
             />
-            {/* {errors.owner_id && touched.owner_id && (
-              <p className="text-red-500 text-sm">{errors.owner_id}</p>
-            )} */}
+           {errors.owner_id && touched.owner_id && (
+    <p className="text-red-500 text-sm">{errors.owner_id}</p>
+  )}
           </div>
 
               {/* Partner Name */}
@@ -592,7 +594,7 @@ return (
                 variant='solid'
                 disabled={isSubmitting}
               >
-                {isSubmitting ? 'Submitting...' : 'Confirm'}
+                Confirm
               </Button>
             </div>
           </Form>

@@ -239,6 +239,7 @@ const validationSchema = yup.object().shape({
 const AddBranchForm: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>()
     const navigate = useNavigate()
+    const [isSubmitting, setIsSubmitting] = useState(false);
     //   const [locationData, setLocationData] = useState([]);
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
@@ -729,6 +730,7 @@ const AddBranchForm: React.FC = () => {
         }
 
         try {
+            setIsSubmitting(true);
             const response = await dispatch(createBranch(formData))
                 .unwrap()
                 .catch((error: any) => {
@@ -768,6 +770,8 @@ const AddBranchForm: React.FC = () => {
                 'An unexpected error occurred. Please try again.'
             showErrorNotification(errorMessage)
             throw error // Re-throw to prevent further execution
+        } finally {
+            setIsSubmitting(false);
         }
     }
 
@@ -782,7 +786,7 @@ const AddBranchForm: React.FC = () => {
                     }
                     onClick={() => navigate('/branch')}
                 />
-                <h3 className="text-2xl font-semibold mb-2">Add New Branch</h3>
+                <h3 className="text-2xl font-semibold mb-2">Add Branch</h3>
             </div>
             <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -791,12 +795,17 @@ const AddBranchForm: React.FC = () => {
                             Select Company Group{' '}
                             <span className="text-red-500">*</span>
                         </p>
-                        <OutlinedSelect
+                        {/* <OutlinedSelect
                         isDisabled={true}
                             label="Select Company Group"
                             options={companyGroups}
                             value={selectedCompanyGroup}
                             onChange={setSelectedCompanyGroup}
+                        /> */}
+                        <OutlinedInput
+                             label="Select Company Group"
+                             value={selectedCompanyGroup?.label}
+                             onChange={()=>{}}
                         />
                     </div>
                     <div>
@@ -1279,8 +1288,8 @@ const AddBranchForm: React.FC = () => {
                                         <label>
                                             {seRegistrationNumberExists ===
                                             'applied'
-                                                ? 'Please upload the S&E  acknowledgment copy(Accepted : Pdf/Zip/Image(Max Size: 20mb))'
-                                                : 'Please upload the S&E Registration certificate(Accepted : Pdf/Zip/Image(Max Size: 20mb))'}
+                                                ? 'Upload S&E Acknowledgment Copy (Accepted: PDF/Zip/Image, Max 20MB)'
+                                                : 'Upload S&E Registration Certificate (Accepted: PDF/Zip/Image, Max 20MB)'}
                                             <span className="text-red-500">
                                                 *
                                             </span>
@@ -1309,12 +1318,12 @@ const AddBranchForm: React.FC = () => {
                         <div className="border rounded-md py-4 p-2 mt-4">
                             <div className="flex flex-col gap-8">
                                 <div className="flex justify-between">
-                                    <h4>Lease / Rent Setup</h4>
+                                    <h4>Lease Deed / Rent Setup</h4>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                                     <div>
                                         <p className="mb-2">
-                                            Lease deed / Rent Agreement Status
+                                            Lease Deed / Rent Agreement Status
                                             <span className="text-red-500">
                                                 *
                                             </span>
@@ -1347,8 +1356,8 @@ const AddBranchForm: React.FC = () => {
                                     {leaseValidityType === 'fixed' && (
                                         <div>
                                             <p className="mb-2">
-                                                Lease deed / Rent Agreement
-                                                valid up to
+                                                Lease Deed / Rent Agreement
+                                                Valid Up To
                                                 <span className="text-red-500">
                                                     *
                                                 </span>
@@ -1372,7 +1381,7 @@ const AddBranchForm: React.FC = () => {
                                     <div>
                                         <div className="flex flex-col gap-4">
                                             <label>
-                                                Please upload Lease deed copy(Accepted : Pdf/Zip/Image(Max Size: 20mb))
+                                                Upload Lease Deed Copy(Accepted: PDF/Zip/Image, Max 20MB)
                                                 <span className="text-red-500">
                                                     *
                                                 </span>
@@ -1559,8 +1568,8 @@ const AddBranchForm: React.FC = () => {
                                             <label>
                                                 {seRegistrationNumberExists ===
                                                 'applied'
-                                                    ? 'Please upload the S&E  acknowledgment copy (Accepted : Pdf/Zip/Image(Max Size: 20mb))'
-                                                    : 'Please upload the S&E Registration certificate (Accepted : Pdf/Zip/Image(Max Size: 20mb))'}
+                                                    ? 'Upload S&E Acknowledgment Copy (Accepted: PDF/Zip/Image, Max 20MB)'
+                                                    : 'Upload S&E Registration Certificate (Accepted: PDF/Zip/Image, Max 20MB)'}
                                                 <span className="text-red-500">
                                                     *
                                                 </span>
@@ -1650,22 +1659,23 @@ const AddBranchForm: React.FC = () => {
                 </div> */}
 
                 <div className="flex justify-end gap-2">
-                    <Button
-                        type="button"
-                        variant="solid"
-                        size="sm"
-                        onClick={handleAddBranch}
-                    >
-                        Confirm
-                    </Button>
-                    <Button
+                <Button
                         type="button"
                         variant="plain"
-                        size="sm"
+                        // size="sm"
                         onClick={() => navigate(-1)}
                     >
                         Cancel
                     </Button>
+                        <Button
+                            type="button"
+                            variant="solid"
+                            loading={isSubmitting}
+                            onClick={handleAddBranch}
+                        >
+                            Confirm
+                        </Button>
+                   
                 </div>
             </div>
         </div>

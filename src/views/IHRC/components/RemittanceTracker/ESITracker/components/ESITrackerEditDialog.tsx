@@ -126,7 +126,7 @@ const ESITrackerEditDialog: React.FC<ESITrackerEditDialogProps> = ({
   const [editedData, setEditedData] = useState<ESIChallanData>({
     id: trackerId,
   });
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const dispatch = useDispatch();
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
@@ -146,7 +146,7 @@ const ESITrackerEditDialog: React.FC<ESITrackerEditDialogProps> = ({
   const fetchTrackerData = async () => {
     try {
       // console.log(trackerId)
-      setLoading(true);
+      // setLoading(true);
       const response = await dispatch((fetchTrackerById(trackerId)))
             .unwrap()
             .catch((error: any) => {
@@ -211,7 +211,7 @@ const ESITrackerEditDialog: React.FC<ESITrackerEditDialogProps> = ({
   
 const handleSubmit = async () => {
   try {
-
+    setLoading(true)
     const isValid = await validateForm();
     if (!isValid) {
       console.log(isValid)
@@ -266,6 +266,8 @@ const handleSubmit = async () => {
   } catch (err) {
     console.error('Error submitting tracker data:', err);
     // openNotification('danger', 'Failed to save changes');
+  } finally {
+    setLoading(false)
   }
 };
   const handleDateChange = (field: 'dueDate' | 'amountPaidOn' | 'month', date: Date | null) => {
@@ -314,7 +316,7 @@ const handleSubmit = async () => {
       width={800}
       height={560}
     >
-      <h5 className="mb-4">Edit ESI Tracker Detail</h5>
+      <h5 className="mb-4">Edit ESI Tracker</h5>
       
       <div className="p-4 space-y-1">
         {/* First Row */}
@@ -449,7 +451,7 @@ const handleSubmit = async () => {
         <Button variant="plain" onClick={onClose} className="mr-2">
           Cancel
         </Button>
-        <Button variant="solid" onClick={handleSubmit}>
+        <Button variant="solid" onClick={handleSubmit} loading={loading}>
           Confirm
         </Button>
       </div>

@@ -83,6 +83,10 @@ import ChallanChart from './ChallanChart'
 import ChallanCountChart from './ChallanCountChart'
 import ChallanVisualization from './ChallanVisualisation'
 
+interface DashboardBodyProps {
+  companyId: string;
+}
+
 const complianceDeadlines = [
     { date: '2024-08-01', description: 'Monthly Financial Report Due' },
     { date: '2024-08-15', description: 'Quarterly Report Due' },
@@ -102,25 +106,23 @@ const complianceDeadlines = [
     { date: '2024-12-31', description: 'End of Year Tax Filing Deadline' },
 ]
 
-const DashboardBody = () => {
+const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
   return (
     <div className='flex flex-col gap-6 mt-6'>
       {/* <Statistic /> */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* PaymentDatesChart takes full width */}
         <div className="col-span-1 lg:col-span-2">
-          <PaymentDatesChart />
+          <PaymentDatesChart companyId={companyId} />
         </div>
 
-        {/* ChallanChart and ChallanCountChart side by side */}
         <div className="col-span-1">
-          <ChallanChart />
+          <ChallanChart companyId={companyId} />
         </div>
         <div className="col-span-1">
-          <ChallanCountChart />
+          <ChallanCountChart  companyId={companyId} />
         </div>
         <div className="col-span-1 lg:col-span-2">
-          <ChallanVisualization />
+          <ChallanVisualization  companyId={companyId} />
         </div>
       </div>
     </div>

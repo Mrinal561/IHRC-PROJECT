@@ -42,6 +42,7 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
     onDataChange 
 }) => {
     const dispatch = useAppDispatch();
+    const [loading, setLoading] = useState(false)
     const [dialogIsOpen, setDialogIsOpen] = useState(false);
     const [companyGroupTableData, setCompanyGroupTableData] = useState<CompanyGroupData[]>([]);
     const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
@@ -185,6 +186,7 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
         
         // if (itemToEdit?.id && editedCompanyGroupName.trim()) {
             try {
+                setLoading(true)
                 const isValid = await validateForm();
                 if(!isValid) {
                     showErrorNotification("Please fix the validation Error");
@@ -222,7 +224,9 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
             } catch (error) {
                 console.error('Error updating company group:', error);
                 // showErrorNotification('Failed to update company group');
-            } 
+            } finally{
+                setLoading(false)
+            }
         // } else {
         //     showErrorNotification('Please enter a valid company group name');
         // }
@@ -363,7 +367,7 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
                 onClose={handleDialogClose}
                 onRequestClose={handleDialogClose}
             >
-                <h5 className="mb-4">Edit Entity Name</h5>
+                <h5 className="mb-4">Edit Company Group</h5>
                 <div className="mb-4">
                     <OutlinedInput
                         label="Company Group Name"
@@ -383,6 +387,7 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
                         Cancel
                     </Button>
                     <Button 
+                    loading={loading}
                         variant="solid" 
                         onClick={handleEditConfirm}
                     >

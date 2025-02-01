@@ -115,6 +115,7 @@ const UserEditForm = () => {
     const dispatch = useDispatch<AppDispatch>()
     const navigate = useNavigate()
     const location = useLocation()
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const locationState = location.state as LocationState
     const companyName = locationState?.companyName
     const companyId = locationState?.companyId
@@ -293,6 +294,7 @@ const loadBranches = async (companyId: string) => {
         }
         console.log(data)
         try {
+            setIsSubmitting(true)
             const res = await dispatch(
                 updateUser({
                     id: userId,
@@ -306,6 +308,8 @@ const loadBranches = async (companyId: string) => {
         } catch (error: any) {
             const errorMessage = error || 'Failed to Update user'
             showNotification('danger', errorMessage) // Show the API error message
+        } finally {
+            setIsSubmitting(false);
         }
     }
 
@@ -321,7 +325,7 @@ const loadBranches = async (companyId: string) => {
                     onClick={() => navigate('/user-entity')}
                 />
                 <h3 className="text-2xl font-semibold">
-                    User -( {editedData?.name || ''})
+                    Edit User -({editedData?.name || ''})
                 </h3>
             </div>
 
@@ -679,7 +683,7 @@ const loadBranches = async (companyId: string) => {
                                     >
                                         Cancel
                                     </Button>
-                                    <Button type="submit" variant="solid">
+                                    <Button type="submit" variant="solid" loading={isSubmitting}>
                                        Confirm
                                     </Button>
                                 </div>

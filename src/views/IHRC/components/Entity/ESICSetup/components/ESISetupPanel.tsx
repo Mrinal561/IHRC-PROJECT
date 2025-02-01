@@ -127,7 +127,7 @@ const ESISetupPanel = ({ onClose, addESISetup , refreshData, companyId, companyN
   const [locations, setLocations] = useState<LocationOption[]>([]);
   const [selectedLocation, setSelectedLocation] = useState('')
   const [users, setUsers] = useState<any[]>([])
-
+  const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState<{
     group_id: number;
     company_id: number;
@@ -391,6 +391,7 @@ useEffect(() => {
   // Handle form submission
   const handleSubmit = async () => {
     try {
+      setLoading(true)
       const isValid = await validateForm();
       if(!isValid){
         showNotification('danger', 'Please fix the validation errors');
@@ -444,6 +445,7 @@ useEffect(() => {
       // showNotification('danger', error.response?.data?.message || 'Failed to create ESI Setup');
     } finally {
       setIsLoading(false);
+      setLoading(false)
     }
   };
 
@@ -603,8 +605,8 @@ useEffect(() => {
 
 return (
   <div className="p-4">
-    <div className="grid grid-cols-3 gap-4 mb-3">
-      {/* Company Information Section */}
+    <div className="grid grid-cols-4 gap-4 mb-3">
+      {/* First Row with 4 columns */}
       <div className="space-y-2">
         <p className="text-sm font-medium">Company Group</p>
         <OutlinedInput
@@ -621,8 +623,6 @@ return (
           disabled
         />
       </div>
-
-      {/* Code and Type Section */}
       <div className="space-y-2">
         <p className="text-sm font-medium">Code Type <span className="text-red-500">*</span></p>
         <OutlinedSelect
@@ -631,7 +631,7 @@ return (
           value={codeTypeOptions.find(option => option.value === formData.code_Type)}
           onChange={handleCodeTypeChange}
         />
-        <div className="min-h-[20px]">
+        <div className="min-h-[10px]">
           {errors.code_Type && (
             <p className="text-red-500 text-xs mt-1">{errors.code_Type}</p>
           )}
@@ -644,14 +644,14 @@ return (
           value={formData.code}
           onChange={handleCodeChange}
         />
-        <div className="min-h-[20px]">
+        <div className="min-h-[10px]">
           {errors.code && (
             <p className="text-red-500 text-xs mt-1">{errors.code}</p>
           )}
         </div>
       </div>
 
-      {/* Location Section */}
+      {/* Second Row with 4 columns */}
       <div className="space-y-2">
         <p className="text-sm font-medium">State <span className="text-red-500">*</span></p>
         <OutlinedSelect
@@ -660,7 +660,7 @@ return (
           value={selectedStates}
           onChange={handleStateChange}
         />
-        <div className="min-h-[20px]">
+        <div className="min-h-[10px]">
           {errors.state_id && (
             <p className="text-red-500 text-xs mt-1">{errors.state_id}</p>
           )}
@@ -673,7 +673,7 @@ return (
           stateId={selectedStates?.value ? parseInt(selectedStates.value) : undefined}
           onDistrictSelect={(id) => setSelectedDistrictId(id)}
         />
-        <div className="min-h-[20px]">
+        <div className="min-h-[10px]">
           {errors.district_id && (
             <p className="text-red-500 text-xs mt-1">{errors.district_id}</p>
           )}
@@ -685,14 +685,12 @@ return (
           onChange={handleLocationChange}
           districtId={selectedDistrictId}
         />
-        <div className="min-h-[20px]">
+        <div className="min-h-[10px]">
           {errors.location && (
             <p className="text-red-500 text-xs mt-1">{errors.location}</p>
           )}
         </div>
       </div>
-
-      {/* User Credentials Section */}
       <div className="space-y-2">
         <p className="text-sm font-medium">ESI User</p>
         <OutlinedInput
@@ -700,12 +698,14 @@ return (
           value={formData.esi_user}
           onChange={handleESIUserChange}
         />
-        <div className="min-h-[20px]">
+        <div className="min-h-[10px]">
           {errors.esi_user && (
             <p className="text-red-500 text-xs mt-1">{errors.esi_user}</p>
           )}
         </div>
       </div>
+
+      {/* Third Row with Password (1 column) and Authorized Signatory (3 columns) */}
       <div className="space-y-2">
         <p className="text-sm font-medium">Password</p>
         <OutlinedPasswordInput
@@ -713,16 +713,16 @@ return (
           value={formData.password}
           onChange={handlePasswordChange}
         />
-        <div className="min-h-[20px]">
+        <div className="min-h-[10px]">
           {errors.password && (
             <p className="text-red-500 text-xs mt-1">{errors.password}</p>
           )}
         </div>
       </div>
-
-      <div className="col-span-1 space-y-2">
+      <div className="col-span-3 space-y-2">
         <p className="text-sm font-medium">Select Authorized Signatory<span className="text-red-500">*</span></p>
         <Select
+        size='sm'
           isMulti
           options={users.map(user => ({
             value: String(user.user_details.id),
@@ -730,20 +730,22 @@ return (
           }))}
           onChange={handleSignatoryChange}
         />
-        <div className="min-h-[20px]">
+        <div className="min-h-[10px]">
           {errors.signatory_data && (
             <p className="text-red-500 text-xs mt-1">{errors.signatory_data}</p>
           )}
         </div>
       </div>
-      <div className="col-span-2 space-y-2">
+
+      {/* Fourth Row with Upload Certificate (4 columns) */}
+      <div className="col-span-4 space-y-2">
         <p className="text-sm font-medium">Upload Certificate(Accepted : Pdf/Zip/Image(Max Size: 20mb))<span className="text-red-500">*</span></p>
         <Input
           type="file"
           onChange={handleFileUpload}
           accept=".pdf, .zip, .jpg"
         />
-        <div className="min-h-[20px]">
+        <div className="min-h-[10px]">
           {errors.certificate && (
             <p className="text-red-500 text-xs mt-1">{errors.certificate}</p>
           )}
@@ -751,21 +753,21 @@ return (
       </div>
 
       {/* Action Buttons */}
-      <div className="col-span-3 flex justify-end space-x-2">
-        <Button
-          variant="solid"
-          size="sm"
-          onClick={handleSubmit}
-          loading={isLoading}
-        >
-          Confirm
-        </Button>
+      <div className="col-span-4 flex justify-end space-x-2">
         <Button
           variant="plain"
           size="sm"
           onClick={onClose}
         >
           Cancel
+        </Button>
+        <Button
+          variant="solid"
+          size="sm"
+          onClick={handleSubmit}
+          loading={loading}
+        >
+          Confirm
         </Button>
       </div>
     </div>

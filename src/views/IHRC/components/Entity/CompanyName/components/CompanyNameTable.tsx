@@ -64,6 +64,8 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({
 }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [dialogLoading, setDialogLoading] = useState(false);
   const [companyTableData, setCompanyTableData] = useState<CompanyData[]>([]);
   const [dialogIsOpen, setDialogIsOpen] = useState(false);
   const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
@@ -88,6 +90,22 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({
   useEffect(() => {
     fetchCompanyData(1, 10);
   }, []);
+
+
+  const handleNameChange = async (value: string) => {
+    setEditedName(value);
+    try {
+      // Validate just the name field
+      await companySchema.validateAt('name', { name: value });
+      // Clear error if validation passes
+      setErrors(prev => ({ ...prev, name: undefined }));
+    } catch (err) {
+      if (err instanceof yup.ValidationError) {
+        // Set only name error
+        setErrors(prev => ({ ...prev, name: err.message }));
+      }
+    }
+  };
 
   const fetchCompanyData = async (page: number, size: number) => {
     try {
@@ -242,6 +260,7 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({
   const handleDeleteConfirm = async () => {
     if (itemToDelete?.id) {
       try {
+        setLoading(true)
         const res = await dispatch(deleteCompany(itemToDelete.id))
         .unwrap()
         .catch((error: any) => {
@@ -277,6 +296,8 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({
         onDataChange(); // Notify parent component
       } catch (error) {
         // showNotification('danger', 'Failed to delete company');
+      } finally{
+        setLoading(false)
       }
       
     }
@@ -301,61 +322,60 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({
     }
 };
   
-  const handleEditConfirm = async () => {
-    // if (itemToEdit?.id && editedName.trim()) {
-      try {
-        const isValid = await validateForm();
-        if(!isValid) return;
-        const groupId = selectedCompanyGroup 
-          ? parseInt(selectedCompanyGroup.value)
-          : itemToEdit.group_id;
+const handleEditConfirm = async () => {
+  if (!itemToEdit) {
+    showNotification('danger', 'No company selected for editing');
+    return;
+  }
 
-        if (editedName.trim() !== itemToEdit.name || groupId !== itemToEdit.group_id) {
-         const response= await dispatch(updateCompany({
-            id: itemToEdit.id,
-            data: {
-              name: editedName.trim(),
-              group_id: groupId
-            }
-          })).catch((error: any) => {
-            // Handle different error formats
-            if (error.response?.data?.message) {
-                // API error response
-                showErrorNotification(error.response.data.message);
-            } else if (error.message) {
-                // Regular error object
-                showErrorNotification(error.message);
-            } else if (Array.isArray(error)) {
-                // Array of error messages
-                showErrorNotification(error);
-            } else {
-                // Fallback error message
-                showErrorNotification(error);
-            }
-            throw error; // Re-throw to prevent navigation
-        });
+  try {
+    setDialogLoading(true);
+    
+    const isValid = await validateForm();
+    if (!isValid) {
+      setDialogLoading(false);
+      return;
+    }
 
-        if(response){
+    const groupId = selectedCompanyGroup 
+      ? parseInt(selectedCompanyGroup.value)
+      : itemToEdit.group_id;
 
-          
-          
-          onDataChange(); // Notify parent component
-          
-          // Fetch data for the current page
-          await fetchCompanyData(tableData.pageIndex, tableData.pageSize);
-          console.log("re rendering the table")
-          showNotification('success', 'Company updated successfully');
+    // Only proceed if there are actual changes
+    if (editedName.trim() !== itemToEdit.name || groupId !== itemToEdit.group_id) {
+      const response = await dispatch(updateCompany({
+        id: itemToEdit.id,
+        data: {
+          name: editedName.trim(),
+          group_id: groupId
         }
-        }
-      } catch (error) {
-        console.error(error);
-        showNotification('danger', 'Failed to update company');
+      })).unwrap(); // Use unwrap to properly handle the promise
+
+      if (response) {
+        showNotification('success', 'Company updated successfully');
+        handleDialogClose();
+        await fetchCompanyData(tableData.pageIndex, tableData.pageSize);
+        onDataChange();
       }
+    } else {
+      showNotification('danger', 'No changes detected');
       handleDialogClose();
-    // } else {
-    //   showNotification('danger', 'Please fill in all required fields');
-    // }
-  };
+    }
+  } catch (error: any) {
+    // Handle different error formats
+    if (error.response?.data?.message) {
+      showErrorNotification(error.response.data.message);
+    } else if (error.message) {
+      showErrorNotification(error.message);
+    } else if (Array.isArray(error)) {
+      showErrorNotification(error);
+    } else {
+      showErrorNotification('Failed to update company');
+    }
+  } finally {
+    setDialogLoading(false);
+  }
+};
 
   const onPaginationChange = (page: number) => {
     setTableData(prev => ({ ...prev, pageIndex: page }));
@@ -439,7 +459,7 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({
           >
             Cancel
           </Button>
-          <Button variant="solid" onClick={handleDeleteConfirm}>
+          <Button variant="solid" onClick={handleDeleteConfirm} loading={loading}>
             Delete
           </Button>
         </div>
@@ -447,46 +467,63 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({
 
       {/* Edit Dialog */}
       <Dialog
-        isOpen={editDialogIsOpen}
-        onClose={handleDialogClose}
-        onRequestClose={handleDialogClose}
+       isOpen={editDialogIsOpen}
+       onClose={() => {
+         if (!dialogLoading) {
+           handleDialogClose();
+         }
+       }}
+       onRequestClose={() => {
+         if (!dialogLoading) {
+           handleDialogClose();
+         }
+       }}
       >
         <h5 className="mb-4">Edit Company</h5>
-        <div className="flex flex-col gap-5">
-          <div>
-            <p className='mb-4'>Select Company Group <span className='text-red-500'>*</span></p>
-            <OutlinedSelect
-              label="Company Group"
-              options={companyGroups}
-              value={selectedCompanyGroup}
-              onChange={(option: SelectOption | null) => setSelectedCompanyGroup(option)}
-            />
-          </div>
-          <div>
-          <p className='mb-4'>Enter Company Name <span className='text-red-500'>*</span></p>
-            <OutlinedInput
-              label="Company Name"
-              value={editedName}
-              onChange={(value: string) => setEditedName(value)}
-            />
-             {errors.name && (
-              <div className="text-red-500 text-sm mt-1">{errors.name}</div>
-            )}
-          </div>
-        </div>
-        <div className="text-right mt-6">
-          <Button
-            className="ltr:mr-2 rtl:ml-2"
-            variant="plain"
-            onClick={handleDialogClose}
-          >
-            Cancel
-          </Button>
-          <Button variant="solid" onClick={handleEditConfirm}>
-            Confirm
-          </Button>
-        </div>
-      </Dialog>
+  <div className="flex flex-col gap-5">
+    <div>
+      <p className='mb-4'>Company Group <span className='text-red-500'>*</span></p>
+      <OutlinedSelect
+        isDisabled={true}
+        label="Company Group"
+        options={companyGroups}
+        value={selectedCompanyGroup}
+        onChange={(option: SelectOption | null) => setSelectedCompanyGroup(option)}
+      />
+    </div>
+    <div>
+      <p className='mb-4'> Company Name <span className='text-red-500'>*</span></p>
+      <OutlinedInput
+        label="Enter Company Name"
+        value={editedName}
+        onChange={(value: string) => handleNameChange(value)}
+        // disabled={dialogLoading}
+      />
+      {errors.name && (
+        <div className="text-red-500 text-sm mt-1">{errors.name}</div>
+      )}
+    </div>
+  </div>
+  <div className="text-right mt-6">
+    <Button
+      className="ltr:mr-2 rtl:ml-2"
+      variant="plain"
+      onClick={handleDialogClose}
+      disabled={dialogLoading}
+      type="button"
+    >
+      Cancel
+    </Button>
+    <Button 
+      variant="solid" 
+      onClick={handleEditConfirm} 
+      loading={dialogLoading}
+      disabled={dialogLoading}
+    >
+      Confirm
+    </Button>
+  </div>
+</Dialog>
     </div>
   );
 };

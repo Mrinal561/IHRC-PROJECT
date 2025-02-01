@@ -313,7 +313,7 @@ const handleRemitModeChange = (option: { value: string; label: string } | null) 
   }
 
   return (
-    <div className="p-4 space-y-4">
+    <div className="p-4 space-y-2">
       {/* Company and Group Information */}
       <div className="grid grid-cols-2 gap-4">
         <div className="h-[70px]">
@@ -337,10 +337,10 @@ const handleRemitModeChange = (option: { value: string; label: string } | null) 
       {/* Registration Number and User ID */}
       <div className="flex gap-4 items-center">
         <div className="flex flex-col gap-2 w-full">
-          <label>Enter LWF Registration Number</label>
+          <label>LWF Registration Number</label>
           <div className="w-full">
             <OutlinedInput
-              label="LWF Registration Number"
+              label="Enter LWF Registration Number"
               value={formData.register_number}
               onChange={(value) => handleChange('register_number', value)}
             />
@@ -352,10 +352,10 @@ const handleRemitModeChange = (option: { value: string; label: string } | null) 
           </div>
         </div>
         <div className="flex flex-col gap-2 w-full">
-          <label>Enter LWF User ID</label>
+          <label>LWF User Name</label>
           <div className="w-full">
             <OutlinedInput
-              label="LWF User ID"
+              label="Enter LWF User Name"
               value={formData.username}
               onChange={(value) => handleChange('username', value)}
             />
@@ -371,10 +371,10 @@ const handleRemitModeChange = (option: { value: string; label: string } | null) 
       {/* Password and Registration Date */}
       <div className="flex gap-4 items-center">
         <div className="flex flex-col gap-2 w-full">
-          <label>Enter LWF Password</label>
+          <label>Password</label>
           <div className="w-full">
             <OutlinedPasswordInput
-              label="LWF Password"
+              label="Enter LWF Password"
               value={formData.password}
               onChange={(value) => handleChange('password', value)}
             />
@@ -427,7 +427,7 @@ const handleRemitModeChange = (option: { value: string; label: string } | null) 
   </div>
 
   <div>
-    <label className="block text-sm font-medium text-gray-700 mb-2">LWF Certificate(Accepted : Pdf/Zip/Image(Max Size: 20mb))</label>
+    <label className="block text-sm font-medium text-gray-700 mb-2">Certificate Upload (PDF/ZIP/IMG • 20MB) *</label>
     <div className="flex items-center gap-2">
     <Input
       type="file"
