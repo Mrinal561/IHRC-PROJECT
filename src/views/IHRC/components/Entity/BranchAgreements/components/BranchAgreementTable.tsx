@@ -266,18 +266,32 @@ const BranchAgreementTable = () => {
             header: 'Start Date',
             enableSorting: false,
             accessorKey: 'start_date',
-            cell: ({ value }) => (
-                <div className="w-44">{dayjs(value).format('DD-MM-YYYY')}</div>
-            ),
-        },
-        {
+            cell: ({ getValue }) => {
+              const value = getValue();
+              return (
+                <div className="w-44">
+                  {dayjs(value).isValid() 
+                    ? dayjs(value).format('DD-MM-YYYY')
+                    : 'Invalid Date'}
+                </div>
+              );
+            },
+          },
+          {
             header: 'End Date',
             accessorKey: 'end_date',
             enableSorting: false,
-            cell: ({ value }) => (
-                <div className="w-44">{dayjs(value).format('DD-MM-YYYY')}</div>
-            ),
-        },
+            cell: ({ getValue }) => {
+              const value = getValue();
+              return (
+                <div className="w-44">
+                  {dayjs(value).isValid()
+                    ? dayjs(value).format('DD-MM-YYYY')
+                    : 'Invalid Date'}
+                </div>
+              );
+            },
+          },
         {
             header: 'Actions',
             id: 'actions',

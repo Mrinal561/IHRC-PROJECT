@@ -7,6 +7,7 @@ import {
     toast,
     Notification,
     DatePicker,
+    Select
 } from '@/components/ui'
 import { IoArrowBack } from 'react-icons/io5'
 import OutlinedSelect from '@/components/ui/Outlined'
@@ -19,6 +20,7 @@ import { format } from 'date-fns'
 import * as yup from 'yup'
 import { Formik, Field, Form, ErrorMessage } from 'formik'
 import OutlinedPasswordInput from '@/components/ui/OutlinedInput/OutlinedPasswordInput'
+import { MultiValue } from 'react-select'
 interface LocationState {
     companyName?: string
     companyId?: string
@@ -330,34 +332,36 @@ const UserAddForm = () => {
 
                 {/* Branch Selection */}
                 <div className="flex flex-col gap-2">
-                    <p className="mb-2">
-                        Select Branch(es) <span className="text-red-500">*</span>
-                    </p>
-                    <Field name="branch_id">
-                        {({ field }: any) => (
-                            <OutlinedSelect
-                                label="Select Branches"
-                                options={branches}
-                                value={branches.filter(branch => 
-                                    values.branch_id?.includes(Number(branch.value))
-                                )}
-                                onChange={(selectedOptions: SelectOption[] | null) => {
-                                    const branchIds = selectedOptions 
-                                        ? selectedOptions.map(option => Number(option.value))
-                                        : [];
-                                    setFieldValue('branch_id', branchIds);
-                                }}
-                                isMulti={true}
-                                // isDisabled={!values.company_id}
-                            />
-                        )}
-                    </Field>
-                    {touched.branch_id && errors.branch_id && (
-                        <span className="text-red-500 text-sm">
-                            {errors.branch_id}
-                        </span>
-                    )}
-                </div>
+    <p className="mb-2">
+        Select Branch(es) <span className="text-red-500">*</span>
+    </p>
+    <Field name="branch_id">
+        {({ field }: any) => (
+            <Select
+                size="sm"
+                isMulti
+                options={branches.map((branch) => ({
+                    value: branch.value,
+                    label: branch.label,
+                }))}
+                value={branches.filter((branch) =>
+                    values.branch_id?.includes(Number(branch.value))
+                )}
+                onChange={(selectedOptions: MultiValue<SelectOption>) => {
+                    const branchIds = selectedOptions
+                        ? selectedOptions.map((option) => Number(option.value))
+                        : [];
+                    setFieldValue('branch_id', branchIds);
+                }}
+            />
+        )}
+    </Field>
+    {touched.branch_id && errors.branch_id && (
+        <span className="text-red-500 text-sm">
+            {errors.branch_id}
+        </span>
+    )}
+</div>
 
                 {/* Name */}
                 <div className="flex flex-col gap-2">

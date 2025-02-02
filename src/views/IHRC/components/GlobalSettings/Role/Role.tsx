@@ -172,7 +172,7 @@ const Role = () => {
           <div className="w-full">
             <label className="text-gray-600 mb-2 block">Designation Name <span className="text-red-500">*</span></label>
             <OutlinedInput
-              label="Designation Name"
+              label="Enter Designation Name"
               value={formData.name}
               onChange={(value: string) => handleInputChange('name', value)}
             />

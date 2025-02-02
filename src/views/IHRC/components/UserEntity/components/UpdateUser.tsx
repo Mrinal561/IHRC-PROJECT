@@ -7,6 +7,7 @@ import {
     toast,
     Notification,
     DatePicker,
+    Select
 } from '@/components/ui'
 import { IoArrowBack } from 'react-icons/io5'
 import OutlinedSelect from '@/components/ui/Outlined'
@@ -24,6 +25,7 @@ import * as yup from 'yup'
 import { Formik, Field, Form, ErrorMessage } from 'formik'
 import { showErrorNotification } from '@/components/ui/ErrorMessage/ErrorMessage'
 import moment from 'moment'
+import { MultiValue } from 'react-select'
 interface LocationState {
     userId: any
     companyName?: string
@@ -636,24 +638,27 @@ const loadBranches = async (companyId: string) => {
         Select Branch(es) <span className="text-red-500">*</span>
     </p>
     <Field name="branch_id">
-        {({ field }: any) => (
-            <OutlinedSelect
-                label="Select Branches"
-                options={branches}
-                value={branches.filter(branch => 
-                    values.branch_id?.includes(Number(branch.value))
-                )}
-                onChange={(selectedOptions: SelectOption[] | null) => {
-                    const branchIds = selectedOptions 
-                        ? selectedOptions.map(option => Number(option.value))
-                        : [];
-                    setFieldValue('branch_id', branchIds);
-                }}
-                isMulti={true}
-                isDisabled={!values.company_id}
-            />
-        )}
-    </Field>
+    {({ field, form: { setFieldValue, values } }: any) => (
+        <Select
+            size="sm"
+            isMulti
+            isDisabled={!values.company_id}
+            options={branches.map((branch: Branch) => ({
+                value: branch.value,
+                label: branch.label,
+            }))}
+            value={branches.filter((branch: Branch) =>
+                values.branch_id?.includes(Number(branch.value))
+            )}
+            onChange={(selectedOptions: MultiValue<SelectOption>) => {
+                const branchIds = selectedOptions
+                    ? selectedOptions.map((option) => Number(option.value))
+                    : [];
+                setFieldValue('branch_id', branchIds);
+            }}
+        />
+    )}
+</Field>
 </div>
                                 {/* Auth Signatory (moved to full width) */}
                                 <div className="col-span-2 flex flex-col gap-2">

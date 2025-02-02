@@ -708,7 +708,7 @@ const loadStates = async () => {
     <div>
         <p className="mb-2">PT EC Frequency</p>
         <OutlinedInput
-            label="PTEC Frequency"
+            label="PT EC Frequency"
             value={ptSetupData.ptec_frequency || '--'}
              onChange={function (value: string): void {
                                     throw new Error('Function not implemented.')
@@ -718,7 +718,7 @@ const loadStates = async () => {
     <div>
         <p className="mb-2">PT RC Frequency</p>
         <OutlinedInput
-            label="PTRC Frequency"
+            label="PT RC Frequency"
             value={ptSetupData.ptrc_frequency || '--'}
              onChange={function (value: string): void {
                                     throw new Error('Function not implemented.')
@@ -729,7 +729,7 @@ const loadStates = async () => {
                 {/* User Details */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                        <p className="mb-2">PT User</p>
+                        <p className="mb-2">Username</p>
                         <OutlinedInput
                             label="Enter Username"
                             value={ptSetupData.username}

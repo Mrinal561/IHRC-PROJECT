@@ -580,7 +580,7 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
   
         {/* Rest of the form - Username and Password */}
         <div className="space-y-2">
-          <p className="text-sm font-medium">User Name</p>
+          <p className="text-sm font-medium">Username</p>
           <OutlinedInput
             label="Enter Username"
             value={formData.username}
@@ -609,7 +609,7 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
   
         {/* Upload Document */}
         <div className="col-span-2 space-y-1">
-          <p className="text-sm font-medium">Certificate Upload (PDF/ZIP/IMG • 20MB) <span className="text-red-500">*</span></p>
+          <p className="text-sm font-medium">Certificate Upload (PDF/Zip/Image, Max 20MB) <span className="text-red-500">*</span></p>
           <Input
             type="file"
             onChange={handleFileUpload}

@@ -380,7 +380,7 @@ const handleRemitModeChange = (option: { value: string; label: string } | null) 
                   <label>  PT RC Registration Number</label>
                   <div className="w-full">
                       <OutlinedInput
-                          label="Enter PT Registration Number"
+                          label="Enter PT RC Registration Number"
                           value={formData.register_number}
                           onChange={(value) => handleChange('register_number', value)}
                       />
@@ -400,7 +400,7 @@ const handleRemitModeChange = (option: { value: string; label: string } | null) 
                   <label>  PT EC Enrollment Number</label>
                   <div className="w-full">
                       <OutlinedInput
-                          label="Enter PT Enrollment Number"
+                          label="Enter PT EC Enrollment Number"
                           value={formData.enroll_number}
                           onChange={(value) => handleChange('enroll_number', value)}
                       />
@@ -414,10 +414,10 @@ const handleRemitModeChange = (option: { value: string; label: string } | null) 
                   </div>
               </div>
               <div className="flex flex-col gap-2">
-                  <label>  PT User </label>
+                  <label>   Username </label>
                   <div className="w-full">
                       <OutlinedInput
-                          label="Enter PT Username"
+                          label="Enter Username"
                           value={formData.username}
                           onChange={(value) => handleChange('username', value)}
                       />
@@ -431,7 +431,7 @@ const handleRemitModeChange = (option: { value: string; label: string } | null) 
                   </div>
               </div>
               <div className="flex flex-col gap-2">
-                  <label>  PT Password</label>
+                  <label>  Password</label>
                   <div className="w-full">
                       <OutlinedPasswordInput
                           label="Enter Password"
