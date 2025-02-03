@@ -580,9 +580,9 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
   
         {/* Rest of the form - Username and Password */}
         <div className="space-y-2">
-          <p className="text-sm font-medium">Username</p>
+          <p className="text-sm font-medium">LWF User</p>
           <OutlinedInput
-            label="Enter Username"
+            label="Enter LWF User"
             value={formData.username}
             onChange={handleUsernameChange}
           />

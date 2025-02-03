@@ -178,7 +178,7 @@ const PTSetupPage = () => {
     });
     const [selectedLocation, setSelectedLocation] = useState('')
     const [selectedDistrictId, setSelectedDistrictId] = useState<number>()
-
+    const [loading, setLoading] = useState(false)
 
     const validateField = async (fieldName: string, value: any) => {
         try {
@@ -471,6 +471,7 @@ const loadStates = async () => {
     // Submit handler
     const handleSubmit = async () => {
         try {
+            setLoading(true)
           const formData = {
                 ...ptSetupData,
                 register_date: ptSetupData.register_date?.toISOString() || '',
@@ -525,6 +526,9 @@ const loadStates = async () => {
         } catch (error: any) {
             // showErrorNotification(error.message || 'Failed to create PT Setup')
             console.log(error)
+        } finally {
+            setIsLoading(false)
+            setLoading(false)
         }
     }
 
@@ -729,9 +733,9 @@ const loadStates = async () => {
                 {/* User Details */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                        <p className="mb-2">Username</p>
+                        <p className="mb-2">PT User</p>
                         <OutlinedInput
-                            label="Enter Username"
+                            label="Enter PT User"
                             value={ptSetupData.username}
                             onChange={(value) => handleInputChange('username', value)}
                         />
@@ -845,7 +849,7 @@ const loadStates = async () => {
                 {/* Action Buttons */}
                 <div className="flex justify-end space-x-2">
                     <Button onClick={() => navigate(-1)}>Cancel</Button>
-                    <Button variant="solid" onClick={handleSubmit}>
+                    <Button variant="solid" onClick={handleSubmit} loading={loading}>
                         Confirm
                     </Button>
                 </div>

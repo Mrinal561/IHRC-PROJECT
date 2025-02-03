@@ -314,7 +314,7 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
                 ),
             },
             {
-                header: 'Menu',
+                header: 'Sub-Menu',
                 enableSorting: false,
                 id: 'menuAccess',
                 cell: ({ row }) => (

@@ -941,7 +941,7 @@ const AddBranchForm: React.FC = () => {
                                     onChange={setSelectedCompanyGroup}
                                 /> */}
                                 <OutlinedInput
-                             label="Select Company Group"
+                             label="Company Group"
                              value={selectedCompanyGroup?.label}
                              onChange={()=>{}}
                         />

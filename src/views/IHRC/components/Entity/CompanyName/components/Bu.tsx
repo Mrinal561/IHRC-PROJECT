@@ -177,7 +177,7 @@ const Bu: React.FC<BuProps> = ({ onUploadSuccess }) => {
             onClick={handleConfirm}
             loading={isUploading}
           >
-             {isUploading ? 'Uploading...' : 'Confirm'}
+            Confirm
           </Button>
         </div>
       </Dialog>

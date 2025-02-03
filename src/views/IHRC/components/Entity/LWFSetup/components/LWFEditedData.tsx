@@ -92,6 +92,7 @@ const LWFEditedData: React.FC<LWFEditedDataProps> = ({
   
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [loading, setLoading] = useState(true);
+  const [loader, setLoader] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const dispatch = useDispatch();
 
@@ -254,6 +255,7 @@ const handleChange = (field: keyof LWFSetupData, value: string) => {
 // Modified handleSubmit to still do a final validation
 const handleSubmit = async () => {
   try {
+    setLoader(true)
     const isValid = await validateForm();
     if (!isValid) return;
     
@@ -282,6 +284,8 @@ const handleSubmit = async () => {
   } catch (err) {
     console.error('Error submitting LWF data:', err);
     openNotification('danger', 'Failed to save changes');
+  } finally{
+    setLoader(false)
   }
 };
 
@@ -352,10 +356,10 @@ const handleRemitModeChange = (option: { value: string; label: string } | null) 
           </div>
         </div>
         <div className="flex flex-col gap-2 w-full">
-          <label>Username</label>
+          <label>LWF User</label>
           <div className="w-full">
             <OutlinedInput
-              label="Enter Username"
+              label="Enter LWF User"
               value={formData.username}
               onChange={(value) => handleChange('username', value)}
             />
@@ -448,11 +452,12 @@ const handleRemitModeChange = (option: { value: string; label: string } | null) 
   </div>
 </div>
 
-      <div className="flex justify-end mt-6">
+<div className="mt-6 text-right flex gap-2 justify-end items-center">
+         
         <Button variant="plain" onClick={onClose} className="mr-2">
           Cancel
         </Button>
-        <Button variant="solid" onClick={handleSubmit}>
+        <Button variant="solid" onClick={handleSubmit} loading={loader}>
           Confirm
         </Button>
       </div>
