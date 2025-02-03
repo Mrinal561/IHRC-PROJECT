@@ -159,6 +159,12 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> =({
         cell: (props) => <div className="w-28 truncate">₹{(props.getValue() as number).toLocaleString()}</div>,
       },
       {
+        header: 'EDLI Wage',
+        enableSorting: false,
+        accessorKey: 'edli_wage',
+        cell: (props) => <div className="w-28 truncate">₹{(props.getValue() as number).toLocaleString()}</div>,
+      },
+      {
         header: 'Total Challan Amount',
         enableSorting: false,
         accessorKey: 'total_challan_amt',
@@ -187,6 +193,12 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> =({
         enableSorting: false,
         accessorKey: 'payment_date',
         cell: (props) => <div className="w-40 truncate">{dayjs(props.getValue() as string).format('DD-MM-YYYY')}</div>,
+      },
+      {
+        header: 'Delay Reason',
+        enableSorting: false,
+        accessorKey: 'delay_reason',
+        cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
       },
       {
         header: 'TRRN No',

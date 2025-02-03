@@ -195,7 +195,7 @@ const handleRequestToAdmin = async (id: any) => {
       {
         header: 'Due Date',
         enableSorting: false,
-        accessorKey: 'payment_due_date',
+        accessorKey: 'return_due_date',
         cell: (props) => (
           <div className="w-28 truncate">
             {dayjs(props.getValue() as string).format('DD-MM-YYYY')}
@@ -205,16 +205,6 @@ const handleRequestToAdmin = async (id: any) => {
       {
         header: 'Date Of Payment',
         enableSorting: false,
-        accessorKey: 'payment_date',
-        cell: (props) => (
-          <div className="w-40 truncate">
-            {dayjs(props.getValue() as string).format('DD-MM-YYYY')}
-          </div>
-        ),
-      },
-      {
-        header: 'Submission Date',
-        enableSorting: false,
         accessorKey: 'submit_date',
         cell: (props) => (
           <div className="w-40 truncate">
@@ -222,6 +212,16 @@ const handleRequestToAdmin = async (id: any) => {
           </div>
         ),
       },
+      // {
+      //   header: 'Submission Date',
+      //   enableSorting: false,
+      //   accessorKey: 'submit_date',
+      //   cell: (props) => (
+      //     <div className="w-40 truncate">
+      //       {dayjs(props.getValue() as string).format('DD-MM-YYYY')}
+      //     </div>
+      //   ),
+      // },
       {
         header: 'Delay',
         enableSorting: false,
