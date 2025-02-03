@@ -497,9 +497,9 @@ const PTECTrackerTable: React.FC<PTTrackerTableProps> = ({
             <Button 
               onClick={confirmDelete}
               variant="solid"
-              color="blue"
+              // color="blue"
             >
-              Delete
+              Confirm
             </Button>
           </div>
         </div>

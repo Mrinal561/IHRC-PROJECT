@@ -19,6 +19,7 @@ const PTSetupPage: React.FC = () => {
   const { companyName } = useParams<{ companyName: string }>();
   const navigate = useNavigate();
   const location = useLocation();
+  const [isLoading, setIsLoading] = useState(false);
   const [ptSetupData, setPTSetupData] = useState<PTSetupData[]>([]);
   const dispatch = useDispatch();
     const locationState = location.state as { 
@@ -41,6 +42,7 @@ const PTSetupPage: React.FC = () => {
 
   const fetchPTSetupData = async () => {
     try {
+      setIsLoading(true);
       const response = await await httpClient.get(endpoints.ptSetup.getAll(), {
         params: {
           'company_id[]': actualCompanyId,
@@ -59,6 +61,8 @@ const PTSetupPage: React.FC = () => {
     } catch (error) {
       console.error('Error fetching PT Setup data:', error);
       throw error;
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -136,7 +140,9 @@ const handlePageSizeChange = (newPageSize: number) => {
         </Button>
       </div>
 
-      <PTSetupTable data={ptSetupData}  onRefresh={refreshPTSetupData} 
+      <PTSetupTable data={ptSetupData}  
+      isLoading={isLoading}
+      onRefresh={refreshPTSetupData} 
       pagination={pagination}
       onPaginationChange={handlePaginationChange}
       onPageSizeChange={handlePageSizeChange}

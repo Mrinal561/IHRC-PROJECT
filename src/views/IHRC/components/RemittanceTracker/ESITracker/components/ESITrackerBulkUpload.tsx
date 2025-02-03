@@ -141,9 +141,11 @@ const ESITrackerBulkUpload: React.FC<ESITrackerBulkUploadProps> = ({ onUploadCon
         } catch (error) {
             console.error('Upload error:', error);
             setIsDialogOpen(false)
+            handleCancel();
         } finally {
             setIsUploading(false);
             setLoading(false);
+            handleCancel();
         }
     };
 
@@ -257,7 +259,7 @@ const ESITrackerBulkUpload: React.FC<ESITrackerBulkUploadProps> = ({ onUploadCon
                         <Button size="sm" icon={<HiDownload />}>Download Format</Button>
                     </a>
                 </div>
-                <div className="mt-6 text-right">
+                <div className="mt-6 text-right flex gap-2 justify-end items-center">
                     <Button
                         size="sm"
                         className="mr-2"

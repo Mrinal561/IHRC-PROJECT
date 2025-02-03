@@ -324,7 +324,7 @@ return (
           />
         </div>
         <div className="h-[90px]">
-          <p className="text-sm font-medium mb-2">Code Type</p>
+          <p className="text-sm font-medium mb-2">Code Type<span className="text-red-500">*</span></p>
           <OutlinedSelect
             label="Select Code Type"
             options={codeTypeOptions}
@@ -342,7 +342,7 @@ return (
       {/* Second Row: ESI Code, ESI User, Password */}
       <div className="grid grid-cols-3 gap-4">
         <div className="h-[90px]">
-          <p className="text-sm font-medium mb-2">ESI Code</p>
+          <p className="text-sm font-medium mb-2">ESI Code<span className="text-red-500">*</span></p>
           <OutlinedInput
             label="ESI Code"
             value={formData.code}
@@ -377,7 +377,7 @@ return (
       {/* ESI Certificate */}
       <div className="grid grid-cols-1 gap-3">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">ESI Certificate(Accepted : Pdf/Zip/Image(Max Size: 20mb))</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">ESI Certificate(PDF/Zip/Image, Max 20MB)<span className="text-red-500">*</span></label>
           <div className="flex items-center gap-2">
             <Input
               type="file"

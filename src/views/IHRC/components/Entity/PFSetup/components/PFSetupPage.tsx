@@ -796,7 +796,7 @@ useEffect(()=>{
                     </div>
                     <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                        PF Registration Certificate(Accepted : Pdf/Zip/Image(Max Size: 20mb))<span className="text-red-500">*</span>
+                    PF Certificate (PDF/Zip/Image, Max 20MB)<span className="text-red-500">*</span>
                     </label>
                     <Input
                     accept='.pdf,.zip,.jpg'

@@ -11,6 +11,9 @@ import dayjs from 'dayjs';
 import { showErrorNotification } from '@/components/ui/ErrorMessage';
 import { deletePT } from '@/store/slices/ptSetup/ptSetupSlice';
 import { useDispatch } from 'react-redux';
+import Lottie from 'lottie-react';
+import loadingAnimation from '@/assets/lotties/system-regular-716-spinner-three-dots-loop-scale.json';
+
 
 interface PTSetupTableProps {
   data: PTSetupData[];
@@ -22,9 +25,10 @@ interface PTSetupTableProps {
   };
   onPaginationChange: (page: number) => void;
   onPageSizeChange: (pageSize: number) => void;
+  isLoading: boolean;
 }
 
-const PTSetupTable: React.FC<PTSetupTableProps> = ({ data , onRefresh, pagination,onPageSizeChange,onPaginationChange}) => {
+const PTSetupTable: React.FC<PTSetupTableProps> = ({ data, isLoading , onRefresh, pagination,onPageSizeChange,onPaginationChange}) => {
   const dispatch = useDispatch()
   const [dialogIsOpen, setDialogIsOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<number | null>(null);
@@ -32,7 +36,7 @@ const PTSetupTable: React.FC<PTSetupTableProps> = ({ data , onRefresh, paginatio
   const [itemToEdit, setItemToEdit] = useState<PTSetupData | null>(null);
   const [suspendDialogIsOpen, setSuspendDialogIsOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
-
+  const [loading, setLoading] = useState(false)
   const openSuspendDialog = (index: number) => {
     setSuspendDialogIsOpen(true);
   };
@@ -82,7 +86,7 @@ const PTSetupTable: React.FC<PTSetupTableProps> = ({ data , onRefresh, paginatio
         ),
       },
       {
-        header: 'PT Enrollment Number(PTEC)',
+        header: 'Enrollment Number(PT EC)',
         enableSorting: false,
         accessorKey: 'enroll_number',
         cell: (props: any) => (
@@ -90,7 +94,7 @@ const PTSetupTable: React.FC<PTSetupTableProps> = ({ data , onRefresh, paginatio
         ),
       },
       {
-        header: 'PT Registration Number(PTRC)',
+        header: 'Registration Number(PT RC)',
         enableSorting: false,
         accessorKey: 'register_number',
         cell: (props: any) => (
@@ -225,6 +229,7 @@ const PTSetupTable: React.FC<PTSetupTableProps> = ({ data , onRefresh, paginatio
   const handleDialogOk = async () => {
     if (itemToDelete) {
       try {
+        setLoading(true)
         const res = await dispatch(deletePT(itemToDelete.id)).unwrap()
         .catch((error: any) => {
           // Handle different error formats
@@ -263,9 +268,28 @@ const PTSetupTable: React.FC<PTSetupTableProps> = ({ data , onRefresh, paginatio
         //   </Notification>
         // );
         console.log(error)
+      } finally {
+        setLoading(false)
       }
     }
   };
+
+  if (isLoading) {
+    return (
+        <div className="flex flex-col items-center justify-center h-96 text-gray-500 rounded-xl">
+            <div className="w-28 h-28">
+                <Lottie 
+                    animationData={loadingAnimation} 
+                    loop 
+                    className="w-24 h-24"
+                />
+            </div>
+            <p className="text-lg font-semibold">
+                Loading Data...
+            </p>
+        </div>
+    );
+}
 
   return (
     <div className="relative">
@@ -279,7 +303,7 @@ const PTSetupTable: React.FC<PTSetupTableProps> = ({ data , onRefresh, paginatio
           data={data}
           skeletonAvatarColumns={[0]}
           skeletonAvatarProps={{ className: 'rounded-md' }}
-          loading={false}
+          loading={isLoading}
           pagingData={{
             total: pagination.total,
             pageIndex: pagination.pageIndex,
@@ -308,7 +332,7 @@ const PTSetupTable: React.FC<PTSetupTableProps> = ({ data , onRefresh, paginatio
           >
             Cancel
           </Button>
-          <Button variant="solid" onClick={handleDialogOk}>Delete</Button>
+          <Button variant="solid" onClick={handleDialogOk} loading={loading}>Confirm</Button>
         </div>
       </Dialog>
 
@@ -317,7 +341,7 @@ const PTSetupTable: React.FC<PTSetupTableProps> = ({ data , onRefresh, paginatio
         onClose={handleDialogClose}
         onRequestClose={handleDialogClose}
         width={1060}
-        height={560}
+        height={510}
       >
         <h5 className="mb-4">Edit PT Setup</h5>
         {itemToEdit && (

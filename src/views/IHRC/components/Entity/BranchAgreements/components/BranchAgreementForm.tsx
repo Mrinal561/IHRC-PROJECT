@@ -103,7 +103,7 @@ const BranchAgreementForm = () => {
   const [agreementDocument, setAgreementDocument] = useState<File | null>(null);
   const [isLoadingSubCategories, setIsLoadingSubCategories] = useState(false);
 const [subCategoryInput, setSubCategoryInput] = useState('');
-
+const [loading, setLoading] = useState(false)
   const [formdata, setFormData] = useState<BranchAgreement>({
     branch_id: 0,
     agreement_type: '',
@@ -261,6 +261,7 @@ const [subCategoryInput, setSubCategoryInput] = useState('');
   ) => {
     console.log("form submisiion")
     try {
+      setLoading(true)
       if (!values.agreementDocument) {
         showNotification('danger', 'Agreement document is required');
         return;
@@ -320,6 +321,7 @@ const [subCategoryInput, setSubCategoryInput] = useState('');
       }
     } finally {
       setSubmitting(false);
+      setLoading(false)
     }
   };
 return (
@@ -593,6 +595,7 @@ return (
                 type="submit" 
                 variant='solid'
                 disabled={isSubmitting}
+                loading={loading}
               >
                 Confirm
               </Button>

@@ -792,7 +792,7 @@ const AddBranchForm: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                     <div>
                         <p className="mb-2">
-                            Select Company Group{' '}
+                            Company Group{' '}
                             <span className="text-red-500">*</span>
                         </p>
                         {/* <OutlinedSelect
@@ -803,7 +803,7 @@ const AddBranchForm: React.FC = () => {
                             onChange={setSelectedCompanyGroup}
                         /> */}
                         <OutlinedInput
-                             label="Select Company Group"
+                             label="Company Group"
                              value={selectedCompanyGroup?.label}
                              onChange={()=>{}}
                         />
@@ -1288,8 +1288,8 @@ const AddBranchForm: React.FC = () => {
                                         <label>
                                             {seRegistrationNumberExists ===
                                             'applied'
-                                                ? 'Upload S&E Acknowledgment Copy (Accepted: PDF/Zip/Image, Max 20MB)'
-                                                : 'Upload S&E Registration Certificate (Accepted: PDF/Zip/Image, Max 20MB)'}
+                                                ? 'Upload S&E Acknowledgment(PDF/Zip/Image, Max 20MB)'
+                                                : 'Upload S&E Certificate(PDF/Zip/Image, Max 20MB)'}
                                             <span className="text-red-500">
                                                 *
                                             </span>
@@ -1568,8 +1568,8 @@ const AddBranchForm: React.FC = () => {
                                             <label>
                                                 {seRegistrationNumberExists ===
                                                 'applied'
-                                                    ? 'Upload S&E Acknowledgment Copy (Accepted: PDF/Zip/Image, Max 20MB)'
-                                                    : 'Upload S&E Registration Certificate (Accepted: PDF/Zip/Image, Max 20MB)'}
+                                                    ? 'Upload S&E Acknowledgment (PDF/Zip/Image, Max 20MB)'
+                                                    : 'Upload S&E Certificate (PDF/Zip/Image, Max 20MB)'}
                                                 <span className="text-red-500">
                                                     *
                                                 </span>

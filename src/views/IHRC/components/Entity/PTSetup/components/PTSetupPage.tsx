@@ -706,9 +706,9 @@ const loadStates = async () => {
                 </div>
 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
     <div>
-        <p className="mb-2">PTEC Frequency</p>
+        <p className="mb-2">PT EC Frequency</p>
         <OutlinedInput
-            label="PTEC Frequency"
+            label="PT EC Frequency"
             value={ptSetupData.ptec_frequency || '--'}
              onChange={function (value: string): void {
                                     throw new Error('Function not implemented.')
@@ -716,9 +716,9 @@ const loadStates = async () => {
         />
     </div>
     <div>
-        <p className="mb-2">PTRC Frequency</p>
+        <p className="mb-2">PT RC Frequency</p>
         <OutlinedInput
-            label="PTRC Frequency"
+            label="PT RC Frequency"
             value={ptSetupData.ptrc_frequency || '--'}
              onChange={function (value: string): void {
                                     throw new Error('Function not implemented.')
@@ -755,7 +755,7 @@ const loadStates = async () => {
                     <div>
                         <p className="mb-2">Email</p>
                         <OutlinedInput
-                            label="Email"
+                            label="Enter Email"
                             value={ptSetupData.email}
                             onChange={(value) => handleInputChange('email', value)}
                         />
@@ -770,7 +770,7 @@ const loadStates = async () => {
                     <div>
                         <p className="mb-2">Mobile Number  <span className="text-red-500">*</span></p>
                         <OutlinedInput
-                        label="Mobile Number"
+                        label="Enter Mobile Number"
                         value={ptSetupData.mobile}
                         onChange={(value) => handleInputChange('mobile', value)}
               />

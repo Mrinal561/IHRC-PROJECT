@@ -739,7 +739,7 @@ return (
 
       {/* Fourth Row with Upload Certificate (4 columns) */}
       <div className="col-span-4 space-y-2">
-        <p className="text-sm font-medium">Upload Certificate(Accepted : Pdf/Zip/Image(Max Size: 20mb))<span className="text-red-500">*</span></p>
+        <p className="text-sm font-medium">Upload Certificate(PDF/Zip/Image, Max 20MB)<span className="text-red-500">*</span></p>
         <Input
           type="file"
           onChange={handleFileUpload}
