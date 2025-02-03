@@ -179,6 +179,7 @@ const ConfigDropdown: React.FC<ConfigDropdownProps> = ({
   const dropdownRef = useRef(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -229,6 +230,7 @@ const ConfigDropdown: React.FC<ConfigDropdownProps> = ({
     }
 
     try {
+      setLoading(true)
       const formData = new FormData();
       formData.append('document', selectedFile);
       
@@ -264,10 +266,12 @@ const ConfigDropdown: React.FC<ConfigDropdownProps> = ({
     } catch (error) {
       toast.push(
         <Notification title="Error" type="danger">
-          Failed to upload document
+           {error.response.data.message}
         </Notification>
       );
       console.error('Upload error:', error);
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -341,7 +345,7 @@ const ConfigDropdown: React.FC<ConfigDropdownProps> = ({
              accept='.pdf, .zip, .jpg'
           />
         </div>
-        <div className="mt-6 text-right">
+        <div className="mt-6 text-right flex gap-2 justify-end items-center">
           <Button
             size="sm"
             className="mr-2"
@@ -354,6 +358,7 @@ const ConfigDropdown: React.FC<ConfigDropdownProps> = ({
             size="sm"
             onClick={handleFileUpload}
             disabled={!selectedFile}
+            loading={loading}
           >
             Confirm
           </Button>

@@ -440,9 +440,10 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
                 onRequestClose={handleDialogClose}  shouldCloseOnOverlayClick={false} 
             >
                 <h5 className="mb-4">Edit Designation Name</h5>
-                <div className="mb-4">
+                <div className="w-full">
+            <label className="text-gray-600 mb-2 block">Designation Name <span className="text-red-500">*</span></label>
                     <OutlinedInput
-                        label="Designation Name"
+                        label="Enter Designation Name"
                         value={editedRoleName}
                         onChange={handleInputChange}
                     />
@@ -474,7 +475,7 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
                 onClose={handleDeleteDialogClose}
                 onRequestClose={handleDeleteDialogClose}
             >
-                <h5 className="mb-4">Delete Role</h5>
+                <h5 className="mb-4">Delete Designation</h5>
                 <div className="mb-4">
                     <p>Are you sure you want to delete the designation "{itemToDelete?.name}"?</p>
                     {/* <p className="text-red-500 mt-2">This action cannot be undone.</p> */}

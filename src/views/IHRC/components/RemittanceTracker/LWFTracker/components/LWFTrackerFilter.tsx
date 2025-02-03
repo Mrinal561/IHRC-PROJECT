@@ -287,7 +287,7 @@ const LWFTrackerFilter: React.FC<LWFTrackerFilterProps> = ({ onFilterChange }) =
       </div> 
       <div className='flex-1 min-w-[140px]'>
         <OutlinedInput
-          label="Search"
+          label="Search By Location"
           value={searchValue}
           onChange={(e) => handleSearchChange(e)}
         />

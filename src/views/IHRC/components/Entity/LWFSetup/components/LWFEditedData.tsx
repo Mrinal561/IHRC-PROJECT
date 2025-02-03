@@ -337,7 +337,7 @@ const handleRemitModeChange = (option: { value: string; label: string } | null) 
       {/* Registration Number and User ID */}
       <div className="flex gap-4 items-center">
         <div className="flex flex-col gap-2 w-full">
-          <label>LWF Registration Number</label>
+          <label>LWF Registration Number<span className="text-red-500">*</span></label>
           <div className="w-full">
             <OutlinedInput
               label="Enter LWF Registration Number"
@@ -352,10 +352,10 @@ const handleRemitModeChange = (option: { value: string; label: string } | null) 
           </div>
         </div>
         <div className="flex flex-col gap-2 w-full">
-          <label>LWF User Name</label>
+          <label>Username</label>
           <div className="w-full">
             <OutlinedInput
-              label="Enter LWF User Name"
+              label="Enter Username"
               value={formData.username}
               onChange={(value) => handleChange('username', value)}
             />
@@ -374,7 +374,7 @@ const handleRemitModeChange = (option: { value: string; label: string } | null) 
           <label>Password</label>
           <div className="w-full">
             <OutlinedPasswordInput
-              label="Enter LWF Password"
+              label="Enter Password"
               value={formData.password}
               onChange={(value) => handleChange('password', value)}
             />
@@ -386,7 +386,7 @@ const handleRemitModeChange = (option: { value: string; label: string } | null) 
           </div>
         </div>
         <div className="flex flex-col gap-2 w-full">
-          <label>LWF Registration Date</label>
+          <label>LWF Registration Date<span className="text-red-500">*</span></label>
           <div className="w-full">
             <DatePicker
               size="sm"
@@ -407,7 +407,7 @@ const handleRemitModeChange = (option: { value: string; label: string } | null) 
       <div className="grid grid-cols-2 gap-4">
   {/* Remit Mode Section */}
   <div className="flex flex-col">
-    <label className="block text-sm font-medium text-gray-700 mb-2">Remit Mode</label>
+    <label className="block text-sm font-medium text-gray-700 mb-2">Remit Mode <span className="text-red-500">*</span></label>
     <div>
       <OutlinedSelect
         label="Select Mode"
@@ -427,7 +427,7 @@ const handleRemitModeChange = (option: { value: string; label: string } | null) 
   </div>
 
   <div>
-    <label className="block text-sm font-medium text-gray-700 mb-2">Certificate Upload (PDF/ZIP/IMG • 20MB) *</label>
+    <label className="block text-sm font-medium text-gray-700 mb-2">Certificate Upload (PDF/Zip/Image, Max 20MB) <span className="text-red-500">*</span></label>
     <div className="flex items-center gap-2">
     <Input
       type="file"

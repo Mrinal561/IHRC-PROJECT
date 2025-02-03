@@ -276,7 +276,7 @@ const PTECTrackerFilter: React.FC<PTECTrackerFilterProps> = ({ onFilterChange })
       
       <div className='flex-1 min-w-[140px]'>
         <OutlinedSelect
-          label="PTEC Code"
+          label="PT EC Code"
           options={ptCodeOptions}
           value={selectedPtCode}
           onChange={handlePtCodeChange}
@@ -284,7 +284,7 @@ const PTECTrackerFilter: React.FC<PTECTrackerFilterProps> = ({ onFilterChange })
       </div> 
       <div className='flex-1 min-w-[140px]'>
         <OutlinedInput
-          label="Search"
+          label="Search By Location"
           value={searchValue}
           onChange={(e) => handleSearchChange(e)}
         />
