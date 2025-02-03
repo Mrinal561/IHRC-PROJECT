@@ -46,7 +46,7 @@ const ESISetupTable: React.FC<ESISetupTableProps> = ({
   const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
   const [itemToEdit, setItemToEdit] = useState<EsiSetupData | null>(null);
   const [editingId, setEditingId] = useState<number | null>(null);
-
+  const [Loading, setLoading] = useState(false)
   const maxSignatories = useMemo(() => {
     return data.reduce((max, item) => {
       const signatoryCount = item.signatories?.length || 0;
@@ -204,6 +204,7 @@ const ESISetupTable: React.FC<ESISetupTableProps> = ({
   const handleDialogOk = async () => {
     if (itemToDelete) {
       try {
+        setLoading(true)
         const res = await dispatch(deleteESI(itemToDelete)).unwrap();
         if (res) {
           toast.push(
@@ -227,6 +228,8 @@ const ESISetupTable: React.FC<ESISetupTableProps> = ({
         } else {
           showErrorNotification(error);
         }
+      } finally{
+        setLoading(false)
       }
     }
   };
@@ -296,7 +299,8 @@ const ESISetupTable: React.FC<ESISetupTableProps> = ({
       >
         <h5 className="mb-4">Confirm Deletion</h5>
         <p>Are you sure you want to delete this ESI Setup?</p>
-        <div className="text-right mt-6">
+        <div className="mt-6 text-right flex gap-2 justify-end items-center">
+         
           <Button
             className="ltr:mr-2 rtl:ml-2"
             variant="plain"
@@ -304,8 +308,8 @@ const ESISetupTable: React.FC<ESISetupTableProps> = ({
           >
             Cancel
           </Button>
-          <Button variant="solid" onClick={handleDialogOk}>
-            Delete
+          <Button variant="solid" onClick={handleDialogOk} loading={Loading}>
+            Confirm
           </Button>
         </div>
       </Dialog>

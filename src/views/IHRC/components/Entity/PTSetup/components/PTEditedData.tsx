@@ -414,10 +414,10 @@ const handleRemitModeChange = (option: { value: string; label: string } | null) 
                   </div>
               </div>
               <div className="flex flex-col gap-2">
-                  <label>   Username </label>
+                  <label>   PT User </label>
                   <div className="w-full">
                       <OutlinedInput
-                          label="Enter Username"
+                          label="Enter PT User"
                           value={formData.username}
                           onChange={(value) => handleChange('username', value)}
                       />

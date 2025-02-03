@@ -453,7 +453,7 @@ const BranchTable: React.FC<BranchTableProps> = ({
                         Cancel
                     </Button>
                     <Button variant="solid" onClick={handleDialogOk}>
-                        Delete
+                        Confirm
                     </Button>
                 </div>
             </Dialog>

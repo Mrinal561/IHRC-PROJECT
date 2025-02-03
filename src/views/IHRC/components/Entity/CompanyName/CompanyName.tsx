@@ -5,7 +5,6 @@
 // import OutlinedInput from '@/components/ui/OutlinedInput';
 // import AdaptableCard from '@/components/shared/AdaptableCard';
 // import CompanyNameTable from './components/CompanyNameTable';
-// import Filter from './components/Filter';
 // import { useAppDispatch } from '@/store';
 // import { fetchCompanies, createCompany } from '@/store/slices/company/companySlice';
 // import { CompanyData } from '@/@types/company';
@@ -24,11 +23,11 @@
 
 // const validationSchema = yup.object().shape({
 //   name: yup
-//   .string()
-//   .required('Company name is required')
-//   .min(2, 'Company name must be at least 2 characters')
-//   .max(100, 'Company name must not exceed 100 characters')
-//   .matches(/^\S.*\S$|^\S$/,'The input must not have leading or trailing spaces'),
+//     .string()
+//     .required('Company name is required')
+//     .min(2, 'Company name must be at least 2 characters')
+//     .max(100, 'Company name must not exceed 100 characters')
+//     .matches(/^\S.*\S$|^\S$/,'The input must not have leading or trailing spaces'),
 //   group_id: yup
 //     .number()
 //     .min(1, 'Valid company group is required')
@@ -37,8 +36,6 @@
 
 // const CompanyName = () => {
 //   const dispatch = useAppDispatch();
-//   const [nameFieldTouched, setNameFieldTouched] = useState(false);
-
 //   const [isLoading, setIsLoading] = useState(false);
 //   const [dialogLoading, setDialogLoading] = useState(false);
 //   const [companyData, setCompanyData] = useState<CompanyData[]>([]);
@@ -47,7 +44,11 @@
 //   const navigate = useNavigate();
 //   const [companyGroup, setCompanyGroup] = useState({ id: 0, name: '' });
 //   const [searchTerm, setSearchTerm] = useState('');
-
+//   const [pagination, setPagination] = useState({
+//     total: 0,
+//     pageIndex: 1,
+//     pageSize: 10,
+// });
 //   // Load default company group
 //   const loadDefaultCompanyGroup = async () => {
 //     try {
@@ -55,7 +56,6 @@
 //         params: { ignorePlatform: true },
 //       });
       
-//       // Assuming we want the first company group as default
 //       if (data.data && data.data.length > 0) {
 //         const defaultGroup = data.data[0];
 //         const groupData = {
@@ -63,7 +63,6 @@
 //           name: defaultGroup.name
 //         };
 //         setCompanyGroup(groupData);
-//         // Initialize formik with the default group_id
 //         formik.setFieldValue('group_id', defaultGroup.id);
 //       }
 //     } catch (error) {
@@ -86,6 +85,10 @@
 //       }));
       
 //       if (data && data.data) {
+//         setPagination(prev => ({
+//           ...prev,
+//           total: data.paginate_data.totalResults
+//       }));
 //         setCompanyData(
 //           data.data.map((v: any) => ({
 //             ...v,
@@ -93,7 +96,6 @@
 //           })) || []
 //         );
 //       }
-//       // console.log(companyData)
 //     } catch (error) {
 //       console.error('Failed to fetch companies:', error);
 //       toast.push(
@@ -105,10 +107,20 @@
 //       setIsLoading(false);
 //     }
 //   };
+//   const handlePaginationChange = (page: number) => {
+//     setPagination(prev => ({ ...prev, pageIndex: page }));
+// };
+
+// const handlePageSizeChange = (newPageSize: number) => {
+//     setPagination(prev => ({
+//         ...prev,
+//         pageSize: newPageSize,
+//         pageIndex: 1, // Reset to first page when changing page size
+//     }));
+// };
 
 //   const handleSearch = (value: string) => {
 //     setSearchTerm(value);
-//     // Debounce the API call to avoid too many requests
 //     const timeoutId = setTimeout(() => {
 //       fetchCompanyDataTable(1, 10, value);
 //     }, 300);
@@ -123,10 +135,12 @@
 //   const formik = useFormik({
 //     initialValues: {
 //       name: '',
-//       group_id: companyGroup.id, // Initialize with current group_id
+//       group_id: companyGroup.id,
 //     },
 //     validationSchema,
-//     enableReinitialize: true, // This ensures form values update when initialValues change
+//     validateOnChange: true,
+//     validateOnBlur: true,
+//     enableReinitialize: true,
 //     onSubmit: async (values) => {
 //       if (values.group_id === 0) {
 //         showErrorNotification('Valid company group is required');
@@ -168,10 +182,6 @@
 //   });
 
 //   useEffect(() => {
-//     console.log(companyData);
-//   }, [handleSearch]);
-
-//   useEffect(() => {
 //     loadDefaultCompanyGroup();
 //   }, []);
 
@@ -179,24 +189,15 @@
 //     fetchCompanyDataTable();
 //   }, []);
 
-//   // useEffect(() => {
-//   //   if (isTouched) {
-//   //     formik.validateForm();
-//   //   }
-//   // }, [formik.values, isTouched]);
-
 //   const onDialogClose = () => {
 //     setIsOpen(false);
 //     formik.resetForm();
-//     setNameFieldTouched(false); 
 //   };
 
 //   const handleInputChange = (value: string) => {
-//     setNameFieldTouched(true); 
 //     formik.setFieldValue('name', value);
+//     formik.setFieldTouched('name', true, false);
 //   };
-
-//   const shouldShowNameError = nameFieldTouched && formik.errors.name;
 
 //   return (
 //     <AdaptableCard className="h-full" bodyClass="h-full">
@@ -205,9 +206,8 @@
 //           <h3 className="text-2xl font-bold">Companies</h3>
 //         </div>
 //         <div className="flex gap-3 items-center">
-//           {/* <Filter /> */}
 //           <OutlinedInput
-//             label="Search Company"
+//             label="Search By Company Name"
 //             value={searchTerm}
 //             onChange={(e) => handleSearch(e)}
 //           />
@@ -228,6 +228,9 @@
 //         onDataChange={handleDataChange}
 //         companyData={companyData}
 //         isLoading={isLoading}
+//         pagination={pagination}
+//       onPaginationChange={handlePaginationChange}
+//       onPageSizeChange={handlePageSizeChange}
 //       />
 
 //       <Dialog
@@ -255,8 +258,10 @@
 //               label="Enter Company Name"
 //               value={formik.values.name}
 //               onChange={handleInputChange}
+//               onBlur={formik.handleBlur('name')}
+//               error={Boolean(formik.touched.name && formik.errors.name)}
 //             />
-//             {shouldShowNameError&& (
+//             {formik.touched.name && formik.errors.name && (
 //               <div className="mt-1 text-red-500 text-sm">{formik.errors.name}</div>
 //             )}
 //           </div>
@@ -275,7 +280,6 @@
 //               loading={dialogLoading}
 //               type="submit"
 //             >
-//               {/* {dialogLoading ? 'Adding...' : 'Confirm'} */}
 //               Confirm
 //             </Button>
 //           </div>
@@ -332,6 +336,11 @@ const CompanyName = () => {
   const navigate = useNavigate();
   const [companyGroup, setCompanyGroup] = useState({ id: 0, name: '' });
   const [searchTerm, setSearchTerm] = useState('');
+  const [pagination, setPagination] = useState({
+    total: 0,
+    pageIndex: 1,
+    pageSize: 10,
+  });
 
   // Load default company group
   const loadDefaultCompanyGroup = async () => {
@@ -369,6 +378,10 @@ const CompanyName = () => {
       }));
       
       if (data && data.data) {
+        setPagination(prev => ({
+          ...prev,
+          total: data.paginate_data.totalResults
+        }));
         setCompanyData(
           data.data.map((v: any) => ({
             ...v,
@@ -388,17 +401,28 @@ const CompanyName = () => {
     }
   };
 
+  const handlePaginationChange = (page: number) => {
+    setPagination(prev => ({ ...prev, pageIndex: page }));
+    fetchCompanyDataTable(page, pagination.pageSize, searchTerm);
+  };
+
+  const handlePageSizeChange = (newPageSize: number) => {
+    setPagination(prev => ({
+      ...prev,
+      pageSize: newPageSize,
+      pageIndex: 1, // Reset to first page when changing page size
+    }));
+    fetchCompanyDataTable(1, newPageSize, searchTerm);
+  };
+
   const handleSearch = (value: string) => {
     setSearchTerm(value);
-    const timeoutId = setTimeout(() => {
-      fetchCompanyDataTable(1, 10, value);
-    }, 300);
-    return () => clearTimeout(timeoutId);
+    fetchCompanyDataTable(1, pagination.pageSize, value);
   };
 
   const handleDataChange = async () => {
     setTableKey(prevKey => prevKey + 1);
-    await fetchCompanyDataTable(1, 10);
+    await fetchCompanyDataTable(pagination.pageIndex, pagination.pageSize, searchTerm);
   };
 
   const formik = useFormik({
@@ -455,8 +479,8 @@ const CompanyName = () => {
   }, []);
 
   useEffect(() => {
-    fetchCompanyDataTable();
-  }, []);
+    fetchCompanyDataTable(pagination.pageIndex, pagination.pageSize, searchTerm);
+  }, [pagination.pageIndex, pagination.pageSize, searchTerm]);
 
   const onDialogClose = () => {
     setIsOpen(false);
@@ -478,7 +502,7 @@ const CompanyName = () => {
           <OutlinedInput
             label="Search By Company Name"
             value={searchTerm}
-            onChange={(e) => handleSearch(e)}
+            onChange={(e) => handleSearch(e.target.value)}
           />
           <Bu onUploadSuccess={handleDataChange} />
           <Button
@@ -497,6 +521,9 @@ const CompanyName = () => {
         onDataChange={handleDataChange}
         companyData={companyData}
         isLoading={isLoading}
+        pagination={pagination}
+        onPaginationChange={handlePaginationChange}
+        onPageSizeChange={handlePageSizeChange}
       />
 
       <Dialog
@@ -523,7 +550,7 @@ const CompanyName = () => {
             <OutlinedInput
               label="Enter Company Name"
               value={formik.values.name}
-              onChange={handleInputChange}
+              onChange={(e) => handleInputChange(e.target.value)}
               onBlur={formik.handleBlur('name')}
               error={Boolean(formik.touched.name && formik.errors.name)}
             />
