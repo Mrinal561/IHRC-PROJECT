@@ -16,6 +16,7 @@ import { useDispatch } from 'react-redux';
 import { FaUserShield } from 'react-icons/fa';
 import { requestCompanyEdit } from '@/store/slices/request/requestSLice';
 import store from '@/store';
+import { showErrorNotification } from '@/components/ui/ErrorMessage';
 
 export interface Company {
   id: number;
@@ -101,6 +102,7 @@ const LWFTrackerTable: React.FC<LWFTrackerTableProps> = ({
   canEdit
 }) => {
   const dispatch = useDispatch();
+  const [loader ,setLoader] = useState(false)
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editingData, setEditingData] = useState<LWFTrackerData | null>(null);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -113,13 +115,37 @@ const LWFTrackerTable: React.FC<LWFTrackerTableProps> = ({
   };
 
    const confirmDelete = () => {
+    try{
+      setLoader(true)
+    
     if (trackerToDelete) {
-      dispatch(deleteLwfTracker(trackerToDelete));
+      dispatch(deleteLwfTracker(trackerToDelete)).unwrap().catch((error: any) => {
+        // Handle different error formats
+        if (error.response?.data?.message) {
+            // API error response
+            showErrorNotification(error.response.data.message);
+        } else if (error.message) {
+            // Regular error object
+            showErrorNotification(error.message);
+        } else if (Array.isArray(error)) {
+            // Array of error messages
+            showErrorNotification(error);
+        } else {
+            // Fallback error message
+            showErrorNotification(error);
+        }
+        throw error; // Re-throw to prevent navigation
+    });
       setDeleteConfirmOpen(false);
       if (onRefresh) {
         onRefresh();
       }
     }
+  } catch(error:any){
+    console.log(error)
+  } finally {
+    setLoader(false)
+  }
   };
 
   const handleRequestToAdmin = async (id: any) => {
@@ -176,7 +202,7 @@ const LWFTrackerTable: React.FC<LWFTrackerTableProps> = ({
         header: 'Registration Number',
         enableSorting: false,
         accessorKey: 'LwfSetup.register_number',
-        cell: (props) => <div className="w-52 truncate">{props.getValue() as string}</div>,
+        cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
       },
       {
         header: 'Payroll month',
@@ -192,26 +218,26 @@ const LWFTrackerTable: React.FC<LWFTrackerTableProps> = ({
                   }
       },
       {
-        header: 'Salary Register Amt',
+        header: 'Salary Register Amount',
         enableSorting: false,
         accessorKey: 'salary_register_amt',
-        cell: (props) => <div className="w-52 truncate">
+        cell: (props) => <div className="w-36 truncate">
           ₹{(props.getValue() as number)?.toLocaleString() || '-'}
         </div>,
       },
       {
-        header: 'Total Paid Amt',
+        header: 'Total Paid Amount',
         enableSorting: false,
         accessorKey: 'total_paid_amt',
-        cell: (props) => <div className="w-52 truncate">
+        cell: (props) => <div className="w-36 truncate">
           ₹{(props.getValue() as number)?.toLocaleString() || '-'}
         </div>,
       },
       {
-        header: 'Difference Amt',
+        header: 'Difference Amount',
         enableSorting: false,
         accessorKey: 'difference_amt',
-        cell: (props) => <div className="w-52 truncate">
+        cell: (props) => <div className="w-36 truncate">
           ₹{(props.getValue() as number)?.toLocaleString() || '-'}
         </div>,
       },
@@ -244,7 +270,7 @@ const LWFTrackerTable: React.FC<LWFTrackerTableProps> = ({
         enableSorting: false,
         accessorKey: 'delay_in_days',
         cell: (props) => <div className="w-28 truncate">
-          {props.getValue() ? `${props.getValue()} Days` : '-'}
+          {props.getValue()}-Days
         </div>,
       },
       {
@@ -252,7 +278,7 @@ const LWFTrackerTable: React.FC<LWFTrackerTableProps> = ({
         enableSorting: false,
         accessorKey: 'delay_reason',
         cell: (props) => <div className="w-40 truncate">
-          {(props.getValue() as string) || '-'}
+          {(props.getValue() as string) || '--'}
         </div>,
       },
       {
@@ -453,7 +479,7 @@ if (loading) {
           <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>
           <p className="mb-6">Are you sure you want to delete this LWF Tracker entry?</p>
           
-          <div className="flex justify-end space-x-2">
+          <div className="flex justify-end space-x-2  items-center">
             <Button 
               onClick={() => setDeleteConfirmOpen(false)}
               variant="plain"
@@ -464,6 +490,7 @@ if (loading) {
               onClick={confirmDelete}
               variant="solid"
               // color="blue"
+              loading={loader}
             >
               Confirm
             </Button>

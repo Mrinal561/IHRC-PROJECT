@@ -18,6 +18,7 @@ import { deletePtecTracker } from '@/store/slices/ptSetup/ptecTrackerSlice';
 import { FaUserShield } from 'react-icons/fa';
 import { requestCompanyEdit } from '@/store/slices/request/requestSLice';
 import store from '@/store';
+import { showErrorNotification } from '@/components/ui/ErrorMessage';
 
 const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
@@ -52,6 +53,7 @@ const PTECTrackerTable: React.FC<PTTrackerTableProps> = ({
   canEdit
 }) => {
    const dispatch = useDispatch();
+   const [loader ,setLoader] = useState(false)
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editingData, setEditingData] = useState<PTTrackerData | null>(null);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -64,13 +66,37 @@ const PTECTrackerTable: React.FC<PTTrackerTableProps> = ({
   };
 
   const confirmDelete = () => {
+    try{
+
+    setLoader(true)
     if (trackerToDelete) {
-      dispatch(deletePtecTracker(trackerToDelete));
+      dispatch(deletePtecTracker(trackerToDelete)).unwrap().catch((error: any) => {
+        // Handle different error formats
+        if (error.response?.data?.message) {
+            // API error response
+            showErrorNotification(error.response.data.message);
+        } else if (error.message) {
+            // Regular error object
+            showErrorNotification(error.message);
+        } else if (Array.isArray(error)) {
+            // Array of error messages
+            showErrorNotification(error);
+        } else {
+            // Fallback error message
+            showErrorNotification(error);
+        }
+        throw error; // Re-throw to prevent navigation
+    });
       setDeleteConfirmOpen(false);
       if (onRefresh) {
         onRefresh();
       }
     }
+  } catch(error:any){
+    console.log(error)
+  } finally{
+    setLoader(false)
+  }
   };
   const handleEdit = (row: PTTrackerData) => {
     setEditingData(row);
@@ -229,13 +255,13 @@ const PTECTrackerTable: React.FC<PTTrackerTableProps> = ({
         header: 'Delay',
         enableSorting: false,
         accessorKey: 'delay_in_days',
-        cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
+        cell: (props) => <div className="w-28 truncate">{props.getValue()}-Days</div>,
       },
       {
         header: 'Delay Reason',
         enableSorting: false,
         accessorKey: 'delay_reason',
-        cell: (props) => <div className="w-36 truncate">{props.getValue() as string}</div>,
+        cell: (props) => <div className="w-36 truncate">{props.getValue() as string || '--'}</div>,
       },
       {
         header: 'Receipt No',
@@ -487,7 +513,7 @@ const PTECTrackerTable: React.FC<PTTrackerTableProps> = ({
           <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>
           <p className="mb-6">Are you sure you want to delete this PTEC Tracker entry?</p>
           
-          <div className="flex justify-end space-x-2">
+          <div className="flex justify-end space-x-2 items-center">
             <Button 
               onClick={() => setDeleteConfirmOpen(false)}
               variant="plain"
@@ -497,6 +523,7 @@ const PTECTrackerTable: React.FC<PTTrackerTableProps> = ({
             <Button 
               onClick={confirmDelete}
               variant="solid"
+              loading={loader}
               // color="blue"
             >
               Confirm

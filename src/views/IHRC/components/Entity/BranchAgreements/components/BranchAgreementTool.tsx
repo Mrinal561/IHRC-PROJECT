@@ -3,7 +3,7 @@ import React from 'react'
 import { HiPlusCircle } from 'react-icons/hi'
 import { useNavigate } from 'react-router-dom'
 
-const BranchAgreementTool = () => {
+const BranchAgreementTool = ({canCreate}) => {
 
     const navigate = useNavigate();
 
@@ -14,7 +14,9 @@ const BranchAgreementTool = () => {
   return (
     <div className='flex gap-2 items-center w- pb-6'>
         <div>
+          {canCreate && (
             <Button variant='solid' onClick={handleBranchAgreement} icon={<HiPlusCircle />} size="sm" >Add Agreement</Button>
+          )}
         </div>
     </div>
   )

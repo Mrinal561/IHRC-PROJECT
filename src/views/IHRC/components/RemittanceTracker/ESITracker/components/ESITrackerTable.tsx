@@ -49,7 +49,7 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> =({
 }) => {
     // const [data, setData] = useState<ESITrackerData[]>(sampleData);
     const dispatch = useDispatch();
-
+    const [loader ,setLoader] = useState(false)
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [editingData, setEditingData] = useState<esiChallanData | null>(null);
     const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -69,6 +69,8 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> =({
       };
 
       const confirmDelete = () => {
+        try{
+          setLoader(true)
         if (trackerToDelete) {
           dispatch(deleteTracker(trackerToDelete)).unwrap().catch((error: any) => {
             // Handle different error formats
@@ -93,6 +95,11 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> =({
             onRefresh();
           }
         }
+      } catch(error:any){
+        console.log(error)
+      }finally{
+        setLoader(false)
+      }
       };
 
       const handleRequestToAdmin = async (id: any) => {
@@ -290,7 +297,7 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> =({
               accessorKey: 'delay_in_days',
               cell: (props) => (
                   <div className="w-40 truncate">
-                      {props.getValue() as string}
+                      {props.getValue()}-Days
                   </div>
               ),
           },
@@ -300,7 +307,7 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> =({
               accessorKey: 'delay_reason',
               cell: (props) => (
                   <div className="w-40 truncate">
-                      {props.getValue() as string}
+                      {props.getValue() as string || '--'}
                   </div>
               ),
           },
@@ -557,7 +564,7 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> =({
           <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>
           <p className="mb-6">Are you sure you want to delete this ESI Tracker entry?</p>
           
-          <div className="flex justify-end space-x-2">
+          <div className="flex justify-end space-x-2  items-center">
             <Button 
               onClick={() => setDeleteConfirmOpen(false)}
               variant="plain"
@@ -567,6 +574,7 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> =({
             <Button 
               onClick={confirmDelete}
               variant="solid"
+              loading={loader}
               // color="blue"
             >
               Confirm
