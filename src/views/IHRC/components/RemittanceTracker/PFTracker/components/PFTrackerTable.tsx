@@ -16,6 +16,7 @@ import { VscGitPullRequestGoToChanges } from 'react-icons/vsc';
 import { FaUserShield } from 'react-icons/fa';
 import { requestCompanyEdit } from '@/store/slices/request/requestSLice';
 import store from '@/store';
+import { showErrorNotification } from '@/components/ui/ErrorMessage';
 const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
 interface PfTrackerTableProps {
@@ -49,6 +50,7 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> =({
   canEdit
 }) => {
   const dispatch = useDispatch();
+  const [loader ,setLoader] = useState(false)
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editingData, setEditingData] = useState<PfChallanData | null>(null);
   const [pfTrackerData, setPfTrackerData] = useState<PfChallanData[]>([]);
@@ -63,13 +65,37 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> =({
   };
 
   const confirmDelete = () => {
+    try{
+
+      setLoader(true)
     if (trackerToDelete) {
-      dispatch(deleteTracker(trackerToDelete));
+      dispatch(deleteTracker(trackerToDelete)).unwrap().catch((error: any) => {
+        // Handle different error formats
+        if (error.response?.data?.message) {
+            // API error response
+            showErrorNotification(error.response.data.message);
+        } else if (error.message) {
+            // Regular error object
+            showErrorNotification(error.message);
+        } else if (Array.isArray(error)) {
+            // Array of error messages
+            showErrorNotification(error);
+        } else {
+            // Fallback error message
+            showErrorNotification(error);
+        }
+        throw error; // Re-throw to prevent navigation
+    });
       setDeleteConfirmOpen(false);
       if (onRefresh) {
         onRefresh();
       }
     }
+  } catch(error:any){
+    console.log(error)
+  } finally{
+    setLoader(false)
+  }
   };
 
   const handleRequestToAdmin = async (id: any) => {
@@ -195,10 +221,16 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> =({
         cell: (props) => <div className="w-40 truncate">{dayjs(props.getValue() as string).format('DD-MM-YYYY')}</div>,
       },
       {
+        header: 'Delay In Days',
+        enableSorting: false,
+        accessorKey: 'delay_in_days',
+        cell: (props) => <div className="w-40 truncate">{props.getValue() as string}-Days</div>,
+      },
+      {
         header: 'Delay Reason',
         enableSorting: false,
         accessorKey: 'delay_reason',
-        cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
+        cell: (props) => <div className="w-40 truncate">{props.getValue() as string || '--'}</div>,
       },
       {
         header: 'TRRN No',
@@ -456,7 +488,7 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> =({
           <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>
           <p className="mb-6">Are you sure you want to delete this PF Tracker entry?</p>
           
-          <div className="flex justify-end space-x-2">
+          <div className="flex justify-end space-x-2  items-center">
             <Button 
               onClick={() => setDeleteConfirmOpen(false)}
               variant="plain"
@@ -466,6 +498,7 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> =({
             <Button 
               onClick={confirmDelete}
               variant="solid"
+              loading={loader}
               // color="blue"
             >
               Confirm

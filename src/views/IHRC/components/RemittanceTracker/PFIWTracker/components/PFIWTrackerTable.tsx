@@ -16,6 +16,7 @@ import { deletePfiwTracker } from '@/store/slices/pftracker/pfTrackerSlice';
 import { FaUserShield } from 'react-icons/fa';
 import { requestCompanyEdit } from '@/store/slices/request/requestSLice';
 import store from '@/store';
+import { showErrorNotification } from '@/components/ui/ErrorMessage';
 
 const documentPath = "../store/AllMappedCompliancesDetails.xls";
 
@@ -91,7 +92,7 @@ const [trackerToDelete, setTrackerToDelete] = useState<string | null>(null);
   const dispatch = useDispatch();
   const userId = login?.user?.user?.id;
   const type = login?.user?.user?.type;
-
+  const [loader ,setLoader] = useState(false)
   
 const handleDeleteConfirmation = (trackerId: string) => {
   setTrackerToDelete(trackerId);
@@ -99,13 +100,36 @@ const handleDeleteConfirmation = (trackerId: string) => {
 };
 
 const confirmDelete = () => {
+  try{
+    setLoader(true)
   if (trackerToDelete) {
-    dispatch(deletePfiwTracker(trackerToDelete));
+    dispatch(deletePfiwTracker(trackerToDelete)).unwrap().catch((error: any) => {
+      // Handle different error formats
+      if (error.response?.data?.message) {
+          // API error response
+          showErrorNotification(error.response.data.message);
+      } else if (error.message) {
+          // Regular error object
+          showErrorNotification(error.message);
+      } else if (Array.isArray(error)) {
+          // Array of error messages
+          showErrorNotification(error);
+      } else {
+          // Fallback error message
+          showErrorNotification(error);
+      }
+      throw error; // Re-throw to prevent navigation
+  });
     setDeleteConfirmOpen(false);
     if (onRefresh) {
       onRefresh();
     }
   }
+} catch(error:any){
+  console.log(error)
+} finally {
+  setLoader(false)
+}
 };
 const handleRequestToAdmin = async (id: any) => {
   try {
@@ -225,10 +249,10 @@ const handleRequestToAdmin = async (id: any) => {
       {
         header: 'Delay',
         enableSorting: false,
-        accessorKey: 'delay_days',
+        accessorKey: 'delay_in_days',
         cell: (props) => (
           <div className="w-40 truncate">
-            {props.getValue() ? `${props.getValue()} Days` : '--'}
+            {props.getValue()}-Days
           </div>
         ),
       },
@@ -429,7 +453,7 @@ const handleRequestToAdmin = async (id: any) => {
         <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>
         <p className="mb-6">Are you sure you want to delete this PFIW Tracker entry?</p>
         
-        <div className="flex justify-end space-x-2">
+        <div className="flex justify-end space-x-2  items-center">
           <Button 
             onClick={() => setDeleteConfirmOpen(false)}
             variant="plain"
@@ -439,6 +463,7 @@ const handleRequestToAdmin = async (id: any) => {
           <Button 
             onClick={confirmDelete}
             variant="solid"
+            loading={loader}
             // color="blue"
           >
             Confirm

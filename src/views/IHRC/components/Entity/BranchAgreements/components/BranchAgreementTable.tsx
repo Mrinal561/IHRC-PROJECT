@@ -11,7 +11,7 @@ import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-const BranchAgreementTable = () => {
+const BranchAgreementTable = (canEdit,canDelete) => {
     const { user } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
@@ -19,6 +19,7 @@ const BranchAgreementTable = () => {
     
     // State Management
     const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(false)
     const [isLoading, setIsLoading] = useState(false);
     const [isBranchLoading, setIsBranchLoading] = useState(false);
     const [branches, setBranches] = useState([]);
@@ -214,6 +215,7 @@ const BranchAgreementTable = () => {
 
     const handleDelete = async () => {
         try {
+            setLoading(true)
           await httpClient.delete(endpoints.branchAgreement.delete(selectedAgreementId));
           showNotification('success', 'Branch agreement deleted successfully');
           fetchBranchAgreementData(); // Refresh the table
@@ -221,6 +223,8 @@ const BranchAgreementTable = () => {
         } catch (error) {
           console.error('Failed to delete agreement:', error);
           showNotification('danger', 'Failed to delete agreement');
+        } finally {
+            setLoading(false)
         }
       };
 
@@ -250,12 +254,12 @@ const BranchAgreementTable = () => {
             accessorKey: 'sub_category',
             Cell: ({ value }) => <div className="w-40 truncate">{value}</div>,
         },
-        // {
-        //     header: 'Owner',
-        //     enableSorting: false,
-        //     accessorKey: 'owner_name',
-        //     Cell: ({ value }) => <div className="w-40 truncate">{value}</div>,
-        // },
+        {
+            header: 'Owner',
+            enableSorting: false,
+            accessorKey: 'owner.name',
+            Cell: ({ value }) => <div className="w-40 truncate">{value}</div>,
+        },
         {
             header: 'Partner',
             enableSorting: false,
@@ -297,6 +301,8 @@ const BranchAgreementTable = () => {
             id: 'actions',
             cell: ({ row }) => (
                 <div className="flex items-center gap-2">
+                    
+                    {canEdit && (
                     <Tooltip title="Edit">
                         <Button
                             size="sm"
@@ -307,17 +313,20 @@ const BranchAgreementTable = () => {
                             className="text-blue-500"
                         />
                     </Tooltip>
+                    )}
+                    {canDelete && (
                     <Tooltip title="Delete">
-        <Button
-          size="sm"
-          icon={<FiTrash />}
-          className="text-red-500"
-          onClick={() => {
-            setSelectedAgreementId(row.original.id);
-            setDeleteDialogOpen(true);
-          }}
-        />
-      </Tooltip>
+                        <Button
+                        size="sm"
+                        icon={<FiTrash />}
+                        className="text-red-500"
+                        onClick={() => {
+                            setSelectedAgreementId(row.original.id);
+                            setDeleteDialogOpen(true);
+                        }}
+                        />
+                    </Tooltip>
+                    )}
                 </div>
             ),
         },
@@ -394,8 +403,8 @@ const BranchAgreementTable = () => {
                       >
                           Cancel
                       </Button>
-                      <Button variant="solid" onClick={handleDelete}>
-                          Delete
+                      <Button variant="solid" onClick={handleDelete} loading={loading}>
+                          Confirm
                       </Button>
                   </div>
 </Dialog>
