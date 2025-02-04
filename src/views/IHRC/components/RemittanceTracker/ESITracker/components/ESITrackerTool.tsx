@@ -196,20 +196,29 @@ const ESITrackerTool: React.FC<{
     }
   };
   return (
-    <div className='w-full'>
-      <div className="flex gap-4 items-center mb-4 w-full">
-        <ESITrackerFilter 
-          onFilterChange={handleFilterChange} 
-        />
-        <CustomDateRangePicker onApply={handleDateRangeApply} />
-        <Button  
-          variant="solid" 
-          size="sm" 
-          icon={<HiDownload />}
-          onClick={handleDownload}>
-          Download ESI Data
-        </Button>
-        <ESITrackerBulkUpload onUploadConfirm={handleUploadConfirm} canCreate={canCreate} />
+    <div className="w-full px-4">
+      <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center mb-4 w-full">
+        <div className="w-full lg:flex-1">
+          <ESITrackerFilter 
+            onFilterChange={handleFilterChange} 
+          />
+        </div>
+        <div className="flex flex-wrap gap-2 items-center">
+          <CustomDateRangePicker onApply={handleDateRangeApply} />
+          <Button  
+            variant="solid" 
+            size="sm" 
+            icon={<HiDownload />}
+            onClick={handleDownload}
+            className="whitespace-nowrap"
+          >
+            Download ESI Data
+          </Button>
+          <ESITrackerBulkUpload 
+            onUploadConfirm={handleUploadConfirm} 
+            canCreate={canCreate} 
+          />
+        </div>
       </div>
     </div>
   );

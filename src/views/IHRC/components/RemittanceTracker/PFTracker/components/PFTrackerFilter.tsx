@@ -260,8 +260,8 @@ const PFTrackerFilter: React.FC<PFTrackerFilterProps> = ({ onFilterChange }) => 
   };
 
   return ( 
-    <div className="w-full flex items-center gap-3">  
-      <div className='flex-1 min-w-[140px]'>
+    <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">  
+      <div className="min-w-0">
         <OutlinedSelect
           label="Group"
           options={companyGroups}
@@ -270,7 +270,7 @@ const PFTrackerFilter: React.FC<PFTrackerFilterProps> = ({ onFilterChange }) => 
         />
       </div>
       
-      <div className='flex-1 min-w-[140px]'>
+      <div className="min-w-0">
         <OutlinedSelect
           label="Company"
           options={companies}
@@ -280,7 +280,7 @@ const PFTrackerFilter: React.FC<PFTrackerFilterProps> = ({ onFilterChange }) => 
         />
       </div>
       
-      <div className='flex-1 min-w-[140px]'>
+      <div className="min-w-0">
         <OutlinedSelect
           label="PF Code"
           options={pfCodeOptions}
@@ -289,11 +289,12 @@ const PFTrackerFilter: React.FC<PFTrackerFilterProps> = ({ onFilterChange }) => 
           // disabled={!selectedCompany}
         />
       </div> 
-      <div className='flex-1 min-w-[140px]'>
+      <div className="min-w-0">
         <OutlinedInput
           label="Search By Location"
           value={searchValue}
           onChange={(e) => handleSearchChange(e)}
+          maxLabelWidth='90%'
         />
       </div>
     </div>

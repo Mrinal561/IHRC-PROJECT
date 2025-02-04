@@ -258,8 +258,8 @@ const LWFTrackerFilter: React.FC<LWFTrackerFilterProps> = ({ onFilterChange }) =
   };
 
   return ( 
-    <div className="w-full flex items-center gap-3">  
-      <div className='flex-1 min-w-[140px]'>
+    <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3"> 
+      <div className="min-w-0">
         <OutlinedSelect
           label="Group"
           options={companyGroups}
@@ -268,7 +268,7 @@ const LWFTrackerFilter: React.FC<LWFTrackerFilterProps> = ({ onFilterChange }) =
         />
       </div>
       
-      <div className='flex-1 min-w-[140px]'>
+      <div className="min-w-0">
         <OutlinedSelect
           label="Company"
           options={companies}
@@ -277,7 +277,7 @@ const LWFTrackerFilter: React.FC<LWFTrackerFilterProps> = ({ onFilterChange }) =
         />
       </div>
       
-      <div className='flex-1 min-w-[140px]'>
+      <div className="min-w-0">
         <OutlinedSelect
           label="LWF Code"
           options={lwfCodeOptions}
@@ -285,11 +285,12 @@ const LWFTrackerFilter: React.FC<LWFTrackerFilterProps> = ({ onFilterChange }) =
           onChange={handleLwfCodeChange}
         />
       </div> 
-      <div className='flex-1 min-w-[140px]'>
+      <div className="min-w-0">
         <OutlinedInput
           label="Search By Location"
           value={searchValue}
           onChange={(e) => handleSearchChange(e)}
+          maxLabelWidth='90%'
         />
       </div>
     </div>
