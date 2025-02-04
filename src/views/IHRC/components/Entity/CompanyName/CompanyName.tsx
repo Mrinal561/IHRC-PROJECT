@@ -502,7 +502,7 @@ const CompanyName = () => {
           <OutlinedInput
             label="Search By Company Name"
             value={searchTerm}
-            onChange={(e) => handleSearch(e.target.value)}
+            onChange={(e) => handleSearch(e)}
           />
           <Bu onUploadSuccess={handleDataChange} />
           <Button
@@ -550,9 +550,9 @@ const CompanyName = () => {
             <OutlinedInput
               label="Enter Company Name"
               value={formik.values.name}
-              onChange={(e) => handleInputChange(e.target.value)}
-              onBlur={formik.handleBlur('name')}
-              error={Boolean(formik.touched.name && formik.errors.name)}
+              onChange={handleInputChange}
+              // onBlur={formik.handleBlur('name')}
+              // error={Boolean(formik.touched.name && formik.errors.name)}
             />
             {formik.touched.name && formik.errors.name && (
               <div className="mt-1 text-red-500 text-sm">{formik.errors.name}</div>
