@@ -1381,7 +1381,7 @@ const AddBranchForm: React.FC = () => {
                                     <div>
                                         <div className="flex flex-col gap-4">
                                             <label>
-                                                Upload Lease Deed Copy(Accepted: PDF/Zip/Image, Max 20MB)
+                                                Upload Lease Deed Copy(PDF/Zip/Image, Max 20MB)
                                                 <span className="text-red-500">
                                                     *
                                                 </span>

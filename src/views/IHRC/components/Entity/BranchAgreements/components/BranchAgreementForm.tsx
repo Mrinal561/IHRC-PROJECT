@@ -11,6 +11,7 @@ import * as Yup from 'yup';
 import SubCategoryAutosuggest from './SubCategoryAutosuggest';
 import DatePicker from '@/components/ui/DatePicker/DatePicker';
 import { format } from 'date-fns';
+import AgreementTypeAutosuggest from './AgreementTypeAutosuggest';
 
 interface SelectOption {
   value: string;
@@ -395,30 +396,20 @@ return (
                 />
             </div>
               )}
-
-              {/* Agreement Type */}
-              <div className="space-y-2">
-              <label htmlFor="agreementType">Agreement Type <span className="text-red-500">*</span></label>
-                <Field name="agreementType">
-                  {({ field, form }) => (
-                    <OutlinedInput
-                      label="Enter Agreement Type"
-                      value={field.value}
-                      onChange={(value) => {
-                        if (typeof value === 'string') {
-                          form.setFieldValue('agreementType', value);
-                        } else if (value?.target?.value) {
-                          form.setFieldValue('agreementType', value.target.value);
-                        }
-                      }}
-                      onBlur={field.onBlur}
-                    />
-                  )}
-                </Field>
-                {errors.agreementType && touched.agreementType && (
-                  <p className="text-red-500 text-sm">{errors.agreementType}</p>
-                )}
-              </div>
+             {/* Agreement Type */}
+          <div className="space-y-2">
+            <AgreementTypeAutosuggest
+              value={values.agreementType}
+              onChange={(value) => setFieldValue('agreementType', value)}
+              onAgreementTypeSelect={(value) => {
+                setFieldValue('agreementTypeId', value);
+              }}
+              isDisabled={isSubmitting}
+            />
+            {errors.agreementType && touched.agreementType && (
+              <p className="text-red-500 text-sm">{errors.agreementType}</p>
+            )}
+          </div>
 
               {/* Sub Category */}
               <div className="space-y-2">
@@ -535,7 +526,7 @@ return (
 
               {/* Agreement Document */}
               <div className="space-y-2">
-                <label htmlFor="agreementDocument">Agreement Document <span className="text-red-500">*</span></label>
+                <label htmlFor="agreementDocument">Agreement Document (PDF/Zip/Image, Max 20MB) <span className="text-red-500">*</span></label>
                 <Input
                   id="agreementDocument"
                   name="agreementDocument"

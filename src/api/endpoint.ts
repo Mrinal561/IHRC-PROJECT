@@ -31,7 +31,9 @@ export const endpoints = {
         district: () => api('/district'),
         location: () => api('/location'),
         getSubCategory: () => api('/subcategory-suggestions'),
-        createSubCategory: () => api('/subcategory')
+        createSubCategory: () => api('/subcategory'),
+        agreementTypeSuggestions: () => api('/agreement-type-suggestions'),
+        createAgreementType: () => api('/agreement-type'),
     },
     user: {
         getAll: () => api('companyadmin/user'),
