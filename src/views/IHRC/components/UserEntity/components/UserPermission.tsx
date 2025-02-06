@@ -341,17 +341,23 @@ import { useDispatch } from 'react-redux';
 import { updateUserPermissions } from '@/store/slices/userEntity/UserEntitySlice';
 import Button from '@/components/ui/Button'
 import { IoArrowBack } from 'react-icons/io5';
+import store from '@/store';
 
 
 const UserPermission = () => {
   const location = useLocation();
   const userData = location.state?.userData;
   const dispatch = useDispatch();
+  const {login} = store.getState();
+  const ActualModuleAccess = login.user.user.moduleAccess;
+  const moduleNames = ActualModuleAccess
+    ?.map(module => module.name)
+    .filter(name => name !== 'Company Setup');
 
   const transformModuleData = (moduleAccess:any) => {
     return moduleAccess?.map(module => {
       // Skip the Company Setup module
-      if (module.name === 'Company Setup') {
+       if (module.name === 'Company Setup' || !moduleNames.includes(module.name)) {
         return null;
       }
   
