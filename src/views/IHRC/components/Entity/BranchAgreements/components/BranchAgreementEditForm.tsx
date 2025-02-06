@@ -330,6 +330,8 @@ const BranchAgreementEditForm = () => {
                 setCurrentBranchData(branch);
                 setFieldValue('branch', selectedOption.value);
                 setBranchOfficeType(branch.officeType || '');
+                loadUsers(selectedOption.id)
+                // console.log(selectedOption.id)
               }
             }}
             // isDisabled={true} // Since it's edit form, we keep it disabled

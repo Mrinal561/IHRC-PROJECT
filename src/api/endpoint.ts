@@ -237,5 +237,6 @@ export const endpoints = {
             challancounts:(type:any,code:any,financialYear:any)=> api(`companyadmin/graph/challan-counts?type=${type}&code=${code}&financial_year=${financialYear}`),
             analytics:(type:any,code:any,financialYear:any)=> api(`companyadmin/graph/challan-analytics?type=${type}&code=${code}&financialYear=${financialYear}`),
 
-        }
+        },
+        
 }

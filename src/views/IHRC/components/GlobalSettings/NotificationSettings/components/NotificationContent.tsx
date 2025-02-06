@@ -18,6 +18,8 @@ import { createNotificationSettings, fetchUnmarkedNotifications } from '@/store/
 import { showErrorNotification } from '@/components/ui/ErrorMessage';
 import Lottie from 'lottie-react';
 import loadingAnimation from '@/assets/lotties/system-regular-716-spinner-three-dots-loop-scale.json'
+import httpClient from '@/api/http-client';
+import { endpoints } from '@/api/endpoint';
 
 
 
@@ -52,6 +54,31 @@ const NotificationContent: React.FC = () => {
 const [isLoading, setIsLoading] = useState(false);
   const [deadlineReminder, setDeadlineReminder] = useState('');
 
+  useEffect(() => {
+    const fetchNotificationData = async () => {
+        try {
+            const response = await httpClient.get(endpoints.notification.notification());
+            console.log('Notification Data:', response);
+
+            // Check if the response has data and update the form state
+            if (response.data.data && response.data.data.length > 0) {
+              console.log("data")
+                const { days_before, total_times, email_enabled, push_enabled } = response.data.data[0];
+                setFormData(prev => ({
+                    ...prev,
+                    daysBeforeNotify: days_before || 0,
+                    totalTimes: total_times || 0,
+                    emailEnabled: email_enabled || false,
+                    pushEnabled: push_enabled || false,
+                }));
+            }
+        } catch (error) {
+            console.error('Error fetching notification data:', error);
+        }
+    };
+
+    fetchNotificationData();
+}, []); // Empty dependency array ensures this runs only once on mount
 
   const handleInputChange = (field: keyof FormData, value: string | boolean) => {
     setFormData(prev => ({
@@ -139,12 +166,12 @@ const [isLoading, setIsLoading] = useState(false);
             );
             
             // Reset form data
-            setFormData({
-                daysBeforeNotify: 0,
-                totalTimes: 0,
-                pushEnabled: false,
-                emailEnabled: false
-            });
+            // setFormData({
+            //     daysBeforeNotify: 0,
+            //     totalTimes: 0,
+            //     pushEnabled: false,
+            //     emailEnabled: false
+            // });
             
             // Reset notification types
             setNotificationTypes({
