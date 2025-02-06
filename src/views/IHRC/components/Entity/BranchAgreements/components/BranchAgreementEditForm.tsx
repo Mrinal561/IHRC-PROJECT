@@ -410,7 +410,7 @@ const BranchAgreementEditForm = () => {
                   {({ field }) => (
                     <OutlinedInput
                       {...field}
-                      label="Partner Name"
+                      label="Enter Partner Name"
                       value={field.value}
                       onChange={(value) => setFieldValue('partnerName', value)}
                       error={errors.partnerName && touched.partnerName}
@@ -429,7 +429,7 @@ const BranchAgreementEditForm = () => {
                   {({ field }) => (
                     <OutlinedInput
                       {...field}
-                      label="Partner Contact"
+                      label="Enter Partner Contact"
                       value={field.value}
                       onChange={(value) => setFieldValue('partnerContact', value)}
                       error={errors.partnerContact && touched.partnerContact}
