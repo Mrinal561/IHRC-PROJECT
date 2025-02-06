@@ -360,17 +360,28 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> =({
         header: 'Actions',
         id: 'actions',
         cell: ({ row }) => {
-          const { iseditable, uploaded_by } = row.original;
+          const { iseditable, uploaded_by, is_requested } = row.original;
+          console.log(iseditable, is_requested);
       
           // Check if user is admin or if they're the uploader
           const canShowActions = type === 'admin' || (type === 'user' && userId === uploaded_by);
       
+          // If is_requested is true, don't show any actions
+          
+          // If user cannot show actions, return null
           if (!canShowActions) {
-            return null; // Don't show any actions
+            return null;
           }
-      
+          
+          // if (is_requested) {
+          //   return null;
+          // }
+
+
           return (
             <div className="flex items-center gap-2">
+              {!is_requested &&
+              <>
               {iseditable ? (
                 // Show all actions when iseditable is true
                 <>
@@ -404,19 +415,18 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> =({
                 </>
               ) : (
                 // Show only Request to Admin button when iseditable is false
-                <>
-                  {/* {canEdit && ( */}
-                    <Tooltip title="Request to Admin">
-                      <Button
-                        size="sm"
-                        onClick={() => handleRequestToAdmin(row.original.id)}
-                        icon={<FaUserShield />}
-                        className="text-blue-500"
-                      />
-                    </Tooltip>
-                  {/* // )} */}
-                </>
+                <Tooltip title="Request to Admin">
+                  <Button
+                    size="sm"
+                    onClick={() => handleRequestToAdmin(row.original.id)}
+                    icon={<FaUserShield />}
+                    className="text-blue-500"
+                  />
+                </Tooltip>
               )}
+              </>
+              }
+              
             </div>
           );
         },

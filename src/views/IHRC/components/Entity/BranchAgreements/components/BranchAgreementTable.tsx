@@ -10,6 +10,7 @@ import dayjs from 'dayjs';
 import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { HiOutlineViewGrid } from 'react-icons/hi';
 
 const BranchAgreementTable = (canEdit,canDelete) => {
     const { user } = useAuth();
@@ -359,32 +360,39 @@ const BranchAgreementTable = (canEdit,canDelete) => {
             </div>
 
             {/* Data Table */}
-            <DataTable
-                columns={columns}
-                data={data}
-                loading={isLoading}
-                pagingData={{
-                    total: tableData.total,
-                    pageIndex: tableData.pageIndex,
-                    pageSize: tableData.pageSize,
-                }}
-                onPaginationChange={(page) => setTableData(prev => ({ 
-                    ...prev, 
-                    pageIndex: page 
-                }))}
-                onSelectChange={(value) => setTableData(prev => ({
-                    ...prev,
-                    pageSize: Number(value),
-                    pageIndex: 1,
-                }))}
-                onSort={(sortKey) => setTableData(prev => ({
-                    ...prev,
-                    sort: {
-                        key: sortKey,
-                        order: prev.sort.order === 'desc' ? 'asc' : 'desc'
-                    }
-                }))}
-            />
+            {data.length === 0 ? (
+  <div className="flex flex-col items-center justify-center h-96 text-gray-500 border rounded-xl">
+    <HiOutlineViewGrid className="w-12 h-12 mb-4 text-gray-300" />
+    <p className="text-center">No Data Available</p>
+  </div>
+) : (
+  <DataTable
+    columns={columns}
+    data={data}
+    loading={isLoading}
+    pagingData={{
+      total: tableData.total,
+      pageIndex: tableData.pageIndex,
+      pageSize: tableData.pageSize,
+    }}
+    onPaginationChange={(page) => setTableData(prev => ({ 
+      ...prev, 
+      pageIndex: page 
+    }))}
+    onSelectChange={(value) => setTableData(prev => ({
+      ...prev,
+      pageSize: Number(value),
+      pageIndex: 1,
+    }))}
+    onSort={(sortKey) => setTableData(prev => ({
+      ...prev,
+      sort: {
+        key: sortKey,
+        order: prev.sort.order === 'desc' ? 'asc' : 'desc'
+      }
+    }))}
+  />
+)}
 
 <Dialog
   isOpen={deleteDialogOpen}

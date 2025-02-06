@@ -350,7 +350,7 @@ const AddBranchForm: React.FC = () => {
     const handleDocumentView = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
         if (formData.se_document) {
-            const fullPath = `${import.meta.env.VITE_API_GATEWAY}/${formData.se_document}`
+            const fullPath = `${import.meta.env.VITE_API_GATEWAY}${formData.se_document}`
             window.open(fullPath, '_blank')
         }
     }
@@ -359,7 +359,7 @@ const AddBranchForm: React.FC = () => {
     ) => {
         e.preventDefault()
         if (formData.lease_document) {
-            const fullPath = `${import.meta.env.VITE_API_GATEWAY}/${formData.lease_document}`
+            const fullPath = `${import.meta.env.VITE_API_GATEWAY}${formData.lease_document}`
             window.open(fullPath, '_blank')
         }
     }

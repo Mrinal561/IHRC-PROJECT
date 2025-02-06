@@ -299,24 +299,32 @@ const EditPermission = () => {
           </div>
         </div>
       </div>
-      <DataTable
-        columns={columns}
-        data={data}
-        skeletonAvatarColumns={[0]}
-        skeletonAvatarProps={{ className: 'rounded-md' }}
-        loading={isLoading}
-        pagingData={{
-          total: tableData.total,
-          pageIndex: tableData.pageIndex,
-          pageSize: tableData.pageSize,
-        }}
-        onPaginationChange={onPaginationChange}
-        onSelectChange={onSelectChange}
-        onSort={onSort}
-        stickyHeader={true}
-        stickyFirstColumn={true}
-        stickyLastColumn={true}
-      />
+      
+      {data.length === 0 ? (
+  <div className="flex flex-col items-center justify-center h-96 text-gray-500 border rounded-xl">
+    <HiOutlineViewGrid className="w-12 h-12 mb-4 text-gray-300" />
+    <p className="text-center">No Data Available</p>
+  </div>
+) : (
+  <DataTable
+    columns={columns}
+    data={data}
+    skeletonAvatarColumns={[0]}
+    skeletonAvatarProps={{ className: 'rounded-md' }}
+    loading={isLoading}
+    pagingData={{
+      total: tableData.total,
+      pageIndex: tableData.pageIndex,
+      pageSize: tableData.pageSize,
+    }}
+    onPaginationChange={onPaginationChange}
+    onSelectChange={onSelectChange}
+    onSort={onSort}
+    stickyHeader={true}
+    stickyFirstColumn={true}
+    stickyLastColumn={true}
+  />
+)}
     </div>
   );
 };

@@ -1455,24 +1455,7 @@ const AddBranchForm: React.FC = () => {
                                                     label: 'Applied For',
                                                 },
                                             ]}
-                                            value={
-                                                seRegistrationNumberExists ===
-                                                'valid'
-                                                    ? {
-                                                          value: 'valid',
-                                                          label: 'Have Valid License',
-                                                      }
-                                                    : seRegistrationNumberExists ===
-                                                        'expired'
-                                                      ? {
-                                                            value: 'expired',
-                                                            label: 'Expired',
-                                                        }
-                                                      : {
-                                                            value: 'applied',
-                                                            label: 'Applied For',
-                                                        }
-                                            }
+                                            value={null}
                                             onChange={(selectedOption: any) => {
                                                 const newStatus =
                                                     selectedOption?.value ||
