@@ -12,6 +12,7 @@ import { format } from 'date-fns';
 import SubCategoryAutosuggest from './SubCategoryAutosuggest';
 import { Eye } from 'lucide-react';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
+import AgreementTypeAutosuggest from './AgreementTypeAutosuggest';
 
 
 interface FormValues {
@@ -327,22 +328,19 @@ const BranchAgreementEditForm = () => {
 
               {/* Editable fields */}
               <div className="space-y-2">
-                <label htmlFor="agreementType">Agreement Type <span className="text-red-500">*</span></label>
-                <Field name="agreementType">
-                  {({ field }) => (
-                    <OutlinedInput
-                      {...field}
-                      label="Agreement Type"
-                      value={field.value}
-                      onChange={(value) => setFieldValue('agreementType', value)}
-                      error={errors.agreementType && touched.agreementType}
-                    />
-                  )}
-                </Field>
-                {errors.agreementType && touched.agreementType && (
-                  <p className="text-red-500 text-sm">{errors.agreementType}</p>
-                )}
-              </div>
+              {/* <label htmlFor="agreementType">Agreement Type <span className="text-red-500">*</span></label> */}
+              <AgreementTypeAutosuggest
+                value={values.agreementType}
+                onChange={(value) => setFieldValue('agreementType', value)}
+                onAgreementTypeSelect={(value) => {
+                  setFieldValue('agreementTypeId', value);
+                }}
+                isDisabled={isSubmitting}
+              />
+              {errors.agreementType && touched.agreementType && (
+                <p className="text-red-500 text-sm">{errors.agreementType}</p>
+              )}
+            </div>
               <div className="space-y-2">
                
                 <SubCategoryAutosuggest
