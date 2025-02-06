@@ -356,7 +356,6 @@ const UserPermission = () => {
 
   const transformModuleData = (moduleAccess:any) => {
     return moduleAccess?.map(module => {
-      // Skip the Company Setup module
        if (module.name === 'Company Setup' || !moduleNames.includes(module.name)) {
         return null;
       }
