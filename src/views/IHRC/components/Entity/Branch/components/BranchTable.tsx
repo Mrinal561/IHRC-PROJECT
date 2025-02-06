@@ -50,6 +50,12 @@ const BranchTable: React.FC<BranchTableProps> = ({
     filterValues = {},
     onRefreshMethodAvailable,
 }) => {
+
+    const [tableData, setTableData] = useState({
+        total: 0,
+    pageIndex: 1,
+    pageSize: 10,
+    })
     const dispatch = useDispatch<AppDispatch>()
     const [data, setData] = useState<EntityData[]>(entityDataSet)
     const [dialogIsOpen, setDialogIsOpen] = useState(false)
@@ -298,8 +304,11 @@ const BranchTable: React.FC<BranchTableProps> = ({
             </Notification>,
         )
     }
+    useEffect(() => {
+        console.log('Updated tableData:', tableData)
+    }, [tableData])
 
-    const fetchBranchData = async (page: 1, size: 10) => {
+    const fetchBranchData = async (page: number, size: number) => {
         setIsLoading(true)
         try {
             const { data } = await httpClient.get(endpoints.branch.getAll(), {
@@ -310,17 +319,20 @@ const BranchTable: React.FC<BranchTableProps> = ({
                     'state_id[]': filterValues.stateId || undefined,
                     'district_id[]': filterValues.districtId || undefined,
                     'location_id[]': filterValues.locationId || undefined,
-                    'search' : filterValues.search || undefined
+                    'search': filterValues.search || undefined,
+                    'page': page,
+                    'page_size': size,
                 },
             })
 
-            // set(data?.data)
             setBranchTableData(data?.data)
             setTableData((prev) => ({
                 ...prev,
-                total: data?.paginate_data.totalResult,
+                total: data?.paginate_data.totalResults,
                 pageIndex: data?.paginate_data.page,
+                pageSize: size,
             }))
+            // console.log(tableData)
         } catch (error) {
             console.error('Failed to fetch branch:', error)
             toast.push(
@@ -333,6 +345,7 @@ const BranchTable: React.FC<BranchTableProps> = ({
         }
     }
 
+
     const handleEditClick = (branchId: number) => {
         setCurrentBranchId(branchId)
         setEditDialogIsOpen(true)
@@ -342,17 +355,24 @@ const BranchTable: React.FC<BranchTableProps> = ({
         fetchBranchData(1, 10)
     }
 
-    useEffect(() => {
-        fetchBranchData(1, 10)
-    }, [])
-    // useEffect(() => {
-    //     if (onRefreshMethodAvailable) {
-    //         onRefreshMethodAvailable(fetchBranchData(1, 10));
-    //     }
-    // }, [onRefreshMethodAvailable, fetchBranchData]);
+  
+    const onPaginationChange = (page: number) => {
+        fetchBranchData(page, tableData.pageSize)
+        console.log(tableData)
+    }
+
+    const onSelectChange = (value: number) => {
+        fetchBranchData(1, value)
+        console.log(tableData)
+    }
 
     useEffect(() => {
-        fetchBranchData(1, 10)
+        fetchBranchData(1, tableData.pageSize)
+    }, [])
+
+    useEffect(() => {
+        fetchBranchData(tableData.pageIndex, tableData.pageSize)
+       
     }, [
         filterValues.branchId,
         filterValues.companyGroupId,
@@ -362,28 +382,6 @@ const BranchTable: React.FC<BranchTableProps> = ({
         filterValues.locationId,
         filterValues.search
     ])
-
-    const [tableData, setTableData] = useState({
-        total: 0,
-        pageIndex: 1,
-        pageSize: 10,
-        query: '',
-        sort: { order: '', key: '' },
-    })
-
-    const onPaginationChange = (page: number) => {
-        setTableData((prev) => ({ ...prev, pageIndex: page }))
-        fetchBranchData(page, tableData.pageSize)
-    }
-
-    const onSelectChange = (value: number) => {
-        setTableData((prev) => ({
-            ...prev,
-            pageSize: Number(value),
-            pageIndex: 1,
-        }))
-        fetchBranchData(1, value)
-    }
 
     if (isLoading) {
         return (
@@ -408,6 +406,7 @@ const BranchTable: React.FC<BranchTableProps> = ({
                     <p className="text-center">No Data Available</p>
                 </div>
             ) : (
+               
                 <DataTable
                     columns={columns}
                     data={branchTableData}

@@ -15,6 +15,11 @@ import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 import AgreementTypeAutosuggest from './AgreementTypeAutosuggest';
 
 
+interface SelectOption {
+  value: string;
+  label: string;
+}
+
 interface FormValues {
     agreementType: string;
     ownerName: string;
@@ -84,6 +89,24 @@ const BranchAgreementEditForm = () => {
     branch: '',
     applicableForAllCompany: false,
   });
+  const [users, setUsers] = useState<SelectOption[]>([]);
+
+
+  const loadUsers = async (branchId: string) => {
+    try {
+      const { data } = await httpClient.get(endpoints.user.getAll(), {
+        params: { 'branch_id[]': branchId }
+      });
+      const formattedUsers = data?.data?.map((user: any) => ({
+        label: user.user_details.name,
+        value: user.user_details.id.toString()
+      }));
+      setUsers(formattedUsers || []);
+    } catch (error) {
+      console.error('Failed to load users:', error);
+      showNotification('danger', 'Failed to load users');
+    }
+  };
 
   const loadBranches = async (companyId: string) => {
     try {
@@ -128,22 +151,24 @@ const BranchAgreementEditForm = () => {
       const agreementResponse = await httpClient.get(endpoints.branchAgreement.detail(id));
       const agreement = agreementResponse.data.agreement;
       await loadBranches(agreement.Branch.Company.id);
+      await loadUsers(agreement.Branch.id); 
       setBranchOfficeType(agreement.Branch.office_type);
       
       setInitialValues({
         agreementType: agreement.agreement_type || '',
-        ownerName: agreement.owner?.name || '', 
+        ownerName: agreement.owner_id?.toString() || '',
         partnerName: agreement.partner_name || '',
         partnerContact: agreement.partner_number || '',
         startDate: agreement.start_date || '',
         endDate: agreement.end_date || '',
-        agreementDocument: null,
+        agreementDocument: agreement.agreement_document,
         existingDocument: agreement.agreement_document || '',
         subCategory: agreement.sub_category || '',
         companyGroup: agreement.Branch.Company.group_name || '',
         company: agreement.Branch.Company.name || '',
         branch: String(agreement.Branch.id),
         applicableForAllCompany: agreement.applicable_for_all || false,
+        
       });
       setCurrentBranchData({
         value: String(agreement.Branch.id),
@@ -177,7 +202,7 @@ const BranchAgreementEditForm = () => {
       const requestBody = {
         branch_id: parseInt(values.branch, 10), 
         agreement_type: values.agreementType,
-        owner_name: values.ownerName,
+        owner_id: parseInt(values.ownerName, 10), 
         partner_name: values.partnerName,
         partner_number: values.partnerContact,
         start_date: format(new Date(values.startDate), 'yyyy-MM-dd'),
@@ -360,13 +385,16 @@ const BranchAgreementEditForm = () => {
                 <label htmlFor="ownerName">Owner Name <span className="text-red-500">*</span></label>
                 <Field name="ownerName">
                   {({ field }) => (
-                    <OutlinedInput
-                      {...field}
-                      label="Owner Name"
-                      value={field.value}
-                      // onChange={(value) => setFieldValue('ownerName', value)}
-                      error={errors.ownerName && touched.ownerName}
-                    />
+                    <OutlinedSelect
+                    label="Select Owner"
+                    options={users}
+                    value={users.find(option => option.value === values.ownerName) || null}
+                    onChange={(selectedOption) => {
+                      if (selectedOption) {
+                        setFieldValue('ownerName', selectedOption.value);
+                      }
+                    }}
+                  />
                   )}
                 </Field>
                 {errors.ownerName && touched.ownerName && (
