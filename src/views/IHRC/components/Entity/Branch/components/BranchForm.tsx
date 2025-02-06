@@ -315,14 +315,25 @@ const AddBranchForm: React.FC = () => {
     const [errors, setErrors] = useState<any>({})
 
     useEffect(() => {
-        setFormData((prev) => ({
-            ...prev,
-            document_validity_type: seValidityType,
-            se_validity:
-                seValidityType === 'fixed' ? prev.se_validity : '2024-11-21',
-            lease_validity: '2024-11-21',
-        }))
-    }, [seValidityType])
+        setFormData((prev) => {
+            const updatedFormData = {
+                ...prev,
+                document_validity_type: seValidityType,
+                lease_validity: '2024-11-21',
+            };
+    
+            // Only include se_validity if seValidityType is 'fixed'
+            if (seValidityType === 'fixed') {
+                updatedFormData.se_validity = prev.se_validity;
+            } else {
+                // Remove se_validity if seValidityType is 'lifetime'
+                const { se_validity, ...rest } = updatedFormData;
+                return rest;
+            }
+    
+            return updatedFormData;
+        });
+    }, [seValidityType]);
 
     const statusTypeOptions = [
         { value: 'active', label: 'Active' },
@@ -722,6 +733,10 @@ const AddBranchForm: React.FC = () => {
             const { se_validity, ...restFormData } = formData
             formData = restFormData
         }
+        if (seValidityType === 'lifetime') {
+            const { se_validity, ...restFormData } = formData;
+            formData = restFormData;
+        }
         //check validation here all
         await validateFormData() // This validates all fields at once
         const isValid = await validateFormData()
@@ -747,7 +762,7 @@ const AddBranchForm: React.FC = () => {
                     } else {
                         // Fallback error message
                         showErrorNotification(
-                            'An unexpected error occurred. Please try again.',
+                           error
                         )
                     }
                     throw error // Re-throw to prevent navigation
