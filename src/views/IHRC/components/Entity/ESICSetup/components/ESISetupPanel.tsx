@@ -1367,9 +1367,9 @@ const ESISetupPanel = ({ onClose, addESISetup, refreshData, companyId, companyNa
   </div>
 
   <div className="space-y-2">
-    <p className="text-sm font-medium">Mobile Number <span className="text-red-500">*</span></p>
+    <p className="text-sm font-medium">Mobile <span className="text-red-500">*</span></p>
     <OutlinedInput
-      label="Enter Mobile Number"
+      label="Enter Mobile"
       value={formData.mobile_number}
       onChange={handleMobileChange}
     />

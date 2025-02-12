@@ -471,7 +471,7 @@ const handleRemitModeChange = (option: { value: string; label: string } | null) 
                   <label>  Mobile Number</label>
                   <div className="w-full">
                       <OutlinedInput
-                          label="Enter Mobile Number"
+                          label="Enter Mobile"
                           value={formData.mobile}
                           onChange={(value) => handleChange('mobile', value)}
                       />

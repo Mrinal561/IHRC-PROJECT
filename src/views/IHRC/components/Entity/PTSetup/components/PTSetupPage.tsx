@@ -775,9 +775,9 @@ const loadStates = async () => {
                 {/* Additional Details */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <p className="mb-2">Mobile Number  <span className="text-red-500">*</span></p>
+                        <p className="mb-2">Mobile <span className="text-red-500">*</span></p>
                         <OutlinedInput
-                        label="Enter Mobile Number"
+                        label="Enter Mobile"
                         value={ptSetupData.mobile}
                         onChange={(value) => handleInputChange('mobile', value)}
               />
