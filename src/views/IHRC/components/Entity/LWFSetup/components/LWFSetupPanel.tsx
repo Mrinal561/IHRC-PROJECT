@@ -1068,7 +1068,7 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
   
       {/* Third Row - New Fields */}
       <div className="space-y-2">
-        <p className="text-sm font-medium">Mobile Number <span className="text-red-500">*</span></p>
+        <p className="text-sm font-medium">Mobile<span className="text-red-500">*</span></p>
         <OutlinedInput
           label="Enter Mobile"
           value={formData.mobile_number}
