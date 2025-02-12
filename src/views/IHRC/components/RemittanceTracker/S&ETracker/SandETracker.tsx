@@ -221,7 +221,7 @@ const SandETracker = () => {
                 
                 // Find Remittance Tracker module
                 const remittanceModule = response.payload.moduleAccess?.find(
-                    (module: any) => module.id === 7
+                    (module: any) => module.id === 2
                 )
                 
                 if (!remittanceModule) {
@@ -241,7 +241,7 @@ const SandETracker = () => {
 
                 // Find Notice Tracker menu item
                 const noticeTrackerMenu = remittanceModule.menus?.find(
-                    (menu: any) => menu.id === 28
+                    (menu: any) => menu.id === 7
                 )
                
                 if (!noticeTrackerMenu) {

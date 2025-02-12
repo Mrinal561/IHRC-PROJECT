@@ -251,13 +251,29 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
     setLoading(false)
   }
 };
-  
-  const handleDateChange = async(field: 'month' | 'dueDate' | 'dateOfPayment', date: Date | null) => {
-    if (date) {
-      const dateString = date.toISOString().split('T')[0];
-      await handleChange(field, dateString);
-    }
-  };
+const formatDateForDisplay = (dateString: string | undefined): Date | undefined => {
+  if (!dateString) return undefined;
+  const date = new Date(dateString);
+  // Adjust for local timezone
+  const localDate = new Date(date.getTime() + date.getTimezoneOffset() * 60000);
+  return localDate;
+};
+
+// Helper function to format date for API
+const formatDateForAPI = (date: Date): string => {
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${year}-${month}-${day}`;
+};
+
+const handleDateChange = async (field: 'month' | 'dueDate' | 'payment_date', date: Date | null) => {
+  if (date) {
+    // Format date for API
+    const formattedDate = formatDateForAPI(date);
+    await handleChange(field, formattedDate);
+  }
+};
 
   const openNotification = (type: 'success' | 'info' | 'danger' | 'warning', message: string) => {
     toast.push(
@@ -410,8 +426,11 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
               <DatePicker
                 size='sm'
                 placeholder="Date of Payment"
-                value={editedData.payment_date ? new Date(editedData.payment_date) : undefined}
+                value={editedData.payment_date ? formatDateForDisplay(editedData.payment_date) : undefined}
                 onChange={(date) => handleDateChange('payment_date', date)}
+                inputFormat="DD-MM-YYYY"  // Changed to uppercase format tokens
+                yearLabelFormat="YYYY"
+                monthLabelFormat="MMMM YYYY"
               />
                {validationErrors['payment_date'] && (
                 <p className="text-red-500 text-sm mt-1">{validationErrors['payment_date']}</p>

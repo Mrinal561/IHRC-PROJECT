@@ -791,6 +791,9 @@ useEffect(()=>{
                             onChange={(date: Date | null) =>
                                 handleInputChange('register_date', date)
                             }
+                            inputFormat="DD-MM-YYYY"  // Changed to uppercase format tokens
+                            yearLabelFormat="YYYY"
+                            monthLabelFormat="MMMM YYYY"
                         />
                         {getErrorMessage('register_date')}
                     </div>

@@ -66,7 +66,7 @@ export const endpoints = {
         update: (id: string) => api(`companyadmin/branch/${id}`),
         // update: (id: string) => api(`companyadmin/branch/${id}`),
         delete: (id: string) => api(`companyadmin/branch/${id}`),
-        downloadFormat: () => api(`upload/sample_files/branch.xlsx`),
+        downloadFormat: () => api(`companyadmin/branch/download-template`),
         bulkCreate: () => api(`/companyadmin/branch/bulk-upload`),
     },
     role: {
@@ -193,7 +193,9 @@ export const endpoints = {
         getById: (id: any) => api(`companyadmin/lwfsetup/${id}`),
           update: (id: any) => api(`companyadmin/lwfsetup/${id}`),
           delete: (id:any) => api(`companyadmin/lwfsetup/${id}`),
-          getAllCodes:()=> api('lwf-code')
+          getAllCodes:()=> api('lwf-code'),
+          downloadFormat:()=> api('companyadmin/lwfsetup/template/download'),
+          bulkCreate:()=> api('companyadmin/lwfsetup/bulk-create')
     },
     request: {
         request: (id: any) => api(`companyadmin/company/edit-request/${id}`),

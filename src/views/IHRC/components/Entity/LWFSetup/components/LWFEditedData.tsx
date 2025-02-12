@@ -16,6 +16,8 @@ interface ValidationErrors {
   password?: string;
   register_date?: Date;
   remmit_mode?: string;
+  mobile_number?:string;
+  email?:string;
 }
 
 interface Company {
@@ -38,6 +40,8 @@ interface LWFSetupData {
   CompanyGroup?: CompanyGroup;
   certificate?:string;
   signatory_id?:number;
+  email?:string;
+  mobile_number?:string;
 }
 
 const lwfSchema = yup.object().shape({
@@ -63,6 +67,15 @@ const lwfSchema = yup.object().shape({
     .string()
     .required('Remittance mode is required')
     .oneOf(['online', 'offline'], 'Invalid remittance mode'),
+    mobile_number: yup.string()
+    .required('Mobile number is required')
+    .matches(/^[0-9]{10}$/, 'Mobile number must be 10 digits'),
+  email: yup.string()
+  .matches(
+      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]+$/,
+      'Invalid email address.'
+  )
+  .required('Email is required'),
 });
 
 interface LWFEditedDataProps {
@@ -87,7 +100,9 @@ const LWFEditedData: React.FC<LWFEditedDataProps> = ({
     register_date: '',
     remmit_mode: '',
     certificate:'',
-    signatory_id: 0
+    signatory_id: 0,
+    email:'',
+    mobile_number:''
   });
   
   const [errors, setErrors] = useState<ValidationErrors>({});
@@ -153,6 +168,8 @@ const LWFEditedData: React.FC<LWFEditedDataProps> = ({
   const validateForm = async () => {
     try {
       await lwfSchema.validate({
+        email:formData.email,
+        mobile_number: formData.mobile_number,
         username: formData.username,
         register_number: formData.register_number,
         password: formData.password,
@@ -267,6 +284,8 @@ const handleSubmit = async () => {
       remmit_mode: formData.remmit_mode,
       signatory_id: formData.signatory_id,
       certificate: formData.certificate,
+      email:formData.email,
+      mobile_number:formData.mobile_number,
     };
 
     const resultAction = await dispatch(updateLwf({
@@ -319,7 +338,7 @@ const handleRemitModeChange = (option: { value: string; label: string } | null) 
   return (
     <div className="p-4 space-y-2">
       {/* Company and Group Information */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-3 gap-4">
         <div className="h-[70px]">
           <p className="text-sm font-medium mb-2">Company Group</p>
           <OutlinedInput
@@ -336,10 +355,6 @@ const handleRemitModeChange = (option: { value: string; label: string } | null) 
             disabled
           />
         </div>
-      </div>
-
-      {/* Registration Number and User ID */}
-      <div className="flex gap-4 items-center">
         <div className="flex flex-col gap-2 w-full">
           <label>LWF Registration Number<span className="text-red-500">*</span></label>
           <div className="w-full">
@@ -355,6 +370,11 @@ const handleRemitModeChange = (option: { value: string; label: string } | null) 
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Registration Number and User ID */}
+      <div className="flex gap-4 items-center">
+        
         <div className="flex flex-col gap-2 w-full">
           <label>LWF User</label>
           <div className="w-full">
@@ -370,10 +390,6 @@ const handleRemitModeChange = (option: { value: string; label: string } | null) 
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Password and Registration Date */}
-      <div className="flex gap-4 items-center">
         <div className="flex flex-col gap-2 w-full">
           <label>Password</label>
           <div className="w-full">
@@ -405,6 +421,41 @@ const handleRemitModeChange = (option: { value: string; label: string } | null) 
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Password and Registration Date */}
+      <div className="flex gap-4 items-center">
+      <div className="flex flex-col gap-2 w-full">
+          <label>Mobile</label>
+          <div className="w-full">
+            <OutlinedInput
+              label="Enter Mobile"
+              value={formData.mobile_number}
+              onChange={(value) => handleChange('mobile_number', value)}
+            />
+            <div className="h-5">
+              {errors.mobile_number && (
+                <div className="text-red-500 text-sm">{errors.mobile_number}</div>
+              )}
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col gap-2 w-full">
+          <label>Password</label>
+          <div className="w-full">
+            <OutlinedInput
+              label="Enter Email"
+              value={formData.email}
+              onChange={(value) => handleChange('email', value)}
+            />
+            <div className="h-5">
+              {errors.email && (
+                <div className="text-red-500 text-sm">{errors.email}</div>
+              )}
+            </div>
+          </div>
+        </div>
+
       </div>
 
       {/* Remittance Mode */}
@@ -454,10 +505,10 @@ const handleRemitModeChange = (option: { value: string; label: string } | null) 
 
 <div className="mt-6 text-right flex gap-2 justify-end items-center">
          
-        <Button variant="plain" onClick={onClose} className="mr-2">
+        <Button variant="plain" onClick={onClose} className="mr-2" size='sm'>
           Cancel
         </Button>
-        <Button variant="solid" onClick={handleSubmit} loading={loader}>
+        <Button variant="solid" onClick={handleSubmit} loading={loader} size='sm'>
           Confirm
         </Button>
       </div>

@@ -6,8 +6,9 @@ import { useDispatch } from 'react-redux'
 import { APP_PREFIX_PATH } from '@/constants/route.constant'
 import { fetchUsers } from '@/store/slices/userEntity/UserEntitySlice'
 import { fetchCompanyGroups } from '@/store/slices/companyGroup/companyGroupSlice'
+import Bu from './Bu'
 
-const UserTool: React.FC = () => {
+const UserTool: React.FC<{ onUploadSuccess?: () => void }> = ({ onUploadSuccess }) => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const [companyDetails, setCompanyDetails] = useState<{
@@ -63,6 +64,7 @@ const UserTool: React.FC = () => {
 
     return (
         <div className="flex gap-3">
+            <Bu onUploadSuccess={onUploadSuccess}></Bu>
             <Button
                 variant="solid"
                 icon={<HiPlusCircle />}

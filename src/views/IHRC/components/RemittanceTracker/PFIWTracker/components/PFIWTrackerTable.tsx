@@ -252,7 +252,7 @@ const handleRequestToAdmin = async (id: any) => {
         accessorKey: 'delay_in_days',
         cell: (props) => (
           <div className="w-40 truncate">
-            {props.getValue()}-Days
+            {props.getValue()}
           </div>
         ),
       },

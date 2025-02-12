@@ -66,7 +66,7 @@ const Bu: React.FC<BuProps> = ({ onUploadSuccess }) => {
     } catch (error) {
       toast.push(
         <Notification title="Error" type="danger">
-          Upload failed. Please try again.
+         {error.response.data.message}
         </Notification>
       );
       console.error('Upload error:', error);
@@ -155,7 +155,7 @@ const Bu: React.FC<BuProps> = ({ onUploadSuccess }) => {
           value={remark}
           onChange={(e) => setRemark(e.target.value)}
         />
-        <div className="mt-6 text-right">
+         <div className="mt-6 text-right flex gap-2 justify-end items-center">
           <Button
             size="sm"
             className="mr-2"
@@ -170,7 +170,7 @@ const Bu: React.FC<BuProps> = ({ onUploadSuccess }) => {
             onClick={handleConfirm}
             loading={isUploading}
           >
-             {isUploading ? 'Uploading...' : 'Confirm'}
+           Confirm
           </Button>
         </div>
       </Dialog>

@@ -14,6 +14,8 @@ export type EsiSetupData = {
         signatory_id: number;
     }[]; 
     certificate?: string;
+    email:string;
+    mobile_number:string;
 }
 
 export type EsiSetupResponseData = {

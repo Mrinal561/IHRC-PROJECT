@@ -269,7 +269,7 @@ const PTRCTrackerTable: React.FC<PTTrackerTableProps> = ({
         header: 'Delay',
         enableSorting: false,
         accessorKey: 'delay_in_days',
-        cell: (props) => <div className="w-28 truncate">{props.getValue()}-Days</div>,
+        cell: (props) => <div className="w-28 truncate">{props.getValue()}</div>,
       },
       {
         header: 'Delay Reason',

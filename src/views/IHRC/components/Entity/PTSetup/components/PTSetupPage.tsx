@@ -702,6 +702,9 @@ const loadStates = async () => {
                                 }));
                                 await validateField('register_date', date);
                             }}
+                            inputFormat="DD-MM-YYYY"  // Changed to uppercase format tokens
+                            yearLabelFormat="YYYY"
+                            monthLabelFormat="MMMM YYYY"
                         />
                          {errors.register_date && (
             <p className="text-red-500 text-xs mt-1">{errors.register_date}</p>

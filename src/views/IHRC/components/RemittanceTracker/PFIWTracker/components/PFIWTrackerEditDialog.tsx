@@ -39,8 +39,6 @@ const validationSchema = yup.object().shape({
     .typeError('Please enter a valid date'),
   delay_reason: yup
     .string()
-    .required('Delay reason is required')
-    .min(5, 'Delay reason must be at least 5 characters'),
 });
 
 
@@ -110,9 +108,27 @@ const PFIWTrackerEditDialog: React.FC<PFIWTrackerEditDialogProps> = ({
     setValidationErrors((prev) => ({ ...prev, [field]: undefined }));
   };
 
-  const handleDateChange = (field: 'onth' | 'dueDate' | 'ubmissionDate', date: Date | null) => {
+  const formatDateForDisplay = (dateString: string | undefined): Date | undefined => {
+    if (!dateString) return undefined;
+    const date = new Date(dateString);
+    // Adjust for local timezone
+    const localDate = new Date(date.getTime() + date.getTimezoneOffset() * 60000);
+    return localDate;
+  };
+  
+  // Helper function to format date for API
+  const formatDateForAPI = (date: Date): string => {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${year}-${month}-${day}`;
+  };
+  
+  const handleDateChange = async (field: 'month' | 'dueDate' | 'payment_date', date: Date | null) => {
     if (date) {
-      handleChange(field, date.toISOString().split('T')[0]);
+      // Format date for API
+      const formattedDate = formatDateForAPI(date);
+      await handleChange(field, formattedDate);
     }
   };
 
@@ -262,8 +278,11 @@ const PFIWTrackerEditDialog: React.FC<PFIWTrackerEditDialogProps> = ({
               <DatePicker
               size='sm'
                 placeholder="Month"
-                value={editedData.submit_date ? new Date(editedData.submit_date) : undefined}
+                value={editedData.submit_date ? formatDateForDisplay(editedData.submit_date) : undefined}
                 onChange={(date) => handleDateChange('submit_date', date)}
+                inputFormat="DD-MM-YYYY"  // Changed to uppercase format tokens
+                yearLabelFormat="YYYY"
+                monthLabelFormat="MMMM YYYY"
               />
               {validationErrors.submit_date && (
                 <p className="text-red-500 text-sm mt-1">{validationErrors.submit_date}</p>

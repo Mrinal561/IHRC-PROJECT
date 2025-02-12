@@ -109,7 +109,7 @@ const PTECTracker: React.FC = () => {
                 
                 // Find Remittance Tracker module
                 const remittanceModule = response.payload.moduleAccess?.find(
-                    (module: any) => module.id === 9
+                    (module: any) => module.id === 1
                 )
                 
                 if (!remittanceModule) {
@@ -129,7 +129,7 @@ const PTECTracker: React.FC = () => {
 
                 // Find PF Tracker menu item
                 const pfTrackerMenu = remittanceModule.menus?.find(
-                    (menu: any) => menu.id === 35
+                    (menu: any) => menu.id === 6
                 )
 
                 if (!pfTrackerMenu) {

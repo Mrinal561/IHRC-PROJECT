@@ -116,6 +116,18 @@ const validationSchema = yup.object().shape({
         .matches(
             /^\d{4}-\d{2}-\d{2}$/,
             'Opening date must be in the format YYYY-MM-DD',
+        ).test(
+            'is-not-future-date',
+            'Opening date cannot be a future date',
+            function (value) {
+                if (!value) return true; // Skip validation if the value is empty
+
+                const selectedDate = new Date(value);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0); // Reset time part to compare only dates
+
+                return selectedDate <= today;
+            }
         ),
     head_count: yup
         .string()
@@ -988,7 +1000,7 @@ const AddBranchForm: React.FC = () => {
                     </div>
                     <div>
                         <p className="mb-2">
-                            GST Number <span className="text-red-500">*</span>
+                            GST Number
                         </p>
                         <OutlinedInput
                             label="Enter Gst Number"

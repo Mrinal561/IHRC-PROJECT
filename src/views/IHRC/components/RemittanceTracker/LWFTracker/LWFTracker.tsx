@@ -213,7 +213,7 @@ const LWFTracker: React.FC = () => {
                 
                 // Find Remittance Tracker module
                 const remittanceModule = response.payload.moduleAccess?.find(
-                    (module: any) => module.id === 9
+                    (module: any) => module.id === 1
                 )
                 
                 if (!remittanceModule) {
@@ -233,7 +233,7 @@ const LWFTracker: React.FC = () => {
 
                 // Find PF Tracker menu item
                 const pfTrackerMenu = remittanceModule.menus?.find(
-                    (menu: any) => menu.id === 33
+                    (menu: any) => menu.id === 4
                 )
 
                 if (!pfTrackerMenu) {

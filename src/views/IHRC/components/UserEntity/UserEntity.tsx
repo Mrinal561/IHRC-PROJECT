@@ -5,9 +5,12 @@ import UserTool from './components/UserTool'
 import OutlinedInput from '@/components/ui/OutlinedInput';
 const UserEntity = () => {
     const [searchTerm, setSearchTerm] = useState('')
-
+    const [refreshTrigger, setRefreshTrigger] = useState(0)
     const handleSearch = (value: string) => {
         setSearchTerm(value)
+    }
+    const handleDataRefresh = () => {
+        setRefreshTrigger(prev => prev + 1)
     }
     return (
         
@@ -24,12 +27,12 @@ const UserEntity = () => {
                         onChange={(e) => handleSearch(e)}
                     />
                     <div className="flex-shrink-0">
-                        <UserTool/>
+                        <UserTool onUploadSuccess={refreshTrigger}/>
                     </div>
                 </div>
             </div>
         </div>
-        <UserTable search={searchTerm} />
+        <UserTable search={searchTerm} refreshTrigger={refreshTrigger}/>
     </AdaptableCard>
     )
 }

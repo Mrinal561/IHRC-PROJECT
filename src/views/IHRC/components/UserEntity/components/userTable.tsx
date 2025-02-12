@@ -34,7 +34,10 @@ import UserEditDialog from './UserEditDialog'
 import { fetchCompanyGroups } from '@/store/slices/companyGroup/companyGroupSlice'
 import { useNavigate } from 'react-router-dom'
 
-const UserTable: React.FC<{search:any}> = ({search}) => {
+const UserTable: React.FC<{
+    search: any;
+    refreshTrigger: number;
+}> = ({ search, refreshTrigger }) => {
     const dispatch = useDispatch<AppDispatch>()
     const [isLoading, setIsLoading] = useState(false)
     const [userTableData, setUserTableData] = useState([])
@@ -318,35 +321,6 @@ const UserTable: React.FC<{search:any}> = ({search}) => {
         }
     }
 
-    // const handleEditConfirm = async () => {
-    //     if (itemToEdit?.id) {
-    //         try {
-    //             const response = await dispatch(updateUser({
-    //                 id: itemToEdit.id,
-    //                 data: editedUserData
-    //             })).unwrap();
-
-    //             if (response) {
-    //                 handleDialogClose();
-    //                 toast.push(
-    //                     <Notification title="Success" type="success">
-    //                         User Edited successfully
-    //                     </Notification>
-    //                 );
-    //                 fetchUserData(tableData.pageIndex, tableData.pageSize);
-    //             }
-    //         } catch (error: any) {
-    //             if (error.response?.data?.message) {
-    //                 showErrorNotification(error.response.data.message);
-    //             } else if (error.message) {
-    //                 showErrorNotification(error.message);
-    //             } else {
-    //                 showErrorNotification('An unexpected error occurred while updating the user');
-    //             }
-    //         }
-    //     }
-    // };
-
     const openDeleteDialog = (userid: string) => {
         setItemToDelete(userid)
         setDialogIsOpen(true)
@@ -376,41 +350,9 @@ const UserTable: React.FC<{search:any}> = ({search}) => {
         setItemToEdit(null)
         setEditedUserData({})
     }
-
-    // const handleDialogOk = () => {
-    //     if (itemToDelete !== null) {
-    //         const newData = [...data];
-    //         newData.splice(itemToDelete, 1);
-    //         setData(newData);
-    //         setDialogIsOpen(false);
-    //         setItemToDelete(null);
-    //         openNotification('danger', 'User deleted successfully');
-    //     }
-    // }
-    // const suspendConfirm = () => {
-    //     setSuspendDialogIsOpen(false)
-    //     openNotification('success', 'User suspended successfully');
-    // }
-    // const disableConfirm = () => {
-    //     setDisableDialogIsOpen(false);
-    //     openNotification('success', 'User disable successfully');
-    // }
-
-    // const handleEditConfirm = () => {
-    //     if (itemToEdit !== null) {
-    //         const newData = [...data];
-    //         newData[itemToEdit] = editedUser;
-    //         setData(newData);
-    //         setEditDialogIsOpen(false);
-    //         setItemToEdit(null);
-    //         setEditedUser({});
-    //         openNotification('success', 'User updated successfully');
-    //     }
-    // };
-
     useEffect(() => {
         fetchUserData(1, 10,search)
-    }, [search])
+    }, [search, refreshTrigger]) 
 
     const fetchUserData = async (page: number, size: number, searchQuery?: string) => {
         setIsLoading(true)
@@ -551,123 +493,6 @@ const UserTable: React.FC<{search:any}> = ({search}) => {
                 userId={itemToEdit}
                 onRefresh={fetchUserData}
             />
-            {/* <Dialog
-                isOpen={editDialogIsOpen}
-                onClose={handleDialogClose}
-                onRequestClose={handleDialogClose}
-            >
-                <h5 className="mb-4">Edit User Details</h5>
-                <div className="grid grid-cols-2 gap-4">
-                    <OutlinedInput
-                        label="First Name"
-                        value={editedUserData.first_name || ''}
-                        onChange={(value) => setEditedUserData(prev => ({ ...prev, first_name: value }))}
-                    />
-                    <OutlinedInput
-                        label="Last Name"
-                        value={editedUserData.last_name || ''}
-                        onChange={(value) => setEditedUserData(prev => ({ ...prev, last_name: value }))}
-                    />
-                    <OutlinedInput
-                        label="Email"
-                        value={editedUserData.email || ''}
-                        onChange={(value) => setEditedUserData(prev => ({ ...prev, email: value }))}
-                    />
-                    <OutlinedInput
-                        label="Mobile"
-                        value={editedUserData.mobile || ''}
-                        onChange={(value) => setEditedUserData(prev => ({ ...prev, mobile: value }))}
-                    />
-                </div>
-                <div className="text-right mt-6">
-                    <Button
-                        className="ltr:mr-2 rtl:ml-2"
-                        variant="plain"
-                        onClick={handleDialogClose}
-                    >
-                        Cancel
-                    </Button>
-                    <Button variant="solid" onClick={handleEditConfirm}>
-                        Save Changes
-                    </Button>
-                </div>
-            </Dialog> */}
-            {/*
-            <Dialog
-                isOpen={disableDialogIsOpen}
-                onClose={handleDialogClose}
-                onRequestClose={handleDialogClose}
-            >
-                <h5 className="mb-4">Confirm Disable Login</h5>
-                <p>
-                    Are you sure you want to disable this user? This action cannot be undone.
-                </p>
-                <div className="text-right mt-6">
-                    <Button
-                        className="ltr:mr-2 rtl:ml-2"
-                        variant="plain"
-                        onClick={handleDialogClose}
-                    >
-                        Cancel
-                    </Button>
-                    <Button variant="solid" onClick={disableConfirm}>
-                        Confirm
-                    </Button>
-                </div>
-            </Dialog>
-            <Dialog
-                isOpen={suspendDialogIsOpen}
-                onClose={handleDialogClose}
-                onRequestClose={handleDialogClose}
-            >
-                <h5 className="mb-4">Confirm Suspend User</h5>
-                <p>
-                    Are you sure you want to suspend this user? This action cannot be undone.
-                </p>
-                <div className="text-right mt-6">
-                    <Button
-                        className="ltr:mr-2 rtl:ml-2"
-                        variant="plain"
-                        onClick={handleDialogClose}
-                    >
-                        Cancel
-                    </Button>
-                    <Button variant="solid" onClick={suspendConfirm}>
-                        Confirm
-                    </Button>
-                </div>
-            </Dialog>
-
-            <Dialog
-                isOpen={editDialogIsOpen}
-                onClose={handleDialogClose}
-                onRequestClose={handleDialogClose}
-            >
-                <h5 className="mb-4">Edit User</h5>
-                <div className="grid grid-cols-2 gap-4">
-                    {Object.entries(editedUser).map(([key, value], index) => (
-                        <OutlinedInput
-                            key={key}
-                            label={key.replace(/([A-Z])/g, ' $1').trim()}
-                            value={value as string}
-                            onChange={(newValue: string) => setEditedUser(prev => ({ ...prev, [key]: newValue }))}
-                        />
-                    ))}
-                </div>
-                <div className="text-right mt-6">
-                    <Button
-                        className="ltr:mr-2 rtl:ml-2"
-                        variant="plain"
-                        onClick={handleDialogClose}
-                    >
-                        Cancel
-                    </Button>
-                    <Button variant="solid" onClick={handleEditConfirm}>
-                        Confirm
-                    </Button>
-                </div>
-            </Dialog> 
-            */}
         </div>
     )
 }

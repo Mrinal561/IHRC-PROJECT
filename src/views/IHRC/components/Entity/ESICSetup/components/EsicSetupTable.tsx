@@ -12,6 +12,7 @@ import { deleteESI } from '@/store/slices/esiSetup/esiSetupSlice';
 import { useDispatch } from 'react-redux';
 import Lottie from 'lottie-react';
 import loadingAnimation from '@/assets/lotties/system-regular-716-spinner-three-dots-loop-scale.json';
+import { HiOutlineViewGrid } from 'react-icons/hi';
 
 interface ESISetupTableProps {
   data: EsiSetupData[];
@@ -104,6 +105,22 @@ const ESISetupTable: React.FC<ESISetupTableProps> = ({
         ),
       },
       {
+        header: 'Mobile',
+        enableSorting: false,
+        accessorKey: 'mobile_number',
+        cell: (props) => (
+          <div className=" flex items-center justify-center">{props.getValue()}</div>
+        ),
+      },
+      {
+        header: 'Email',
+        enableSorting: false,
+        accessorKey: 'email',
+        cell: (props) => (
+          <div className=" flex items-center justify-center">{props.getValue()}</div>
+        ),
+      },
+      {
         header: 'ESI User ID',
         enableSorting: false,
         accessorKey: 'esi_user',
@@ -121,39 +138,39 @@ const ESISetupTable: React.FC<ESISetupTableProps> = ({
       },
     ];
 
-    for (let i = 0; i < maxSignatories; i++) {
-      const signatoryNum = i + 1;
-      baseColumns.push(
-        {
-          header: `Authorized Signatory ${signatoryNum}`,
-          accessorKey: `signatory_name_${signatoryNum}`,
-          cell: (props) => (
-            <div className="w-48 truncate">{props.getValue()}</div>
-          ),
-        },
-        {
-          header: `Designation ${signatoryNum}`,
-          accessorKey: `signatory_role_${signatoryNum}`,
-          cell: (props) => (
-            <div className="w-48 truncate">{props.getValue()}</div>
-          ),
-        },
-        {
-          header: `Email ${signatoryNum}`,
-          accessorKey: `signatory_email_${signatoryNum}`,
-          cell: (props) => (
-            <div className="w-48 truncate">{props.getValue()}</div>
-          ),
-        },
-        {
-          header: `Mobile ${signatoryNum}`,
-          accessorKey: `signatory_mobile_${signatoryNum}`,
-          cell: (props) => (
-            <div className="w-48 truncate">{props.getValue()}</div>
-          ),
-        }
-      );
-    }
+    // for (let i = 0; i < maxSignatories; i++) {
+    //   const signatoryNum = i + 1;
+    //   baseColumns.push(
+    //     {
+    //       header: `Authorized Signatory ${signatoryNum}`,
+    //       accessorKey: `signatory_name_${signatoryNum}`,
+    //       cell: (props) => (
+    //         <div className="w-48 truncate">{props.getValue()}</div>
+    //       ),
+    //     },
+    //     {
+    //       header: `Designation ${signatoryNum}`,
+    //       accessorKey: `signatory_role_${signatoryNum}`,
+    //       cell: (props) => (
+    //         <div className="w-48 truncate">{props.getValue()}</div>
+    //       ),
+    //     },
+    //     {
+    //       header: `Email ${signatoryNum}`,
+    //       accessorKey: `signatory_email_${signatoryNum}`,
+    //       cell: (props) => (
+    //         <div className="w-48 truncate">{props.getValue()}</div>
+    //       ),
+    //     },
+    //     {
+    //       header: `Mobile ${signatoryNum}`,
+    //       accessorKey: `signatory_mobile_${signatoryNum}`,
+    //       cell: (props) => (
+    //         <div className="w-48 truncate">{props.getValue()}</div>
+    //       ),
+    //     }
+    //   );
+    // }
 
     baseColumns.push({
       header: 'Actions',
@@ -269,9 +286,10 @@ const ESISetupTable: React.FC<ESISetupTableProps> = ({
   return (
     <div className="relative">
       {transformedData.length === 0 ? (
-        <div className="text-center py-8 text-gray-500">
-          No ESI setup data available
-        </div>
+        <div className="flex flex-col items-center justify-center h-96 text-gray-500 border rounded-xl">
+        <HiOutlineViewGrid className="w-12 h-12 mb-4 text-gray-300" />
+        <p className="text-center">No Data Available</p>
+      </div>
       ) : (
         <DataTable
           columns={columns}
@@ -319,7 +337,7 @@ const ESISetupTable: React.FC<ESISetupTableProps> = ({
         onClose={handleDialogClose}
         onRequestClose={handleDialogClose}
         width={800}
-        height={480}
+        height={520}
       >
         <h5 className="mb-4">Edit ESI Setup</h5>
         {itemToEdit && (

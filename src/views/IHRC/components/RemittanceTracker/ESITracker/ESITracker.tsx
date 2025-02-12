@@ -113,7 +113,7 @@ const ESITracker: React.FC = () => {
                 
                 // Find Remittance Tracker module
                 const remittanceModule = response.payload.moduleAccess?.find(
-                    (module: any) => module.id === 9
+                    (module: any) => module.id === 1
                 )
                 
                 if (!remittanceModule) {
@@ -133,7 +133,7 @@ const ESITracker: React.FC = () => {
 
                 // Find PF Tracker menu item
                 const pfTrackerMenu = remittanceModule.menus?.find(
-                    (menu: any) => menu.id === 32
+                    (menu: any) => menu.id === 3
                 )
 
                 if (!pfTrackerMenu) {

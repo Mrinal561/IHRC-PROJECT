@@ -92,7 +92,7 @@ const BranchAgreements: React.FC = () => {
                 
                 // Find Branch module (module.id = 8)
                 const branchModule = response.payload.moduleAccess?.find(
-                    (module: any) => module.id === 8
+                    (module: any) => module.id === 4
                 )
                 
                 if (!branchModule) {
@@ -112,7 +112,7 @@ const BranchAgreements: React.FC = () => {
 
                 // Find Branch Agreements menu item (menu.id = 29)
                 const branchAgreementsMenu = branchModule.menus?.find(
-                    (menu: any) => menu.id === 29
+                    (menu: any) => menu.id === 8
                 )
 
                 if (!branchAgreementsMenu) {

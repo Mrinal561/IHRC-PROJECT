@@ -103,6 +103,7 @@ const PFEditedData: React.FC<PFEditedDataProps> = ({
   const [selectedSignatories, setSelectedSignatories] = useState<Array<{ id: number; name: string }>>([]);
   const [selectedLocationId, setSelectedLocationId] = useState<number>();
   const [loader, setLoader] = useState(false)
+  
   const handleDocumentView = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (formData.register_certificate) {

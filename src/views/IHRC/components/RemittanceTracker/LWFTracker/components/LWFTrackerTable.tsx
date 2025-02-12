@@ -270,7 +270,7 @@ const LWFTrackerTable: React.FC<LWFTrackerTableProps> = ({
         enableSorting: false,
         accessorKey: 'delay_in_days',
         cell: (props) => <div className="w-28 truncate">
-          {props.getValue()}-Days
+          {props.getValue()}
         </div>,
       },
       {

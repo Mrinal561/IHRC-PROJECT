@@ -359,7 +359,7 @@ const handleEditConfirm = async () => {
                 <div className="flex flex-col items-center justify-center h-96 text-gray-500 border rounded-xl">
                 <HiOutlineViewGrid className="w-12 h-12 mb-4 text-gray-300" />
                 <p className="text-center">
-        No Data Available
+                   No Data Available
                 </p>
       </div>
             ) : (

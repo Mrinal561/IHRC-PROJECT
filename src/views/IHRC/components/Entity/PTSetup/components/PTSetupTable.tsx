@@ -13,6 +13,7 @@ import { deletePT } from '@/store/slices/ptSetup/ptSetupSlice';
 import { useDispatch } from 'react-redux';
 import Lottie from 'lottie-react';
 import loadingAnimation from '@/assets/lotties/system-regular-716-spinner-three-dots-loop-scale.json';
+import { HiOutlineViewGrid } from 'react-icons/hi';
 
 
 interface PTSetupTableProps {
@@ -294,9 +295,10 @@ const PTSetupTable: React.FC<PTSetupTableProps> = ({ data, isLoading , onRefresh
   return (
     <div className="relative">
       {data.length === 0 ? (
-        <div className="text-center py-8 text-gray-500">
-          No PT setup data available
-        </div>
+      <div className="flex flex-col items-center justify-center h-96 text-gray-500 border rounded-xl">
+      <HiOutlineViewGrid className="w-12 h-12 mb-4 text-gray-300" />
+      <p className="text-center">No Data Available</p>
+    </div>
       ) : (
         <DataTable
           columns={columns}

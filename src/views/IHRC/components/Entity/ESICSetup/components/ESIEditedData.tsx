@@ -11,6 +11,8 @@ import * as yup from 'yup';
 import { Eye } from 'lucide-react';
 
 interface ESISetupData {
+  email:string;
+  mobile_number:string;
   id: number;
   group_id: number;
   company_id: number;
@@ -48,6 +50,8 @@ interface ValidationErrors {
   esi_user?: string;
   password?: string;
   certificate?:string;
+  mobile_number?:string;
+  email?:string;
 }
 
 interface ESIEditedDataProps {
@@ -62,6 +66,15 @@ const esiSchema = yup.object().shape({
   code: yup.string()
   .required('ESI code is required')
   .matches(/^[A-Za-z0-9]+$/, 'ESI code must contain only letters and numbers'),
+  mobile_number: yup.string()
+  .required('Mobile number is required')
+  .matches(/^[0-9]{10}$/, 'Mobile number must be 10 digits'),
+email: yup.string()
+.matches(
+    /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]+$/,
+    'Invalid email address.'
+)
+.required('Email is required'),
   // esi_user: yup
   //   .string()
   //   .required('ESI user is required')
@@ -97,6 +110,8 @@ const ESIEditedData: React.FC<ESIEditedDataProps> = ({
     esi_user: '',
     password: '',
     certificate: '',
+    email:'',
+    mobile_number:''
   });
   const storedId = id;
 
@@ -217,6 +232,8 @@ const handleSubmit = async () => {
         esi_user: formData.esi_user,
         password: formData.password,
         certificate: formData.certificate,
+        email:formData.email,
+        mobile_number: formData.mobile_number
       };
 
       if (!id) {
@@ -323,7 +340,7 @@ return (
             disabled
           />
         </div>
-        <div className="h-[90px]">
+        <div className="h-[70px]">
           <p className="text-sm font-medium mb-2">Code Type<span className="text-red-500">*</span></p>
           <OutlinedSelect
             label="Select Code Type"
@@ -341,19 +358,19 @@ return (
 
       {/* Second Row: ESI Code, ESI User, Password */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="h-[90px]">
+        <div className="h-[70px]">
           <p className="text-sm font-medium mb-2">ESI Code<span className="text-red-500">*</span></p>
           <OutlinedInput
-            label="ESI Code"
+            label="Enter ESI Code"
             value={formData.code}
             onChange={(value) => handleChange('code', value)}
           />
           {errors.code && <p className="text-red-500 text-xs mt-1">{errors.code}</p>}
         </div>
-        <div className="h-[90px]">
+        <div className="h-[70px]">
           <p className="text-sm font-medium mb-2">ESI User</p>
           <OutlinedInput
-            label="ESI User"
+            label="Enter ESI User"
             value={formData.esi_user}
             onChange={(value) => handleChange('esi_user', value)}
           />
@@ -361,15 +378,38 @@ return (
             <p className="text-red-500 text-xs mt-1">{errors.esi_user}</p>
           )}
         </div>
-        <div className="h-[90px]">
+        <div className="h-[70px]">
           <p className="text-sm font-medium mb-2">Password</p>
           <OutlinedPasswordInput
-            label="Password"
+            label="Enter Password"
             value={formData.password}
             onChange={(value) => handleChange('password', value)}
           />
           {errors.password && (
             <p className="text-red-500 text-xs mt-1">{errors.password}</p>
+          )}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="h-[70px]">
+          <p className="text-sm font-medium mb-2">Email<span className="text-red-500">*</span></p>
+          <OutlinedInput
+            label="Enter Email"
+            value={formData.email}
+            onChange={(value) => handleChange('email', value)}
+          />
+          {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+        </div>
+        <div className="h-[70px]">
+          <p className="text-sm font-medium mb-2">ESI User</p>
+          <OutlinedInput
+            label="Enter Mobile"
+            value={formData.mobile_number}
+            onChange={(value) => handleChange('mobile_number', value)}
+          />
+          {errors.esi_user && (
+            <p className="text-red-500 text-xs mt-1">{errors.mobile_number}</p>
           )}
         </div>
       </div>
@@ -400,10 +440,10 @@ return (
 
       {/* Action Buttons */}
       <div className="flex justify-end gap-2">
-        <Button variant="plain" onClick={onClose}>
+        <Button variant="plain" onClick={onClose} size='sm'>
           Cancel
         </Button>
-        <Button variant="solid" onClick={handleSubmit} loading={loader}>
+        <Button variant="solid" onClick={handleSubmit} loading={loader} size='sm'>
           Confirm
         </Button>
       </div>

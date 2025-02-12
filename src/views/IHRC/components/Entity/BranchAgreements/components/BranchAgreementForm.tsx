@@ -387,14 +387,16 @@ return (
 
               {/* Office Type */}
               {currentBranchData?.office_type && (
-              <div className="space-y-2">
-              <label htmlFor="officeType">Office Type</label>
-                <OutlinedInput
-                  label="Office Type"
-                  value={currentBranchData.office_type}
-                  onChange={() => {}}
-                />
-            </div>
+                <div className="space-y-2">
+                  <label htmlFor="officeType">Office Type</label>
+                  <OutlinedInput
+                    label="Office Type"
+                    value={currentBranchData.office_type === 'coorporate_office' 
+                      ? 'Corporate Office' 
+                      : currentBranchData.office_type}
+                    onChange={() => {}}
+                  />
+                </div>
               )}
              {/* Agreement Type */}
           <div className="space-y-2">
@@ -495,13 +497,16 @@ return (
 
               {/* Start Date */}
               <div className="space-y-2">
-                <label htmlFor="startDate">Start Date <span className="text-red-500">*</span></label>
+                <label htmlFor="startDate">Agreement Start Date <span className="text-red-500">*</span></label>
                 <DatePicker
                   size="sm"
-                  placeholder="Pick Start Date"
+                  placeholder="Select Start Date"
                   onChange={(date) => {
                     setFieldValue('startDate', date ? format(date, 'yyyy-MM-dd') : '');
                   }}
+                  inputFormat="DD-MM-YYYY"  // Changed to uppercase format tokens
+                  yearLabelFormat="YYYY"
+                  monthLabelFormat="MMMM YYYY"
                 />
                 {errors.startDate && touched.startDate && (
                   <p className="text-red-500 text-sm">{errors.startDate}</p>
@@ -510,14 +515,17 @@ return (
 
               {/* End Date */}
               <div className="space-y-2">
-                <label htmlFor="endDate">End Date <span className="text-red-500">*</span></label>
+                <label htmlFor="endDate">Agreement End Date <span className="text-red-500">*</span></label>
                 <DatePicker
                   size="sm"
-                  placeholder="Pick End Date"
+                  placeholder="Select End Date"
                   onChange={(date) => {
                     setFieldValue('endDate', date ? format(date, 'yyyy-MM-dd') : '');
                   }}
                   minDate={values.startDate ? new Date(values.startDate) : undefined}
+                  inputFormat="DD-MM-YYYY"  // Changed to uppercase format tokens
+                  yearLabelFormat="YYYY"
+                  monthLabelFormat="MMMM YYYY"
                 />
                 {errors.endDate && touched.endDate && (
                   <p className="text-red-500 text-sm">{errors.endDate}</p>

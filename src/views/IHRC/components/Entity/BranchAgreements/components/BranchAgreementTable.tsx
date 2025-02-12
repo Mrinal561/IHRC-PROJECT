@@ -338,14 +338,14 @@ const BranchAgreementTable = (canEdit,canDelete) => {
             {/* Filters Section */}
             <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <OutlinedSelect
-    label="Select Company"
+    label="Company"
     value={filters.company_id} // This will now be the full option object
     options={companies}
     onChange={(value) => handleFilterChange('company_id', value)}
 />
 
 <OutlinedSelect
-    label="Select Branch"
+    label="Branch"
     value={filters.branch_id} // This will now be the full option object
     options={branches}
     onChange={(value) => handleFilterChange('branch_id', value)}

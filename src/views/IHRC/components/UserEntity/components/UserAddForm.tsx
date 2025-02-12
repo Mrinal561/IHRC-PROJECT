@@ -80,7 +80,19 @@ const userValidationSchema = yup.object().shape({
         .string()
         .required('Mobile number is required')
         .matches(/^[0-9]{10}$/, 'Mobile number must be 10 digits'),
-    joining_date: yup.string().required('Joining date is required'),
+    joining_date: yup.string().required('Joining date is required').test(
+        'is-not-future-date',
+        'Opening date cannot be a future date',
+        function (value) {
+            if (!value) return true; // Skip validation if the value is empty
+
+            const selectedDate = new Date(value);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // Reset time part to compare only dates
+
+            return selectedDate <= today;
+        }
+    ),
     role_id: yup
         .number()
         .required('Designation is required')
@@ -331,7 +343,7 @@ const UserAddForm = () => {
                 </div>
 
                 {/* Branch Selection */}
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2 col-span-full">
     <p className="mb-2">
         Select Branch(es) <span className="text-red-500">*</span>
     </p>
@@ -580,7 +592,12 @@ const UserAddForm = () => {
         </span>
     )}
     {/* Authorized Signatory Checkbox - Nested within PAN div */}
-    <div className="mt-8">
+
+</div>
+
+{/* Add a full-width empty div to maintain grid layout */}
+<div className="col-span-full">
+<div className="">
         <label className="flex items-center">
             <Checkbox
                 checked={values.auth_signatory}
@@ -597,9 +614,6 @@ const UserAddForm = () => {
         </label>
     </div>
 </div>
-
-{/* Add a full-width empty div to maintain grid layout */}
-<div className="col-span-full"></div>
             </div>
 
             {/* Submit Button */}

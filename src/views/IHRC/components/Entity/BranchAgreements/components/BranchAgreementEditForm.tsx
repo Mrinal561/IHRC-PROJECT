@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { endpoints } from '@/api/endpoint';
 import httpClient from '@/api/http-client';
-import { Button, Checkbox, Input, toast, Notification } from '@/components/ui';
+import { Button, Checkbox, Input, toast, Notification, Tooltip } from '@/components/ui';
 import OutlinedInput from '@/components/ui/OutlinedInput';
 import { Field, Formik, Form } from 'formik';
 import { IoArrowBack } from 'react-icons/io5';
@@ -347,7 +347,9 @@ const BranchAgreementEditForm = () => {
                 <div className="space-y-2">
                   <label>Office Type</label>
                   <OutlinedInput 
-                    value={branchOfficeType}
+                    value={branchOfficeType === 'coorporate_office' 
+                      ? 'Corporate Office' 
+                      : currentBranchData.office_type}
                     disabled 
                   />
                 </div>
@@ -443,11 +445,14 @@ const BranchAgreementEditForm = () => {
               
 
               <div className="space-y-2">
-  <label htmlFor="startDate">Start Date <span className="text-red-500">*</span></label>
+  <label htmlFor="startDate">Agreement Start Date <span className="text-red-500">*</span></label>
   <DatePicker
     placeholder="Start Date"
     value={values.startDate ? new Date(values.startDate) : null}
     onChange={(date) => setFieldValue('startDate', date ? format(date, 'yyyy-MM-dd') : '')}
+    inputFormat="DD-MM-YYYY"  // Changed to uppercase format tokens
+    yearLabelFormat="YYYY"
+    monthLabelFormat="MMMM YYYY"
   />
   {errors.startDate && touched.startDate && (
     <p className="text-red-500 text-sm">{errors.startDate}</p>
@@ -455,12 +460,15 @@ const BranchAgreementEditForm = () => {
 </div>
 
 <div className="space-y-2">
-  <label htmlFor="endDate">End Date <span className="text-red-500">*</span></label>
+  <label htmlFor="endDate">Agreement End Date <span className="text-red-500">*</span></label>
   <DatePicker
     placeholder="End Date"
     value={values.endDate ? new Date(values.endDate) : null}
     onChange={(date) => setFieldValue('endDate', date ? format(date, 'yyyy-MM-dd') : '')}
     minDate={values.startDate ? new Date(values.startDate) : undefined}
+    inputFormat="DD-MM-YYYY"  // Changed to uppercase format tokens
+    yearLabelFormat="YYYY"
+    monthLabelFormat="MMMM YYYY"
   />
   {errors.endDate && touched.endDate && (
     <p className="text-red-500 text-sm">{errors.endDate}</p>
@@ -489,14 +497,17 @@ const BranchAgreementEditForm = () => {
                   className="w-full"
                 />
                 {values.existingDocument && ( 
+                <Tooltip title="View Document">
                   <button
                   onClick={handleDocumentView(values.existingDocument)}
                     className="p-2 hover:bg-gray-100 rounded-full flex-shrink-0"
                     title="View Document"
                     type="button"
                   >
+                   
                     <Eye size={20} />
                   </button>
+                  </Tooltip>
                 )}
               </div>
               {errors.agreementDocument && touched.agreementDocument && (
@@ -527,7 +538,7 @@ const BranchAgreementEditForm = () => {
                 Cancel
               </Button>
               <Button type="submit" disabled={isSubmitting} variant="solid">
-                {isSubmitting ? 'Confirming....' : 'Confirm'}
+                Confirm
               </Button>
             </div>
           </Form>

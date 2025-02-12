@@ -91,7 +91,19 @@ const userValidationSchema = yup.object().shape({
         .string()
         .required('Mobile number is required')
         .matches(/^[0-9]{10}$/, 'Mobile number must be 10 digits'),
-    joining_date: yup.string().required('Joining date is required'),
+    joining_date: yup.string().required('Joining date is required').test(
+        'is-not-future-date',
+        'Opening date cannot be a future date',
+        function (value) {
+            if (!value) return true; // Skip validation if the value is empty
+
+            const selectedDate = new Date(value);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // Reset time part to compare only dates
+
+            return selectedDate <= today;
+        }
+    ),
     role_id: yup
         .number()
         .required('Designation is required')
@@ -408,6 +420,34 @@ const loadBranches = async (companyId: string) => {
                                             </span>
                                         )}
                                 </div>
+                                    {/* Branch Selection */}
+<div className="flex flex-col gap-2 col-span-full">
+    <p className="">
+        Select Branch(es) <span className="text-red-500">*</span>
+    </p>
+    <Field name="branch_id">
+    {({ field, form: { setFieldValue, values } }: any) => (
+        <Select
+            size="sm"
+            isMulti
+            isDisabled={!values.company_id}
+            options={branches.map((branch: Branch) => ({
+                value: branch.value,
+                label: branch.label,
+            }))}
+            value={branches.filter((branch: Branch) =>
+                values.branch_id?.includes(Number(branch.value))
+            )}
+            onChange={(selectedOptions: MultiValue<SelectOption>) => {
+                const branchIds = selectedOptions
+                    ? selectedOptions.map((option) => Number(option.value))
+                    : [];
+                setFieldValue('branch_id', branchIds);
+            }}
+        />
+    )}
+</Field>
+</div>
 
                                 {/* Name */}
                                 <div className="flex flex-col gap-2">
@@ -632,34 +672,7 @@ const loadBranches = async (companyId: string) => {
                                         </span>
                                     )}
                                 </div>
-                                    {/* Branch Selection */}
-<div className="flex flex-col gap-2">
-    <p className="mb-2">
-        Select Branch(es) <span className="text-red-500">*</span>
-    </p>
-    <Field name="branch_id">
-    {({ field, form: { setFieldValue, values } }: any) => (
-        <Select
-            size="sm"
-            isMulti
-            isDisabled={!values.company_id}
-            options={branches.map((branch: Branch) => ({
-                value: branch.value,
-                label: branch.label,
-            }))}
-            value={branches.filter((branch: Branch) =>
-                values.branch_id?.includes(Number(branch.value))
-            )}
-            onChange={(selectedOptions: MultiValue<SelectOption>) => {
-                const branchIds = selectedOptions
-                    ? selectedOptions.map((option) => Number(option.value))
-                    : [];
-                setFieldValue('branch_id', branchIds);
-            }}
-        />
-    )}
-</Field>
-</div>
+                                
                                 {/* Auth Signatory (moved to full width) */}
                                 <div className="col-span-2 flex flex-col gap-2">
                                     <label className="flex items-center">

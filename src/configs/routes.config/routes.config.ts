@@ -165,6 +165,17 @@ export const protectedRoutes = [
         ),
         authority: [],
     },
+    {
+        key: 'pfSetup.edit',
+        path: `/pfsetup-edit`,
+        component: lazy(
+            () =>
+                import(
+                    '@/views/IHRC/components/Entity/PFSetup/components/PFEditPage'
+                ),
+        ),
+        authority: [],
+    },
 
     {
         key: 'assignChecklist.item3',

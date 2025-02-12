@@ -12,8 +12,11 @@ import { deleteLwf } from '@/store/slices/lwfSetup/lwfTrackerSlice';
 import { useDispatch } from 'react-redux';
 import Lottie from 'lottie-react';
 import loadingAnimation from '@/assets/lotties/system-regular-716-spinner-three-dots-loop-scale.json';
+import { HiOutlineViewGrid } from 'react-icons/hi';
 
 export interface LWFSetupData {
+    email:string;
+    mobile_number:string;
     Company_Group_Name: string;
     Company_Name: string;
     lwfState: string;
@@ -133,7 +136,7 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
             {
                 header: 'LWF Registration Date',
                 enableSorting: false,
-                accessorKey: 'lwfRegistrationDate',
+                accessorKey: 'register_date',
                 cell: (props) => (
                     <div className="w-32 flex items-center justify-center">{dayjs(props.getValue() as string).format('DD-MM-YYYY')}</div>
                 ),
@@ -146,6 +149,22 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
                     <div className="w-40 flex items-center justify-center">{props.getValue() as string}</div>
                 ),
             },
+            {
+                header: 'Mobile',
+                enableSorting: false,
+                accessorKey: 'mobile_number',
+                cell: (props) => (
+                  <div className=" flex items-center justify-center">{props.getValue()}</div>
+                ),
+              },
+              {
+                header: 'Email',
+                enableSorting: false,
+                accessorKey: 'email',
+                cell: (props) => (
+                  <div className=" flex items-center justify-center">{props.getValue()}</div>
+                ),
+              },
             {
                 header: 'User Name',
                 enableSorting: false,
@@ -164,39 +183,39 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
             },
         ];
 
-        for (let i = 0; i < maxSignatories; i++) {
-            const signatoryNum = i + 1;
-            baseColumns.push(
-                {
-                    header: `Authorized Signatory ${signatoryNum}`,
-                    accessorKey: `signatory_name_${signatoryNum}`,
-                    cell: (props) => (
-                        <div className="w-48 truncate">{props.getValue()}</div>
-                    ),
-                },
-                {
-                    header: `Designation ${signatoryNum}`,
-                    accessorKey: `signatory_role_${signatoryNum}`,
-                    cell: (props) => (
-                        <div className="w-48 truncate">{props.getValue()}</div>
-                    ),
-                },
-                {
-                    header: `Email ${signatoryNum}`,
-                    accessorKey: `signatory_email_${signatoryNum}`,
-                    cell: (props) => (
-                        <div className="w-48 truncate">{props.getValue()}</div>
-                    ),
-                },
-                {
-                    header: `Mobile ${signatoryNum}`,
-                    accessorKey: `signatory_mobile_${signatoryNum}`,
-                    cell: (props) => (
-                        <div className="w-48 truncate">{props.getValue()}</div>
-                    ),
-                }
-            );
-        }
+        // for (let i = 0; i < maxSignatories; i++) {
+        //     const signatoryNum = i + 1;
+        //     baseColumns.push(
+        //         {
+        //             header: `Authorized Signatory ${signatoryNum}`,
+        //             accessorKey: `signatory_name_${signatoryNum}`,
+        //             cell: (props) => (
+        //                 <div className="w-48 truncate">{props.getValue()}</div>
+        //             ),
+        //         },
+        //         {
+        //             header: `Designation ${signatoryNum}`,
+        //             accessorKey: `signatory_role_${signatoryNum}`,
+        //             cell: (props) => (
+        //                 <div className="w-48 truncate">{props.getValue()}</div>
+        //             ),
+        //         },
+        //         {
+        //             header: `Email ${signatoryNum}`,
+        //             accessorKey: `signatory_email_${signatoryNum}`,
+        //             cell: (props) => (
+        //                 <div className="w-48 truncate">{props.getValue()}</div>
+        //             ),
+        //         },
+        //         {
+        //             header: `Mobile ${signatoryNum}`,
+        //             accessorKey: `signatory_mobile_${signatoryNum}`,
+        //             cell: (props) => (
+        //                 <div className="w-48 truncate">{props.getValue()}</div>
+        //             ),
+        //         }
+        //     );
+        // }
 
         baseColumns.push({
             header: 'Actions',
@@ -313,9 +332,10 @@ const LWFSetupTable: React.FC<LWFSetupTableProps> = ({
     return (
         <div className="relative">
             {transformedData.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
-                    No LWF setup data available
-                </div>
+               <div className="flex flex-col items-center justify-center h-96 text-gray-500 border rounded-xl">
+               <HiOutlineViewGrid className="w-12 h-12 mb-4 text-gray-300" />
+               <p className="text-center">No Data Available</p>
+             </div>
             ) : (
                 <DataTable
                     columns={columns}

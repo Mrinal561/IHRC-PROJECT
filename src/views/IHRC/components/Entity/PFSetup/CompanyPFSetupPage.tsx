@@ -146,6 +146,10 @@ const handlePageSizeChange = (newPageSize: number) => {
       onPaginationChange={handlePaginationChange}
       onPageSizeChange={handlePageSizeChange}
       isLoading={isLoading}
+      companyName={actualCompanyName}
+      companyId={actualCompanyId}
+      groupId={actualGroupId}
+      groupName={actualGroupName}
       />
     </div>
   );

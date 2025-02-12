@@ -233,8 +233,8 @@ const handlePageSizeChange = (newPageSize: number) => {
         isOpen={isOpen}
         onClose={handleClose}
         onRequestClose={() => setIsOpen(false)}
-        width={800}
-        height={525}
+        width={950}
+        height={535}
         shouldCloseOnOverlayClick={false} 
       >
         <h4 className="mb-1">Add ESI Setup</h4>

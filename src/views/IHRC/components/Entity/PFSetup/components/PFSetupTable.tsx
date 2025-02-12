@@ -12,9 +12,11 @@ import { showErrorNotification } from '@/components/ui/ErrorMessage';
 import Lottie from 'lottie-react';
 import loadingAnimation from '@/assets/lotties/system-regular-716-spinner-three-dots-loop-scale.json';
 import { HiOutlineViewGrid } from 'react-icons/hi';
+import { useNavigate } from 'react-router-dom';
 
 const PFSetupTable = ({ data, onRefresh, companyName, groupName, pagination, onPageSizeChange, onPaginationChange, isLoading }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate()
   const [dialogIsOpen, setDialogIsOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
   const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
@@ -163,9 +165,18 @@ const PFSetupTable = ({ data, onRefresh, companyName, groupName, pagination, onP
   };
 
   const openEditDialog = (item) => {
-    setEditingId(item.id);
-    setEditDialogIsOpen(true);
-    setEditFormData(item);
+    // setEditingId(item.id);
+    // setEditDialogIsOpen(true);
+    // setEditFormData(item);
+    navigate(`/pfsetup-edit`, {
+      state: {
+          id:item.id,
+          companyGroupName: groupName,
+          companyName: companyName,
+          companyId: item.company_id,
+          groupId: item.group_id,
+      },
+  });
   };
 
   const handleDialogClose = () => {
@@ -228,9 +239,10 @@ const PFSetupTable = ({ data, onRefresh, companyName, groupName, pagination, onP
   return (
     <div className="relative">
       {transformedData.length === 0 ? (
-        <div className="text-center py-8 text-gray-500">
-          No PF setup data available
-        </div>
+       <div className="flex flex-col items-center justify-center h-96 text-gray-500 border rounded-xl">
+       <HiOutlineViewGrid className="w-12 h-12 mb-4 text-gray-300" />
+       <p className="text-center">No Data Available</p>
+     </div>
       ) : (
         <DataTable
           columns={columns}
