@@ -663,3 +663,4 @@ const DataTable = forwardRef(_DataTable) as <T>(
 
 export type { ColumnDef, Row, CellContext }
 export default DataTable
+
