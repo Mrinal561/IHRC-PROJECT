@@ -131,24 +131,24 @@ const params: any = {
             </div>
           );
         }
-      },
+      },  
       {
         header: 'Due Date',
         enableSorting: false,
-        accessorKey: 'payment_due_date',
+        accessorKey: 'return_due_date',
         cell: (props) => <div className="w-28 truncate">{dayjs(props.getValue() as string).format('DD-MM-YYYY')}</div>,
       },
       {
         header: 'Date of Payment',
         enableSorting: false,
-        accessorKey: 'payment_date',
+        accessorKey: 'submit_date',
         cell: (props) => <div className="w-40 truncate">{dayjs(props.getValue() as string).format('DD-MM-YYYY')}</div>,
       },
       {
         header: 'Delay in Days',
         enableSorting: false,
         accessorKey: 'delay_in_days',
-        cell: (props) => <div className="w-28 truncate">{props.getValue() ? `${props.getValue()} Days` : '-'}</div>,
+        cell: (props) => <div className="w-28 truncate">{props.getValue() ? `${props.getValue()}` : '-'}</div>,
       },
       {
         header: 'Delay Reason',

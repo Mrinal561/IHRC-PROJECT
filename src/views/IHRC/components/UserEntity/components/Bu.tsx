@@ -38,7 +38,7 @@ const Bu: React.FC<BulkUploadProps> = ({
       formData.append('remark', remark);
       
       const res = await httpClient.post(
-        endpoints.users.bulkCreate(),
+        endpoints.user.bulkCreate(),
         formData,
         {
           headers: {
@@ -82,7 +82,7 @@ const Bu: React.FC<BulkUploadProps> = ({
   const handleDownload = async (e: React.MouseEvent) => {
     e.preventDefault();
     try {
-      const res = await httpClient.get(endpoints.users.downloadFormat(), {
+      const res = await httpClient.get(endpoints.user.downloadFormat(), {
         responseType: "blob",
       });
       

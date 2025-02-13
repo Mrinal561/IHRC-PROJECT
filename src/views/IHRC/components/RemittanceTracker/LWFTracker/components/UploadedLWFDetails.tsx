@@ -204,7 +204,7 @@ const params: any = {
         enableSorting: false,
         accessorKey: 'delay_in_days',
         cell: (props) => <div className="w-28 truncate">
-          {props.getValue() ? `${props.getValue()} Days` : '-'}
+          {props.getValue() ? `${props.getValue()}` : '-'}
         </div>,
       },
       {
