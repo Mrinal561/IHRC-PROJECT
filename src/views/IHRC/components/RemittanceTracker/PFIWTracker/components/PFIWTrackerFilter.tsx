@@ -269,6 +269,7 @@ const PFIWTrackerFilter: React.FC<PFIWTrackerFilterProps> = ({ onFilterChange })
           options={companyGroups}
           value={selectedCompanyGroup}
           onChange={handleCompanyGroupChange}
+          showClearButton={false}
         />
       </div>
       

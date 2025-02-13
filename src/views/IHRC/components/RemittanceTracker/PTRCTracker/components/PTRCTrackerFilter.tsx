@@ -262,6 +262,7 @@ const PTRCTrackerFilter: React.FC<PTRCTrackerFilterProps> = ({ onFilterChange })
           options={companyGroups}
           value={selectedCompanyGroup}
           onChange={handleCompanyGroupChange}
+          showClearButton={false}
         />
       </div>
       

@@ -267,6 +267,7 @@ const PFTrackerFilter: React.FC<PFTrackerFilterProps> = ({ onFilterChange }) => 
           options={companyGroups}
           value={selectedCompanyGroup}
           onChange={handleCompanyGroupChange}
+          showClearButton={false}
         />
       </div>
       

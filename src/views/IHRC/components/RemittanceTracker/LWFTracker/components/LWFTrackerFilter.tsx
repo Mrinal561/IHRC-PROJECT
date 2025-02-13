@@ -265,6 +265,7 @@ const LWFTrackerFilter: React.FC<LWFTrackerFilterProps> = ({ onFilterChange }) =
           options={companyGroups}
           value={selectedCompanyGroup}
           onChange={handleCompanyGroupChange}
+          showClearButton={false}
         />
       </div>
       
