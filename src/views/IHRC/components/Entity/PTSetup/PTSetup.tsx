@@ -9,6 +9,7 @@ import { endpoints } from '@/api/endpoint';
 import { PTSetupData } from '@/@types/PtSetup';
 import { fetchptsetup } from '@/store/slices/ptSetup/ptSetupSlice';
 import { useDispatch } from 'react-redux';
+import PTBulkUpload from './components/PTBulkUpload';
 
 interface LocationState {
   companyName?: string;
@@ -130,7 +131,12 @@ const handlePageSizeChange = (newPageSize: number) => {
           </Button>
           <h1 className="text-2xl font-bold">{actualCompanyName}-PT Setup</h1>
         </div>
-        <Button
+        <div className="flex items-center">
+        <PTBulkUpload
+                        companyId={actualCompanyId}
+                        onUploadSuccess={refreshPTSetupData}
+                    />
+           <Button
           variant="solid"
           size="sm"
           icon={<HiPlusCircle />}
@@ -138,6 +144,8 @@ const handlePageSizeChange = (newPageSize: number) => {
         >
           Add PT Setup
         </Button>
+        </div>
+
       </div>
 
       <PTSetupTable data={ptSetupData}  

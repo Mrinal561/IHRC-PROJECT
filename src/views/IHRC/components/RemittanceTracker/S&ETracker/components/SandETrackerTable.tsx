@@ -764,7 +764,7 @@ const NoticeTrackerTable: React.FC<NoticeTrackerTableProps> = ({
               variant="solid"
               color="blue"
             >
-              Delete
+              Confirm
             </Button>
           </div>
         </div>

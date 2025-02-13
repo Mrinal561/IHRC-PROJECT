@@ -9,7 +9,7 @@ interface LWFBulkUploadProps {
   companyId:any
 }
 
-const LWFBulkUpload: React.FC<LWFBulkUploadProps> = ({onUploadSuccess, companyId }) => {
+const PTBulkUpload: React.FC<LWFBulkUploadProps> = ({onUploadSuccess, companyId }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [remark, setRemark] = useState('');
   const [file, setFile] = useState<File | null>(null);
@@ -38,7 +38,7 @@ const LWFBulkUpload: React.FC<LWFBulkUploadProps> = ({onUploadSuccess, companyId
       formData.append('company_id', companyId)
       //company_id
       const res = await httpClient.post(
-        endpoints.lwfSetup.bulkCreate(),
+        endpoints.ptSetup.bulkCreate(),
         formData,
         {
           headers: {
@@ -81,7 +81,7 @@ const LWFBulkUpload: React.FC<LWFBulkUploadProps> = ({onUploadSuccess, companyId
 
   const handleDownload = async () => {
     try {
-      const res = await httpClient.get(endpoints.lwfSetup.downloadFormat(companyId), {
+      const res = await httpClient.get(endpoints.ptSetup.downloadFormat(companyId), {
         responseType: "blob",
       });
       
@@ -89,7 +89,7 @@ const LWFBulkUpload: React.FC<LWFBulkUploadProps> = ({onUploadSuccess, companyId
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", "LWF_Setup_Template.xlsx");
+      link.setAttribute("download", "PT_Setup_Template.xlsx");
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -135,7 +135,7 @@ const LWFBulkUpload: React.FC<LWFBulkUploadProps> = ({onUploadSuccess, companyId
           </a>
         </div>
         <div className="flex flex-col gap-2">
-          <p>Upload LWF Setup File:</p>
+          <p>Upload PT Setup File:</p>
           <Input
             type="file"
             onChange={handleFileChange}
@@ -174,4 +174,4 @@ const LWFBulkUpload: React.FC<LWFBulkUploadProps> = ({onUploadSuccess, companyId
   );
 };
 
-export default LWFBulkUpload;
+export default PTBulkUpload;

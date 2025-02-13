@@ -57,8 +57,9 @@ import SandETrackerFilter from './SandETrackerFilter';
 import SandETrackerBulkUpload from './SandETrackerBulkUpload';
 import { Button } from '@/components/ui';
 import CustomDateRangePicker from '../../PFTracker/components/CustomDateRangePicker';
-import { HiDownload } from 'react-icons/hi';
+import { HiDownload, HiPlusCircle } from 'react-icons/hi';
 import NoticeUploadDialog from './SandETrackerBulkUpload';
+import { useNavigate } from 'react-router-dom';
 
 interface SandETrackerToolProps {
   canCreate:boolean;
@@ -85,7 +86,7 @@ const SandETrackerTool: React.FC<SandETrackerToolProps> = ({ onRefresh, onFilter
     startDate: '',
     endDate: ''
   });
-
+  const navigate = useNavigate()
   const handleUploadConfirm = () => {
     setShowUploadedDetails(true);
   };
@@ -122,7 +123,16 @@ const SandETrackerTool: React.FC<SandETrackerToolProps> = ({ onRefresh, onFilter
         >
           Download Notice Data
         </Button>
-        <NoticeUploadDialog onSuccess={onRefresh} canCreate={canCreate}/>
+        {canCreate && (
+        <Button
+          variant="solid"
+          size="sm"
+          icon={<HiPlusCircle />}
+          onClick={() => navigate('/notice-tracker/create')} // Adjust this path to match your routing structure
+        >
+          Add Notice
+        </Button>
+      )}
       </div>
     </div>
   )

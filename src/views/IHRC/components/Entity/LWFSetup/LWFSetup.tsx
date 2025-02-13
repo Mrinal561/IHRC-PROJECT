@@ -137,6 +137,7 @@ const LWFSetupPage: React.FC = () => {
                 </div>
                 <div className="flex items-center">
                     <LWFBulkUpload
+                        companyId={actualCompanyId}
                         onUploadSuccess={refreshLWFSetupData}
                     />
                     <Button

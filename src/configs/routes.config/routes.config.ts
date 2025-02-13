@@ -571,6 +571,17 @@ export const protectedRoutes = [
         authority: [],
     },
     {
+        key: 'remittanceTrackerCreate.collapse.item7',
+        path: '/notice-tracker/create',
+        component: lazy(
+            () =>
+                import(
+                    '@/views/IHRC/components/RemittanceTracker/S&ETracker/components/NoticeFormPage'
+                ),
+        ),
+        authority: [],
+    },
+    {
         key: 'pftracker.uploadeddetail',
         path: '/uploadedpfdetail',
         component: lazy(

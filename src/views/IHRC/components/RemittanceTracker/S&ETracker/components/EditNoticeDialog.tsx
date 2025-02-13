@@ -213,13 +213,14 @@
 // export default EditNoticeDialog;
 
 import React, { useState, useEffect } from 'react';
-import { Button, DatePicker, Dialog, Input } from '@/components/ui';
+import { Button, DatePicker, Dialog, Input, Tooltip } from '@/components/ui';
 import OutlinedInput from '@/components/ui/OutlinedInput';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 import { toast, Notification } from '@/components/ui';
 import { useDispatch } from 'react-redux';
 import { fetchNoticeById, updateNotice } from '@/store/slices/noticeTracker/noticeTrackerSlice';
 import { showErrorNotification } from '@/components/ui/ErrorMessage';
+import { Eye } from 'lucide-react';
 
 interface EditNoticeDialogProps {
   isOpen: boolean;
@@ -227,6 +228,12 @@ interface EditNoticeDialogProps {
   noticeId: number | null;
   onSuccess?: () => void;
 }
+interface NoticeTypeOption {
+  value: string;
+  label: string;
+  id?: string;
+}
+
 
 const EditNoticeDialog: React.FC<EditNoticeDialogProps> = ({
   isOpen,
@@ -247,12 +254,11 @@ const EditNoticeDialog: React.FC<EditNoticeDialogProps> = ({
   };
   
   const [formData, setFormData] = useState(initialFormData);
-
-  const noticeTypeOptions = [
-    { value: 'inspection', label: 'Inspection' },
-    { value: 'show_cause', label: 'Show Cause' },
-    { value: 'demand', label: 'Demand' },
-    { value: 'other', label: 'Other' }
+  const noticeTypeOptions: NoticeTypeOption[] = [
+    { value: 'inspection', label: 'Inspection', id: '1' },
+    { value: 'show_cause', label: 'Show Cause', id: '2' },
+    { value: 'demand', label: 'Demand', id: '3' },
+    { value: 'other', label: 'Other', id: '4' }
   ];
 
   useEffect(() => {
@@ -380,6 +386,13 @@ const EditNoticeDialog: React.FC<EditNoticeDialogProps> = ({
       setIsLoading(false);
     }
   };
+  const handleDocumentView = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (formData.notice_document) {
+        const fullPath = `${import.meta.env.VITE_API_GATEWAY}/${formData.notice_document}`;
+        window.open(fullPath, '_blank');
+    }
+ };
 
   return (
     <Dialog
@@ -396,9 +409,14 @@ const EditNoticeDialog: React.FC<EditNoticeDialogProps> = ({
               <label className="text-sm font-medium">Notice Type</label>
               <OutlinedSelect
                 label="Select Notice Type"
+                value={noticeTypeOptions.find(option => option.value === formData.notice_type) || null}
                 options={noticeTypeOptions}
-                value={noticeTypeOptions.find(option => option.value === formData.notice_type)}
-                onChange={(option) => handleChange('notice_type', option?.value || '')}
+                onChange={(selectedOption) => {
+                  const noticeType = noticeTypeOptions.find(n => n.value === selectedOption.value);
+                  if (noticeType) {
+                    handleChange('notice_type', selectedOption.value);
+                  }
+                }}
               />
             </div>
             <div className="space-y-2">
@@ -433,14 +451,27 @@ const EditNoticeDialog: React.FC<EditNoticeDialogProps> = ({
             </div>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-2 flex gap-2 flex-col">
             <label className="text-sm font-medium">Update Notice Document</label>
+            <div className='flex gap-2'>
+
+            
             <Input 
               type="file"
               onChange={handleFileChange}
               className="w-full"
               accept=".pdf,.jpg,.jpeg,.png"
             />
+             <Tooltip title="View Document">
+            <button
+                onClick={handleDocumentView}
+                className="p-2 hover:bg-gray-100 rounded-full flex-shrink-0"
+                title="View Document"
+              >
+                <Eye size={20} />
+              </button>
+              </Tooltip>
+              </div>
           </div>
         </div>
 
@@ -456,7 +487,7 @@ const EditNoticeDialog: React.FC<EditNoticeDialogProps> = ({
             onClick={handleSubmit}
             loading={isLoading}
           >
-            Update
+            Confirm
           </Button>
         </div>
       </div>

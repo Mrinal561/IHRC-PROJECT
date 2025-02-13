@@ -112,6 +112,8 @@ export const endpoints = {
         delete: (id:any) => api(`companyadmin/ptsetup/${id}`),
         getAllCodes:()=> api('ptec-code'),
         rcCodes:()=>  api('ptrc-code'),
+        downloadFormat:(id:any)=> api(`companyadmin/ptsetup/template/download?company_id=${id}`),
+        bulkCreate:()=> api('companyadmin/ptsetup/bulk-create')
     },
     tracker: {
         downloadFormat: () => api('/companyadmin/pfsetup/pf-tracker/exportdata'),
@@ -197,7 +199,7 @@ export const endpoints = {
           update: (id: any) => api(`companyadmin/lwfsetup/${id}`),
           delete: (id:any) => api(`companyadmin/lwfsetup/${id}`),
           getAllCodes:()=> api('lwf-code'),
-          downloadFormat:()=> api('companyadmin/lwfsetup/template/download'),
+          downloadFormat:(id:any)=> api(`companyadmin/lwfsetup/template/download?company_id=${id}`),
           bulkCreate:()=> api('companyadmin/lwfsetup/bulk-create')
     },
     request: {

@@ -59,7 +59,7 @@ const ConfigDropdown: React.FC<ConfigDropdownProps> = ({
 
   return (
     <div ref={containerRef} className="relative">
-      <Tooltip title="Click to Configure">
+      <Tooltip title="Click To Configure">
         <Button
           ref={buttonRef}
           size="sm"
