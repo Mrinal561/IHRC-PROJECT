@@ -33,7 +33,7 @@ const Bu: React.FC<BuProps> = ({ onUploadSuccess }) => {
       }
 
       const formData = new FormData();
-      formData.append('document', file);
+      formData.append('file', file);
       formData.append('remark', remark);
       
       const res = await httpClient.post(
