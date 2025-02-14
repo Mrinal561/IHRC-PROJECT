@@ -8,7 +8,7 @@ const ComplianceCalendar: React.FC = () => {
 
   return (
     <div className="flex flex-col">
-      <h2 className="text-xl font-semibold mb-4">Calendar</h2>
+      <h2 className="text-xl font-semibold mb-4">Compliance Calendar</h2>
       <div className="md:w-[300px] max-w-[300px] mx-auto">
         <Calendar
           value={value}
