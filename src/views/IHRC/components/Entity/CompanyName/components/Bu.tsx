@@ -70,9 +70,21 @@ const Bu: React.FC<BuProps> = ({ onUploadSuccess }) => {
         }
       }
     } catch (error) {
+      let errorMessage;
+
+      // Check if the message is an array
+      if (Array.isArray(error.response.data.message)) {
+        // Join the array elements into a single string, separated by new lines or commas
+        errorMessage = error.response.data.message.join('\n'); // or use ', ' for commas
+      } else {
+        // If it's not an array, use the message directly
+        errorMessage = error.response.data.message;
+      }
+    
+      // Display the error message in the toast
       toast.push(
         <Notification title="Error" type="danger">
-          Upload failed. Please try again.
+          {errorMessage}
         </Notification>
       );
       console.error('Upload error:', error);
@@ -162,7 +174,7 @@ const Bu: React.FC<BuProps> = ({ onUploadSuccess }) => {
           value={remark}
           onChange={(e) => setRemark(e.target.value)}
         />
-        <div className="mt-6 text-right">
+        <div className="mt-6 text-right flex gap-2 items-center justify-end">
           <Button
             size="sm"
             className="mr-2"

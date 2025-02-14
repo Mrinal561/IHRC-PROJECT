@@ -4,6 +4,7 @@ import DashboardCard from './components/DashboardCard'
 import IhrcDashboardHeader from './components/IhrcDashboardHeader'
 import DashboardBody from './components/DashboardBody'
 import { HiOutlineViewGrid } from 'react-icons/hi'
+import MessageTicker from './components/staticDashboard/MessageTicker'
 
 
 const Home = () => {

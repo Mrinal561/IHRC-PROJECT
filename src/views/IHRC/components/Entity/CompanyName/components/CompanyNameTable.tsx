@@ -329,7 +329,7 @@ const handleEditConfirm = async () => {
     } else if (Array.isArray(error)) {
       showErrorNotification(error);
     } else {
-      showErrorNotification('Failed to update company');
+      showErrorNotification(error);
     }
   } finally {
     setDialogLoading(false);

@@ -977,6 +977,9 @@ const AddBranchForm: React.FC = () => {
                                         : '',
                                 }))
                             }}
+                            inputFormat="DD-MM-YYYY"  // Changed to uppercase format tokens
+                            yearLabelFormat="YYYY"
+                            monthLabelFormat="MMMM YYYY"
                         />{' '}
                         {errors?.opening_date && (
                             <span className="text-red-500 text-sm">
@@ -1306,6 +1309,9 @@ const AddBranchForm: React.FC = () => {
                                                         }
                                                     })
                                                 }}
+                                                inputFormat="DD-MM-YYYY"  // Changed to uppercase format tokens
+                            yearLabelFormat="YYYY"
+                            monthLabelFormat="MMMM YYYY"
                                             />
                                             {errors?.se_validity && (
                                                 <span className="text-red-500 text-sm">
@@ -1402,6 +1408,9 @@ const AddBranchForm: React.FC = () => {
                                                 onChange={
                                                     handleLeaseValidityChange
                                                 }
+                                                inputFormat="DD-MM-YYYY"  // Changed to uppercase format tokens
+                            yearLabelFormat="YYYY"
+                            monthLabelFormat="MMMM YYYY"
                                             />
                                             {errors?.lease_validity && (
                                                 <span className="text-red-500 text-sm">
@@ -1410,6 +1419,7 @@ const AddBranchForm: React.FC = () => {
                                                     }
                                                 </span>
                                             )}
+                                            
                                         </div>
                                     )}
                                     <div>

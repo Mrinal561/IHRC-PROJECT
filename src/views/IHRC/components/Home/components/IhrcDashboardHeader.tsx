@@ -22,8 +22,8 @@ const IhrcDashboardHeader = ({ onCompanyChange }: IhrcDashboardHeaderProps) => {
   
     return (
         <div className="w-full">
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-10">
-                <div className="mb-4 lg:mb-0">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between">
+                <div className="mb-4 lg:mb-6">
                     <h3 className="text-2xl font-bold">DASHBOARD</h3>
                     <p className="text-gray-600">View Your Company's Statistics</p>
                 </div>
