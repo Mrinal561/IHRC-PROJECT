@@ -50,7 +50,7 @@ const LWFBulkUpload: React.FC<LWFBulkUploadProps> = ({onUploadSuccess, companyId
       if (res) {
         toast.push(
           <Notification title="Success" type="success">
-            LWF Setup data uploaded successfully!
+            {res.data.message}
           </Notification>
         );
         

@@ -48,9 +48,10 @@ const PTBulkUpload: React.FC<LWFBulkUploadProps> = ({onUploadSuccess, companyId 
       );
 
       if (res) {
+        console.log(res)
         toast.push(
           <Notification title="Success" type="success">
-            PT Setup data uploaded successfully!
+           {res.data.message}
           </Notification>
         );
         

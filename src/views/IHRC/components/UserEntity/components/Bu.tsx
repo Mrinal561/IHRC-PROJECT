@@ -48,9 +48,10 @@ const Bu: React.FC<BulkUploadProps> = ({
       );
 
       if (res) {
+        console.log(res)
         toast.push(
           <Notification title="Success" type="success">
-            Users uploaded successfully!
+           {res.data.message}
           </Notification>
         );
         

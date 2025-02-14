@@ -95,7 +95,7 @@ const StatisticCard = ({ icon, bgColor, title, value }) => {
         })}
       </div>
       <div className="flex-1 min-w-0">
-        <h3 className="font-semibold text-base text-white">
+        <h3 className="font-semibold text-sm text-white">
           {title}
         </h3>
         <p className="font-medium opacity-90">{value}</p>

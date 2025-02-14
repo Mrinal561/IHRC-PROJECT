@@ -10,7 +10,7 @@ const StatisticCard = ({ icon, bgColor, title, value }) => {
         })}
       </div>
       <div className="flex-1 min-w-0"> {/* Add flex-1 and min-w-0 to allow truncation */}
-        <h3 className="font-semibold text-base text-white whitespace-nowrap overflow-hidden text-ellipsis">
+        <h3 className="font-semibold text-sm text-white whitespace-nowrap overflow-hidden text-ellipsis">
           {title}
         </h3>
         <p className="font-medium opacity-90">{value}</p>

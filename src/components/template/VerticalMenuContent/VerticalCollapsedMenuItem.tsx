@@ -8,6 +8,7 @@ import type { CommonProps } from '@/@types/common'
 import type { Direction } from '@/@types/theme'
 import type { NavigationTree } from '@/@types/navigation'
 import { NAV_ITEM_TYPE_COLLAPSE } from '@/constants/navigation.constant'
+import { useEffect } from 'react'
 
 interface DefaultItemProps extends CommonProps {
     nav: NavigationTree
@@ -177,6 +178,13 @@ const VerticalCollapsedMenuItem = ({
     sideCollapsed,
     ...rest
 }: VerticalCollapsedMenuItemProps) => {
+    useEffect(() => {
+        // Store the current value in localStorage
+        localStorage.setItem('sideCollapsed', JSON.stringify(sideCollapsed))
+        
+        // You could log it to verify
+        console.log('sideCollapsed value stored:', sideCollapsed)
+    }, [sideCollapsed])
     return sideCollapsed ? (
         <CollapsedItem {...rest} />
     ) : (

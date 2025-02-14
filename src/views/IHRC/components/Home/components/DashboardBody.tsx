@@ -131,7 +131,90 @@
 
 // export default DashboardBody
 
-import React from 'react';
+// import React from 'react';
+// import BranchesDashboardCount from './staticDashboard/BranchesDashboardCount';
+// import SEDashboardCount from './staticDashboard/SEDashboardCount';
+// import AgreementsDashboardCount from './staticDashboard/AgreementsDashboardCount';
+// import RentalDepositsDashboard from './staticDashboard/RentalDepositsDashboard';
+// import NoticesDashboard from './staticDashboard/NoticesDasboard';
+// import Notices from './staticDashboard/Notices';
+// import ComplianceCalendar from './staticDashboard/ComplianceCalender';
+// import RevenueStackedColumn from './staticDashboard/RevenueStackedColumn';
+// import AnnualRevenueDonut from './staticDashboard/AnnualRevenueDonut';
+// import PaymentDateComparison from './staticDashboard/PaymentDateComparison';
+// import ChallanUploadCounts from './staticDashboard/ChallanUploadCounts';
+
+// interface DashboardBodyProps {
+//   companyId: string | number;
+// }
+
+// const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
+//   return (
+//     <div className="flex flex-col lg:flex-row gap-6 mt-6">
+//       {/* Main content area */}
+//       <div className="flex-1">
+//         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//           <div className="bg-white p-4 rounded-lg border shadow-sm">
+//             <h2 className="text-xl font-semibold mb-4">Branch Statistics</h2>
+//             <BranchesDashboardCount />
+//           </div>
+          
+//           <div className="bg-white p-4 rounded-lg border shadow-sm">
+//             <h2 className="text-xl font-semibold mb-4">S&E Registration Status</h2>
+//             <SEDashboardCount />
+//           </div>
+          
+//           <div className="bg-white p-4 rounded-lg border shadow-sm">
+//             <h2 className="text-xl font-semibold mb-4">Rent Agreements</h2>
+//             <AgreementsDashboardCount />
+//           </div>
+
+//           <div className="bg-white p-4 rounded-lg border shadow-sm">
+//             <h2 className="text-xl font-semibold mb-4">Agreements</h2>
+//             <RentalDepositsDashboard />
+//           </div>
+
+//           <div className="bg-white p-4 rounded-lg border shadow-sm col-span-2">
+//             <h2 className="text-xl font-semibold mb-4">Notice Board</h2>
+//             <NoticesDashboard />
+//           </div>
+          
+//           <div className="bg-white p-4 rounded-lg border shadow-sm col-span-2">
+//             <RevenueStackedColumn />
+//           </div>
+//         </div>
+
+//         {/* Payment Date Comparison - Full Width */}
+//         <div className="bg-white p-4 rounded-lg border shadow-sm mt-6">
+//           <h2 className="text-xl font-semibold mb-4">Payment Date Analysis</h2>
+//           <PaymentDateComparison />
+//         </div>
+//       </div>
+
+//       {/* Right sidebar for Notices timeline */}
+//       <div className="lg:w-[380px] flex-shrink-0">
+//         <div className="bg-white p-4 rounded-lg border shadow-sm mb-6">
+//           <ComplianceCalendar />
+//         </div>
+        
+//         <div className="bg-white p-4 rounded-lg border shadow-sm mb-6">
+//           <Notices />
+//         </div>
+
+//         <div className="bg-white p-4 rounded-lg border shadow-sm mb-6">
+//           <AnnualRevenueDonut />
+//         </div>
+//         <div className="bg-white p-4 rounded-lg border shadow-sm">
+//           <ChallanUploadCounts />
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default DashboardBody;
+
+import React, { useEffect, useState } from 'react';
 import BranchesDashboardCount from './staticDashboard/BranchesDashboardCount';
 import SEDashboardCount from './staticDashboard/SEDashboardCount';
 import AgreementsDashboardCount from './staticDashboard/AgreementsDashboardCount';
@@ -143,73 +226,190 @@ import RevenueStackedColumn from './staticDashboard/RevenueStackedColumn';
 import AnnualRevenueDonut from './staticDashboard/AnnualRevenueDonut';
 import PaymentDateComparison from './staticDashboard/PaymentDateComparison';
 import ChallanUploadCounts from './staticDashboard/ChallanUploadCounts';
+import { useSelector } from 'react-redux';
+import { useAppSelector } from '@/store';
 
 interface DashboardBodyProps {
   companyId: string | number;
 }
 
 const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
-  return (
-    <div className="flex flex-col lg:flex-row gap-6 mt-6">
-      {/* Main content area */}
-      <div className="flex-1">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white p-4 rounded-lg border shadow-sm">
-            <h2 className="text-xl font-semibold mb-4">Branch Statistics</h2>
-            <BranchesDashboardCount />
-          </div>
-          
-          <div className="bg-white p-4 rounded-lg border shadow-sm">
-            <h2 className="text-xl font-semibold mb-4">S&E Registration Status</h2>
-            <SEDashboardCount />
-          </div>
-          
-          <div className="bg-white p-4 rounded-lg border shadow-sm">
-            <h2 className="text-xl font-semibold mb-4">Rent Agreements</h2>
-            <AgreementsDashboardCount />
-          </div>
+  // Add state to track the sideCollapsed value
+  const [sideCollapsed, setSideCollapsed] = useState<boolean>(() => {
+    // Initialize from localStorage if available
+    const storedValue = localStorage.getItem('sideCollapsed');
+    return storedValue ? JSON.parse(storedValue) : false;
+  });
+  
+  // Set up an effect to watch for changes in localStorage
+  useEffect(() => {
+    // Function to handle storage events
+    const handleStorageChange = () => {
+      const newValue = JSON.parse(localStorage.getItem('sideCollapsed') || 'false');
+      if (newValue !== sideCollapsed) {
+        setSideCollapsed(newValue);
+        console.log('sideCollapsed changed in DashboardBody:', newValue);
+      }
+    };
+    
+    // Set up event listener for storage changes
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Also check for changes on a regular interval as a backup
+    const intervalId = setInterval(() => {
+      const currentValue = JSON.parse(localStorage.getItem('sideCollapsed') || 'false');
+      if (currentValue !== sideCollapsed) {
+        setSideCollapsed(currentValue);
+        console.log('sideCollapsed changed (interval check):', currentValue);
+      }
+    }, 1000);
+    
+    // Clean up listeners and interval on unmount
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      clearInterval(intervalId);
+    };
+  }, [sideCollapsed]);
+  
+  // Initial log
+  useEffect(() => {
+    console.log('Initial sideCollapsed value in DashboardBody:', sideCollapsed);
+  }, []);
 
-          <div className="bg-white p-4 rounded-lg border shadow-sm">
-            <h2 className="text-xl font-semibold mb-4">Agreements</h2>
-            <RentalDepositsDashboard />
-          </div>
-
-          <div className="bg-white p-4 rounded-lg border shadow-sm col-span-2">
-            <h2 className="text-xl font-semibold mb-4">Notice Board</h2>
-            <NoticesDashboard />
-          </div>
-          
-          <div className="bg-white p-4 rounded-lg border shadow-sm col-span-2">
-            <RevenueStackedColumn />
-          </div>
-        </div>
-
-        {/* Payment Date Comparison - Full Width */}
-        <div className="bg-white p-4 rounded-lg border shadow-sm mt-6">
-          <h2 className="text-xl font-semibold mb-4">Payment Date Analysis</h2>
-          <PaymentDateComparison />
-        </div>
-      </div>
-
-      {/* Right sidebar for Notices timeline */}
-      <div className="lg:w-[380px] flex-shrink-0">
-        <div className="bg-white p-4 rounded-lg border shadow-sm mb-6">
-          <ComplianceCalendar />
-        </div>
-        
-        <div className="bg-white p-4 rounded-lg border shadow-sm mb-6">
-          <Notices />
-        </div>
-
-        <div className="bg-white p-4 rounded-lg border shadow-sm mb-6">
-          <AnnualRevenueDonut />
-        </div>
-        <div className="bg-white p-4 rounded-lg border shadow-sm">
-          <ChallanUploadCounts />
-        </div>
-      </div>
+  if (!sideCollapsed) {
+    // When sidebar is not collapsed, render everything in a vertical layout
+    return (
+<div className="flex flex-col gap-6 mt-6">
+  {/* Branch Statistics and S&E Registration Status - Side by Side */}
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="bg-white p-4 rounded-lg border shadow-sm">
+      <h2 className="text-xl font-semibold mb-4">Branch Statistics</h2>
+      <BranchesDashboardCount />
     </div>
-  );
+    
+    <div className="bg-white p-4 rounded-lg border shadow-sm">
+      <h2 className="text-xl font-semibold mb-4">S&E Registration Status</h2>
+      <SEDashboardCount />
+    </div>
+  </div>
+  
+  {/* Rent Agreements and Agreements - Side by Side */}
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="bg-white p-4 rounded-lg border shadow-sm">
+      <h2 className="text-xl font-semibold mb-4">Rent Agreements</h2>
+      <AgreementsDashboardCount />
+    </div>
+
+    <div className="bg-white p-4 rounded-lg border shadow-sm">
+      <h2 className="text-xl font-semibold mb-4">Agreements</h2>
+      <RentalDepositsDashboard />
+    </div>
+  </div>
+
+  {/* Notice Board */}
+  <div className="bg-white p-4 rounded-lg border shadow-sm">
+    <h2 className="text-xl font-semibold mb-4">Notice Board</h2>
+    <NoticesDashboard />
+  </div>
+  
+  {/* Revenue Stacked Column and Compliance Calendar - Side by Side */}
+  <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-6">
+  <div className="bg-white p-4 rounded-lg border shadow-sm">
+    <RevenueStackedColumn />
+  </div>
+
+  <div className="bg-white p-4 rounded-lg border shadow-sm">
+    <ComplianceCalendar />
+  </div>
+</div>
+
+  {/* Payment Date Comparison */}
+  <div className="bg-white p-4 rounded-lg border shadow-sm">
+    <h2 className="text-xl font-semibold mb-4">Payment Date Analysis</h2>
+    <PaymentDateComparison />
+  </div>
+  
+  {/* Notices */}
+  <div className="bg-white p-4 rounded-lg border shadow-sm">
+    <Notices />
+  </div>
+
+  {/* Challan Upload Counts and Annual Revenue Donut - Side by Side */}
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="bg-white p-4 rounded-lg border shadow-sm">
+      <ChallanUploadCounts />
+    </div>
+    
+    <div className="bg-white p-4 rounded-lg border shadow-sm">
+      <AnnualRevenueDonut />
+    </div>
+  </div>
+</div>
+    );
+  } else {
+    // Original layout when sidebar is collapsed
+    return (
+      <div className="flex flex-col lg:flex-row gap-6 mt-6">
+        {/* Main content area */}
+        <div className="flex-1">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-white p-4 rounded-lg border shadow-sm">
+              <h2 className="text-xl font-semibold mb-4">Branch Statistics</h2>
+              <BranchesDashboardCount />
+            </div>
+            
+            <div className="bg-white p-4 rounded-lg border shadow-sm">
+              <h2 className="text-xl font-semibold mb-4">S&E Registration Status</h2>
+              <SEDashboardCount />
+            </div>
+            
+            <div className="bg-white p-4 rounded-lg border shadow-sm">
+              <h2 className="text-xl font-semibold mb-4">Rent Agreements</h2>
+              <AgreementsDashboardCount />
+            </div>
+
+            <div className="bg-white p-4 rounded-lg border shadow-sm">
+              <h2 className="text-xl font-semibold mb-4">Agreements</h2>
+              <RentalDepositsDashboard />
+            </div>
+
+            <div className="bg-white p-4 rounded-lg border shadow-sm col-span-2">
+              <h2 className="text-xl font-semibold mb-4">Notice Board</h2>
+              <NoticesDashboard />
+            </div>
+            
+            <div className="bg-white p-4 rounded-lg border shadow-sm col-span-2">
+              <RevenueStackedColumn />
+            </div>
+          </div>
+
+          {/* Payment Date Comparison - Full Width */}
+          <div className="bg-white p-4 rounded-lg border shadow-sm mt-6">
+            <h2 className="text-xl font-semibold mb-4">Payment Date Analysis</h2>
+            <PaymentDateComparison />
+          </div>
+        </div>
+
+        {/* Right sidebar for Notices timeline */}
+        <div className="lg:w-[380px] flex-shrink-0">
+          <div className="bg-white p-4 rounded-lg border shadow-sm mb-6">
+            <ComplianceCalendar />
+          </div>
+          
+          <div className="bg-white p-4 rounded-lg border shadow-sm mb-6">
+            <Notices />
+          </div>
+
+          <div className="bg-white p-4 rounded-lg border shadow-sm mb-6">
+            <AnnualRevenueDonut />
+          </div>
+          <div className="bg-white p-4 rounded-lg border shadow-sm">
+            <ChallanUploadCounts />
+          </div>
+        </div>
+      </div>
+    );
+  }
 };
 
 export default DashboardBody;

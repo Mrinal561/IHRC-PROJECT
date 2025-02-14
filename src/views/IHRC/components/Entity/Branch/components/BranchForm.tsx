@@ -786,7 +786,7 @@ const AddBranchForm: React.FC = () => {
                     }
                     throw error // Re-throw to prevent navigation
                 })
-
+                console.log(response)
             if (response) {
                 navigate('/branch')
                 toast.push(

@@ -519,7 +519,7 @@ const loadStates = async () => {
             
             toast.push(
                 <Notification title="Success" type="success">
-                    PT Setup successfully created
+                  {  PT Setup successfully created}
                 </Notification>
             )
             navigate(-1)
