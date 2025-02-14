@@ -50,7 +50,7 @@ const PTBulkUpload: React.FC<LWFBulkUploadProps> = ({onUploadSuccess, companyId 
       if (res) {
         toast.push(
           <Notification title="Success" type="success">
-            LWF Setup data uploaded successfully!
+            PT Setup data uploaded successfully!
           </Notification>
         );
         
@@ -63,7 +63,7 @@ const PTBulkUpload: React.FC<LWFBulkUploadProps> = ({onUploadSuccess, companyId 
     } catch (error) {
       toast.push(
         <Notification title="Error" type="danger">
-          {error.response?.data?.message || 'Failed to upload LWF Setup data'}
+          {error.response?.data?.message}
         </Notification>
       );
       console.error('Upload error:', error);
