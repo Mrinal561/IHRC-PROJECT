@@ -70,6 +70,7 @@ const ESITracker: React.FC = () => {
 
 
     useEffect(() => {
+        // console.log(filters)
         // Handler for the custom event
         const handleFinancialYearChange = (event: CustomEvent) => {
             const newFinancialYear = event.detail;
@@ -184,6 +185,7 @@ const ESITracker: React.FC = () => {
 
     // Update the ref whenever filters change
     useEffect(() => {
+        // console.log(filters)
         filtersRef.current = filters;
     }, [filters]);
 
@@ -235,7 +237,7 @@ const ESITracker: React.FC = () => {
 
     useEffect(() => {
         fetchEsiTrackerData(pagination.pageIndex, pagination.pageSize);
-    }, [fetchEsiTrackerData, pagination.pageIndex, pagination.pageSize]);
+    }, [fetchEsiTrackerData, pagination.pageIndex, pagination.pageSize,filters]);
 
     const handleFilterChange = (newFilters) => {
         setFilters(newFilters);

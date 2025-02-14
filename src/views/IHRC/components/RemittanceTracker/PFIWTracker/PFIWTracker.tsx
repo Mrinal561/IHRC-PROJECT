@@ -226,7 +226,7 @@ const PFIWTracker: React.FC = () => {
 
     useEffect(() => {
         fetchPFIWTrackerData(pagination.pageIndex, pagination.pageSize)
-    }, [fetchPFIWTrackerData, pagination.pageIndex, pagination.pageSize, filters.groupId, filters.companyId, , isInitialized, permissions.canList])
+    }, [fetchPFIWTrackerData, pagination.pageIndex, pagination.pageSize, filters.groupId, filters.companyId, , isInitialized, permissions.canList,filters])
 
     const handleFilterChange = (newFilters:any) => {
         setFilters(newFilters)

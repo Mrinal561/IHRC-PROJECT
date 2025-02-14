@@ -332,7 +332,8 @@ const LWFTracker: React.FC = () => {
         pagination.pageIndex,
         pagination.pageSize,
         filters.groupId,
-        filters.companyId
+        filters.companyId,
+        filters
     ]);
 
     const handleFilterChange = (newFilters) => {

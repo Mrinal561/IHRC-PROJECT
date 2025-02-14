@@ -241,11 +241,27 @@ const PFIWTrackerFilter: React.FC<PFIWTrackerFilterProps> = ({ onFilterChange })
     // Reset company and PF code selections
     setSelectedCompany(null);
     setSelectedPfCode(null);
+    onFilterChange({
+      groupName: value?.label || '',
+      groupId: value?.value || '',
+      companyName: '',
+      companyId: '',
+      pfCode: '',
+      search: searchValue
+    });
   };
 
   const handleCompanyChange = (value: Option | null) => {
     setSelectedCompany(value);
     setSelectedPfCode(null);
+    onFilterChange({
+      groupName: value?.label || '',
+      groupId: value?.value || '',
+      companyName: value?.label || '',
+      companyId: value?.value || '',
+      pfCode: '',
+      search: searchValue
+    });
   };
 
   const handlePfCodeChange = (value: Option | null) => {

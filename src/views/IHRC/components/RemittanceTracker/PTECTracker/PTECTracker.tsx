@@ -219,7 +219,7 @@ const PTECTracker: React.FC = () => {
 
     useEffect(() => {
         fetchPTTrackerData(pagination.pageIndex, pagination.pageSize)
-    }, [fetchPTTrackerData, pagination.pageIndex, pagination.pageSize,filters.groupId, filters.companyId,financialYear])
+    }, [fetchPTTrackerData, pagination.pageIndex, pagination.pageSize,filters.groupId, filters.companyId,financialYear,filters])
 
     const handleFilterChange = (newFilters: any) => {
         setFilters(newFilters)

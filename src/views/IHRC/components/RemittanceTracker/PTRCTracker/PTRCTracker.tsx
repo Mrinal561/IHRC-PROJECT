@@ -219,7 +219,7 @@ const PTRCTracker: React.FC = () => {
 
     useEffect(() => {
         fetchPtrcTrackerData(pagination.pageIndex, pagination.pageSize)
-    }, [fetchPtrcTrackerData, pagination.pageIndex, pagination.pageSize,filters.groupId, filters.companyId])
+    }, [fetchPtrcTrackerData, pagination.pageIndex, pagination.pageSize,filters.groupId, filters.companyId, filters])
 
     const handleFilterChange = (newFilters: any) => {
         setFilters(newFilters)

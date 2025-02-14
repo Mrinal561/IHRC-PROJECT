@@ -235,11 +235,27 @@ const PTRCTrackerFilter: React.FC<PTRCTrackerFilterProps> = ({ onFilterChange })
     setSelectedCompanyGroup(value);
     setSelectedCompany(null);
     setSelectedPtCode(null);
+    onFilterChange({
+      groupName: value?.label || '',
+      groupId: value?.value || '',
+      companyName: '',
+      companyId: '',
+      ptCode: '',
+      search: searchValue
+    });
   };
 
   const handleCompanyChange = (value: Option | null) => {
     setSelectedCompany(value);
     setSelectedPtCode(null);
+    onFilterChange({
+      groupName: value?.label || '',
+      groupId: value?.value || '',
+      companyName: value?.label || '',
+      companyId: value?.value || '',
+      ptCode: '',
+      search: searchValue
+    });
   };
 
   const handlePtCodeChange = (value: Option | null) => {

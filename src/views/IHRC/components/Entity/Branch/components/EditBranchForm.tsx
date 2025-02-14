@@ -225,8 +225,15 @@ const validationSchema = yup.object().shape({
         gst_number: yup
         .string()
         .nullable()
-        .required('GST Number is required')
-        .matches(/^[0-9A-Z]{15}$/, 'GST number must be 15 characters and can contain only numbers and uppercase letters'),
+        .test('format-if-exists', 'GST number must be 15 characters and can contain only numbers and uppercase letters', 
+          function(value) {
+            // If value is empty or null, pass the validation
+            if (!value) return true;
+            
+            // Otherwise check format
+            return /^[0-9A-Z]{15}$/.test(value);
+          }
+        ),
     document: yup.string().nullable(),
     document_validity_type: yup
         .string()
@@ -1126,7 +1133,6 @@ const AddBranchForm: React.FC = () => {
                             <div>
                                 <p className="mb-2">
                                     GST Number{' '}
-                                    <span className="text-red-500">*</span>
                                 </p>
                                 <OutlinedInput
                                     label="Enter Gst Number"

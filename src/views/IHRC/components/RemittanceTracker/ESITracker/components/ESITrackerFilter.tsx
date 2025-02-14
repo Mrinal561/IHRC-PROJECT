@@ -238,14 +238,33 @@ const ESIWTrackerFilter: React.FC<ESIWTrackerFilterProps> = ({ onFilterChange })
 
   const handleCompanyGroupChange = (value: Option | null) => {
     setSelectedCompanyGroup(value);
-    // Reset company and ESI code selections
     setSelectedCompany(null);
     setSelectedEsiCode(null);
+    
+    // Trigger filter change with updated group and reset company and ESI code
+    onFilterChange({
+      groupName: value?.label || '',
+      groupId: value?.value || '',
+      companyName: '',
+      companyId: '',
+      esiCode: '',
+      search: searchValue
+    });
   };
 
   const handleCompanyChange = (value: Option | null) => {
     setSelectedCompany(value);
     setSelectedEsiCode(null);
+    
+    // Trigger filter change with updated company and reset ESI code
+    onFilterChange({
+      groupName: selectedCompanyGroup?.label || '',
+      groupId: selectedCompanyGroup?.value || '',
+      companyName: value?.label || '',
+      companyId: value?.value || '',
+      esiCode: '',
+      search: searchValue
+    });
   };
 
   const handleEsiCodeChange = (value: Option | null) => {

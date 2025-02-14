@@ -237,11 +237,27 @@ const LWFTrackerFilter: React.FC<LWFTrackerFilterProps> = ({ onFilterChange }) =
     // Reset company and LWF code selections
     setSelectedCompany(null);
     setSelectedLwfCode(null);
+    onFilterChange({
+      groupName: value?.label || '',
+      groupId: value?.value || '',
+      companyName: '',
+      companyId: '',
+      lwfCode: '',
+      search: searchValue
+    });
   };
 
   const handleCompanyChange = (value: Option | null) => {
     setSelectedCompany(value);
     setSelectedLwfCode(null);
+    onFilterChange({
+      groupName: value?.label || '',
+      groupId: value?.value || '',
+      companyName: value?.label || '',
+      companyId: value?.value || '',
+      lwfCode: '',
+      search: searchValue
+    });
   };
 
   const handleLwfCodeChange = (value: Option | null) => {

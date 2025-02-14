@@ -233,7 +233,7 @@ const PFTracker: React.FC = () => {
 
     useEffect(() => {
         if (isInitialized && permissions.canList) {
-            fetchPFTrackerData(pagination.pageIndex, pagination.pageSize)
+            fetchPFTrackerData(pagination.pageIndex, pagination.pageSize,filters)
         }
     }, [fetchPFTrackerData, pagination.pageIndex, pagination.pageSize, filters.groupId, filters.companyId, isInitialized, permissions.canList,financialYear])
 
