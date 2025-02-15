@@ -5,32 +5,58 @@ export const companies: any[] = [
         beyond: '5',
         within: '2',
     },
-    // {
-    //   company_name: "Infosys Ltd.",
-    //   sl_no: 2,
-    //   state: "Karnataka",
-    //   branch: "Southern Branch",
-    //   location: "Bengaluru",
-    // },
-    // {
-    //   company_name: "Wipro Ltd.",
-    //   sl_no: 3,
-    //   state: "Telangana",
-    //   branch: "Central Branch",
-    //   location: "Hyderabad",
-    // },
-    // {
-    //   company_name: "Reliance Industries",
-    //   sl_no: 4,
-    //   state: "Gujarat",
-    //   branch: "Western Branch",
-    //   location: "Ahmedabad",
-    // },
-    // {
-    //   company_name: "HCL Technologies",
-    //   sl_no: 5,
-    //   state: "Uttar Pradesh",
-    //   branch: "Northern Branch",
-    //   location: "Noida",
-    // },
-]
+    {
+        company_name: 'Tata Motors',
+        code: 2,
+        beyond: '7',
+        within: '3',
+    },
+    {
+        company_name: 'Infosys',
+        code: 3,
+        beyond: '4',
+        within: '1',
+    },
+    {
+        company_name: 'Wipro',
+        code: 4,
+        beyond: '6',
+        within: '4',
+    },
+    {
+        company_name: 'HCL Tech',
+        code: 5,
+        beyond: '3',
+        within: '2',
+    },
+    {
+        company_name: 'Reliance Industries',
+        code: 6,
+        beyond: '8',
+        within: '5',
+    },
+    {
+        company_name: 'HDFC Bank',
+        code: 7,
+        beyond: '4',
+        within: '2',
+    },
+    {
+        company_name: 'ITC Limited',
+        code: 8,
+        beyond: '6',
+        within: '3',
+    },
+    {
+        company_name: 'Asian Paints',
+        code: 9,
+        beyond: '5',
+        within: '4',
+    },
+    {
+        company_name: 'Bharti Airtel',
+        code: 10,
+        beyond: '7',
+        within: '3',
+    }
+];

@@ -346,24 +346,23 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
                 </div>
 
                 {/* Payment Date Comparison */}
+                <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-6">
                 <div className="bg-white p-4 rounded-lg border shadow-sm">
-                    <h2 className="text-xl font-semibold mb-4">
-                        Payment Date Analysis
-                    </h2>
                     <PaymentDateComparison />
                 </div>
-
-                <div className="bg-white p-4 rounded-lg border shadow-sm">
-                    <h2 className="text-xl font-semibold mb-4">
-                        Payment Date Analysis
-                    </h2>
-                    <PaymentDateComparison />
-                </div>
-
-                {/* Notices */}
                 <div className="bg-white p-4 rounded-lg border shadow-sm">
                     <Alerts />
                 </div>
+                </div>
+                {/* <div className="bg-white p-4 rounded-lg border shadow-sm">
+                    <h2 className="text-xl font-semibold mb-4">
+                        Payment Date Analysis
+                    </h2>
+                    <PaymentDateComparison />
+                </div> */}
+
+                {/* Notices */}
+               
                 <div className="bg-white p-4 rounded-lg border shadow-sm">
                     <Notices />
                 </div>
@@ -447,6 +446,9 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
                         </h2>
                         <RemittanceStatus />
                     </div>
+                    <div className="bg-white p-4 rounded-lg border shadow-sm mt-6">
+                        <ComplinceTool />
+                    </div>
                 </div>
 
                 {/* Right sidebar for Notices timeline */}
@@ -471,9 +473,9 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
                     <div className="bg-white p-4 rounded-lg border shadow-sm mb-6">
                         <ComplinceStatus />
                     </div>
-                    <div className="bg-white p-4 rounded-lg border shadow-sm">
+                    {/* <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <ComplinceTool />
-                    </div>
+                    </div> */}
                 </div>
             </div>
         )
