@@ -1,10 +1,10 @@
-import React from 'react';
-import Timeline from '@/components/ui/Timeline';
-import Avatar from '@/components/ui/Avatar';
-import Badge from '@/components/ui/Badge';
-import Card from '@/components/ui/Card';
-import Tag from '@/components/ui/Tag';
-import { AlertCircle, FileText, Clock, Upload } from 'lucide-react';
+import React from 'react'
+import Timeline from '@/components/ui/Timeline'
+import Avatar from '@/components/ui/Avatar'
+import Badge from '@/components/ui/Badge'
+import Card from '@/components/ui/Card'
+import Tag from '@/components/ui/Tag'
+import { AlertCircle, FileText, Clock, Upload } from 'lucide-react'
 
 const TimelineAvatar = ({ children, ...rest }) => {
     return (
@@ -18,46 +18,14 @@ const Notices = () => {
     return (
         <div className="max-w-[700px]">
             <div className="flex justify-between items-center mb-6">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Notices</h2>
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                    Notices
+                </h2>
                 <button className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100">
                     View All
                 </button>
             </div>
             <Timeline>
-                <Timeline.Item
-                    media={
-                        <TimelineAvatar className="bg-red-500 text-white">
-                            <AlertCircle size={14} />
-                        </TimelineAvatar>
-                    }
-                >
-                    <p className="my-1 flex items-center">
-                        <span className="font-semibold text-gray-900 dark:text-gray-100">
-                            DSC Expiry Alert
-                        </span>
-                        <span className="mx-2">-</span>
-                        <span>Subham DSC expired on PF portal</span>
-                        <Tag className="ml-3 rtl:mr-3 bg-red-100 text-red-600">
-                            Urgent
-                        </Tag>
-                    </p>
-                </Timeline.Item>
-                <Timeline.Item
-                    media={
-                        <TimelineAvatar className="bg-amber-500 text-white">
-                            <FileText size={14} />
-                        </TimelineAvatar>
-                    }
-                >
-                    <p className="my-1 flex items-center">
-                        <span className="font-semibold text-gray-900 dark:text-gray-100">
-                            E-Sign Status
-                        </span>
-                        <span className="mx-2">-</span>
-                        <span>E-Sign inactive of Subham on PF portal</span>
-                        {/* <Badge className="ml-3 rtl:mr-3" /> */}
-                    </p>
-                </Timeline.Item>
                 <Timeline.Item
                     media={
                         <TimelineAvatar className="bg-blue-500 text-white">
@@ -85,7 +53,9 @@ const Notices = () => {
                             Due Date Reminder
                         </span>
                         <span className="mx-2">-</span>
-                        <span>PF due date is near please upload adequate documents</span>
+                        <span>
+                            PF due date is near please upload adequate documents
+                        </span>
                         <Tag className="ml-3 rtl:mr-3 bg-purple-100 text-purple-600">
                             Upcoming
                         </Tag>
@@ -96,4 +66,4 @@ const Notices = () => {
     )
 }
 
-export default Notices;
+export default Notices
