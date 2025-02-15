@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react'
 import { Button, Input, toast, Notification, DatePicker } from '@/components/ui'
 import OutlinedInput from '@/components/ui/OutlinedInput'
@@ -13,7 +12,7 @@ import { useDispatch } from 'react-redux'
 import { AppDispatch } from '@/store'
 import { showErrorNotification } from '@/components/ui/ErrorMessage'
 import { createptsetup } from '@/store/slices/ptSetup/ptSetupSlice'
-import * as yup from 'yup';
+import * as yup from 'yup'
 import OutlinedPasswordInput from '@/components/ui/OutlinedInput/OutlinedPasswordInput'
 
 const ptSetupSchema = yup.object().shape({
@@ -21,39 +20,43 @@ const ptSetupSchema = yup.object().shape({
         .number()
         .required('State is required')
         .positive('Please select a valid state'),
-    
-    district: yup
-        .string()
-        .required('District is required'),
-    
-    location: yup
-        .string()
-        .required('Location is required'),
-    
+
+    district: yup.string().required('District is required'),
+
+    location: yup.string().required('Location is required'),
+
     register_number: yup
         .string()
         .required('Registration number is required')
-        .matches(/^[A-Za-z0-9]+$/, 'Registration number must contain only letters and numbers'),
-    
+        .matches(
+            /^[A-Za-z0-9]+$/,
+            'Registration number must contain only letters and numbers',
+        ),
+
     enroll_number: yup
         .string()
         .required('Enrollment number is required')
-        .matches(/^[A-Za-z0-9]+$/, 'Enrollment number must contain only letters and numbers'),
-    
- register_date: yup.date().required('Registration date is required')
-    .max(new Date(), 'Registration date cannot be in the future'),
-    
+        .matches(
+            /^[A-Za-z0-9]+$/,
+            'Enrollment number must contain only letters and numbers',
+        ),
+
+    register_date: yup
+        .date()
+        .required('Registration date is required')
+        .max(new Date(), 'Registration date cannot be in the future'),
+
     remmit_mode: yup
         .string()
         .required('Remittance mode is required')
         .oneOf(['online', 'offline'], 'Invalid remittance mode'),
-    
+
     // username: yup
     //     .string()
     //     .required('Username is required')
     //     .min(4, 'Username must be at least 4 characters')
     //     .matches(/^[A-Za-z0-9_]+$/, 'Username can only contain letters, numbers, and underscores'),
-    
+
     // password: yup
     //     .string()
     //     .required('Password is required')
@@ -62,57 +65,53 @@ const ptSetupSchema = yup.object().shape({
     //         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
     //        'Must include A-Z, a-z, 0-9, @$!%*?& (Weak Password)'
     //     ),
-    
+
     //     email: yup
     //     .string()
     //     .matches(
     //         /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|in|org|net|edu|gov)$/,
     //         'Invalid email address. Please use a valid email with a.com,.in,.org,.net,.edu, or.gov domain.',
     //     ),
-    
+
     mobile: yup
-    .string()
-    .required()
-    .matches(/^[0-9]{10}$/, 'Mobile number must be exactly 10 digits'),
+        .string()
+        .required()
+        .matches(/^[0-9]{10}$/, 'Mobile number must be exactly 10 digits'),
     // ec_certificate: yup
     //     .string()
     //     .required('EC Certificate is required'),
-    
+
     // rc_certificate: yup
     //     .string()
     //     .required('RC Certificate is required'),
-    
-    ptec_frequency: yup
-        .string()
-        .required('PTEC frequency is required'),
-    
-    ptrc_frequency: yup
-        .string()
-        .required('PTRC frequency is required')
-});
+
+    ptec_frequency: yup.string().required('PTEC frequency is required'),
+
+    ptrc_frequency: yup.string().required('PTRC frequency is required'),
+})
 
 interface ValidationErrors {
-    [key: string]: string;
-  }
+    [key: string]: string
+}
 
 interface PTSetupData {
-   group_id: number
+    group_id: number
     company_id: number
     state_id: number
-    district: string  // Changed to string
+    district: string // Changed to string
     location: string
-    register_number: string  // Changed to string
-    enroll_number: string   // Changed to string
+    register_number: string // Changed to string
+    enroll_number: string // Changed to string
     register_date: Date | null
     remmit_mode: string
     username: string
     password: string
     email: string
-    mobile: string    // Changed from mobile_no to mobile and type to string
+    mobile: string // Changed from mobile_no to mobile and type to string
     ec_certificate: string
     rc_certificate: string
     ptec_frequency: string
-   ptrc_frequency: string
+    ptrc_frequency: string
 }
 
 interface SelectOption {
@@ -122,25 +121,23 @@ interface SelectOption {
     ptrc_frequency?: string
 }
 
-
 interface LocationState {
-    companyName?: string;
-    companyGroupName?: string;
-    companyId?: string;
-    groupId?: string;
-  }
+    companyName?: string
+    companyGroupName?: string
+    companyId?: string
+    groupId?: string
+}
 
 const PTSetupPage = () => {
-
-  const [errors, setErrors] = useState<ValidationErrors>({});
+    const [errors, setErrors] = useState<ValidationErrors>({})
     const navigate = useNavigate()
     const location = useLocation()
-  const locationState = location.state as LocationState;
-  
-  const companyName = locationState?.companyName;
-  const companyGroupName = locationState?.companyGroupName;
-  const companyId = locationState?.companyId;
-  const groupId = locationState?.groupId;
+    const locationState = location.state as LocationState
+
+    const companyName = locationState?.companyName
+    const companyGroupName = locationState?.companyGroupName
+    const companyId = locationState?.companyId
+    const groupId = locationState?.groupId
     const dispatch = useDispatch<AppDispatch>()
     const [isLoading, setIsLoading] = useState(true)
 
@@ -161,21 +158,29 @@ const PTSetupPage = () => {
         mobile: '',
         ec_certificate: '',
         rc_certificate: '',
-         ptec_frequency: '',
-        ptrc_frequency: ''
+        ptec_frequency: '',
+        ptrc_frequency: '',
     })
 
     // State for select options
     const [companyGroups, setCompanyGroups] = useState<SelectOption[]>([])
-    const [selectedCompanyGroup, setSelectedCompanyGroup] = useState<SelectOption | null>(null)
+    const [selectedCompanyGroup, setSelectedCompanyGroup] =
+        useState<SelectOption | null>(null)
     const [companies, setCompanies] = useState<SelectOption[]>([])
-    const [selectedCompany, setSelectedCompany] = useState<SelectOption | null>(null)
+    const [selectedCompany, setSelectedCompany] = useState<SelectOption | null>(
+        null,
+    )
     const [states, setStates] = useState<SelectOption[]>([])
-    const [selectedState, setSelectedState] = useState<SelectOption | null>(null)
-    const [selectedDistrict, setSelectedDistrict] = useState<{ id: number | null; name: string }>({
+    const [selectedState, setSelectedState] = useState<SelectOption | null>(
+        null,
+    )
+    const [selectedDistrict, setSelectedDistrict] = useState<{
+        id: number | null
+        name: string
+    }>({
         id: null,
-        name: ''
-    });
+        name: '',
+    })
     const [selectedLocation, setSelectedLocation] = useState('')
     const [selectedDistrictId, setSelectedDistrictId] = useState<number>()
     const [loading, setLoading] = useState(false)
@@ -183,63 +188,60 @@ const PTSetupPage = () => {
     const validateField = async (fieldName: string, value: any) => {
         try {
             // Create a validation schema for just this field
-            const fieldSchema = yup.reach(ptSetupSchema, fieldName);
-            await fieldSchema.validate(value);
-            
+            const fieldSchema = yup.reach(ptSetupSchema, fieldName)
+            await fieldSchema.validate(value)
+
             // Clear error for this field if validation passes
-            setErrors(prev => ({
+            setErrors((prev) => ({
                 ...prev,
-                [fieldName]: undefined
-            }));
+                [fieldName]: undefined,
+            }))
         } catch (error) {
             if (error instanceof yup.ValidationError) {
                 // Set error message for this field
-                setErrors(prev => ({
+                setErrors((prev) => ({
                     ...prev,
-                    [fieldName]: error.message
-                }));
+                    [fieldName]: error.message,
+                }))
             }
         }
-    };
-
+    }
 
     const handleInputChange = async (fieldName: string, value: any) => {
-        setPtSetupData(prev => ({
+        setPtSetupData((prev) => ({
             ...prev,
-            [fieldName]: value
-        }));
-        
-        // Validate the field immediately after value change
-        await validateField(fieldName, value);
-    };
+            [fieldName]: value,
+        }))
 
+        // Validate the field immediately after value change
+        await validateField(fieldName, value)
+    }
 
     const handleStateChange = async (option: SelectOption | null) => {
-        setSelectedState(option);
-        setSelectedDistrict({ id: null, name: '' });
-        setSelectedLocation('');
-        
+        setSelectedState(option)
+        setSelectedDistrict({ id: null, name: '' })
+        setSelectedLocation('')
+
         if (option) {
             const selectedStateDetails = states.find(
-                state => state.value === option.value
-            );
+                (state) => state.value === option.value,
+            )
 
-            const newStateId = parseInt(option.value);
-            
-            setPtSetupData(prev => ({
+            const newStateId = parseInt(option.value)
+
+            setPtSetupData((prev) => ({
                 ...prev,
                 state_id: newStateId,
                 district: '',
                 location: '',
                 ptec_frequency: selectedStateDetails?.ptec_frequency || '',
-                ptrc_frequency: selectedStateDetails?.ptrc_frequency || ''
-            }));
+                ptrc_frequency: selectedStateDetails?.ptrc_frequency || '',
+            }))
 
             // Validate state_id field
-            await validateField('state_id', newStateId);
+            await validateField('state_id', newStateId)
         }
-    };
-
+    }
 
     // File conversion helper
     const convertToBase64 = (file: File): Promise<string> => {
@@ -257,12 +259,15 @@ const PTSetupPage = () => {
     // Load company groups
     const loadCompanyGroups = async () => {
         try {
-            const { data } = await httpClient.get(endpoints.companyGroup.getAll(), {
-                params: { ignorePlatform: true }
-            })
+            const { data } = await httpClient.get(
+                endpoints.companyGroup.getAll(),
+                {
+                    params: { ignorePlatform: true },
+                },
+            )
             const formattedGroups = data.data.map((v: any) => ({
                 label: v.name,
-                value: String(v.id)
+                value: String(v.id),
             }))
             setCompanyGroups(formattedGroups)
         } catch (error) {
@@ -270,7 +275,7 @@ const PTSetupPage = () => {
             toast.push(
                 <Notification title="Error" type="danger">
                     Failed to load company groups
-                </Notification>
+                </Notification>,
             )
         }
     }
@@ -280,13 +285,13 @@ const PTSetupPage = () => {
         try {
             const { data } = await httpClient.get(endpoints.company.getAll(), {
                 params: {
-                    'group_id[]': [groupId]
-                }
+                    'group_id[]': [groupId],
+                },
             })
             if (data?.data) {
                 const formattedCompanies = data.data.map((company: any) => ({
                     label: company.name,
-                    value: String(company.id)
+                    value: String(company.id),
                 }))
                 setCompanies(formattedCompanies)
             }
@@ -295,70 +300,72 @@ const PTSetupPage = () => {
             toast.push(
                 <Notification title="Error" type="danger">
                     Failed to load companies
-                </Notification>
+                </Notification>,
             )
         }
     }
-const loadStates = async () => {
-    try {
-        const response = await httpClient.get(endpoints.common.state())
-        if (response.data) {
-            const formattedStates = response.data
-                .filter((state: any) => state.ptrc_active && state.ptec_active)
-                .map((state: any) => ({
-                    label: state.name,
-                    value: String(state.id),
-                    // Preserve additional state details
-                    ptec_frequency: state.ptec_frequency,
-                    ptrc_frequency: state.ptrc_frequency
-                }))
-            setStates(formattedStates)
+    const loadStates = async () => {
+        try {
+            const response = await httpClient.get(endpoints.common.state())
+            if (response.data) {
+                const formattedStates = response.data
+                    .filter(
+                        (state: any) => state.ptrc_active && state.ptec_active,
+                    )
+                    .map((state: any) => ({
+                        label: state.name,
+                        value: String(state.id),
+                        // Preserve additional state details
+                        ptec_frequency: state.ptec_frequency,
+                        ptrc_frequency: state.ptrc_frequency,
+                    }))
+                setStates(formattedStates)
+            }
+        } catch (error) {
+            console.error('Failed to load states:', error)
+            toast.push(
+                <Notification title="Error" type="danger">
+                    Failed to load states
+                </Notification>,
+            )
         }
-    } catch (error) {
-        console.error('Failed to load states:', error)
-        toast.push(
-            <Notification title="Error" type="danger">
-                Failed to load states
-            </Notification>
-        )
     }
-}
 
-//     const handleStateChange = (option: SelectOption | null) => {
-//     setSelectedState(option);
-//     setSelectedDistrict({ id: null, name: '' }); // Reset district selection
-//     setSelectedLocation(''); // Reset location selection
-    
-//     if (option) {
-//         // Find the state details from the existing states array
-//         const selectedStateDetails = states.find(
-//             state => state.value === option.value
-//         );
+    //     const handleStateChange = (option: SelectOption | null) => {
+    //     setSelectedState(option);
+    //     setSelectedDistrict({ id: null, name: '' }); // Reset district selection
+    //     setSelectedLocation(''); // Reset location selection
 
-//         setPtSetupData(prev => ({
-//             ...prev,
-//             state_id: parseInt(option.value),
-//             district: '', 
-//             location: '',
-//             ptec_frequency: selectedStateDetails?.ptec_frequency || '',
-//             ptrc_frequency: selectedStateDetails?.ptrc_frequency || ''
-//         }));
-//     }
-// };
-    
-    
-      const handleDistrictSelect = (district: { id: number | null; name: string }) => {
-        setSelectedDistrict(district);
-        setPtSetupData(prev => ({
+    //     if (option) {
+    //         // Find the state details from the existing states array
+    //         const selectedStateDetails = states.find(
+    //             state => state.value === option.value
+    //         );
+
+    //         setPtSetupData(prev => ({
+    //             ...prev,
+    //             state_id: parseInt(option.value),
+    //             district: '',
+    //             location: '',
+    //             ptec_frequency: selectedStateDetails?.ptec_frequency || '',
+    //             ptrc_frequency: selectedStateDetails?.ptrc_frequency || ''
+    //         }));
+    //     }
+    // };
+
+    const handleDistrictSelect = (district: {
+        id: number | null
+        name: string
+    }) => {
+        setSelectedDistrict(district)
+        setPtSetupData((prev) => ({
             ...prev,
-            district: district.id ? district.id.toString() : '' // Convert to string
-        }));
+            district: district.id ? district.id.toString() : '', // Convert to string
+        }))
         if (district.id) {
-            setSelectedDistrictId(district.id);
+            setSelectedDistrictId(district.id)
         }
-    };
-
-
+    }
 
     // Handle certificate uploads
     // const handleCertificateUpload = async (type: 'ec' | 'rc', file: File) => {
@@ -378,26 +385,24 @@ const loadStates = async () => {
     //     }
     // }
 
-
-
     const validateForm = async () => {
         try {
-          await ptSetupSchema.validate(ptSetupData, { abortEarly: false });
-          setErrors({});
-          return true;
+            await ptSetupSchema.validate(ptSetupData, { abortEarly: false })
+            setErrors({})
+            return true
         } catch (yupError) {
-          if (yupError instanceof yup.ValidationError) {
-            const newErrors: ValidationErrors = {};
-            yupError.inner.forEach((error) => {
-              if (error.path) {
-                newErrors[error.path] = error.message;
-              }
-            });
-            setErrors(newErrors);
-          }
-          return false;
+            if (yupError instanceof yup.ValidationError) {
+                const newErrors: ValidationErrors = {}
+                yupError.inner.forEach((error) => {
+                    if (error.path) {
+                        newErrors[error.path] = error.message
+                    }
+                })
+                setErrors(newErrors)
+            }
+            return false
         }
-      };
+    }
     //   const validateFileType = (file: File) => {
     //     const acceptedTypes = ['application/pdf'];
     //     if (!acceptedTypes.includes(file.type)) {
@@ -405,15 +410,15 @@ const loadStates = async () => {
     //     }
     //     return null;
     // };
-    
+
     const validateFileSize = (file: File) => {
-        const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+        const maxSize = 5 * 1024 * 1024 // 5MB in bytes
         if (file.size > maxSize) {
-            return 'File size should not exceed 5MB';
+            return 'File size should not exceed 5MB'
         }
-        return null;
-    };
-    
+        return null
+    }
+
     // Update the certificate upload handlers
     const handleCertificateUpload = async (type: 'ec' | 'rc', file: File) => {
         try {
@@ -426,53 +431,51 @@ const loadStates = async () => {
             //     }));
             //     return;
             // }
-    
+
             // Validate file size
-            const sizeError = validateFileSize(file);
+            const sizeError = validateFileSize(file)
             if (sizeError) {
-                setErrors(prev => ({
+                setErrors((prev) => ({
                     ...prev,
-                    [`${type}_certificate`]: sizeError
-                }));
-                return;
+                    [`${type}_certificate`]: sizeError,
+                }))
+                return
             }
-    
+
             // If validations pass, convert to base64
-            const base64String = await convertToBase64(file);
-            setPtSetupData(prev => ({
+            const base64String = await convertToBase64(file)
+            setPtSetupData((prev) => ({
                 ...prev,
-                [`${type}_certificate`]: base64String
-            }));
-    
+                [`${type}_certificate`]: base64String,
+            }))
+
             // Clear any previous errors
-            setErrors(prev => ({
+            setErrors((prev) => ({
                 ...prev,
-                [`${type}_certificate`]: undefined
-            }));
-    
+                [`${type}_certificate`]: undefined,
+            }))
+
             // Validate the field using Yup schema
-            await validateField(`${type}_certificate`, base64String);
-    
+            await validateField(`${type}_certificate`, base64String)
         } catch (error) {
-            console.error(`Error processing ${type} certificate:`, error);
-            setErrors(prev => ({
+            console.error(`Error processing ${type} certificate:`, error)
+            setErrors((prev) => ({
                 ...prev,
-                [`${type}_certificate`]: 'Failed to process certificate'
-            }));
+                [`${type}_certificate`]: 'Failed to process certificate',
+            }))
             toast.push(
                 <Notification title="Error" type="danger">
                     Failed to process certificate
-                </Notification>
-            );
+                </Notification>,
+            )
         }
-    };
-
+    }
 
     // Submit handler
     const handleSubmit = async () => {
         try {
             setLoading(true)
-          const formData = {
+            const formData = {
                 ...ptSetupData,
                 register_date: ptSetupData.register_date?.toISOString() || '',
                 // Ensure all number fields are converted to strings
@@ -484,43 +487,45 @@ const loadStates = async () => {
                 // enroll_number is already a string
                 // mobile is already a string
             }
-          console.log(formData);
-          const isValid = await validateForm();
+            console.log(formData)
+            const isValid = await validateForm()
             if (!isValid) {
-            toast.push(
-                <Notification title="Error" type="danger">
-                Please fix the validation errors
-                </Notification>
-            );
-            return;
+                toast.push(
+                    <Notification title="Error" type="danger">
+                        Please fix the validation errors
+                    </Notification>,
+                )
+                return
             }
-           const response = await dispatch(createptsetup(formData))
-      .unwrap()
-      .catch((error: any) => {
-        // Handle different error formats
-        if (error.response?.data?.message) {
-            // API error response
-            console.log('inside error')
-            showErrorNotification(error.response.data.message);
-        } else if (error.message) {
-            // Regular error object
-            showErrorNotification(error.message);
-        } else if (Array.isArray(error)) {
-            // Array of error messages
-            showErrorNotification(error);
-        } else {
-            // Fallback error message
-            showErrorNotification(error);
-        }
-        throw error; // Re-throw to prevent navigation
-    });
+            const response = await dispatch(createptsetup(formData))
+                .unwrap()
+                .catch((error: any) => {
+                    // Handle different error formats
+                    if (error.response?.data?.message) {
+                        // API error response
+                        console.log('inside error')
+                        showErrorNotification(error.response.data.message)
+                    } else if (error.message) {
+                        // Regular error object
+                        showErrorNotification(error.message)
+                    } else if (Array.isArray(error)) {
+                        // Array of error messages
+                        showErrorNotification(error)
+                    } else {
+                        // Fallback error message
+                        showErrorNotification(error)
+                    }
+                    throw error // Re-throw to prevent navigation
+                })
             // Here you would dispatch your createPT action
             // const response = await dispatch(createPT(formData)).unwrap()
-            
+
             toast.push(
                 <Notification title="Success" type="success">
-                  {  PT Setup successfully created}
-                </Notification>
+                    <div className="flex items-center">
+                        <span>PT Setup successfully created</span>
+                    </div>
+                </Notification>,
             )
             navigate(-1)
         } catch (error: any) {
@@ -540,9 +545,9 @@ const loadStates = async () => {
 
     useEffect(() => {
         if (selectedCompanyGroup?.value) {
-            setPtSetupData(prev => ({
+            setPtSetupData((prev) => ({
                 ...prev,
-                group_id: parseInt(selectedCompanyGroup.value)
+                group_id: parseInt(selectedCompanyGroup.value),
             }))
             loadCompanies(selectedCompanyGroup.value)
         }
@@ -550,9 +555,9 @@ const loadStates = async () => {
 
     useEffect(() => {
         if (selectedCompany?.value) {
-            setPtSetupData(prev => ({
+            setPtSetupData((prev) => ({
                 ...prev,
-                company_id: parseInt(selectedCompany.value)
+                company_id: parseInt(selectedCompany.value),
             }))
         }
     }, [selectedCompany])
@@ -581,11 +586,11 @@ const loadStates = async () => {
                             value={selectedCompanyGroup}
                             onChange={setSelectedCompanyGroup}
                         /> */}
-                         <OutlinedInput
+                        <OutlinedInput
                             label="Company Group"
                             value={companyGroupName}
                             disabled
-                            />
+                        />
                     </div>
                     <div>
                         <p className="mb-2">Company</p>
@@ -595,144 +600,177 @@ const loadStates = async () => {
                             value={selectedCompany}
                             onChange={setSelectedCompany}
                         /> */}
-                         <OutlinedInput
+                        <OutlinedInput
                             label="Company"
                             value={companyName}
                             disabled
-                            />
+                        />
                     </div>
                 </div>
 
                 {/* Location Details */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                        <p className="mb-2">State <span className="text-red-500">*</span></p>
-                         <OutlinedSelect
+                        <p className="mb-2">
+                            State <span className="text-red-500">*</span>
+                        </p>
+                        <OutlinedSelect
                             label="Select State"
                             options={states}
                             value={selectedState}
                             onChange={handleStateChange}
                         />
-                         {errors.state_id && (
-            <p className="text-red-500 text-xs mt-1">{errors.state_id}</p>
-          )}
+                        {errors.state_id && (
+                            <p className="text-red-500 text-xs mt-1">
+                                {errors.state_id}
+                            </p>
+                        )}
                     </div>
                     <div>
-                       <DistrictAutosuggest 
-                        value={selectedDistrict}
-                        onChange={async (district) => {
-                            setSelectedDistrict(district);
-                            const districtValue = district.id ? district.id.toString() : '';
-                            setPtSetupData(prev => ({
-                                ...prev,
-                                district: districtValue
-                            }));
-                            await validateField('district', districtValue);
-                            if (district.id) {
-                                setSelectedDistrictId(district.id);
+                        <DistrictAutosuggest
+                            value={selectedDistrict}
+                            onChange={async (district) => {
+                                setSelectedDistrict(district)
+                                const districtValue = district.id
+                                    ? district.id.toString()
+                                    : ''
+                                setPtSetupData((prev) => ({
+                                    ...prev,
+                                    district: districtValue,
+                                }))
+                                await validateField('district', districtValue)
+                                if (district.id) {
+                                    setSelectedDistrictId(district.id)
+                                }
+                            }}
+                            stateId={
+                                selectedState?.value
+                                    ? parseInt(selectedState.value)
+                                    : undefined
                             }
-                        }}
-                        stateId={selectedState?.value ? parseInt(selectedState.value) : undefined}
-                        onDistrictSelect={(id) => {
-                            setSelectedDistrictId(id);
-                            // Also update the form data when district is selected
-                            setPtSetupData(prev => ({
-                                ...prev,
-                                district: id ? id.toString() : ''
-                            }));
-                        }}
-                    />
-                     {errors.district && (
-            <p className="text-red-500 text-xs mt-1">{errors.district}</p>
-          )}
+                            onDistrictSelect={(id) => {
+                                setSelectedDistrictId(id)
+                                // Also update the form data when district is selected
+                                setPtSetupData((prev) => ({
+                                    ...prev,
+                                    district: id ? id.toString() : '',
+                                }))
+                            }}
+                        />
+                        {errors.district && (
+                            <p className="text-red-500 text-xs mt-1">
+                                {errors.district}
+                            </p>
+                        )}
                     </div>
                     <div>
                         <LocationAutosuggest
                             value={selectedLocation}
                             onChange={async (location: string) => {
-                                setSelectedLocation(location);
-                                setPtSetupData(prev => ({
+                                setSelectedLocation(location)
+                                setPtSetupData((prev) => ({
                                     ...prev,
-                                    location: location
-                                }));
-                                await validateField('location', location);
+                                    location: location,
+                                }))
+                                await validateField('location', location)
                             }}
                             districtId={selectedDistrictId}
                         />
-                         {errors.location && (
-            <p className="text-red-500 text-xs mt-1">{errors.location}</p>
-          )}
+                        {errors.location && (
+                            <p className="text-red-500 text-xs mt-1">
+                                {errors.location}
+                            </p>
+                        )}
                     </div>
                 </div>
 
                 {/* Registration Details */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                        <p className="mb-2">PT RC Registration Number <span className="text-red-500">*</span></p>
-                       <OutlinedInput
-                        label="Enter Registration Number"
-                        value={ptSetupData.register_number}
-                        onChange={(value) => handleInputChange('register_number', value)}
-                    />
-                     {errors.register_number && (
-            <p className="text-red-500 text-xs mt-1">{errors.register_number}</p>
-          )}
-                    </div>
-                    <div>
-                        <p className="mb-2">PT EC Enrollment Number <span className="text-red-500">*</span></p>
+                        <p className="mb-2">
+                            PT RC Registration Number{' '}
+                            <span className="text-red-500">*</span>
+                        </p>
                         <OutlinedInput
-                        label="Enter Enrollment Number"
-                        value={ptSetupData.enroll_number}
-                        onChange={(value) => handleInputChange('enroll_number', value)}
-                    />
-                    {errors.enroll_number && (
-            <p className="text-red-500 text-xs mt-1">{errors.enroll_number}</p>
-          )}
+                            label="Enter Registration Number"
+                            value={ptSetupData.register_number}
+                            onChange={(value) =>
+                                handleInputChange('register_number', value)
+                            }
+                        />
+                        {errors.register_number && (
+                            <p className="text-red-500 text-xs mt-1">
+                                {errors.register_number}
+                            </p>
+                        )}
                     </div>
                     <div>
-                        <p className="mb-2">Registration Date <span className="text-red-500">*</span></p>
+                        <p className="mb-2">
+                            PT EC Enrollment Number{' '}
+                            <span className="text-red-500">*</span>
+                        </p>
+                        <OutlinedInput
+                            label="Enter Enrollment Number"
+                            value={ptSetupData.enroll_number}
+                            onChange={(value) =>
+                                handleInputChange('enroll_number', value)
+                            }
+                        />
+                        {errors.enroll_number && (
+                            <p className="text-red-500 text-xs mt-1">
+                                {errors.enroll_number}
+                            </p>
+                        )}
+                    </div>
+                    <div>
+                        <p className="mb-2">
+                            Registration Date{' '}
+                            <span className="text-red-500">*</span>
+                        </p>
                         <DatePicker
-                            size='sm'
+                            size="sm"
                             placeholder="Select Date"
                             value={ptSetupData.register_date}
                             onChange={async (date) => {
-                                setPtSetupData(prev => ({
+                                setPtSetupData((prev) => ({
                                     ...prev,
-                                    register_date: date
-                                }));
-                                await validateField('register_date', date);
+                                    register_date: date,
+                                }))
+                                await validateField('register_date', date)
                             }}
-                            inputFormat="DD-MM-YYYY"  // Changed to uppercase format tokens
+                            inputFormat="DD-MM-YYYY" // Changed to uppercase format tokens
                             yearLabelFormat="YYYY"
                             monthLabelFormat="MMMM YYYY"
                         />
-                         {errors.register_date && (
-            <p className="text-red-500 text-xs mt-1">{errors.register_date}</p>
-          )}
+                        {errors.register_date && (
+                            <p className="text-red-500 text-xs mt-1">
+                                {errors.register_date}
+                            </p>
+                        )}
                     </div>
                 </div>
-<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <div>
-        <p className="mb-2">PT EC Frequency</p>
-        <OutlinedInput
-            label="PT EC Frequency"
-            value={ptSetupData.ptec_frequency || '--'}
-             onChange={function (value: string): void {
-                                    throw new Error('Function not implemented.')
-                                } }  
-        />
-    </div>
-    <div>
-        <p className="mb-2">PT RC Frequency</p>
-        <OutlinedInput
-            label="PT RC Frequency"
-            value={ptSetupData.ptrc_frequency || '--'}
-             onChange={function (value: string): void {
-                                    throw new Error('Function not implemented.')
-                                } }  
-        />
-    </div>
-</div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <p className="mb-2">PT EC Frequency</p>
+                        <OutlinedInput
+                            label="PT EC Frequency"
+                            value={ptSetupData.ptec_frequency || '--'}
+                            onChange={function (value: string): void {
+                                throw new Error('Function not implemented.')
+                            }}
+                        />
+                    </div>
+                    <div>
+                        <p className="mb-2">PT RC Frequency</p>
+                        <OutlinedInput
+                            label="PT RC Frequency"
+                            value={ptSetupData.ptrc_frequency || '--'}
+                            onChange={function (value: string): void {
+                                throw new Error('Function not implemented.')
+                            }}
+                        />
+                    </div>
+                </div>
                 {/* User Details */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
@@ -740,12 +778,15 @@ const loadStates = async () => {
                         <OutlinedInput
                             label="Enter PT User"
                             value={ptSetupData.username}
-                            onChange={(value) => handleInputChange('username', value)}
+                            onChange={(value) =>
+                                handleInputChange('username', value)
+                            }
                         />
                         {errors.username && (
-            <p className="text-red-500 text-xs mt-1">{errors.username}</p>
-          )}
-                        
+                            <p className="text-red-500 text-xs mt-1">
+                                {errors.username}
+                            </p>
+                        )}
                     </div>
                     <div>
                         <p className="mb-2">Password</p>
@@ -753,106 +794,145 @@ const loadStates = async () => {
                             label="Enter Password"
                             // type="password"
                             value={ptSetupData.password}
-                            onChange={(value) => handleInputChange('password', value)}
+                            onChange={(value) =>
+                                handleInputChange('password', value)
+                            }
                         />
-                         {errors.password && (
-            <p className="text-red-500 text-xs mt-1">{errors.password}</p>
-          )}
+                        {errors.password && (
+                            <p className="text-red-500 text-xs mt-1">
+                                {errors.password}
+                            </p>
+                        )}
                     </div>
                     <div>
                         <p className="mb-2">Email</p>
                         <OutlinedInput
                             label="Enter Email"
                             value={ptSetupData.email}
-                            onChange={(value) => handleInputChange('email', value)}
+                            onChange={(value) =>
+                                handleInputChange('email', value)
+                            }
                         />
-                          {errors.email && (
-            <p className="text-red-500 text-xs mt-1">{errors.email}</p>
-          )}
+                        {errors.email && (
+                            <p className="text-red-500 text-xs mt-1">
+                                {errors.email}
+                            </p>
+                        )}
                     </div>
                 </div>
 
                 {/* Additional Details */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <p className="mb-2">Mobile <span className="text-red-500">*</span></p>
+                        <p className="mb-2">
+                            Mobile <span className="text-red-500">*</span>
+                        </p>
                         <OutlinedInput
-                        label="Enter Mobile"
-                        value={ptSetupData.mobile}
-                        onChange={(value) => handleInputChange('mobile', value)}
-              />
-                 {errors.mobile && (
-            <p className="text-red-500 text-xs mt-1">{errors.mobile}</p>
-          )}
-            </div>
-                    <div>
-                        <p className="mb-2">Remittance Mode <span className="text-red-500">*</span></p>
-                        <OutlinedSelect
-                label="Select Mode"
-                options={[
-                  { value: 'online', label: 'Online' },
-                  { value: 'offline', label: 'Offline' }
-                ]}
-                onChange={async (option) => {
-                    if (option) {
-                        setPtSetupData(prev => ({
-                            ...prev,
-                            remmit_mode: option.value
-                        }));
-                        // Validate the remittance mode immediately after selection
-                        await validateField('remmit_mode', option.value);
-                    }
-                }}
-                value={undefined}/>
-                   {errors.remmit_mode && (
-            <p className="text-red-500 text-xs mt-1">{errors.remmit_mode}</p>
-          )}
+                            label="Enter Mobile"
+                            value={ptSetupData.mobile}
+                            onChange={(value) =>
+                                handleInputChange('mobile', value)
+                            }
+                        />
+                        {errors.mobile && (
+                            <p className="text-red-500 text-xs mt-1">
+                                {errors.mobile}
+                            </p>
+                        )}
                     </div>
-            </div>
+                    <div>
+                        <p className="mb-2">
+                            Remittance Mode{' '}
+                            <span className="text-red-500">*</span>
+                        </p>
+                        <OutlinedSelect
+                            label="Select Mode"
+                            options={[
+                                { value: 'online', label: 'Online' },
+                                { value: 'offline', label: 'Offline' },
+                            ]}
+                            onChange={async (option) => {
+                                if (option) {
+                                    setPtSetupData((prev) => ({
+                                        ...prev,
+                                        remmit_mode: option.value,
+                                    }))
+                                    // Validate the remittance mode immediately after selection
+                                    await validateField(
+                                        'remmit_mode',
+                                        option.value,
+                                    )
+                                }
+                            }}
+                            value={undefined}
+                        />
+                        {errors.remmit_mode && (
+                            <p className="text-red-500 text-xs mt-1">
+                                {errors.remmit_mode}
+                            </p>
+                        )}
+                    </div>
+                </div>
 
                 {/* Certificates */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <div>
-        <p className="mb-2">RC Certificate(Accepted : Pdf/Zip/Image(Max Size: 20mb)) <span className="text-red-500">*</span></p>
-        <div className="space-y-2">
-            <Input
-                type="file"
-                accept=".pdf , .zip , .jpg"
-                onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) handleCertificateUpload('rc', file);
-                }}
-            />
-            
-            {errors.rc_certificate && (
-                <p className="text-red-500 text-xs">{errors.rc_certificate}</p>
-            )}
-        </div>
-    </div>
+                    <div>
+                        <p className="mb-2">
+                            RC Certificate(Accepted : Pdf/Zip/Image(Max Size:
+                            20mb)) <span className="text-red-500">*</span>
+                        </p>
+                        <div className="space-y-2">
+                            <Input
+                                type="file"
+                                accept=".pdf , .zip , .jpg"
+                                onChange={(e) => {
+                                    const file = e.target.files?.[0]
+                                    if (file)
+                                        handleCertificateUpload('rc', file)
+                                }}
+                            />
 
-    <div>
-        <p className="mb-2">EC Certificate(Accepted : Pdf/Zip/Image(Max Size: 20mb)) <span className="text-red-500">*</span></p>
-        <div className="space-y-2">
-            <Input
-                type="file"
-                 accept=".pdf , .zip , .jpg"
-                onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) handleCertificateUpload('ec', file);
-                }}
-            />
-           
-            {errors.ec_certificate && (
-                <p className="text-red-500 text-xs">{errors.ec_certificate}</p>
-            )}
-        </div>
-    </div>
-</div>
+                            {errors.rc_certificate && (
+                                <p className="text-red-500 text-xs">
+                                    {errors.rc_certificate}
+                                </p>
+                            )}
+                        </div>
+                    </div>
+
+                    <div>
+                        <p className="mb-2">
+                            EC Certificate(Accepted : Pdf/Zip/Image(Max Size:
+                            20mb)) <span className="text-red-500">*</span>
+                        </p>
+                        <div className="space-y-2">
+                            <Input
+                                type="file"
+                                accept=".pdf , .zip , .jpg"
+                                onChange={(e) => {
+                                    const file = e.target.files?.[0]
+                                    if (file)
+                                        handleCertificateUpload('ec', file)
+                                }}
+                            />
+
+                            {errors.ec_certificate && (
+                                <p className="text-red-500 text-xs">
+                                    {errors.ec_certificate}
+                                </p>
+                            )}
+                        </div>
+                    </div>
+                </div>
 
                 {/* Action Buttons */}
                 <div className="flex justify-end space-x-2">
                     <Button onClick={() => navigate(-1)}>Cancel</Button>
-                    <Button variant="solid" onClick={handleSubmit} loading={loading}>
+                    <Button
+                        variant="solid"
+                        onClick={handleSubmit}
+                        loading={loading}
+                    >
                         Confirm
                     </Button>
                 </div>
