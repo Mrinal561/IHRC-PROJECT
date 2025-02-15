@@ -21,44 +21,81 @@ const Updateds = () => {
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                     Latest Updateds
                 </h2>
-                {/* <button className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100">
+                <button className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100">
                     View All
-                </button> */}
+                </button>
             </div>
             <Timeline>
                 <Timeline.Item
-                    media={
-                        <TimelineAvatar className="bg-blue-500 text-white">
-                            <Upload size={14} />
-                        </TimelineAvatar>
-                    }
+                // media={
+                //     <TimelineAvatar className="bg-blue-500 text-white">
+                //         <Upload size={14} />
+                //     </TimelineAvatar>
+                // }
                 >
                     <p className="my-1 flex items-center">
                         <span className="font-semibold text-gray-900 dark:text-gray-100">
-                            Document Request
-                        </span>
-                        <span className="mx-2">-</span>
-                        <span>Documents to be uploaded in PF tracker</span>
-                    </p>
-                </Timeline.Item>
-                <Timeline.Item
-                    media={
-                        <TimelineAvatar className="bg-purple-500 text-white">
-                            <Clock size={14} />
-                        </TimelineAvatar>
-                    }
-                >
-                    <p className="my-1 flex items-center">
-                        <span className="font-semibold text-gray-900 dark:text-gray-100">
-                            Due Date Reminder
+                            10.02/2025
                         </span>
                         <span className="mx-2">-</span>
                         <span>
-                            PF due date is near please upload adequate documents
+                            Lorem ipsum dolor sit amet, consectetur adipisicing
+                            elit.{' '}
                         </span>
-                        <Tag className="ml-3 rtl:mr-3 bg-purple-100 text-purple-600">
-                            Upcoming
-                        </Tag>
+                    </p>
+                </Timeline.Item>
+                <Timeline.Item
+                // media={
+                //     <TimelineAvatar className="bg-blue-500 text-white">
+                //         <Upload size={14} />
+                //     </TimelineAvatar>
+                // }
+                >
+                    <p className="my-1 flex items-center">
+                        <span className="font-semibold text-gray-900 dark:text-gray-100">
+                            10.02/2025
+                        </span>
+                        <span className="mx-2">-</span>
+                        <span>
+                            Lorem ipsum dolor sit amet, consectetur adipisicing
+                            elit.{' '}
+                        </span>
+                    </p>
+                </Timeline.Item>
+                <Timeline.Item
+                // media={
+                //     <TimelineAvatar className="bg-blue-500 text-white">
+                //         <Upload size={14} />
+                //     </TimelineAvatar>
+                // }
+                >
+                    <p className="my-1 flex items-center">
+                        <span className="font-semibold text-gray-900 dark:text-gray-100">
+                            10.02/2025
+                        </span>
+                        <span className="mx-2">-</span>
+                        <span>
+                            Lorem ipsum dolor sit amet, consectetur adipisicing
+                            elit.{' '}
+                        </span>
+                    </p>
+                </Timeline.Item>
+                <Timeline.Item
+                // media={
+                //     <TimelineAvatar className="bg-blue-500 text-white">
+                //         <Upload size={14} />
+                //     </TimelineAvatar>
+                // }
+                >
+                    <p className="my-1 flex items-center">
+                        <span className="font-semibold text-gray-900 dark:text-gray-100">
+                            10.02/2025
+                        </span>
+                        <span className="mx-2">-</span>
+                        <span>
+                            Lorem ipsum dolor sit amet, consectetur adipisicing
+                            elit.{' '}
+                        </span>
                     </p>
                 </Timeline.Item>
             </Timeline>

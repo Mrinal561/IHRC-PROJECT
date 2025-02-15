@@ -232,6 +232,7 @@ import ComplinceTool from './staticDashboard/ComplinceTool'
 import Alerts from './staticDashboard/Alreat'
 import TableFilter from '../../Registers&Return/input/SalaryRegister/components/TableFilter'
 import RemittanceStatus from './staticDashboard/RemittenceStatus'
+import Updateds from './staticDashboard/Updates'
 
 interface DashboardBodyProps {
     companyId: string | number
@@ -347,12 +348,12 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
 
                 {/* Payment Date Comparison */}
                 <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-6">
-                <div className="bg-white p-4 rounded-lg border shadow-sm">
-                    <PaymentDateComparison />
-                </div>
-                <div className="bg-white p-4 rounded-lg border shadow-sm">
-                    <Alerts />
-                </div>
+                    <div className="bg-white p-4 rounded-lg border shadow-sm">
+                        <PaymentDateComparison />
+                    </div>
+                    <div className="bg-white p-4 rounded-lg border shadow-sm">
+                        <Alerts />
+                    </div>
                 </div>
                 {/* <div className="bg-white p-4 rounded-lg border shadow-sm">
                     <h2 className="text-xl font-semibold mb-4">
@@ -362,7 +363,7 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
                 </div> */}
 
                 {/* Notices */}
-               
+
                 <div className="bg-white p-4 rounded-lg border shadow-sm">
                     <Notices />
                 </div>
@@ -376,11 +377,15 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <AnnualRevenueDonut />
                     </div>
+
+                    <div className="bg-white p-4 rounded-lg border shadow-sm">
+                        <ComplinceTool />
+                    </div>
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <ComplinceStatus />
                     </div>
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
-                        <ComplinceTool />
+                        <Updateds />
                     </div>
                 </div>
             </div>
@@ -447,7 +452,7 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
                         <RemittanceStatus />
                     </div>
                     <div className="bg-white p-4 rounded-lg border shadow-sm mt-6">
-                        <ComplinceTool />
+                        <ComplinceStatus />
                     </div>
                 </div>
 
@@ -459,22 +464,23 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
                     <div className="bg-white p-4 rounded-lg border shadow-sm mb-6">
                         <Alerts />
                     </div>
-
                     <div className="bg-white p-4 rounded-lg border shadow-sm mb-6">
                         <Notices />
                     </div>
-
                     <div className="bg-white p-4 rounded-lg border shadow-sm mb-6">
                         <AnnualRevenueDonut />
                     </div>
                     <div className="bg-white p-4 rounded-lg border shadow-sm mb-6">
                         <ChallanUploadCounts />
+                    </div>{' '}
+                    <div className="bg-white p-4 rounded-lg border shadow-sm mb-6">
+                        <Updateds />
                     </div>
                     <div className="bg-white p-4 rounded-lg border shadow-sm mb-6">
-                        <ComplinceStatus />
+                        <ComplinceTool />
                     </div>
                     {/* <div className="bg-white p-4 rounded-lg border shadow-sm">
-                        <ComplinceTool />
+                        <ComplinceStatus />
                     </div> */}
                 </div>
             </div>
