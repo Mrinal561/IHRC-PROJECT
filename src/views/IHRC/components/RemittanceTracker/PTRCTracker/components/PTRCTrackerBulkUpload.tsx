@@ -159,13 +159,17 @@ const PTRCTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({ onUploadCon
     
     try {
       const selectedDate = parse(currentGroup, 'yyyy-MM', new Date());
-      const reqBody = {
-        month: selectedDate.getMonth() + 1, // Adding 1 because getMonth() returns 0-11
-        year: selectedDate.getFullYear()
-      };
+       const payrollMonth = format(selectedDate, 'yyyy-MM');
+      // const reqBody = {
+      //   month: selectedDate.getMonth() + 1, // Adding 1 because getMonth() returns 0-11
+      //   year: selectedDate.getFullYear()
+      // };
       const res = await httpClient.get(endpoints.ptrc.download(), {
         responseType: "blob",
-        data: reqBody
+        // data: reqBody
+        params: { 
+          payrollMonth
+        },
       });
       
       const blob = new Blob([res.data], { type: "text/xlsx" });
