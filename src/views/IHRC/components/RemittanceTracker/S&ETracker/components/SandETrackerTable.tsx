@@ -499,6 +499,8 @@ import { useDispatch } from 'react-redux';
 import dayjs from 'dayjs';
 import { deleteNotice } from '@/store/slices/noticeTracker/noticeTrackerSlice';
 import EditNoticeDialog from './EditNoticeDialog';
+import { useNavigate } from 'react-router-dom';
+import { FaEye } from 'react-icons/fa';
 
 interface NoticeData {
   id: number;
@@ -557,7 +559,7 @@ const NoticeTrackerTable: React.FC<NoticeTrackerTableProps> = ({
   const [noticeToDelete, setNoticeToDelete] = useState<number | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [selectedNoticeId, setSelectedNoticeId] = useState<number | null>(null);
-
+  const navigate = useNavigate();
   const handleDeleteConfirmation = (noticeId: number) => {
     setNoticeToDelete(noticeId);
     setDeleteConfirmOpen(true);
@@ -691,6 +693,13 @@ const NoticeTrackerTable: React.FC<NoticeTrackerTableProps> = ({
               />
             </Tooltip>
             )}
+             <Tooltip title="View Responses">
+          <Button
+            size="sm"
+            onClick={() => navigate(`/notice-tracker/response/`)} 
+            icon={<FaEye />}
+          />
+        </Tooltip>
           </div>
         ),
       },

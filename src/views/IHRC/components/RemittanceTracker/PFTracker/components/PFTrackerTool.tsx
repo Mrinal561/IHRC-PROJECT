@@ -79,6 +79,15 @@ const PFTrackerTool: React.FC<{
 
   const handleDownload = async () => {
     try {
+
+      if (!filters.groupId && !filters.pfCode && !filters.companyId) {
+        toast.push(
+          <Notification title='Warning' type='warning' closable={true} duration={10000}>
+            Atleast Select One Company To Download The Data
+          </Notification>
+        )
+        return;
+      }
       const formattedStartDate = filters.startDate ? new Date(filters.startDate).toISOString().split('T')[0].replace(/-/g, '/') : '';
       const formattedEndDate = filters.endDate ? new Date(filters.endDate).toISOString().split('T')[0].replace(/-/g, '/') : '';
 
@@ -106,13 +115,7 @@ const PFTrackerTool: React.FC<{
       window.URL.revokeObjectURL(url) // Clean up the URL object
     }
     } catch (error) {
-      console.error('Error downloading LWF data:', error)
-      // Here you might want to show an error notification to the user
-      toast.push(
-        <Notification title='Error' type='danger'>
-            No data is available.
-        </Notification>
-      )
+      throw error;
     }
   }
 

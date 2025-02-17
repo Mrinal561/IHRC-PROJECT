@@ -131,20 +131,6 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
       const response = await dispatch((fetchTrackerById(trackerId)))
             .unwrap()
             .catch((error: any) => {
-                // Handle different error formats
-                if (error.response?.data?.message) {
-                    // API error response
-                    showErrorNotification(error.response.data.message);
-                } else if (error.message) {
-                    // Regular error object
-                    showErrorNotification(error.message);
-                } else if (Array.isArray(error)) {
-                    // Array of error messages
-                    showErrorNotification(error);
-                } else {
-                    // Fallback error message
-                    showErrorNotification(error);
-                }
                 throw error; // Re-throw to prevent navigation
             });
       console.log(response)
@@ -210,20 +196,6 @@ const PFTrackerEditDialog: React.FC<PFTrackerEditDialogProps> = ({
       data: updateData
     })).unwrap()
     .catch((error: any) => {
-        // Handle different error formats
-        if (error.response?.data?.message) {
-            // API error response
-            showErrorNotification(error.response.data.message);
-        } else if (error.message) {
-            // Regular error object
-            showErrorNotification(error.message);
-        } else if (Array.isArray(error)) {
-            // Array of error messages
-            showErrorNotification(error);
-        } else {
-            // Fallback error message
-            showErrorNotification(error);
-        }
         throw error; // Re-throw to prevent navigation
     });
 

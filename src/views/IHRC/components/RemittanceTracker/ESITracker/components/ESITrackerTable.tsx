@@ -73,20 +73,6 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> =({
           setLoader(true)
         if (trackerToDelete) {
           dispatch(deleteTracker(trackerToDelete)).unwrap().catch((error: any) => {
-            // Handle different error formats
-            if (error.response?.data?.message) {
-                // API error response
-                showErrorNotification(error.response.data.message);
-            } else if (error.message) {
-                // Regular error object
-                showErrorNotification(error.message);
-            } else if (Array.isArray(error)) {
-                // Array of error messages
-                showErrorNotification(error);
-            } else {
-                // Fallback error message
-                showErrorNotification(error);
-            }
             throw error; // Re-throw to prevent navigation
         });
 
@@ -110,7 +96,9 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> =({
             payload: {
               type: "esi" 
             }
-          })).unwrap(); 
+          })).unwrap().catch((error:any)=> {
+            throw error;
+          }); 
       
           if (res) {
             console.log('Requested Successfully')

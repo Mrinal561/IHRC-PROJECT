@@ -238,15 +238,6 @@ const CompanyNameTable: React.FC<CompanyNameTableProps> = ({
         const res = await dispatch(deleteCompany(itemToDelete.id))
         .unwrap()
         .catch((error: any) => {
-          if (error.response?.data?.message) {
-              showErrorNotification(error.response.data.message);
-          } else if (error.message) {
-              showErrorNotification(error.message);
-          } else if (Array.isArray(error)) {
-              showErrorNotification(error);
-          } else {
-              showErrorNotification(error);
-          }
           throw error;
       });
       handleDialogClose();

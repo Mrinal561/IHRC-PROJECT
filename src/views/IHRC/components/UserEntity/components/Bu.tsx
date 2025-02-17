@@ -62,11 +62,7 @@ const Bu: React.FC<BulkUploadProps> = ({
         }
       }
     } catch (error) {
-      toast.push(
-        <Notification title="Error" type="danger">
-          {error.response?.data?.message || 'Failed to upload users'}
-        </Notification>
-      );
+      throw error;
       console.error('Upload error:', error);
     } finally {
       setIsUploading(false);

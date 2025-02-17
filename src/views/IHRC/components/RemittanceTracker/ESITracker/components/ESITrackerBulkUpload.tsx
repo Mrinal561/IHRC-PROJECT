@@ -116,15 +116,6 @@ const ESITrackerBulkUpload: React.FC<ESITrackerBulkUploadProps> = ({ onUploadCon
             const res = await dispatch(createEsiTracker(formData))
                 .unwrap()
                 .catch((error: any) => {
-                    if (error.response?.data?.message) {
-                        showErrorNotification(error.response.data.message);
-                    } else if (error.message) {
-                        showErrorNotification(error.message);
-                    } else if (Array.isArray(error)) {
-                        showErrorNotification(error);
-                    } else {
-                        showErrorNotification('An unexpected error occurred. Please try again.');
-                    }
                     throw error;
                 });
 

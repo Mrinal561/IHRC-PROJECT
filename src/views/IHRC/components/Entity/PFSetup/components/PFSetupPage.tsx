@@ -349,15 +349,6 @@ useEffect(()=>{
             const response = await dispatch(createPF(formData))
                 .unwrap()
                 .catch((error: any) => {
-                    if (error.response?.data?.message) {
-                        showErrorNotification(error.response.data.message)
-                    } else if (error.message) {
-                        showErrorNotification(error.message)
-                    } else if (Array.isArray(error)) {
-                        showErrorNotification(error)
-                    } else {
-                        showErrorNotification(error)
-                    }
                     throw error
                 })
             if (response) {

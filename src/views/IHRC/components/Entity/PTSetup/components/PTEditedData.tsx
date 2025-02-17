@@ -134,13 +134,6 @@ const PTEditedData: React.FC<PTEditedDataProps> = ({
             const response = await dispatch(fetchptsetupById(id))
                 .unwrap()
                 .catch((error: any) => {
-                    if (error.response?.data?.message) {
-                        showErrorNotification(error.response.data.message)
-                    } else if (error.message) {
-                        showErrorNotification(error.message)
-                    } else if (Array.isArray(error)) {
-                        showErrorNotification(error)
-                    }
                     throw error
                 })
             setFormData(response)

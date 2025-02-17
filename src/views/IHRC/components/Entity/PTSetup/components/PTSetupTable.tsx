@@ -233,20 +233,6 @@ const PTSetupTable: React.FC<PTSetupTableProps> = ({ data, isLoading , onRefresh
         setLoading(true)
         const res = await dispatch(deletePT(itemToDelete.id)).unwrap()
         .catch((error: any) => {
-          // Handle different error formats
-          if (error.response?.data?.message) {
-              // API error response
-              showErrorNotification(error.response.data.message);
-          } else if (error.message) {
-              // Regular error object
-              showErrorNotification(error.message);
-          } else if (Array.isArray(error)) {
-              // Array of error messages
-              showErrorNotification(error);
-          } else {
-              // Fallback error message
-              showErrorNotification(error);
-          }
           throw error; // Re-throw to prevent navigation
       });
         

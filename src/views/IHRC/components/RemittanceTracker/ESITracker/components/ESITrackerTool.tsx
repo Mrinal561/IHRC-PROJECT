@@ -159,6 +159,15 @@ const ESITrackerTool: React.FC<{
   const handleDownload = async () => {
     try {
       // Format dates to YYYY/MM/DD
+
+      if (!filters.groupId && !filters.esiCode && !filters.companyId) {
+        toast.push(
+          <Notification title='Warning' type='warning' closable={true} duration={10000}>
+            Atleast Select One Company To Download The Data
+          </Notification>
+        )
+        return;
+      }
       const formattedStartDate = filters.startDate ? new Date(filters.startDate).toISOString().split('T')[0].replace(/-/g, '/') : '';
       const formattedEndDate = filters.endDate ? new Date(filters.endDate).toISOString().split('T')[0].replace(/-/g, '/') : '';
   
@@ -186,12 +195,7 @@ const ESITrackerTool: React.FC<{
       
      
     } catch (error) {
-      console.error('Error downloading ESI data:', error);
-      toast.push(
-        <Notification title='Error' type='danger'>
-            No data is available.
-        </Notification>
-      )
+      throw error
       // Here you might want to show an error notification to the user
     }
   };

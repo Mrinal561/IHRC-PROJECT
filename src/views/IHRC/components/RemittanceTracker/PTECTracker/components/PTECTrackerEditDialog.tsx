@@ -91,13 +91,6 @@ const PTECTrackerEditDialog: React.FC<PTTrackerEditDialogProps> = ({
       const response = await dispatch(fetchPtecTrackerById(trackerId))
         .unwrap()
         .catch((error: any) => {
-          if (error.response?.data?.message) {
-            showErrorNotification(error.response.data.message);
-          } else if (error.message) {
-            showErrorNotification(error.message);
-          } else if (Array.isArray(error)) {
-            showErrorNotification(error);
-          }
           throw error;
         });
 
@@ -164,20 +157,6 @@ const validateForm = async (): Promise<boolean> => {
       data: updateData // Note: data, not formData
     })) .unwrap()
     .catch((error: any) => {
-        // Handle different error formats
-        if (error.response?.data?.message) {
-            // API error response
-            showErrorNotification(error.response.data.message);
-        } else if (error.message) {
-            // Regular error object
-            showErrorNotification(error.message);
-        } else if (Array.isArray(error)) {
-            // Array of error messages
-            showErrorNotification(error);
-        } else {
-            // Fallback error message
-            showErrorNotification(error);
-        }
         throw error; // Re-throw to prevent navigation
     });
 

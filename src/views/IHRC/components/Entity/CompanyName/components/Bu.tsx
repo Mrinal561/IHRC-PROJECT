@@ -65,8 +65,7 @@ const Bu: React.FC<BuProps> = ({ onUploadSuccess }) => {
                 }
             }
         } catch (error) {
-            let errorMessage
-            console.error('Upload error:', error)
+            throw error;
         } finally {
             setIsUploading(false)
         }

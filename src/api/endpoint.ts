@@ -34,6 +34,11 @@ export const endpoints = {
         createSubCategory: () => api('/subcategory'),
         agreementTypeSuggestions: () => api('/agreement-type-suggestions'),
         createAgreementType: () => api('/agreement-type'),
+        createNoticeType:()=> api(`/notice-type`),
+        noticeTypeSuggestions:() => api(`/notice-type`),
+        createNoticeActType:() => api(`/notice-act`),
+        noticeActSuggestions:() => api(`//notice-act`),
+
     },
     user: {
         getAll: () => api('companyadmin/user'),

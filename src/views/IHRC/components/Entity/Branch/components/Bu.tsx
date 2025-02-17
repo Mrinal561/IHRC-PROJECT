@@ -64,11 +64,12 @@ const Bu: React.FC<BuProps> = ({ onUploadSuccess }) => {
         }
       }
     } catch (error) {
-      toast.push(
-        <Notification title="Error" type="danger">
-         {error.response.data.message}
-        </Notification>
-      );
+      // toast.push(
+      //   <Notification title="Error" type="danger">
+      //    {error.response.data.message}
+      //   </Notification>
+      // );
+      throw error;
       console.error('Upload error:', error);
     } finally {
       setIsUploading(false);

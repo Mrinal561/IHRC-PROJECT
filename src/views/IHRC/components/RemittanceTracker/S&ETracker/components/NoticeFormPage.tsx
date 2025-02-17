@@ -13,6 +13,8 @@ import { createNotice } from '@/store/slices/noticeTracker/noticeTrackerSlice';
 import store from '@/store';
 import { useNavigate } from 'react-router-dom';
 import { IoArrowBack } from 'react-icons/io5';
+import NoticeTypeAutosuggest from './NoticeTypeAutosuggest';
+import NoticeActAutosuggest from './NoticeActAutosuggest';
 
 interface SelectOption {
   value: string;
@@ -183,15 +185,6 @@ const NoticeFormPage = ({ onSuccess }) => {
       const resultAction = await dispatch(createNotice(formData))
         .unwrap()
         .catch((error: any) => {
-          if (error.response?.data?.message) {
-            showErrorNotification(error.response.data.message);
-          } else if (error.message) {
-            showErrorNotification(error.message);
-          } else if (Array.isArray(error)) {
-            showErrorNotification(error);
-          } else {
-            showErrorNotification('An unexpected error occurred. Please try again.');
-          }
           throw error;
         });
 
@@ -283,15 +276,20 @@ const NoticeFormPage = ({ onSuccess }) => {
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Notice Type <span className="text-red-500">*</span></label>
-            <OutlinedSelect
-              label="Select Notice Type"
-              options={noticeTypeOptions}
-              value={noticeTypeOptions.find(option => option.value === formData.notice_type)}
-              onChange={(option) => handleChange('notice_type', option?.value || '')}
-            />
-          </div>
+        <div className="space-y-2">
+          <NoticeTypeAutosuggest
+            value={formData.notice_type}
+            onChange={(value) => handleChange('notice_type', value)}
+            onNoticeTypeSelect={(id) => {
+              // If you need to store the ID separately
+              setFormData(prev => ({
+                ...prev,
+                notice_type_id: id
+              }));
+            }}
+            isDisabled={isLoading}
+          />
+        </div>
           <div className="space-y-2">
             <label className="text-sm font-medium">Notice Received on <span className="text-red-500">*</span></label>
             <DatePicker
@@ -317,13 +315,19 @@ const NoticeFormPage = ({ onSuccess }) => {
             />
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-medium">Notice related to which Act <span className="text-red-500">*</span></label>
-            <OutlinedInput
-              label="Related Act"
-              value={formData.related_act}
-              onChange={(value) => handleChange('related_act', value)}
-            />
-          </div>
+          <NoticeActAutosuggest
+            value={formData.related_act}
+            onChange={(value) => handleChange('related_act', value)}
+            onNoticeActSelect={(id) => {
+              // If you need to store the ID separately
+              setFormData(prev => ({
+                ...prev,
+                notice_act_id: id
+              }));
+            }}
+            isDisabled={isLoading}
+          />
+        </div>
           <div className="space-y-2">
             <label className="text-sm font-medium">Notice Copy (PDF/Zip/Image, Max 20MB) <span className="text-red-500">*</span></label>
             <Input

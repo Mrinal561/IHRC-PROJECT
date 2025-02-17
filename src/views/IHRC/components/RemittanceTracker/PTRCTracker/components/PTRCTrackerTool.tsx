@@ -75,6 +75,15 @@ const PTRCTrackerTool: React.FC<{
 
   const handleDownload = async () => {
     try {
+      // Check if at least one filter is selected
+      if (!filters.groupId && !filters.ptCode && !filters.companyId) {
+        toast.push(
+          <Notification title='Warning' type='warning' closable={true} duration={10000}>
+            Atleast Select One Company To Download The Data
+          </Notification>
+        )
+        return;
+      }
       const formattedStartDate = filters.startDate ? new Date(filters.startDate).toISOString().split('T')[0].replace(/-/g, '/') : '';
       const formattedEndDate = filters.endDate ? new Date(filters.endDate).toISOString().split('T')[0].replace(/-/g, '/') : '';
 
@@ -103,11 +112,7 @@ const PTRCTrackerTool: React.FC<{
     } catch (error) {
       console.error('Error downloading PTRC data:', error);
       // Here you might want to show an error notification to the user
-      toast.push(
-        <Notification title='Error' type='danger'>
-            No data is available.
-        </Notification>
-      )
+     throw error;
     }
   };
 

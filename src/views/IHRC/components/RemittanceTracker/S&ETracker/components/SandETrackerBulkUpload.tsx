@@ -548,6 +548,8 @@
   import { createNotice } from '@/store/slices/noticeTracker/noticeTrackerSlice';
   import * as yup from 'yup';
   import store from '@/store';
+import NoticeTypeAutosuggest from './NoticeTypeAutosuggest';
+import NoticeActAutosuggest from './NoticeActAutosuggest';
 
   interface SelectOption {
     value: string;
@@ -784,15 +786,6 @@
         const resultAction = await dispatch(createNotice(formData))
           .unwrap()
           .catch((error: any) => {
-            if (error.response?.data?.message) {
-              showErrorNotification(error.response.data.message);
-            } else if (error.message) {
-              showErrorNotification(error.message);
-            } else if (Array.isArray(error)) {
-              showErrorNotification(error);
-            } else {
-              showErrorNotification('An unexpected error occurred. Please try again.');
-            }
             throw error;
           });
 
@@ -904,15 +897,20 @@
               </div>
 
               <div className="grid grid-cols-2 gap-2">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Notice Type</label>
-                  <OutlinedSelect
-                    label="Select Notice Type"
-                    options={noticeTypeOptions}
-                    value={noticeTypeOptions.find(option => option.value === formData.noticeType)}
-                    onChange={(option) => handleChange('notice_type', option?.value || '')}
-                  />
-                </div>
+              <div className="space-y-2">
+                <NoticeTypeAutosuggest
+                  value={formData.notice_type}
+                  onChange={(value) => handleChange('notice_type', value)}
+                  onNoticeTypeSelect={(id) => {
+                    // If you need to store the ID separately
+                    setFormData(prev => ({
+                      ...prev,
+                      notice_type_id: id
+                    }));
+                  }}
+                  isDisabled={isLoading}
+                />
+              </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Notice Received on</label>
                   <DatePicker
@@ -935,13 +933,19 @@
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Notice related to which Act</label>
-                  <OutlinedInput
-                    label="Related Act"
-                    value={formData.related_act}
-                    onChange={(value) => handleChange('related_act', value)}
-                  />
-                </div>
+                <NoticeActAutosuggest
+                  value={formData.related_act}
+                  onChange={(value) => handleChange('related_act', value)}
+                  onNoticeActSelect={(id) => {
+                    // If you need to store the ID separately
+                    setFormData(prev => ({
+                      ...prev,
+                      notice_act_id: id
+                    }));
+                  }}
+                  isDisabled={isLoading}
+                />
+              </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Notice Copy (Mandatory)</label>
                   <Input

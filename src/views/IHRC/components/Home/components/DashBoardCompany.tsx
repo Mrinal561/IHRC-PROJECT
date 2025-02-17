@@ -125,7 +125,8 @@ const DashBoardCompany: React.FC<CompanyProps> = ({
               onCompanyChange(defaultCompany);
             }
           } else {
-            showNotification('info', 'No companies found for this group');
+            // showNotification('info', 'No companies found for this group');
+            console.log('no companies')
           }
         } else {
           setCompanies([]);
