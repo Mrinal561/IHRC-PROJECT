@@ -32,7 +32,9 @@ httpClient.interceptors.response.use(
         } else if (error.message.length) {
             showErrorNotification(error.message)
         } else {
-            showErrorNotification(error)
+            showErrorNotification(
+                error || 'Something went wrong ! Please try again !',
+            )
         }
         if (
             (error.response?.status === 401 &&
