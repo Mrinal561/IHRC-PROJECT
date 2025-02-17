@@ -3,6 +3,7 @@ import store from '@/store'
 // import { login } from '@/store/features/auth';
 // import { loginUser } from '@/store/features/auth/authSlice'
 import Cookies from 'js-cookie'
+import { showErrorNotification } from '@/components/ui/ErrorMessage'
 
 const httpClient = axios.create({
     // withCredentials: true,
@@ -26,6 +27,13 @@ httpClient.interceptors.request.use(function (config) {
 httpClient.interceptors.response.use(
     (response) => response,
     (error) => {
+        if (error.response?.data.message.length) {
+            showErrorNotification(error.response?.data.message)
+        } else if (error.message.length) {
+            showErrorNotification(error.message)
+        } else {
+            showErrorNotification(error)
+        }
         if (
             (error.response?.status === 401 &&
                 !error.request.responseURL.includes('companyadmin/profile')) ||
