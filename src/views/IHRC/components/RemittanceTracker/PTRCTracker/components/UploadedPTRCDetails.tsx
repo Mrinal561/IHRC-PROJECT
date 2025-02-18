@@ -129,8 +129,16 @@ const UploadedPTRCDetails: React.FC<UploadedPTDetailsProps> = ({ onBack }) => {
       },
       {
         header: 'Month',
+        enableSorting: false,
         accessorKey: 'payroll_month',
-        cell: (props) => <div className="w-28 truncate">{props.getValue() as string}</div>,
+        cell: (props) => {
+          const date = new Date(props.getValue() as string);
+          return (
+            <div className="w-28 truncate">
+              {date.toLocaleString('default', { month: 'long', year: 'numeric' })}
+            </div>
+          );
+        }
       },
       {
         header: 'Gross Salary',

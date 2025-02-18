@@ -87,7 +87,7 @@ const PFIWTrackerBulkUpload: React.FC<PFIWTrackerBulkUploadProps> = ({ onUploadC
     try {
       if (!file || !currentGroup) {
         toast.push(
-          <Notification title="Error" type="danger">
+          <Notification title="Error" type="danger" closable={true}>
             Please select a file and a month to upload
           </Notification>
         );

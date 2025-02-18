@@ -1080,9 +1080,9 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
       </div>
   
       <div className="space-y-2">
-        <p className="text-sm font-medium">Email <span className="text-red-500">*</span></p>
+        <p className="text-sm font-medium">Email ID<span className="text-red-500">*</span></p>
         <OutlinedInput
-          label="Enter Email"
+          label="Enter Email ID"
           value={formData.email}
           onChange={(value) => handleInputChange('email', value)}
         />

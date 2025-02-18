@@ -90,7 +90,7 @@ useEffect(() => {
     try {
       if (!file || !currentGroup) {
         toast.push(
-          <Notification title="Error" type="danger" duration={3000}>
+          <Notification title="Error" type="danger" closable={true}>
             Please select a file and a month to upload
           </Notification>
         );
@@ -111,7 +111,7 @@ useEffect(() => {
 
       if (res) {
         toast.push(
-          <Notification title="Success" type="success" duration={3000}>
+          <Notification title="Success" type="success" closable={true}>
             Upload successful!
           </Notification>
         );

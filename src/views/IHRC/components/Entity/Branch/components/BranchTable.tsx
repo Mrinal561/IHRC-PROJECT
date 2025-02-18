@@ -13,7 +13,7 @@ import OutlinedInput from '@/components/ui/OutlinedInput/OutlinedInput'
 import OutlinedSelect from '@/components/ui/Outlined'
 import DataTable, { ColumnDef } from '@/components/shared/DataTable'
 import { EntityData, entityDataSet } from '../../../../store/dummyEntityData'
-import { AppDispatch } from '@/store'
+import store, { AppDispatch } from '@/store'
 import { useDispatch, useSelector } from 'react-redux'
 import { BranchData } from '@/@types/branch'
 import { deleteBranch, fetchBranches } from '@/store/slices/branch/branchSlice'
@@ -50,7 +50,9 @@ const BranchTable: React.FC<BranchTableProps> = ({
     filterValues = {},
     onRefreshMethodAvailable,
 }) => {
-
+    const {login} = store.getState()
+    const agreement = login.user.user.moduleAccess;
+    const hasAgreementAccess = agreement.some(module => module.name === "Agreement");
     const [tableData, setTableData] = useState({
         total: 0,
     pageIndex: 1,
@@ -119,6 +121,7 @@ const BranchTable: React.FC<BranchTableProps> = ({
     }, [data])
 
     const handleDialogOk = async () => {
+        console.log(login,hasAgreementAccess)
         if (itemToDelete) {
             try {
                 const res = await dispatch(deleteBranch(itemToDelete)).unwrap();
@@ -266,24 +269,26 @@ const BranchTable: React.FC<BranchTableProps> = ({
                                 className="text-blue-500"
                             />
                         </Tooltip>
+                        {hasAgreementAccess && (
                         <Tooltip title="Agreements">
-                <Button
-                    size="sm"
-                    icon={<HiOutlineBookOpen />}
-                    onClick={() => {
-                        navigate('/agreements', {
-                            state: {
-                                branchId: row.original?.id,
-                                companyId: row.original?.Company?.id,
-                                companyName: row.original?.Company?.name,
-                                branchName: row.original?.name
-                            }
-                        })
-                    }}
-                >
+                            <Button
+                                size="sm"
+                                icon={<HiOutlineBookOpen />}
+                                onClick={() => {
+                                    navigate('/agreements', {
+                                        state: {
+                                            branchId: row.original?.id,
+                                            companyId: row.original?.Company?.id,
+                                            companyName: row.original?.Company?.name,
+                                            branchName: row.original?.name
+                                        }
+                                    })
+                                }}
+                            >
                     {/* Agreements */}
                 </Button>
             </Tooltip>
+                        )}
                         <Tooltip title="Delete">
                         <Button
                             size="sm"

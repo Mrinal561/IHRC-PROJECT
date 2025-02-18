@@ -92,7 +92,7 @@ const ESITrackerBulkUpload: React.FC<ESITrackerBulkUploadProps> = ({ onUploadCon
         try {      
             if (!file || !currentGroup) {
                 toast.push(
-                    <Notification title="Error" type="danger">
+                    <Notification title="Error" type="danger" closable={true}>
                         Please select a file and month to upload
                     </Notification>
                 );

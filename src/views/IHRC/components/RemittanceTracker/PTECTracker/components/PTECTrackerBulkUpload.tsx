@@ -88,7 +88,7 @@ const PTECTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({ onUploadCon
     try {      
       if (!file || !currentGroup) {
         toast.push(
-          <Notification title="Error" type="danger">
+          <Notification title="Error" type="danger" closable={true}>
             Please select a file to upload
           </Notification>
         );

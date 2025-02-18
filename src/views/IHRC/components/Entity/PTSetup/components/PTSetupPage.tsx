@@ -786,14 +786,14 @@ const PTSetupPage = () => {
                         />
                         {errors.password && (
                             <p className="text-red-500 text-xs mt-1">
-                                {errors.password}
+                                {errors.password}   
                             </p>
                         )}
                     </div>
                     <div>
-                        <p className="mb-2">Email</p>
+                        <p className="mb-2">Email ID</p>
                         <OutlinedInput
-                            label="Enter Email"
+                            label="Enter Email ID"
                             value={ptSetupData.email}
                             onChange={(value) =>
                                 handleInputChange('email', value)

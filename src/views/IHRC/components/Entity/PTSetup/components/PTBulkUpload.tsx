@@ -25,7 +25,7 @@ const PTBulkUpload: React.FC<LWFBulkUploadProps> = ({onUploadSuccess, companyId 
       
       if (!file) {
         toast.push(
-          <Notification title="Error" type="danger">
+          <Notification title="Error" type="danger" closable={true}>
             Please select a file to upload
           </Notification>
         );

@@ -444,10 +444,10 @@ const handleRemitModeChange = (option: { value: string; label: string } | null) 
   
           <div className="grid grid-cols-3 gap-4">
               <div className="flex flex-col gap-2">
-                  <label>  Email</label>
+                  <label>  Email ID</label>
                   <div className="w-full">
                       <OutlinedInput
-                          label="Enter Email"
+                          label="Enter Email ID"
                           value={formData.email}
                           onChange={(value) => handleChange('email', value)}
                       />
