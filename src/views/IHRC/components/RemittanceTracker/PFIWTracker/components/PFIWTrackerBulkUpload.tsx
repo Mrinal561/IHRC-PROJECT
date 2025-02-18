@@ -175,8 +175,8 @@ const PFIWTrackerBulkUpload: React.FC<PFIWTrackerBulkUploadProps> = ({ onUploadC
     } catch (error) {
       console.error('Download error:', error);
       toast.push(
-        <Notification title="Error" type="danger">
-          Failed to download template. Please try again.
+        <Notification title="Error" type="danger" closable={true}>
+          No PFIW Setup data found for your company
         </Notification>
       );
     }

@@ -126,7 +126,7 @@ const ConfigDropdown: React.FC<ConfigDropdownProps> = ({
   };
 
   const options = [
-    { key: 'Challan', label: 'Challan' },
+    { key: 'Return', label: 'Return' },
   ];
 
   const updateDropdownPosition = () => {

@@ -173,10 +173,11 @@ useEffect(() => {
     } catch (error) {
       console.error('Download error:', error);
       toast.push(
-        <Notification title="Error" type="danger">
-          Failed to download template. Please try again.
+        <Notification title="Error" type="danger" closable={true}>
+         No LWF Setup data found for your company
         </Notification>
       );
+      // throw error;
     }
   };
 

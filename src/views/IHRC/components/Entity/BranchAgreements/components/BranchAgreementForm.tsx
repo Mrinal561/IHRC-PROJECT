@@ -473,11 +473,11 @@ return (
 
               {/* Partner Contact */}
               <div className="space-y-2">
-              <label htmlFor="partnerContact">Partner Contact <span className="text-red-500">*</span></label>
+              <label htmlFor="partnerContact">Partner Contact No.<span className="text-red-500">*</span></label>
                 <Field name="partnerContact">
                   {({ field, form }) => (
                     <OutlinedInput
-                      label="Enter Partner Contact"
+                      label="Enter Partner Contact No."
                       value={field.value}
                       onChange={(value) => {
                         if (typeof value === 'string') {

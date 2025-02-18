@@ -73,6 +73,7 @@ const Bu: React.FC<BuProps> = ({ onUploadSuccess }) => {
       console.error('Upload error:', error);
     } finally {
       setIsUploading(false);
+      handleCancel()
     }
   };
 

@@ -27,6 +27,7 @@ httpClient.interceptors.request.use(function (config) {
 httpClient.interceptors.response.use(
     (response) => response,
     (error) => {
+        console.log(error)
         if (error.response?.data.message.length) {
             showErrorNotification(error.response?.data.message)
         } else if (error.message.length) {

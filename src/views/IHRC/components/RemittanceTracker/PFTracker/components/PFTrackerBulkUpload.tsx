@@ -189,10 +189,11 @@ useEffect(() => {
     } catch (error) {
       console.error('Download error:', error);
       toast.push(
-        <Notification title="Error" type="danger"  duration={3000}>
-          Failed to download template. Please try again.
+        <Notification title="Error" type="danger" closable={true}>
+         No PF Setup data found for your company
         </Notification>
       );
+      // throw error;
     }
   };
 

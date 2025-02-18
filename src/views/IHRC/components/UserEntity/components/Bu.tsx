@@ -66,6 +66,7 @@ const Bu: React.FC<BulkUploadProps> = ({
       console.error('Upload error:', error);
     } finally {
       setIsUploading(false);
+      handleCancel()
     }
   };
 

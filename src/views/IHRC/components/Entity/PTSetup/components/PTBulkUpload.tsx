@@ -62,14 +62,11 @@ const PTBulkUpload: React.FC<LWFBulkUploadProps> = ({onUploadSuccess, companyId 
         }
       }
     } catch (error) {
-      toast.push(
-        <Notification title="Error" type="danger">
-          {error.response?.data?.message}
-        </Notification>
-      );
+      throw error;
       console.error('Upload error:', error);
     } finally {
       setIsUploading(false);
+      handleCancel()
     }
   };
 
@@ -96,11 +93,12 @@ const PTBulkUpload: React.FC<LWFBulkUploadProps> = ({onUploadSuccess, companyId 
       document.body.removeChild(link);
     } catch (error) {
       console.error('Download error:', error);
-      toast.push(
-        <Notification title="Error" type="danger">
-          Failed to download template. Please try again.
-        </Notification>
-      );
+      // toast.push(
+      //   <Notification title="Error" type="danger">
+      //     Failed to download template. Please try again.
+      //   </Notification>
+      // );
+      throw error;
     }
   };
 

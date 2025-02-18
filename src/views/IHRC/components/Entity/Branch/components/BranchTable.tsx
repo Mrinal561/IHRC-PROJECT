@@ -89,6 +89,14 @@ const BranchTable: React.FC<BranchTableProps> = ({
     const [branchTableData, setBranchTableData] = useState([])
 
     useEffect(() => {
+        if (onRefreshMethodAvailable) {
+            onRefreshMethodAvailable(() => {
+                fetchBranchData(1, tableData.pageSize)
+            })
+        }
+    }, [onRefreshMethodAvailable])
+    
+    useEffect(() => {
         // Generate unique options for all fields
         const uniqueCompanyGroups = Array.from(
             new Set(
