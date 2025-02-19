@@ -249,6 +249,7 @@ const SEDashboardCount = () => {
                 loading={false}
                 stickyHeader={true}
                 selectable={false}
+                showPageSizeSelector={false} 
             />
         </div>
     );

@@ -377,6 +377,7 @@ type DataTableProps<T> = {
     stickyHeader?: boolean
     stickyFirstColumn?: boolean
     stickyLastColumn?: boolean
+    showPageSizeSelector?: boolean 
 }
 
 export type DataTableResetHandle = {
@@ -404,6 +405,7 @@ function _DataTable<T>(
             pageIndex: 1,
             pageSize: 10,
         },
+        showPageSizeSelector = true, 
     } = props
 
     const { pageSize, pageIndex, total } = pagingData
@@ -627,6 +629,7 @@ function _DataTable<T>(
                     </Table>
                 </div>
             </div>
+            {showPageSizeSelector && (
             <div className="flex items-center justify-between mt-4">
                 <Pagination
                     pageSize={pageSize}
@@ -634,6 +637,7 @@ function _DataTable<T>(
                     total={total}
                     onChange={handlePaginationChange}
                 />
+                 
                 <div className="relative" style={{ minWidth: 130 }}>
                     <div className="relative ">
                         <Select
@@ -651,6 +655,7 @@ function _DataTable<T>(
                     </div>
                 </div>
             </div>
+                )}
         </Loading>
     )
 }

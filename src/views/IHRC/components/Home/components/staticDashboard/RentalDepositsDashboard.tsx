@@ -227,6 +227,7 @@ const RentalDepositsDashboard = () => {
                 loading={false}
                 stickyHeader={true}
                 selectable={false}
+                showPageSizeSelector={false} 
             />
         </div>
     );

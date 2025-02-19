@@ -6,7 +6,7 @@ import type { ColumnDef } from '@/components/shared/DataTable';
 // Virtual Agreement Table Component
 const VirtualAgreement = () => {
     const agreementData = [
-        { name: 'Total Agreements', value: '200' },
+        { name: 'Total Agreement', value: '200' },
         { name: 'Valid Agreement', value: '80' },
         { name: 'Expired Agreement', value: '120' },
     ];
@@ -20,7 +20,7 @@ const VirtualAgreement = () => {
                     const value = props.getValue() as string;
                     return (
                         <Tooltip title={value} placement="top">
-                            <div className="w-48 truncate">
+                            <div className="w-28 truncate">
                                 {value.length > 30 ? value.substring(0, 30) + '...' : value}
                             </div>
                         </Tooltip>
@@ -34,7 +34,7 @@ const VirtualAgreement = () => {
                     const value = props.getValue() as string;
                     return (
                         <Tooltip title={value} placement="top">
-                            <div className="w-32 truncate">
+                            <div className="w-auto truncate">
                                 {value.length > 18 ? value.substring(0, 18) + '...' : value}
                             </div>
                         </Tooltip>
@@ -55,6 +55,7 @@ const VirtualAgreement = () => {
                 loading={false}
                 stickyHeader={true}
                 selectable={false}
+                showPageSizeSelector={false} 
             />
         </div>
     );

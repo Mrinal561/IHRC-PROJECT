@@ -55,6 +55,7 @@ import type { ColumnDef } from '@/components/shared/DataTable';
                 loading={false}
                 stickyHeader={true}
                 selectable={false}
+                showPageSizeSelector={false} 
             />
         </div>
     );
