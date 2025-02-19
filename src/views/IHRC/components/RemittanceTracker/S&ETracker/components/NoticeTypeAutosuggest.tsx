@@ -30,7 +30,7 @@ const NoticeTypeAutosuggest = ({
   const fetchAllNoticeTypes = async () => {
     setIsLoading(true);
     try {
-      const { data } = await httpClient.get(endpoints.common.noticeTypeSuggestions());
+      const { data } = await httpClient.get(endpoints.noticeTracker.noticeTypeSuggestions());
       const noticeTypesData = Array.isArray(data) ? data : [data];
       setNoticeTypes(noticeTypesData);
       setFilteredNoticeTypes(noticeTypesData);
@@ -56,7 +56,7 @@ const NoticeTypeAutosuggest = ({
 
       setIsLoading(true);
       try {
-        const { data } = await httpClient.get(endpoints.common.noticeTypeSuggestions(), {
+        const { data } = await httpClient.get(endpoints.noticeTracker.noticeTypeSuggestions(), {
           params: { search: value }
         });
         const noticeTypesData = Array.isArray(data) ? data : [data];
@@ -77,7 +77,7 @@ const NoticeTypeAutosuggest = ({
 
     setIsCreating(true);
     try {
-      const { data } = await httpClient.post(endpoints.common.createNoticeType(), {
+      const { data } = await httpClient.post(endpoints.noticeTracker.createNoticeType(), {
         notice_type: noticeTypeName
       });
       

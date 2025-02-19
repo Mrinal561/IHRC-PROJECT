@@ -34,10 +34,7 @@ export const endpoints = {
         createSubCategory: () => api('/subcategory'),
         agreementTypeSuggestions: () => api('/agreement-type-suggestions'),
         createAgreementType: () => api('/agreement-type'),
-        createNoticeType:()=> api(`/notice-type`),
-        noticeTypeSuggestions:() => api(`/notice-type`),
-        createNoticeActType:() => api(`/notice-act`),
-        noticeActSuggestions:() => api(`//notice-act`),
+       
 
     },
     user: {
@@ -220,7 +217,17 @@ export const endpoints = {
         update: (id:any) => api(`/companyadmin/noticetracker/${id}`),
         list:()=> api('companyadmin/noticetracker'),
         detail: (id:any) => api(`/companyadmin/noticetracker/${id}`),
-        delete: (id:any) => api(`/companyadmin/noticetracker/${id}`)
+        delete: (id:any) => api(`/companyadmin/noticetracker/${id}`),
+        timeline: (id: any) => api(`/companyadmin/noticeTracker/timeline/${id}`),
+        noticeReply: (id: any) => api(`/companyadmin/noticeTracker/reply/${id}`),
+        createNoticeType:()=> api(`/companyadmin/noticeTracker/notice-type`),
+        noticeTypeSuggestions:() => api(`/companyadmin/noticeTracker/notice-type`),
+        createNoticeActType:() => api(`/companyadmin/noticeTracker/notice-act`),
+        noticeActSuggestions:() => api(`/companyadmin/noticeTracker/notice-act`),
+        noticeStatusSuggestions: () => api(`/companyadmin/noticeTracker/status`),
+        createNoticeStatusSuggestions: () => api(`/companyadmin/noticeTracker/status`),
+        noticeCriticalitySuggestion: () => api(`/companyadmin/noticeTracker/criticality`),
+        createNoticeCriticalitySuggestion: () => api(`/companyadmin/noticeTracker/criticality`)
     },
     permission:{
         approve:(id:any)=> api(`companyadmin/company/tracker-edit-permission/${id}`)
