@@ -572,7 +572,7 @@ export const protectedRoutes = [
     },
     {
         key: 'noticeTracker.response',
-        path: '/notice-tracker/response',
+        path: '/notice-tracker/response/:noticeId',
         component: lazy(
             () =>
                 import(
@@ -583,7 +583,7 @@ export const protectedRoutes = [
     },
     {
         key: 'noticeTracker.replyHistory',
-        path: '/notice-tracker/replyhistory',
+        path: '/notice-tracker/replyhistory/:noticeId',
         component: lazy(
             () =>
                 import(

@@ -30,7 +30,7 @@ const NoticeActAutosuggest = ({
   const fetchAllNoticeActs = async () => {
     setIsLoading(true);
     try {
-      const { data } = await httpClient.get(endpoints.common.noticeActSuggestions());
+      const { data } = await httpClient.get(endpoints.noticeTracker.noticeActSuggestions());
       const noticeActsData = Array.isArray(data) ? data : [data];
       setNoticeActs(noticeActsData);
       setFilteredNoticeActs(noticeActsData);
@@ -56,7 +56,7 @@ const NoticeActAutosuggest = ({
 
       setIsLoading(true);
       try {
-        const { data } = await httpClient.get(endpoints.common.noticeActSuggestions(), {
+        const { data } = await httpClient.get(endpoints.noticeTracker.noticeActSuggestions(), {
           params: { search: value }
         });
         const noticeActsData = Array.isArray(data) ? data : [data];
@@ -77,7 +77,7 @@ const NoticeActAutosuggest = ({
 
     setIsCreating(true);
     try {
-      const { data } = await httpClient.post(endpoints.common.createNoticeActType(), {
+      const { data } = await httpClient.post(endpoints.noticeTracker.createNoticeActType(), {
         notice_act: noticeActName
       });
       

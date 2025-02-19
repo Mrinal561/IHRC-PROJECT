@@ -183,6 +183,16 @@ const NoticeTrackerTable: React.FC<NoticeTrackerTableProps> = ({
         },
       },
       {
+        header: 'Status',
+        enableSorting: false,
+        accessorKey: 'status',
+        cell: (props) => (
+          <div className="w-32 truncate capitalize">
+            {(props.getValue() as string).replace(/_/g, ' ')}
+          </div>
+        ),
+      },
+      {
         header: 'Actions',
         id: 'actions',
         cell: ({ row }) => (
@@ -209,7 +219,7 @@ const NoticeTrackerTable: React.FC<NoticeTrackerTableProps> = ({
              <Tooltip title="Add Reply">
           <Button
             size="sm"
-            onClick={() => navigate(`/notice-tracker/response`)} 
+            onClick={() => navigate(`/notice-tracker/response/${row.original.id}`)}
             icon={<FaComments />}
 
           />
@@ -217,7 +227,7 @@ const NoticeTrackerTable: React.FC<NoticeTrackerTableProps> = ({
         <Tooltip title="View Reply">
           <Button
             size="sm"
-            onClick={() => navigate(`/notice-tracker/replyhistory`)} 
+            onClick={() => navigate(`/notice-tracker/replyhistory/${row.original.id}`)} 
             icon={<FaEye />}
           />
         </Tooltip>
