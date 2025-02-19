@@ -468,7 +468,8 @@ const NoticeTimelinePage = () => {
                             <div className="my-1">
                                 <div className="flex items-center mb-2">
                                     <span className="font-semibold text-gray-900 dark:text-gray-100">
-                                        {response.respondedBy}
+                                        {response.respondedBy === "" ? "Admin" : response.respondedBy}
+                                        
                                     </span>
                                     <span className="mx-2">has replied on</span>
                                     <span className="text-gray-600">
