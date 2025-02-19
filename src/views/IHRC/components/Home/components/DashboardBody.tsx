@@ -233,6 +233,11 @@ import Alerts from './staticDashboard/Alreat'
 import TableFilter from '../../Registers&Return/input/SalaryRegister/components/TableFilter'
 import RemittanceStatus from './staticDashboard/RemittenceStatus'
 import Updateds from './staticDashboard/Updates'
+import VirtualAgreement from './staticDashboard/VirtualAgreement'
+import BranchOwnership from './staticDashboard/BranchOwnership'
+import BranchTypes from './staticDashboard/BranchTypes'
+import ComplianceStatusPie from './staticDashboard/ComplianceStatusPie'
+import ComplianceStatus from './staticDashboard/ComplianceStatus'
 
 interface DashboardBodyProps {
     companyId: string | number
@@ -299,7 +304,7 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <h2 className="text-xl font-semibold mb-4">
-                            Branch Statistics
+                            Branch Status
                         </h2>
                         <BranchesDashboardCount />
                     </div>
@@ -316,23 +321,40 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <h2 className="text-xl font-semibold mb-4">
-                            Rent Agreements
+                            Rent Agreement Status
                         </h2>
                         <AgreementsDashboardCount />
                     </div>
 
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <h2 className="text-xl font-semibold mb-4">
-                            Agreements
+                            Physical Branch Agreement Status
                         </h2>
                         <RentalDepositsDashboard />
                     </div>
                 </div>
 
                 {/* Notice Board */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="bg-white p-4 rounded-lg border shadow-sm">
-                    <h2 className="text-xl font-semibold mb-4">Notice Board</h2>
+                    <h2 className="text-xl font-semibold mb-4">Notice Status</h2>
                     <NoticesDashboard />
+                </div>
+                <div className="bg-white p-4 rounded-lg border shadow-sm">
+                    <h2 className="text-xl font-semibold mb-4">Virtual Agreement Status</h2>
+                    <VirtualAgreement />
+                </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-white p-4 rounded-lg border shadow-sm">
+                    <h2 className="text-xl font-semibold mb-4"> Branch Ownership Type</h2>
+                    <BranchOwnership />
+                </div>
+                <div className="bg-white p-4 rounded-lg border shadow-sm">
+                    <h2 className="text-xl font-semibold mb-4"> Branch Types</h2>
+                    <BranchTypes />
+                </div>
                 </div>
 
                 {/* Revenue Stacked Column and Compliance Calendar - Side by Side */}
@@ -399,7 +421,7 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="bg-white p-4 rounded-lg border shadow-sm">
                             <h2 className="text-xl font-semibold mb-4">
-                                Branch Statistics
+                                Branch Status
                             </h2>
                             <BranchesDashboardCount />
                         </div>
@@ -413,25 +435,51 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
 
                         <div className="bg-white p-4 rounded-lg border shadow-sm">
                             <h2 className="text-xl font-semibold mb-4">
-                                Rent Agreements
+                                Rent Agreement Status
                             </h2>
                             <AgreementsDashboardCount />
                         </div>
 
                         <div className="bg-white p-4 rounded-lg border shadow-sm">
                             <h2 className="text-xl font-semibold mb-4">
-                                Agreements
+                            Physical Branch Agreement Status
                             </h2>
                             <RentalDepositsDashboard />
                         </div>
-
-                        <div className="bg-white p-4 rounded-lg border shadow-sm col-span-2">
+                        <div className="bg-white p-4 rounded-lg border shadow-sm">
                             <h2 className="text-xl font-semibold mb-4">
-                                Notice Board
+                            Virtual Branch Agreement Status
+                            </h2>
+                            <VirtualAgreement />
+                        </div>
+
+
+                        <div className="bg-white p-4 rounded-lg border shadow-sm">
+                            <h2 className="text-xl font-semibold mb-4">
+                                Notice Status
                             </h2>
                             <NoticesDashboard />
                         </div>
 
+                        <div className="bg-white p-4 rounded-lg border shadow-sm">
+                            <h2 className="text-xl font-semibold mb-4">
+                                Branch Ownership Type
+                            </h2>
+                            <BranchOwnership />
+                        </div>
+                        <div className="bg-white p-4 rounded-lg border shadow-sm">
+                            <h2 className="text-xl font-semibold mb-4">
+                                Branch Types
+                            </h2>
+                            <BranchTypes />
+                        </div>
+
+                        <div className="bg-white p-4 rounded-lg border shadow-sm">
+                            <ComplianceStatusPie />
+                        </div>
+                        <div className="bg-white p-4 rounded-lg border shadow-sm">
+                            <ComplianceStatus />
+                        </div>
                         <div className="bg-white p-4 rounded-lg border shadow-sm col-span-2">
                             <RevenueStackedColumn />
                         </div>

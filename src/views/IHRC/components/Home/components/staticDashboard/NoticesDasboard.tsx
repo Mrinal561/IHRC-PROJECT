@@ -10,7 +10,7 @@ const StatisticCard = ({ icon, bgColor, title, value }) => {
         })}
       </div>
       <div className="flex-1 min-w-0"> {/* Add flex-1 and min-w-0 to allow truncation */}
-        <h3 className="font-semibold text-sm text-white whitespace-nowrap overflow-hidden text-ellipsis">
+        <h3 className="font-semibold text-sm text-white">
           {title}
         </h3>
         <p className="font-medium opacity-90">{value}</p>
@@ -43,7 +43,7 @@ const NoticesDashboard = () => {
       },
      
       {
-        title: 'Notice Under Process',
+        title: 'Under Process',
         value: '10',
         icon: (
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28">
@@ -66,9 +66,16 @@ const NoticesDashboard = () => {
   
     return (
       <div className="space-y-4">
-        <div className="flex flex-wrap gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {noticesStatistics.map((stat, index) => (
-            <div key={index} className="flex-1 min-w-[240px]">
+             <div 
+             key={index} 
+             className={`
+               ${noticesStatistics.length % 2 === 1 && index === noticesStatistics.length - 1 
+                 ? "md:col-span-2" 
+                 : ""}
+             `}
+           >
               <StatisticCard
                 icon={stat.icon}
                 bgColor={stat.bgColor}
