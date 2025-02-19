@@ -4,7 +4,7 @@ const ComplianceStatus = () => {
     return (
         <Chart
             options={{
-                colors: ['#a78bfa', '#3b82f6', '#15803d', '#6d28d9'],  // Light Violet, Blue, Deep Green, Deep Violet
+                colors: ['#15803d', '#dc2626', '#f97316', '#a78bfa'],
                 labels: ['Complied', 'Not Complied', 'Complied with Delay', 'Not Applicable'],
                 legend: {
                     position: 'top',  // Move legend to the top
