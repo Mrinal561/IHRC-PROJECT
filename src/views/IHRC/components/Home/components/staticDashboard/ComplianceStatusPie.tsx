@@ -35,7 +35,7 @@ const ComplianceStatusPie = () => {
                 }
             }}
             series={[35, 40, 15, 10]}  // Updated, Not Yet Due, Closer Due, Overdue
-            height={400}
+            height={300}
             type="pie"
         />
     )

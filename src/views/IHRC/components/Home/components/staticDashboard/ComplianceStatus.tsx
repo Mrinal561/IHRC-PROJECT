@@ -36,7 +36,7 @@ const ComplianceStatus = () => {
                 }
             }}
             series={[45, 20, 15, 10]}  // Complied, Not Complied, Complied with Delay, Not Applicable
-            height={400}  // Increased height
+            height={300}  // Increased height
             type="pie"
         />
     );

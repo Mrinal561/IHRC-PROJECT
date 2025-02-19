@@ -1,59 +1,89 @@
-import React from 'react'
-import Chart from 'react-apexcharts'
-import { COLORS } from '@/constants/chart.constant'
 
-const ComplinceStatus = ({
-    year = '2024',
-    Updated = 2000,
-    not_yet_due = 300,
-    Over_Due = 500,
-}) => {
-    const totalAmount = Updated + not_yet_due + Over_Due
+import React, { useState } from 'react';
+import Chart from 'react-apexcharts';
+import { COLORS } from '@/constants/chart.constant';
+import OutlinedSelect from '@/components/ui/Outlined/Outlined'
+
+const ComplinceStatus = ({ year = '2024', mainTotal = 500000, arrearTotal = 180000, damageTotal = 90000 }) => {
+    const totalAmount = mainTotal + arrearTotal + damageTotal;
 
     // Data series and labels
-    const series = [Updated, not_yet_due, Over_Due]
-    const labels = ['Updated', 'Not Yet Due', 'Over Due']
+    const series = [mainTotal, arrearTotal, damageTotal];
+    const labels = ['Main', 'Arrear', 'Damage'];
+
+    // State for filters
+    const [selectedCodeType, setSelectedCodeType] = useState('');
+    const [selectedMonth, setSelectedMonth] = useState('');
+
+    // Options for the filters
+    const codeTypeOptions = [
+        { value: 'esi', label: 'ESI' },
+        { value: 'pf', label: 'PF' },
+        { value: 'pt', label: 'PT' },
+        { value: 'lwf', label: 'LWF' },
+    ];
+
+    const monthOptions = [
+        { value: 'january', label: 'January' },
+        { value: 'february', label: 'February' },
+        { value: 'march', label: 'March' },
+        { value: 'april', label: 'April' },
+        { value: 'may', label: 'May' },
+        { value: 'june', label: 'June' },
+        { value: 'july', label: 'July' },
+        { value: 'august', label: 'August' },
+        { value: 'september', label: 'September' },
+        { value: 'october', label: 'October' },
+        { value: 'november', label: 'November' },
+        { value: 'december', label: 'December' },
+    ];
+
+    // Handlers for filter changes
+    const handleCodeTypeChange = (value) => {
+        setSelectedCodeType(value);
+        // Add logic to filter data based on code type
+    };
+
+    const handleMonthChange = (value) => {
+        setSelectedMonth(value);
+        // Add logic to filter data based on month
+    };
 
     return (
         <div className="flex flex-col items-center">
-            <h2 className="text-lg font-semibold mb-2">
-                Compliance Tool {year}
-            </h2>
+            <h2 className="text-lg font-semibold mb-2">PF Revenue Breakdown for {year}</h2>
             <Chart
                 options={{
                     colors: COLORS,
                     labels: labels,
                     legend: {
                         position: 'bottom',
-                        formatter: function (val, opts) {
-                            const percent =
-                                (opts.w.globals.series[opts.seriesIndex] /
-                                    totalAmount) *
-                                100
-                            return `${val}: ${percent.toFixed(1)}%`
-                        },
+                        formatter: function(val, opts) {
+                            const percent = opts.w.globals.series[opts.seriesIndex] / totalAmount * 100;
+                            return `${val}: ${percent.toFixed(1)}%`;
+                        }
                     },
                     plotOptions: {
                         pie: {
                             donut: {
                                 labels: {
                                     show: true,
-                                },
-                            },
-                        },
+                                }
+                            }
+                        }
                     },
                     dataLabels: {
                         enabled: true,
-                        formatter: function (val) {
-                            return val.toFixed(1) + '%'
-                        },
+                        formatter: function(val) {
+                            return val.toFixed(1) + "%";
+                        }
                     },
                     tooltip: {
                         y: {
-                            formatter: function (val) {
-                                return val.toLocaleString()
-                            },
-                        },
+                            formatter: function(val) {
+                                return val.toLocaleString();
+                            }
+                        }
                     },
                     responsive: [
                         {
@@ -84,7 +114,7 @@ const ComplinceStatus = ({
                 ))}
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default ComplinceStatus
+export default ComplinceStatus;

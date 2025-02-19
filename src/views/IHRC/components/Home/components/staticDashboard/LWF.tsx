@@ -4,7 +4,7 @@ import Chart from 'react-apexcharts';
 import { COLORS } from '@/constants/chart.constant';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined'
 
-const ComplinceStatus = ({ year = '2024', mainTotal = 500000, arrearTotal = 180000, damageTotal = 90000 }) => {
+const LWf = ({ year = '2024', mainTotal = 500000, arrearTotal = 180000, damageTotal = 90000 }) => {
     const totalAmount = mainTotal + arrearTotal + damageTotal;
 
     // Data series and labels
@@ -51,8 +51,7 @@ const ComplinceStatus = ({ year = '2024', mainTotal = 500000, arrearTotal = 1800
 
     return (
         <div className="flex flex-col items-center">
-
-            <h2 className="text-lg font-semibold mb-2">PT Revenue Breakdown for {year}</h2>
+            <h2 className="text-lg font-semibold mb-2">LWF Revenue Breakdown for {year}</h2>
             <Chart
                 options={{
                     colors: COLORS,
@@ -118,4 +117,4 @@ const ComplinceStatus = ({ year = '2024', mainTotal = 500000, arrearTotal = 1800
     );
 };
 
-export default ComplinceStatus;
+export default LWf;

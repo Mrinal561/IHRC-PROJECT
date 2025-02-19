@@ -275,47 +275,6 @@ const RemittanceStatus = () => {
                     )
                 },
             },
-            // {
-            //     header: 'Status',
-            //     accessorKey: 'status',
-            //     cell: (props) => {
-            //         const value = props.getValue() as string
-            //         return (
-            //             <Tooltip title={value} placement="top">
-            //                 <div className="w-32 truncate">
-            //                     {value.length > 18
-            //                         ? value.substring(0, 18) + '...'
-            //                         : value}
-            //                 </div>
-            //             </Tooltip>
-            //         )
-            //     },
-            // },
-            // {
-            //     header: 'Actions',
-            //     id: 'actions',
-            //     cell: ({ row }) => {
-            //         return (
-            //             <div className='flex gap-2'>
-            //                 <Tooltip title="View Uploaded Salary Register" placement="top">
-            //                     <Button
-            //                         size="sm"
-            //                         icon={<RiEyeLine />}
-            //                         className='hover:bg-transparent'
-            //                     />
-            //                 </Tooltip>
-            //                 <Tooltip title="Download Uploaded Salary Register" placement="top">
-            //                     <Button
-            //                         size="sm"
-            //                         icon={<HiDownload />}
-            //                         onClick={DownloadNotification}
-            //                         className='hover:bg-transparent'
-            //                     />
-            //                 </Tooltip>
-            //             </div>
-            //         );
-            //     },
-            // },
         ],
         [],
     )

@@ -19,7 +19,7 @@ const Updateds = () => {
         <div className="max-w-[700px]">
             <div className="flex justify-between items-center mb-6">
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                    Latest Updateds
+                    Latest Updates
                 </h2>
                 <button className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100">
                     View All

@@ -242,6 +242,7 @@ import NoticeStatusPie from './staticDashboard/NoticeStatusPie'
 import RemittanceBreakup from './staticDashboard/RemittanceBreakup'
 import RegistrationsBreakup from './staticDashboard/RegistrationBreakup'
 import RegistrationBreakup from './staticDashboard/RegistrationBreakup'
+import LWF from './staticDashboard/LWF'
 
 interface DashboardBodyProps {
     companyId: string | number
@@ -378,29 +379,32 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="bg-white p-4 rounded-lg border shadow-sm col-span-2">
-                    <RevenueStackedColumn />
+                    <RegistrationBreakup />
                 </div>
                 </div>
 
                 {/* Revenue Stacked Column and Compliance Calendar - Side by Side */}
-                <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-6">
-                    <div className="bg-white p-4 rounded-lg border shadow-sm">
+                <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr] gap-6">
+                    {/* <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <RegistrationBreakup />
+                    </div> */}
+                     <div className="bg-white p-4 rounded-lg border shadow-sm">
+                        <AnnualRevenueDonut />
                     </div>
-
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
-                        <ComplianceCalendar />
+                        <ComplinceTool />
                     </div>
+                   
                 </div>
 
                 {/* Payment Date Comparison */}
                 <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-6">
-                    <div className="bg-white p-4 rounded-lg border shadow-sm">
+                    {/* <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <PaymentDateComparison />
-                    </div>
-                    <div className="bg-white p-4 rounded-lg border shadow-sm">
+                    </div> */}
+                    {/* <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <Alerts />
-                    </div>
+                    </div> */}
                 </div>
                 {/* <div className="bg-white p-4 rounded-lg border shadow-sm">
                     <h2 className="text-xl font-semibold mb-4">
@@ -411,25 +415,21 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
 
                 {/* Notices */}
 
-                <div className="bg-white p-4 rounded-lg border shadow-sm">
+                {/* <div className="bg-white p-4 rounded-lg border shadow-sm">
                     <Notices />
-                </div>
+                </div> */}
 
                 {/* Challan Upload Counts and Annual Revenue Donut - Side by Side */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="bg-white p-4 rounded-lg border shadow-sm">
+                    {/* <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <ChallanUploadCounts />
-                    </div>
+                    </div> */}
 
-                    <div className="bg-white p-4 rounded-lg border shadow-sm">
-                        <AnnualRevenueDonut />
-                    </div>
-
-                    <div className="bg-white p-4 rounded-lg border shadow-sm">
-                        <ComplinceTool />
-                    </div>
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <ComplinceStatus />
+                    </div>
+                    <div className="bg-white p-4 rounded-lg border shadow-sm">
+                        <ComplianceCalendar />
                     </div>
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <Updateds />
@@ -440,133 +440,104 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
     } else {
         // Original layout when sidebar is collapsed
         return (
-            <div className="flex flex-col lg:flex-row gap-6 mt-6">
-                {/* Main content area */}
-                <div className="flex-1">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="bg-white p-4 rounded-lg border shadow-sm">
-                            <h2 className="text-xl font-semibold mb-4">
-                                Branch Status
-                            </h2>
-                            <BranchesDashboardCount />
-                        </div>
-
-                        <div className="bg-white p-4 rounded-lg border shadow-sm">
-                            <h2 className="text-xl font-semibold mb-4">
-                                S&E Registration Status
-                            </h2>
-                            <SEDashboardCount />
-                        </div>
-
-                        <div className="bg-white p-4 rounded-lg border shadow-sm">
-                            <h2 className="text-xl font-semibold mb-4">
-                                Rent Agreement Status
-                            </h2>
-                            <AgreementsDashboardCount />
-                        </div>
-
-                        <div className="bg-white p-4 rounded-lg border shadow-sm">
-                            <h2 className="text-xl font-semibold mb-4">
-                            Physical Branch Agreement Status
-                            </h2>
-                            <RentalDepositsDashboard />
-                        </div>
-                        <div className="bg-white p-4 rounded-lg border shadow-sm">
-                            <h2 className="text-xl font-semibold mb-4">
-                            Virtual Branch Agreement Status
-                            </h2>
-                            <VirtualAgreement />
-                        </div>
-
-
-                        <div className="bg-white p-4 rounded-lg border shadow-sm">
-                            <h2 className="text-xl font-semibold mb-4">
-                                Notice Status
-                            </h2>
-                            <NoticesDashboard />
-                        </div>
-
-                        <div className="bg-white p-4 rounded-lg border shadow-sm">
-                            <h2 className="text-xl font-semibold mb-4">
-                                Branch Ownership Type
-                            </h2>
-                            <BranchOwnership />
-                        </div>
-                        <div className="bg-white p-4 rounded-lg border shadow-sm">
-                            <h2 className="text-xl font-semibold mb-4">
-                                Branch Types
-                            </h2>
-                            <BranchTypes />
-                        </div>
-
-                        <div className="bg-white p-4 rounded-lg border shadow-sm">
-                            <ComplianceStatusPie />
-                        </div>
-                        <div className="bg-white p-4 rounded-lg border shadow-sm">
-                            <ComplianceStatus />
-                        </div>
-                        <div className="bg-white p-4 rounded-lg border shadow-sm">
-                            <NoticeStatusPie />
-                        </div>
-                        <div className="bg-white p-4 rounded-lg border shadow-sm">
-                            <RemittanceBreakup />
-                        </div>
-                        <div className="bg-white p-4 rounded-lg border shadow-sm col-span-2">
-                            <RegistrationBreakup />
-                        </div>
-                        <div className="bg-white p-4 rounded-lg border shadow-sm col-span-2">
-                            <RevenueStackedColumn />
-                        </div>
+            <div className="flex flex-col gap-6 mt-6">
+                {/* First Row */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div className="bg-white p-4 rounded-lg border shadow-sm">
+                        <h2 className="text-xl font-semibold mb-4">Branch Status</h2>
+                        <BranchesDashboardCount />
                     </div>
-
-                    {/* Payment Date Comparison - Full Width */}
-                    <div className="bg-white p-4 rounded-lg border shadow-sm mt-6">
-                        <h2 className="text-xl font-semibold mb-4">
-                            Payment Date Analysis
-                        </h2>
-                        <PaymentDateComparison />
+            
+                    <div className="bg-white p-4 rounded-lg border shadow-sm">
+                        <h2 className="text-xl font-semibold mb-4">S&E Registration Status</h2>
+                        <SEDashboardCount />
                     </div>
-
-                    <div className="bg-white p-4 rounded-lg border shadow-sm mt-6">
-                        <h2 className="text-xl font-semibold mb-4">
-                            Remittances Status{' '}
-                        </h2>
-                        <RemittanceStatus />
+            
+                    <div className="bg-white p-4 rounded-lg border shadow-sm">
+                        <h2 className="text-xl font-semibold mb-4">Rent Agreement Status</h2>
+                        <AgreementsDashboardCount />
                     </div>
-                    {/* <div className="bg-white p-4 rounded-lg border shadow-sm mt-6">
-                        <ComplinceStatus />
-                    </div> */}
+            
+                    <div className="bg-white p-4 rounded-lg border shadow-sm">
+                        <h2 className="text-xl font-semibold mb-4">Physical Branch Agreement Status</h2>
+                        <RentalDepositsDashboard />
+                    </div>
                 </div>
-
-                {/* Right sidebar for Notices timeline */}
-                <div className="lg:w-[380px] flex-shrink-0">
-                    <div className="bg-white p-4 rounded-lg border shadow-sm mb-6">
-                        <ComplianceCalendar />
+            
+                {/* Second Row */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div className="bg-white p-4 rounded-lg border shadow-sm">
+                        <h2 className="text-xl font-semibold mb-4">Virtual Branch Agreement Status</h2>
+                        <VirtualAgreement />
                     </div>
-                    <div className="bg-white p-4 rounded-lg border shadow-sm mb-6">
-                        <Alerts />
+            
+                    <div className="bg-white p-4 rounded-lg border shadow-sm">
+                        <h2 className="text-xl font-semibold mb-4">Notice Status</h2>
+                        <NoticesDashboard />
                     </div>
-                    <div className="bg-white p-4 rounded-lg border shadow-sm mb-6">
-                        <Notices />
+            
+                    <div className="bg-white p-4 rounded-lg border shadow-sm">
+                        <h2 className="text-xl font-semibold mb-4">Branch Ownership Type</h2>
+                        <BranchOwnership />
                     </div>
-                    <div className="bg-white p-4 rounded-lg border shadow-sm mb-6">
+            
+                    <div className="bg-white p-4 rounded-lg border shadow-sm">
+                        <h2 className="text-xl font-semibold mb-4">Branch Types</h2>
+                        <BranchTypes />
+                    </div>
+                </div>
+            
+                {/* Third Row */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="bg-white p-4 rounded-lg border shadow-sm">
+                        <ComplianceStatusPie />
+                    </div>
+                    <div className="bg-white p-4 rounded-lg border shadow-sm">
+                        <ComplianceStatus />
+                    </div>
+                    <div className="bg-white p-4 rounded-lg border shadow-sm">
+                        <NoticeStatusPie />
+                    </div>
+                    
+                </div>
+            
+                {/* Fourth Row */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div className="bg-white p-4 rounded-lg border shadow-sm col-span-2">
+                        <RemittanceBreakup />
+                    </div>
+                    <div className="bg-white p-4 rounded-lg border shadow-sm col-span-2">
+                        <RegistrationBreakup />
+                    </div>
+                   
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <AnnualRevenueDonut />
                     </div>
-                    <div className="bg-white p-4 rounded-lg border shadow-sm mb-6">
-                        <ChallanUploadCounts />
-                    </div>{' '}
-                    <div className="bg-white p-4 rounded-lg border shadow-sm mb-6">
-                        <Updateds />
-                    </div>
-                    <div className="bg-white p-4 rounded-lg border shadow-sm mb-6">
+                    <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <ComplinceTool />
                     </div>
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <ComplinceStatus />
                     </div>
+                    <div className="bg-white p-4 rounded-lg border shadow-sm">
+                        <LWF />
+                    </div>
+                </div>
+            
+                {/* Fifth Row */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                   
+                    <div className="bg-white p-4 rounded-lg border shadow-sm">
+                        <ComplianceCalendar />
+                    </div>
+                    <div className="bg-white p-4 rounded-lg border shadow-sm">
+                        <Updateds />
+                    </div>
                 </div>
             </div>
-        )
+        );
     }
 }
 

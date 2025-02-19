@@ -11,6 +11,7 @@ const ComplianceCalendar: React.FC = () => {
       <h2 className="text-xl font-semibold mb-4">Compliance Calendar</h2>
       <div className="md:w-[300px] max-w-[300px] mx-auto">
         <Calendar
+        className=''
           value={value}
           dayClassName={(date, { selected }) => {
             if (date.getDate() === 12 && !selected) {

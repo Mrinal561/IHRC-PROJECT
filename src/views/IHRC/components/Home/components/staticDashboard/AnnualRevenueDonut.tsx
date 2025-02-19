@@ -267,26 +267,8 @@ const AnnualRevenueDonut = ({ year = '2024', mainTotal = 500000, arrearTotal = 1
 
     return (
         <div className="flex flex-col items-center">
-            <div className="w-full flex items-center mb-4 gap-2">
-                {/* Wrapper div for filters with increased width */}
-                <div className='w-[120px]'>
-                    <OutlinedSelect
-                        label="Code Type"
-                        options={codeTypeOptions}
-                        value={selectedCodeType}
-                        onChange={handleCodeTypeChange}
-                    />
-                    </div>
-                    <div className='w-[120px]'>
-                    <OutlinedSelect
-                        label="Month"
-                        options={monthOptions}
-                        value={selectedMonth}
-                        onChange={handleMonthChange}
-                    />
-                </div>
-            </div>
-            <h2 className="text-lg font-semibold mb-2">Revenue Breakdown for {year}</h2>
+
+            <h2 className="text-lg font-semibold mb-2">ESI Revenue Breakdown for {year}</h2>
             <Chart
                 options={{
                     colors: COLORS,
