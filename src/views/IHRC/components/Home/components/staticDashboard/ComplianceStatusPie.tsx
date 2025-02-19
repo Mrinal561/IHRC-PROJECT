@@ -4,7 +4,7 @@ const ComplianceStatusPie = () => {
     return (
         <Chart
             options={{
-                colors: ['#056608', '#003153', '#f97316', '#0ea5e9'],
+                colors: ['#056608', '#ffbf00', '#808080', '#FF0000'],
                 labels: ['Updated', 'Not Yet Due', 'Closer Due', 'Overdue'],
                 legend: {
                     position: 'top',  // Move legend to the top

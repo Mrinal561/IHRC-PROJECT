@@ -4,7 +4,7 @@ const NoticeStatusPie = () => {
     return (
         <Chart
             options={{
-                colors: ['#056608', '#f97316', '#29527A'],  // Blue, Amber, Green
+                colors: ['#040273', '#FF0000', '#056608'],  // Blue, Amber, Green
                 labels: ['Total Notice', 'Open', 'Closed'],
                 legend: {
                     position: 'top',  // Move legend to the top
