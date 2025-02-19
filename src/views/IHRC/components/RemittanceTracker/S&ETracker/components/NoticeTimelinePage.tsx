@@ -312,6 +312,8 @@ const NoticeTimelinePage = () => {
     const [noticeData, setNoticeData] = useState<NoticeDetails | null>(null);
     const [loading, setLoading] = useState(true);
 
+    const baseUrl =  `${import.meta.env.VITE_API_GATEWAY}`
+
     useEffect(() => {
         const fetchTimelineData = async () => {
             try {
@@ -330,7 +332,7 @@ const NoticeTimelinePage = () => {
                         noticeDetails: notice.data.notice_detail,
                         document: {
                             name: notice.data.document.split('/').pop(),
-                            url: notice.data.document
+                           url: `${baseUrl}/${notice.data.document}`
                         }
                     });
                 }
@@ -354,7 +356,7 @@ const NoticeTimelinePage = () => {
                     criticality: 'new notice',
                     document: {
                         name: item.data.document.split('/').pop(),
-                        url: item.data.document
+                       url: `${baseUrl}/${item.data.document}`
                     },
                     respondedBy: item.user.name
                 };
@@ -366,7 +368,7 @@ const NoticeTimelinePage = () => {
                     criticality: item.data.criticality.toLowerCase(),
                     document: {
                         name: item.data.documents[0].split('/').pop(),
-                        url: item.data.documents[0]
+                       url: `${baseUrl}/${item.data.documents[0]}`
                     },
                     respondedBy: item.user.name
                 };
@@ -442,7 +444,7 @@ const NoticeTimelinePage = () => {
                                 <p className="text-sm text-gray-500 mb-2">Attached Document:</p>
                                 <div className="inline-flex items-center space-x-2 bg-blue-500 text-white px-2 py-1 rounded-md hover:bg-blue-700 transition-colors">
                                     <File className="w-4 h-4" />
-                                    <a href={noticeData.document.url} className="hover:underline">
+                                    <a href={noticeData.document.url} target="_blank" className="hover:underline">
                                         {noticeData.document.name}
                                     </a>
                                 </div>
@@ -491,7 +493,7 @@ const NoticeTimelinePage = () => {
                                             <div className="flex items-center space-x-2 pt-2">
                                                 <div className="inline-flex items-center space-x-2 bg-blue-500 text-white px-2 py-1 rounded-md hover:bg-blue-700 transition-colors">
                                                     <File className="w-4 h-4" />
-                                                    <a href={response.document.url} className="hover:underline">
+                                                    <a href={response.document.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
                                                         {response.document.name}
                                                     </a>
                                                 </div>
