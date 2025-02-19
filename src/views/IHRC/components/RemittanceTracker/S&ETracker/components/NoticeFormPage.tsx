@@ -50,7 +50,7 @@ const NoticeFormPage = ({ onSuccess }) => {
     reference_number: '',
     related_act: '',
     notice_document: null,
-    noticeDetails: ''
+    notice_detail: ''
   };
 
   const [formData, setFormData] = useState(initialFormData);
@@ -343,8 +343,8 @@ const NoticeFormPage = ({ onSuccess }) => {
           <label className="text-sm font-medium">Details of Notice</label>
           <textarea
             className="w-full p-2 border rounded-md h-24 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={formData.noticeDetails}
-            onChange={(e) => handleChange('noticeDetails', e.target.value)}
+            value={formData.notice_detail}
+            onChange={(e) => handleChange('notice_detail', e.target.value)}
             placeholder="Enter notice details..."
           />
         </div>
