@@ -334,7 +334,7 @@ const NoticeFormPage = ({ onSuccess }) => {
               type="file"
               onChange={handleFileChange}
               className="w-full"
-              accept=".pdf,.jpg,.jpeg,.png"
+              accept=".pdf,.jpg,.zip,.jpeg,.png"
             />
           </div>
         </div>

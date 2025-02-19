@@ -701,7 +701,7 @@ const EditNoticeDialog: React.FC<EditNoticeDialogProps> = ({
                 type="file"
                 onChange={handleFileChange}
                 className="w-full"
-                accept=".pdf,.jpg,.jpeg,.png"
+                accept=".pdf,.jpg,.jpeg,.png,.zip,"
               />
               <Tooltip title="View Document">
                 <button
