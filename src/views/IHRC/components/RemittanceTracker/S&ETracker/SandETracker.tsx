@@ -157,6 +157,7 @@ const SandETracker = () => {
         companyId: '',
         startDate: '',
         endDate: '',
+        status:''
     })
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -301,6 +302,7 @@ const SandETracker = () => {
                     'company_id[]': filters.companyId,
                     'from_date': filters.startDate,
                     'to_date': filters.endDate,
+                    'status': filters.status,
                 }
                 if (financialYear) {
                     params['financial_year'] = financialYear
@@ -322,12 +324,12 @@ const SandETracker = () => {
                 setIsLoading(false)
             }
         },
-        [filters.groupId, filters.companyId, filters.startDate, filters.endDate,financialYear]
+        [filters.groupId, filters.companyId, filters.startDate, filters.endDate,financialYear,filters.status]
     )
 
     useEffect(() => {
         fetchNoticeTrackerData(pagination.pageIndex, pagination.pageSize)
-    }, [fetchNoticeTrackerData, pagination.pageIndex, pagination.pageSize, filters.groupId, filters.companyId])
+    }, [fetchNoticeTrackerData, pagination.pageIndex, pagination.pageSize, filters.groupId, filters.companyId,filters.status])
 
     const handleFilterChange = (newFilters: any) => {
         setFilters(newFilters)
