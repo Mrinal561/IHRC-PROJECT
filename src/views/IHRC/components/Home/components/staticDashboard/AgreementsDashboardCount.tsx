@@ -182,7 +182,7 @@ const AgreementsDashboardCount = () => {
                     const value = props.getValue() as string;
                     return (
                         <Tooltip title={value} placement="top">
-                            <div className="w-48 truncate">
+                            <div className="w-28 truncate">
                                 {value.length > 30
                                     ? value.substring(0, 30) + '...'
                                     : value}
@@ -198,7 +198,7 @@ const AgreementsDashboardCount = () => {
                     const value = props.getValue() as string;
                     return (
                         <Tooltip title={value} placement="top">
-                            <div className="w-32 truncate">
+                            <div className="w-auto truncate">
                                 {value.length > 18
                                     ? value.substring(0, 18) + '...'
                                     : value}
