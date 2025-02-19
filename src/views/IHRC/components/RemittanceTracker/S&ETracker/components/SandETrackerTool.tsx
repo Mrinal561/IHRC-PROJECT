@@ -55,11 +55,13 @@
 import React, { useState } from 'react'
 import SandETrackerFilter from './SandETrackerFilter';
 import SandETrackerBulkUpload from './SandETrackerBulkUpload';
-import { Button } from '@/components/ui';
+import { Button, toast, Notification } from '@/components/ui';
 import CustomDateRangePicker from '../../PFTracker/components/CustomDateRangePicker';
 import { HiDownload, HiPlusCircle } from 'react-icons/hi';
 import NoticeUploadDialog from './SandETrackerBulkUpload';
 import { useNavigate } from 'react-router-dom';
+import httpClient from '@/api/http-client';
+import { endpoints } from '@/api/endpoint';
 
 interface SandETrackerToolProps {
   canCreate:boolean;
@@ -112,6 +114,54 @@ const SandETrackerTool: React.FC<SandETrackerToolProps> = ({ onRefresh, onFilter
     onFilterChange(updatedFilters);
   };
 
+  const handleDownload = async () => {
+    try {
+      // Format dates to YYYY/MM/DD
+
+      if (!filters.groupId  && !filters.companyId) {
+        toast.push(
+          <Notification title='Warning' type='warning' closable={true} duration={10000}>
+            Atleast Select One Company To Download The Data
+          </Notification>
+        )
+        return;
+      }
+      const formattedStartDate = filters.startDate ? new Date(filters.startDate).toISOString().split('T')[0].replace(/-/g, '/') : '';
+      const formattedEndDate = filters.endDate ? new Date(filters.endDate).toISOString().split('T')[0].replace(/-/g, '/') : '';
+  
+      const response = await httpClient.get(endpoints.noticeTracker.download(), {
+        responseType: 'blob',
+        params: {
+          'group_id[]': filters.groupId,
+          'company_id[]': filters.companyId,
+          'to_date[]': formattedEndDate,
+          'from_date': formattedStartDate
+        }
+      });
+      if(response){
+        const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'NoticeTracker.xlsx');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      }
+      
+     
+    } catch (error) {
+      toast.push(
+        <Notification title='Danger' type='danger' closable={true} duration={10000}>
+        Failed to generate excel file
+        </Notification>
+      )
+      // throw error
+      // Here you might want to show an error notification to the user
+    }
+  };
+
   return (
     <div className='w-full'>
       <div className='flex gap-3 items-center mb-4'>
@@ -121,6 +171,7 @@ const SandETrackerTool: React.FC<SandETrackerToolProps> = ({ onRefresh, onFilter
           variant="solid" 
           size="sm" 
           icon={<HiDownload />}
+          onClick={handleDownload}
         >
           Download Notice Data
         </Button>

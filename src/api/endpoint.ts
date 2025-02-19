@@ -227,7 +227,8 @@ export const endpoints = {
         noticeStatusSuggestions: () => api(`/companyadmin/noticeTracker/status`),
         createNoticeStatusSuggestions: () => api(`/companyadmin/noticeTracker/status`),
         noticeCriticalitySuggestion: () => api(`/companyadmin/noticeTracker/criticality`),
-        createNoticeCriticalitySuggestion: () => api(`/companyadmin/noticeTracker/criticality`)
+        createNoticeCriticalitySuggestion: () => api(`/companyadmin/noticeTracker/criticality`),
+        download:()=> api(`companyadmin/noticetracker/download-notice-data`)
     },
     permission:{
         approve:(id:any)=> api(`companyadmin/company/tracker-edit-permission/${id}`)
