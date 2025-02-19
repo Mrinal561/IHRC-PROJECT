@@ -238,6 +238,10 @@ import BranchOwnership from './staticDashboard/BranchOwnership'
 import BranchTypes from './staticDashboard/BranchTypes'
 import ComplianceStatusPie from './staticDashboard/ComplianceStatusPie'
 import ComplianceStatus from './staticDashboard/ComplianceStatus'
+import NoticeStatusPie from './staticDashboard/NoticeStatusPie'
+import RemittanceBreakup from './staticDashboard/RemittanceBreakup'
+import RegistrationsBreakup from './staticDashboard/RegistrationBreakup'
+import RegistrationBreakup from './staticDashboard/RegistrationBreakup'
 
 interface DashboardBodyProps {
     companyId: string | number
@@ -356,11 +360,32 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
                     <BranchTypes />
                 </div>
                 </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-white p-4 rounded-lg border shadow-sm">
+                    <ComplianceStatusPie />
+                </div>
+                <div className="bg-white p-4 rounded-lg border shadow-sm">
+                    <ComplianceStatus />
+                </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-white p-4 rounded-lg border shadow-sm">
+                    <NoticeStatusPie />
+                </div>
+                <div className="bg-white p-4 rounded-lg border shadow-sm">
+                    <RemittanceBreakup />
+                </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-white p-4 rounded-lg border shadow-sm col-span-2">
+                    <RevenueStackedColumn />
+                </div>
+                </div>
 
                 {/* Revenue Stacked Column and Compliance Calendar - Side by Side */}
                 <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-6">
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
-                        <RevenueStackedColumn />
+                        <RegistrationBreakup />
                     </div>
 
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
@@ -480,6 +505,15 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
                         <div className="bg-white p-4 rounded-lg border shadow-sm">
                             <ComplianceStatus />
                         </div>
+                        <div className="bg-white p-4 rounded-lg border shadow-sm">
+                            <NoticeStatusPie />
+                        </div>
+                        <div className="bg-white p-4 rounded-lg border shadow-sm">
+                            <RemittanceBreakup />
+                        </div>
+                        <div className="bg-white p-4 rounded-lg border shadow-sm col-span-2">
+                            <RegistrationBreakup />
+                        </div>
                         <div className="bg-white p-4 rounded-lg border shadow-sm col-span-2">
                             <RevenueStackedColumn />
                         </div>
@@ -499,9 +533,9 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
                         </h2>
                         <RemittanceStatus />
                     </div>
-                    <div className="bg-white p-4 rounded-lg border shadow-sm mt-6">
+                    {/* <div className="bg-white p-4 rounded-lg border shadow-sm mt-6">
                         <ComplinceStatus />
-                    </div>
+                    </div> */}
                 </div>
 
                 {/* Right sidebar for Notices timeline */}
@@ -527,9 +561,9 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
                     <div className="bg-white p-4 rounded-lg border shadow-sm mb-6">
                         <ComplinceTool />
                     </div>
-                    {/* <div className="bg-white p-4 rounded-lg border shadow-sm">
+                    <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <ComplinceStatus />
-                    </div> */}
+                    </div>
                 </div>
             </div>
         )

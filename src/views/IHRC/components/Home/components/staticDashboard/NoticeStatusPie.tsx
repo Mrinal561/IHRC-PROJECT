@@ -1,11 +1,11 @@
 import Chart from 'react-apexcharts';
 
-const ComplianceStatus = () => {
+const NoticeStatusPie = () => {
     return (
         <Chart
             options={{
-                colors: ['#a78bfa', '#3b82f6', '#15803d', '#6d28d9'],  // Light Violet, Blue, Deep Green, Deep Violet
-                labels: ['Complied', 'Not Complied', 'Complied with Delay', 'Not Applicable'],
+                colors: ['#3b82f6', '#f59e0b', '#22c55e'],  // Blue, Amber, Green
+                labels: ['Total Notice', 'Open', 'Closed'],
                 legend: {
                     position: 'top',  // Move legend to the top
                 },
@@ -26,21 +26,20 @@ const ComplianceStatus = () => {
                     width: '100%',  // Makes the chart responsive
                 },
                 title: {
-                    text: 'Compliance Status',
+                    text: 'Notice Status',
                     align: 'center',
                     style: {
                         fontSize: '20px',
                         fontWeight: 'bold'
                     },
-                    offsetY:-5,
+                    offsetY:5,  // Add spacing below the title
                 }
             }}
-            series={[45, 20, 15, 10]}  // Complied, Not Complied, Complied with Delay, Not Applicable
-            height={400}  // Increased height
+            series={[100, 30, 70]}  // Total Notice, Open, Closed
+            height={300}  // Increased height
             type="pie"
         />
     );
 };
 
-
-export default ComplianceStatus;
+export default NoticeStatusPie;
