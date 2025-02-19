@@ -152,13 +152,12 @@ const PTECTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({ onUploadCon
     }
     try {
       const selectedDate = parse(currentGroup, 'yyyy-MM', new Date());
-      const reqBody = {
-        month: selectedDate.getMonth() + 1, // Adding 1 because getMonth() returns 0-11
-        year: selectedDate.getFullYear()
-      };
+     const payrollMonth = format(selectedDate, 'yyyy-MM');
       const res = await httpClient.get(endpoints.ptec.download(), {
         responseType: "blob",
-        data: reqBody
+        params: { 
+          payrollMonth
+        },
       });
       if(res){
         toast.push(
