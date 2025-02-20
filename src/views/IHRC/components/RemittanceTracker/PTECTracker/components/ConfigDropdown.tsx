@@ -274,11 +274,11 @@ const ConfigDropdown: React.FC<ConfigDropdownProps> = ({
                 fileInputRef.current.value = ''
             }
         } catch (error) {
-            toast.push(
-                <Notification title="Error" closable={true} type="danger">
-                    {error.response.data.message}
-                </Notification>,
-            )
+            // toast.push(
+            //     <Notification title="Error" type="danger">
+            //         {error.response.data.message}
+            //     </Notification>,
+            // )
             console.error('Upload error:', error)
         } finally {
             setLoading(false)
