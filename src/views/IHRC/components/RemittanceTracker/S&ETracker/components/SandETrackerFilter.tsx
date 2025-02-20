@@ -200,6 +200,7 @@ interface NoticeProps {
     companyId: string;
     status: string;
     noticeType: string;
+  
   }) => void;
 }
 
