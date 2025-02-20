@@ -15,6 +15,21 @@ import EditNoticeDialog from './EditNoticeDialog';
 import { useNavigate } from 'react-router-dom';
 import { FaArrowCircleRight, FaComments, FaEnvelopeOpen, FaEye, FaHistory, FaRegCommentDots, FaReply } from 'react-icons/fa';
 
+
+
+const getStatusColor = (status: string) => {
+  const statusLower = status.toLowerCase();
+  
+  if (statusLower === 'open') {
+      return 'bg-red-500 text-white rounded-lg';
+  }
+  if (statusLower === 'close') {
+      return 'bg-green-500 text-white rounded-lg';
+  }
+  // Any other status (including reopen, etc) will be amber
+  return 'bg-amber-500 text-white rounded-lg';
+};
+
 interface NoticeData {
   id: number;
   uuid: string;
@@ -96,12 +111,12 @@ const NoticeTrackerTable: React.FC<NoticeTrackerTableProps> = ({
 
   const columns: ColumnDef<NoticeData>[] = useMemo(
     () => [
-      {
-        header: 'Company Group',
-        enableSorting: false,
-        accessorKey: 'CompanyGroup.name',
-        cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
-      },
+      // {
+      //   header: 'Company Group',
+      //   enableSorting: false,
+      //   accessorKey: 'CompanyGroup.name',
+      //   cell: (props) => <div className="w-40 truncate">{props.getValue() as string}</div>,
+      // },
       {
         header: 'Company',
         enableSorting: false,
@@ -186,11 +201,16 @@ const NoticeTrackerTable: React.FC<NoticeTrackerTableProps> = ({
         header: 'Status',
         enableSorting: false,
         accessorKey: 'status',
-        cell: (props) => (
-          <div className="w-32 truncate capitalize">
-            {(props.getValue() as string).replace(/_/g, ' ')}
-          </div>
-        ),
+        cell: (props) => {
+          const status = props.getValue() as string;
+          return (
+            <div className="w-32 truncate">
+              <span className={`px-2 py-1 rounded ${getStatusColor(status)}`}>
+                {status.toUpperCase()}
+              </span>
+            </div>
+          );
+        },
       },
       {
         header: 'Actions',
@@ -219,7 +239,9 @@ const NoticeTrackerTable: React.FC<NoticeTrackerTableProps> = ({
              <Tooltip title="Add Reply">
           <Button
             size="sm"
-            onClick={() => navigate(`/notice-tracker/response/${row.original.id}`)}
+            onClick={() => navigate('/notice-tracker/response', { 
+              state: { noticeId: row.original.id }
+            })}
             icon={<FaComments />}
 
           />
@@ -227,7 +249,9 @@ const NoticeTrackerTable: React.FC<NoticeTrackerTableProps> = ({
         <Tooltip title="View Reply">
           <Button
             size="sm"
-            onClick={() => navigate(`/notice-tracker/replyhistory/${row.original.id}`)} 
+            onClick={() => navigate('/notice-tracker/replyhistory', {
+              state: { noticeId: row.original.id }
+            })} 
             icon={<FaEye />}
           />
         </Tooltip>

@@ -427,7 +427,7 @@ import OutlinedInput from '@/components/ui/OutlinedInput';
 import { toast, Notification } from '@/components/ui';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 import { IoArrowBack } from 'react-icons/io5';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import CriticalityAutoSuggest from './CriticalityAutoSuggest';
 import StatusAutoSuggest from './StatusAutoSuggest';
 import httpClient from '@/api/http-client';
@@ -435,7 +435,17 @@ import { endpoints } from '@/api/endpoint';
 import NoticeTypeAutosuggest from './NoticeTypeAutosuggest';
 
 const NoticeResponsePage = () => {
-  const { noticeId } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const noticeId = location.state?.noticeId;
+
+  // Redirect if no noticeId in state
+  useEffect(() => {
+    if (!noticeId) {
+      navigate('/notice-tracker', { replace: true });
+      return;
+    }
+  }, [noticeId, navigate]);
   const [notice, setNotice] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
   
@@ -446,7 +456,7 @@ const NoticeResponsePage = () => {
     status: '',
     notice_type: ''
   });
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
     useEffect(() => {
         const fetchNoticeDetails = async () => {
@@ -536,6 +546,7 @@ const NoticeResponsePage = () => {
         </Notification>
       );
     }
+  }
 
     return (
         <div className="w-full p-6">
@@ -639,5 +650,6 @@ const NoticeResponsePage = () => {
         </div>
     )
 }
+
 
 export default NoticeResponsePage

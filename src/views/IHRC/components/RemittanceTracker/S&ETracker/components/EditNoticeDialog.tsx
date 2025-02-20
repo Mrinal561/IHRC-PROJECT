@@ -522,6 +522,7 @@ const EditNoticeDialog: React.FC<EditNoticeDialogProps> = ({
     notice_date: null,
     reference_number: '',
     related_act: '',
+    notice_detail: '',
     related_act_id: null,
     notice_document: null,
   };
@@ -542,6 +543,7 @@ const EditNoticeDialog: React.FC<EditNoticeDialogProps> = ({
             notice_type: response.notice_type || '',
             notice_type_id: response.notice_type_id || null,
             notice_date: noticeDate,
+            notice_detail: response.notice_detail,
             reference_number: response.reference_number || '',
             related_act: response.related_act || '',
             related_act_id: response.related_act_id || null,
@@ -610,6 +612,7 @@ const EditNoticeDialog: React.FC<EditNoticeDialogProps> = ({
         notice_type_id: formData.notice_type_id,
         notice_date: formData.notice_date ? formData.notice_date.toISOString() : null,
         reference_number: formData.reference_number,
+        notice_detail: formData.notice_detail,
         related_act: formData.related_act,
         related_act_id: formData.related_act_id,
         notice_document: formData.notice_document
@@ -714,6 +717,20 @@ const EditNoticeDialog: React.FC<EditNoticeDialogProps> = ({
               </Tooltip>
             </div>
           </div>
+
+          <div className="space-y-2">
+                    <label className="text-sm font-medium">
+                        Details of Notice
+                    </label>
+                    <textarea
+                        className="w-full p-2 border rounded-md h-24 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        value={formData.notice_detail}
+                        onChange={(e) =>
+                            handleChange('notice_detail', e.target.value)
+                        }
+                        placeholder="Enter notice details..."
+                    />
+                </div>
         </div>
 
         <div className="flex justify-end mt-6 space-x-2">

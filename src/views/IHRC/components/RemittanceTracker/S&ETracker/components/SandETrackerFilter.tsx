@@ -273,6 +273,7 @@ interface NoticeProps {
     companyName: string;
     companyId: string;
     status: string;
+    noticeType: string;
   }) => void;
 }
 
@@ -281,6 +282,7 @@ const SandETrackerFilter: React.FC<NoticeProps> = ({ onFilterChange }) => {
   const [selectedCompanyGroup, setSelectedCompanyGroup] = useState<Option | null>(null);
   const [selectedCompany, setSelectedCompany] = useState<Option | null>(null);
   const [selectedStatus, setSelectedStatus] = useState<Option | null>(null);
+  const [selectedNoticeType, setSelectedNoticeType] = useState<Option | null>(null);
 
   const [companyGroups, setCompanyGroups] = useState<Option[]>([]);
   const [companies, setCompanies] = useState<Option[]>([]);

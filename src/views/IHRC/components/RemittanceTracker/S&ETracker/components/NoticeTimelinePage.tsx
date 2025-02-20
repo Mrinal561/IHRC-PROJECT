@@ -241,7 +241,7 @@ import Card from '@/components/ui/Card';
 import { FileText, AlertCircle, Mail, CheckCircle, File } from 'lucide-react';
 import { Button } from '@/components/ui';
 import { IoArrowBack } from 'react-icons/io5';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { endpoints } from '@/api/endpoint';
 import httpClient from '@/api/http-client';
 
@@ -249,7 +249,7 @@ interface TimelineResponse {
     replyDetails: string;
     replyDate: string;
     status: string;
-    criticality: string;
+    notice_type: string;
     document: {
         name: string;
         url: string;
@@ -278,14 +278,16 @@ const TimelineAvatar = ({ children, ...rest }) => {
 };
 
 const getStatusColor = (status: string) => {
-    const colors = {
-        open: 'bg-blue-500 rounded text-white',
-        close: 'bg-gray-500 rounded text-white',
-        reopen: 'bg-amber-500 rounded text-white',
-        general: 'bg-green-500 rounded text-white',
-        other: 'bg-purple-500 rounded text-white'
-    };
-    return colors[status] || 'bg-gray-500';
+    const statusLower = status.toLowerCase();
+    
+    if (statusLower === 'open') {
+        return 'bg-red-500 rounded text-white';
+    }
+    if (statusLower === 'close') {
+        return 'bg-green-500 rounded text-white';
+    }
+    // Any other status (including reopen, etc) will be amber
+    return 'bg-amber-500 rounded text-white';
 };
 
 const getCriticalityIcon = (criticality: string) => {
@@ -307,12 +309,20 @@ const getCriticalityIcon = (criticality: string) => {
 
 const NoticeTimelinePage = () => {
     const navigate = useNavigate();
-    const { noticeId } = useParams();
-    const [timelineData, setTimelineData] = useState<TimelineResponse[]>([]);
+  const location = useLocation();
+  const noticeId = location.state?.noticeId;    const [timelineData, setTimelineData] = useState<TimelineResponse[]>([]);
     const [noticeData, setNoticeData] = useState<NoticeDetails | null>(null);
     const [loading, setLoading] = useState(true);
 
     const baseUrl =  `${import.meta.env.VITE_API_GATEWAY}`
+
+    useEffect(() => {
+        if (!noticeId) {
+          navigate('/notice-tracker', { replace: true });
+          return;
+        }
+      }, [noticeId, navigate]);
+
 
     useEffect(() => {
         const fetchTimelineData = async () => {
@@ -366,7 +376,7 @@ const NoticeTimelinePage = () => {
                     replyDetails: item.data.reply_text,
                     replyDate: item.date,
                     status: item.data.status.toLowerCase(),
-                    criticality: item.data.criticality.toLowerCase(),
+                    notice_type: item.data.notice_type.toLowerCase(),
                     document: {
                         name: item.data.documents[0].split('/').pop(),
                        url: `${baseUrl}/${item.data.documents[0]}`
@@ -464,7 +474,7 @@ const NoticeTimelinePage = () => {
                             key={index}
                             media={
                                 <TimelineAvatar className={getStatusColor(response.status)}>
-                                    {getCriticalityIcon(response.criticality)}
+                                    {getCriticalityIcon(response.notice_type)}
                                 </TimelineAvatar>
                             }
                         >
@@ -508,7 +518,12 @@ const NoticeTimelinePage = () => {
                 </Timeline>
             </div>
             <div className="flex justify-end mt-6">
-                <Button variant="solid" onClick={() => navigate(`/notice-tracker/response/${noticeId}`)}>
+            <Button 
+    variant="solid" 
+    onClick={() => navigate('/notice-tracker/response', {
+        state: { noticeId: noticeId }
+    })}
+>
                     <span>Add Reply</span>
                 </Button>
             </div>
