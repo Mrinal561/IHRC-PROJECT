@@ -449,6 +449,7 @@ import CriticalityAutoSuggest from './CriticalityAutoSuggest';
 import StatusAutoSuggest from './StatusAutoSuggest';
 import httpClient from '@/api/http-client';
 import { endpoints } from '@/api/endpoint';
+import NoticeTypeAutosuggest from './NoticeTypeAutosuggest';
 
 const NoticeResponsePage = () => {
   const { noticeId } = useParams();
@@ -460,7 +461,7 @@ const NoticeResponsePage = () => {
     notice_sent_at: null,
     reply_document: null,
     status: '',
-    criticality: ''
+    notice_type: ''
   });
   const navigate = useNavigate();
 
@@ -530,7 +531,7 @@ const NoticeResponsePage = () => {
         notice_sent_at: form.notice_sent_at,
         notice_reply: form.notice_reply,
         status: form.status,
-        criticality: form.criticality,
+        notice_type: form.notice_type,
         reply_documents: form.reply_document ? [form.reply_document] : []
       });
   
@@ -612,13 +613,15 @@ const NoticeResponsePage = () => {
           </div>
 
           <div className="space-y-2">
-            {/* <label className="text-sm font-medium">Criticality</label> */}
-            <CriticalityAutoSuggest
-              value={form.criticality}
-              onChange={(value) => handleChange('criticality', value)}
-              onCriticalitySelect={(id) => handleChange('criticality_id', id)}
-              isDisabled={isLoading}
-            />
+
+          <NoticeTypeAutosuggest
+            value={form.notice_type}
+            onChange={(value) => handleChange('notice_type', value)}
+            onNoticeTypeSelect={(id) => {
+              handleChange('notice_type_id', id)}
+            }
+            isDisabled={isLoading}
+          />
           </div>
         </div>
       </div>
