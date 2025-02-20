@@ -60,7 +60,7 @@
 
 import React, { useState } from 'react';
 import Chart from 'react-apexcharts';
-import { Card } from '@/components/ui/card';
+import { Card } from '@/components/ui';
 import { ApexOptions } from 'apexcharts';
 
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
