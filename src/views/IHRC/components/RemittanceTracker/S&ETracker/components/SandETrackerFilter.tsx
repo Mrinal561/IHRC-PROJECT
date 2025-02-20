@@ -1,91 +1,4 @@
-// import React, { useState } from 'react';
-// import OutlinedSelect from '@/components/ui/Outlined/Outlined';
-// import { EntityData, entityDataSet } from '../../../../store/dummyEntityData';
 
-// type Option = {
-//   value: string;
-//   label: string;
-// };
-
-
-// const getUniqueGroup = (data: EntityData[]): string[] => {
-//     const companyGroupName = data.map(item => item.Company_Group_Name);
-//     return Array.from(new Set(companyGroupName)).filter((companyGroupName): companyGroupName is string => companyGroupName !== undefined);
-//   };
-  
-//   const groupOptions: Option[] = getUniqueGroup(entityDataSet).map(companyGroupName => ({
-//     value: companyGroupName,
-//     label: companyGroupName,
-//   }));
-
-//   const getUniqueName = (data: EntityData[]): string[] => {
-//     const companyName = data.map(item => item.Company_Name);
-//     return Array.from(new Set(companyName)).filter((companyName): companyName is string => companyName !== undefined);
-//   };
-  
-//   const nameOptions: Option[] = getUniqueName(entityDataSet).map(companyName => ({
-//     value: companyName,
-//     label: companyName,
-//   }));
-// const getUniqueDistricts = (data: EntityData[]): string[] => {
-//   const state = data.map(item => item.State);
-//   return Array.from(new Set(state)).filter((state): state is string => state !== undefined);
-// };
-
-// const options: Option[] = getUniqueDistricts(entityDataSet).map(state => ({
-//   value: state,
-//   label: state,
-// }));
-
-// const SandETrackerFilter: React.FC = () => {
-//   const [currentFilter, setCurrentFilter] = useState<string>(options[0]?.value ||'');
-//   const [currentGroup, setCurrentGroup] = useState<string>(groupOptions[0]?.value||'');
-//   const [groupName, setGroupName] = useState<string>(nameOptions[0]?.value||'');
-
-//   const handleFilterChange = (selectedOption: Option | null) => {
-//     if (selectedOption) {
-//       setCurrentFilter(selectedOption.value);
-      
-//       // You can add any additional logic here that needs to happen when the filter changes
-//     }
-//   };
-//   const handleGroupChange = (selectedOption: Option | null) => {
-//     if (selectedOption) {
-//         setCurrentGroup(selectedOption.value)
-      
-//       // You can add any additional logic here that needs to happen when the filter changes
-//     }
-//   };
-//   const handleNameChange = (selectedOption: Option | null) => {
-//     if (selectedOption) {
-//         setGroupName(selectedOption.value)
-      
-//       // You can add any additional logic here that needs to happen when the filter changes
-//     }
-//   };
-
-//   return ( 
-//     <div className=" flex gap-3">    
-//         <div>
-//         <OutlinedSelect
-//         label="Group Name"
-//         options={groupOptions}
-//         value={groupOptions.find((option) => option.value === currentGroup)}
-//         onChange={handleGroupChange}
-//       />
-//         </div>
-//         <div>
-//         <OutlinedSelect
-//         label="Company Name"
-//         options={nameOptions}
-//         value={nameOptions.find((option) => option.value === groupName)}
-//         onChange={handleNameChange}
-//       />
-//         </div>
-//     </div>
-//   );
-// };
-// export default SandETrackerFilter;
 
 // import React, { useState, useEffect } from 'react';
 // import OutlinedSelect from '@/components/ui/Outlined/Outlined';
@@ -98,23 +11,31 @@
 //   label: string;
 // };
 
-// interface NoticeProps{
-//   onFilterChange:(filters:{
-//     groupId:string;
-//     groupName:string;
-//     companyName:string;
-//     companyId:string;
-//     status:string;
-//   }) => void
+// interface NoticeProps {
+//   onFilterChange: (filters: {
+//     groupId: string;
+//     groupName: string;
+//     companyName: string;
+//     companyId: string;
+//     status: string;
+//     noticeType: string;
+//   }) => void;
 // }
 
-// const SandETrackerFilter: React.FC<NoticeProps> = ({onFilterChange}) => {
+// const SandETrackerFilter: React.FC<NoticeProps> = ({ onFilterChange }) => {
 //   const [isLoading, setIsLoading] = useState(true);
 //   const [selectedCompanyGroup, setSelectedCompanyGroup] = useState<Option | null>(null);
 //   const [selectedCompany, setSelectedCompany] = useState<Option | null>(null);
+//   const [selectedStatus, setSelectedStatus] = useState<Option | null>(null);
+//   const [selectedNoticeType, setSelectedNoticeType] = useState<Option | null>(null);
 
 //   const [companyGroups, setCompanyGroups] = useState<Option[]>([]);
 //   const [companies, setCompanies] = useState<Option[]>([]);
+
+//   const statusOptions: Option[] = [
+//     { value: 'open', label: 'Open' },
+//     { value: 'close', label: 'Close' }
+//   ];
 
 //   const showNotification = (type: 'success' | 'info' | 'danger' | 'warning', message: string) => {
 //     toast.push(
@@ -201,17 +122,18 @@
 //     }
 //   }, [selectedCompanyGroup]);
 
-//   // Add this useEffect to call onFilterChange when company changes
-// useEffect(() => {
-//   if (selectedCompany?.value) {
-//     onFilterChange({
-//       groupId: selectedCompanyGroup?.value || '',
-//       groupName: selectedCompanyGroup?.label || '',
-//       companyName: selectedCompany.label,
-//       companyId: selectedCompany.value
-//     });
-//   }
-// }, [selectedCompany]);
+//   // Update filters when selections change
+//   useEffect(() => {
+//     if (selectedCompany?.value) {
+//       onFilterChange({
+//         groupId: selectedCompanyGroup?.value || '',
+//         groupName: selectedCompanyGroup?.label || '',
+//         companyName: selectedCompany.label,
+//         companyId: selectedCompany.value,
+//         status: selectedStatus?.value || ''
+//       });
+//     }
+//   }, [selectedCompany, selectedStatus]);
 
 //   const handleGroupChange = (value: Option | null) => {
 //     setSelectedCompanyGroup(value);
@@ -220,14 +142,10 @@
 
 //   const handleNameChange = (value: Option | null) => {
 //     setSelectedCompany(value);
-//     if (value) {
-//       onFilterChange({
-//         groupId: selectedCompanyGroup?.value || '',
-//         groupName: selectedCompanyGroup?.label || '',
-//         companyName: value.label,
-//         companyId: value.value
-//       });
-//     }
+//   };
+
+//   const handleStatusChange = (value: Option | null) => {
+//     setSelectedStatus(value);
 //   };
 
 //   return ( 
@@ -238,7 +156,6 @@
 //           options={companyGroups}
 //           value={selectedCompanyGroup}
 //           onChange={handleGroupChange}
-//           // isLoading={isLoading}
 //         />
 //       </div>
 //       <div className='flex-1 min-w-[160px]'>
@@ -249,11 +166,20 @@
 //           onChange={handleNameChange}
 //         />
 //       </div>
+//       <div className='flex-1 min-w-[160px]'>
+//         <OutlinedSelect
+//           label="Status"
+//           options={statusOptions}
+//           value={selectedStatus}
+//           onChange={handleStatusChange}
+//         />
+//       </div>
 //     </div>
 //   );
 // };
 
 // export default SandETrackerFilter;
+
 
 import React, { useState, useEffect } from 'react';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
@@ -286,11 +212,8 @@ const SandETrackerFilter: React.FC<NoticeProps> = ({ onFilterChange }) => {
 
   const [companyGroups, setCompanyGroups] = useState<Option[]>([]);
   const [companies, setCompanies] = useState<Option[]>([]);
-
-  const statusOptions: Option[] = [
-    { value: 'open', label: 'Open' },
-    { value: 'close', label: 'Close' }
-  ];
+  const [statusOptions, setStatusOptions] = useState<Option[]>([]);
+  const [noticeTypeOptions, setNoticeTypeOptions] = useState<Option[]>([]);
 
   const showNotification = (type: 'success' | 'info' | 'danger' | 'warning', message: string) => {
     toast.push(
@@ -301,6 +224,38 @@ const SandETrackerFilter: React.FC<NoticeProps> = ({ onFilterChange }) => {
         {message}
       </Notification>
     );
+  };
+
+  // Load Status Options
+  const loadStatusOptions = async () => {
+    try {
+      const { data } = await httpClient.get(endpoints.noticeTracker.noticeStatusSuggestions());
+      const statusesData = Array.isArray(data) ? data : [data];
+      const formattedStatus = statusesData.map((status) => ({
+        value: status.status.toLowerCase(),
+        label: status.status
+      }));
+      setStatusOptions(formattedStatus);
+    } catch (error) {
+      console.error('Failed to load status options:', error);
+      showNotification('danger', 'Failed to load status options');
+    }
+  };
+
+  // Load Notice Type Options
+  const loadNoticeTypeOptions = async () => {
+    try {
+      const { data } = await httpClient.get(endpoints.noticeTracker.noticeTypeSuggestions());
+      const noticeTypesData = Array.isArray(data) ? data : [data];
+      const formattedTypes = noticeTypesData.map((type) => ({
+        value: type.notice_type.toLowerCase(),
+        label: type.notice_type
+      }));
+      setNoticeTypeOptions(formattedTypes);
+    } catch (error) {
+      console.error('Failed to load notice types:', error);
+      showNotification('danger', 'Failed to load notice types');
+    }
   };
 
   // Load Company Groups
@@ -362,9 +317,11 @@ const SandETrackerFilter: React.FC<NoticeProps> = ({ onFilterChange }) => {
     }
   };
 
-  // Initial load of company groups
+  // Initial load of all data
   useEffect(() => {
     loadCompanyGroups();
+    loadStatusOptions();
+    loadNoticeTypeOptions();
   }, []);
 
   // Load companies when company group changes
@@ -385,10 +342,11 @@ const SandETrackerFilter: React.FC<NoticeProps> = ({ onFilterChange }) => {
         groupName: selectedCompanyGroup?.label || '',
         companyName: selectedCompany.label,
         companyId: selectedCompany.value,
-        status: selectedStatus?.value || ''
+        status: selectedStatus?.value || '',
+        noticeType: selectedNoticeType?.value || ''
       });
     }
-  }, [selectedCompany, selectedStatus]);
+  }, [selectedCompany, selectedStatus, selectedNoticeType]);
 
   const handleGroupChange = (value: Option | null) => {
     setSelectedCompanyGroup(value);
@@ -401,6 +359,10 @@ const SandETrackerFilter: React.FC<NoticeProps> = ({ onFilterChange }) => {
 
   const handleStatusChange = (value: Option | null) => {
     setSelectedStatus(value);
+  };
+
+  const handleNoticeTypeChange = (value: Option | null) => {
+    setSelectedNoticeType(value);
   };
 
   return ( 
@@ -427,6 +389,14 @@ const SandETrackerFilter: React.FC<NoticeProps> = ({ onFilterChange }) => {
           options={statusOptions}
           value={selectedStatus}
           onChange={handleStatusChange}
+        />
+      </div>
+      <div className='flex-1 min-w-[160px]'>
+        <OutlinedSelect
+          label="Notice Type"
+          options={noticeTypeOptions}
+          value={selectedNoticeType}
+          onChange={handleNoticeTypeChange}
         />
       </div>
     </div>

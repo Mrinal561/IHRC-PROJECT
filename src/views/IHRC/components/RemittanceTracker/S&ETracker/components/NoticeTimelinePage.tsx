@@ -358,19 +358,7 @@ const NoticeTimelinePage = () => {
 
     const transformTimelineData = (data: any[]): TimelineResponse[] => {
         return data.map((item) => {
-            // if (item.type === 'NOTICE_CREATED') {
-            //     return {
-            //         replyDetails: item.data.notice_detail,
-            //         replyDate: item.date,
-            //         status: 'open', // Default status for notice creation
-            //         criticality: 'new notice',
-            //         document: {
-            //             name: item.data.document.split('/').pop(),
-            //            url: `${baseUrl}/${item.data.document}`
-            //         },
-            //         respondedBy: item.user.name
-            //     };
-            // } 
+          
              if (item.type === 'NOTICE_REPLY') {
                 return {
                     replyDetails: item.data.reply_text,
@@ -468,6 +456,8 @@ const NoticeTimelinePage = () => {
             {/* Reply Timeline */}
             <div className="mb-6">
                 <h2 className="text-lg font-semibold mb-4">Reply History</h2>
+                {timelineData.length > 0 ? (
+
                 <Timeline>
                     {timelineData.map((response, index) => (
                         <Timeline.Item
@@ -516,6 +506,19 @@ const NoticeTimelinePage = () => {
                         </Timeline.Item>
                     ))}
                 </Timeline>
+                ): (
+                    <Card className="p-6">
+            <div className="flex flex-col items-center justify-center text-center">
+                <FileText className="w-12 h-12 text-gray-400 mb-3" />
+                <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-1">
+                    No Replies Yet
+                </h3>
+                <p className="text-gray-500">
+                    This notice hasn't received any replies. Click 'Add Reply' to be the first to respond.
+                </p>
+            </div>
+        </Card>
+                )}
             </div>
             <div className="flex justify-end mt-6">
             <Button 
