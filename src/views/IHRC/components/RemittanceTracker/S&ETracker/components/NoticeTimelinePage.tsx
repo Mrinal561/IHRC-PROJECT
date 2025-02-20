@@ -497,16 +497,21 @@ const NoticeTimelinePage = () => {
                                 <Card className="mt-2">
                                     <div className="space-y-4">
                                         <div>
+                                        <p className="text-sm text-gray-500">Notice Details:</p>
                                         <p className="text-gray-600 dark:text-gray-300">
     {formatTextWithLineBreaks(response.replyDetails)}
 </p>
                                         </div>
+                                            <div >
+                                        <p className="text-sm text-gray-500">Notice Type:</p>
                                         <div className="inline-flex items-center space-x-2 bg-blue-500 text-white px-2 py-1 rounded-md hover:bg-blue-700 transition-colors">
                                             {response.notice_type}
+                                            </div>
                                         </div>
                                         
                                         {response.document && (
-                                            <div className="flex items-center space-x-2 pt-2">
+                                            <div className=" items-center space-x-2 pt-2">
+                                                <p className="text-sm text-gray-500 mb-2">Notice Copy:</p>
                                                 <div className='inline-flex gap-2 items-center'>
                                                     <File className="w-4 h-4" />
                                                     <a href={response.document.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
