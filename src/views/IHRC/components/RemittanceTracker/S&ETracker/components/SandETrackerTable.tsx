@@ -166,7 +166,7 @@ const NoticeTrackerTable: React.FC<NoticeTrackerTableProps> = ({
         ),
       },
       {
-        header: 'Notice Document',
+        header: 'Notice Copy',
         enableSorting: false,
         accessorKey: 'notice_document',
         cell: (props) => {

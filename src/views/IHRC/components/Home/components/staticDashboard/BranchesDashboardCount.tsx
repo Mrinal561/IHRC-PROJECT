@@ -329,7 +329,7 @@ const BranchesDashboardCount = () => {
         {
             name: 'Physical Branches',
             value: '7',
-            badgeColor: 'bg-red-400 text-white', // Light green badge
+            badgeColor: 'bg-blue-400 text-white', // Light green badge
         },
         {
             name: 'Virtual Branches',
@@ -385,7 +385,7 @@ const BranchesDashboardCount = () => {
     return (
         <div className="w-full overflow-x-auto py-2 p-1 bg-white rounded-lg shadow-lg border">
 
-                                    <h2 className="text-xl text-center font-semibold mb-6 mt-2">Branch Status</h2>
+                                    <h2 className="text-lg text-center font-semibold mb-6 mt-2">Branch Status</h2>
 
             <DataTable
                 columns={columns}
