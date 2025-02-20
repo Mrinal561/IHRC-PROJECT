@@ -5,10 +5,10 @@ import type { ColumnDef } from '@/components/shared/DataTable';
 
 export const BranchTypes = () => {
     const typesData = [
-        { name: 'Total Office', value: '400', badgeColor: 'bg-blue-400 text-white', },
         { name: 'Corporate Office', value: '200', badgeColor: 'bg-amber-400 text-white', },
-        { name: 'Regional Office', value: '80', badgeColor: 'bg-green-400 text-white', },
         { name: 'Sales Office', value: '120', badgeColor: 'bg-blue-400 text-white', },
+        { name: 'Regional Office', value: '80', badgeColor: 'bg-green-400 text-white', },
+        { name: 'Total Office', value: '400', badgeColor: 'bg-blue-400 text-white', },
     ];
 
     const columns = useMemo(

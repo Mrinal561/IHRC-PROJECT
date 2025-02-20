@@ -165,20 +165,21 @@ import type { ColumnDef } from '@/components/shared/DataTable';
 
 const RentalDepositsDashboard = () => {
     const depositsData = [
+        
         {
-            name: 'Total Agreements',
-            value: '1000',
-            badgeColor: 'bg-blue-400 text-white',
-        },
-        {
-            name: 'Valid Agreement',
+            name: 'Valid',
             value: '800',
             badgeColor: 'bg-amber-400 text-white',
         },
         {
-            name: 'Expired Agreement',
+            name: 'Expired',
             value: '200',
             badgeColor: 'bg-red-400 text-white',
+        },
+        {
+            name: 'Total',
+            value: '1000',
+            badgeColor: 'bg-blue-400 text-white',
         },
     ];
 

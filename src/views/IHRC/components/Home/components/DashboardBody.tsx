@@ -445,17 +445,16 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                     {/* <div className="bg-white p-4 rounded-lg border shadow-sm"> */}
                         {/* <h2 className="text-xl font-semibold mb-4">Branch Status</h2> */}
+                    <BranchTypes />
                         <BranchesDashboardCount />
                     {/* </div> */}
             
                     {/* <div className="bg-white p-4 rounded-lg border shadow-sm"> */}
-                        
-                        <SEDashboardCount />
+                    <BranchOwnership />
                     {/* </div> */}
             
                     {/* <div className="bg-white p-4 rounded-lg border shadow-sm"> */}
                         {/* <h2 className="text-xl font-semibold mb-4">Rent Agreement Status</h2> */}
-                        <AgreementsDashboardCount />
                     {/* </div> */}
             
                     {/* <div className="bg-white p-4 rounded-lg border shadow-sm"> */}
@@ -473,22 +472,24 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
             
                     {/* <div className="bg-white p-4 rounded-lg border shadow-sm"> */}
                         {/* <h2 className="text-xl font-semibold mb-4">Notice Status</h2> */}
-                        <NoticesDashboard />
                     {/* </div> */}
             
                     {/* <div className="bg-white p-4 rounded-lg border shadow-sm"> */}
                         {/* <h2 className="text-xl font-semibold mb-4">Branch Ownership Type</h2> */}
-                        <BranchOwnership />
+                        <SEDashboardCount />
+                        <AgreementsDashboardCount />
+                        <NoticesDashboard />
+                        {/* <BranchOwnership /> */}
                     {/* </div> */}
             
                     {/* <div className="bg-white p-4 rounded-lg border shadow-sm"> */}
                         {/* <h2 className="text-xl font-semibold mb-4">Branch Types</h2> */}
-                        <BranchTypes />
+                        {/* <BranchTypes /> */}
                     {/* </div> */}
                 </div>
             
                 {/* Third Row */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
                     <div className="overflow-x-auto py-2 p-1 bg-white rounded-lg shadow-lg border">
                         <ComplianceStatusPie />
                     </div>

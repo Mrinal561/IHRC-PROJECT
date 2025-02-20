@@ -160,26 +160,26 @@ import type { ColumnDef } from '@/components/shared/DataTable';
 const AgreementsDashboardCount = () => {
     const agreementData = [
         {
-            name: 'Total Rent Agreements',
-            value: '100',
-            badgeColor: 'bg-blue-400 text-white',
-        },
-        {
-            name: 'Valid Rent Agreements',
+            name: 'Valid',
             value: '70',
             badgeColor: 'bg-amber-400 text-white',
         },
         {
-            name: 'Expired Rent Agreements',
+            name: 'Expired',
             value: '30',
             badgeColor: 'bg-red-400 text-white',
+        },
+        {
+            name: 'Total',
+            value: '100',
+            badgeColor: 'bg-blue-400 text-white',
         },
     ];
 
     const columns: ColumnDef<typeof agreementData[0]>[] = useMemo(
         () => [
             {
-                header: 'Agreement Type',
+                header: 'S&E RC Status',
                 accessorKey: 'name',
                 enableSorting: false,
                 cell: (props) => {
@@ -220,7 +220,7 @@ const AgreementsDashboardCount = () => {
 
     return (
         <div className="w-full overflow-x-auto py-2 p-1 bg-white rounded-lg shadow-lg border">
-           <h2 className="text-base text-center font-semibold mb-6 mt-2">Rent Agreement Status</h2>
+           <h2 className="text-base text-center font-semibold mb-6 mt-2">Virtual Branches S&E RC Status</h2>
             <DataTable
                 columns={columns}
                 data={agreementData}

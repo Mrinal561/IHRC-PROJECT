@@ -183,32 +183,33 @@ import type { ColumnDef } from '@/components/shared/DataTable';
 
 const SEDashboardCount = () => {
     const seData = [
+        
         {
-            name: 'Total S&E Registration',
-            value: '15',
-            badgeColor: 'bg-blue-400 text-white',
-        },
-        {
-            name: 'Have Valid Registration',
+            name: 'Valid',
             value: '10',
             badgeColor: 'bg-amber-400 text-white',
         },
-        {
-            name: 'Applied For',
-            value: '2',
-            badgeColor: 'bg-blue-400 text-white',
-        },
+        // {
+        //     name: 'Applied For',
+        //     value: '2',
+        //     badgeColor: 'bg-blue-400 text-white',
+        // },
         {
             name: 'Expired',
             value: '2',
             badgeColor: 'bg-red-400 text-white',
+        },
+        {
+            name: 'Total',
+            value: '15',
+            badgeColor: 'bg-blue-400 text-white',
         },
     ];
 
     const columns: ColumnDef<typeof seData[0]>[] = useMemo(
         () => [
             {
-                header: 'Status',
+                header: 'S&E RC Status',
                 enableSorting: false,
                 accessorKey: 'name',
                 cell: (props) => {
@@ -247,7 +248,7 @@ const SEDashboardCount = () => {
 
     return (
         <div className="w-full overflow-x-auto py-2 p-1 bg-white rounded-lg shadow-lg border">
-            <h2 className="text-base text-center font-semibold  mb-6 mt-2">S&E Registration Status</h2>
+            <h2 className="text-base text-center font-semibold  mb-6 mt-2">Physical Branches S&E RC Status</h2>
             <DataTable
                 columns={columns}
                 data={seData}

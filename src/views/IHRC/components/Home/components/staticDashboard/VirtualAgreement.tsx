@@ -6,9 +6,9 @@ import type { ColumnDef } from '@/components/shared/DataTable';
 // Virtual Agreement Table Component
 const VirtualAgreement = () => {
     const agreementData = [
-        { name: 'Total Agreement', value: '200', badgeColor: 'bg-blue-400 text-white',  },
-        { name: 'Valid Agreement', value: '80', badgeColor: 'bg-amber-400 text-white',  },
-        { name: 'Expired Agreement', value: '120', badgeColor: 'bg-red-400 text-white',  },
+        { name: 'Valid', value: '80', badgeColor: 'bg-amber-400 text-white',  },
+        { name: 'Expired', value: '120', badgeColor: 'bg-red-400 text-white',  },
+        { name: 'Total', value: '200', badgeColor: 'bg-blue-400 text-white',  },
     ];
 
     const columns = useMemo(

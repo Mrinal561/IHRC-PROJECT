@@ -7,10 +7,10 @@ import type { ColumnDef } from '@/components/shared/DataTable';
 
  const NoticesDashboard = () => {
   const noticesData = [
-      { name: 'Total Notices', value: '10', badgeColor: 'bg-blue-400 text-white', },
-      { name: 'Notice Open', value: '2', badgeColor: 'bg-red-400 text-white', },
-      { name: 'Under Process', value: '10', badgeColor: 'bg-amber-400 text-white', },
-      { name: 'Notice Closed', value: '10', badgeColor: 'bg-green-400 text-white', },
+      { name: 'Open', value: '2', badgeColor: 'bg-red-400 text-white', },
+      //   { name: 'Under Process', value: '10', badgeColor: 'bg-amber-400 text-white', },
+      { name: 'Closed', value: '10', badgeColor: 'bg-green-400 text-white', },
+      { name: 'Total', value: '10', badgeColor: 'bg-blue-400 text-white', },
   ];
 
   const columns = useMemo(

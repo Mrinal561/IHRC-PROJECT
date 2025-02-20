@@ -339,7 +339,7 @@ const BranchesDashboardCount = () => {
         {
             name: 'Total Branches',
             value: '57',
-            badgeColor: 'bg-green-400 text-white', // Light blue badge
+            badgeColor: 'bg-blue-400 text-white', // Light blue badge
         }
     ];
 

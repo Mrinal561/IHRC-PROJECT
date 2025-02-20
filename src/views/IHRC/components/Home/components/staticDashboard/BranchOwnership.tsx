@@ -6,9 +6,9 @@ import type { ColumnDef } from '@/components/shared/DataTable';
 
  const BranchOwnership = () => {
     const ownershipData = [
-        { name: 'Total', value: '200', badgeColor: 'bg-blue-400 text-white',  },
         { name: 'Owned', value: '80', badgeColor: 'bg-amber-400 text-white', },
         { name: 'Rented', value: '280', badgeColor: 'bg-blue-400 text-white', },
+        { name: 'Total', value: '200', badgeColor: 'bg-blue-400 text-white',  },
     ];
 
     const columns = useMemo(
