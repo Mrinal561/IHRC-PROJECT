@@ -4,7 +4,30 @@ import Chart from 'react-apexcharts';
 import { COLORS } from '@/constants/chart.constant';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined'
 
-const LWf = ({ year = '2024', mainTotal = 500000, arrearTotal = 180000, damageTotal = 90000 }) => {
+const LWf = ({ year = '2024-25', mainTotal = 500000, arrearTotal = 180000, damageTotal = 90000 }) => {
+
+     const groupOptions = [
+                    { value: 'jan', label: 'January' },
+                    { value: 'feb', label: 'February' },
+                    { value: 'mar', label: 'March' },
+                    { value: 'apr', label: 'April' },
+                    { value: 'may', label: 'May' },
+                    { value: 'jun', label: 'June' },
+                    { value: 'jul', label: 'July' },
+                    { value: 'aug', label: 'August' },
+                    { value: 'sep', label: 'September' },
+                    { value: 'oct', label: 'October' },
+                    { value: 'nov', label: 'November' },
+                    { value: 'dec', label: 'December' }
+                  ];
+                
+                  // State for selected month
+                  const [currentGroup, setCurrentGroup] = useState(groupOptions[1].value);
+                
+                  // Handler for dropdown changes
+                  const handleChange = (setter: Function, field: string) => (option: any) => {
+                    setter(option.value);
+                  };
     const totalAmount = mainTotal + arrearTotal + damageTotal;
 
     // Data series and labels
@@ -51,7 +74,27 @@ const LWf = ({ year = '2024', mainTotal = 500000, arrearTotal = 180000, damageTo
 
     return (
         <div className="flex flex-col items-center">
-            <h2 className="text-lg font-semibold mb-2">LWF Revenue Breakdown for {year}</h2>
+            {/* <h2 className="text-lg font-semibold mb-2">LWF Revenue Breakdown for {year}</h2> */}
+            <div className="w-full">
+  <div className="flex justify-between items-center">
+    <h4 className="text-lg font-bold flex-1 text-center">
+    LWF Revenue Breakdown for {year}
+    </h4>
+    <div className="w-40">
+      <OutlinedSelect
+        label="Month"
+        options={groupOptions}
+        value={groupOptions.find(
+          (option) => option.value === currentGroup
+        )}
+        onChange={handleChange(
+          setCurrentGroup,
+          'groupName'
+        )}
+      />
+    </div>
+  </div>
+</div>
             <Chart
                 options={{
                     colors: COLORS,

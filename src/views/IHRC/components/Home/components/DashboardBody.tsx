@@ -311,6 +311,7 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
                         {/* <h2 className="text-xl font-semibold mb-4">
                             Branch Status
                         </h2> */}
+                         <BranchOwnership />
                         <BranchesDashboardCount />
                     {/* </div> */}
 
@@ -318,7 +319,7 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
                         {/* <h2 className="text-xl font-semibold mb-4"> */}
                             {/* S&E Registration Status */}
                         {/* </h2> */}
-                        <SEDashboardCount />
+                       
                     {/* </div> */}
                 </div>
 
@@ -328,14 +329,14 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
                         <h2 className="text-xl font-semibold mb-4">
                             Rent Agreement Status
                         </h2> */}
-                        <AgreementsDashboardCount />
+                         <BranchOwnership />
                     {/* </div> */}
 
                     {/* <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <h2 className="text-xl font-semibold mb-4">
                             Physical Branch Agreement Status
                         </h2> */}
-                        <RentalDepositsDashboard />
+                         <RentalDepositsDashboard />
                     {/* </div> */}
                 </div>
 
@@ -344,7 +345,7 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
                 {/* <div className="bg-white p-4 rounded-lg border shadow-sm">
                     <h2 className="text-xl font-semibold mb-4">Notice Status</h2> */}
                     <VirtualAgreement />
-                    <NoticesDashboard />
+                    <SEDashboardCount />
                 {/* </div> */}
                 {/* <div className="bg-white p-4 rounded-lg border shadow-sm">
                     <h2 className="text-xl font-semibold mb-4">Virtual Agreement Status</h2> */}
@@ -354,11 +355,12 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* <div className="bg-white p-4 rounded-lg border shadow-sm">
                     <h2 className="text-xl font-semibold mb-4"> Branch Ownership Type</h2> */}
-                    <BranchOwnership />
+                   
                 {/* </div> */}
                 {/* <div className="bg-white p-4 rounded-lg border shadow-sm">
                     <h2 className="text-xl font-semibold mb-4"> Branch Types</h2> */}
-                    <BranchTypes />
+                    <AgreementsDashboardCount />
+                    <NoticesDashboard />
                 {/* </div> */}
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -389,22 +391,28 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
                         <RegistrationBreakup />
                     </div> */}
                      <div className="bg-white p-4 rounded-lg border shadow-sm">
-                        <AnnualRevenueDonut />
+                        <ComplinceTool />
                     </div>
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
-                        <ComplinceTool />
+                        <AnnualRevenueDonut />
                     </div>
                    
                 </div>
 
                 {/* Payment Date Comparison */}
-                <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <PaymentDateComparison />
                     </div> */}
+                    <div className="bg-white p-4 rounded-lg border shadow-sm">
+                    <LWF />
+                    </div>
                     {/* <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <Alerts />
-                    </div> */}
+                        </div> */}
+                    <div className="bg-white p-4 rounded-lg border shadow-sm">
+                        <ComplinceStatus />
+                    </div>
                 </div>
                 {/* <div className="bg-white p-4 rounded-lg border shadow-sm">
                     <h2 className="text-xl font-semibold mb-4">
@@ -425,9 +433,7 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
                         <ChallanUploadCounts />
                     </div> */}
 
-                    <div className="bg-white p-4 rounded-lg border shadow-sm">
-                        <ComplinceStatus />
-                    </div>
+                    
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <ComplianceCalendar />
                     </div>
@@ -512,18 +518,18 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
                     </div>
                    
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="bg-white p-4 rounded-lg border shadow-sm">
-                        <AnnualRevenueDonut />
-                    </div>
-                    <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <ComplinceTool />
                     </div>
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
-                        <ComplinceStatus />
+                        <AnnualRevenueDonut />
                     </div>
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <LWF />
+                    </div>
+                    <div className="bg-white p-4 rounded-lg border shadow-sm">
+                        <ComplinceStatus />
                     </div>
                 </div>
             
