@@ -38,7 +38,7 @@ httpClient.interceptors.response.use(
             window.location.reload()
         } else if (
             error.response?.status !== 401 &&
-            error.response?.data.message.length
+            error.response?.data?.message?.length
         ) {
             showErrorNotification(error.response?.data.message)
         } else if (error.response?.status !== 401 && error.message.length) {
