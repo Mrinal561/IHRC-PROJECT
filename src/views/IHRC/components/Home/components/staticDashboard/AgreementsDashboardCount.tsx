@@ -162,14 +162,17 @@ const AgreementsDashboardCount = () => {
         {
             name: 'Total Rent Agreements',
             value: '100',
+            badgeColor: 'bg-blue-400 text-white',
         },
         {
             name: 'Valid Rent Agreements',
             value: '70',
+            badgeColor: 'bg-amber-400 text-white',
         },
         {
             name: 'Expired Rent Agreements',
             value: '30',
+            badgeColor: 'bg-red-400 text-white',
         },
     ];
 
@@ -183,7 +186,7 @@ const AgreementsDashboardCount = () => {
                     const value = props.getValue() as string;
                     return (
                         <Tooltip title={value} placement="top">
-                            <div className="w-28 truncate">
+                            <div className="font-semibold text-gray-700 hover:text-blue-600 transition-colors duration-200 text-sm">
                                 {value.length > 30
                                     ? value.substring(0, 30) + '...'
                                     : value}
@@ -197,10 +200,12 @@ const AgreementsDashboardCount = () => {
                 enableSorting: false,
                 accessorKey: 'value',
                 cell: (props) => {
-                    const value = props.getValue() as string;
-                    return (
-                        <Tooltip title={value} placement="top">
-                            <div className="w-auto truncate">
+                    const row = props.row.original;
+                                       const value = props.getValue() as string;
+                                       return (
+                                           <Tooltip title={value} placement="top">
+                                               <div
+                                                   className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${row.badgeColor}`}>
                                 {value.length > 18
                                     ? value.substring(0, 18) + '...'
                                     : value}
@@ -214,7 +219,8 @@ const AgreementsDashboardCount = () => {
     );
 
     return (
-        <div className="w-full overflow-x-auto">
+        <div className="w-full overflow-x-auto py-2 p-1 bg-white rounded-lg shadow-lg border">
+           <h2 className="text-base text-center font-semibold mb-6 mt-2">Rent Agreement Status</h2>
             <DataTable
                 columns={columns}
                 data={agreementData}
