@@ -273,7 +273,7 @@ const PTSetupPage = () => {
         } catch (error) {
             console.error('Failed to load company groups:', error)
             toast.push(
-                <Notification title="Error" type="danger">
+                <Notification title="Error" closable={true} type="danger">
                     Failed to load company groups
                 </Notification>,
             )
@@ -298,7 +298,7 @@ const PTSetupPage = () => {
         } catch (error) {
             console.error('Failed to load companies:', error)
             toast.push(
-                <Notification title="Error" type="danger">
+                <Notification title="Error" closable={true} type="danger">
                     Failed to load companies
                 </Notification>,
             )
@@ -324,7 +324,7 @@ const PTSetupPage = () => {
         } catch (error) {
             console.error('Failed to load states:', error)
             toast.push(
-                <Notification title="Error" type="danger">
+                <Notification title="Error" closable={true} type="danger">
                     Failed to load states
                 </Notification>,
             )
@@ -378,7 +378,7 @@ const PTSetupPage = () => {
     //     } catch (error) {
     //         console.error(`Error converting ${type} certificate to base64:`, error)
     //         toast.push(
-    //             <Notification title="Error" type="danger">
+    //             <Notification title="Error" closable={true} type="danger">
     //                 Failed to process certificate
     //             </Notification>
     //         )
@@ -464,7 +464,7 @@ const PTSetupPage = () => {
                 [`${type}_certificate`]: 'Failed to process certificate',
             }))
             toast.push(
-                <Notification title="Error" type="danger">
+                <Notification title="Error" closable={true} type="danger">
                     Failed to process certificate
                 </Notification>,
             )
@@ -491,7 +491,7 @@ const PTSetupPage = () => {
             const isValid = await validateForm()
             if (!isValid) {
                 toast.push(
-                    <Notification title="Error" type="danger">
+                    <Notification title="Error" closable={true} type="danger">
                         Please fix the validation errors
                     </Notification>,
                 )
@@ -786,7 +786,7 @@ const PTSetupPage = () => {
                         />
                         {errors.password && (
                             <p className="text-red-500 text-xs mt-1">
-                                {errors.password}   
+                                {errors.password}
                             </p>
                         )}
                     </div>

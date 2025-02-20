@@ -1,5 +1,3 @@
-
-
 // import React, { useState } from 'react';
 // import { Button, DatePicker, Input, Select } from '@/components/ui';
 // import OutlinedInput from '@/components/ui/OutlinedInput';
@@ -88,7 +86,7 @@
 //       } catch (error) {
 //         console.error('Error converting file:', error);
 //         toast.push(
-//           <Notification title="Error" type="danger">
+//           <Notification title="Error" closable={true} type="danger">
 //             Error processing file
 //           </Notification>
 //         );
@@ -114,7 +112,7 @@
 //       if (index === 0) return true;
 //       return forms[index - 1].status === 'reopen';
 //     });
-    
+
 //     console.log('Form submitted:', visibleForms);
 //     toast.push(
 //       <Notification title="Success" type="success">
@@ -161,7 +159,7 @@
 //                 </Button>
 //               )}
 //             </div>
-            
+
 //             <div className="space-y-4">
 //               <div className="space-y-2">
 //                 <label className="text-sm font-medium">Reply Details Of Notice</label>
@@ -228,21 +226,6 @@
 
 // export default NoticeResponsePage;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // import React, { useState } from 'react';
 // import { Button, DatePicker, Input } from '@/components/ui';
 // import OutlinedInput from '@/components/ui/OutlinedInput';
@@ -278,7 +261,7 @@
 //       } catch (error) {
 //         console.error('Error converting file:', error);
 //         toast.push(
-//           <Notification title="Error" type="danger">
+//           <Notification title="Error" closable={true} type="danger">
 //             Error processing file
 //           </Notification>
 //         );
@@ -341,7 +324,7 @@
 //         <h2 className="text-lg font-semibold mb-4">
 //         Add A  Reply
 //         </h2>
-        
+
 //         <div className="space-y-4">
 //           <div className="space-y-2">
 //             <label className="text-sm font-medium"> Details Of The Reply</label>
@@ -465,65 +448,67 @@ const NoticeResponsePage = () => {
   });
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchNoticeDetails = async () => {
-      try {
-        const response = await httpClient.get(endpoints.noticeTracker.detail(noticeId));
-        setNotice(response.data);
-      } catch (error) {
-        console.error('Failed to fetch notice details:', error);
-        toast.push(
-          <Notification title="Error" type="danger">
-            Failed to fetch notice details
-          </Notification>
-        );
-      }
-    };
-
-    if (noticeId) {
-      fetchNoticeDetails();
-    }
-  }, [noticeId]);
-
-  const handleChange = (field, value) => {
-    setForm(prevForm => ({
-      ...prevForm,
-      [field]: value
-    }));
-  };
-
-  const handleFileChange = async (e) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      try {
-        const base64String = await convertToBase64(file);
-        handleChange('reply_document', base64String);
-      } catch (error) {
-        console.error('Error converting file:', error);
-        toast.push(
-          <Notification title="Error" type="danger">
-            Error processing file
-          </Notification>
-        );
-      }
-    }
-  };
-
-  const convertToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        if (reader.result && typeof reader.result === 'string') {
-          const base64String = reader.result.split(',')[1];
-          resolve(base64String);
-        } else {
-          reject(new Error('Failed to read file as base64'));
+    useEffect(() => {
+        const fetchNoticeDetails = async () => {
+            try {
+                const response = await httpClient.get(
+                    endpoints.noticeTracker.detail(noticeId),
+                )
+                setNotice(response.data)
+            } catch (error) {
+                console.error('Failed to fetch notice details:', error)
+                toast.push(
+                    <Notification title="Error" closable={true} type="danger">
+                        Failed to fetch notice details
+                    </Notification>,
+                )
+            }
         }
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-  };
+
+        if (noticeId) {
+            fetchNoticeDetails()
+        }
+    }, [noticeId])
+
+    const handleChange = (field, value) => {
+        setForm((prevForm) => ({
+            ...prevForm,
+            [field]: value,
+        }))
+    }
+
+    const handleFileChange = async (e) => {
+        const file = e.target.files?.[0]
+        if (file) {
+            try {
+                const base64String = await convertToBase64(file)
+                handleChange('reply_document', base64String)
+            } catch (error) {
+                console.error('Error converting file:', error)
+                toast.push(
+                    <Notification title="Error" closable={true} type="danger">
+                        Error processing file
+                    </Notification>,
+                )
+            }
+        }
+    }
+
+    const convertToBase64 = (file: File): Promise<string> => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader()
+            reader.onload = () => {
+                if (reader.result && typeof reader.result === 'string') {
+                    const base64String = reader.result.split(',')[1]
+                    resolve(base64String)
+                } else {
+                    reject(new Error('Failed to read file as base64'))
+                }
+            }
+            reader.onerror = reject
+            reader.readAsDataURL(file)
+        })
+    }
 
   const handleSubmit = async () => {
     try {
@@ -551,66 +536,83 @@ const NoticeResponsePage = () => {
         </Notification>
       );
     }
-  };
 
-  return (
-    <div className="w-full p-6">
-      <div className="flex items-center gap-2 mb-8">
-        <Button
-          size="sm"
-          className="p-2"
-          variant="plain"
-          icon={<IoArrowBack className="text-gray-500 hover:text-gray-700" />}
-          onClick={() => navigate(-1)}
-        />
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Reply</h1>
-      </div>
+    return (
+        <div className="w-full p-6">
+            <div className="flex items-center gap-2 mb-8">
+                <Button
+                    size="sm"
+                    className="p-2"
+                    variant="plain"
+                    icon={
+                        <IoArrowBack className="text-gray-500 hover:text-gray-700" />
+                    }
+                    onClick={() => navigate(-1)}
+                />
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                    Reply
+                </h1>
+            </div>
 
-      <div className="mb-8 p-6 border rounded-lg bg-white shadow-sm">
-        <h2 className="text-lg font-semibold mb-4">Add A Reply</h2>
-        
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Details Of The Reply</label>
-            <OutlinedInput
-              label="Details of the Reply"
-              value={form.notice_reply}
-              onChange={(value) => handleChange('notice_reply', value)}
-              textarea={true}
-            />
-          </div>
+            <div className="mb-8 p-6 border rounded-lg bg-white shadow-sm">
+                <h2 className="text-lg font-semibold mb-4">Add A Reply</h2>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Reply Sent On</label>
-            <DatePicker
-              clearable
-              size="sm"
-              placeholder="Select Date"
-              value={form.notice_sent_at}
-              onChange={(date) => handleChange('notice_sent_at', date)}
-              inputFormat="DD/MM/YYYY"
-            />
-          </div>
+                <div className="space-y-4">
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium">
+                            Details Of The Reply
+                        </label>
+                        <OutlinedInput
+                            label="Details of the Reply"
+                            value={form.notice_reply}
+                            onChange={(value) =>
+                                handleChange('notice_reply', value)
+                            }
+                            textarea={true}
+                        />
+                    </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Upload Document (PDF/Zip/Image, Max 20MB)</label>
-            <Input
-              type="file"
-              onChange={handleFileChange}
-              className="w-full"
-              accept=".pdf,.jpg,.jpeg,.png"
-            />
-          </div>
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium">
+                            Reply Sent On
+                        </label>
+                        <DatePicker
+                            clearable
+                            size="sm"
+                            placeholder="Select Date"
+                            value={form.notice_sent_at}
+                            onChange={(date) =>
+                                handleChange('notice_sent_at', date)
+                            }
+                            inputFormat="DD/MM/YYYY"
+                        />
+                    </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Notice Status</label>
-            <StatusAutoSuggest
-              value={form.status}
-              onChange={(value) => handleChange('status', value)}
-              onStatusSelect={(id) => handleChange('status_id', id)}
-              isDisabled={isLoading}
-            />
-          </div>
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium">
+                            Upload Document (PDF/Zip/Image, Max 20MB)
+                        </label>
+                        <Input
+                            type="file"
+                            onChange={handleFileChange}
+                            className="w-full"
+                            accept=".pdf,.jpg,.jpeg,.png"
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium">
+                            Notice Status
+                        </label>
+                        <StatusAutoSuggest
+                            value={form.status}
+                            onChange={(value) => handleChange('status', value)}
+                            onStatusSelect={(id) =>
+                                handleChange('status_id', id)
+                            }
+                            isDisabled={isLoading}
+                        />
+                    </div>
 
           <div className="space-y-2">
 
@@ -626,22 +628,16 @@ const NoticeResponsePage = () => {
         </div>
       </div>
 
-      <div className="flex justify-end space-x-2">
-        <Button
-          variant="plain"
-          onClick={() => navigate(-1)}
-        >
-          Cancel
-        </Button>
-        <Button
-          variant="solid"
-          onClick={handleSubmit}
-        >
-          Confirm
-        </Button>
-      </div>
-    </div>
-  );
-};
+            <div className="flex justify-end space-x-2">
+                <Button variant="plain" onClick={() => navigate(-1)}>
+                    Cancel
+                </Button>
+                <Button variant="solid" onClick={handleSubmit}>
+                    Confirm
+                </Button>
+            </div>
+        </div>
+    )
+}
 
-export default NoticeResponsePage;
+export default NoticeResponsePage

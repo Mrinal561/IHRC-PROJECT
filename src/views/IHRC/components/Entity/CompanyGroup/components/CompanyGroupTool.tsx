@@ -1,77 +1,79 @@
-
-
-
-import React, { useState } from 'react';
-import { Button, Dialog, Notification, toast } from '@/components/ui';
-import { HiPlusCircle } from 'react-icons/hi';
-import OutlinedInput from '@/components/ui/OutlinedInput';
-import { createCompanyGroup } from '@/store/slices/companyGroup/companyGroupSlice';
-import { AppDispatch } from '@/store';
-import { useDispatch } from 'react-redux';
-import { CompanyGroupData } from '@/store/slices/companyGroup/companyGroupSlice';
+import React, { useState } from 'react'
+import { Button, Dialog, Notification, toast } from '@/components/ui'
+import { HiPlusCircle } from 'react-icons/hi'
+import OutlinedInput from '@/components/ui/OutlinedInput'
+import { createCompanyGroup } from '@/store/slices/companyGroup/companyGroupSlice'
+import { AppDispatch } from '@/store'
+import { useDispatch } from 'react-redux'
+import { CompanyGroupData } from '@/store/slices/companyGroup/companyGroupSlice'
 
 interface CompanyGroupToolProps {
-    setLoader:any;
-    onDataChange: () => void;
+    setLoader: any
+    onDataChange: () => void
 }
 
-const CompanyGroupTool: React.FC<CompanyGroupToolProps> = ({setLoader, onDataChange }) => {
-    const dispatch = useDispatch<AppDispatch>();
-    const [dialogIsOpen, setIsOpen] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+const CompanyGroupTool: React.FC<CompanyGroupToolProps> = ({
+    setLoader,
+    onDataChange,
+}) => {
+    const dispatch = useDispatch<AppDispatch>()
+    const [dialogIsOpen, setIsOpen] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
     const [newCompanyGroup, setNewCompanyGroup] = useState({
-        name: ''
-    });
+        name: '',
+    })
 
     const handleConfirm = async () => {
         if (!newCompanyGroup.name.trim()) {
             toast.push(
-                <Notification title="Error" type="danger">
+                <Notification title="Error" closable={true} type="danger">
                     Please enter a valid company group name
-                </Notification>
-            );
-            return;
+                </Notification>,
+            )
+            return
         }
 
-        setIsLoading(true);
+        setIsLoading(true)
         try {
-            await dispatch(createCompanyGroup(newCompanyGroup));
+            await dispatch(createCompanyGroup(newCompanyGroup))
 
-            onDialogClose();
+            onDialogClose()
             setLoader(true)
             toast.push(
                 <Notification title="Success" type="success">
                     Company Group added successfully
-                </Notification>
-            );
-            onDataChange(); // Trigger parent refresh
+                </Notification>,
+            )
+            onDataChange() // Trigger parent refresh
             console.log('re rendering')
         } catch (error) {
             toast.push(
                 <Notification title="Failed" type="danger">
                     Failed to add company group
-                </Notification>
-            );
+                </Notification>,
+            )
         }
-        setIsLoading(false);
-        
-    };
+        setIsLoading(false)
+    }
 
     const onDialogClose = () => {
-        setIsOpen(false);
-        setNewCompanyGroup({ name: '' });
-    };
+        setIsOpen(false)
+        setNewCompanyGroup({ name: '' })
+    }
 
-    const handleInputChange = (field: keyof CompanyGroupData, value: string) => {
-        setNewCompanyGroup(prev => ({ ...prev, [field]: value }));
-    };
+    const handleInputChange = (
+        field: keyof CompanyGroupData,
+        value: string,
+    ) => {
+        setNewCompanyGroup((prev) => ({ ...prev, [field]: value }))
+    }
 
     return (
         <div>
-            <Button 
-                variant="solid" 
-                onClick={() => setIsOpen(true)} 
-                icon={<HiPlusCircle />} 
+            <Button
+                variant="solid"
+                onClick={() => setIsOpen(true)}
+                icon={<HiPlusCircle />}
                 size="sm"
             >
                 Add Company Group
@@ -82,16 +84,18 @@ const CompanyGroupTool: React.FC<CompanyGroupToolProps> = ({setLoader, onDataCha
                 onRequestClose={onDialogClose}
                 width={500}
                 height={250}
-                shouldCloseOnOverlayClick={false} 
+                shouldCloseOnOverlayClick={false}
             >
                 <div className="flex flex-col h-full justify-between">
                     <h5 className="mb-4">Add Company Group</h5>
                     <div className="flex flex-col gap-2">
                         <p>Enter Your Company Group</p>
-                        <OutlinedInput 
+                        <OutlinedInput
                             label="Company Group Name"
                             value={newCompanyGroup.name}
-                            onChange={(value: string) => handleInputChange('name', value)}
+                            onChange={(value: string) =>
+                                handleInputChange('name', value)
+                            }
                         />
                     </div>
                     <div className="text-right mt-6">
@@ -103,8 +107,8 @@ const CompanyGroupTool: React.FC<CompanyGroupToolProps> = ({setLoader, onDataCha
                         >
                             Cancel
                         </Button>
-                        <Button 
-                            variant="solid" 
+                        <Button
+                            variant="solid"
                             onClick={handleConfirm}
                             loading={isLoading}
                         >
@@ -114,7 +118,7 @@ const CompanyGroupTool: React.FC<CompanyGroupToolProps> = ({setLoader, onDataCha
                 </div>
             </Dialog>
         </div>
-    );
-};
+    )
+}
 
-export default CompanyGroupTool;
+export default CompanyGroupTool

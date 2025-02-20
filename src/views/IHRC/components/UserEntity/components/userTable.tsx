@@ -35,8 +35,8 @@ import { fetchCompanyGroups } from '@/store/slices/companyGroup/companyGroupSlic
 import { useNavigate } from 'react-router-dom'
 
 const UserTable: React.FC<{
-    search: any;
-    refreshTrigger: number;
+    search: any
+    refreshTrigger: number
 }> = ({ search, refreshTrigger }) => {
     const dispatch = useDispatch<AppDispatch>()
     const [isLoading, setIsLoading] = useState(false)
@@ -57,15 +57,19 @@ const UserTable: React.FC<{
 
     const handleModifyPermission = async (userData) => {
         try {
-            const response = await dispatch(fetchUserById(userData.user_details.id));
+            const response = await dispatch(
+                fetchUserById(userData.user_details.id),
+            )
             if (response) {
-                navigate('/user-permission', { state: { userData: response.payload } });
+                navigate('/user-permission', {
+                    state: { userData: response.payload },
+                })
             }
         } catch (error) {
-            showErrorNotification('Failed to fetch role details');
+            showErrorNotification('Failed to fetch role details')
         }
-    };
-    
+    }
+
     const columns = useMemo(
         () => [
             {
@@ -99,24 +103,28 @@ const UserTable: React.FC<{
                 accessorKey: 'branch_details',
                 cell: (props) => {
                     const branches = props.getValue() as Array<{
-                        name: string;
-                        state: { name: string };
-                        district: { name: string };
-                    }>;
-                    
+                        name: string
+                        state: { name: string }
+                        district: { name: string }
+                    }>
+
                     if (!branches || branches.length === 0) {
-                        return <div className="w-40 truncate">No Branch Assigned</div>;
+                        return (
+                            <div className="w-40 truncate">
+                                No Branch Assigned
+                            </div>
+                        )
                     }
-            
-                    const branchNames = branches.map(branch => branch.name).join(', ');
-                    
+
+                    const branchNames = branches
+                        .map((branch) => branch.name)
+                        .join(', ')
+
                     return (
                         <Tooltip title={branchNames}>
-                        <div className="w-40 truncate" >
-                            {branchNames}
-                        </div>
+                            <div className="w-40 truncate">{branchNames}</div>
                         </Tooltip>
-                    );
+                    )
                 },
             },
             {
@@ -129,7 +137,7 @@ const UserTable: React.FC<{
                     </div>
                 ),
             },
-            
+
             // {
             //     header: 'Password',
             //     accessorKey: 'password',
@@ -236,15 +244,19 @@ const UserTable: React.FC<{
                                 className="text-blue-500"
                             />
                         </Tooltip> */}
-                         <Tooltip title="Modify Permission">
+                        <Tooltip title="Modify Permission">
                             <Button
                                 size="sm"
-                                onClick={() => handleModifyPermission(row.original)}
-                                icon={<RiShieldKeyholeLine className="h-5 w-5" />}
+                                onClick={() =>
+                                    handleModifyPermission(row.original)
+                                }
+                                icon={
+                                    <RiShieldKeyholeLine className="h-5 w-5" />
+                                }
                                 className="text-purple-600"
                             />
                         </Tooltip>
-                        
+
                         <Tooltip title="Delete User">
                             <Button
                                 size="sm"
@@ -337,14 +349,22 @@ const UserTable: React.FC<{
         setEditedUserData({})
     }
     useEffect(() => {
-        fetchUserData(1, 10,search)
-    }, [search, refreshTrigger]) 
+        fetchUserData(1, 10, search)
+    }, [search, refreshTrigger])
 
-    const fetchUserData = async (page: number, size: number, searchQuery?: string) => {
+    const fetchUserData = async (
+        page: number,
+        size: number,
+        searchQuery?: string,
+    ) => {
         setIsLoading(true)
         try {
             const { payload: data } = await dispatch(
-                fetchUsers({ page: page, page_size: size, search: searchQuery }),
+                fetchUsers({
+                    page: page,
+                    page_size: size,
+                    search: searchQuery,
+                }),
             )
             //     .unwrap()
             //     .catch((error: any) => {
@@ -375,7 +395,7 @@ const UserTable: React.FC<{
         } catch (error) {
             console.error('Failed to fetch users:', error)
             // toast.push(
-            //   <Notification title="Error" type="danger">
+            //   <Notification title="Error" closable={true} type="danger">
             //     Failed to fetch Users
             //   </Notification>
             // );
@@ -394,7 +414,7 @@ const UserTable: React.FC<{
 
     const onPaginationChange = (page: number) => {
         setTableData((prev) => ({ ...prev, pageIndex: page }))
-        fetchUserData(page, tableData.pageSize,search)
+        fetchUserData(page, tableData.pageSize, search)
     }
 
     const onSelectChange = (value: number) => {

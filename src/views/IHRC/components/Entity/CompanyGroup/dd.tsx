@@ -6,11 +6,11 @@
 // import OutlinedInput from '@/components/ui/OutlinedInput';
 // import AdaptableCard from '@/components/shared/AdaptableCard';
 // import { useAppDispatch } from '@/store';
-// import { 
-//     fetchCompanyGroups, 
+// import {
+//     fetchCompanyGroups,
 //     createCompanyGroup,
 //     updateCompanyGroup,
-//     deleteCompanyGroup 
+//     deleteCompanyGroup
 // } from '@/store/slices/companyGroup/companyGroupSlice';
 
 // const CompanyGroup = () => {
@@ -33,7 +33,7 @@
 //             }
 //         } catch (error) {
 //             toast.push(
-//                 <Notification title="Error" type="danger">
+//                 <Notification title="Error" closable={true} type="danger">
 //                     Failed to fetch company groups
 //                 </Notification>
 //             );
@@ -48,7 +48,7 @@
 //     const handleCreate = async () => {
 //         if (companyData.length > 0) {
 //             toast.push(
-//                 <Notification title="Error" type="danger">
+//                 <Notification title="Error" closable={true} type="danger">
 //                     Only one company group is allowed. Please delete the existing group first.
 //                 </Notification>
 //             );
@@ -57,7 +57,7 @@
 
 //         if (!companyGroupName.trim()) {
 //             toast.push(
-//                 <Notification title="Error" type="danger">
+//                 <Notification title="Error" closable={true} type="danger">
 //                     Please enter a valid company group name
 //                 </Notification>
 //             );
@@ -77,7 +77,7 @@
 //             );
 //         } catch (error) {
 //             toast.push(
-//                 <Notification title="Error" type="danger">
+//                 <Notification title="Error" closable={true} type="danger">
 //                     Failed to create company group
 //                 </Notification>
 //             );
@@ -88,7 +88,7 @@
 //     const handleEdit = async () => {
 //         if (!companyGroupName.trim()) {
 //             toast.push(
-//                 <Notification title="Error" type="danger">
+//                 <Notification title="Error" closable={true} type="danger">
 //                     Please enter a valid company group name
 //                 </Notification>
 //             );
@@ -112,7 +112,7 @@
 //             );
 //         } catch (error) {
 //             toast.push(
-//                 <Notification title="Error" type="danger">
+//                 <Notification title="Error" closable={true} type="danger">
 //                     Failed to update company group
 //                 </Notification>
 //             );
@@ -134,7 +134,7 @@
 //             );
 //         } catch (error) {
 //             toast.push(
-//                 <Notification title="Error" type="danger">
+//                 <Notification title="Error" closable={true} type="danger">
 //                     Failed to delete company group
 //                 </Notification>
 //             );
@@ -148,10 +148,10 @@
 //                 <div className="mb-4 lg:mb-0">
 //                     <h3 className="text-2xl font-bold">Company Group Manager</h3>
 //                 </div>
-//                 <Button 
-//                     variant="solid" 
-//                     onClick={() => setCreateDialogOpen(true)} 
-//                     icon={<HiPlusCircle />} 
+//                 <Button
+//                     variant="solid"
+//                     onClick={() => setCreateDialogOpen(true)}
+//                     icon={<HiPlusCircle />}
 //                     size="sm"
 //                     disabled={companyData.length > 0}
 //                 >
@@ -327,49 +327,37 @@
 
 // export default CompanyGroup;
 
-
-
-
-
-
-
-
-
-
-
-
-
-import React, { useState, useEffect, useMemo } from 'react';
-import { Button, Dialog, Notification, toast } from '@/components/ui';
-import { HiPlusCircle } from 'react-icons/hi';
-import OutlinedInput from '@/components/ui/OutlinedInput';
-import AdaptableCard from '@/components/shared/AdaptableCard';
-import DataTable from '@/components/shared/DataTable';
-import { useAppDispatch } from '@/store';
-import { 
-    fetchCompanyGroups, 
+import React, { useState, useEffect, useMemo } from 'react'
+import { Button, Dialog, Notification, toast } from '@/components/ui'
+import { HiPlusCircle } from 'react-icons/hi'
+import OutlinedInput from '@/components/ui/OutlinedInput'
+import AdaptableCard from '@/components/shared/AdaptableCard'
+import DataTable from '@/components/shared/DataTable'
+import { useAppDispatch } from '@/store'
+import {
+    fetchCompanyGroups,
     createCompanyGroup,
     updateCompanyGroup,
-    deleteCompanyGroup 
-} from '@/store/slices/companyGroup/companyGroupSlice';
-import { FiTrash } from 'react-icons/fi';
-import { MdEdit } from 'react-icons/md';
+    deleteCompanyGroup,
+} from '@/store/slices/companyGroup/companyGroupSlice'
+import { FiTrash } from 'react-icons/fi'
+import { MdEdit } from 'react-icons/md'
 
 const CompanyGroup = () => {
-    const dispatch = useAppDispatch();
-    const [isLoading, setIsLoading] = useState(false);
-    const [dialogLoading, setDialogLoading] = useState(false);
-    const [companyData, setCompanyData] = useState([]);
-    const [createDialogOpen, setCreateDialogOpen] = useState(false);
-    const [editDialogOpen, setEditDialogOpen] = useState(false);
-    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-    const [selectedGroup, setSelectedGroup] = useState(null);
-    const [companyGroupName, setCompanyGroupName] = useState('');
+    const dispatch = useAppDispatch()
+    const [isLoading, setIsLoading] = useState(false)
+    const [dialogLoading, setDialogLoading] = useState(false)
+    const [companyData, setCompanyData] = useState([])
+    const [createDialogOpen, setCreateDialogOpen] = useState(false)
+    const [editDialogOpen, setEditDialogOpen] = useState(false)
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+    const [selectedGroup, setSelectedGroup] = useState(null)
+    const [companyGroupName, setCompanyGroupName] = useState('')
     const [tableData, setTableData] = useState({
         total: 0,
         pageIndex: 1,
         pageSize: 10,
-    });
+    })
 
     const columns = useMemo(
         () => [
@@ -392,9 +380,9 @@ const CompanyGroup = () => {
                             variant="solid"
                             icon={<MdEdit />}
                             onClick={() => {
-                                setSelectedGroup(row.original);
-                                setCompanyGroupName(row.original.name);
-                                setEditDialogOpen(true);
+                                setSelectedGroup(row.original)
+                                setCompanyGroupName(row.original.name)
+                                setEditDialogOpen(true)
                             }}
                         >
                             Edit
@@ -404,8 +392,8 @@ const CompanyGroup = () => {
                             variant="solid"
                             icon={<FiTrash />}
                             onClick={() => {
-                                setSelectedGroup(row.original);
-                                setDeleteDialogOpen(true);
+                                setSelectedGroup(row.original)
+                                setDeleteDialogOpen(true)
                             }}
                         >
                             Delete
@@ -414,156 +402,163 @@ const CompanyGroup = () => {
                 ),
             },
         ],
-        []
-    );
+        [],
+    )
 
     const fetchCompanyDataTable = async (page = 1, pageSize = 10) => {
-        setIsLoading(true);
+        setIsLoading(true)
         try {
             const { payload: data } = await dispatch(
-                fetchCompanyGroups({ page, page_size: pageSize })
-            );
+                fetchCompanyGroups({ page, page_size: pageSize }),
+            )
             if (data?.data) {
-                setCompanyData(data.data);
-                setTableData(prev => ({
+                setCompanyData(data.data)
+                setTableData((prev) => ({
                     ...prev,
                     total: data.paginate_data?.totalResult || data.data.length,
                     pageIndex: page,
-                }));
+                }))
             }
         } catch (error) {
             toast.push(
-                <Notification title="Error" type="danger">
+                <Notification title="Error" closable={true} type="danger">
                     Failed to fetch company groups
-                </Notification>
-            );
+                </Notification>,
+            )
         }
-        setIsLoading(false);
-    };
+        setIsLoading(false)
+    }
 
     useEffect(() => {
-        fetchCompanyDataTable(tableData.pageIndex, tableData.pageSize);
-    }, [tableData.pageIndex, tableData.pageSize]);
+        fetchCompanyDataTable(tableData.pageIndex, tableData.pageSize)
+    }, [tableData.pageIndex, tableData.pageSize])
 
     const handleCreate = async () => {
         if (companyData.length > 0) {
             toast.push(
-                <Notification title="Error" type="danger">
-                    Only one company group is allowed. Please delete the existing group first.
-                </Notification>
-            );
-            return;
+                <Notification title="Error" closable={true} type="danger">
+                    Only one company group is allowed. Please delete the
+                    existing group first.
+                </Notification>,
+            )
+            return
         }
 
         if (!companyGroupName.trim()) {
             toast.push(
-                <Notification title="Error" type="danger">
+                <Notification title="Error" closable={true} type="danger">
                     Please enter a valid company group name
-                </Notification>
-            );
-            return;
+                </Notification>,
+            )
+            return
         }
 
-        setDialogLoading(true);
+        setDialogLoading(true)
         try {
-            await dispatch(createCompanyGroup({ name: companyGroupName })).unwrap();
-            await fetchCompanyDataTable();
-            setCreateDialogOpen(false);
-            setCompanyGroupName('');
+            await dispatch(
+                createCompanyGroup({ name: companyGroupName }),
+            ).unwrap()
+            await fetchCompanyDataTable()
+            setCreateDialogOpen(false)
+            setCompanyGroupName('')
             toast.push(
                 <Notification title="Success" type="success">
                     Company Group created successfully
-                </Notification>
-            );
+                </Notification>,
+            )
         } catch (error) {
             toast.push(
-                <Notification title="Error" type="danger">
+                <Notification title="Error" closable={true} type="danger">
                     Failed to create company group
-                </Notification>
-            );
+                </Notification>,
+            )
         }
-        setDialogLoading(false);
-    };
+        setDialogLoading(false)
+    }
 
     const handleEdit = async () => {
         if (!companyGroupName.trim()) {
             toast.push(
-                <Notification title="Error" type="danger">
+                <Notification title="Error" closable={true} type="danger">
                     Please enter a valid company group name
-                </Notification>
-            );
-            return;
+                </Notification>,
+            )
+            return
         }
 
-        setDialogLoading(true);
+        setDialogLoading(true)
         try {
-            await dispatch(updateCompanyGroup({
-                id: selectedGroup.id,
-                data: { name: companyGroupName }
-            })).unwrap();
-            await fetchCompanyDataTable();
-            setEditDialogOpen(false);
-            setCompanyGroupName('');
-            setSelectedGroup(null);
+            await dispatch(
+                updateCompanyGroup({
+                    id: selectedGroup.id,
+                    data: { name: companyGroupName },
+                }),
+            ).unwrap()
+            await fetchCompanyDataTable()
+            setEditDialogOpen(false)
+            setCompanyGroupName('')
+            setSelectedGroup(null)
             toast.push(
                 <Notification title="Success" type="success">
                     Company Group updated successfully
-                </Notification>
-            );
+                </Notification>,
+            )
         } catch (error) {
             toast.push(
-                <Notification title="Error" type="danger">
+                <Notification title="Error" closable={true} type="danger">
                     Failed to update company group
-                </Notification>
-            );
+                </Notification>,
+            )
         }
-        setDialogLoading(false);
-    };
+        setDialogLoading(false)
+    }
 
     const handleDelete = async () => {
-        setDialogLoading(true);
+        setDialogLoading(true)
         try {
-            await dispatch(deleteCompanyGroup(selectedGroup.id)).unwrap();
-            await fetchCompanyDataTable();
-            setDeleteDialogOpen(false);
-            setSelectedGroup(null);
+            await dispatch(deleteCompanyGroup(selectedGroup.id)).unwrap()
+            await fetchCompanyDataTable()
+            setDeleteDialogOpen(false)
+            setSelectedGroup(null)
             toast.push(
                 <Notification title="Success" type="success">
                     Company Group deleted successfully
-                </Notification>
-            );
+                </Notification>,
+            )
         } catch (error) {
             toast.push(
-                <Notification title="Error" type="danger">
+                <Notification title="Error" closable={true} type="danger">
                     Failed to delete company group
-                </Notification>
-            );
+                </Notification>,
+            )
         }
-        setDialogLoading(false);
-    };
+        setDialogLoading(false)
+    }
 
     const onPaginationChange = (page) => {
-        setTableData(prev => ({ ...prev, pageIndex: page }));
-    };
+        setTableData((prev) => ({ ...prev, pageIndex: page }))
+    }
 
     const onSelectChange = (pageSize) => {
-        setTableData(prev => ({
+        setTableData((prev) => ({
             ...prev,
             pageSize: Number(pageSize),
             pageIndex: 1,
-        }));
-    };
+        }))
+    }
 
     return (
         <AdaptableCard className="h-full" bodyClass="h-full">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-4">
                 <div className="mb-4 lg:mb-0">
-                    <h3 className="text-2xl font-bold">Company Group Manager</h3>
+                    <h3 className="text-2xl font-bold">
+                        Company Group Manager
+                    </h3>
                 </div>
-                <Button 
-                    variant="solid" 
-                    onClick={() => setCreateDialogOpen(true)} 
-                    icon={<HiPlusCircle />} 
+                <Button
+                    variant="solid"
+                    onClick={() => setCreateDialogOpen(true)}
+                    icon={<HiPlusCircle />}
                     size="sm"
                     disabled={companyData.length > 0}
                 >
@@ -590,12 +585,12 @@ const CompanyGroup = () => {
             <Dialog
                 isOpen={createDialogOpen}
                 onClose={() => {
-                    setCreateDialogOpen(false);
-                    setCompanyGroupName('');
+                    setCreateDialogOpen(false)
+                    setCompanyGroupName('')
                 }}
                 onRequestClose={() => {
-                    setCreateDialogOpen(false);
-                    setCompanyGroupName('');
+                    setCreateDialogOpen(false)
+                    setCompanyGroupName('')
                 }}
             >
                 <h5 className="mb-4">Create Company Group</h5>
@@ -610,8 +605,8 @@ const CompanyGroup = () => {
                     <Button
                         variant="plain"
                         onClick={() => {
-                            setCreateDialogOpen(false);
-                            setCompanyGroupName('');
+                            setCreateDialogOpen(false)
+                            setCompanyGroupName('')
                         }}
                         disabled={dialogLoading}
                     >
@@ -631,14 +626,14 @@ const CompanyGroup = () => {
             <Dialog
                 isOpen={editDialogOpen}
                 onClose={() => {
-                    setEditDialogOpen(false);
-                    setCompanyGroupName('');
-                    setSelectedGroup(null);
+                    setEditDialogOpen(false)
+                    setCompanyGroupName('')
+                    setSelectedGroup(null)
                 }}
                 onRequestClose={() => {
-                    setEditDialogOpen(false);
-                    setCompanyGroupName('');
-                    setSelectedGroup(null);
+                    setEditDialogOpen(false)
+                    setCompanyGroupName('')
+                    setSelectedGroup(null)
                 }}
             >
                 <h5 className="mb-4">Edit Company Group</h5>
@@ -653,9 +648,9 @@ const CompanyGroup = () => {
                     <Button
                         variant="plain"
                         onClick={() => {
-                            setEditDialogOpen(false);
-                            setCompanyGroupName('');
-                            setSelectedGroup(null);
+                            setEditDialogOpen(false)
+                            setCompanyGroupName('')
+                            setSelectedGroup(null)
                         }}
                         disabled={dialogLoading}
                     >
@@ -675,22 +670,25 @@ const CompanyGroup = () => {
             <Dialog
                 isOpen={deleteDialogOpen}
                 onClose={() => {
-                    setDeleteDialogOpen(false);
-                    setSelectedGroup(null);
+                    setDeleteDialogOpen(false)
+                    setSelectedGroup(null)
                 }}
                 onRequestClose={() => {
-                    setDeleteDialogOpen(false);
-                    setSelectedGroup(null);
+                    setDeleteDialogOpen(false)
+                    setSelectedGroup(null)
                 }}
             >
                 <h5 className="mb-4">Delete Company Group</h5>
-                <p>Are you sure you want to delete this company group? This action cannot be undone.</p>
+                <p>
+                    Are you sure you want to delete this company group? This
+                    action cannot be undone.
+                </p>
                 <div className="flex justify-end gap-2 mt-6">
                     <Button
                         variant="plain"
                         onClick={() => {
-                            setDeleteDialogOpen(false);
-                            setSelectedGroup(null);
+                            setDeleteDialogOpen(false)
+                            setSelectedGroup(null)
                         }}
                         disabled={dialogLoading}
                     >
@@ -706,7 +704,7 @@ const CompanyGroup = () => {
                 </div>
             </Dialog>
         </AdaptableCard>
-    );
-};
+    )
+}
 
-export default CompanyGroup;
+export default CompanyGroup

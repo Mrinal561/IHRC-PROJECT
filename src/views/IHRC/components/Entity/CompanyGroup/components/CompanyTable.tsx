@@ -1,85 +1,92 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import DataTable from '@/components/shared/DataTable';
-import { Button, Dialog, Tooltip, Notification, toast } from '@/components/ui';
-import { FiTrash } from 'react-icons/fi';
-import { MdEdit } from 'react-icons/md';
-import OutlinedInput from '@/components/ui/OutlinedInput';
-import { useAppDispatch } from '@/store';
-import { 
-    deleteCompanyGroup, 
+import React, { useState, useMemo, useEffect } from 'react'
+import DataTable from '@/components/shared/DataTable'
+import { Button, Dialog, Tooltip, Notification, toast } from '@/components/ui'
+import { FiTrash } from 'react-icons/fi'
+import { MdEdit } from 'react-icons/md'
+import OutlinedInput from '@/components/ui/OutlinedInput'
+import { useAppDispatch } from '@/store'
+import {
+    deleteCompanyGroup,
     updateCompanyGroup,
-    fetchCompanyGroups 
-} from '@/store/slices/companyGroup/companyGroupSlice';
-import { CompanyGroupData } from '@/store/slices/companyGroup/companyGroupSlice';
-import { showErrorNotification } from '@/components/ui/ErrorMessage';
+    fetchCompanyGroups,
+} from '@/store/slices/companyGroup/companyGroupSlice'
+import { CompanyGroupData } from '@/store/slices/companyGroup/companyGroupSlice'
+import { showErrorNotification } from '@/components/ui/ErrorMessage'
 import loadingAnimation from '@/assets/lotties/system-regular-716-spinner-three-dots-loop-scale.json'
-import Lottie from 'lottie-react';
+import Lottie from 'lottie-react'
 import { HiOutlineViewGrid } from 'react-icons/hi'
-import * as yup from 'yup';
+import * as yup from 'yup'
 
 interface ValidationErrors {
-    name?: string;
+    name?: string
 }
 
 const companySchema = yup.object().shape({
     name: yup
-      .string()
-      .required('Role name is required')
-      .min(3, 'Role name must be at least 3 characters')
-      .max(50, 'Role name must not exceed 50 characters')
-      .matches(/^\S.*\S$|^\S$/,'The input must not have leading or trailing spaces')
-    });
+        .string()
+        .required('Role name is required')
+        .min(3, 'Role name must be at least 3 characters')
+        .max(50, 'Role name must not exceed 50 characters')
+        .matches(
+            /^\S.*\S$|^\S$/,
+            'The input must not have leading or trailing spaces',
+        ),
+})
 
 interface CompanyTableProps {
-    companyData: CompanyGroupData[];
-    isLoading: boolean;
-    onDataChange: (page?: number, pageSize?: number) => void;
+    companyData: CompanyGroupData[]
+    isLoading: boolean
+    onDataChange: (page?: number, pageSize?: number) => void
 }
 
-const CompanyTable: React.FC<CompanyTableProps> = ({ 
-    companyData, 
-    isLoading, 
-    onDataChange 
+const CompanyTable: React.FC<CompanyTableProps> = ({
+    companyData,
+    isLoading,
+    onDataChange,
 }) => {
-    const dispatch = useAppDispatch();
+    const dispatch = useAppDispatch()
     const [loading, setLoading] = useState(false)
-    const [dialogIsOpen, setDialogIsOpen] = useState(false);
-    const [companyGroupTableData, setCompanyGroupTableData] = useState<CompanyGroupData[]>([]);
-    const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
-    const [itemToDelete, setItemToDelete] = useState<CompanyGroupData | null>(null);
-    const [itemToEdit, setItemToEdit] = useState<CompanyGroupData | null>(null);
-    const [editedCompanyGroupName, setEditedCompanyGroupName] = useState('');
-    const [errors, setErrors] = useState<ValidationErrors>({});
-    const [editedCreatedBy, setEditedCreatedBy] = useState<string | null>(null);
+    const [dialogIsOpen, setDialogIsOpen] = useState(false)
+    const [companyGroupTableData, setCompanyGroupTableData] = useState<
+        CompanyGroupData[]
+    >([])
+    const [editDialogIsOpen, setEditDialogIsOpen] = useState(false)
+    const [itemToDelete, setItemToDelete] = useState<CompanyGroupData | null>(
+        null,
+    )
+    const [itemToEdit, setItemToEdit] = useState<CompanyGroupData | null>(null)
+    const [editedCompanyGroupName, setEditedCompanyGroupName] = useState('')
+    const [errors, setErrors] = useState<ValidationErrors>({})
+    const [editedCreatedBy, setEditedCreatedBy] = useState<string | null>(null)
     const [tableData, setTableData] = useState({
         total: 0,
         pageIndex: 1,
         pageSize: 10,
         query: '',
         sort: { order: '', key: '' },
-    });
+    })
 
     useEffect(() => {
-        setCompanyGroupTableData(companyData);
-    }, [companyData]);
+        setCompanyGroupTableData(companyData)
+    }, [companyData])
 
     useEffect(() => {
-        fetchCompanyGroupData(tableData.pageIndex, tableData.pageSize);
-    }, [tableData.pageIndex, tableData.pageSize]);
+        fetchCompanyGroupData(tableData.pageIndex, tableData.pageSize)
+    }, [tableData.pageIndex, tableData.pageSize])
 
     const fetchCompanyGroupData = async (page: number, size: number) => {
         const { payload: data } = await dispatch(
-            fetchCompanyGroups({ page, page_size: size })
-        );
+            fetchCompanyGroups({ page, page_size: size }),
+        )
         if (data?.data) {
-            setCompanyGroupTableData(data.data);
+            setCompanyGroupTableData(data.data)
             // setTableData(prev => ({
             //     ...prev,
             //     total: data.paginate_data.totalResult,
             //     pageIndex: data.paginate_data.page,
             // }));
         }
-    };
+    }
 
     const columns = useMemo(
         () => [
@@ -88,7 +95,9 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
                 enableSorting: false,
                 accessorKey: 'name',
                 cell: (props) => (
-                    <div className="w-96 truncate">{props.getValue() as string}</div>
+                    <div className="w-96 truncate">
+                        {props.getValue() as string}
+                    </div>
                 ),
             },
             {
@@ -116,206 +125,214 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
                 ),
             },
         ],
-        []
-    );
+        [],
+    )
 
     const handleDeleteConfirm = async () => {
         if (itemToDelete?.id) {
             try {
-              const response=  await dispatch(deleteCompanyGroup(itemToDelete.id)).unwrap().catch((error: any) => {
-                throw error; // Re-throw to prevent navigation
-            });
+                const response = await dispatch(
+                    deleteCompanyGroup(itemToDelete.id),
+                )
+                    .unwrap()
+                    .catch((error: any) => {
+                        throw error // Re-throw to prevent navigation
+                    })
 
-            if(response){
-                handleDialogClose();
-                
-                const newTotal = tableData.total - 1;
-                const lastPage = Math.ceil(newTotal / tableData.pageSize);
-                const newPageIndex = tableData.pageIndex > lastPage ? lastPage : tableData.pageIndex;
-                
-                onDataChange(newPageIndex, tableData.pageSize);
-                showSuccessNotification('Company group deleted successfully');
-            }
+                if (response) {
+                    handleDialogClose()
+
+                    const newTotal = tableData.total - 1
+                    const lastPage = Math.ceil(newTotal / tableData.pageSize)
+                    const newPageIndex =
+                        tableData.pageIndex > lastPage
+                            ? lastPage
+                            : tableData.pageIndex
+
+                    onDataChange(newPageIndex, tableData.pageSize)
+                    showSuccessNotification(
+                        'Company group deleted successfully',
+                    )
+                }
             } catch (error) {
-                showErrorNotification(error);
-                console.log(error);
-                
+                showErrorNotification(error)
+                console.log(error)
             }
-            handleDialogClose();
+            handleDialogClose()
         }
-    };
+    }
 
     const validateForm = async () => {
         try {
-            await companySchema.validate({ name: editedCompanyGroupName }, { abortEarly: false });
-            setErrors({});
-            return true;
+            await companySchema.validate(
+                { name: editedCompanyGroupName },
+                { abortEarly: false },
+            )
+            setErrors({})
+            return true
         } catch (err) {
             if (err instanceof yup.ValidationError) {
-                const validationErrors: ValidationErrors = {};
+                const validationErrors: ValidationErrors = {}
                 err.inner.forEach((error) => {
                     if (error.path) {
-                        validationErrors[error.path as keyof ValidationErrors] = error.message;
+                        validationErrors[error.path as keyof ValidationErrors] =
+                            error.message
                     }
-                });
-                setErrors(validationErrors);
+                })
+                setErrors(validationErrors)
             }
-            return false;
+            return false
         }
-    };
+    }
 
-    useEffect(()=>{
-        validateForm();
-    },[editedCompanyGroupName])
+    useEffect(() => {
+        validateForm()
+    }, [editedCompanyGroupName])
 
     const handleEditConfirm = async () => {
-        
         // if (itemToEdit?.id && editedCompanyGroupName.trim()) {
-            try {
-                setLoading(true)
-                const isValid = await validateForm();
-                if(!isValid) {
-                    showErrorNotification("Please fix the validation Error");
-                    return
-                };
-                const result = await dispatch(updateCompanyGroup({
-                    id: itemToEdit.id,
-                    data: { 
-                        name: editedCompanyGroupName.trim(),
-                        created_by: editedCreatedBy 
-                    }
-                })).unwrap().catch((error: any) => {
-                    throw error; // Re-throw to prevent navigation
-                });
-
-                if (result) {
-                    onDataChange();
-                    handleDialogClose();
-                    showSuccessNotification('Company group updated successfully');
-                } 
-            } catch (error) {
-                console.error('Error updating company group:', error);
-                // showErrorNotification('Failed to update company group');
-            } finally{
-                setLoading(false)
+        try {
+            setLoading(true)
+            const isValid = await validateForm()
+            if (!isValid) {
+                showErrorNotification('Please fix the validation Error')
+                return
             }
+            const result = await dispatch(
+                updateCompanyGroup({
+                    id: itemToEdit.id,
+                    data: {
+                        name: editedCompanyGroupName.trim(),
+                        created_by: editedCreatedBy,
+                    },
+                }),
+            )
+                .unwrap()
+                .catch((error: any) => {
+                    throw error // Re-throw to prevent navigation
+                })
+
+            if (result) {
+                onDataChange()
+                handleDialogClose()
+                showSuccessNotification('Company group updated successfully')
+            }
+        } catch (error) {
+            console.error('Error updating company group:', error)
+            // showErrorNotification('Failed to update company group');
+        } finally {
+            setLoading(false)
+        }
         // } else {
         //     showErrorNotification('Please enter a valid company group name');
         // }
-    };
+    }
 
     const openDeleteDialog = (company: CompanyGroupData) => {
-        setItemToDelete(company);
-        setDialogIsOpen(true);
-    };
+        setItemToDelete(company)
+        setDialogIsOpen(true)
+    }
 
     const openEditDialog = (company: CompanyGroupData) => {
-        setItemToEdit(company);
-        setEditedCompanyGroupName(company.name);
-        setEditedCreatedBy(company.created_by);
-        setEditDialogIsOpen(true);
-    };
+        setItemToEdit(company)
+        setEditedCompanyGroupName(company.name)
+        setEditedCreatedBy(company.created_by)
+        setEditDialogIsOpen(true)
+    }
 
     const handleDialogClose = () => {
-        setDialogIsOpen(false);
-        setEditDialogIsOpen(false);
-        setItemToDelete(null);
-        setItemToEdit(null);
-        setEditedCompanyGroupName('');
-        setErrors({}); 
-    };
+        setDialogIsOpen(false)
+        setEditDialogIsOpen(false)
+        setItemToDelete(null)
+        setItemToEdit(null)
+        setEditedCompanyGroupName('')
+        setErrors({})
+    }
 
     const showSuccessNotification = (message: string) => {
         toast.push(
             <Notification title="Success" type="success">
                 {message}
-            </Notification>
-        );
-    };
+            </Notification>,
+        )
+    }
 
     // const showErrorNotification = (message: string) => {
     //     toast.push(
-    //         <Notification title="Error" type="danger">
+    //         <Notification title="Error" closable={true} type="danger">
     //             {message}
     //         </Notification>
     //     );
     // };
 
     const onPaginationChange = (page: number) => {
-        setTableData(prev => ({ ...prev, pageIndex: page }));
-    };
+        setTableData((prev) => ({ ...prev, pageIndex: page }))
+    }
 
     const onSelectChange = (value: number) => {
-        setTableData(prev => ({
+        setTableData((prev) => ({
             ...prev,
             pageSize: Number(value),
             pageIndex: 1,
-        }));
-    };
+        }))
+    }
 
     if (isLoading) {
-        console.log("Loading....................");
-        
+        console.log('Loading....................')
+
         return (
             <div className="flex flex-col items-center justify-center h-96 text-gray-500  rounded-xl">
                 <div className="w-28 h-28">
-                    <Lottie 
-                        animationData={loadingAnimation} 
-                        loop 
+                    <Lottie
+                        animationData={loadingAnimation}
+                        loop
                         className="w-24 h-24"
                     />
                 </div>
-                <p className="text-lg font-semibold">
-                    Loading Data...
-                </p>
-    
+                <p className="text-lg font-semibold">Loading Data...</p>
             </div>
-        );
+        )
     }
-
 
     return (
         <div className="relative">
-
-{companyGroupTableData.length === 0 ? (
+            {companyGroupTableData.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-96 text-gray-500 border rounded-xl">
-                <HiOutlineViewGrid className="w-12 h-12 mb-4 text-gray-300" />
-                <p className="text-center">
-        No Data Available
-                </p>
-      </div>
+                    <HiOutlineViewGrid className="w-12 h-12 mb-4 text-gray-300" />
+                    <p className="text-center">No Data Available</p>
+                </div>
             ) : (
-            <DataTable
-                columns={columns}
-                data={companyGroupTableData}
-                skeletonAvatarColumns={[0]}
-                skeletonAvatarProps={{ className: 'rounded-md' }}
-                loading={isLoading}
-                // pagingData={{
-                //     total: tableData.total,
-                //     pageIndex: tableData.pageIndex,
-                //     pageSize: tableData.pageSize,
-                // }}
-                // onPaginationChange={onPaginationChange}
-                // onSelectChange={onSelectChange}
-                stickyHeader={true}
-                stickyFirstColumn={true}
-                stickyLastColumn={true}
-                pageSizes={[]} 
-                 onPaginationChange={() => {}} 
-                onSelectChange={() => {}}
-            />
+                <DataTable
+                    columns={columns}
+                    data={companyGroupTableData}
+                    skeletonAvatarColumns={[0]}
+                    skeletonAvatarProps={{ className: 'rounded-md' }}
+                    loading={isLoading}
+                    // pagingData={{
+                    //     total: tableData.total,
+                    //     pageIndex: tableData.pageIndex,
+                    //     pageSize: tableData.pageSize,
+                    // }}
+                    // onPaginationChange={onPaginationChange}
+                    // onSelectChange={onSelectChange}
+                    stickyHeader={true}
+                    stickyFirstColumn={true}
+                    stickyLastColumn={true}
+                    pageSizes={[]}
+                    onPaginationChange={() => {}}
+                    onSelectChange={() => {}}
+                />
             )}
             <Dialog
                 isOpen={dialogIsOpen}
                 onClose={handleDialogClose}
                 onRequestClose={handleDialogClose}
-                shouldCloseOnOverlayClick={false} 
+                shouldCloseOnOverlayClick={false}
             >
                 <h5 className="mb-4">Confirm Deletion</h5>
                 <p>
-                    Are you sure you want to delete the company group "{itemToDelete?.name}"? 
-                    This action cannot be undone.
+                    Are you sure you want to delete the company group "
+                    {itemToDelete?.name}"? This action cannot be undone.
                 </p>
                 <div className="text-right mt-6">
                     <Button
@@ -325,10 +342,7 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
                     >
                         Cancel
                     </Button>
-                    <Button 
-                        variant="solid" 
-                        onClick={handleDeleteConfirm}
-                    >
+                    <Button variant="solid" onClick={handleDeleteConfirm}>
                         Delete
                     </Button>
                 </div>
@@ -344,11 +358,15 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
                     <OutlinedInput
                         label="Company Group Name"
                         value={editedCompanyGroupName}
-                        onChange={(value: string) => setEditedCompanyGroupName(value)}
+                        onChange={(value: string) =>
+                            setEditedCompanyGroupName(value)
+                        }
                     />
                     {errors.name && (
-              <div className="text-red-500 text-sm mt-1">{errors.name}</div>
-            )}
+                        <div className="text-red-500 text-sm mt-1">
+                            {errors.name}
+                        </div>
+                    )}
                 </div>
                 <div className="text-right mt-6">
                     <Button
@@ -358,9 +376,9 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
                     >
                         Cancel
                     </Button>
-                    <Button 
-                    loading={loading}
-                        variant="solid" 
+                    <Button
+                        loading={loading}
+                        variant="solid"
                         onClick={handleEditConfirm}
                     >
                         Confirm
@@ -368,7 +386,7 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
                 </div>
             </Dialog>
         </div>
-    );
-};
+    )
+}
 
-export default CompanyTable;
+export default CompanyTable
