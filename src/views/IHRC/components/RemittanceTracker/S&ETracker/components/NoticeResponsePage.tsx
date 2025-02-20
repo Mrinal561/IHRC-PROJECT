@@ -612,7 +612,7 @@ const NoticeResponsePage = () => {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">Criticality</label>
+            {/* <label className="text-sm font-medium">Criticality</label> */}
             <CriticalityAutoSuggest
               value={form.criticality}
               onChange={(value) => handleChange('criticality', value)}

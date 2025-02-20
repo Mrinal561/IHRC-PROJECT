@@ -348,19 +348,20 @@ const NoticeTimelinePage = () => {
 
     const transformTimelineData = (data: any[]): TimelineResponse[] => {
         return data.map((item) => {
-            if (item.type === 'NOTICE_CREATED') {
-                return {
-                    replyDetails: item.data.notice_detail,
-                    replyDate: item.date,
-                    status: 'open', // Default status for notice creation
-                    criticality: 'new notice',
-                    document: {
-                        name: item.data.document.split('/').pop(),
-                       url: `${baseUrl}/${item.data.document}`
-                    },
-                    respondedBy: item.user.name
-                };
-            } else if (item.type === 'NOTICE_REPLY') {
+            // if (item.type === 'NOTICE_CREATED') {
+            //     return {
+            //         replyDetails: item.data.notice_detail,
+            //         replyDate: item.date,
+            //         status: 'open', // Default status for notice creation
+            //         criticality: 'new notice',
+            //         document: {
+            //             name: item.data.document.split('/').pop(),
+            //            url: `${baseUrl}/${item.data.document}`
+            //         },
+            //         respondedBy: item.user.name
+            //     };
+            // } 
+             if (item.type === 'NOTICE_REPLY') {
                 return {
                     replyDetails: item.data.reply_text,
                     replyDate: item.date,
