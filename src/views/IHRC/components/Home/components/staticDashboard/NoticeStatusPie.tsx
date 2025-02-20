@@ -418,7 +418,7 @@ const NoticeStatusPie = () => {
       colors: ['#fff']
     },
     dataLabels: {
-      enabled: true,
+      enabled: false,
       formatter: function(val: number) {
         if (typeof val === 'number') {
           return val.toFixed(1);

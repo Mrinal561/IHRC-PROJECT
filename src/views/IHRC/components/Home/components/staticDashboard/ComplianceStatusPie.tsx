@@ -127,7 +127,7 @@ const ComplianceStatusPie = () => {
       colors: ['#fff']
     },
     dataLabels: {
-      enabled: true,
+      enabled: false,
       formatter: function(val: number) {
         if (typeof val === 'number') {
           return val.toFixed(1) + '%';
@@ -150,7 +150,7 @@ const ComplianceStatusPie = () => {
       enabled: true,
       y: {
         formatter: function(val: number) {
-          return val + '%';
+          return val.toString();
         }
       }
     },
@@ -202,7 +202,7 @@ const ComplianceStatusPie = () => {
             className="text-base font-bold mt-1" 
             style={{ color: options.colors?.[index] }}
           >
-            {data.series[index]}%
+            {data.series[index]}
           </div>
         </div>
       ))}

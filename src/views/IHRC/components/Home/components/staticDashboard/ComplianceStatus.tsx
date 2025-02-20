@@ -93,7 +93,7 @@ const ComplianceStatus = () => {
   
         
   const data = {
-    series: [38.9, 16.7, 44.4, 20],  // Complied, Not Complied, Complied with Delay, Not Applicable
+    series: [38, 16, 44, 20],  // Complied, Not Complied, Complied with Delay, Not Applicable
     labels: ['Complied', 'Not Complied', 'Complied with Delay', 'Not Applicable']
   };
 
@@ -139,7 +139,7 @@ const ComplianceStatus = () => {
       colors: ['#fff']
     },
     dataLabels: {
-      enabled: true,
+      enabled: false,
       formatter: function(val: number) {
         if (typeof val === 'number') {
           return val.toFixed(1) + '%';
@@ -162,7 +162,7 @@ const ComplianceStatus = () => {
       enabled: true,
       y: {
         formatter: function(val: number) {
-          return val + '%';
+          return val.toString();
         }
       }
     },
@@ -214,7 +214,7 @@ const ComplianceStatus = () => {
             className="text-base font-bold mt-1" 
             style={{ color: options.colors?.[index] }}
           >
-            {data.series[index]}%
+            {data.series[index]}
           </div>
         </div>
       ))}

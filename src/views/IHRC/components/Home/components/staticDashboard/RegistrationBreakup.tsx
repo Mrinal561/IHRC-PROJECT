@@ -114,7 +114,7 @@ const RegistrationsBreakup = () => {
         },
     ];
 
-    const colors = ['#1e3a8a', '#FFA500', '#008000', '#0ea5e9', '#8A2BE2']; // Colors for each bar
+    const colors = ['#1e3a8a', '#ffc107', '#00c853', '#0ea5e9', '#8A2BE2']; // Colors for each bar
 
     const options = {
         chart: {
