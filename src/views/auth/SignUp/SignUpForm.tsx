@@ -158,7 +158,6 @@
 
 // export default SignUpForm
 
-
 import { FormItem, FormContainer } from '@/components/ui/Form'
 import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
@@ -195,7 +194,7 @@ const validationSchema = Yup.object().shape({
     password: Yup.string().required('Please enter your password'),
     confirmPassword: Yup.string().oneOf(
         [Yup.ref('password')],
-        'Your passwords do not match'
+        'Your passwords do not match',
     ),
 })
 
@@ -220,30 +219,30 @@ const SignUpForm = (props: SignUpFormProps) => {
                 </Notification>,
                 {
                     placement: 'top-end',
-                }
+                },
             )
-            
+
             // Redirect to sign in page after successful signup
             navigate(signInUrl)
         } catch (error) {
             const err = error as AxiosError
             if (err.response?.status === 400) {
                 toast.push(
-                    <Notification title="error" type="danger">
+                    <Notification title="Error" closable={true} type="danger">
                         Email already exists
                     </Notification>,
                     {
                         placement: 'top-end',
-                    }
+                    },
                 )
             } else {
                 toast.push(
-                    <Notification title="error" type="danger">
+                    <Notification title="Error" closable={true} type="danger">
                         Something went wrong! Please try again.
                     </Notification>,
                     {
                         placement: 'top-end',
-                    }
+                    },
                 )
             }
         }

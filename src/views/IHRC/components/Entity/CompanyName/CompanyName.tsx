@@ -67,7 +67,7 @@
 //     } catch (error) {
 //       console.error('Failed to load default company group:', error);
 //       toast.push(
-//         <Notification title="Error" type="danger">
+//         <Notification title="Error" closable={true} type="danger">
 //           Failed to load company group
 //         </Notification>
 //       );
@@ -98,7 +98,7 @@
 //     } catch (error) {
 //       console.error('Failed to fetch companies:', error);
 //       toast.push(
-//         <Notification title="Error" type="danger">
+//         <Notification title="Error" closable={true} type="danger">
 //           Failed to fetch companies
 //         </Notification>
 //       );
@@ -369,7 +369,7 @@ const CompanyName = () => {
         } catch (error) {
             console.error('Failed to load default company group:', error)
             toast.push(
-                <Notification title="Error" type="danger">
+                <Notification title="Error" closable={true} type="danger">
                     Failed to load company group
                 </Notification>,
             )
@@ -406,7 +406,7 @@ const CompanyName = () => {
         } catch (error) {
             console.error('Failed to fetch companies:', error)
             toast.push(
-                <Notification title="Error" type="danger">
+                <Notification title="Error" closable={true} type="danger">
                     Failed to fetch companies
                 </Notification>,
             )

@@ -27,25 +27,25 @@
 // import useQuery from '@/utils/hooks/useQuery'
 // import appConfig from '@/configs/app.config'
 // import { showErrorNotification } from '@/components/ui/ErrorMessage'
- 
+
 // interface SignInFormProps extends CommonProps {
 //     disableSubmit?: boolean
 //     forgotPasswordUrl?: string
 //     signUpUrl?: string
 // }
- 
+
 // type SignInFormSchema = {
 //     userName: string
 //     password: string
 //     // rememberMe: boolean
 // }
- 
+
 // const validationSchema = Yup.object().shape({
 //     userName: Yup.string().required('Please enter your user name'),
 //     password: Yup.string().required('Please enter your password'),
 //     rememberMe: Yup.bool(),
 // })
- 
+
 // const SignInForm = (props: SignInFormProps) => {
 //     const {
 //         disableSubmit = false,
@@ -53,15 +53,15 @@
 //         forgotPasswordUrl = '/forgot-password',
 //         signUpUrl = '/sign-up',
 //     } = props
- 
+
 //     const [message, setMessage] = useTimeOutMessage()
 //     const query = useQuery()
- 
+
 //     const { LogIn } = useAuth()
 //     const dispatch = useAppDispatch()
 //     const navigate = useNavigate()
 //     const [loading, setLoading] = useState(false)
- 
+
 //     const onSignIn = async (values: SignInFormSchema) => {
 //         setLoading(true)
 //         try {
@@ -84,9 +84,9 @@
 //                 throw error; // Re-throw to prevent navigation
 //             });
 //             console.log('API call succeeded:', result) // Your existing log
-    
+
 //             Cookies.set('token', result.access_token, { path: '/' })
-    
+
 //             // Your existing fetchAuthUser logic
 //             dispatch(fetchAuthUser()).then(({ payload }) => {
 //                 if (payload) {
@@ -110,12 +110,12 @@
 //                     // )
 //                 }
 //             })
-    
+
 //             setLoading(false)
 //         } catch (error: any) {
 //             if (error?.response?.status === 401) {
 //                 toast.push(
-//                     <Notification title="error" type="danger">
+//                     <Notification title="Error" closable={true} type="danger">
 //                         Invalid email or password{' '}
 //                     </Notification>,
 //                     {
@@ -124,7 +124,7 @@
 //                 )
 //             } else {
 //                 // toast.push(
-//                 //     <Notification title="error" type="danger">
+//                 //     <Notification title="Error" closable={true} type="danger">
 //                 //         Something went wrong! Please Try again.{' '}
 //                 //     </Notification>,
 //                 //     {
@@ -136,7 +136,7 @@
 //             setLoading(false)
 //         }
 //     }
- 
+
 //     return (
 //         <div className={className}>
 //             {message && (
@@ -220,7 +220,7 @@
 //         </div>
 //     )
 // }
- 
+
 // export default SignInForm
 import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
@@ -249,7 +249,7 @@ import { useState } from 'react'
 import { REDIRECT_URL_KEY } from '@/constants/app.constant'
 import useQuery from '@/utils/hooks/useQuery'
 import appConfig from '@/configs/app.config'
- 
+
 interface SignInFormProps extends CommonProps {
     disableSubmit?: boolean
     forgotPasswordUrl?: string
@@ -293,11 +293,11 @@ const SignInForm = (props: SignInFormProps) => {
                 password: values.password,
             })
             console.log('API call succeeded:', data) // Check if this logs
- 
+
             console.log(data)
- 
+
             Cookies.set('token', data.access_token, { path: '/' })
- 
+
             dispatch(fetchAuthUser()).then(({ payload }) => {
                 if (payload) {
                     dispatch(setIsAuthenticated(true))
@@ -335,14 +335,14 @@ const SignInForm = (props: SignInFormProps) => {
                     // showErrorNotification()
                 }
             })
- 
+
             setLoading(false)
         } catch (error) {
             console.log(error)
             const err = error as AxiosError
             if (err.response?.status == 401) {
                 toast.push(
-                    <Notification title="Error" type="danger">
+                    <Notification title="Error" closable={true} type="danger">
                         Invalid email or password{' '}
                     </Notification>,
                     {
@@ -351,8 +351,8 @@ const SignInForm = (props: SignInFormProps) => {
                 )
             } else {
                 toast.push(
-                    <Notification title="Error" type="danger">
-                       {error.response.data.message}
+                    <Notification title="Error" closable={true} type="danger">
+                        {error.response.data.message}
                     </Notification>,
                     {
                         placement: 'top-end',
@@ -360,7 +360,7 @@ const SignInForm = (props: SignInFormProps) => {
                 )
             }
         }
- 
+
         setLoading(false)
     }
 

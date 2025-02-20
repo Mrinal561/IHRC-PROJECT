@@ -22,61 +22,62 @@ import { AppDispatch } from '@/store'
 import { createEsiSetup } from '@/services/EsiSetupService'
 import { createPF } from '@/store/slices/pfSetup/pfSlice'
 import { showErrorNotification } from '@/components/ui/ErrorMessage'
-import * as yup from 'yup';
+import * as yup from 'yup'
 import OutlinedPasswordInput from '@/components/ui/OutlinedInput/OutlinedPasswordInput'
 
 const pfSetupSchema = yup.object().shape({
     pf_code: yup
         .string()
         .required('PF Code is required')
-        .matches(/^[A-Za-z0-9]+$/, 'ESI code must contain only letters and numbers'),
-    
+        .matches(
+            /^[A-Za-z0-9]+$/,
+            'ESI code must contain only letters and numbers',
+        ),
+
     state_id: yup
         .number()
         .required('State is required')
         .min(1, 'Please select a state'),
-    
+
     district: yup
         .string()
         .required('District is required')
         .min(2, 'District name must be at least 2 characters'),
-    
+
     location: yup
         .string()
         .required('Location is required')
         .min(2, 'Location must be at least 2 characters'),
-    
-    pf_user: yup
-        .string(),
-    
-    password: yup
-        .string(),
 
-    
+    pf_user: yup.string(),
+
+    password: yup.string(),
+
     register_date: yup
         .date()
         .required('Registration date is required')
         .max(new Date(), 'Registration date cannot be in the future'),
-    
+
     // register_certificate: yup
     //     .string()
     //     .required('Registration certificate is required'),
-    
-    signatory_data: yup.array().of(
-        yup.object().shape({
-            signatory_id: yup.number().required('Signatory ID is required'),
-            dsc_validity: yup
-                .string()
-                .required('DSC validity date is required'),
-            e_sign_status: yup
-                .string()
-                .required('E-sign status is required')
-                .oneOf(['active', 'inactive'], 'Invalid e-sign status'),
-        })
-    ).min(1, 'At least one signatory is required'),
+
+    signatory_data: yup
+        .array()
+        .of(
+            yup.object().shape({
+                signatory_id: yup.number().required('Signatory ID is required'),
+                dsc_validity: yup
+                    .string()
+                    .required('DSC validity date is required'),
+                e_sign_status: yup
+                    .string()
+                    .required('E-sign status is required')
+                    .oneOf(['active', 'inactive'], 'Invalid e-sign status'),
+            }),
+        )
+        .min(1, 'At least one signatory is required'),
 })
-
-
 
 interface PFSetupData {
     group_id: number
@@ -93,11 +94,11 @@ interface PFSetupData {
 }
 
 interface LocationState {
-    companyName?: string;
-    companyGroupName?: string;
-    companyId?: string;
-    groupId?: string;
-  }
+    companyName?: string
+    companyGroupName?: string
+    companyId?: string
+    groupId?: string
+}
 
 interface PFSetupPageProps {
     onClose: () => void
@@ -137,16 +138,15 @@ interface Location {
 }
 
 const PFSetupPage: React.FC = () => {
-
     const [errors, setErrors] = useState<{ [key: string]: string }>({})
     const navigate = useNavigate()
     const location = useLocation()
-  const locationState = location.state as LocationState;
-  
-  const companyGroupName = locationState?.companyGroupName;
-  const companyName = locationState?.companyName;
-  const companyId = locationState?.companyId;
-  const groupId = locationState?.groupId;
+    const locationState = location.state as LocationState
+
+    const companyGroupName = locationState?.companyGroupName
+    const companyName = locationState?.companyName
+    const companyId = locationState?.companyId
+    const groupId = locationState?.groupId
     const companyData = location.state?.companyData
     const [fileBase64, setFileBase64] = useState<string>('')
     const dispatch = useDispatch<AppDispatch>()
@@ -178,7 +178,7 @@ const PFSetupPage: React.FC = () => {
         number | undefined
     >()
     const [selectedLocationId, setSelectedLocationId] = useState('')
-    const [formTouched, setFormTouched] = useState(false);
+    const [formTouched, setFormTouched] = useState(false)
     const [pfSetupData, setPfSetupData] = useState<PFSetupData>({
         group_id: 0,
         company_id: 0,
@@ -193,8 +193,6 @@ const PFSetupPage: React.FC = () => {
         password: '',
     })
     const [isSubmitted, setIsSubmitted] = useState(false)
-    
-    
 
     const convertToBase64 = (file: File): Promise<string> => {
         return new Promise((resolve, reject) => {
@@ -226,7 +224,7 @@ const PFSetupPage: React.FC = () => {
                     error,
                 )
                 toast.push(
-                    <Notification title="Error" type="danger">
+                    <Notification title="Error" closable={true} type="danger">
                         Failed to process registration certificate
                     </Notification>,
                 )
@@ -260,7 +258,7 @@ const PFSetupPage: React.FC = () => {
         } catch (error) {
             console.error(`Error converting ${fileType} to base64:`, error)
             toast.push(
-                <Notification title="Error" type="danger">
+                <Notification title="Error" closable={true} type="danger">
                     Failed to process{' '}
                     {fileType === 'dsc_document' ? 'DSC' : 'E-Sign'} document
                 </Notification>,
@@ -292,10 +290,13 @@ const PFSetupPage: React.FC = () => {
                 err.inner.forEach((error) => {
                     if (error.path) {
                         if (error.path.startsWith('signatory_data[')) {
-                            const match = error.path.match(/signatory_data\[(\d+)\]\.(.+)/)
+                            const match = error.path.match(
+                                /signatory_data\[(\d+)\]\.(.+)/,
+                            )
                             if (match) {
                                 const [_, index, field] = match
-                                newErrors[`signatory_data_${index}_${field}`] = error.message
+                                newErrors[`signatory_data_${index}_${field}`] =
+                                    error.message
                             }
                         } else {
                             newErrors[error.path] = error.message
@@ -316,23 +317,22 @@ const PFSetupPage: React.FC = () => {
         }
         validateChangedFields()
     }, [pfSetupData, isSubmitted])
-    
-useEffect(()=>{
 
-   if (formTouched) {
-        validateForm();
-    }
-},[pfSetupData])
+    useEffect(() => {
+        if (formTouched) {
+            validateForm()
+        }
+    }, [pfSetupData])
     // Handle submit with base64 files
     const handleSubmit = async () => {
         setIsSubmitted(true)
         const isValid = await validateForm()
-        
+
         if (!isValid) {
             toast.push(
                 <Notification title="Validation Error" type="danger">
                     Please fix the highlighted errors to continue
-                </Notification>
+                </Notification>,
             )
             return
         }
@@ -342,7 +342,7 @@ useEffect(()=>{
             Company_Group_Name: companyGroupName,
             Company_Name: companyName,
             company_id: companyId,
-            group_id: groupId
+            group_id: groupId,
         }
 
         try {
@@ -357,7 +357,7 @@ useEffect(()=>{
                         <div className="flex items-center">
                             <span>PF Setup successfully created</span>
                         </div>
-                    </Notification>
+                    </Notification>,
                 )
                 navigate(-1)
             }
@@ -365,7 +365,6 @@ useEffect(()=>{
             console.error('Error submitting PF setup:', error)
         }
     }
-
 
     const getErrorMessage = (field: string, signatoryIndex?: number) => {
         if (signatoryIndex !== undefined) {
@@ -396,7 +395,7 @@ useEffect(()=>{
         } catch (error) {
             console.error('Failed to load company groups:', error)
             toast.push(
-                <Notification title="Error" type="danger">
+                <Notification title="Error" closable={true} type="danger">
                     Failed to load company groups
                 </Notification>,
             )
@@ -430,7 +429,7 @@ useEffect(()=>{
         } catch (error: any) {
             console.error('Failed to load companies:', error)
             toast.push(
-                <Notification title="Error" type="danger">
+                <Notification title="Error" closable={true} type="danger">
                     {error.response?.data?.message ||
                         'Failed to load companies'}
                 </Notification>,
@@ -468,19 +467,19 @@ useEffect(()=>{
         try {
             const response = await httpClient.get(endpoints.user.getAll(), {
                 params: {
-                  'company_id[]': companyId
-                }
-              });
+                    'company_id[]': companyId,
+                },
+            })
             console.log('Users API Response:', response.data)
 
             if (response.data) {
                 // Format the users data to only include name and id
                 const formattedUsers = response.data.data
-                .filter((user: any) => user.user_details.auth_signatory)
-                .map((user: any) => ({
-                    id: user.user_details.id,
-                    name: `${user.user_details.name}`,
-                }))
+                    .filter((user: any) => user.user_details.auth_signatory)
+                    .map((user: any) => ({
+                        id: user.user_details.id,
+                        name: `${user.user_details.name}`,
+                    }))
 
                 setUsers(formattedUsers)
                 console.log('Formatted Users:', formattedUsers)
@@ -488,7 +487,7 @@ useEffect(()=>{
         } catch (error) {
             console.error('Failed to load users:', error)
             toast.push(
-                <Notification title="Error" type="danger">
+                <Notification title="Error" closable={true} type="danger">
                     Failed to load users
                 </Notification>,
             )
@@ -525,7 +524,7 @@ useEffect(()=>{
         } catch (error) {
             console.error('Failed to load states:', error)
             toast.push(
-                <Notification title="Error" type="danger">
+                <Notification title="Error" closable={true} type="danger">
                     Failed to load states
                 </Notification>,
             )
@@ -558,15 +557,15 @@ useEffect(()=>{
 
     const handleInputChange = async (
         field: keyof PFSetupData,
-        value: string | Date | null | File | string[]
+        value: string | Date | null | File | string[],
     ) => {
-        setPfSetupData(prev => ({ ...prev, [field]: value }))
-        
+        setPfSetupData((prev) => ({ ...prev, [field]: value }))
+
         if (isSubmitted) {
             const error = await validateField(field, value)
-            setErrors(prev => ({
+            setErrors((prev) => ({
                 ...prev,
-                [field]: error
+                [field]: error,
             }))
         }
     }
@@ -590,10 +589,13 @@ useEffect(()=>{
         }))
 
         if (isSubmitted) {
-            const error = await validateField('signatory_data', newSignatoryData)
-            setErrors(prev => ({
+            const error = await validateField(
+                'signatory_data',
+                newSignatoryData,
+            )
+            setErrors((prev) => ({
                 ...prev,
-                signatory_data: error
+                signatory_data: error,
             }))
         }
 
@@ -654,11 +656,11 @@ useEffect(()=>{
                             value={selectedCompanyGroup}
                             onChange={setSelectedCompanyGroup}
                         /> */}
-                         <OutlinedInput
+                        <OutlinedInput
                             label="Company Group"
                             value={companyGroupName}
                             disabled
-                            />
+                        />
                     </div>
                     <div>
                         <p className="mb-2"> Company</p>
@@ -670,27 +672,33 @@ useEffect(()=>{
                                 setSelectedCompany(option)
                             }}
                         /> */}
-                         <OutlinedInput
+                        <OutlinedInput
                             label="Company"
                             value={companyName}
                             disabled
-                            />
+                        />
                     </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                     <div>
-                        <p className="mb-2"> PF code <span className="text-red-500">*</span></p>
+                        <p className="mb-2">
+                            {' '}
+                            PF code <span className="text-red-500">*</span>
+                        </p>
                         <OutlinedInput
                             label="Enter PF Code"
                             value={pfSetupData.pf_code}
                             onChange={(value: string) =>
                                 handleInputChange('pf_code', value)
                             }
-                            />
-                            {getErrorMessage('pf_code')}
+                        />
+                        {getErrorMessage('pf_code')}
                     </div>
                     <div>
-                        <p className="mb-2"> State <span className="text-red-500">*</span></p>
+                        <p className="mb-2">
+                            {' '}
+                            State <span className="text-red-500">*</span>
+                        </p>
                         <OutlinedSelect
                             label="Select State"
                             options={states}
@@ -774,7 +782,8 @@ useEffect(()=>{
                 <div className="grid grid-cols-2 gap-4">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                            PF Registration Date <span className="text-red-500">*</span>
+                            PF Registration Date{' '}
+                            <span className="text-red-500">*</span>
                         </label>
                         <DatePicker
                             placeholder="Pick a Date"
@@ -782,38 +791,39 @@ useEffect(()=>{
                             onChange={(date: Date | null) =>
                                 handleInputChange('register_date', date)
                             }
-                            inputFormat="DD-MM-YYYY"  // Changed to uppercase format tokens
+                            inputFormat="DD-MM-YYYY" // Changed to uppercase format tokens
                             yearLabelFormat="YYYY"
                             monthLabelFormat="MMMM YYYY"
                         />
                         {getErrorMessage('register_date')}
                     </div>
                     <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                    PF Certificate (PDF/Zip/Image, Max 20MB)<span className="text-red-500">*</span>
-                    </label>
-                    <Input
-                    accept='.pdf,.zip,.jpg'
-                        type="file"
-                        onChange={handleRegistrationCertificateUpload}
-                    />
-                    {getErrorMessage('register_certificate')}
-                </div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            PF Certificate (PDF/Zip/Image, Max 20MB)
+                            <span className="text-red-500">*</span>
+                        </label>
+                        <Input
+                            accept=".pdf,.zip,.jpg"
+                            type="file"
+                            onChange={handleRegistrationCertificateUpload}
+                        />
+                        {getErrorMessage('register_certificate')}
+                    </div>
                 </div>
                 <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Select Authorised Signatories
-                        </label>
-                        <Select
-                            isMulti
-                            options={users.map((user) => ({
-                                value: String(user.id), // Use ID as value
-                                label: user.name,
-                            }))}
-                            onChange={handleSignatoryChange}
-                        />
-                         {getErrorMessage('signatory_data')}
-                    </div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Select Authorised Signatories
+                    </label>
+                    <Select
+                        isMulti
+                        options={users.map((user) => ({
+                            value: String(user.id), // Use ID as value
+                            label: user.name,
+                        }))}
+                        onChange={handleSignatoryChange}
+                    />
+                    {getErrorMessage('signatory_data')}
+                </div>
                 {selectedSignatories.length > 0 && (
                     <div className="space-y-4 border rounded-lg p-4">
                         <h6 className="font-semibold">Selected Signatories</h6>
@@ -854,7 +864,10 @@ useEffect(()=>{
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-4">
                                                 {' '}
-                                                DSC Valid Upto{' '} <span className="text-red-500">*</span>
+                                                DSC Valid Upto{' '}
+                                                <span className="text-red-500">
+                                                    *
+                                                </span>
                                             </label>
                                             <DatePicker
                                                 size="sm"
@@ -870,7 +883,10 @@ useEffect(()=>{
                                                     )
                                                 }}
                                             />
-                                            {getErrorMessage('dsc_validity', index)}
+                                            {getErrorMessage(
+                                                'dsc_validity',
+                                                index,
+                                            )}
                                         </div>
                                     </div>
                                     <div>
@@ -902,7 +918,10 @@ useEffect(()=>{
                                                         )
                                                     }
                                                 />
-                                                  {getErrorMessage('e_sign_status', index)}
+                                                {getErrorMessage(
+                                                    'e_sign_status',
+                                                    index,
+                                                )}
                                             </div>
                                         </div>
                                     </div>
@@ -911,7 +930,7 @@ useEffect(()=>{
                         ))}
                     </div>
                 )}
-               
+
                 <div className="flex justify-end space-x-2">
                     <Button onClick={() => navigate(-1)}>Cancel</Button>
                     <Button

@@ -40,7 +40,7 @@ interface BranchTableProps {
         stateId?: string
         districtId?: string
         locationId?: string
-        search?:any
+        search?: any
     }
 
     onRefreshMethodAvailable?: (refreshFn: () => void) => void
@@ -50,13 +50,15 @@ const BranchTable: React.FC<BranchTableProps> = ({
     filterValues = {},
     onRefreshMethodAvailable,
 }) => {
-    const {login} = store.getState()
-    const agreement = login.user.user.moduleAccess;
-    const hasAgreementAccess = agreement.some(module => module.name === "Agreement");
+    const { login } = store.getState()
+    const agreement = login.user.user.moduleAccess
+    const hasAgreementAccess = agreement.some(
+        (module) => module.name === 'Agreement',
+    )
     const [tableData, setTableData] = useState({
         total: 0,
-    pageIndex: 1,
-    pageSize: 10,
+        pageIndex: 1,
+        pageSize: 10,
     })
     const dispatch = useDispatch<AppDispatch>()
     const [data, setData] = useState<EntityData[]>(entityDataSet)
@@ -97,7 +99,7 @@ const BranchTable: React.FC<BranchTableProps> = ({
             })
         }
     }, [onRefreshMethodAvailable])
-    
+
     useEffect(() => {
         // Generate unique options for all fields
         const uniqueCompanyGroups = Array.from(
@@ -121,43 +123,42 @@ const BranchTable: React.FC<BranchTableProps> = ({
     }, [data])
 
     const handleDialogOk = async () => {
-        console.log(login,hasAgreementAccess)
+        console.log(login, hasAgreementAccess)
         if (itemToDelete) {
             try {
-                const res = await dispatch(deleteBranch(itemToDelete)).unwrap();
-                
+                const res = await dispatch(deleteBranch(itemToDelete)).unwrap()
+
                 // Only show success message if we get here (no error was thrown)
                 toast.push(
                     <Notification title="Deleted" type="success">
                         Branch Deleted Successfully
-                    </Notification>
-                );
-                
-                handleRefreshData();
-                handleDialogClose();
-                
+                    </Notification>,
+                )
+
+                handleRefreshData()
+                handleDialogClose()
             } catch (error: any) {
                 // Handle different error formats
                 if (error.response?.data?.message) {
                     // API error response
-                    showErrorNotification(error.response.data.message);
+                    showErrorNotification(error.response.data.message)
                 } else if (error.message) {
                     // Regular error object
-                    showErrorNotification(error.message);
+                    showErrorNotification(error.message)
                 } else if (Array.isArray(error)) {
                     // Array of error messages
-                    showErrorNotification(error);
+                    showErrorNotification(error)
                 } else {
                     // Fallback error message
-                    showErrorNotification(error);
+                    showErrorNotification(error)
                 }
-                console.log(error);
-            } finally{
-                handleDialogClose();
+                console.log(error)
+            } finally {
+                handleDialogClose()
             }
         }
-    };
-    
+    }
+
     const openDeleteDialog = (branchId: number) => {
         setItemToDelete(branchId)
         setDialogIsOpen(true)
@@ -181,7 +182,7 @@ const BranchTable: React.FC<BranchTableProps> = ({
             // },
             {
                 header: 'Company',
-                 enableSorting: false,
+                enableSorting: false,
                 accessorKey: 'Company.name',
                 cell: (props) => (
                     <div className="w-32 truncate">
@@ -191,7 +192,7 @@ const BranchTable: React.FC<BranchTableProps> = ({
             },
             {
                 header: 'State',
-                 enableSorting: false,
+                enableSorting: false,
                 accessorKey: 'State.name',
                 cell: (props) => (
                     <div className="w-32 truncate">
@@ -201,7 +202,7 @@ const BranchTable: React.FC<BranchTableProps> = ({
             },
             {
                 header: 'District',
-                 enableSorting: false,
+                enableSorting: false,
                 accessorKey: 'District.name',
                 cell: (props) => (
                     <div className="w-32 truncate">
@@ -211,7 +212,7 @@ const BranchTable: React.FC<BranchTableProps> = ({
             },
             {
                 header: 'Location',
-                 enableSorting: false,
+                enableSorting: false,
                 accessorKey: 'Location.name',
                 cell: (props) => (
                     <div className="w-32 truncate">
@@ -221,7 +222,7 @@ const BranchTable: React.FC<BranchTableProps> = ({
             },
             {
                 header: 'Branch Name',
-                 enableSorting: false,
+                enableSorting: false,
                 accessorKey: 'name',
                 cell: (props) => (
                     <div className="w-40 truncate">
@@ -231,7 +232,7 @@ const BranchTable: React.FC<BranchTableProps> = ({
             },
             {
                 header: 'Branch Address',
-                 enableSorting: false,
+                enableSorting: false,
                 accessorKey: 'address',
                 cell: (props) => (
                     <div className="w-40 truncate">
@@ -241,7 +242,7 @@ const BranchTable: React.FC<BranchTableProps> = ({
             },
             {
                 header: 'Branch Opening Date',
-                 enableSorting: false,
+                enableSorting: false,
                 accessorKey: 'opening_date',
                 cell: (props) => (
                     <div className="w-44 ">
@@ -251,7 +252,7 @@ const BranchTable: React.FC<BranchTableProps> = ({
             },
             {
                 header: 'Actions',
-                 enableSorting: false,
+                enableSorting: false,
                 id: 'actions',
                 cell: ({ row }) => (
                     <div className="flex items-center gap-2">
@@ -270,32 +271,36 @@ const BranchTable: React.FC<BranchTableProps> = ({
                             />
                         </Tooltip>
                         {hasAgreementAccess && (
-                        <Tooltip title="Agreements">
-                            <Button
-                                size="sm"
-                                icon={<HiOutlineBookOpen />}
-                                onClick={() => {
-                                    navigate('/agreements', {
-                                        state: {
-                                            branchId: row.original?.id,
-                                            companyId: row.original?.Company?.id,
-                                            companyName: row.original?.Company?.name,
-                                            branchName: row.original?.name
-                                        }
-                                    })
-                                }}
-                            >
-                    {/* Agreements */}
-                </Button>
-            </Tooltip>
+                            <Tooltip title="Agreements">
+                                <Button
+                                    size="sm"
+                                    icon={<HiOutlineBookOpen />}
+                                    onClick={() => {
+                                        navigate('/agreements', {
+                                            state: {
+                                                branchId: row.original?.id,
+                                                companyId:
+                                                    row.original?.Company?.id,
+                                                companyName:
+                                                    row.original?.Company?.name,
+                                                branchName: row.original?.name,
+                                            },
+                                        })
+                                    }}
+                                >
+                                    {/* Agreements */}
+                                </Button>
+                            </Tooltip>
                         )}
                         <Tooltip title="Delete">
-                        <Button
-                            size="sm"
-                            onClick={() => openDeleteDialog(row.original.id)}
-                            icon={<FiTrash />}
-                            className="text-red-500"
-                        />
+                            <Button
+                                size="sm"
+                                onClick={() =>
+                                    openDeleteDialog(row.original.id)
+                                }
+                                icon={<FiTrash />}
+                                className="text-red-500"
+                            />
                         </Tooltip>
                     </div>
                 ),
@@ -332,9 +337,9 @@ const BranchTable: React.FC<BranchTableProps> = ({
                     'state_id[]': filterValues.stateId || undefined,
                     'district_id[]': filterValues.districtId || undefined,
                     'location_id[]': filterValues.locationId || undefined,
-                    'search': filterValues.search || undefined,
-                    'page': page,
-                    'page_size': size,
+                    search: filterValues.search || undefined,
+                    page: page,
+                    page_size: size,
                 },
             })
 
@@ -349,7 +354,7 @@ const BranchTable: React.FC<BranchTableProps> = ({
         } catch (error) {
             console.error('Failed to fetch branch:', error)
             toast.push(
-                <Notification title="Error" type="danger">
+                <Notification title="Error" closable={true} type="danger">
                     Failed to fetch Branch
                 </Notification>,
             )
@@ -357,7 +362,6 @@ const BranchTable: React.FC<BranchTableProps> = ({
             setIsLoading(false)
         }
     }
-
 
     const handleEditClick = (branchId: number) => {
         setCurrentBranchId(branchId)
@@ -368,7 +372,6 @@ const BranchTable: React.FC<BranchTableProps> = ({
         fetchBranchData(1, 10)
     }
 
-  
     const onPaginationChange = (page: number) => {
         fetchBranchData(page, tableData.pageSize)
         console.log(tableData)
@@ -385,7 +388,6 @@ const BranchTable: React.FC<BranchTableProps> = ({
 
     useEffect(() => {
         fetchBranchData(tableData.pageIndex, tableData.pageSize)
-       
     }, [
         filterValues.branchId,
         filterValues.companyGroupId,
@@ -393,7 +395,7 @@ const BranchTable: React.FC<BranchTableProps> = ({
         filterValues.stateId,
         filterValues.districtId,
         filterValues.locationId,
-        filterValues.search
+        filterValues.search,
     ])
 
     if (isLoading) {
@@ -419,7 +421,6 @@ const BranchTable: React.FC<BranchTableProps> = ({
                     <p className="text-center">No Data Available</p>
                 </div>
             ) : (
-               
                 <DataTable
                     columns={columns}
                     data={branchTableData}

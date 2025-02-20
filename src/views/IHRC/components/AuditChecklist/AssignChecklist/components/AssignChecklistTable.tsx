@@ -1,7 +1,17 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { ColumnDef, OnSortParam } from '@/components/shared/DataTable'
 import DataTable from '@/components/shared/DataTable'
-import {Button,Calendar,Dialog,Tooltip,Input,toast,Notification,Checkbox, DatePicker,} from '@/components/ui'
+import {
+    Button,
+    Calendar,
+    Dialog,
+    Tooltip,
+    Input,
+    toast,
+    Notification,
+    Checkbox,
+    DatePicker,
+} from '@/components/ui'
 import { HiBellAlert } from 'react-icons/hi2'
 import { MdEdit } from 'react-icons/md'
 import { RiEyeLine } from 'react-icons/ri'
@@ -23,7 +33,7 @@ import { AppDispatch } from '@/store'
 import { showErrorNotification } from '@/components/ui/ErrorMessage'
 import OutlinedInput from '@/components/ui/OutlinedInput'
 import loadingAnimation from '@/assets/lotties/system-regular-716-spinner-three-dots-loop-scale.json'
-import Lottie from 'lottie-react';
+import Lottie from 'lottie-react'
 import { HiOutlineViewGrid } from 'react-icons/hi'
 
 interface UserData {
@@ -91,15 +101,15 @@ interface AssignChecklistTableProps {
     tableKey?: number
     refreshTable: () => void
     onSelectedIdsChange: (selectedIds: number[]) => void
-    selectedId?: number[];
+    selectedId?: number[]
     pagination: {
-    total: number;
-    pageIndex: number;
-    pageSize: number;
-  };
-  onPaginationChange: (page: number) => void;
-  onPageSizeChange: (pageSize: number) => void;
-  canCreate: boolean;
+        total: number
+        pageIndex: number
+        pageSize: number
+    }
+    onPaginationChange: (page: number) => void
+    onPageSizeChange: (pageSize: number) => void
+    canCreate: boolean
 }
 
 const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
@@ -109,13 +119,13 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
     refreshTable,
     onSelectedIdsChange,
     selectedId,
-      pagination,
-  onPaginationChange,
-  onPageSizeChange,
-  canCreate,
+    pagination,
+    onPaginationChange,
+    onPageSizeChange,
+    canCreate,
 }) => {
-    console.log(data);
-    
+    console.log(data)
+
     const navigate = useNavigate()
     const dispatch = useDispatch<AppDispatch>()
     const [activeRowId, setActiveRowId] = useState<number | null>(null)
@@ -132,43 +142,42 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
     const [selectedApproverOption, setSelectedApproverOption] =
         useState<any>(null)
     const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set())
-    const [selectedScheduledFrequency, setSelectedScheduledFrequency] = useState<SelectOption | null>(null)
-    const [selectedCustomizedFrequency, setSelectedCustomizedFrequency] = useState<SelectOption | null>(null)
+    const [selectedScheduledFrequency, setSelectedScheduledFrequency] =
+        useState<SelectOption | null>(null)
+    const [selectedCustomizedFrequency, setSelectedCustomizedFrequency] =
+        useState<SelectOption | null>(null)
     const [dueDate, setDueDate] = useState<Date | null>(null)
     const [firstDate, setFirstDate] = useState<Date | null>(null)
     const [secondDate, setSecondDate] = useState<Date | null>(null)
     const [thirdDate, setThirdDate] = useState<Date | null>(null)
     const [lastDate, setLastDate] = useState<Date | null>(null)
 
-
-
     const scheduledOptions: SelectOption[] = [
         { value: 'monthly', label: 'Monthly' },
         { value: 'yearly', label: 'Yearly' },
         { value: 'half_yearly', label: 'Half Yearly' },
-        { value: 'quarterly', label: 'Quarterly' }
+        { value: 'quarterly', label: 'Quarterly' },
     ]
-
-  
 
     const customizedFrequencyOptions: SelectOption[] = [
         { value: 'monthly', label: 'Monthly' },
         { value: 'yearly', label: 'Yearly' },
         { value: 'half_yearly', label: 'Half Yearly' },
-        { value: 'quarterly', label: 'Quarterly' }
+        { value: 'quarterly', label: 'Quarterly' },
     ]
-
 
     // State to manage date field states
     const [dateFieldsState, setDateFieldsState] = useState({
         isFirstDateEnabled: true,
         isSecondDateEnabled: false,
         isThirdDateEnabled: false,
-        isLastDateEnabled: false
+        isLastDateEnabled: false,
     })
 
     // Function to handle frequency changes
-    const handleCustomizedFrequencyChange = (selectedOption: SelectOption | null) => {
+    const handleCustomizedFrequencyChange = (
+        selectedOption: SelectOption | null,
+    ) => {
         setSelectedCustomizedFrequency(selectedOption)
 
         // Reset date states
@@ -178,13 +187,13 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
         setLastDate(null)
 
         // Update date field states based on selected frequency
-        switch(selectedOption?.value) {
+        switch (selectedOption?.value) {
             case 'monthly':
                 setDateFieldsState({
                     isFirstDateEnabled: true,
                     isSecondDateEnabled: false,
                     isThirdDateEnabled: false,
-                    isLastDateEnabled: false
+                    isLastDateEnabled: false,
                 })
                 break
             case 'yearly':
@@ -192,7 +201,7 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
                     isFirstDateEnabled: true,
                     isSecondDateEnabled: false,
                     isThirdDateEnabled: false,
-                    isLastDateEnabled: false
+                    isLastDateEnabled: false,
                 })
                 break
             case 'half_yearly':
@@ -200,7 +209,7 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
                     isFirstDateEnabled: true,
                     isSecondDateEnabled: false,
                     isThirdDateEnabled: false,
-                    isLastDateEnabled: true
+                    isLastDateEnabled: true,
                 })
                 break
             case 'quarterly':
@@ -208,7 +217,7 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
                     isFirstDateEnabled: true,
                     isSecondDateEnabled: true,
                     isThirdDateEnabled: true,
-                    isLastDateEnabled: true
+                    isLastDateEnabled: true,
                 })
                 break
             default:
@@ -216,35 +225,34 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
                     isFirstDateEnabled: false,
                     isSecondDateEnabled: false,
                     isThirdDateEnabled: false,
-                    isLastDateEnabled: false
+                    isLastDateEnabled: false,
                 })
         }
     }
 
-
     const handleCancel = () => {
-        setIsEditDialogOpen(false);
-    };
+        setIsEditDialogOpen(false)
+    }
 
     const handleEditSave = async () => {
         // Determine the appropriate due date based on frequency
-        let selectedDueDate: string | null = null;
-    
-        switch(selectedCustomizedFrequency?.value) {
+        let selectedDueDate: string | null = null
+
+        switch (selectedCustomizedFrequency?.value) {
             case 'monthly':
-                selectedDueDate = firstDate?.toISOString().split('T')[0] || null;
-                break;
+                selectedDueDate = firstDate?.toISOString().split('T')[0] || null
+                break
             case 'yearly':
-                selectedDueDate = firstDate?.toISOString().split('T')[0] || null;
-                break;
+                selectedDueDate = firstDate?.toISOString().split('T')[0] || null
+                break
             case 'half_yearly':
-                selectedDueDate = lastDate?.toISOString().split('T')[0] || null;
-                break;
+                selectedDueDate = lastDate?.toISOString().split('T')[0] || null
+                break
             case 'quarterly':
-                selectedDueDate = lastDate?.toISOString().split('T')[0] || null;
-                break;
+                selectedDueDate = lastDate?.toISOString().split('T')[0] || null
+                break
             default:
-                selectedDueDate = null;
+                selectedDueDate = null
         }
         if (
             activeRowId &&
@@ -258,9 +266,9 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
                 approver_id: selectedApproverOption?.value || 0,
                 scheduled_frequency: selectedScheduledFrequency?.value || '',
                 due_date: selectedDueDate,
-                customized_frequency: selectedCustomizedFrequency?. value || '',
+                customized_frequency: selectedCustomizedFrequency?.value || '',
             }
-    
+
             setIsUpdating(true)
             try {
                 const response = await dispatch(
@@ -268,22 +276,25 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
                         id: activeRowId.toString(),
                         data: updateData,
                     }),
-                ).unwrap()
-                .catch((error: any) => {
-                    // Error handling remains the same
-                    if (error.response?.data?.message) {
-                        showErrorNotification(error.response.data.message);
-                    } else if (error.message) {
-                        showErrorNotification(error.message);
-                    } else if (Array.isArray(error)) {
-                        showErrorNotification(error);
-                    } else {
-                        showErrorNotification('An unexpected error occurred. Please try again.');
-                    }
-                    throw error;
-                });
-    
-                if(response) {
+                )
+                    .unwrap()
+                    .catch((error: any) => {
+                        // Error handling remains the same
+                        if (error.response?.data?.message) {
+                            showErrorNotification(error.response.data.message)
+                        } else if (error.message) {
+                            showErrorNotification(error.message)
+                        } else if (Array.isArray(error)) {
+                            showErrorNotification(error)
+                        } else {
+                            showErrorNotification(
+                                'An unexpected error occurred. Please try again.',
+                            )
+                        }
+                        throw error
+                    })
+
+                if (response) {
                     setIsEditDialogOpen(false)
                     toast.push(
                         <Notification title="Success" type="success">
@@ -296,10 +307,10 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
                     setSelectedCustomizedFrequency(null)
                     refreshTable()
                 }
-            } catch (error : any) {
+            } catch (error: any) {
                 console.log(error)
                 toast.push(
-                    <Notification title="Error" type="danger">
+                    <Notification title="Error" closable={true} type="danger">
                         {error}
                     </Notification>,
                 )
@@ -316,7 +327,6 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
         }
     }
 
-    
     const handleOwnerChange = (value: any) => {
         setSelectedOwnerOption(value)
     }
@@ -347,7 +357,7 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
             } else {
                 console.error('Invalid data structure:', response)
                 toast.push(
-                    <Notification title="Error" type="danger">
+                    <Notification title="Error" closable={true} type="danger">
                         Invalid data format received
                     </Notification>,
                 )
@@ -355,7 +365,7 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
         } catch (error) {
             console.error('Error fetching users:', error)
             toast.push(
-                <Notification title="Error" type="danger">
+                <Notification title="Error" closable={true} type="danger">
                     Failed to fetch users
                 </Notification>,
             )
@@ -401,22 +411,23 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
             owner_id: row.owner_id,
             approver_id: row.approver_id,
             MasterCompliance: row.MasterCompliance,
-            
         })
 
         // Set the initial selected options based on existing data
         const ownerOption = userOptions.find(
-            (option) => option.value === row.owner_id
+            (option) => option.value === row.owner_id,
         )
         const approverOption = userOptions.find(
             (option) => option.value === row.approver_id,
         )
         const initialScheduledFrequency = scheduledOptions.find(
-            (option) => option.value === row.MasterCompliance.scheduled_frequency
+            (option) =>
+                option.value === row.MasterCompliance.scheduled_frequency,
         )
 
-        console.log("testing frequency ............" + initialScheduledFrequency);
-        
+        console.log(
+            'testing frequency ............' + initialScheduledFrequency,
+        )
 
         setSelectedScheduledFrequency(initialScheduledFrequency || null)
 
@@ -437,8 +448,6 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
         setSelectedOwnerOption(null)
         setSelectedApproverOption(null)
     }
-
-    
 
     const columns: ColumnDef<ComplianceData>[] = useMemo(
         () => [
@@ -543,32 +552,26 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
                     return (
                         <div className="w-52">
                             <div className="w-52">
-    {value ? new Date(value).toLocaleDateString() : '--'}
-</div>
+                                {value
+                                    ? new Date(value).toLocaleDateString()
+                                    : '--'}
+                            </div>
                         </div>
                     )
                 },
             },
             {
                 header: 'Owner',
-                accessorFn: (row) =>
-                    row.Owner
-                        ? row.Owner.name
-                        : null,
+                accessorFn: (row) => (row.Owner ? row.Owner.name : null),
                 cell: ({ getValue }) => (
                     <div className="w-32">{getValue<string>() || '--'}</div>
                 ),
             },
             {
                 header: 'Approver',
-                accessorFn: (row) =>
-                    row.Approver
-                        ? row.Approver.name
-                        : null,
+                accessorFn: (row) => (row.Approver ? row.Approver.name : null),
                 cell: ({ getValue }) => (
-                    <div className="w-36">
-                        {getValue<string>() || '--'}
-                    </div>
+                    <div className="w-36">{getValue<string>() || '--'}</div>
                 ),
             },
             {
@@ -582,7 +585,10 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
                                 onClick={() =>
                                     navigate(
                                         `/app/IHRC/assign-list-detail/${row.original.mst_compliance_id}`,
-                                        { state: row.original.MasterCompliance },
+                                        {
+                                            state: row.original
+                                                .MasterCompliance,
+                                        },
                                     )
                                 }
                                 icon={<RiEyeLine />}
@@ -590,14 +596,19 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
                             />
                         </Tooltip>
                         {canCreate && (
-                        <Tooltip title="Set Owner & Approver" placement="top">
-                            <Button
-                                size="sm"
-                                onClick={() => handleEditClick(row.original)}
-                                icon={<MdEdit />}
-                                className="hover:bg-transparent"
-                            />
-                        </Tooltip>
+                            <Tooltip
+                                title="Set Owner & Approver"
+                                placement="top"
+                            >
+                                <Button
+                                    size="sm"
+                                    onClick={() =>
+                                        handleEditClick(row.original)
+                                    }
+                                    icon={<MdEdit />}
+                                    className="hover:bg-transparent"
+                                />
+                            </Tooltip>
                         )}
                         <Tooltip
                             title="Set Compliance Reminder"
@@ -625,77 +636,66 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
         sort: { order: '', key: '' },
     })
 
-
     if (loading) {
-        console.log("Loading....................");
-        
+        console.log('Loading....................')
+
         return (
             <div className="flex flex-col items-center justify-center h-96 text-gray-500  rounded-xl">
                 <div className="w-28 h-28">
-                    <Lottie 
-                        animationData={loadingAnimation} 
-                        loop 
+                    <Lottie
+                        animationData={loadingAnimation}
+                        loop
                         className="w-24 h-24"
                     />
                 </div>
-                <p className="text-lg font-semibold">
-                    Loading Data...
-                </p>
-
+                <p className="text-lg font-semibold">Loading Data...</p>
             </div>
-        );
+        )
     }
-
-
-    
-
-   
 
     return (
         <div className="relative">
             {data.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-96 text-gray-500 border rounded-xl">
-                <HiOutlineViewGrid className="w-12 h-12 mb-4 text-gray-300" />
-                <p className="text-center">
-        No Data Available
-                </p>
-      </div>
+                    <HiOutlineViewGrid className="w-12 h-12 mb-4 text-gray-300" />
+                    <p className="text-center">No Data Available</p>
+                </div>
             ) : (
-            <DataTable
-                columns={columns}
-                data={data}
-                skeletonAvatarColumns={[0]}
-                skeletonAvatarProps={{ className: 'rounded-md' }}
-                loading={loading}
-                // pagingData={{
-                //     total: tableData.total,
-                //     pageIndex: tableData.pageIndex,
-                //     pageSize: tableData.pageSize,
-                // }}
-                // onPaginationChange={(page) =>
-                //     setTableData((prev) => ({ ...prev, pageIndex: page }))
-                // }
-                // onSelectChange={(value) =>
-                //     setTableData((prev) => ({
-                //         ...prev,
-                //         pageSize: Number(value),
-                //         pageIndex: 1,
-                //     }))
-                        // }
-                         pagingData={{
-            total: pagination.total,
-            pageIndex: pagination.pageIndex,
-            pageSize: pagination.pageSize,
-          }}
-          // Pass the pagination handlers
-          onPaginationChange={onPaginationChange}
-          onSelectChange={onPageSizeChange}
-                // onSort={(sort) => setTableData((prev) => ({ ...prev, sort }))}
-                stickyHeader={true}
-                stickyFirstColumn={true}
-                stickyLastColumn={true}
-                selectable={true}
-            />
+                <DataTable
+                    columns={columns}
+                    data={data}
+                    skeletonAvatarColumns={[0]}
+                    skeletonAvatarProps={{ className: 'rounded-md' }}
+                    loading={loading}
+                    // pagingData={{
+                    //     total: tableData.total,
+                    //     pageIndex: tableData.pageIndex,
+                    //     pageSize: tableData.pageSize,
+                    // }}
+                    // onPaginationChange={(page) =>
+                    //     setTableData((prev) => ({ ...prev, pageIndex: page }))
+                    // }
+                    // onSelectChange={(value) =>
+                    //     setTableData((prev) => ({
+                    //         ...prev,
+                    //         pageSize: Number(value),
+                    //         pageIndex: 1,
+                    //     }))
+                    // }
+                    pagingData={{
+                        total: pagination.total,
+                        pageIndex: pagination.pageIndex,
+                        pageSize: pagination.pageSize,
+                    }}
+                    // Pass the pagination handlers
+                    onPaginationChange={onPaginationChange}
+                    onSelectChange={onPageSizeChange}
+                    // onSort={(sort) => setTableData((prev) => ({ ...prev, sort }))}
+                    stickyHeader={true}
+                    stickyFirstColumn={true}
+                    stickyLastColumn={true}
+                    selectable={true}
+                />
             )}
             <Dialog
                 isOpen={isEditDialogOpen}
@@ -703,109 +703,120 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
                 onRequestClose={handleDialogClose}
                 className="p-4"
                 width={700}
-                shouldCloseOnOverlayClick={false} 
+                shouldCloseOnOverlayClick={false}
             >
                 <h5 className="mb-2 text-lg font-semibold">
-                    Set Owner & Approver 
+                    Set Owner & Approver
                     {/* <span className="text-indigo-600">{editData.MasterCompliance?.uuid}</span> */}
                 </h5>
                 <div className="space-y-6">
-                    <div className='flex gap-4 w-full'>
-                    <div className='w-full flex flex-col gap-2'>
-                        <label className="block mb-2">Set Owner Name</label>
-                        <OutlinedSelect
-                            label="Set Owner Name"
-                            options={userOptions}
-                            value={selectedOwnerOption}
-                            onChange={handleOwnerChange}
-                            
-                        />
-                    </div>
-                    <div className='w-full flex flex-col gap-2'>
-                        <label className="block mb-2">Set Approver Name</label>
-                        <OutlinedSelect
-                            label="Set Approver Name"
-                            options={userOptions}
-                            value={selectedApproverOption}
-                            onChange={handleApproverChange}
+                    <div className="flex gap-4 w-full">
+                        <div className="w-full flex flex-col gap-2">
+                            <label className="block mb-2">Set Owner Name</label>
+                            <OutlinedSelect
+                                label="Set Owner Name"
+                                options={userOptions}
+                                value={selectedOwnerOption}
+                                onChange={handleOwnerChange}
                             />
+                        </div>
+                        <div className="w-full flex flex-col gap-2">
+                            <label className="block mb-2">
+                                Set Approver Name
+                            </label>
+                            <OutlinedSelect
+                                label="Set Approver Name"
+                                options={userOptions}
+                                value={selectedApproverOption}
+                                onChange={handleApproverChange}
+                            />
+                        </div>
                     </div>
-                  </div>
 
-                  <div className='flex gap-4 w-full'>
-
-                    <div className='w-full'>
-                        <label className="block mb-2">Scheduled Frequency</label>
+                    <div className="flex gap-4 w-full">
+                        <div className="w-full">
+                            <label className="block mb-2">
+                                Scheduled Frequency
+                            </label>
                             <OutlinedInput
-                                label='Scheduled Frequency'
-                                value={editData.MasterCompliance?.scheduled_frequency || 'Not Set'}
+                                label="Scheduled Frequency"
+                                value={
+                                    editData.MasterCompliance
+                                        ?.scheduled_frequency || 'Not Set'
+                                }
                                 onChange={function (value: string): void {
                                     throw new Error('Function not implemented.')
-                                } }                            />
-                    </div>
+                                }}
+                            />
+                        </div>
 
-                    <div className='w-full'>
-                        <label className="block mb-2">Customized Frequency</label>
-                        <OutlinedSelect
+                        <div className="w-full">
+                            <label className="block mb-2">
+                                Customized Frequency
+                            </label>
+                            <OutlinedSelect
                                 label="Select Customized Frequency"
                                 options={customizedFrequencyOptions}
                                 value={selectedCustomizedFrequency}
                                 onChange={handleCustomizedFrequencyChange}
                             />
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <p className="mb-2">First Due Date</p>
+                            <DatePicker
+                                size="sm"
+                                placeholder="Select first due date"
+                                value={dueDate}
+                                onChange={(date: Date | null) =>
+                                    setFirstDate(date)
+                                }
+                                disabled={!dateFieldsState.isFirstDateEnabled}
+                            />
+                        </div>
+                        <div>
+                            <p className="mb-2">Second Due Date</p>
+                            <DatePicker
+                                size="sm"
+                                placeholder="Select second due date"
+                                value={secondDate}
+                                onChange={(date: Date | null) =>
+                                    setSecondDate(date)
+                                }
+                                disabled={!dateFieldsState.isSecondDateEnabled}
+                            />
+                        </div>
+                        <div>
+                            <p className="mb-2">Third Due Date</p>
+                            <DatePicker
+                                size="sm"
+                                placeholder="Select third due date"
+                                value={thirdDate}
+                                onChange={(date: Date | null) =>
+                                    setThirdDate(date)
+                                }
+                                disabled={!dateFieldsState.isThirdDateEnabled}
+                            />
+                        </div>
+                        <div>
+                            <p className="mb-2">Last Due Date</p>
+                            <DatePicker
+                                size="sm"
+                                placeholder="Select last due date"
+                                value={lastDate}
+                                onChange={(date: Date | null) =>
+                                    setLastDate(date)
+                                }
+                                disabled={!dateFieldsState.isLastDateEnabled}
+                            />
+                        </div>
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-                <p className="mb-2">First Due Date</p>
-                <DatePicker
-                    size='sm'
-                    placeholder="Select first due date"
-                    value={dueDate}
-                    onChange={(date: Date | null) => setFirstDate(date)}
-                    disabled={!dateFieldsState.isFirstDateEnabled}
-                />
-            </div>
-            <div>
-                <p className="mb-2">Second Due Date</p>
-                <DatePicker
-                    size='sm'
-                    placeholder="Select second due date"
-                    value={secondDate}
-                    onChange={(date: Date | null) => setSecondDate(date)}
-                    disabled={!dateFieldsState.isSecondDateEnabled}
-                />
-            </div>
-            <div>
-                <p className="mb-2">Third Due Date</p>
-                <DatePicker
-                    size='sm'
-                    placeholder="Select third due date"
-                    value={thirdDate}
-                    onChange={(date: Date | null) => setThirdDate(date)}
-                    disabled={!dateFieldsState.isThirdDateEnabled}
-                />
-            </div>
-            <div>
-                <p className="mb-2">Last Due Date</p>
-                <DatePicker
-                    size='sm'
-                    placeholder="Select last due date"
-                    value={lastDate}
-                    onChange={(date: Date | null) => setLastDate(date)}
-                    disabled={!dateFieldsState.isLastDateEnabled}
-                />
-            </div>
-        </div>
-                </div>
-
-                
                 <div className="mt-6 text-right">
-                <Button
-                        className="mr-2"
-                        onClick={handleCancel}
-                        
-                    >
+                    <Button className="mr-2" onClick={handleCancel}>
                         Cancel
                     </Button>
                     <Button
@@ -849,7 +860,6 @@ const AssignChecklistTable: React.FC<AssignChecklistTableProps> = ({
                 </div>
             </Dialog>
         </div>
-                            
     )
 }
 
