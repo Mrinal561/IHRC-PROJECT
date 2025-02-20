@@ -389,6 +389,15 @@ const NoticeTimelinePage = () => {
         return <div>Loading...</div>;
     }
 
+    const formatTextWithLineBreaks = (text) => {
+        return text.split('\n').map((line, index) => (
+            <React.Fragment key={index}>
+                {line}
+                <br />
+            </React.Fragment>
+        ));
+    };
+
     return (
         <div className="p-6">
             {/* Notice History Header */}
@@ -433,8 +442,9 @@ const NoticeTimelinePage = () => {
 
                         <div>
                             <p className="text-sm text-gray-500">Notice Details:</p>
-                            <p className="text-gray-600 dark:text-gray-300 mt-1">
-                                {noticeData.noticeDetails}
+                            {/* <p className="text-gray-600 dark:text-gray-300 mt-1"> */}
+                            <p className="text-gray-600 dark:text-gray-300 preserve-newlines">
+                            {formatTextWithLineBreaks(noticeData.noticeDetails)}
                             </p>
                         </div>
 
@@ -487,7 +497,9 @@ const NoticeTimelinePage = () => {
                                 <Card className="mt-2">
                                     <div className="space-y-4">
                                         <div>
-                                            <p className="text-gray-600 dark:text-gray-300">{response.replyDetails}</p>
+                                        <p className="text-gray-600 dark:text-gray-300">
+    {formatTextWithLineBreaks(response.replyDetails)}
+</p>
                                         </div>
                                         <div className="inline-flex items-center space-x-2 bg-blue-500 text-white px-2 py-1 rounded-md hover:bg-blue-700 transition-colors">
                                             {response.notice_type}
