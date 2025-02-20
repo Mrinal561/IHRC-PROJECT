@@ -535,6 +535,7 @@ const EditNoticeDialog: React.FC<EditNoticeDialogProps> = ({
         try {
           setIsLoading(true);
           const response = await dispatch(fetchNoticeById(noticeId)).unwrap();
+          console.log('api response', response);
           
           // Convert the date string to a Date object if it exists
           const noticeDate = response.notice_date ? new Date(response.notice_date) : null;
@@ -551,6 +552,7 @@ const EditNoticeDialog: React.FC<EditNoticeDialogProps> = ({
           };
 
           setFormData(formattedData);
+          
         } catch (error) {
           console.error('Failed to load notice:', error);
           showErrorNotification('Failed to load notice details');
@@ -642,6 +644,7 @@ const EditNoticeDialog: React.FC<EditNoticeDialogProps> = ({
     if (formData.notice_document) {
       const fullPath = `${import.meta.env.VITE_API_GATEWAY}/${formData.notice_document}`;
       window.open(fullPath, '_blank');
+      console.log('full path url ' , fullPath);
     }
   };
 
@@ -698,7 +701,7 @@ const EditNoticeDialog: React.FC<EditNoticeDialogProps> = ({
           </div>
 
           <div className="space-y-2 flex gap-2 flex-col">
-            <label className="text-sm font-medium">Update Notice Document</label>
+            <label className="text-sm font-medium">Update Notice Document (PDF/Zip/Image, Max 20MB){' '}</label>
             <div className='flex gap-2'>
               <Input 
                 type="file"
