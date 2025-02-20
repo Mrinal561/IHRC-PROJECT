@@ -572,18 +572,18 @@ export const protectedRoutes = [
     },
     {
         key: 'noticeTracker.response',
-        path: '/notice-tracker/response/:noticeId',
+        path: '/notice-tracker/response',
         component: lazy(
             () =>
-                import(
-                    '@/views/IHRC/components/RemittanceTracker/S&ETracker/components/NoticeResponsePage'
-                ),
+              import(
+                '@/views/IHRC/components/RemittanceTracker/S&ETracker/components/NoticeResponsePage'
+              )
         ),
         authority: [],
     },
     {
         key: 'noticeTracker.replyHistory',
-        path: '/notice-tracker/replyhistory/:noticeId',
+        path: '/notice-tracker/replyhistory',
         component: lazy(
             () =>
                 import(

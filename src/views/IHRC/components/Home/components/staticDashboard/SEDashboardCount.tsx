@@ -183,34 +183,40 @@ import type { ColumnDef } from '@/components/shared/DataTable';
 
 const SEDashboardCount = () => {
     const seData = [
+        
         {
-            name: 'Total S&E Registration',
-            value: '15',
-        },
-        {
-            name: 'Have Valid Registration',
+            name: 'Valid',
             value: '10',
+            badgeColor: 'bg-amber-400 text-white',
         },
-        {
-            name: 'Applied For',
-            value: '2',
-        },
+        // {
+        //     name: 'Applied For',
+        //     value: '2',
+        //     badgeColor: 'bg-blue-400 text-white',
+        // },
         {
             name: 'Expired',
             value: '2',
+            badgeColor: 'bg-red-400 text-white',
+        },
+        {
+            name: 'Total',
+            value: '15',
+            badgeColor: 'bg-blue-400 text-white',
         },
     ];
 
     const columns: ColumnDef<typeof seData[0]>[] = useMemo(
         () => [
             {
-                header: 'Status',
+                header: 'S&E RC Status',
+                enableSorting: false,
                 accessorKey: 'name',
                 cell: (props) => {
                     const value = props.getValue() as string;
                     return (
                         <Tooltip title={value} placement="top">
-                            <div className="w-28 truncate">
+                            <div className="font-semibold text-gray-700 hover:text-blue-600 transition-colors duration-200 text-sm">
                                 {value.length > 30
                                     ? value.substring(0, 30) + '...'
                                     : value}
@@ -221,12 +227,13 @@ const SEDashboardCount = () => {
             },
             {
                 header: 'Count',
+                enableSorting: false,
                 accessorKey: 'value',
                 cell: (props) => {
-                    const value = props.getValue() as string;
-                    return (
+                    const row = props.row.original;
+                    const value = props.getValue() as string;                    return (
                         <Tooltip title={value} placement="top">
-                            <div className="w-auto truncate">
+                            <div  className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${row.badgeColor}`}>
                                 {value.length > 18
                                     ? value.substring(0, 18) + '...'
                                     : value}
@@ -240,7 +247,8 @@ const SEDashboardCount = () => {
     );
 
     return (
-        <div className="w-full overflow-x-auto">
+        <div className="w-full overflow-x-auto py-2 p-1 bg-white rounded-lg shadow-lg border">
+            <h2 className="text-base text-center font-semibold  mb-6 mt-2">Physical Branches S&E RC Status</h2>
             <DataTable
                 columns={columns}
                 data={seData}

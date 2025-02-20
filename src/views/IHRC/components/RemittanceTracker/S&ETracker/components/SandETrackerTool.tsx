@@ -87,7 +87,8 @@ const SandETrackerTool: React.FC<SandETrackerToolProps> = ({ onRefresh, onFilter
     companyId: '',
     startDate: '',
     endDate: '',
-    status:''
+    status:'',
+    noticeType: ''
   });
   const navigate = useNavigate()
   const handleUploadConfirm = () => {

@@ -223,6 +223,101 @@
 
 // export default BranchesDashboardCount;
 
+
+
+
+
+
+
+
+
+
+
+
+
+// import React, { useMemo } from 'react';
+// import DataTable from '@/components/shared/DataTable';
+// import { Tooltip } from '@/components/ui';
+// import type { ColumnDef } from '@/components/shared/DataTable';
+
+// const BranchesDashboardCount = () => {
+//     const branchData = [
+        
+//         {
+//             name: 'Physical Branches',
+//             value: '7',
+//         },
+//         {
+//             name: 'Virtual Branches',
+//             value: '50',
+//         },
+//         {
+//             name: 'Total Branches',
+//             value: '57 ',
+//         }
+//     ];
+
+//     const columns: ColumnDef<typeof branchData[0]>[] = useMemo(
+//         () => [
+//             {
+//                 header: 'Branch Type',
+//                 accessorKey: 'name',
+//                 enableSorting: false,
+//                 cell: (props) => {
+//                     const value = props.getValue() as string;
+//                     return (
+//                         <Tooltip title={value} placement="top">
+//                             <div className="w-28 truncate">
+//                                 {value.length > 30
+//                                     ? value.substring(0, 30) + '...'
+//                                     : value}
+//                             </div>
+//                         </Tooltip>
+//                     );
+//                 },
+//             },
+//             {
+//                 header: 'Count',
+//                 accessorKey: 'value',
+//                 enableSorting: false,
+//                 cell: (props) => {
+//                     const value = props.getValue() as string;
+//                     return (
+//                         <Tooltip title={value} placement="top">
+//                             <div className="w-auto truncate">
+//                                 {value.length > 18
+//                                     ? value.substring(0, 18) + '...'
+//                                     : value}
+//                             </div>
+//                         </Tooltip>
+//                     );
+//                 },
+//             },
+//         ],
+//         []
+//     );
+
+//     return (
+//         <div className="w-full overflow-x-auto">
+//             <DataTable
+//                 columns={columns}
+//                 data={branchData}
+//                 skeletonAvatarColumns={[0]}
+//                 skeletonAvatarProps={{ className: 'rounded-md' }}
+//                 loading={false}
+//                 stickyHeader={true}
+//                 selectable={false}
+//                 showPageSizeSelector={false} 
+//             />
+//         </div>
+//     );
+// };
+
+// export default BranchesDashboardCount;
+
+
+
+
 import React, { useMemo } from 'react';
 import DataTable from '@/components/shared/DataTable';
 import { Tooltip } from '@/components/ui';
@@ -230,33 +325,36 @@ import type { ColumnDef } from '@/components/shared/DataTable';
 
 const BranchesDashboardCount = () => {
     const branchData = [
-        {
-            name: 'Total Branches',
-            value: '57 ',
-        },
+        
         {
             name: 'Physical Branches',
             value: '7',
+            badgeColor: 'bg-blue-400 text-white', // Light green badge
         },
         {
             name: 'Virtual Branches',
             value: '50',
+            badgeColor: 'bg-amber-400 text-white', // Light purple badge
         },
+        {
+            name: 'Total Branches',
+            value: '57',
+            badgeColor: 'bg-blue-400 text-white', // Light blue badge
+        }
     ];
 
     const columns: ColumnDef<typeof branchData[0]>[] = useMemo(
         () => [
             {
                 header: 'Branch Type',
+                enableSorting: false,
                 accessorKey: 'name',
                 cell: (props) => {
                     const value = props.getValue() as string;
                     return (
                         <Tooltip title={value} placement="top">
-                            <div className="w-28 truncate">
-                                {value.length > 30
-                                    ? value.substring(0, 30) + '...'
-                                    : value}
+                            <div className="font-semibold text-gray-700 hover:text-blue-600 transition-colors duration-200 text-sm">
+                                {value}
                             </div>
                         </Tooltip>
                     );
@@ -264,15 +362,17 @@ const BranchesDashboardCount = () => {
             },
             {
                 header: 'Count',
+                enableSorting: false,
                 accessorKey: 'value',
                 cell: (props) => {
+                    const row = props.row.original;
                     const value = props.getValue() as string;
                     return (
                         <Tooltip title={value} placement="top">
-                            <div className="w-auto truncate">
-                                {value.length > 18
-                                    ? value.substring(0, 18) + '...'
-                                    : value}
+                            <div
+                                className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${row.badgeColor}`}
+                            >
+                                {value}
                             </div>
                         </Tooltip>
                     );
@@ -283,7 +383,10 @@ const BranchesDashboardCount = () => {
     );
 
     return (
-        <div className="w-full overflow-x-auto">
+        <div className="w-full overflow-x-auto py-2 p-1 bg-white rounded-lg shadow-lg border">
+
+                                    <h2 className="text-base text-center font-semibold mb-6 mt-2">Branch Status</h2>
+
             <DataTable
                 columns={columns}
                 data={branchData}
@@ -292,7 +395,10 @@ const BranchesDashboardCount = () => {
                 loading={false}
                 stickyHeader={true}
                 selectable={false}
-                showPageSizeSelector={false} 
+                showPageSizeSelector={false}
+                // headerClassName="bg-gray-100 font-bold text-gray-800"
+                // rowClassName="hover:bg-gray-50 transition-colors duration-200"
+                // className="border-collapse w-full"
             />
         </div>
     );

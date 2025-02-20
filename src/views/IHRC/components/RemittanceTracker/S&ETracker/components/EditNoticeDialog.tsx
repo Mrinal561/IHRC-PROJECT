@@ -522,6 +522,7 @@ const EditNoticeDialog: React.FC<EditNoticeDialogProps> = ({
     notice_date: null,
     reference_number: '',
     related_act: '',
+    notice_detail: '',
     related_act_id: null,
     notice_document: null,
   };
@@ -534,6 +535,7 @@ const EditNoticeDialog: React.FC<EditNoticeDialogProps> = ({
         try {
           setIsLoading(true);
           const response = await dispatch(fetchNoticeById(noticeId)).unwrap();
+          console.log('api response', response);
           
           // Convert the date string to a Date object if it exists
           const noticeDate = response.notice_date ? new Date(response.notice_date) : null;
@@ -542,6 +544,7 @@ const EditNoticeDialog: React.FC<EditNoticeDialogProps> = ({
             notice_type: response.notice_type || '',
             notice_type_id: response.notice_type_id || null,
             notice_date: noticeDate,
+            notice_detail: response.notice_detail,
             reference_number: response.reference_number || '',
             related_act: response.related_act || '',
             related_act_id: response.related_act_id || null,
@@ -549,6 +552,7 @@ const EditNoticeDialog: React.FC<EditNoticeDialogProps> = ({
           };
 
           setFormData(formattedData);
+          
         } catch (error) {
           console.error('Failed to load notice:', error);
           showErrorNotification('Failed to load notice details');
@@ -610,6 +614,7 @@ const EditNoticeDialog: React.FC<EditNoticeDialogProps> = ({
         notice_type_id: formData.notice_type_id,
         notice_date: formData.notice_date ? formData.notice_date.toISOString() : null,
         reference_number: formData.reference_number,
+        notice_detail: formData.notice_detail,
         related_act: formData.related_act,
         related_act_id: formData.related_act_id,
         notice_document: formData.notice_document
@@ -639,6 +644,7 @@ const EditNoticeDialog: React.FC<EditNoticeDialogProps> = ({
     if (formData.notice_document) {
       const fullPath = `${import.meta.env.VITE_API_GATEWAY}/${formData.notice_document}`;
       window.open(fullPath, '_blank');
+      console.log('full path url ' , fullPath);
     }
   };
 
@@ -695,7 +701,7 @@ const EditNoticeDialog: React.FC<EditNoticeDialogProps> = ({
           </div>
 
           <div className="space-y-2 flex gap-2 flex-col">
-            <label className="text-sm font-medium">Update Notice Document</label>
+            <label className="text-sm font-medium">Update Notice Copy (PDF/Zip/Image, Max 20MB){' '}</label>
             <div className='flex gap-2'>
               <Input 
                 type="file"
@@ -714,6 +720,20 @@ const EditNoticeDialog: React.FC<EditNoticeDialogProps> = ({
               </Tooltip>
             </div>
           </div>
+
+          <div className="space-y-2">
+                    <label className="text-sm font-medium">
+                        Details of Notice
+                    </label>
+                    <textarea
+                        className="w-full p-2 border rounded-md h-24 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        value={formData.notice_detail}
+                        onChange={(e) =>
+                            handleChange('notice_detail', e.target.value)
+                        }
+                        placeholder="Enter notice details..."
+                    />
+                </div>
         </div>
 
         <div className="flex justify-end mt-6 space-x-2">
