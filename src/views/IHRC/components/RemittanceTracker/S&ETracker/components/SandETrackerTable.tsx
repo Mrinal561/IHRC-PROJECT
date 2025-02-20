@@ -217,7 +217,27 @@ const NoticeTrackerTable: React.FC<NoticeTrackerTableProps> = ({
         id: 'actions',
         cell: ({ row }) => (
           <div className="flex items-center gap-2">
+            <Tooltip title="View Reply">
+          <Button
+            size="sm"
+            onClick={() => navigate('/notice-tracker/replyhistory', {
+              state: { noticeId: row.original.id }
+            })} 
+            icon={<FaEye />}
+          />
+        </Tooltip>
+        <Tooltip title="Add Reply">
+          <Button
+            size="sm"
+            onClick={() => navigate('/notice-tracker/response', { 
+              state: { noticeId: row.original.id }
+            })}
+            icon={<FaComments />}
+
+          />
+        </Tooltip>
             {canEdit && (
+              
             <Tooltip title="Edit">
               <Button
                 size="sm"
@@ -236,25 +256,8 @@ const NoticeTrackerTable: React.FC<NoticeTrackerTableProps> = ({
               />
             </Tooltip>
             )}
-             <Tooltip title="Add Reply">
-          <Button
-            size="sm"
-            onClick={() => navigate('/notice-tracker/response', { 
-              state: { noticeId: row.original.id }
-            })}
-            icon={<FaComments />}
-
-          />
-        </Tooltip>
-        <Tooltip title="View Reply">
-          <Button
-            size="sm"
-            onClick={() => navigate('/notice-tracker/replyhistory', {
-              state: { noticeId: row.original.id }
-            })} 
-            icon={<FaEye />}
-          />
-        </Tooltip>
+            
+        
           </div>
         ),
       },

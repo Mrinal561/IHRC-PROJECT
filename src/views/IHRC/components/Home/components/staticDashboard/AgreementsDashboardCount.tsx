@@ -178,6 +178,7 @@ const AgreementsDashboardCount = () => {
             {
                 header: 'Agreement Type',
                 accessorKey: 'name',
+                enableSorting: false,
                 cell: (props) => {
                     const value = props.getValue() as string;
                     return (
@@ -193,6 +194,7 @@ const AgreementsDashboardCount = () => {
             },
             {
                 header: 'Count',
+                enableSorting: false,
                 accessorKey: 'value',
                 cell: (props) => {
                     const value = props.getValue() as string;

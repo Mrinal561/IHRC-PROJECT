@@ -308,9 +308,9 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
                 {/* Branch Statistics and S&E Registration Status - Side by Side */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
-                        <h2 className="text-xl font-semibold mb-4">
+                        {/* <h2 className="text-xl font-semibold mb-4">
                             Branch Status
-                        </h2>
+                        </h2> */}
                         <BranchesDashboardCount />
                     </div>
 
@@ -443,10 +443,10 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
             <div className="flex flex-col gap-6 mt-6">
                 {/* First Row */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    <div className="bg-white p-4 rounded-lg border shadow-sm">
-                        <h2 className="text-xl font-semibold mb-4">Branch Status</h2>
+                    {/* <div className="bg-white p-4 rounded-lg border shadow-sm"> */}
+                        {/* <h2 className="text-xl font-semibold mb-4">Branch Status</h2> */}
                         <BranchesDashboardCount />
-                    </div>
+                    {/* </div> */}
             
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <h2 className="text-xl font-semibold mb-4">S&E Registration Status</h2>

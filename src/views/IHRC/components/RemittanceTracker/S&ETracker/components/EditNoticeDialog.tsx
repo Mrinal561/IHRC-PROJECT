@@ -701,7 +701,7 @@ const EditNoticeDialog: React.FC<EditNoticeDialogProps> = ({
           </div>
 
           <div className="space-y-2 flex gap-2 flex-col">
-            <label className="text-sm font-medium">Update Notice Document (PDF/Zip/Image, Max 20MB){' '}</label>
+            <label className="text-sm font-medium">Update Notice Copy (PDF/Zip/Image, Max 20MB){' '}</label>
             <div className='flex gap-2'>
               <Input 
                 type="file"

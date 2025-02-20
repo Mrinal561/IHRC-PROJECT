@@ -440,7 +440,7 @@ const NoticeTimelinePage = () => {
 
                         {noticeData.document && (
                             <div>
-                                <p className="text-sm text-gray-500 mb-2">Attached Document:</p>
+                                <p className="text-sm text-gray-500 mb-2">Notice Copy:</p>
                                 <div className="inline-flex items-center space-x-2 bg-blue-500 text-white px-2 py-1 rounded-md hover:bg-blue-700 transition-colors">
                                     <File className="w-4 h-4" />
                                     <a href={noticeData.document.url} target="_blank" className="hover:underline">
@@ -489,10 +489,13 @@ const NoticeTimelinePage = () => {
                                         <div>
                                             <p className="text-gray-600 dark:text-gray-300">{response.replyDetails}</p>
                                         </div>
+                                        <div className="inline-flex items-center space-x-2 bg-blue-500 text-white px-2 py-1 rounded-md hover:bg-blue-700 transition-colors">
+                                            {response.notice_type}
+                                        </div>
                                         
                                         {response.document && (
                                             <div className="flex items-center space-x-2 pt-2">
-                                                <div className="inline-flex items-center space-x-2 bg-blue-500 text-white px-2 py-1 rounded-md hover:bg-blue-700 transition-colors">
+                                                <div className='inline-flex gap-2 items-center'>
                                                     <File className="w-4 h-4" />
                                                     <a href={response.document.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
                                                         {response.document.name}

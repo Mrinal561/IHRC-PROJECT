@@ -459,79 +459,82 @@ const NoticeResponsePage = () => {
       </div>
 
       <div className="mb-8 p-6 border rounded-lg bg-white shadow-sm">
-        <h2 className="text-lg font-semibold mb-4">Add A Reply</h2>
+  <h2 className="text-lg font-semibold mb-4">Add A Reply</h2>
 
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium">
-              Details Of The Reply <span className="text-red-500">*</span>
-            </label>
-            <OutlinedInput
-              label="Details of the Reply"
-              value={form.notice_reply}
-              onChange={(value) => handleChange('notice_reply', value)}
-              textarea={true}
-              error={!!errors.notice_reply}
-            />
-            {showFieldError('notice_reply')}
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-sm font-medium">
-              Reply Sent On <span className="text-red-500">*</span>
-            </label>
-            <DatePicker
-              clearable
-              size="sm"
-              placeholder="Select Date"
-              value={form.notice_sent_at}
-              onChange={(date) => handleChange('notice_sent_at', date)}
-              inputFormat="DD/MM/YYYY"
-              maxDate={new Date()}
-            />
-            {showFieldError('notice_sent_at')}
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-sm font-medium">
-              Upload Document (PDF/Zip/Image, Max 20MB) <span className="text-red-500">*</span>
-            </label>
-            <Input
-              type="file"
-              onChange={handleFileChange}
-              className="w-full"
-              accept=".pdf,.jpg,.jpeg,.png,.zip"
-            />
-            {showFieldError('reply_document')}
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-sm font-medium">
-              Notice Status
-            </label>
-            <StatusAutoSuggest
-              value={form.status}
-              onChange={(value) => handleChange('status', value)}
-              onStatusSelect={(id) => handleChange('status_id', id)}
-              isDisabled={isLoading}
-            />
-            {showFieldError('status')}
-          </div>
-
-          <div className="space-y-2">
-            {/* <label className="text-sm font-medium">
-              Notice Type <span className="text-red-500">*</span>
-            </label> */}
-            <NoticeTypeAutosuggest
-              value={form.notice_type}
-              onChange={(value) => handleChange('notice_type', value)}
-              onNoticeTypeSelect={(id) => handleChange('notice_type_id', id)}
-              isDisabled={isLoading}
-            />
-            {showFieldError('notice_type')}
-          </div>
-        </div>
+  <div className="space-y-4">
+    {/* 1st Row: Notice Status and Notice Type */}
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="space-y-2">
+        {/* <label className="text-sm font-medium">Notice Status</label> */}
+        <StatusAutoSuggest
+          value={form.status}
+          onChange={(value) => handleChange('status', value)}
+          onStatusSelect={(id) => handleChange('status_id', id)}
+          isDisabled={isLoading}
+        />
+        {showFieldError('status')}
       </div>
+
+      <div className="space-y-2">
+        {/* <label className="text-sm font-medium">Notice Type</label> */}
+        <NoticeTypeAutosuggest
+          value={form.notice_type}
+          onChange={(value) => handleChange('notice_type', value)}
+          onNoticeTypeSelect={(id) => handleChange('notice_type_id', id)}
+          isDisabled={isLoading}
+        />
+        {showFieldError('notice_type')}
+      </div>
+    </div>
+
+    {/* 2nd Row: Reply Date and Reply Document */}
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="space-y-2">
+        <label className="text-sm font-medium">
+          Reply Date <span className="text-red-500">*</span>
+        </label>
+        <DatePicker
+          clearable
+          size="sm"
+          placeholder="Select Date"
+          value={form.notice_sent_at}
+          onChange={(date) => handleChange('notice_sent_at', date)}
+          inputFormat="DD/MM/YYYY"
+          maxDate={new Date()}
+        />
+        {showFieldError('notice_sent_at')}
+      </div>
+
+      <div className="space-y-2">
+        <label className="text-sm font-medium">
+         Notice Copy (PDF/Zip/Image, Max 20MB) <span className="text-red-500">*</span>
+        </label>
+        <Input
+          type="file"
+          onChange={handleFileChange}
+          className="w-full"
+          accept=".pdf,.jpg,.jpeg,.png,.zip"
+        />
+        {showFieldError('reply_document')}
+      </div>
+    </div>
+
+    {/* 3rd Row: Reply Details */}
+    <div className="space-y-2">
+      <label className="text-sm font-medium">
+        Details Of The Reply <span className="text-red-500">*</span>
+      </label>
+      <OutlinedInput
+        label="Details of the Reply"
+        value={form.notice_reply}
+        onChange={(value) => handleChange('notice_reply', value)}
+        textarea={true}
+        error={!!errors.notice_reply}
+      />
+      {showFieldError('notice_reply')}
+    </div>
+  </div>
+</div>
 
       <div className="flex justify-end space-x-2">
         <Button variant="plain" onClick={() => navigate(-1)}>
