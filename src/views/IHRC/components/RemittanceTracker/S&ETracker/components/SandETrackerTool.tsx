@@ -73,6 +73,7 @@ interface SandETrackerToolProps {
     companyId: string;
     startDate: string;
     endDate: string;
+    // is_follow_up: string;
   }) => void;
 }
 
@@ -88,7 +89,7 @@ const SandETrackerTool: React.FC<SandETrackerToolProps> = ({ onRefresh, onFilter
     startDate: '',
     endDate: '',
     status:'',
-    noticeType: ''
+    noticeType: '',
   });
   const navigate = useNavigate()
   const handleUploadConfirm = () => {
@@ -97,7 +98,9 @@ const SandETrackerTool: React.FC<SandETrackerToolProps> = ({ onRefresh, onFilter
 
   const handleFilterChange = (newFilters: typeof filters) => {
     console.log('Filter values changed:', newFilters);
-    setFilters(newFilters);
+    setFilters({
+      ...newFilters,
+    });
     onFilterChange(newFilters);
   };
 

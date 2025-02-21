@@ -23,7 +23,7 @@ const getStatusColor = (status: string) => {
   if (statusLower === 'open') {
       return 'bg-red-500 text-white rounded-lg';
   }
-  if (statusLower === 'close') {
+  if (statusLower === 'closed') {
       return 'bg-green-500 text-white rounded-lg';
   }
   // Any other status (including reopen, etc) will be amber

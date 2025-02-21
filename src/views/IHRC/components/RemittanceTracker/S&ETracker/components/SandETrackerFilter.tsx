@@ -344,7 +344,7 @@ const SandETrackerFilter: React.FC<NoticeProps> = ({ onFilterChange }) => {
         companyName: selectedCompany.label,
         companyId: selectedCompany.value,
         status: selectedStatus?.value || '',
-        noticeType: selectedNoticeType?.value || ''
+        noticeType: selectedNoticeType?.value || '',
       });
     }
   }, [selectedCompany, selectedStatus, selectedNoticeType]);

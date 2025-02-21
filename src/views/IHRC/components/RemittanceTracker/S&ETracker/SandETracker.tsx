@@ -488,7 +488,6 @@ const SandETracker = () => {
         endDate: '',
         status: '',
         noticeType: '',
-        is_follow_up: false,
     });
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -609,7 +608,6 @@ const SandETracker = () => {
                     to_date: filters.endDate, // Always include endDate
                     status: filters.status, // Always include status
                     notice_type: filters.noticeType, // Always include noticeType
-                    is_follow_up: filters.is_follow_up, // Always include is_follow_up
                 };
 
                 if (financialYear) {
@@ -631,7 +629,7 @@ const SandETracker = () => {
                 setIsLoading(false);
             }
         },
-        [filters.groupId, filters.companyId, filters.startDate, filters.endDate, financialYear, filters.status, filters.noticeType, filters.is_follow_up]
+        [filters.groupId, filters.companyId, filters.startDate, filters.endDate, financialYear, filters.status, filters.noticeType, filters]
     );
 
     useEffect(() => {
@@ -643,7 +641,6 @@ const SandETracker = () => {
         filters.endDate,
         filters.status,
         filters.noticeType,
-        filters.is_follow_up,
         pagination.pageIndex,
         pagination.pageSize,
         fetchNoticeTrackerData,
