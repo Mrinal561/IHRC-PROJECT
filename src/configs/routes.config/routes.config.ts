@@ -582,6 +582,17 @@ export const protectedRoutes = [
         authority: [],
     },
     {
+        key: 'noticeTracker.followupNotice',
+        path: '/notice-tracker/followUpNotice',
+        component: lazy(
+            () =>
+              import(
+                '@/views/IHRC/components/RemittanceTracker/S&ETracker/components/NoticeFollowUpPage'
+              )
+        ),
+        authority: [],
+    },
+    {
         key: 'noticeTracker.replyHistory',
         path: '/notice-tracker/replyhistory',
         component: lazy(

@@ -520,7 +520,6 @@ import { IoArrowBack } from 'react-icons/io5'
 import NoticeTypeAutosuggest from './NoticeTypeAutosuggest'
 import NoticeActAutosuggest from './NoticeActAutosuggest'
 import * as Yup from 'yup'
-
 interface SelectOption {
     value: string
     label: string
@@ -568,9 +567,11 @@ const validationSchema = Yup.object().shape({
         .required('Notice document is required'),
     notice_detail: Yup.string()
         .required('Notice details are required')
-        .trim()
-        // .min(10, 'Please provide description')
-})
+        .trim(),
+    criticality: Yup.string()
+        .required('Criticality is required')
+        .oneOf(['high', 'medium', 'low'], 'Invalid criticality value'),
+})     
 
 const NoticeFormPage = ({ onSuccess }) => {
     const dispatch = useDispatch()
@@ -582,6 +583,8 @@ const NoticeFormPage = ({ onSuccess }) => {
     const [isLoading, setIsLoading] = useState(false)
     const [states, setStates] = useState<SelectOption[]>([])
     const [selectedStates, setSelectedStates] = useState<SelectOption | null>(null)
+    const [selectedCriticality, setSelectedCriticality] = useState<SelectOption | null>(null)
+
     const [selectedDistrict, setSelectedDistrict] = useState<{
         id: number | null
         name: string
@@ -607,6 +610,7 @@ const NoticeFormPage = ({ onSuccess }) => {
         related_act: '',
         notice_document: null,
         notice_detail: '',
+        criticality: '',
     }
 
     const [formData, setFormData] = useState(initialFormData)
@@ -615,6 +619,12 @@ const NoticeFormPage = ({ onSuccess }) => {
         loadCompanyGroups()
         loadStates()
     }, [])
+
+    const criticalityOptions = [
+        {value: 'high', label: 'High'},
+        {value: 'medium', label: 'Medium'},
+        {value: 'low', label: 'Low'}
+    ]
 
     const loadCompanyGroups = async () => {
         try {
@@ -890,7 +900,7 @@ const NoticeFormPage = ({ onSuccess }) => {
                 </div>
 
                 {/* Notice Type and Date */}
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-3 gap-4">
                     <div className="space-y-2">
                         <NoticeTypeAutosuggest
                             value={formData.notice_type}
@@ -905,6 +915,21 @@ const NoticeFormPage = ({ onSuccess }) => {
                         />
                         {showFieldError('notice_type')}
                     </div>
+                    <div className="space-y-2">
+                    <label className="text-sm font-medium">
+                        Criticality <span className="text-red-500">*</span>
+                    </label>
+                    <OutlinedSelect
+                        label="Select Criticality"
+                        options={criticalityOptions}
+                        value={selectedCriticality}
+                        onChange={(option: SelectOption | null) => {
+                            setSelectedCriticality(option)
+                            handleChange('criticality', option?.value || '')
+                        }}
+                    />
+                    {showFieldError('criticality')}
+                </div>
                     <div className="space-y-2">
                         <label className="text-sm font-medium">
                             Notice Received on <span className="text-red-500">*</span>

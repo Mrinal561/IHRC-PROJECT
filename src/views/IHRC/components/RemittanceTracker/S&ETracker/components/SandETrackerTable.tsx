@@ -212,54 +212,123 @@ const NoticeTrackerTable: React.FC<NoticeTrackerTableProps> = ({
           );
         },
       },
+      // {
+      //   header: 'Actions',
+      //   id: 'actions',
+      //   cell: ({ row }) => (
+      //     <div className="flex items-center gap-2">
+      //       <Tooltip title="View Reply">
+      //     <Button
+      //       size="sm"
+      //       onClick={() => navigate('/notice-tracker/replyhistory', {
+      //         state: { noticeId: row.original.id }
+      //       })} 
+      //       icon={<FaEye />}
+      //     />
+      //   </Tooltip>
+      //   <Tooltip title="Add Reply">
+      //     <Button
+      //       size="sm"
+      //       onClick={() => navigate('/notice-tracker/response', { 
+      //         state: { noticeId: row.original.id }
+      //       })}
+      //       icon={<FaComments />}
+
+      //     />
+      //   </Tooltip>
+      //       {canEdit && (
+              
+      //       <Tooltip title="Edit">
+      //         <Button
+      //           size="sm"
+      //           onClick={() => handleEdit(row.original)}
+      //           icon={<MdEdit />}
+      //         />
+      //       </Tooltip>
+      //       )}
+      //       {canDelete && (
+      //       <Tooltip title="Delete">
+      //         <Button
+      //           size="sm"
+      //           onClick={() => handleDeleteConfirmation(row.original.id)}
+      //           icon={<FiTrash />}
+      //           className="text-red-500"
+      //         />
+      //       </Tooltip>
+      //       )}
+            
+        
+      //     </div>
+      //   ),
+      // },
       {
         header: 'Actions',
         id: 'actions',
-        cell: ({ row }) => (
-          <div className="flex items-center gap-2">
-            <Tooltip title="View Reply">
-          <Button
-            size="sm"
-            onClick={() => navigate('/notice-tracker/replyhistory', {
-              state: { noticeId: row.original.id }
-            })} 
-            icon={<FaEye />}
-          />
-        </Tooltip>
-        <Tooltip title="Add Reply">
-          <Button
-            size="sm"
-            onClick={() => navigate('/notice-tracker/response', { 
-              state: { noticeId: row.original.id }
-            })}
-            icon={<FaComments />}
-
-          />
-        </Tooltip>
-            {canEdit && (
-              
-            <Tooltip title="Edit">
-              <Button
-                size="sm"
-                onClick={() => handleEdit(row.original)}
-                icon={<MdEdit />}
-              />
-            </Tooltip>
-            )}
-            {canDelete && (
-            <Tooltip title="Delete">
-              <Button
-                size="sm"
-                onClick={() => handleDeleteConfirmation(row.original.id)}
-                icon={<FiTrash />}
-                className="text-red-500"
-              />
-            </Tooltip>
-            )}
-            
-        
-          </div>
-        ),
+        cell: ({ row }) => {
+          const status = row.original.status.toLowerCase(); // Get the status in lowercase
+          return (
+            <div className="flex items-center gap-2">
+              {/* View Reply Button */}
+              <Tooltip title="View Reply">
+                <Button
+                  size="sm"
+                  onClick={() => navigate('/notice-tracker/replyhistory', {
+                    state: { noticeId: row.original.id }
+                  })} 
+                  icon={<FaEye />}
+                />
+              </Tooltip>
+      
+              {/* Conditional Button */}
+              {status === 'open' ? (
+                // Show Reply Button if status is "open"
+                <Tooltip title="Add Reply">
+                  <Button
+                    size="sm"
+                    onClick={() => navigate('/notice-tracker/response', { 
+                      state: { noticeId: row.original.id }
+                    })}
+                    icon={<FaComments />}
+                  />
+                </Tooltip>
+              ) : (
+                // Show Add Notice Button if status is "closed"
+                <Tooltip title="Add Notice">
+                  <Button
+                    size="sm"
+                    onClick={() => navigate('/notice-tracker/followUpNotice', { 
+                      state: { noticeId: row.original.id }
+                    })}
+                    icon={<FaEnvelopeOpen />}
+                  />
+                </Tooltip>
+              )}
+      
+              {/* Edit Button (if canEdit is true) */}
+              {canEdit && (
+                <Tooltip title="Edit">
+                  <Button
+                    size="sm"
+                    onClick={() => handleEdit(row.original)}
+                    icon={<MdEdit />}
+                  />
+                </Tooltip>
+              )}
+      
+              {/* Delete Button (if canDelete is true) */}
+              {canDelete && (
+                <Tooltip title="Delete">
+                  <Button
+                    size="sm"
+                    onClick={() => handleDeleteConfirmation(row.original.id)}
+                    icon={<FiTrash />}
+                    className="text-red-500"
+                  />
+                </Tooltip>
+              )}
+            </div>
+          );
+        },
       },
     ],
     [onRefresh]
