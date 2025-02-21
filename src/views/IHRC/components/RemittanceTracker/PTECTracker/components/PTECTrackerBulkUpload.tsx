@@ -154,16 +154,16 @@ const PTECTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({
 
     const handleDownload = async (e: React.MouseEvent<HTMLAnchorElement>) => {
         e.preventDefault()
-        if (!currentGroup) {
-            toast.push(
-                <Notification
-                    type="warning"
-                    title="Please select a month before downloading"
-                />,
-                {},
-            )
-            return
-        }
+        // if (!currentGroup) {
+        //     toast.push(
+        //         <Notification
+        //             type="warning"
+        //             title="Please select a month before downloading"
+        //         />,
+        //         {},
+        //     )
+        //     return
+        // }
         try {
             const selectedDate = parse(currentGroup, 'yyyy-MM', new Date())
             const payrollMonth = format(selectedDate, 'yyyy-MM')
@@ -183,15 +183,16 @@ const PTECTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({
                         File was Downloaded Successfully
                     </Notification>,
                 )
+
+                const blob = new Blob([res.data], { type: 'text/xlsx' })
+                const url = window.URL.createObjectURL(blob)
+                const link = document.createElement('a')
+                link.href = url
+                link.setAttribute('download', 'PTECTracker.xlsx')
+                document.body.appendChild(link)
+                link.click()
+                document.body.removeChild(link)
             }
-            const blob = new Blob([res.data], { type: 'text/xlsx' })
-            const url = window.URL.createObjectURL(blob)
-            const link = document.createElement('a')
-            link.href = url
-            link.setAttribute('download', 'PTECTracker.xlsx')
-            document.body.appendChild(link)
-            link.click()
-            document.body.removeChild(link)
         } catch (error) {
             console.error('Download error:', error)
             toast.push(
