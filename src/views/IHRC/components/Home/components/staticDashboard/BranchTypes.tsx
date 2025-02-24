@@ -14,14 +14,14 @@ export const BranchTypes = () => {
     const columns = useMemo(
         () => [
             {
-                header: 'Office Type',
+                header: 'Type',
                 accessorKey: 'name',
                 enableSorting: false,
                 cell: (props) => {
                     const value = props.getValue() as string;
                     return (
                         <Tooltip title={value} placement="top">
-                           <div className="font-semibold text-gray-700 hover:text-blue-600 transition-colors duration-200 text-xs">
+                           <div className="font-semibold text-gray-700 hover:text-blue-600 transition-colors duration-200 text-xs w-18">
                                 {value.length > 30 ? value.substring(0, 30) + '...' : value}
                             </div>
                         </Tooltip>
@@ -50,8 +50,8 @@ export const BranchTypes = () => {
     );
 
     return (
-        <div className="w-full overflow-x-auto py-2 p-1 bg-white rounded-lg shadow-lg border">
-                                     <h2 className="text-base text-center font-semibold mb-4 mt-2">Branch Types</h2>
+        <div className="w-full overflow-x-auto py-2 bg-white rounded-lg shadow-lg border">
+                                     <h2 className="text-base text-center mb-4 mt-2 font-semibold">Branch Types</h2>
 
             <DataTable
                 columns={columns}

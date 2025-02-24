@@ -13,7 +13,8 @@ import dayjs from 'dayjs';
 import { deleteNotice } from '@/store/slices/noticeTracker/noticeTrackerSlice';
 import EditNoticeDialog from './EditNoticeDialog';
 import { useNavigate } from 'react-router-dom';
-import { FaArrowCircleRight, FaComments, FaEnvelopeOpen, FaEye, FaHistory, FaRegCommentDots, FaReply } from 'react-icons/fa';
+import { FaArrowCircleRight, FaComments, FaEnvelopeOpen, FaEye, FaHistory, FaRegCommentDots, FaReply, FaUserShield } from 'react-icons/fa';
+import { requestNoticeEdit } from '@/store/slices/request/noticerequest';
 
 
 
@@ -53,6 +54,18 @@ interface NoticeData {
     id: number;
     name: string;
   };
+  iseditable?: boolean;
+  is_requested?: boolean;
+  created_by?: any;
+  CreatedBy: {
+    id: number;
+    name: string;
+  }
+}
+
+// Define the interface for the request payload
+interface CompanyAdminNoticeRequestPayload {
+  type: number;
 }
 
 interface NoticeTrackerTableProps {
@@ -107,6 +120,33 @@ const NoticeTrackerTable: React.FC<NoticeTrackerTableProps> = ({
   const handleEdit = (row: NoticeData) => {
     setSelectedNoticeId(row.id);
     setEditDialogOpen(true);
+  };
+
+  const handleRequestToAdmin = async (id: number, type: 'notice' | 'reply' | 'followUp') => {
+    try {
+      let payload: { noticeId?: number; replyId?: number; followUpId?: number } = {};
+  
+      // Set the appropriate ID based on the type
+      if (type === 'notice') {
+        payload.noticeId = id;
+      } else if (type === 'reply') {
+        payload.replyId = id;
+      } else if (type === 'followUp') {
+        payload.followUpId = id;
+      }
+  
+      // Dispatch the request with the correct payload
+      const res = await dispatch(requestNoticeEdit(payload)).unwrap();
+  
+      if (res) {
+        console.log('Requested Successfully');
+        if (onRefresh) {
+          onRefresh();
+        }
+      }
+    } catch (error) {
+      console.log("Admin request error:", error);
+    }
   };
 
   const columns: ColumnDef<NoticeData>[] = useMemo(
@@ -265,7 +305,8 @@ const NoticeTrackerTable: React.FC<NoticeTrackerTableProps> = ({
         header: 'Actions',
         id: 'actions',
         cell: ({ row }) => {
-          const status = row.original.status.toLowerCase(); // Get the status in lowercase
+          const { iseditable, is_requested, created_by, id } = row.original;
+          const status = row.original.status.toLowerCase(); 
           return (
             <div className="flex items-center gap-2">
               {/* View Reply Button */}
@@ -304,16 +345,28 @@ const NoticeTrackerTable: React.FC<NoticeTrackerTableProps> = ({
                 </Tooltip>
               )}
       
-              {/* Edit Button (if canEdit is true) */}
-              {canEdit && (
-                <Tooltip title="Edit">
-                  <Button
-                    size="sm"
-                    onClick={() => handleEdit(row.original)}
-                    icon={<MdEdit />}
-                  />
-                </Tooltip>
-              )}
+             {/* Edit Button (if iseditable is true and is_requested is false) */}
+             {canEdit && iseditable && !is_requested && (
+          <Tooltip title="Edit">
+            <Button
+              size="sm"
+              onClick={() => handleEdit(row.original)}
+              icon={<MdEdit />}
+            />
+          </Tooltip>
+        )}
+
+        {/* Request to Admin Button (if iseditable is true and is_requested is true) */}
+        {(iseditable === false || is_requested) && (
+          <Tooltip title="Request to Admin">
+            <Button
+              size="sm"
+              onClick={() => handleRequestToAdmin(id, 'notice')} // Pass the correct ID and type
+              icon={<FaUserShield />}
+              className="text-blue-500"
+            />
+          </Tooltip>
+        )}
       
               {/* Delete Button (if canDelete is true) */}
               {canDelete && (

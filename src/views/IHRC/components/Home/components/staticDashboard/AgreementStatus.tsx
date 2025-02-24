@@ -5,7 +5,7 @@ import { Card } from '@/components/ui';
 import { ApexOptions } from 'apexcharts';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 
-const SandEStatusPie = () => {
+const AgreementStatus = () => {
   // Month options for the dropdown
   const groupOptions = [
     { value: 'jan', label: 'January' },
@@ -31,7 +31,7 @@ const SandEStatusPie = () => {
   };
 
   const data = {
-    series: [300, 150],   // Total Notice, Open, Closed
+    series: [200, 70],   // Total Notice, Open, Closed
     labels: ['Valid', 'Expired']
   };
 
@@ -40,22 +40,24 @@ const SandEStatusPie = () => {
       type: 'pie',
       background: 'transparent'
     },
-    colors: ['#059669', '#DC143C'],
+    // colors: ['#ed3237', '#059669'],
+    colors: ['#DC143C', '#059669'],
     labels: data.labels,
     legend: {
-      show: false
-      // position: 'bottom',
-      // horizontalAlign: 'center',
-      // fontSize: '12px',
-      // markers: {
-      //   offsetX: 0,
-      //   offsetY: 0
-      // },
-      // itemMargin: {
-      //   horizontal: 10,
-      //   vertical: 5
-      // }
+        show: false
+    //   position: 'bottom',
+    //   horizontalAlign: 'center',
+    //   fontSize: '12px',
+    //   markers: {
+    //     offsetX: 0,
+    //     offsetY: 0
+    //   },
+    //   itemMargin: {
+    //     horizontal: 10,
+    //     vertical: 5
+    //   }
     },
+    
     plotOptions: {
       pie: {
         startAngle: 0,
@@ -122,7 +124,7 @@ const SandEStatusPie = () => {
     <div className="w-full">
       <div className="flex justify-center items-center px-4">
         <h4 className="text-base font-semibold text-center">
-          S&E Status
+          Agreement Status
         </h4>
         {/* <div className="w-40">
           <OutlinedSelect
@@ -163,9 +165,9 @@ const SandEStatusPie = () => {
     <Card 
       className="w-full max-w-2xl mx-auto border-none"
       header={header}
-      // footer={footer}
+    //   footer={footer}
       headerBorder={true}
-      // footerBorder={true}
+    //   footerBorder={true}
       bordered={true}
     >
       <div className="p-0">
@@ -174,10 +176,11 @@ const SandEStatusPie = () => {
           series={data.series}
           type="pie"
           height={250}
-          width={250}        />
+          width={250}
+        />
       </div>
     </Card>
   );
 };
 
-export default SandEStatusPie;
+export default AgreementStatus;

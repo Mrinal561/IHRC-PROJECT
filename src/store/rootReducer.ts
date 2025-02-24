@@ -28,6 +28,16 @@ import role,{ RoleState } from './slices/role/roleSlice'
 import notice,{ NoticeTrackerState } from './slices/noticeTracker/noticeTrackerSlice'
 import notification,{ NotificationState } from './slices/notification/notificationSlice'
 import password,{ PasswordRecoveryState } from './slices/password/passwordSlice'
+
+
+
+
+
+
+
+
+
+
 export type RootState = CombinedState<{
     auth: CombinedState<AuthState>
     base: CombinedState<BaseState>

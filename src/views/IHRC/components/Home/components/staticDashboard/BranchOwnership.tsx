@@ -14,14 +14,14 @@ import type { ColumnDef } from '@/components/shared/DataTable';
     const columns = useMemo(
         () => [
             {
-                header: 'Ownership Type',
+                header: 'Type',
                 accessorKey: 'name',
                 enableSorting: false,
                 cell: (props) => {
                     const value = props.getValue() as string;
                     return (
                         <Tooltip title={value} placement="top">
-                            <div className="font-semibold text-gray-700 hover:text-blue-600 transition-colors duration-200 text-xs">
+                            <div className="font-semibold text-gray-700 hover:text-blue-600 transition-colors duration-200 text-xs w-11">
                                 {value.length > 30 ? value.substring(0, 30) + '...' : value}
                             </div>
                         </Tooltip>
@@ -51,7 +51,7 @@ import type { ColumnDef } from '@/components/shared/DataTable';
                     const value = props.getValue() as string;
                     return (
                         <Tooltip title={value} placement="top">
-                            <div className="font-semibold text-gray-700 hover:text-blue-600 transition-colors duration-200 text-xs">
+                            <div className="inline-flex items-center rounded-full text-xs font-semibold">
                                 {value.length > 30 ? value.substring(0, 30) + '...' : value}
                             </div>
                         </Tooltip>
@@ -68,7 +68,7 @@ import type { ColumnDef } from '@/components/shared/DataTable';
                                        return (
                                            <Tooltip title={value} placement="top">
                                                <div
-                                                   className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${row.badgeColor}`}>
+                                                   className={`inline-flex items-center py-2 rounded-full text-xs font-semibold ${row.badgeColor}`}>
                                 {value.length > 18 ? value.substring(0, 18) + '...' : value}
                             </div>
                         </Tooltip>
@@ -80,7 +80,7 @@ import type { ColumnDef } from '@/components/shared/DataTable';
     );
 
     return (
-        <div className="w-full overflow-x-auto py-2 p-1 bg-white rounded-lg shadow-lg border">
+        <div className="w-full h-80 overflow-x-auto py-2 bg-white rounded-lg shadow-lg border">
            <h2 className="text-base text-center font-semibold mb-4 mt-2">Branch Status</h2>
             <DataTable
                 columns={columns}

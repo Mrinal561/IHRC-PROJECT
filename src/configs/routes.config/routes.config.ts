@@ -407,6 +407,17 @@ export const protectedRoutes = [
     },
     {
         key: 'entityMenu.collapse.item8',
+        path: '/Notice-Edit-permission',
+        component: lazy(
+            () =>
+                import(
+                    '@/views/IHRC/components/GlobalSettings/NoticeEditPermission/NoticeEditPermission'
+                ),
+        ),
+        authority: [],
+    },
+    {
+        key: 'entityMenu.collapse.item8',
         path: '/agreements',
         component: lazy(
             () =>

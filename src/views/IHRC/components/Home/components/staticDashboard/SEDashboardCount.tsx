@@ -191,11 +191,6 @@ const SEDashboardCount = () => {
             vr: '50',
             // badgeColor: 'bg-amber-400 text-white',
         },
-        // {
-        //     name: 'Applied For',
-        //     value: '2',
-        //     badgeColor: 'bg-blue-400 text-white',
-        // },
         {
             name: 'Expired',
             value: '2',
@@ -215,7 +210,7 @@ const SEDashboardCount = () => {
     const columns: ColumnDef<typeof seData[0]>[] = useMemo(
         () => [
             {
-                header: 'S&E Status',
+                header: 'Status',
                 enableSorting: false,
                 accessorKey: 'name',
                 cell: (props) => {
@@ -224,7 +219,7 @@ const SEDashboardCount = () => {
                     const value = props.getValue() as string;
                     return (
                         <Tooltip title={value} placement="top">
-                            <div className= {`font-semibold text-gray-700 hover:text-blue-600 transition-colors duration-200 text-xs ${row.badgeColor}`}>
+                            <div className= {`font-semibold text-gray-700 hover:text-blue-600 transition-colors duration-200 text-xs w-10.5 ${row.badgeColor}`}>
                                 {value.length > 30
                                     ? value.substring(0, 30) + '...'
                                     : value}
@@ -244,8 +239,8 @@ const SEDashboardCount = () => {
                     return (
                         <Tooltip title={value} placement="top">
                             <div className= {`font-semibold text-gray-700 hover:text-blue-600 transition-colors duration-200 text-xs ${row.badgeColor}`}>
-                                {value.length > 30
-                                    ? value.substring(0, 30) + '...'
+                                {value.length > 18
+                                    ? value.substring(0, 18) + '...'
                                     : value}
                             </div>
                         </Tooltip>
@@ -263,8 +258,8 @@ const SEDashboardCount = () => {
                     return (
                         <Tooltip title={value} placement="top">
                             <div className= {`font-semibold text-gray-700 hover:text-blue-600 transition-colors duration-200 text-xs ${row.badgeColor}`}>
-                                {value.length > 30
-                                    ? value.substring(0, 30) + '...'
+                                {value.length > 18
+                                    ? value.substring(0, 18) + '...'
                                     : value}
                             </div>
                         </Tooltip>
@@ -279,7 +274,7 @@ const SEDashboardCount = () => {
                     const row = props.row.original;
                     const value = props.getValue() as string;                    return (
                         <Tooltip title={value} placement="top">
-                            <div  className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${row.badgeColor}`}>
+                            <div  className={`inline-flex items-center py-2 rounded-full text-xs font-semibold ${row.badgeColor}`}>
                                 {value.length > 18
                                     ? value.substring(0, 18) + '...'
                                     : value}
@@ -293,8 +288,8 @@ const SEDashboardCount = () => {
     );
 
     return (
-        <div className="w-full overflow-x-auto py-2 p-1 bg-white rounded-lg shadow-lg border">
-            <h2 className="text-base text-center font-semibold  mb-4 mt-2">Branches S&E Status</h2>
+        <div className="w-full h-80 overflow-x-auto py-2 bg-white rounded-lg shadow-lg border">
+            <h2 className="text-base text-center font-semibold mb-4 mt-2">Branches S&E Status</h2>
             <DataTable
                 columns={columns}
                 data={seData}

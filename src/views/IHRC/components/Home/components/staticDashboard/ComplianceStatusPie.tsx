@@ -197,9 +197,9 @@ const ComplianceStatusPie = () => {
     <div className="grid grid-cols-3 gap-4">
       {data.labels.map((label, index) => (
         <div key={label} className="bg-gray-50 p-3 rounded-lg text-center">
-          <div className="text-xs font-medium text-gray-600">{label}</div>
+          <div className="text-sm font-medium text-gray-600">{label}</div>
           <div 
-            className="text-base font-bold mt-1" 
+            className="text-xl font-bold mt-1" 
             style={{ color: options.colors?.[index] }}
           >
             {data.series[index]}

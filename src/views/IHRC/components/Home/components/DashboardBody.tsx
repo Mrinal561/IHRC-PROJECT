@@ -213,190 +213,457 @@
 
 // export default DashboardBody;
 
-import React, { useEffect, useState } from 'react'
-import BranchesDashboardCount from './staticDashboard/BranchesDashboardCount'
-import SEDashboardCount from './staticDashboard/SEDashboardCount'
-import AgreementsDashboardCount from './staticDashboard/AgreementsDashboardCount'
-import RentalDepositsDashboard from './staticDashboard/RentalDepositsDashboard'
-import NoticesDashboard from './staticDashboard/NoticesDasboard'
-import Notices from './staticDashboard/Notices'
-import ComplianceCalendar from './staticDashboard/ComplianceCalender'
-import RevenueStackedColumn from './staticDashboard/RevenueStackedColumn'
-import AnnualRevenueDonut from './staticDashboard/AnnualRevenueDonut'
-import PaymentDateComparison from './staticDashboard/PaymentDateComparison'
-import ChallanUploadCounts from './staticDashboard/ChallanUploadCounts'
-import { useSelector } from 'react-redux'
-import { useAppSelector } from '@/store'
-import ComplinceStatus from './staticDashboard/CompliceStatus'
-import ComplinceTool from './staticDashboard/ComplinceTool'
-import Alerts from './staticDashboard/Alreat'
-import TableFilter from '../../Registers&Return/input/SalaryRegister/components/TableFilter'
-import RemittanceStatus from './staticDashboard/RemittenceStatus'
-import Updateds from './staticDashboard/Updates'
-import VirtualAgreement from './staticDashboard/VirtualAgreement'
-import BranchOwnership from './staticDashboard/BranchOwnership'
-import BranchTypes from './staticDashboard/BranchTypes'
-import ComplianceStatusPie from './staticDashboard/ComplianceStatusPie'
-import ComplianceStatus from './staticDashboard/ComplianceStatus'
-import NoticeStatusPie from './staticDashboard/NoticeStatusPie'
-import RemittanceBreakup from './staticDashboard/RemittanceBreakup'
-import RegistrationsBreakup from './staticDashboard/RegistrationBreakup'
-import RegistrationBreakup from './staticDashboard/RegistrationBreakup'
-import LWF from './staticDashboard/LWF'
-import SandEStatusPie from './staticDashboard/SandEStatusPie'
 
-interface DashboardBodyProps {
-    companyId: string | number
-}
 
-const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
-    // Add state to track the sideCollapsed value
-    const [sideCollapsed, setSideCollapsed] = useState<boolean>(() => {
-        // Initialize from localStorage if available
-        const storedValue = localStorage.getItem('sideCollapsed')
-        return storedValue ? JSON.parse(storedValue) : false
-    })
 
-    // Set up an effect to watch for changes in localStorage
-    useEffect(() => {
-        // Function to handle storage events
-        const handleStorageChange = () => {
-            const newValue = JSON.parse(
-                localStorage.getItem('sideCollapsed') || 'false',
-            )
-            if (newValue !== sideCollapsed) {
-                setSideCollapsed(newValue)
-                console.log('sideCollapsed changed in DashboardBody:', newValue)
-            }
-        }
 
-        // Set up event listener for storage changes
-        window.addEventListener('storage', handleStorageChange)
 
-        // Also check for changes on a regular interval as a backup
-        const intervalId = setInterval(() => {
-            const currentValue = JSON.parse(
-                localStorage.getItem('sideCollapsed') || 'false',
-            )
-            if (currentValue !== sideCollapsed) {
-                setSideCollapsed(currentValue)
-                console.log(
-                    'sideCollapsed changed (interval check):',
-                    currentValue,
-                )
-            }
-        }, 1000)
 
-        // Clean up listeners and interval on unmount
-        return () => {
-            window.removeEventListener('storage', handleStorageChange)
-            clearInterval(intervalId)
-        }
-    }, [sideCollapsed])
 
-    // Initial log
-    useEffect(() => {
-        console.log(
-            'Initial sideCollapsed value in DashboardBody:',
-            sideCollapsed,
-        )
-    }, [])
 
-    if (!sideCollapsed) {
-        // When sidebar is not collapsed, render everything in a vertical layout
-        return (
-            <div className="flex flex-col gap-6 mt-6">
-                {/* Branch Statistics and S&E Registration Status - Side by Side */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <BranchTypes />
+
+
+
+// import React, { useEffect, useState } from 'react'
+// import BranchesDashboardCount from './staticDashboard/BranchesDashboardCount'
+// import SEDashboardCount from './staticDashboard/SEDashboardCount'
+// import AgreementsDashboardCount from './staticDashboard/AgreementsDashboardCount'
+// import RentalDepositsDashboard from './staticDashboard/RentalDepositsDashboard'
+// import NoticesDashboard from './staticDashboard/NoticesDasboard'
+// import Notices from './staticDashboard/Notices'
+// import ComplianceCalendar from './staticDashboard/ComplianceCalender'
+// import RevenueStackedColumn from './staticDashboard/RevenueStackedColumn'
+// import AnnualRevenueDonut from './staticDashboard/AnnualRevenueDonut'
+// import PaymentDateComparison from './staticDashboard/PaymentDateComparison'
+// import ChallanUploadCounts from './staticDashboard/ChallanUploadCounts'
+// import { useSelector } from 'react-redux'
+// import { useAppSelector } from '@/store'
+// import ComplinceStatus from './staticDashboard/CompliceStatus'
+// import ComplinceTool from './staticDashboard/ComplinceTool'
+// import Alerts from './staticDashboard/Alreat'
+// import TableFilter from '../../Registers&Return/input/SalaryRegister/components/TableFilter'
+// import RemittanceStatus from './staticDashboard/RemittenceStatus'
+// import Updateds from './staticDashboard/Updates'
+// import VirtualAgreement from './staticDashboard/VirtualAgreement'
+// import BranchOwnership from './staticDashboard/BranchOwnership'
+// import BranchTypes from './staticDashboard/BranchTypes'
+// import ComplianceStatusPie from './staticDashboard/ComplianceStatusPie'
+// import ComplianceStatus from './staticDashboard/ComplianceStatus'
+// import NoticeStatusPie from './staticDashboard/NoticeStatusPie'
+// import RemittanceBreakup from './staticDashboard/RemittanceBreakup'
+// import RegistrationsBreakup from './staticDashboard/RegistrationBreakup'
+// import RegistrationBreakup from './staticDashboard/RegistrationBreakup'
+// import LWF from './staticDashboard/LWF'
+// import SandEStatusPie from './staticDashboard/SandEStatusPie'
+// import AgreementStatus from './staticDashboard/AgreementStatus'
+
+// interface DashboardBodyProps {
+//     companyId: string | number
+// }
+
+// const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
+//     // Add state to track the sideCollapsed value
+//     const [sideCollapsed, setSideCollapsed] = useState<boolean>(() => {
+//         // Initialize from localStorage if available
+//         const storedValue = localStorage.getItem('sideCollapsed')
+//         return storedValue ? JSON.parse(storedValue) : false
+//     })
+
+//     // Set up an effect to watch for changes in localStorage
+//     useEffect(() => {
+//         // Function to handle storage events
+//         const handleStorageChange = () => {
+//             const newValue = JSON.parse(
+//                 localStorage.getItem('sideCollapsed') || 'false',
+//             )
+//             if (newValue !== sideCollapsed) {
+//                 setSideCollapsed(newValue)
+//                 console.log('sideCollapsed changed in DashboardBody:', newValue)
+//             }
+//         }
+
+//         // Set up event listener for storage changes
+//         window.addEventListener('storage', handleStorageChange)
+
+//         // Also check for changes on a regular interval as a backup
+//         const intervalId = setInterval(() => {
+//             const currentValue = JSON.parse(
+//                 localStorage.getItem('sideCollapsed') || 'false',
+//             )
+//             if (currentValue !== sideCollapsed) {
+//                 setSideCollapsed(currentValue)
+//                 console.log(
+//                     'sideCollapsed changed (interval check):',
+//                     currentValue,
+//                 )
+//             }
+//         }, 1000)
+
+//         // Clean up listeners and interval on unmount
+//         return () => {
+//             window.removeEventListener('storage', handleStorageChange)
+//             clearInterval(intervalId)
+//         }
+//     }, [sideCollapsed])
+
+//     // Initial log
+//     useEffect(() => {
+//         console.log(
+//             'Initial sideCollapsed value in DashboardBody:',
+//             sideCollapsed,
+//         )
+//     }, [])
+
+//     if (!sideCollapsed) {
+//         // When sidebar is not collapsed, render everything in a vertical layout
+//         return (
+//             <div className="flex flex-col gap-6 mt-6">
+//                 {/* Branch Statistics and S&E Registration Status - Side by Side */}
+//                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+//                 <BranchTypes />
                 
-                <BranchOwnership />
+//                 <BranchOwnership />
 
-                <RentalDepositsDashboard />
+//                 <RentalDepositsDashboard />
 
-                <SEDashboardCount />
+//                 <SEDashboardCount />
 
-                <NoticesDashboard />
-                </div>
+//                 <NoticesDashboard />
+//                 </div>
 
              
                
               
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-white p-4 rounded-lg border shadow-sm">
-                    <ComplianceStatusPie />
-                </div>
-                <div className="bg-white p-4 rounded-lg border shadow-sm">
-                    <ComplianceStatus />
-                </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-white p-4 rounded-lg border shadow-sm">
-                    <NoticeStatusPie />
-                </div>
-                <div className="bg-white p-4 rounded-lg border shadow-sm">
-                    <SandEStatusPie />
-                </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//                 <div className="bg-white p-4 rounded-lg border shadow-sm">
+//                     <ComplianceStatusPie />
+//                 </div>
+//                 <div className="bg-white p-4 rounded-lg border shadow-sm">
+//                     <ComplianceStatus />
+//                 </div>
+//                 </div>
+//                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//                 <div className="bg-white p-4 rounded-lg border shadow-sm">
+//                     <NoticeStatusPie />
+//                 </div>
+//                 <div className="bg-white p-4 rounded-lg border shadow-sm">
+//                     <SandEStatusPie />
+//                 </div>
+//                 </div>
+//                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                <div className="bg-white p-4 rounded-lg border shadow-sm">
-                    <RemittanceBreakup />
-                </div>
-                <div className="bg-white p-4 rounded-lg border shadow-sm col-span-1">
-                    <RegistrationBreakup />
-                </div>
+//                 <div className="bg-white p-4 rounded-lg border shadow-sm">
+//                     <RemittanceBreakup />
+//                 </div>
+//                 <div className="bg-white p-4 rounded-lg border shadow-sm col-span-1">
+//                     <RegistrationBreakup />
+//                 </div>
+//                 </div>
+
+//                 {/* Revenue Stacked Column and Compliance Calendar - Side by Side */}
+//                 <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr] gap-6">
+//                     {/* <div className="bg-white p-4 rounded-lg border shadow-sm">
+//                         <RegistrationBreakup />
+//                     </div> */}
+//                      <div className="bg-white p-4 rounded-lg border shadow-sm">
+//                         <ComplinceTool />
+//                     </div>
+//                     <div className="bg-white p-4 rounded-lg border shadow-sm">
+//                         <AnnualRevenueDonut />
+//                     </div>
+                   
+//                 </div>
+
+//                 {/* Payment Date Comparison */}
+//                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//                     {/* <div className="bg-white p-4 rounded-lg border shadow-sm">
+//                         <PaymentDateComparison />
+//                     </div> */}
+//                     <div className="bg-white p-4 rounded-lg border shadow-sm">
+//                     <LWF />
+//                     </div>
+//                     {/* <div className="bg-white p-4 rounded-lg border shadow-sm">
+//                         <Alerts />
+//                         </div> */}
+//                     <div className="bg-white p-4 rounded-lg border shadow-sm">
+//                         <ComplinceStatus />
+//                     </div>
+//                 </div>
+//                 {/* <div className="bg-white p-4 rounded-lg border shadow-sm">
+//                     <h2 className="text-xl font-semibold mb-4">
+//                         Payment Date Analysis
+//                     </h2>
+//                     <PaymentDateComparison />
+//                 </div> */}
+
+//                 {/* Notices */}
+
+//                 {/* <div className="bg-white p-4 rounded-lg border shadow-sm">
+//                     <Notices />
+//                 </div> */}
+
+//                 {/* Challan Upload Counts and Annual Revenue Donut - Side by Side */}
+//                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//                     {/* <div className="bg-white p-4 rounded-lg border shadow-sm">
+//                         <ChallanUploadCounts />
+//                     </div> */}
+
+                    
+//                     <div className="bg-white p-4 rounded-lg border shadow-sm">
+//                         <ComplianceCalendar />
+//                     </div>
+//                     <div className="bg-white p-4 rounded-lg border shadow-sm">
+//                         <Updateds />
+//                     </div>
+//                 </div>
+//             </div>
+//         )
+//     } else {
+//         // Original layout when sidebar is collapsed
+//         return (
+//             <div className="flex flex-col gap-6 mt-6">
+//                 {/* First Row */}
+//                 <div className="grid grid-cols-1 md:grid-cols-5 gap-2">
+//                     <BranchTypes />
+
+//                     <BranchOwnership />
+
+//                     <RentalDepositsDashboard />
+
+
+//                     <SEDashboardCount />
+                    
+//                     <NoticesDashboard />
+      
+    
+
+//                     {/* <div className="overflow-x-auto py-2 p-1 bg-white rounded-lg shadow-lg border col-span-2">
+//                         <AgreementStatus />
+//                     </div> */}
+
+
+//                 </div>
+            
+//                 {/* Second Row */}
+//                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+//                     <div className="overflow-x-auto py-2 p-1 bg-white rounded-lg shadow-lg border">
+//                         <ComplianceStatusPie />
+//                     </div>
+//                     <div className="overflow-x-auto py-2 p-1 bg-white rounded-lg shadow-lg border">
+//                         <ComplianceStatus />
+//                     </div>
+//                 </div>
+
+
+//                 {/* Third Row */}
+//                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+//                     <div className="overflow-x-auto py-2 p-1 bg-white rounded-lg shadow-lg border">
+//                         <NoticeStatusPie />
+//                     </div>
+//                     <div className="overflow-x-auto py-2 p-1 bg-white rounded-lg shadow-lg border">
+//                         <SandEStatusPie />
+//                     </div>
+                    
+//                 </div>
+            
+//                 {/* Fourth Row */}
+//                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+//                 <div className="bg-white p-4 rounded-lg border shadow-sm col-span-2">
+//                         <RemittanceBreakup />
+//                     </div>
+//                     <div className="bg-white p-4 rounded-lg border shadow-sm col-span-2">
+//                         <RegistrationBreakup />
+//                     </div>
+                   
+//                 </div>
+//                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//                 <div className="bg-white p-4 rounded-lg border shadow-sm">
+//                         <ComplinceTool />
+//                     </div>
+//                     <div className="bg-white p-4 rounded-lg border shadow-sm">
+//                         <AnnualRevenueDonut />
+//                     </div>
+//                     <div className="bg-white p-4 rounded-lg border shadow-sm">
+//                         <LWF />
+//                     </div>
+//                     <div className="bg-white p-4 rounded-lg border shadow-sm">
+//                         <ComplinceStatus />
+//                     </div>
+//                 </div>
+            
+//                 {/* Fifth Row */}
+//                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                   
+//                     <div className="bg-white p-4 rounded-lg border shadow-sm">
+//                         <ComplianceCalendar />
+//                     </div>
+//                     <div className="bg-white p-4 rounded-lg border shadow-sm">
+//                         <Updateds />
+//                     </div>
+//                 </div>
+//             </div>
+//         );
+//     }
+// }
+
+// export default DashboardBody
+
+
+
+
+import React, { useEffect, useState } from 'react';
+import BranchesDashboardCount from './staticDashboard/BranchesDashboardCount';
+import SEDashboardCount from './staticDashboard/SEDashboardCount';
+import AgreementsDashboardCount from './staticDashboard/AgreementsDashboardCount';
+import RentalDepositsDashboard from './staticDashboard/RentalDepositsDashboard';
+import NoticesDashboard from './staticDashboard/NoticesDasboard';
+import Notices from './staticDashboard/Notices';
+import ComplianceCalendar from './staticDashboard/ComplianceCalender';
+import RevenueStackedColumn from './staticDashboard/RevenueStackedColumn';
+import AnnualRevenueDonut from './staticDashboard/AnnualRevenueDonut';
+import PaymentDateComparison from './staticDashboard/PaymentDateComparison';
+import ChallanUploadCounts from './staticDashboard/ChallanUploadCounts';
+import { useSelector } from 'react-redux';
+import { useAppSelector } from '@/store';
+import ComplinceStatus from './staticDashboard/CompliceStatus';
+import ComplinceTool from './staticDashboard/ComplinceTool';
+import Alerts from './staticDashboard/Alreat';
+import TableFilter from '../../Registers&Return/input/SalaryRegister/components/TableFilter';
+import RemittanceStatus from './staticDashboard/RemittenceStatus';
+import Updateds from './staticDashboard/Updates';
+import VirtualAgreement from './staticDashboard/VirtualAgreement';
+import BranchOwnership from './staticDashboard/BranchOwnership';
+import BranchTypes from './staticDashboard/BranchTypes';
+import ComplianceStatusPie from './staticDashboard/ComplianceStatusPie';
+import ComplianceStatus from './staticDashboard/ComplianceStatus';
+import NoticeStatusPie from './staticDashboard/NoticeStatusPie';
+import RemittanceBreakup from './staticDashboard/RemittanceBreakup';
+import RegistrationsBreakup from './staticDashboard/RegistrationBreakup';
+import RegistrationBreakup from './staticDashboard/RegistrationBreakup';
+import LWF from './staticDashboard/LWF';
+import SandEStatusPie from './staticDashboard/SandEStatusPie';
+import AgreementStatus from './staticDashboard/AgreementStatus';
+
+interface DashboardBodyProps {
+    companyId: string | number;
+}
+
+const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
+    const [sideCollapsed, setSideCollapsed] = useState<boolean>(() => {
+        const storedValue = localStorage.getItem('sideCollapsed');
+        return storedValue ? JSON.parse(storedValue) : false;
+    });
+
+    useEffect(() => {
+        const handleStorageChange = () => {
+            const newValue = JSON.parse(localStorage.getItem('sideCollapsed') || 'false');
+            if (newValue !== sideCollapsed) {
+                setSideCollapsed(newValue);
+                console.log('sideCollapsed changed in DashboardBody:', newValue);
+            }
+        };
+
+        window.addEventListener('storage', handleStorageChange);
+
+        const intervalId = setInterval(() => {
+            const currentValue = JSON.parse(localStorage.getItem('sideCollapsed') || 'false');
+            if (currentValue !== sideCollapsed) {
+                setSideCollapsed(currentValue);
+                console.log('sideCollapsed changed (interval check):', currentValue);
+            }
+        }, 1000);
+
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+            clearInterval(intervalId);
+        };
+    }, [sideCollapsed]);
+
+    useEffect(() => {
+        console.log('Initial sideCollapsed value in DashboardBody:', sideCollapsed);
+    }, []);
+
+    if (!sideCollapsed) {
+        return (
+            <div className="flex flex-col gap-6 mt-6">
+                {/* First Row */}
+                <div className="grid grid-cols-1 md:grid-cols-6 gap-2.5">
+                <div className="bg-white rounded-lg col-span-2 font-bold">
+                <BranchTypes />
+                    </div>
+                    <div className="bg-white rounded-lg col-span-2">
+                        <BranchOwnership />
+                    </div>
+                    <div className="bg-white rounded-lg col-span-2">
+                        <RentalDepositsDashboard />
+                    </div>
                 </div>
 
-                {/* Revenue Stacked Column and Compliance Calendar - Side by Side */}
-                <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr] gap-6">
-                    {/* <div className="bg-white p-4 rounded-lg border shadow-sm">
+                {/* Second Row */}
+                <div className="grid grid-cols-1 md:grid-cols-6 gap-2.5">
+                    <div className="col-span-2 h-80 bg-white rounded-lg p-2 shadow-lg border col-span-2">
+                        <AgreementStatus />
+                    </div>
+                <div className="bg-white rounded-lg col-span-2">
+                        <SEDashboardCount />
+                    </div>
+                    <div className="h-80 col-span-2 bg-white p-2 rounded-lg shadow-lg border">
+                        <SandEStatusPie />
+                    </div>
+                   
+                </div>
+
+                <div className='grid grid-cols-1 md:grid-cols-6 gap-2.5'>
+                <div className="bg-white rounded-lg col-span-2">
+                        <NoticesDashboard />
+                    </div>
+                    <div className=" h-80 col-span-2 bg-white p-2 rounded-lg shadow-lg border">
+                        <NoticeStatusPie />
+                    </div>
+                </div>
+
+                {/* Third Row */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="bg-white p-4 rounded-lg border shadow-sm">
+                        <ComplianceStatusPie />
+                    </div>
+                    <div className="bg-white p-4 rounded-lg border shadow-sm">
+                        <ComplianceStatus />
+                    </div>
+                </div>
+
+                {/* Fourth Row */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="bg-white p-4 rounded-lg border shadow-sm">
+                        <RemittanceBreakup />
+                    </div>
+                    <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <RegistrationBreakup />
-                    </div> */}
-                     <div className="bg-white p-4 rounded-lg border shadow-sm">
+                    </div>
+                </div>
+
+                {/* Fifth Row */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <ComplinceTool />
                     </div>
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <AnnualRevenueDonut />
                     </div>
-                   
                 </div>
 
-                {/* Payment Date Comparison */}
+                {/* Sixth Row */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* <div className="bg-white p-4 rounded-lg border shadow-sm">
-                        <PaymentDateComparison />
-                    </div> */}
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
-                    <LWF />
+                        <LWF />
                     </div>
-                    {/* <div className="bg-white p-4 rounded-lg border shadow-sm">
-                        <Alerts />
-                        </div> */}
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <ComplinceStatus />
                     </div>
                 </div>
-                {/* <div className="bg-white p-4 rounded-lg border shadow-sm">
-                    <h2 className="text-xl font-semibold mb-4">
-                        Payment Date Analysis
-                    </h2>
-                    <PaymentDateComparison />
-                </div> */}
 
-                {/* Notices */}
-
-                {/* <div className="bg-white p-4 rounded-lg border shadow-sm">
-                    <Notices />
-                </div> */}
-
-                {/* Challan Upload Counts and Annual Revenue Donut - Side by Side */}
+                {/* Seventh Row */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* <div className="bg-white p-4 rounded-lg border shadow-sm">
-                        <ChallanUploadCounts />
-                    </div> */}
-
-                    
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <ComplianceCalendar />
                     </div>
@@ -405,63 +672,74 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
                     </div>
                 </div>
             </div>
-        )
+        );
     } else {
-        // Original layout when sidebar is collapsed
         return (
             <div className="flex flex-col gap-6 mt-6">
                 {/* First Row */}
-                <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-                    <BranchTypes />
-                
-                    <BranchOwnership />
-    
-                    <RentalDepositsDashboard />
-
-                    <SEDashboardCount />
-
-                    <NoticesDashboard />
+                <div className="grid grid-cols-1 md:grid-cols-8 gap-4">
+                    <div className="bg-white rounded-lg col-span-2 font-bold">
+                        <BranchTypes />
+                    </div>
+                    <div className="bg-white rounded-lg col-span-2">
+                        <BranchOwnership />
+                    </div>
+                    <div className="bg-white rounded-lg col-span-2">
+                        <RentalDepositsDashboard />
+                    </div>
+                    <div className="col-span-2 h-80 bg-white rounded-lg p-2 shadow-lg border col-span-2">
+                        <AgreementStatus />
+                    </div>
                 </div>
-            
+
                 {/* Second Row */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                    <div className="overflow-x-auto py-2 p-1 bg-white rounded-lg shadow-lg border">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="bg-white rounded-lg col-span-1">
+                <SEDashboardCount />
+                    </div>
+                    <div className="h-80 bg-white p-2 rounded-lg shadow-lg border">
+                        <SandEStatusPie />
+                    </div>
+                    <div className="bg-white rounded-lg col-span-1">
+                        <NoticesDashboard />
+                    </div>
+                    <div className=" h-80 bg-white p-2 rounded-lg shadow-lg border">
+                        <NoticeStatusPie />
+                    </div>
+                </div>
+
+                {/* Third Row */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <ComplianceStatusPie />
                     </div>
-                    <div className="overflow-x-auto py-2 p-1 bg-white rounded-lg shadow-lg border">
+                    <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <ComplianceStatus />
                     </div>
                 </div>
 
-
-                {/* Third Row */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                    <div className="overflow-x-auto py-2 p-1 bg-white rounded-lg shadow-lg border">
-                        <NoticeStatusPie />
-                    </div>
-                    <div className="overflow-x-auto py-2 p-1 bg-white rounded-lg shadow-lg border">
-                        <SandEStatusPie />
-                    </div>
-                    
-                </div>
-            
                 {/* Fourth Row */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div className="bg-white p-4 rounded-lg border shadow-sm col-span-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <RemittanceBreakup />
                     </div>
-                    <div className="bg-white p-4 rounded-lg border shadow-sm col-span-2">
+                    <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <RegistrationBreakup />
                     </div>
-                   
                 </div>
+
+                {/* Fifth Row */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-white p-4 rounded-lg border shadow-sm">
+                    <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <ComplinceTool />
                     </div>
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <AnnualRevenueDonut />
                     </div>
+                </div>
+
+                {/* Sixth Row */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <LWF />
                     </div>
@@ -469,10 +747,9 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
                         <ComplinceStatus />
                     </div>
                 </div>
-            
-                {/* Fifth Row */}
+
+                {/* Seventh Row */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                   
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <ComplianceCalendar />
                     </div>
@@ -483,6 +760,6 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
             </div>
         );
     }
-}
+};
 
-export default DashboardBody
+export default DashboardBody;

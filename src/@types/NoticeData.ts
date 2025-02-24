@@ -11,4 +11,5 @@ export interface NoticeData {
     notice_document: string;  // Base64 string
     created_at?: string;  // Optional timestamp
     updated_at?: string;  // Optional timestamp
+    iseditable?: boolean
 }

@@ -158,6 +158,140 @@
 
 // export default RentalDepositsDashboard;
 
+
+
+// import React, { useMemo } from 'react';
+// import DataTable from '@/components/shared/DataTable';
+// import { Tooltip } from '@/components/ui';
+// import type { ColumnDef } from '@/components/shared/DataTable';
+
+// const RentalDepositsDashboard = () => {
+//     const depositsData = [
+        
+//         {
+//             name: 'Valid',
+//             ph: '110',
+//             vr: '50',
+//             value: '800',
+//         },
+//         {
+//             name: 'Expired',
+//             ph: '110',
+//             vr: '50',
+//             value: '200',
+//             badgeColor: 'text-red-600',
+//         },
+//         {
+//             name: 'Total',
+//             ph: '110',
+//             vr: '50',
+//             value: '1000',
+//         },
+//     ];
+
+//     const columns: ColumnDef<typeof depositsData[0]>[] = useMemo(
+//         () => [
+//             {
+//                 header: 'Status',
+//                 accessorKey: 'name',
+//                 enableSorting: false,
+//                 cell: (props) => {
+//                     const value = props.getValue() as string;
+//                     const row = props.row.original;
+
+//                     return (
+//                         <Tooltip title={value} placement="top">
+//                            <div className={ `w-12 font-semibold text-gray-700 hover:text-blue-600 transition-colors duration-200 text-xs ${row.badgeColor}`}>
+//                                 {value.length > 30
+//                                     ? value.substring(0, 30) + '...'
+//                                     : value}
+//                             </div>
+//                         </Tooltip>
+//                     );
+//                 },
+//             },
+//             {
+//                 header: 'PH',
+//                 accessorKey: 'ph',
+//                 enableSorting: false,
+//                 cell: (props) => {
+//                     const row = props.row.original;
+//                                        const value = props.getValue() as string;
+//                                        return (
+//                                            <Tooltip title={value} placement="top">
+//                                                <div
+//                                                    className={`w-2 inline-flex items-center py-1 rounded-full text-xs font-semibold ${row.badgeColor}`}>
+//                                 {value.length > 18
+//                                     ? value.substring(0, 18) + '...'
+//                                     : value}
+//                             </div>
+//                         </Tooltip>
+//                     );
+//                 },
+//             },
+//             {
+//                 header: 'VR',
+//                 accessorKey: 'vr',
+//                 enableSorting: false,
+//                 cell: (props) => {
+//                     const row = props.row.original;
+//                                        const value = props.getValue() as string;
+//                                        return (
+//                                            <Tooltip title={value} placement="top">
+//                                                <div
+//                                                    className={`inline-flex items-center w-2 py-1 rounded-full text-xs font-semibold ${row.badgeColor}`}>
+//                                 {value.length > 18
+//                                     ? value.substring(0, 18) + '...'
+//                                     : value}
+//                             </div>
+//                         </Tooltip>
+//                     );
+//                 },
+//             },
+//             {
+//                 header: 'Count',
+//                 accessorKey: 'value',
+//                 enableSorting: false,
+//                 cell: (props) => {
+//                     const row = props.row.original;
+//                                        const value = props.getValue() as string;
+//                                        return (
+//                                            <Tooltip title={value} placement="top">
+//                                                <div
+//                                                    className={`inline-flex items-center py-1 rounded-full text-xs font-semibold ${row.badgeColor}`}>
+//                                 {value.length > 18
+//                                     ? value.substring(0, 18) + '...'
+//                                     : value}
+//                             </div>
+//                         </Tooltip>
+//                     );
+//                 },
+//             },
+//         ],
+//         []
+//     );
+
+//     return (
+//         <div className="w-full overflow-x-auto py-2 p-1 bg-white rounded-lg shadow-lg border">
+//                                     <h2 className="text-base text-center font-semibold  mb-4 mt-2">Agreement Status</h2>
+
+//             <DataTable
+//                 columns={columns}
+//                 data={depositsData}
+//                 skeletonAvatarColumns={[0]}
+//                 skeletonAvatarProps={{ className: 'rounded-md' }}
+//                 loading={false}
+//                 stickyHeader={true}
+//                 selectable={false}
+//                 showPageSizeSelector={false} 
+//             />
+//         </div>
+//     );
+// };
+
+// export default RentalDepositsDashboard;
+
+
 import React, { useMemo } from 'react';
 import DataTable from '@/components/shared/DataTable';
 import { Tooltip } from '@/components/ui';
@@ -165,7 +299,6 @@ import type { ColumnDef } from '@/components/shared/DataTable';
 
 const RentalDepositsDashboard = () => {
     const depositsData = [
-        
         {
             name: 'Valid',
             ph: '110',
@@ -183,14 +316,14 @@ const RentalDepositsDashboard = () => {
             name: 'Total',
             ph: '110',
             vr: '50',
-            value: '1000',
+            value: '100',
         },
     ];
 
     const columns: ColumnDef<typeof depositsData[0]>[] = useMemo(
         () => [
             {
-                header: 'Agreement Status',
+                header: 'Status',
                 accessorKey: 'name',
                 enableSorting: false,
                 cell: (props) => {
@@ -199,7 +332,7 @@ const RentalDepositsDashboard = () => {
 
                     return (
                         <Tooltip title={value} placement="top">
-                           <div className={ `font-semibold text-gray-700 hover:text-blue-600 transition-colors duration-200 text-xs ${row.badgeColor}`}>
+                            <div className={`w-10.5 font-semibold text-gray-700 hover:text-blue-600 transition-colors duration-200 text-xs ${row.badgeColor}`}>
                                 {value.length > 30
                                     ? value.substring(0, 30) + '...'
                                     : value}
@@ -214,11 +347,10 @@ const RentalDepositsDashboard = () => {
                 enableSorting: false,
                 cell: (props) => {
                     const row = props.row.original;
-                                       const value = props.getValue() as string;
-                                       return (
-                                           <Tooltip title={value} placement="top">
-                                               <div
-                                                   className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${row.badgeColor}`}>
+                    const value = props.getValue() as string;
+                    return (
+                        <Tooltip title={value} placement="top">
+                            <div className={`font-semibold text-gray-700 hover:text-blue-600 transition-colors duration-200 text-xs ${row.badgeColor}`}>
                                 {value.length > 18
                                     ? value.substring(0, 18) + '...'
                                     : value}
@@ -233,11 +365,10 @@ const RentalDepositsDashboard = () => {
                 enableSorting: false,
                 cell: (props) => {
                     const row = props.row.original;
-                                       const value = props.getValue() as string;
-                                       return (
-                                           <Tooltip title={value} placement="top">
-                                               <div
-                                                   className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${row.badgeColor}`}>
+                    const value = props.getValue() as string;
+                    return (
+                        <Tooltip title={value} placement="top">
+                            <div className={`inline-flex items-center rounded-full text-xs font-semibold ${row.badgeColor}`}>
                                 {value.length > 18
                                     ? value.substring(0, 18) + '...'
                                     : value}
@@ -252,11 +383,10 @@ const RentalDepositsDashboard = () => {
                 enableSorting: false,
                 cell: (props) => {
                     const row = props.row.original;
-                                       const value = props.getValue() as string;
-                                       return (
-                                           <Tooltip title={value} placement="top">
-                                               <div
-                                                   className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${row.badgeColor}`}>
+                    const value = props.getValue() as string;
+                    return (
+                        <Tooltip title={value} placement="top">
+                            <div className={`inline-flex items-center py-2 rounded-full text-xs font-semibold ${row.badgeColor}`}>
                                 {value.length > 18
                                     ? value.substring(0, 18) + '...'
                                     : value}
@@ -270,9 +400,9 @@ const RentalDepositsDashboard = () => {
     );
 
     return (
-        <div className="w-full overflow-x-auto py-2 p-1 bg-white rounded-lg shadow-lg border">
-                                    <h2 className="text-base text-center font-semibold  mb-4 mt-2">Agreement Status</h2>
-
+        <div className="w-full h-80 overflow-x-auto py-2 bg-white rounded-lg shadow-lg border">
+           
+            <h2 className="text-base text-center font-semibold mb-4 mt-2">Agreement Status</h2>
             <DataTable
                 columns={columns}
                 data={depositsData}
@@ -281,7 +411,7 @@ const RentalDepositsDashboard = () => {
                 loading={false}
                 stickyHeader={true}
                 selectable={false}
-                showPageSizeSelector={false} 
+                showPageSizeSelector={false}
             />
         </div>
     );

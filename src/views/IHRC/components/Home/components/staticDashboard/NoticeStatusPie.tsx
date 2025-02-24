@@ -372,7 +372,7 @@ const NoticeStatusPie = () => {
   };
 
   const data = {
-    series: [200, 70],   // Total Notice, Open, Closed
+    series: [400, 500],   // Total Notice, Open, Closed
     labels: ['Open', 'Closed']
   };
 
@@ -384,18 +384,21 @@ const NoticeStatusPie = () => {
     // colors: ['#ed3237', '#059669'],
     colors: ['#DC143C', '#059669'],
     labels: data.labels,
+    // legend: {
+    //   position: 'top',
+    //   horizontalAlign: 'center',
+    //   fontSize: '14px',
+    //   markers: {
+    //     offsetX: 0,
+    //     offsetY: 0
+    //   },
+    //   itemMargin: {
+    //     horizontal: 10,
+    //     vertical: 5
+    //   }
+    // },
     legend: {
-      position: 'top',
-      horizontalAlign: 'center',
-      fontSize: '14px',
-      markers: {
-        offsetX: 0,
-        offsetY: 0
-      },
-      itemMargin: {
-        horizontal: 10,
-        vertical: 5
-      }
+      show: false
     },
     plotOptions: {
       pie: {
@@ -462,7 +465,7 @@ const NoticeStatusPie = () => {
   const header = (
     <div className="w-full">
       <div className="flex justify-center items-center px-4">
-        <h4 className="text-base font-bold text-center">
+        <h4 className="text-base font-semibold text-center">
           Notice Status
         </h4>
         {/* <div className="w-40">
@@ -504,17 +507,18 @@ const NoticeStatusPie = () => {
     <Card 
       className="w-full max-w-2xl mx-auto border-none"
       header={header}
-      footer={footer}
+      // footer={footer}
       headerBorder={true}
       footerBorder={true}
       bordered={true}
     >
-      <div className="p-4">
+      <div className="p-0">
         <Chart
           options={options}
           series={data.series}
           type="pie"
-          height={350}
+          height={250}
+          width={250}
         />
       </div>
     </Card>

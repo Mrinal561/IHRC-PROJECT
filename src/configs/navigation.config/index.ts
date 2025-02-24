@@ -63,6 +63,16 @@ const adminnav: NavigationTree[] = [
                 subMenu: [],
             },
             {
+                key: 'groupMenu.collapse.item8',
+                path: '/Notice-Edit-permission',
+                title: 'Notice Edit Permission',
+                translateKey: 'nav.groupMenu.collapse.item8',
+                icon: '',
+                type: NAV_ITEM_TYPE_ITEM,
+                authority: [],
+                subMenu: [],
+            },
+            {
                 key: 'groupMenu.collapse.item2',
                 path: '/global-notification',
                 title: 'Notification Settings',

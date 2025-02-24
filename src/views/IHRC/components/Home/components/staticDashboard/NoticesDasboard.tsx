@@ -16,7 +16,7 @@ import type { ColumnDef } from '@/components/shared/DataTable';
   const columns = useMemo(
       () => [
           {
-              header: 'Notice Status',
+              header: 'Status',
               accessorKey: 'name',
               enableSorting: false,
               cell: (props) => {
@@ -40,7 +40,7 @@ import type { ColumnDef } from '@/components/shared/DataTable';
                                       return (
                                           <Tooltip title={value} placement="top">
                                               <div
-                                                  className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${row.badgeColor}`}>
+                                                  className={`inline-flex items-center py-1 rounded-full text-xs font-semibold ${row.badgeColor}`}>
                               {value.length > 18 ? value.substring(0, 18) + '...' : value}
                           </div>
                       </Tooltip>
@@ -52,7 +52,7 @@ import type { ColumnDef } from '@/components/shared/DataTable';
   );
 
   return (
-    <div className="w-full overflow-x-auto py-2 p-1 bg-white rounded-lg shadow-lg border">
+    <div className="w-full h-80 overflow-x-auto py-2 bg-white rounded-lg shadow-lg border">
         <h2 className="text-base text-center font-semibold mb-4 mt-2">Notice Status</h2>
           <DataTable
               columns={columns}
