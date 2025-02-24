@@ -40,7 +40,7 @@ import type { ColumnDef } from '@/components/shared/DataTable';
                                       return (
                                           <Tooltip title={value} placement="top">
                                               <div
-                                                  className={`inline-flex items-center py-1 rounded-full text-xs font-semibold ${row.badgeColor}`}>
+                                                  className={`inline-flex items-center py-1 rounded-full text-xs px-4 font-semibold ${row.badgeColor}`}>
                               {value.length > 18 ? value.substring(0, 18) + '...' : value}
                           </div>
                       </Tooltip>
