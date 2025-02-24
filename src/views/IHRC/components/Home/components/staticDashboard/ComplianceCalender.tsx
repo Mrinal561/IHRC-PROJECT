@@ -64,7 +64,7 @@ import React from 'react';
 import { useState } from 'react';
 import Calendar from '@/components/ui/Calendar';
 import Badge from '@/components/ui/Badge';
-import { Card } from '@/components/ui/card';
+import { Card } from '@/components/ui';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const ComplianceCalendar: React.FC = () => {
