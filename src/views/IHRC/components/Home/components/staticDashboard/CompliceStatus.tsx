@@ -79,7 +79,7 @@ const ComplinceStatus = ({ year = '2024-25', mainTotal = 500000, arrearTotal = 1
             <div className="w-full">
   <div className="flex justify-between items-center">
     <h4 className="text-lg font-bold flex-1 text-center">
-    PT Revenue Breakdown for {year}
+    PT Remittance Breakdown for {year}
     </h4>
     <div className="w-40">
       <OutlinedSelect

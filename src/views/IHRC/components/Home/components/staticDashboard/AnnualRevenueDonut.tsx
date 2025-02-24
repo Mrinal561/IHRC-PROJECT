@@ -297,7 +297,7 @@ const AnnualRevenueDonut = ({ year = '2024-25', mainTotal = 500000, arrearTotal 
             <div className="w-full">
   <div className="flex justify-between items-center">
     <h4 className="text-lg font-bold flex-1 text-center">
-      ESI Revenue Breakdown for {year}
+      ESI Remittance Breakdown for {year}
     </h4>
     <div className="w-40">
       <OutlinedSelect
