@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import Chart from 'react-apexcharts';
-import { COLORS } from '@/constants/chart.constant';
+import { COLOR_1, COLOR_2, COLOR_5 } from '@/constants/chart.constant';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined'
 
 const ComplinceStatus = ({ year = '2024-25', mainTotal = 500000, arrearTotal = 180000, damageTotal = 90000 }) => {
@@ -98,7 +98,7 @@ const ComplinceStatus = ({ year = '2024-25', mainTotal = 500000, arrearTotal = 1
 </div>
             <Chart
                 options={{
-                    colors: COLORS,
+                    colors: ['#002D62', '#003E92', '#E34234'],
                     labels: labels,
                     legend: {
                         position: 'bottom',

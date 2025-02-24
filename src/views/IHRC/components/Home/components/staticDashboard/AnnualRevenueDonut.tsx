@@ -250,7 +250,7 @@ const AnnualRevenueDonut = ({ year = '2024-25', mainTotal = 500000, arrearTotal 
 
     // Data series and labels
     const series = [mainTotal, arrearTotal, damageTotal];
-    const labels = ['Main', 'Arrear', 'Damage'];
+    const labels = ['Main', 'Interest', 'Penalty'];
 
     // State for filters
     const [selectedCodeType, setSelectedCodeType] = useState('');
@@ -316,7 +316,7 @@ const AnnualRevenueDonut = ({ year = '2024-25', mainTotal = 500000, arrearTotal 
 </div>
             <Chart
                 options={{
-                    colors: COLORS,
+                    colors: ['#ffc107', '#ffb120', '#E34234'],
                     labels: labels,
                     legend: {
                         position: 'bottom',

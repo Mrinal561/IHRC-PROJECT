@@ -6,9 +6,9 @@ import type { ColumnDef } from '@/components/shared/DataTable';
 
  const BranchOwnership = () => {
     const ownershipData = [
-        { name: 'Rented', value: '280', badgeColor: 'bg-blue-400 text-white', },
-        { name: 'Owned', value: '80', badgeColor: 'bg-amber-400 text-white', },
-        { name: 'Total', value: '200', badgeColor: 'bg-blue-400 text-white',  },
+        { name: 'Rented', ph: '50', vr: '100', value: '150' },
+        { name: 'Owned', ph: '50', vr: '100', value: '150', },
+        { name: 'Total',ph: '50', vr: '100', value: '150'  },
     ];
 
     const columns = useMemo(
@@ -21,7 +21,37 @@ import type { ColumnDef } from '@/components/shared/DataTable';
                     const value = props.getValue() as string;
                     return (
                         <Tooltip title={value} placement="top">
-                            <div className="font-semibold text-gray-700 hover:text-blue-600 transition-colors duration-200 text-sm">
+                            <div className="font-semibold text-gray-700 hover:text-blue-600 transition-colors duration-200 text-xs">
+                                {value.length > 30 ? value.substring(0, 30) + '...' : value}
+                            </div>
+                        </Tooltip>
+                    );
+                },
+            },
+            {
+                header: 'PH',
+                accessorKey: 'ph',
+                enableSorting: false,
+                cell: (props) => {
+                    const value = props.getValue() as string;
+                    return (
+                        <Tooltip title={value} placement="top">
+                            <div className="font-semibold text-gray-700 hover:text-blue-600 transition-colors duration-200 text-xs">
+                                {value.length > 30 ? value.substring(0, 30) + '...' : value}
+                            </div>
+                        </Tooltip>
+                    );
+                },
+            },
+            {
+                header: 'VR',
+                accessorKey: 'vr',
+                enableSorting: false,
+                cell: (props) => {
+                    const value = props.getValue() as string;
+                    return (
+                        <Tooltip title={value} placement="top">
+                            <div className="font-semibold text-gray-700 hover:text-blue-600 transition-colors duration-200 text-xs">
                                 {value.length > 30 ? value.substring(0, 30) + '...' : value}
                             </div>
                         </Tooltip>
@@ -38,7 +68,7 @@ import type { ColumnDef } from '@/components/shared/DataTable';
                                        return (
                                            <Tooltip title={value} placement="top">
                                                <div
-                                                   className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${row.badgeColor}`}>
+                                                   className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${row.badgeColor}`}>
                                 {value.length > 18 ? value.substring(0, 18) + '...' : value}
                             </div>
                         </Tooltip>
@@ -51,7 +81,7 @@ import type { ColumnDef } from '@/components/shared/DataTable';
 
     return (
         <div className="w-full overflow-x-auto py-2 p-1 bg-white rounded-lg shadow-lg border">
-           <h2 className="text-base text-center font-semibold mb-6 mt-2">Branch Ownership Type</h2>
+           <h2 className="text-base text-center font-semibold mb-4 mt-2">Branch Status</h2>
             <DataTable
                 columns={columns}
                 data={ownershipData}

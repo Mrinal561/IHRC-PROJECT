@@ -102,7 +102,7 @@ const ComplianceStatus = () => {
       type: 'pie',
       background: 'transparent'
     },
-    colors: ['#00c853', '#ff3d00', '#ffc107', '#808080'],
+    colors: ['#059669', '#DC143C', '#ffc107', '#808080'],
     labels: data.labels,
     legend: {
       position: 'top',

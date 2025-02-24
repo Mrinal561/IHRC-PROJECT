@@ -168,18 +168,22 @@ const RentalDepositsDashboard = () => {
         
         {
             name: 'Valid',
+            ph: '110',
+            vr: '50',
             value: '800',
-            badgeColor: 'bg-amber-400 text-white',
         },
         {
             name: 'Expired',
+            ph: '110',
+            vr: '50',
             value: '200',
-            badgeColor: 'bg-red-400 text-white',
+            badgeColor: 'text-red-600',
         },
         {
             name: 'Total',
+            ph: '110',
+            vr: '50',
             value: '1000',
-            badgeColor: 'bg-blue-400 text-white',
         },
     ];
 
@@ -191,11 +195,51 @@ const RentalDepositsDashboard = () => {
                 enableSorting: false,
                 cell: (props) => {
                     const value = props.getValue() as string;
+                    const row = props.row.original;
+
                     return (
                         <Tooltip title={value} placement="top">
-                           <div className="font-semibold text-gray-700 hover:text-blue-600 transition-colors duration-200 text-sm">
+                           <div className={ `font-semibold text-gray-700 hover:text-blue-600 transition-colors duration-200 text-xs ${row.badgeColor}`}>
                                 {value.length > 30
                                     ? value.substring(0, 30) + '...'
+                                    : value}
+                            </div>
+                        </Tooltip>
+                    );
+                },
+            },
+            {
+                header: 'PH',
+                accessorKey: 'ph',
+                enableSorting: false,
+                cell: (props) => {
+                    const row = props.row.original;
+                                       const value = props.getValue() as string;
+                                       return (
+                                           <Tooltip title={value} placement="top">
+                                               <div
+                                                   className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${row.badgeColor}`}>
+                                {value.length > 18
+                                    ? value.substring(0, 18) + '...'
+                                    : value}
+                            </div>
+                        </Tooltip>
+                    );
+                },
+            },
+            {
+                header: 'VR',
+                accessorKey: 'vr',
+                enableSorting: false,
+                cell: (props) => {
+                    const row = props.row.original;
+                                       const value = props.getValue() as string;
+                                       return (
+                                           <Tooltip title={value} placement="top">
+                                               <div
+                                                   className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${row.badgeColor}`}>
+                                {value.length > 18
+                                    ? value.substring(0, 18) + '...'
                                     : value}
                             </div>
                         </Tooltip>
@@ -212,7 +256,7 @@ const RentalDepositsDashboard = () => {
                                        return (
                                            <Tooltip title={value} placement="top">
                                                <div
-                                                   className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${row.badgeColor}`}>
+                                                   className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${row.badgeColor}`}>
                                 {value.length > 18
                                     ? value.substring(0, 18) + '...'
                                     : value}
@@ -227,7 +271,7 @@ const RentalDepositsDashboard = () => {
 
     return (
         <div className="w-full overflow-x-auto py-2 p-1 bg-white rounded-lg shadow-lg border">
-                                    <h2 className="text-base text-center font-semibold  mb-6 mt-2">Physical Branch Agreement Status</h2>
+                                    <h2 className="text-base text-center font-semibold  mb-4 mt-2">Agreement Status</h2>
 
             <DataTable
                 columns={columns}

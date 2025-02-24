@@ -32,7 +32,7 @@ const LWf = ({ year = '2024-25', mainTotal = 500000, arrearTotal = 180000, damag
 
     // Data series and labels
     const series = [mainTotal, arrearTotal, damageTotal];
-    const labels = ['Main', 'Arrear', 'Damage'];
+    const labels = ['Main', 'Interest', 'Penalty'];
 
     // State for filters
     const [selectedCodeType, setSelectedCodeType] = useState('');
@@ -95,9 +95,10 @@ const LWf = ({ year = '2024-25', mainTotal = 500000, arrearTotal = 180000, damag
     </div>
   </div>
 </div>
+
             <Chart
                 options={{
-                    colors: COLORS,
+                    colors: ['#059669', '#049750', '#E34234'],
                     labels: labels,
                     legend: {
                         position: 'bottom',

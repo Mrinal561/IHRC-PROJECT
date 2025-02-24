@@ -243,6 +243,7 @@ import RemittanceBreakup from './staticDashboard/RemittanceBreakup'
 import RegistrationsBreakup from './staticDashboard/RegistrationBreakup'
 import RegistrationBreakup from './staticDashboard/RegistrationBreakup'
 import LWF from './staticDashboard/LWF'
+import SandEStatusPie from './staticDashboard/SandEStatusPie'
 
 interface DashboardBodyProps {
     companyId: string | number
@@ -306,63 +307,21 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
         return (
             <div className="flex flex-col gap-6 mt-6">
                 {/* Branch Statistics and S&E Registration Status - Side by Side */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* <div className="bg-white p-4 rounded-lg border shadow-sm"> */}
-                        {/* <h2 className="text-xl font-semibold mb-4">
-                            Branch Status
-                        </h2> */}
-                         <BranchOwnership />
-                        <BranchesDashboardCount />
-                    {/* </div> */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <BranchTypes />
+                
+                <BranchOwnership />
 
-                    {/* <div className="bg-white p-4 rounded-lg border shadow-sm"> */}
-                        {/* <h2 className="text-xl font-semibold mb-4"> */}
-                            {/* S&E Registration Status */}
-                        {/* </h2> */}
-                       
-                    {/* </div> */}
+                <RentalDepositsDashboard />
+
+                <SEDashboardCount />
+
+                <NoticesDashboard />
                 </div>
 
-                {/* Rent Agreements and Agreements - Side by Side */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* <div className="bg-white p-4 rounded-lg border shadow-sm">
-                        <h2 className="text-xl font-semibold mb-4">
-                            Rent Agreement Status
-                        </h2> */}
-                         <BranchOwnership />
-                    {/* </div> */}
-
-                    {/* <div className="bg-white p-4 rounded-lg border shadow-sm">
-                        <h2 className="text-xl font-semibold mb-4">
-                            Physical Branch Agreement Status
-                        </h2> */}
-                         <RentalDepositsDashboard />
-                    {/* </div> */}
-                </div>
-
-                {/* Notice Board */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* <div className="bg-white p-4 rounded-lg border shadow-sm">
-                    <h2 className="text-xl font-semibold mb-4">Notice Status</h2> */}
-                    <VirtualAgreement />
-                    <SEDashboardCount />
-                {/* </div> */}
-                {/* <div className="bg-white p-4 rounded-lg border shadow-sm">
-                    <h2 className="text-xl font-semibold mb-4">Virtual Agreement Status</h2> */}
-                {/* </div> */}
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* <div className="bg-white p-4 rounded-lg border shadow-sm">
-                    <h2 className="text-xl font-semibold mb-4"> Branch Ownership Type</h2> */}
-                   
-                {/* </div> */}
-                {/* <div className="bg-white p-4 rounded-lg border shadow-sm">
-                    <h2 className="text-xl font-semibold mb-4"> Branch Types</h2> */}
-                    <AgreementsDashboardCount />
-                    <NoticesDashboard />
-                {/* </div> */}
-                </div>
+             
+               
+              
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="bg-white p-4 rounded-lg border shadow-sm">
                     <ComplianceStatusPie />
@@ -376,11 +335,15 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
                     <NoticeStatusPie />
                 </div>
                 <div className="bg-white p-4 rounded-lg border shadow-sm">
-                    <RemittanceBreakup />
+                    <SandEStatusPie />
                 </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-white p-4 rounded-lg border shadow-sm col-span-2">
+
+                <div className="bg-white p-4 rounded-lg border shadow-sm">
+                    <RemittanceBreakup />
+                </div>
+                <div className="bg-white p-4 rounded-lg border shadow-sm col-span-1">
                     <RegistrationBreakup />
                 </div>
                 </div>
@@ -448,62 +411,36 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
         return (
             <div className="flex flex-col gap-6 mt-6">
                 {/* First Row */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    {/* <div className="bg-white p-4 rounded-lg border shadow-sm"> */}
-                        {/* <h2 className="text-xl font-semibold mb-4">Branch Status</h2> */}
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
                     <BranchTypes />
-                        <BranchesDashboardCount />
-                    {/* </div> */}
-            
-                    {/* <div className="bg-white p-4 rounded-lg border shadow-sm"> */}
+                
                     <BranchOwnership />
-                    {/* </div> */}
-            
-                    {/* <div className="bg-white p-4 rounded-lg border shadow-sm"> */}
-                        {/* <h2 className="text-xl font-semibold mb-4">Rent Agreement Status</h2> */}
-                    {/* </div> */}
-            
-                    {/* <div className="bg-white p-4 rounded-lg border shadow-sm"> */}
-                        {/* <h2 className="text-xl font-semibold mb-4">Physical Branch Agreement Status</h2> */}
-                        <RentalDepositsDashboard />
-                    {/* </div> */}
+    
+                    <RentalDepositsDashboard />
+
+                    <SEDashboardCount />
+
+                    <NoticesDashboard />
                 </div>
             
                 {/* Second Row */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    {/* <div className="bg-white p-4 rounded-lg border shadow-sm"> */}
-                        {/* <h2 className="text-xl font-semibold mb-4">Virtual Branch Agreement Status</h2> */}
-                        <VirtualAgreement />
-                    {/* </div> */}
-            
-                    {/* <div className="bg-white p-4 rounded-lg border shadow-sm"> */}
-                        {/* <h2 className="text-xl font-semibold mb-4">Notice Status</h2> */}
-                    {/* </div> */}
-            
-                    {/* <div className="bg-white p-4 rounded-lg border shadow-sm"> */}
-                        {/* <h2 className="text-xl font-semibold mb-4">Branch Ownership Type</h2> */}
-                        <SEDashboardCount />
-                        <AgreementsDashboardCount />
-                        <NoticesDashboard />
-                        {/* <BranchOwnership /> */}
-                    {/* </div> */}
-            
-                    {/* <div className="bg-white p-4 rounded-lg border shadow-sm"> */}
-                        {/* <h2 className="text-xl font-semibold mb-4">Branch Types</h2> */}
-                        {/* <BranchTypes /> */}
-                    {/* </div> */}
-                </div>
-            
-                {/* Third Row */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                     <div className="overflow-x-auto py-2 p-1 bg-white rounded-lg shadow-lg border">
                         <ComplianceStatusPie />
                     </div>
                     <div className="overflow-x-auto py-2 p-1 bg-white rounded-lg shadow-lg border">
                         <ComplianceStatus />
                     </div>
+                </div>
+
+
+                {/* Third Row */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                     <div className="overflow-x-auto py-2 p-1 bg-white rounded-lg shadow-lg border">
                         <NoticeStatusPie />
+                    </div>
+                    <div className="overflow-x-auto py-2 p-1 bg-white rounded-lg shadow-lg border">
+                        <SandEStatusPie />
                     </div>
                     
                 </div>

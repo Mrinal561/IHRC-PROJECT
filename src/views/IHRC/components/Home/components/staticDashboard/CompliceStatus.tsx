@@ -32,7 +32,7 @@ const ComplinceStatus = ({ year = '2024-25', mainTotal = 500000, arrearTotal = 1
 
     // Data series and labels
     const series = [mainTotal, arrearTotal, damageTotal];
-    const labels = ['Main', 'Arrear', 'Damage'];
+    const labels = ['Main', 'Interest', 'Penalty'];
 
     // State for filters
     const [selectedCodeType, setSelectedCodeType] = useState('');
@@ -98,7 +98,7 @@ const ComplinceStatus = ({ year = '2024-25', mainTotal = 500000, arrearTotal = 1
 </div>
             <Chart
                 options={{
-                    colors: COLORS,
+                    colors: ['#0ea5e9', '#1ec1e2', '#E34234'],
                     labels: labels,
                     legend: {
                         position: 'bottom',

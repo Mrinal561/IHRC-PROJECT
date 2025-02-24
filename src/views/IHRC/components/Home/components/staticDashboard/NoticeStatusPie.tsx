@@ -381,7 +381,8 @@ const NoticeStatusPie = () => {
       type: 'pie',
       background: 'transparent'
     },
-    colors: ['#ff3d00', '#00c853'],
+    // colors: ['#ed3237', '#059669'],
+    colors: ['#DC143C', '#059669'],
     labels: data.labels,
     legend: {
       position: 'top',
@@ -460,11 +461,11 @@ const NoticeStatusPie = () => {
 
   const header = (
     <div className="w-full">
-      <div className="flex justify-between items-center px-4">
-        <h4 className="text-base font-bold">
+      <div className="flex justify-center items-center px-4">
+        <h4 className="text-base font-bold text-center">
           Notice Status
         </h4>
-        <div className="w-40">
+        {/* <div className="w-40">
           <OutlinedSelect
             label="Month"
             options={groupOptions}
@@ -476,7 +477,7 @@ const NoticeStatusPie = () => {
               'groupName'
             )}
           />
-        </div>
+        </div> */}
       </div>
     </div>
   );

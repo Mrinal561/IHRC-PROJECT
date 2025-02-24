@@ -7,10 +7,10 @@ import type { ColumnDef } from '@/components/shared/DataTable';
 
  const NoticesDashboard = () => {
   const noticesData = [
-      { name: 'Open', value: '2', badgeColor: 'bg-red-400 text-white', },
+      { name: 'Open', value: '2'},
       //   { name: 'Under Process', value: '10', badgeColor: 'bg-amber-400 text-white', },
-      { name: 'Closed', value: '10', badgeColor: 'bg-green-400 text-white', },
-      { name: 'Total', value: '10', badgeColor: 'bg-blue-400 text-white', },
+      { name: 'Closed', value: '10'},
+      { name: 'Total', value: '10' },
   ];
 
   const columns = useMemo(
@@ -23,7 +23,7 @@ import type { ColumnDef } from '@/components/shared/DataTable';
                   const value = props.getValue() as string;
                   return (
                       <Tooltip title={value} placement="top">
-                         <div className="font-semibold text-gray-700 hover:text-blue-600 transition-colors duration-200 text-sm">
+                         <div className="font-semibold text-gray-700 hover:text-blue-600 transition-colors duration-200 text-xs">
                               {value.length > 30 ? value.substring(0, 30) + '...' : value}
                           </div>
                       </Tooltip>
@@ -40,7 +40,7 @@ import type { ColumnDef } from '@/components/shared/DataTable';
                                       return (
                                           <Tooltip title={value} placement="top">
                                               <div
-                                                  className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${row.badgeColor}`}>
+                                                  className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${row.badgeColor}`}>
                               {value.length > 18 ? value.substring(0, 18) + '...' : value}
                           </div>
                       </Tooltip>
@@ -53,7 +53,7 @@ import type { ColumnDef } from '@/components/shared/DataTable';
 
   return (
     <div className="w-full overflow-x-auto py-2 p-1 bg-white rounded-lg shadow-lg border">
-        <h2 className="text-base text-center font-semibold mb-6 mt-2">Notice Status</h2>
+        <h2 className="text-base text-center font-semibold mb-4 mt-2">Notice Status</h2>
           <DataTable
               columns={columns}
               data={noticesData}

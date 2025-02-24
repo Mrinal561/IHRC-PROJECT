@@ -193,7 +193,7 @@ const PTECTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({
                 link.click()
                 document.body.removeChild(link)
             }
-        } catch (error) {
+        } catch (error:any) {
             console.error('Download error:', error)
             toast.push(
                 <Notification
@@ -202,7 +202,8 @@ const PTECTrackerBulkUpload: React.FC<PTTrackerBulkUploadProps> = ({
                     type="danger"
                     closable={true}
                 >
-                    No PT Setup data found for your company
+                    {/* No PT Setup data found for your company */}
+                    No eligible data found for export
                 </Notification>,
             )
             // throw error;

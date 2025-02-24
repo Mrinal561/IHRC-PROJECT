@@ -10,9 +10,9 @@ const RemittanceBreakup = () => {
     ]
 
     const colors = {
-        pf: '#1e3a8a',     // Pure blue for PF
+        pf: '#002D62',     // Pure blue for PF
         esi: '#ffc107',    // Orange for ESI
-        pt: '#00c853',     // Green for PT
+        pt: '#059669',     // Green for PT
         lwf: '#0ea5e9'     // Sky blue for LWF
     }
 
