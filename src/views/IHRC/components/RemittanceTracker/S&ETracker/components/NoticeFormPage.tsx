@@ -932,7 +932,7 @@ const NoticeFormPage = ({ onSuccess }) => {
                 </div>
                     <div className="space-y-2">
                         <label className="text-sm font-medium">
-                            Notice Received on <span className="text-red-500">*</span>
+                            Notice Date <span className="text-red-500">*</span>
                         </label>
                         <DatePicker
                             clearable

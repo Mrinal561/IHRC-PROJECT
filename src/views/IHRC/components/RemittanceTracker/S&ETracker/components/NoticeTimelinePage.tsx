@@ -267,6 +267,7 @@ interface NoticeDetails {
     referenceNumber: string;
     receivedDate: string;
     noticeDetails: string;
+    criticality: string;
     document: {
         name: string;
         url: string;
@@ -418,6 +419,7 @@ const NoticeTimelinePage = () => {
                         referenceNumber: notice.data.reference_number,
                         receivedDate: notice.data.notice_date,
                         noticeDetails: notice.data.notice_detail,
+                        criticality: notice.data.criticality,
                         document: {
                             name: docPath.split('/').pop() || '',
                             url: docPath ? `${baseUrl}/${docPath}` : ''
@@ -428,6 +430,7 @@ const NoticeTimelinePage = () => {
                         setReplyId(latestReply.id);
                     }
                     console.log('reply id', replyId);
+                    console.log('notice data', response.data);
                     
                 }
             } catch (error) {
@@ -492,15 +495,21 @@ const NoticeTimelinePage = () => {
                         {isFollowUp && (
                             <>
                                 <div>
-                                    <p className="text-sm text-gray-500">Reference Number:</p>
-                                    <p className="text-gray-900">{item.referenceNumber}</p>
-                                </div>
-                                <div>
                                     <p className="text-sm text-gray-500">Related Act:</p>
                                     <p className="text-gray-900">{item.relatedAct}</p>
                                 </div>
+                                <div>
+                                    <p className="text-sm text-gray-500">Reference Number:</p>
+                                    <p className="text-gray-900">{item.referenceNumber}</p>
+                                </div>
                             </>
                         )}
+                        <div>
+                            <p className="text-sm text-gray-500">Notice Type:</p>
+                            <div className="inline-flex items-center space-x-2 bg-blue-500 text-white px-2 py-1 rounded-md">
+                                {item.noticeType}
+                            </div>
+                        </div>
                         
                         <div>
                             <p className="text-sm text-gray-500">
@@ -511,12 +520,6 @@ const NoticeTimelinePage = () => {
                             </p>
                         </div>
 
-                        <div>
-                            <p className="text-sm text-gray-500">Notice Type:</p>
-                            <div className="inline-flex items-center space-x-2 bg-blue-500 text-white px-2 py-1 rounded-md">
-                                {item.noticeType}
-                            </div>
-                        </div>
 
                         {item.document && item.document.name && (
                             <div className="items-center space-x-2 pt-2">
@@ -579,7 +582,8 @@ const NoticeTimelinePage = () => {
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <p className="text-sm text-gray-500">Notice Type:</p>
-                                <p className="text-gray-900 dark:text-gray-100">{noticeData.noticeType}</p>
+                                <p className="inline-flex items-center space-x-2 bg-blue-500 text-white px-2 py-1 rounded-md">
+                                {noticeData.noticeType}</p>
                             </div>
                             <div>
                                 <p className="text-sm text-gray-500">Notice Act:</p>
@@ -590,9 +594,15 @@ const NoticeTimelinePage = () => {
                                 <p className="text-gray-900 dark:text-gray-100">{noticeData.referenceNumber}</p>
                             </div>
                             <div>
-                                <p className="text-sm text-gray-500">Notice Received on:</p>
+                                <p className="text-sm text-gray-500">Notice Date:</p>
                                 <p className="text-gray-900 dark:text-gray-100">
                                     {formatDate(noticeData.receivedDate)}
+                                </p>
+                            </div>
+                            <div>
+                                <p className="text-sm text-gray-500">Criticality:</p>
+                                <p className="text-gray-900 dark:text-gray-100">
+                                    {noticeData.criticality}
                                 </p>
                             </div>
                         </div>

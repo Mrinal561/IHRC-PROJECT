@@ -9,7 +9,7 @@ interface LogoProps extends CommonProps {
     logoWidth?: number | string
 }
 
-const LOGO_SRC_PATH = '/ihrc/img/logo/'
+const LOGO_SRC_PATH = '/ihrc/img/logo/logo'
 
 const Logo = (props: LogoProps) => {
     const {
@@ -31,7 +31,7 @@ const Logo = (props: LogoProps) => {
         >
             <img
                 className={imgClass}
-                src={`${LOGO_SRC_PATH}logo-${mode}-${type}.png`}
+                src={`${LOGO_SRC_PATH}.png`}
                 alt={`${APP_NAME} logo`}
             />
         </div>
