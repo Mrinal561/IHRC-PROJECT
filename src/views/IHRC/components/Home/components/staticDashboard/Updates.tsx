@@ -34,13 +34,12 @@ const Updateds = () => {
                 // }
                 >
                     <p className="my-1 flex items-center">
-                        <span className="font-semibold text-gray-900 dark:text-gray-100">
-                            10.02/2025
+                    <span className="font-semibold text-gray-900 dark:text-gray-100">
+                            23.02/2025
                         </span>
                         <span className="mx-2">-</span>
                         <span>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit.{' '}
+                           Process Flow for Delinking of Erroneously Linked Member ID's from UAN.{' '}
                         </span>
                     </p>
                 </Timeline.Item>
@@ -53,12 +52,11 @@ const Updateds = () => {
                 >
                     <p className="my-1 flex items-center">
                         <span className="font-semibold text-gray-900 dark:text-gray-100">
-                            10.02/2025
+                            11.12/2024
                         </span>
                         <span className="mx-2">-</span>
                         <span>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit.{' '}
+                           Kerla LWF! Online Payment Mode Enabled.{' '}
                         </span>
                     </p>
                 </Timeline.Item>
@@ -71,12 +69,11 @@ const Updateds = () => {
                 >
                     <p className="my-1 flex items-center">
                         <span className="font-semibold text-gray-900 dark:text-gray-100">
-                            10.02/2025
+                            05.12/2024
                         </span>
                         <span className="mx-2">-</span>
                         <span>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit.{' '}
+                        EPFO EXTENSION OF TIME - UAN Activation and Seeding Bank Account with Aadhar for availing the benefits under ELI Scheme.{' '}
                         </span>
                     </p>
                 </Timeline.Item>
@@ -89,12 +86,11 @@ const Updateds = () => {
                 >
                     <p className="my-1 flex items-center">
                         <span className="font-semibold text-gray-900 dark:text-gray-100">
-                            10.02/2025
+                            18.07/2025
                         </span>
                         <span className="mx-2">-</span>
                         <span>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit.{' '}
+                        Haryana LWF! Option of monthly payment available on the online portal. {' '}
                         </span>
                     </p>
                 </Timeline.Item>

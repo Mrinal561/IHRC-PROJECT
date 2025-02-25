@@ -186,23 +186,23 @@ const SEDashboardCount = () => {
         
         {
             name: 'Valid',
-            value: '10',
             ph: '110',
             vr: '50',
+            value: '160',
             // badgeColor: 'bg-amber-400 text-white',
         },
         {
             name: 'Expired',
-            value: '2',
-            ph: '110',
+            ph: '30',
             vr: '50',
+            value: '80',
             badgeColor: 'text-red-600',
         },
         {
             name: 'Total',
-            value: '15',
-            ph: '110',
-            vr: '50',
+            ph: '140',
+            vr: '100',
+            value: '240',
             // badgeColor: 'bg-blue-400 text-white',
         },
     ];
@@ -267,7 +267,7 @@ const SEDashboardCount = () => {
                 },
             },
             {
-                header: 'Count',
+                header: 'Total',
                 enableSorting: false,
                 accessorKey: 'value',
                 cell: (props) => {

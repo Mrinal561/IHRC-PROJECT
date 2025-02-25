@@ -110,7 +110,7 @@ import { COLORS } from '@/constants/chart.constant';
 const RegistrationsBreakup = () => {
     const data = [
         {
-            data: [1200, 800, 500, 300, 600], // Example values for each registration type
+            data: [2, 40, 20, 12, 20], // Example values for each registration type
         },
     ];
 

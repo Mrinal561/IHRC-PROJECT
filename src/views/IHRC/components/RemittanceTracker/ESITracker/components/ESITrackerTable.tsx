@@ -310,15 +310,21 @@ const ESITrackerTable: React.FC<EsiTrackerTableProps> =({
                 ),
             },
             {
-                header: 'Challan Type',
-                enableSorting: false,
-                accessorKey: 'challan_type',
-                cell: (props) => (
-                    <div className="w-40 truncate">
-                        {props.getValue() as string}
-                    </div>
-                ),
-            },
+              header: 'Challan Type',
+              enableSorting: false,
+              accessorKey: 'challan_type',
+              cell: (props) => {
+                  const value = props.getValue() as string;
+                  // Capitalize the first letter
+                  const capitalizedValue = value.charAt(0).toUpperCase() + value.slice(1);
+                  
+                  return (
+                      <div className="w-40 truncate">
+                          {capitalizedValue}
+                      </div>
+                  );
+              },
+          },
             {
   header: 'ESIC challan cum payment receipt',
   enableSorting: false,

@@ -374,7 +374,7 @@ const LWFTracker: React.FC = () => {
         <AdaptableCard className="h-full" bodyClass="h-full">
             <div className="flex flex-wrap gap-6 items-center justify-between mb-6">
                 <div className="">
-                    <h3 className="text-2xl font-bold">LWF Trackers</h3>
+                    <h3 className="text-2xl font-bold">LWF Tracker</h3>
                 </div>
                 <LWFTrackerTool onFilterChange={handleFilterChange} canCreate={permissions.canCreate} />
             </div>

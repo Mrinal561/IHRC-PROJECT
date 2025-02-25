@@ -98,7 +98,7 @@ const ComplinceStatus = ({ year = '2024-25', mainTotal = 500000, arrearTotal = 1
 </div>
             <Chart
                 options={{
-                    colors: ['#0ea5e9', '#1ec1e2', '#E34234'],
+                    colors: ['#002D62', '#0066b2', '#318CE7'], 
                     labels: labels,
                     legend: {
                         position: 'bottom',

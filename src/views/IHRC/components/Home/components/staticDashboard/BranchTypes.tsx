@@ -8,7 +8,7 @@ export const BranchTypes = () => {
         { name: 'Corporate Office', value: '200' },
         // { name: 'Sales Office', value: '120' },
         { name: 'Regional Office', value: '80' },
-        { name: 'Total Office', value: '400' },
+        { name: 'Total Office', value: '280' },
     ];
 
     const columns = useMemo(
@@ -29,7 +29,7 @@ export const BranchTypes = () => {
                 },
             },
             {
-                header: 'Count',
+                header: 'Total',
                 accessorKey: 'value',
                 enableSorting: false,
                 cell: (props) => {

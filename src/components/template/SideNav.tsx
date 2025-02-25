@@ -1169,7 +1169,7 @@ const adminnav: NavigationTree[] = [
                     {
                         key: 'userSetup.collapse.user',
                         path: '/user-entity',
-                        title: 'Users',
+                        title: 'User',
                         translateKey: 'nav.userSetup.collapse.user',
                         icon: '',
                         type: NAV_ITEM_TYPE_ITEM,

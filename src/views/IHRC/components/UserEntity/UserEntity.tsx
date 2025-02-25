@@ -18,7 +18,7 @@ const UserEntity = () => {
         <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-10">
             <div className="flex items-center justify-between w-full">
                 <h3 className="text-2xl font-bold">
-                    Users
+                    User
                 </h3>
                 <div className="flex items-center gap-4">
                     <OutlinedInput

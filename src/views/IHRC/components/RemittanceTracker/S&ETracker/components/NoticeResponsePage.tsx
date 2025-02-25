@@ -829,7 +829,7 @@ const NoticeResponsePage = () => {
               <div>
                 <p className="text-sm text-gray-500">Notice Received on:</p>
                 <p className="text-gray-900 dark:text-gray-100">
-                  {notice.notice_date}
+                  {formatDate(notice.notice_date)}
                 </p>
               </div>
             </div>

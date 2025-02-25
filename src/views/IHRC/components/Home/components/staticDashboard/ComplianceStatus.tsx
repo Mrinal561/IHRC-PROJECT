@@ -93,7 +93,7 @@ const ComplianceStatus = () => {
   
         
   const data = {
-    series: [38, 16, 44, 20],  // Complied, Not Complied, Complied with Delay, Not Applicable
+    series: [12, 8, 6, 4],  // Complied, Not Complied, Complied with Delay, Not Applicable
     labels: ['Complied', 'Not Complied', 'Complied with Delay', 'Not Applicable']
   };
 

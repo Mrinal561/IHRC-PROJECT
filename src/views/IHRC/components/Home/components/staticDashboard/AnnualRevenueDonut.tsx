@@ -316,7 +316,7 @@ const AnnualRevenueDonut = ({ year = '2024-25', mainTotal = 500000, arrearTotal 
 </div>
             <Chart
                 options={{
-                    colors: ['#ffc107', '#ffb120', '#E34234'],
+                    colors: ['#002D62', '#0066b2', '#318CE7'],                    
                     labels: labels,
                     legend: {
                         position: 'bottom',

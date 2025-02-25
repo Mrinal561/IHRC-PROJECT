@@ -372,7 +372,7 @@ const NoticeStatusPie = () => {
   };
 
   const data = {
-    series: [400, 500],   // Total Notice, Open, Closed
+    series: [2, 10],   // Total Notice, Open, Closed
     labels: ['Open', 'Closed']
   };
 

@@ -8,7 +8,7 @@ import type { ColumnDef } from '@/components/shared/DataTable';
     const ownershipData = [
         { name: 'Rented', ph: '50', vr: '100', value: '150' },
         { name: 'Owned', ph: '50', vr: '100', value: '150', },
-        { name: 'Total',ph: '50', vr: '100', value: '150'  },
+        { name: 'Total',ph: '100', vr: '200', value: '300'  },
     ];
 
     const columns = useMemo(
@@ -59,7 +59,7 @@ import type { ColumnDef } from '@/components/shared/DataTable';
                 },
             },
             {
-                header: 'Count',
+                header: 'Total',
                 accessorKey: 'value',
                 enableSorting: false,
                 cell: (props) => {

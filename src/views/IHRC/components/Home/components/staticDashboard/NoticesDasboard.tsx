@@ -10,7 +10,7 @@ import type { ColumnDef } from '@/components/shared/DataTable';
       { name: 'Open', value: '2'},
       //   { name: 'Under Process', value: '10', badgeColor: 'bg-amber-400 text-white', },
       { name: 'Closed', value: '10'},
-      { name: 'Total', value: '10' },
+      { name: 'Total', value: '12' },
   ];
 
   const columns = useMemo(

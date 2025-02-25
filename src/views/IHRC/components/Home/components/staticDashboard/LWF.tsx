@@ -98,7 +98,7 @@ const LWf = ({ year = '2024-25', mainTotal = 500000, arrearTotal = 180000, damag
 
             <Chart
                 options={{
-                    colors: ['#059669', '#049750', '#E34234'],
+                    colors: ['#002D62', '#0066b2', '#318CE7'], 
                     labels: labels,
                     legend: {
                         position: 'bottom',

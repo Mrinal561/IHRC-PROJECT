@@ -31,8 +31,8 @@ const AgreementStatus = () => {
   };
 
   const data = {
-    series: [200, 70],   // Total Notice, Open, Closed
-    labels: ['Valid', 'Expired']
+    series: [30, 160],   // Total Notice, Open, Closed
+    labels: ['Expired', 'Valid']
   };
 
   const options: ApexOptions = {

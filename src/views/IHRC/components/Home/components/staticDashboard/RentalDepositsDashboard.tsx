@@ -303,20 +303,20 @@ const RentalDepositsDashboard = () => {
             name: 'Valid',
             ph: '110',
             vr: '50',
-            value: '800',
+            value: '160',
         },
         {
             name: 'Expired',
-            ph: '110',
-            vr: '50',
-            value: '200',
+            ph: '20',
+            vr: '10',
+            value: '30',
             badgeColor: 'text-red-600',
         },
         {
             name: 'Total',
-            ph: '110',
-            vr: '50',
-            value: '100',
+            ph: '130',
+            vr: '60',
+            value: '190',
         },
     ];
 
@@ -378,7 +378,7 @@ const RentalDepositsDashboard = () => {
                 },
             },
             {
-                header: 'Count',
+                header: 'Total',
                 accessorKey: 'value',
                 enableSorting: false,
                 cell: (props) => {

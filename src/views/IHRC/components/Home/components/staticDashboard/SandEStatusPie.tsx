@@ -31,7 +31,7 @@ const SandEStatusPie = () => {
   };
 
   const data = {
-    series: [300, 150],   // Total Notice, Open, Closed
+    series: [160, 80],   // Total Notice, Open, Closed
     labels: ['Valid', 'Expired']
   };
 

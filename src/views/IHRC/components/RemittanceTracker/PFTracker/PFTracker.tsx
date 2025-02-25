@@ -280,7 +280,7 @@ const PFTracker: React.FC = () => {
         <AdaptableCard className="h-full" bodyClass="h-full">
             <div className="flex flex-wrap gap-6 items-center justify-between mb-6">
                 <div className="">
-                    <h3 className="text-2xl font-bold">PF Trackers</h3>
+                    <h3 className="text-2xl font-bold">PF Tracker</h3>
                 </div>
                 <PFTrackerTool onFilterChange={handleFilterChange} canCreate={permissions.canCreate} />
             </div>
