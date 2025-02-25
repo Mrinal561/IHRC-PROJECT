@@ -31,7 +31,7 @@ import type { ColumnDef } from '@/components/shared/DataTable';
               },
           },
           {
-              header: 'Count',
+              header: 'Total',
               accessorKey: 'value',
               enableSorting: false,
               cell: (props) => {
