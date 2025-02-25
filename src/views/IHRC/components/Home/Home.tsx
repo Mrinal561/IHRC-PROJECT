@@ -20,7 +20,7 @@ const Home = () => {
   };
 
   return (
-    <div className='flex flex-col gap-4 h-full'>
+    <div className='flex flex-col gap-1 h-full'>
       <IhrcDashboardHeader onCompanyChange={handleCompanyChange} />
       <DashboardBody  companyId={companyId}  />
        {/* <div className="flex flex-col items-center justify-center h-full text-gray-500 border rounded-xl">

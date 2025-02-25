@@ -400,9 +400,9 @@ const RentalDepositsDashboard = () => {
     );
 
     return (
-        <div className="w-full h-80 overflow-x-auto py-2 bg-white rounded-lg shadow-lg border">
+        <div className="w-full  overflow-x-auto py-2 bg-white rounded-lg shadow-lg border table-home">
            
-            <h2 className="text-base text-center font-semibold mb-4 mt-2">Agreement Status</h2>
+            <h2 className="text-base text-center font-semibold mb-2 mt-0">Agreement Status</h2>
             <DataTable
                 columns={columns}
                 data={depositsData}

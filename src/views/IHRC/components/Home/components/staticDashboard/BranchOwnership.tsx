@@ -80,8 +80,8 @@ import type { ColumnDef } from '@/components/shared/DataTable';
     );
 
     return (
-        <div className="w-full h-80 overflow-x-auto py-2 bg-white rounded-lg shadow-lg border">
-           <h2 className="text-base text-center font-semibold mb-4 mt-2">Branch Status</h2>
+        <div className="w-full overflow-x-auto py-2 bg-white rounded-lg shadow-lg border table-home">
+           <h2 className="text-base text-center font-semibold mb-2 mt-0">Branch Status</h2>
             <DataTable
                 columns={columns}
                 data={ownershipData}

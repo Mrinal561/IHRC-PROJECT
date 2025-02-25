@@ -6,7 +6,7 @@ import type { ColumnDef } from '@/components/shared/DataTable';
 export const BranchTypes = () => {
     const typesData = [
         { name: 'Corporate Office', value: '200' },
-        { name: 'Sales Office', value: '120' },
+        // { name: 'Sales Office', value: '120' },
         { name: 'Regional Office', value: '80' },
         { name: 'Total Office', value: '400' },
     ];
@@ -38,7 +38,7 @@ export const BranchTypes = () => {
                                         return (
                                             <Tooltip title={value} placement="top">
                                                 <div
-                                                    className={`inline-flex items-center px-2 rounded-full text-xs font-semibold ${row.badgeColor}`}>
+                                                    className={`inline-flex items-center py-2 rounded-full text-xs font-semibold ${row.badgeColor}`}>
                                 {value.length > 18 ? value.substring(0, 18) + '...' : value}
                             </div>
                         </Tooltip>
@@ -50,8 +50,8 @@ export const BranchTypes = () => {
     );
 
     return (
-        <div className="w-full overflow-x-auto py-2 bg-white rounded-lg shadow-lg border">
-                                     <h2 className="text-base text-center mb-4 mt-2 font-semibold">Branch Types</h2>
+        <div className="w-full overflow-x-auto py-2 bg-white rounded-lg shadow-lg border custom table-home">
+                                     <h2 className="text-base text-center mb-2 mt-0 font-semibold">Branch Types</h2>
 
             <DataTable
                 columns={columns}

@@ -89,16 +89,16 @@ const ComplianceCalendar: React.FC = () => {
   ];
 
   return (
-    <Card className="p-4 border-none">
+    <Card className="p-0 border-none custom-card-body">
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Calendar Section */}
-        <div className="flex-1">
+        <div className="flex-1 md:w-[50%] max-w-[50%] ">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
               Compliance Calendar
             </h2>
           </div>
-          <div className="md:w-[300px] max-w-[300px] mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+          <div className="md:w-[100%] max-w-[100%] mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-sm">
             <Calendar
               className="border-none"
               value={value}
@@ -145,7 +145,7 @@ const ComplianceCalendar: React.FC = () => {
         </div>
 
         {/* Upcoming Dates Section */}
-        <div className="flex-1 lg:border-l lg:pl-6">
+        <div className="flex-1 lg:border-l lg:pl-6 md:w-[50%] max-w-[50%] ">
           <h3 className="text-lg font-medium mb-4 text-gray-800 dark:text-gray-200">
             Upcoming Dates
           </h3>

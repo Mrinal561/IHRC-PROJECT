@@ -161,7 +161,7 @@ const SandEStatusPie = () => {
 
   return (
     <Card 
-      className="w-full max-w-2xl mx-auto border-none"
+      className="w-full max-w-2xl mx-auto border-none p-0 custom-card-home"
       header={header}
       // footer={footer}
       headerBorder={true}
@@ -173,8 +173,8 @@ const SandEStatusPie = () => {
           options={options}
           series={data.series}
           type="pie"
-          height={250}
-          width={250}        />
+          height={180}
+          width={180}        />
       </div>
     </Card>
   );

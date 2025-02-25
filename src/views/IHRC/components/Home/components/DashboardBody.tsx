@@ -585,9 +585,9 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
 
     if (!sideCollapsed) {
         return (
-            <div className="flex flex-col gap-6 mt-6">
+            <div className="flex flex-col gap-2 mt-1">
                 {/* First Row */}
-                <div className="grid grid-cols-1 md:grid-cols-6 gap-2.5">
+                <div className="grid grid-cols-1 md:grid-cols-6 gap-2">
                 <div className="bg-white rounded-lg col-span-2 font-bold">
                 <BranchTypes />
                     </div>
@@ -600,30 +600,30 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
                 </div>
 
                 {/* Second Row */}
-                <div className="grid grid-cols-1 md:grid-cols-6 gap-2.5">
-                    <div className="col-span-2 h-80 bg-white rounded-lg p-2 shadow-lg border col-span-2">
+                <div className="grid grid-cols-1 md:grid-cols-6 gap-2">
+                    <div className="col-span-2  bg-white rounded-lg p-2 shadow-lg border col-span-2">
                         <AgreementStatus />
                     </div>
                 <div className="bg-white rounded-lg col-span-2">
                         <SEDashboardCount />
                     </div>
-                    <div className="h-80 col-span-2 bg-white p-2 rounded-lg shadow-lg border">
+                    <div className=" col-span-2 bg-white p-2 rounded-lg shadow-lg border">
                         <SandEStatusPie />
                     </div>
                    
                 </div>
 
-                <div className='grid grid-cols-1 md:grid-cols-6 gap-2.5'>
+                <div className='grid grid-cols-1 md:grid-cols-6 gap-2'>
                 <div className="bg-white rounded-lg col-span-2">
                         <NoticesDashboard />
                     </div>
-                    <div className=" h-80 col-span-2 bg-white p-2 rounded-lg shadow-lg border">
+                    <div className="  col-span-2 bg-white p-2 rounded-lg shadow-lg border">
                         <NoticeStatusPie />
                     </div>
                 </div>
 
                 {/* Third Row */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <ComplianceStatusPie />
                     </div>
@@ -633,7 +633,7 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
                 </div>
 
                 {/* Fourth Row */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <RemittanceBreakup />
                     </div>
@@ -643,7 +643,7 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
                 </div>
 
                 {/* Fifth Row */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <ComplinceTool />
                     </div>
@@ -653,7 +653,7 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
                 </div>
 
                 {/* Sixth Row */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <LWF />
                     </div>
@@ -663,11 +663,11 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
                 </div>
 
                 {/* Seventh Row */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="bg-white p-4 rounded-lg border shadow-sm">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <div className="bg-white p0 rounded-lg border shadow-sm">
                         <ComplianceCalendar />
                     </div>
-                    <div className="bg-white p-4 rounded-lg border shadow-sm">
+                    <div className="bg-white p-2 rounded-lg border shadow-sm">
                         <Updateds />
                     </div>
                 </div>
@@ -675,9 +675,9 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
         );
     } else {
         return (
-            <div className="flex flex-col gap-6 mt-6">
+            <div className="flex flex-col gap-2 mt-1">
                 {/* First Row */}
-                <div className="grid grid-cols-1 md:grid-cols-8 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-8 gap-2">
                     <div className="bg-white rounded-lg col-span-2 font-bold">
                         <BranchTypes />
                     </div>
@@ -687,29 +687,29 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
                     <div className="bg-white rounded-lg col-span-2">
                         <RentalDepositsDashboard />
                     </div>
-                    <div className="col-span-2 h-80 bg-white rounded-lg p-2 shadow-lg border col-span-2">
+                    <div className="col-span-2  bg-white rounded-lg p-1 shadow-lg border col-span-2">
                         <AgreementStatus />
                     </div>
                 </div>
 
                 {/* Second Row */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="bg-white rounded-lg col-span-1">
+                <div className="grid grid-cols-1 md:grid-cols-8 gap-2">
+                <div className="bg-white rounded-lg col-span-2">
                 <SEDashboardCount />
                     </div>
-                    <div className="h-80 bg-white p-2 rounded-lg shadow-lg border">
+                    <div className=" bg-white p-1 rounded-lg shadow-lg border col-span-2">
                         <SandEStatusPie />
                     </div>
-                    <div className="bg-white rounded-lg col-span-1">
+                    <div className="bg-white rounded-lg col-span-2">
                         <NoticesDashboard />
                     </div>
-                    <div className=" h-80 bg-white p-2 rounded-lg shadow-lg border">
+                    <div className="  bg-white p-1 rounded-lg shadow-lg border col-span-2">
                         <NoticeStatusPie />
                     </div>
                 </div>
 
                 {/* Third Row */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <ComplianceStatusPie />
                     </div>
@@ -719,7 +719,7 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
                 </div>
 
                 {/* Fourth Row */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <RemittanceBreakup />
                     </div>
@@ -729,7 +729,7 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
                 </div>
 
                 {/* Fifth Row */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <ComplinceTool />
                     </div>
@@ -739,7 +739,7 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
                 </div>
 
                 {/* Sixth Row */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <LWF />
                     </div>
@@ -749,7 +749,7 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId }) => {
                 </div>
 
                 {/* Seventh Row */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <ComplianceCalendar />
                     </div>
