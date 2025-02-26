@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
 import DashboardFilter from './DashboardFilter';
@@ -6,6 +7,8 @@ import { endpoints } from '@/api/endpoint';
 import httpClient from '@/api/http-client';
 import { Notification, toast } from '@/components/ui';
 import OutlinedInput from '@/components/ui/OutlinedInput';
+import Lottie from 'lottie-react';
+import loadingAnimation from '@/assets/lotties/system-regular-716-spinner-three-dots-loop-scale.json';
 
 interface SelectOption {
   value: string;
@@ -35,6 +38,8 @@ const DashBoardCompany: React.FC<CompanyProps> = ({
   onLocationChange
 }) => {
   const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+
   const [selectedCompanyGroup, setSelectedCompanyGroup] = useState<SelectOption | null>(null);
   const [selectedCompany, setSelectedCompany] = useState<SelectOption | null>(null);
   const [selectedState, setSelectedState] = useState<SelectOption | null>(null);
@@ -70,7 +75,6 @@ const DashBoardCompany: React.FC<CompanyProps> = ({
 
   // Load Company Groups
   const loadCompanyGroups = async () => {
-
     try {
       const { data } = await httpClient.get(endpoints.companyGroup.getAll(), {
         params: { ignorePlatform: true },
@@ -108,7 +112,6 @@ const DashBoardCompany: React.FC<CompanyProps> = ({
       console.log(data.data);
       console.log('company id ' + data.data.id);
 
-
       if (data?.data) {
         const formattedCompanies = data.data.map((company: any) => ({
           label: company.name,
@@ -125,7 +128,6 @@ const DashBoardCompany: React.FC<CompanyProps> = ({
               onCompanyChange(defaultCompany);
             }
           } else {
-            // showNotification('info', 'No companies found for this group');
             console.log('no companies')
           }
         } else {
@@ -151,8 +153,6 @@ const DashBoardCompany: React.FC<CompanyProps> = ({
       }
       console.log(response.data);
       console.log('state  id ' + response.data.id);
-
-
     } catch (error) {
       console.error('Failed to load states:', error);
       showNotification('danger', 'Failed to load states');
@@ -175,8 +175,6 @@ const DashBoardCompany: React.FC<CompanyProps> = ({
       }
       console.log(response.data);
       console.log('district  id ' + response.data.id);
-
-
     } catch (error) {
       console.error('Failed to load districts:', error);
       showNotification('danger', 'Failed to load districts');
@@ -186,12 +184,10 @@ const DashBoardCompany: React.FC<CompanyProps> = ({
 
   const loadLocation = async (districtId: string) => {
     setIsLoadingBranches(true);
- 
-    try{
+    try {
       const response = await httpClient.get(endpoints.common.location(), {
-        params: { district_id: districtId}
-      })
-      // setLocationId(location.id);
+        params: { district_id: districtId }
+      });
  
       if (response.data) {
         const formattedLocation = response.data.map((location: any) => ({
@@ -199,37 +195,29 @@ const DashBoardCompany: React.FC<CompanyProps> = ({
           value: String(location.id)
         }));
         console.log("location data" + response.data);
-       
         setLocation(formattedLocation);
       }
-      // console.log(response.data);
       console.log('location  id ' + response.data.id);
       console.log('location district id ' + response.data.district_id);
-
-
-    }
-    catch (error) {
+    } catch (error) {
       console.error('Failed to load location:', error);
+    } finally {
+      setIsLoadingBranches(false);
     }
-  }
+  };
 
   // Load Branches based on selected District
   const loadBranches = async (locationId: string, locationName: string)  => {
     setIsLoadingBranches(true);
     try {
-     
       const { data } = await httpClient.get(endpoints.branch.getAll());
 
       console.log('branch  id ' + data.id);
       console.log('branch location id ' + data.location_id);
 
-     
- 
       console.log('Selected location:', { id: locationId, name: locationName });
       console.log('Available Branches:', data.data);
- 
- 
- 
+
       // Filter branches where district_id matches the selected district
       const filteredBranches = data.data.filter((branch: any, location: any) => {
         const branchLocationId = String(location.id);
@@ -253,25 +241,23 @@ const DashBoardCompany: React.FC<CompanyProps> = ({
         console.log('location id' + locationId);
         console.log('branch location id' + branchLocationId);
         
-       
         return matchById || matchByName;
       });
-    console.log('Filtered Branches:', filteredBranches);
- 
-    const formattedBranches = filteredBranches.map((branch: any) => ({
-      label: `${branch.name}`,
-      value: String(branch.id),
-    }));
+      console.log('Filtered Branches:', filteredBranches);
+
+      const formattedBranches = filteredBranches.map((branch: any) => ({
+        label: `${branch.name}`,
+        value: String(branch.id),
+      }));
    
-    console.log('Formatted Branches:', formattedBranches);
-    setBranches(formattedBranches);
+      console.log('Formatted Branches:', formattedBranches);
+      setBranches(formattedBranches);
    
-    if (selectedBranch && !formattedBranches.find(b => b.value === selectedBranch.value)) {
-      setSelectedBranch(null);
-      onBranchChange?.(null);
-    }
-    console.log(data.data);
-     
+      if (selectedBranch && !formattedBranches.find(b => b.value === selectedBranch.value)) {
+        setSelectedBranch(null);
+        onBranchChange?.(null);
+      }
+      console.log(data.data);
     } catch (error) {
       console.error('Failed to load branches:', error);
       showNotification('danger', 'Failed to load branches');
@@ -302,56 +288,38 @@ const DashBoardCompany: React.FC<CompanyProps> = ({
   // Load districts when state changes
   useEffect(() => {
     if (selectedState?.value) {
+      console.log('Loading districts for stateId:', selectedState.value); // Debug log
+
       setSelectedDistrict(null);
       setSelectedLocation(null);
-      setSelectedLocation(null);
       setSelectedBranch(null);
-      setLocation([]);
       setLocation([]);
       setBranches([]);
       loadDistricts(selectedState.value);
     } else {
       setDistricts([]);
       setLocation([]);
-      setLocation([]);
       setBranches([]);
     }
   }, [selectedState]);
 
-
   useEffect(() => {
     if (selectedDistrict?.value) {
       setSelectedLocation(null);
-    if (selectedDistrict?.value) {
-      setSelectedLocation(null);
       setSelectedBranch(null);
-      setBranches([]);
-      loadLocation(selectedDistrict.value);
       setBranches([]);
       loadLocation(selectedDistrict.value);
     } else {
       setLocation([]);
       setBranches([]);
     }
-  }}, [selectedDistrict])
-
-
-  useEffect(() => {
-    if (selectedLocation?.value) {
-      setSelectedBranch(null);
-      loadBranches(selectedLocation.value, selectedLocation.label);
-    } else {
-      setBranches([]);
-    }
-  }, [selectedLocation]);
-
+  }, [selectedDistrict]);
 
   useEffect(() => {
     if (selectedLocation?.value) {
       setSelectedBranch(null);
       loadBranches(selectedLocation.value, selectedLocation.label);
     } else {
-      setLocation([]);
       setBranches([]);
     }
   }, [selectedLocation]);
@@ -360,6 +328,7 @@ const DashBoardCompany: React.FC<CompanyProps> = ({
     setStartDate(start);
     setEndDate(end);
   };
+
   const handleCompanyGroupChange = (value: SelectOption | null) => {
     setSelectedCompanyGroup(value);
     onCompanyGroupChange?.(value);
@@ -368,40 +337,76 @@ const DashBoardCompany: React.FC<CompanyProps> = ({
   const handleCompanyChange = (value: SelectOption | null) => {
     setSelectedCompany(value);
     onCompanyChange?.(value);
+    setLoading(false);
   };
 
   const handleStateChange = (value: SelectOption | null) => {
-    if (value?.value === selectedState?.value) return;
-
     setSelectedState(value);
     onStateChange?.(value);
+    
+    // When state filter is cleared, reset all dependent filters
+    if (!value) {
+      setSelectedDistrict(null);
+      setSelectedLocation(null);
+      setSelectedBranch(null);
+      
+      // Notify parent components about these resets
+      onDistrictChange?.(null);
+      onLocationChange?.(null);
+      onBranchChange?.(null);
+    }
+    setLoading(false);
   };
 
   const handleDistrictChange = (value: SelectOption | null) => {
     setSelectedDistrict(value);
     onDistrictChange?.(value);
+    
+    // When district filter is cleared, reset location and branch
+    if (!value) {
+      setSelectedLocation(null);
+      setSelectedBranch(null);
+      
+      onLocationChange?.(null);
+      onBranchChange?.(null);
+    }
+    setLoading(false);
   };
 
-  const handleBranchChange = (value: BranchOption | null) => {
-    setSelectedBranch(value);
-    onBranchChange?.(value);
-  };
-  
   const handleLocationChange = (value: SelectOption | null) => {
     setSelectedLocation(value);
     onLocationChange?.(value);
+    
+    // When location filter is cleared, reset branch
+    if (!value) {
+      setSelectedBranch(null);
+      onBranchChange?.(null);
+    }
+    setLoading(false);
   };
   
+  const handleBranchChange = (value: BranchOption | null) => {
+    setSelectedBranch(value);
+    onBranchChange?.(value);
+    setLoading(false);
+  };
 
   return (
+   
+
     <div className="w-full flex items-center gap-3">
+       {loading && (
+      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <div className="w-28 h-28">
+          <Lottie 
+            animationData={loadingAnimation} 
+            loop 
+            className="w-24 h-24"
+          />
+        </div>
+      </div>
+    )}
       <div className="flex-1 min-w-[140px]">
-        {/* <OutlinedSelect
-          label="Company Group"
-          options={companyGroups}
-          value={selectedCompanyGroup}
-          onChange={handleCompanyGroupChange}
-        /> */}
         <OutlinedInput
           label="Company Group"
           value={companyGroupName} 
@@ -450,20 +455,10 @@ const DashBoardCompany: React.FC<CompanyProps> = ({
           value={selectedBranch}
           onChange={handleBranchChange}
           options={branches}
-        
         />
       </div>
-
-      {/* <div className="flex-none">
-        <CustomDateRangePicker onApply={handleDateRangeApply} />
-      </div>
-
-      <div className="flex-none">
-        <DashboardFilter />
-      </div> */}
     </div>
   );
 };
 
 export default DashBoardCompany;
-

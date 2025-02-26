@@ -176,36 +176,61 @@
 
 // export default SEDashboardCount;
 
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import DataTable from '@/components/shared/DataTable';
 import { Tooltip } from '@/components/ui';
 import type { ColumnDef } from '@/components/shared/DataTable';
+import httpClient from '@/api/http-client';
+import { endpoints } from '@/api/endpoint';
 
-const SEDashboardCount = () => {
-    const seData = [
+interface SEProps {
+    companyId?: string | number;
+    stateId?: string | number;
+    districtId?: string | number;
+    locationId?: string | number;
+    branchId?: string | number;
+  }
+
+
+
+const SEDashboardCount: React.FC<SEProps> = ({ 
+    companyId, 
+    stateId, 
+    districtId, 
+    locationId, 
+    branchId 
+  }) => {
+
+    const [seData, setSeData] = useState([]);
+          const [loading, setLoading] = useState<boolean>(true);
+
+
+          useEffect(() => {
+            const fetchSEdata = async () => {
+                try {
+                    const params: any = {};
+                if (companyId) params.companyId = companyId;
+                if (stateId) params.stateId = stateId;
+                if (districtId) params.districtId = districtId;
+                if (locationId) params.locationId = locationId;
+                if (branchId) params.branchId = branchId;
+                    const response = await httpClient.get(endpoints.graph.branchSEStatus(), {
+                        params
+                    });
+                    setSeData(response.data);
+                } catch (error) {
+                    console.error('Error fetching S&E Data:', error);
+                } finally {
+                    setLoading(false);
+                  }
+            };
+    
+            // if (companyId || stateId || districtId || locationId || branchId) {
+                fetchSEdata();
+            // }
+        }, [companyId, stateId, districtId, locationId, branchId]);
+
         
-        {
-            name: 'Valid',
-            ph: '110',
-            vr: '50',
-            value: '160',
-            // badgeColor: 'bg-amber-400 text-white',
-        },
-        {
-            name: 'Expired',
-            ph: '30',
-            vr: '50',
-            value: '80',
-            badgeColor: 'text-red-600',
-        },
-        {
-            name: 'Total',
-            ph: '140',
-            vr: '100',
-            value: '240',
-            // badgeColor: 'bg-blue-400 text-white',
-        },
-    ];
 
     const columns: ColumnDef<typeof seData[0]>[] = useMemo(
         () => [
@@ -217,9 +242,10 @@ const SEDashboardCount = () => {
                     const row = props.row.original;
 
                     const value = props.getValue() as string;
+                    const textColorClass = value === 'Expired' ? 'text-red-600' : '';
                     return (
                         <Tooltip title={value} placement="top">
-                            <div className= {`font-semibold text-gray-700 hover:text-blue-600 transition-colors duration-200 text-xs w-10.5 ${row.badgeColor}`}>
+                            <div className= {`font-semibold text-gray-700 hover:text-blue-600 transition-colors duration-200 text-xs w-10.5 ${textColorClass}`}>
                                 {value.length > 30
                                     ? value.substring(0, 30) + '...'
                                     : value}
@@ -228,53 +254,56 @@ const SEDashboardCount = () => {
                     );
                 },
             },
-            {
-                header: 'PH',
-                enableSorting: false,
-                accessorKey: 'ph',
-                cell: (props) => {
-                    const row = props.row.original;
+            // {
+            //     header: 'PH',
+            //     enableSorting: false,
+            //     accessorKey: 'ph',
+            //     cell: (props) => {
+            //         const row = props.row.original;
 
-                    const value = props.getValue() as string;
-                    return (
-                        <Tooltip title={value} placement="top">
-                            <div className= {`font-semibold text-gray-700 hover:text-blue-600 transition-colors duration-200 text-xs ${row.badgeColor}`}>
-                                {value.length > 18
-                                    ? value.substring(0, 18) + '...'
-                                    : value}
-                            </div>
-                        </Tooltip>
-                    );
-                },
-            },
-            {
-                header: 'VR',
-                enableSorting: false,
-                accessorKey: 'vr',
-                cell: (props) => {
-                    const value = props.getValue() as string;
-                    const row = props.row.original;
+            //         const value = props.getValue() as string;
+            //         const textColorClass = value === 'Expired' ? 'text-red-600' : '';
+            //         return (
+            //             <Tooltip title={value} placement="top">
+            //                 <div className= {`font-semibold text-gray-700 hover:text-blue-600 transition-colors duration-200 text-xs ${textColorClass}`}>
+            //                     {value.length > 18
+            //                         ? value.substring(0, 18) + '...'
+            //                         : value}
+            //                 </div>
+            //             </Tooltip>
+            //         );
+            //     },
+            // },
+            // {
+            //     header: 'VR',
+            //     enableSorting: false,
+            //     accessorKey: 'vr',
+            //     cell: (props) => {
+            //         const value = props.getValue() as string;
+            //         const row = props.row.original;
+            //         const textColorClass = value === 'Expired' ? 'text-red-600' : '';
 
-                    return (
-                        <Tooltip title={value} placement="top">
-                            <div className= {`font-semibold text-gray-700 hover:text-blue-600 transition-colors duration-200 text-xs ${row.badgeColor}`}>
-                                {value.length > 18
-                                    ? value.substring(0, 18) + '...'
-                                    : value}
-                            </div>
-                        </Tooltip>
-                    );
-                },
-            },
+            //         return (
+            //             <Tooltip title={value} placement="top">
+            //                 <div className= {`font-semibold text-gray-700 hover:text-blue-600 transition-colors duration-200 text-xs ${textColorClass}`}>
+            //                     {value.length > 18
+            //                         ? value.substring(0, 18) + '...'
+            //                         : value}
+            //                 </div>
+            //             </Tooltip>
+            //         );
+            //     },
+            // },
             {
                 header: 'Total',
                 enableSorting: false,
                 accessorKey: 'value',
                 cell: (props) => {
                     const row = props.row.original;
-                    const value = props.getValue() as string;                    return (
+                    const value = props.getValue() as string;   
+                    const textColorClass = value === 'Expired' ? 'text-red-600' : '';                 return (
                         <Tooltip title={value} placement="top">
-                            <div  className={`inline-flex items-center py-2 rounded-full text-xs font-semibold ${row.badgeColor}`}>
+                            <div  className={`inline-flex items-center py-2 rounded-full text-xs font-semibold ${textColorClass}`}>
                                 {value.length > 18
                                     ? value.substring(0, 18) + '...'
                                     : value}
@@ -295,7 +324,7 @@ const SEDashboardCount = () => {
                 data={seData}
                 skeletonAvatarColumns={[0]}
                 skeletonAvatarProps={{ className: 'rounded-md' }}
-                loading={false}
+                loading={loading}
                 stickyHeader={true}
                 selectable={false}
                 showPageSizeSelector={false} 
@@ -305,3 +334,67 @@ const SEDashboardCount = () => {
 };
 
 export default SEDashboardCount;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import React, { useState, useEffect } from 'react';
+// import axios from 'axios';
+
+// const BranchSEStatus = () => {
+//   const [data, setData] = useState([
+//     { name: 'Valid', value: '0' },
+//     { name: 'Expired', value: '0' },
+//     { name: 'Total', value: '0' },
+//   ]);
+
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       try {
+//         const response = await axios.get('/companyadmin/graph/branch-se-status', {
+//           params: { companyId: 1 }, // Replace with actual company ID
+//         });
+//         setData(response.data);
+//       } catch (error) {
+//         console.error('Error fetching branch S&E status:', error);
+//       }
+//     };
+
+//     fetchData();
+//   }, []);
+
+//   return (
+//     <div>
+//       <h2>Branch S&E Status</h2>
+//       <table>
+//         <thead>
+//           <tr>
+//             <th>Status</th>
+//             <th>Count</th>
+//           </tr>
+//         </thead>
+//         <tbody>
+//           {data.map((item, index) => (
+//             <tr key={index}>
+//               <td>{item.name}</td>
+//               <td>{item.value}</td>
+//             </tr>
+//           ))}
+//         </tbody>
+//       </table>
+//     </div>
+//   );
+// };
+
+// export default BranchSEStatus;

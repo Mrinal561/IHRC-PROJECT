@@ -256,11 +256,23 @@ export const endpoints = {
             reset:() => api(`reset-password`)
         },
         graph:{
-            dueDate:(type:any,code:any,financialYear:any)=> api(`companyadmin/graph/graph-data?type=${type}&code=${code}&financial_year=${financialYear}`),
-            challanamount:(type:any,code:any,financialYear:any)=> api(`companyadmin/graph/challan-amount?type=${type}&code=${code}&financialYear=${financialYear}`),
-            challancounts:(type:any,code:any,financialYear:any)=> api(`companyadmin/graph/challan-counts?type=${type}&code=${code}&financial_year=${financialYear}`),
-            analytics:(type:any,code:any,financialYear:any)=> api(`companyadmin/graph/challan-analytics?type=${type}&code=${code}&financialYear=${financialYear}`),
+            // dueDate:(type:any,code:any,financialYear:any)=> api(`companyadmin/graph/graph-data?type=${type}&code=${code}&financial_year=${financialYear}`),
+            // challanamount:(type:any,code:any,financialYear:any)=> api(`companyadmin/graph/challan-amount?type=${type}&code=${code}&financialYear=${financialYear}`),
+            // challancounts:(type:any,code:any,financialYear:any)=> api(`companyadmin/graph/challan-counts?type=${type}&code=${code}&financial_year=${financialYear}`),
+            // analytics:(type:any,code:any,financialYear:any)=> api(`companyadmin/graph/challan-analytics?type=${type}&code=${code}&financialYear=${financialYear}`),
 
+            branchType: () => api(`companyadmin/graph/branch-types`),
+            branchStatus: () => api(`companyadmin/graph/branch-status`),
+            agreementStatus: () => api(`companyadmin/graph/agreement-status`),
+            agreementStatusGraph: () => api(`companyadmin/graph/agreement-status-graph`),
+            branchSEStatus: () => api(`companyadmin/graph/branch-se-status`),
+            branchSEStatusGraph: () => api(`companyadmin/graph/branch-se-status-graph`),
+            noticeStatus: () => api(`companyadmin/graph/notice-status`),
+            noticeStatusGraph: () => api(`companyadmin/graph/notice-status-graph`),
+            remittanceBreakup: () => api(`companyadmin/graph/remittance-breakup`),
+            registerBreakup: () => api(`companyadmin/graph/registration-breakup`),
+            pfremittanceBreakup: () => api(`companyadmin/graph/pf-remittance-breakdown`),
+            esiremittanceBreakup: () => api(`companyadmin/graph/esi-remittance-breakdown`),
         },
         
 }

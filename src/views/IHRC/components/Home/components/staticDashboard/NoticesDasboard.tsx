@@ -1,17 +1,56 @@
 
 
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import DataTable from '@/components/shared/DataTable';
 import { Tooltip } from '@/components/ui';
 import type { ColumnDef } from '@/components/shared/DataTable';
+import httpClient from '@/api/http-client';
+import { endpoints } from '@/api/endpoint';
 
- const NoticesDashboard = () => {
-  const noticesData = [
-      { name: 'Open', value: '2'},
-      //   { name: 'Under Process', value: '10', badgeColor: 'bg-amber-400 text-white', },
-      { name: 'Closed', value: '10'},
-      { name: 'Total', value: '12' },
-  ];
+
+interface NoticeStatusProps {
+    companyId?: string | number;
+    stateId?: string | number;
+    districtId?: string | number;
+    locationId?: string | number;
+    branchId?: string | number;
+  }
+
+ const NoticesDashboard: React.FC<NoticeStatusProps> = ({ 
+     companyId, 
+     stateId, 
+     districtId, 
+     locationId, 
+     branchId 
+   })  => {
+     const [noticeData, setNoticeData] = useState([]);
+       const [loading, setLoading] = useState<boolean>(true);
+
+
+       useEffect(() => {
+        const fetchNoticeStatus = async () => {
+            try {
+                const params: any = {};
+                if (companyId) params.companyId = companyId;
+                if (stateId) params.stateId = stateId;
+                if (districtId) params.districtId = districtId;
+                if (locationId) params.locationId = locationId;
+                if (branchId) params.branchId = branchId;
+                const response = await httpClient.get(endpoints.graph.noticeStatus(), {
+                    params
+                });
+                setNoticeData(response.data);
+            } catch (error) {
+                console.error('Error fetching Notice Status Data:', error);
+            } finally {
+                setLoading(false);
+              }
+        };
+
+        // if (companyId || stateId || districtId || locationId || branchId) {
+            fetchNoticeStatus();
+        // }
+    }, [companyId, stateId, districtId, locationId, branchId]);
 
   const columns = useMemo(
       () => [
@@ -56,10 +95,10 @@ import type { ColumnDef } from '@/components/shared/DataTable';
         <h2 className="text-base text-center font-semibold mb-2 mt-0">Notice Status</h2>
           <DataTable
               columns={columns}
-              data={noticesData}
+              data={noticeData}
               skeletonAvatarColumns={[0]}
               skeletonAvatarProps={{ className: 'rounded-md' }}
-              loading={false}
+              loading={loading}
               stickyHeader={true}
               selectable={false}
               showPageSizeSelector={false} 

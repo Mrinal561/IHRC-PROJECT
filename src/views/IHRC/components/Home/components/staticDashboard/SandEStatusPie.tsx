@@ -1,60 +1,78 @@
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Chart from 'react-apexcharts';
 import { Card } from '@/components/ui';
 import { ApexOptions } from 'apexcharts';
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
+import httpClient from '@/api/http-client';
+import { endpoints } from '@/api/endpoint';
 
-const SandEStatusPie = () => {
-  // Month options for the dropdown
-  const groupOptions = [
-    { value: 'jan', label: 'January' },
-    { value: 'feb', label: 'February' },
-    { value: 'mar', label: 'March' },
-    { value: 'apr', label: 'April' },
-    { value: 'may', label: 'May' },
-    { value: 'jun', label: 'June' },
-    { value: 'jul', label: 'July' },
-    { value: 'aug', label: 'August' },
-    { value: 'sep', label: 'September' },
-    { value: 'oct', label: 'October' },
-    { value: 'nov', label: 'November' },
-    { value: 'dec', label: 'December' }
-  ];
+interface SEStatusProps {
+  companyId?: string | number;
+  stateId?: string | number;
+  districtId?: string | number;
+  locationId?: string | number;
+  branchId?: string | number;
+}
 
-  // State for selected month
-  const [currentGroup, setCurrentGroup] = useState(groupOptions[1].value);
+interface SEStatusData {
+  series: number[];
+  labels: string[];
+}
+const SandEStatusPie: React.FC<SEStatusProps> = ({ 
+  companyId, 
+  stateId, 
+  districtId, 
+  locationId, 
+  branchId 
+}) => {
 
-  // Handler for dropdown changes
-  const handleChange = (setter: Function, field: string) => (option: any) => {
-    setter(option.value);
-  };
 
-  const data = {
-    series: [160, 80],   // Total Notice, Open, Closed
-    labels: ['Valid', 'Expired']
-  };
+const [chartData, setChartData] = useState<SEStatusData>({
+    series: [0, 0],   // Default values before API response (Expired, Valid)
+    labels: ['Expired', 'Valid']
+  });
+  
+  const [loading, setLoading] = useState<boolean>(true);
+
+
+  useEffect(() => {
+    const fetchSEGraph = async () => {
+      setLoading(true);
+      try {
+        const params: any = {};
+                if (companyId) params.companyId = companyId;
+                if (stateId) params.stateId = stateId;
+                if (districtId) params.districtId = districtId;
+                if (locationId) params.locationId = locationId;
+                if (branchId) params.branchId = branchId;
+        const response = await httpClient.get(endpoints.graph.branchSEStatusGraph(), {
+          params
+        });
+        
+        setChartData(response.data);
+      } catch (error) {
+        console.error('Error fetching S&E Status Data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // Only fetch if at least one filter parameter is provided
+    // if (companyId || stateId || districtId || locationId || branchId) {
+      fetchSEGraph();
+    // }
+  }, [companyId, stateId, districtId, locationId, branchId]);
 
   const options: ApexOptions = {
     chart: {
       type: 'pie',
       background: 'transparent'
     },
-    colors: ['#059669', '#DC143C'],
-    labels: data.labels,
+    colors: ['#00a249', '#d20000'], // Red for Expired, Green for Valid
+    labels: chartData.labels,
     legend: {
       show: false
-      // position: 'bottom',
-      // horizontalAlign: 'center',
-      // fontSize: '12px',
-      // markers: {
-      //   offsetX: 0,
-      //   offsetY: 0
-      // },
-      // itemMargin: {
-      //   horizontal: 10,
-      //   vertical: 5
-      // }
     },
     plotOptions: {
       pie: {
@@ -124,40 +142,10 @@ const SandEStatusPie = () => {
         <h4 className="text-base font-semibold text-center">
           S&E Status
         </h4>
-        {/* <div className="w-40">
-          <OutlinedSelect
-            label="Month"
-            options={groupOptions}
-            value={groupOptions.find(
-              (option) => option.value === currentGroup
-            )}
-            onChange={handleChange(
-              setCurrentGroup,
-              'groupName'
-            )}
-          />
-        </div> */}
       </div>
     </div>
   );
 
-  const footer = (
-    <div className="flex justify-center mx-10">
-      <div className="grid grid-cols-2 gap-4">
-        {data.labels.map((label, index) => (
-          <div key={label} className="bg-gray-50 p-3 rounded-lg text-center">
-            <div className="text-sm font-medium text-gray-600">{label}</div>
-            <div 
-              className="text-lg font-bold mt-1" 
-              style={{ color: options.colors?.[index] }}
-            >
-              {data.series[index]}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
 
   return (
     <Card 
@@ -168,13 +156,18 @@ const SandEStatusPie = () => {
       // footerBorder={true}
       bordered={true}
     >
-      <div className="p-0">
-        <Chart
-          options={options}
-          series={data.series}
-          type="pie"
-          height={180}
-          width={180}        />
+       <div className="p-0 flex justify-center items-center">
+              {loading ? (
+                <div className="py-10 text-gray-400">Loading...</div>
+              ) : (
+                <Chart
+                  options={options}
+                  series={chartData.series}
+                  type="pie"
+                  height={180}
+                  width={180}
+                />
+              )}
       </div>
     </Card>
   );

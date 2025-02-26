@@ -292,35 +292,63 @@
 // export default RentalDepositsDashboard;
 
 
-import React, { useMemo } from 'react';
+
+
+import React, { useEffect, useMemo, useState } from 'react';
 import DataTable from '@/components/shared/DataTable';
 import { Tooltip } from '@/components/ui';
 import type { ColumnDef } from '@/components/shared/DataTable';
+import httpClient from '@/api/http-client';
+import { endpoints } from '@/api/endpoint';
 
-const RentalDepositsDashboard = () => {
-    const depositsData = [
-        {
-            name: 'Valid',
-            ph: '110',
-            vr: '50',
-            value: '160',
-        },
-        {
-            name: 'Expired',
-            ph: '20',
-            vr: '10',
-            value: '30',
-            badgeColor: 'text-red-600',
-        },
-        {
-            name: 'Total',
-            ph: '130',
-            vr: '60',
-            value: '190',
-        },
-    ];
+// Define type for deposit data (without badgeColor since it's not from API)
+interface AgreementStatusProps {
+    companyId?: string | number;
+    stateId?: string | number;
+    districtId?: string | number;
+    locationId?: string | number;
+    branchId?: string | number;
+  }
 
-    const columns: ColumnDef<typeof depositsData[0]>[] = useMemo(
+  
+const RentalDepositsDashboard: React.FC<AgreementStatusProps> = ({ 
+    companyId, 
+    stateId, 
+    districtId, 
+    locationId, 
+    branchId 
+  })  => {
+    const [depositsData, setDepositData] = useState([]);
+      const [loading, setLoading] = useState<boolean>(true);
+    
+
+    // Fetch data from the API
+    useEffect(() => {
+        const fetchAgreementStatus = async () => {
+            try {
+                const params: any = {};
+                if (companyId) params.companyId = companyId;
+                if (stateId) params.stateId = stateId;
+                if (districtId) params.districtId = districtId;
+                if (locationId) params.locationId = locationId;
+                if (branchId) params.branchId = branchId;
+                const response = await httpClient.get(endpoints.graph.agreementStatus(), {
+                    params
+                });
+                setDepositData(response.data);
+            } catch (error) {
+                console.error('Error fetching Agreement Status Data:', error);
+            } finally {
+                setLoading(false);
+              }
+        };
+
+        // if (companyId || stateId || districtId || locationId || branchId) {
+            fetchAgreementStatus();
+        // }
+    }, [companyId, stateId, districtId, locationId, branchId]);
+
+    const columns = useMemo(
         () => [
             {
                 header: 'Status',
@@ -328,11 +356,12 @@ const RentalDepositsDashboard = () => {
                 enableSorting: false,
                 cell: (props) => {
                     const value = props.getValue() as string;
-                    const row = props.row.original;
+                    // Apply text-red-600 class only if status is "Expired"
+                    const textColorClass = value === 'Expired' ? 'text-red-600' : '';
 
                     return (
                         <Tooltip title={value} placement="top">
-                            <div className={`w-10.5 font-semibold text-gray-700 hover:text-blue-600 transition-colors duration-200 text-xs ${row.badgeColor}`}>
+                            <div className={`w-10.5 font-semibold text-gray-700 hover:text-blue-600 transition-colors duration-200 text-xs ${textColorClass}`}>
                                 {value.length > 30
                                     ? value.substring(0, 30) + '...'
                                     : value}
@@ -347,11 +376,14 @@ const RentalDepositsDashboard = () => {
                 enableSorting: false,
                 cell: (props) => {
                     const row = props.row.original;
-                    const value = props.getValue() as string;
+                    const value = props.getValue() as string || '';
+                    // Apply text-red-600 class only if row's name is "Expired"
+                    const textColorClass = row.name === 'Expired' ? 'text-red-600' : '';
+                    
                     return (
                         <Tooltip title={value} placement="top">
-                            <div className={`font-semibold text-gray-700 hover:text-blue-600 transition-colors duration-200 text-xs ${row.badgeColor}`}>
-                                {value.length > 18
+                            <div className={`font-semibold text-gray-700 hover:text-blue-600 transition-colors duration-200 text-xs ${textColorClass}`}>
+                                {value && value.length > 18
                                     ? value.substring(0, 18) + '...'
                                     : value}
                             </div>
@@ -365,11 +397,14 @@ const RentalDepositsDashboard = () => {
                 enableSorting: false,
                 cell: (props) => {
                     const row = props.row.original;
-                    const value = props.getValue() as string;
+                    const value = props.getValue() as string || '';
+                    // Apply text-red-600 class only if row's name is "Expired"
+                    const textColorClass = row.name === 'Expired' ? 'text-red-600' : '';
+                    
                     return (
                         <Tooltip title={value} placement="top">
-                            <div className={`inline-flex items-center rounded-full text-xs font-semibold ${row.badgeColor}`}>
-                                {value.length > 18
+                            <div className={`inline-flex items-center rounded-full text-xs font-semibold ${textColorClass}`}>
+                                {value && value.length > 18
                                     ? value.substring(0, 18) + '...'
                                     : value}
                             </div>
@@ -379,14 +414,17 @@ const RentalDepositsDashboard = () => {
             },
             {
                 header: 'Total',
-                accessorKey: 'value',
+                accessorKey: 'total',
                 enableSorting: false,
                 cell: (props) => {
                     const row = props.row.original;
                     const value = props.getValue() as string;
+                    // Apply text-red-600 class only if row's name is "Expired"
+                    const textColorClass = row.name === 'Expired' ? 'text-red-600' : '';
+                    
                     return (
                         <Tooltip title={value} placement="top">
-                            <div className={`inline-flex items-center py-2 rounded-full text-xs font-semibold ${row.badgeColor}`}>
+                            <div className={`inline-flex items-center py-2 rounded-full text-xs font-semibold ${textColorClass}`}>
                                 {value.length > 18
                                     ? value.substring(0, 18) + '...'
                                     : value}
@@ -400,15 +438,14 @@ const RentalDepositsDashboard = () => {
     );
 
     return (
-        <div className="w-full  overflow-x-auto py-2 bg-white rounded-lg shadow-lg border table-home">
-           
+        <div className="w-full overflow-x-auto py-2 bg-white rounded-lg shadow-lg border table-home">
             <h2 className="text-base text-center font-semibold mb-2 mt-0">Agreement Status</h2>
             <DataTable
                 columns={columns}
                 data={depositsData}
                 skeletonAvatarColumns={[0]}
                 skeletonAvatarProps={{ className: 'rounded-md' }}
-                loading={false}
+                loading={loading}
                 stickyHeader={true}
                 selectable={false}
                 showPageSizeSelector={false}
