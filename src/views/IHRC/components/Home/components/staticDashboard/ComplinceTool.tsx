@@ -85,7 +85,6 @@ const ComplianceStatus: React.FC<ComplianceStatusProps> = ({
     const fetchRemittanceData = async () => {
       setLoading(true);
       try {
-        
         const response = await httpClient.get(endpoints.graph.pfremittanceBreakup(), {
           params: {
             companyId,
@@ -109,10 +108,7 @@ const ComplianceStatus: React.FC<ComplianceStatusProps> = ({
       }
     };
 
-    // Only fetch if at least one filter parameter is provided
-    // if (companyId || stateId || districtId || locationId || branchId) {
-      fetchRemittanceData();
-    // }
+    fetchRemittanceData();
   }, [companyId, stateId, districtId, locationId, branchId, currentGroup, year]);
 
   // Data series and labels
@@ -120,12 +116,8 @@ const ComplianceStatus: React.FC<ComplianceStatusProps> = ({
   const labels = ['Main', 'Arrear', 'Damage'];
   const totalAmount = mainTotal + arrearTotal + damageTotal;
 
-  // Format percentage values, replacing NaN with 0%
-  const formatPercentage = (value: number, total: number) => {
-    if (total === 0) return '0%';
-    const percent = (value / total) * 100;
-    return isNaN(percent) ? '0%' : `${percent.toFixed(1)}%`;
-  };
+  // Check if all values in the series are 0
+  const isNoDataAvailable = series.every(value => value === 0);
 
   return (
     <div className="flex flex-col items-center">
@@ -146,7 +138,9 @@ const ComplianceStatus: React.FC<ComplianceStatusProps> = ({
       </div>
 
       {loading ? (
-        <div>Loading...</div>
+        <div className="py-10 text-gray-400">Loading...</div>
+      ) : isNoDataAvailable ? (
+        <div className="py-10 text-gray-400">No Data Available</div>
       ) : (
         <>
           <Chart
@@ -207,9 +201,6 @@ const ComplianceStatus: React.FC<ComplianceStatusProps> = ({
                 <span className="font-semibold text-lg">
                   {series[index].toLocaleString()}
                 </span>
-                {/* <span className="text-sm text-gray-500">
-                  {formatPercentage(series[index], totalAmount)}
-                </span> */}
               </div>
             ))}
           </div>

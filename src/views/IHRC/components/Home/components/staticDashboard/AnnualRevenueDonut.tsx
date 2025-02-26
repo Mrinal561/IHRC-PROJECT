@@ -284,6 +284,10 @@ const AnnualRevenueDonut: React.FC<AnnualRevenueDonutProps> = ({
   const labels = ['Main', 'Interest', 'Penalty'];
   const totalAmount = mainTotal + interestTotal + penaltyTotal;
 
+
+  const isNoDataAvailable = series.every(value => value === 0);
+
+
   // Format percentage values, replacing NaN with 0%
   const formatPercentage = (value: number, total: number) => {
     if (total === 0) return '0%';
@@ -310,7 +314,9 @@ const AnnualRevenueDonut: React.FC<AnnualRevenueDonutProps> = ({
       </div>
 
       {loading ? (
-        <div>Loading...</div>
+        <div className="py-10 text-gray-400">Loading...</div>
+      ) : isNoDataAvailable ? (
+        <div className="py-10 text-gray-400">No Data Available</div>
       ) : (
         <>
           <Chart

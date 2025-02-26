@@ -146,30 +146,34 @@ const [chartData, setChartData] = useState<SEStatusData>({
     </div>
   );
 
+  const isNoDataAvailable = chartData.series.every(value => value === 0);
+
 
   return (
-    <Card 
-      className="w-full max-w-2xl mx-auto border-none p-0 custom-card-home"
-      header={header}
-      // footer={footer}
-      headerBorder={true}
-      // footerBorder={true}
-      bordered={true}
-    >
-       <div className="p-0 flex justify-center items-center">
-              {loading ? (
-                <div className="py-10 text-gray-400">Loading...</div>
-              ) : (
-                <Chart
-                  options={options}
-                  series={chartData.series}
-                  type="pie"
-                  height={180}
-                  width={180}
-                />
-              )}
-      </div>
-    </Card>
+     <Card 
+          className="w-full max-w-2xl mx-auto border-none p-0 custom-card-home"
+          header={header}
+          // footer={footer}
+          headerBorder={true}
+          footerBorder={true}
+          bordered={true}
+        >
+          <div className="p-0 flex justify-center items-center">
+            {loading ? (
+              <div className="py-10 text-gray-400">Loading...</div>
+            ) : isNoDataAvailable ? (
+              <div className="py-10 text-gray-400">No Data Available</div>
+            ) : (
+              <Chart
+                options={options}
+                series={chartData.series}
+                type="pie"
+                height={180}
+                width={180}
+              />
+            )}
+          </div>
+        </Card>
   );
 };
 
