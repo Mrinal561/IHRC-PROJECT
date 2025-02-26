@@ -328,7 +328,7 @@ const AddBranchForm: React.FC = () => {
         lease_validity: '',
         se_status: '',
         office_mode: 'physical',
-        agreement_data: [],
+        // agreement_data: [],
         gst_number: '',
     })
     const [errors, setErrors] = useState<any>({})
@@ -366,6 +366,7 @@ const AddBranchForm: React.FC = () => {
         { value: 'register_office', label: 'Register Office' },
         { value: 'coorporate_office', label: 'Coorporate Office' },
         { value: 'regional_office', label: 'Regional Office' },
+        { value: 'factory', label: 'Factory' },
         { value: 'branch', label: 'Branch Office' },
         { value: 'other', label: 'Others' },
         // { value: 'branch', label: 'Branch' },
