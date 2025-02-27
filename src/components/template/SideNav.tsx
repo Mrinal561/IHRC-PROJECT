@@ -1138,7 +1138,7 @@ const adminnav: NavigationTree[] = [
                     {
                         key: 'entitySetup.collapse.branchagreement',
                         path: '/agreements',
-                        title: 'Agreements',
+                        title: 'Agreement',
                         translateKey: 'nav.entitySetup.collapse.branchagreement',
                         icon: '',
                         type: NAV_ITEM_TYPE_ITEM,
