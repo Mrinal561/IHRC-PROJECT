@@ -1,6 +1,3 @@
-
-
-
 import React, { useMemo, useEffect, useState } from 'react';
 import DataTable from '@/components/shared/DataTable';
 import { Tooltip } from '@/components/ui';
@@ -16,6 +13,8 @@ interface BranchTypesProps {
     branchId?: string | number;
 }
 
+
+
 export const BranchTypes: React.FC<BranchTypesProps> = ({ 
     companyId, 
     stateId, 
@@ -29,12 +28,12 @@ export const BranchTypes: React.FC<BranchTypesProps> = ({
 
     // Fetch branch types data from the API
     useEffect(() => {
-        if (!companyId && !stateId && !districtId && !locationId && !branchId) {
-            // Reset data to default state
-            setTypesData([]); // or fetch default data if available
-            setLoading(false);
-            return;
-        }
+        // if (!companyId && !stateId && !districtId && !locationId && !branchId) {
+        //     // Reset data to default state
+        //     setTypesData([]); // or fetch default data if available
+        //     setLoading(false);
+        //     return;
+        // }
     
         // Fetch data with filters
         const fetchBranchTypes = async () => {
@@ -101,19 +100,21 @@ export const BranchTypes: React.FC<BranchTypesProps> = ({
     );
 
     return (
-        <div className="w-full overflow-x-auto py-2 bg-white rounded-lg shadow-lg border custom table-home">
-            <h2 className="text-base text-center mb-2 mt-0 font-semibold">Branch Types</h2>
-            <DataTable
-                columns={columns}
-                data={typesData}
-                skeletonAvatarColumns={[0]}
-                skeletonAvatarProps={{ className: 'rounded-md' }}
-                loading={loading}
-                stickyHeader={true}
-                selectable={false}
-                showPageSizeSelector={false}
-            />
-        </div>
+
+                <div className="w-full overflow-x-auto py-2 bg-white rounded-lg shadow-lg border custom table-home">
+                    <h2 className="text-base text-center mb-2 mt-0 font-semibold">Branch Types</h2>
+                   
+                        <DataTable
+                        columns={columns}
+                        data={typesData}
+                        skeletonAvatarColumns={[0]}
+                        skeletonAvatarProps={{ className: 'rounded-md' }}
+                        loading={loading}
+                        stickyHeader={true}
+                        selectable={false}
+                        showPageSizeSelector={false}
+                        />
+                </div>
     );
 };
 

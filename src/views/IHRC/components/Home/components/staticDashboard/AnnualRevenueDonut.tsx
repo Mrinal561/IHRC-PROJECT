@@ -250,6 +250,12 @@ const AnnualRevenueDonut: React.FC<AnnualRevenueDonutProps> = ({
     const fetchRemittanceData = async () => {
       setLoading(true);
       try {
+        const params: any = {};
+        if (companyId) params.companyId = companyId;
+                if (stateId) params.stateId = stateId;
+                if (districtId) params.districtId = districtId;
+                if (locationId) params.locationId = locationId;
+                if (branchId) params.branchId = branchId;
         const response = await httpClient.get(endpoints.graph.esiremittanceBreakup(), {
           params: {
             companyId,
@@ -299,7 +305,7 @@ const AnnualRevenueDonut: React.FC<AnnualRevenueDonutProps> = ({
     <div className="flex flex-col items-center">
       <div className="w-full">
         <div className="flex justify-between items-center">
-          <h4 className="text-lg font-bold flex-1 text-center">
+          <h4 className="text-base font-bold flex-1 text-center">
             ESI Remittance Breakdown for {year}
           </h4>
           <div className="w-40">

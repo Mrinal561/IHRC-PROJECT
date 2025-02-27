@@ -15,7 +15,7 @@ import AnnualRevenueDonut from './staticDashboard/AnnualRevenueDonut';
 import PaymentDateComparison from './staticDashboard/PaymentDateComparison';
 import ChallanUploadCounts from './staticDashboard/ChallanUploadCounts';
 import { useSelector } from 'react-redux';
-import { useAppSelector } from '@/store';
+import store, { useAppSelector } from '@/store';
 import ComplinceStatus from './staticDashboard/CompliceStatus';
 import ComplinceTool from './staticDashboard/ComplinceTool';
 import Alerts from './staticDashboard/Alreat';
@@ -80,23 +80,23 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId, stateId, distr
         console.log('Initial sideCollapsed value in DashboardBody:', sideCollapsed);
     }, []);
 
-    if (loading) {
-        console.log("Loading....................");
-        return (
-            <div className="flex flex-col items-center justify-center h-96 text-gray-500 rounded-xl">
-                <div className="w-28 h-28">
-                    <Lottie 
-                        animationData={loadingAnimation} 
-                        loop 
-                        className="w-24 h-24"
-                    />
-                </div>
-                <p className="text-lg font-semibold">
-                    Loading Data...
-                </p>
-            </div>
-        );
-    }
+    // if (loading) {
+    //     console.log("Loading....................");
+    //     return (
+    //         <div className="flex flex-col items-center justify-center h-96 text-gray-500 rounded-xl">
+    //             <div className="w-28 h-28">
+    //                 <Lottie 
+    //                     animationData={loadingAnimation} 
+    //                     loop 
+    //                     className="w-24 h-24"
+    //                 />
+    //             </div>
+    //             <p className="text-lg font-semibold">
+    //                 Loading Data...
+    //             </p>
+    //         </div>
+    //     );
+    // }
 
     console.log('DashboardBody rendering with:', { companyId, stateId, districtId, locationId, branchId });
     
@@ -114,6 +114,21 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId, stateId, distr
         
         return props;
       };
+
+
+    //   const {login} = store.getState();
+    //   const moduleAccess = login.user.user.moduleAccess
+    //   const moduleNames = moduleAccess.map(module => module.name);
+      
+      
+    //   useEffect(() => {
+    //       console.log('module names', moduleNames);
+    //       console.log('module access ka data', moduleAccess);
+    //   }, []);
+
+
+
+
 
     const props = getProps();
 
@@ -168,10 +183,10 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId, stateId, distr
                 {/* Fifth Row */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
-                        <ComplinceTool {...props} />
+                        <ComplinceTool />
                     </div>
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
-                        <AnnualRevenueDonut {...props} />
+                        <AnnualRevenueDonut  />
                     </div>
                 </div>
 

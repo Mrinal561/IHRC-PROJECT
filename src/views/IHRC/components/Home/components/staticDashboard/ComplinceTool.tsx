@@ -123,7 +123,7 @@ const ComplianceStatus: React.FC<ComplianceStatusProps> = ({
     <div className="flex flex-col items-center">
       <div className="w-full">
         <div className="flex justify-between items-center">
-          <h4 className="text-lg font-bold flex-1 text-center">
+          <h4 className="text-base font-bold flex-1 text-center">
             PF Remittance Breakdown for {year}
           </h4>
           <div className="w-40">
