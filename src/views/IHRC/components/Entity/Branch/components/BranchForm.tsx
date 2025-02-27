@@ -946,7 +946,7 @@ const AddBranchForm: React.FC = () => {
                         </p>
                         <DatePicker
                             size="sm"
-                            placeholder="Pick a Date"
+                            placeholder="Select a Date"
                             onChange={(date) => {
                                 setFormData((prev) => ({
                                     ...prev,

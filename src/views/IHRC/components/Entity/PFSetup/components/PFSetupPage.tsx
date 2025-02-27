@@ -786,7 +786,7 @@ const PFSetupPage: React.FC = () => {
                             <span className="text-red-500">*</span>
                         </label>
                         <DatePicker
-                            placeholder="Pick a Date"
+                            placeholder="Select a Date"
                             value={pfSetupData.register_date}
                             onChange={(date: Date | null) =>
                                 handleInputChange('register_date', date)

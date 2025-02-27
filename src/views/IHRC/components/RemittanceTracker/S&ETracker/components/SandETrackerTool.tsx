@@ -168,7 +168,7 @@ const SandETrackerTool: React.FC<SandETrackerToolProps> = ({ onRefresh, onFilter
 
   return (
     <div className='w-full'>
-      <div className='flex gap-3 items-center mb-4'>
+      <div className='flex gap-4 items-center mb-4 w-full'>
         <SandETrackerFilter onFilterChange={handleFilterChange} />
         <CustomDateRangePicker onApply={handleDateRangeApply} />
         <Button  

@@ -367,16 +367,16 @@ const SandETrackerFilter: React.FC<NoticeProps> = ({ onFilterChange }) => {
   };
 
   return ( 
-    <div className="w-full flex items-center gap-3">  
-      <div className='flex-1 min-w-[160px]'>
-        <OutlinedSelect
+    <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3"> 
+      <div className="min-w-0">
+      <OutlinedSelect
           label="Group Name"
           options={companyGroups}
           value={selectedCompanyGroup}
           onChange={handleGroupChange}
         />
       </div>
-      <div className='flex-1 min-w-[160px]'>
+      <div className="min-w-0">
         <OutlinedSelect
           label="Company Name"
           options={companies}
@@ -384,7 +384,7 @@ const SandETrackerFilter: React.FC<NoticeProps> = ({ onFilterChange }) => {
           onChange={handleNameChange}
         />
       </div>
-      <div className='flex-1 min-w-[160px]'>
+      <div className="min-w-0">
         <OutlinedSelect
           label="Status"
           options={statusOptions}
@@ -392,7 +392,7 @@ const SandETrackerFilter: React.FC<NoticeProps> = ({ onFilterChange }) => {
           onChange={handleStatusChange}
         />
       </div>
-      <div className='flex-1 min-w-[160px]'>
+      <div className="min-w-0">
         <OutlinedSelect
           label="Notice Type"
           options={noticeTypeOptions}

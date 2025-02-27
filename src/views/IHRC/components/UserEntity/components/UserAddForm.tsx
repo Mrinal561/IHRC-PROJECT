@@ -82,7 +82,7 @@ const userValidationSchema = yup.object().shape({
         .matches(/^[0-9]{10}$/, 'Mobile number must be 10 digits'),
     joining_date: yup.string().required('Joining date is required').test(
         'is-not-future-date',
-        'Opening date cannot be a future date',
+        'Joining date cannot be a future date',
         function (value) {
             if (!value) return true; // Skip validation if the value is empty
 
