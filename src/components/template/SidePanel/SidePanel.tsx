@@ -154,7 +154,7 @@ const _SidePanel = (props: SidePanelProps) => {
         try {
             const response = await dispatch(fetchUnmarkedNotifications());
             if (response.payload) {
-                setNotificationData(response.payload);
+                setNotificationData(response.payload.data);
             }
         } catch (error) {
             console.error('Error fetching unmarked notifications:', error);
