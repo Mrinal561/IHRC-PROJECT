@@ -244,13 +244,16 @@ const UserAddForm = () => {
         try {
             setIsSubmitting(true)
             const resultAction = await dispatch(createUser(data)).unwrap()
+            .catch((error: any) => {
+                throw error;
+            })
             if (resultAction) {
                 navigate('/user-entity')
                 showNotification('success', 'User added successfully')
             }
         } catch (error: any) {
             const errorMessage = error || 'Failed to add user'
-            showNotification('danger', errorMessage) // Show the API error message
+            // showNotification('danger', errorMessage) // Show the API error message
         } finally {
             setIsSubmitting(false)
         }

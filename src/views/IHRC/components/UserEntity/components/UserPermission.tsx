@@ -342,6 +342,8 @@ import { updateUserPermissions } from '@/store/slices/userEntity/UserEntitySlice
 import Button from '@/components/ui/Button'
 import { IoArrowBack } from 'react-icons/io5';
 import store from '@/store';
+import { toast, Notification } from '@/components/ui';
+
 
 
 const UserPermission = () => {
@@ -462,6 +464,13 @@ const UserPermission = () => {
     });
   };
 
+  const showSuccessNotification = (message) => {
+    toast.push(
+        <Notification title="Success" type="success">
+            {message}
+        </Notification>
+    );
+};
   const handleUpdateAll = () => {
     const flattenPermissions = (data) => {
       let result = [];
@@ -484,6 +493,9 @@ const UserPermission = () => {
       };
 
       data.forEach(processRow);
+      if(result) {
+        showSuccessNotification('User permissions updated successfully')
+      }
       return result;
     };
 
