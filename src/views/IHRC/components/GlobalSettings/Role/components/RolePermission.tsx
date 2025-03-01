@@ -666,6 +666,7 @@ import Checkbox from '@/components/ui/Checkbox/Checkbox';
 import Button from '@/components/ui/Button/Button';
 import { IoArrowBack } from 'react-icons/io5';
 import store from '@/store';
+import { toast, Notification } from '@/components/ui';
 
 const RolePermission = () => {
   const { id } = useParams();
@@ -731,6 +732,14 @@ const RolePermission = () => {
       setPermissions(transformedData);
     }
   }, [roleData]);
+
+  const showSuccessNotification = (message) => {
+    toast.push(
+        <Notification title="Success" type="success">
+            {message}
+        </Notification>
+    );
+};
 
   const handleCheckboxChange = (rowId, permission, value) => {
     setPermissions(current => {
@@ -813,6 +822,9 @@ const RolePermission = () => {
       };
 
       data.forEach(processRow);
+      if(result) {
+        showSuccessNotification('Permission Updated Successfully')
+      }
       return result;
     };
 

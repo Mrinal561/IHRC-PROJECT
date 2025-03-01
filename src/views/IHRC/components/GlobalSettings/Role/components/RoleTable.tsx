@@ -177,7 +177,7 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
             
             if (result) {
                 onDataChange();
-                showSuccessNotification('Role updated successfully');
+                showSuccessNotification('Designation updated successfully');
                 handleDialogClose();
             }
         } catch (error) {
@@ -241,7 +241,7 @@ const RoleTable = ({ roleData, isLoading, onDataChange }) => {
                 
                 if (result) {
                     onDataChange();
-                    showSuccessNotification('Role deleted successfully');
+                    showSuccessNotification('Designation deleted successfully');
                 }
             } catch (error) {
                 console.error(error);

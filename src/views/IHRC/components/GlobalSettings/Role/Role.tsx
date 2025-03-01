@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import AdaptableCard from '@/components/shared/AdaptableCard';
-import { Button, Dialog } from '@/components/ui';
+import { Button, Dialog, toast, Notification } from '@/components/ui';
 import { HiPlusCircle } from 'react-icons/hi';
 import OutlinedInput from '@/components/ui/OutlinedInput';
 import { useDispatch } from 'react-redux';
@@ -108,6 +108,13 @@ const Role = () => {
     }
   };
 
+  const showSuccessNotification = (message) => {
+    toast.push(
+        <Notification title="Success" type="success">
+            {message}
+        </Notification>
+    );
+};
 
   const handleConfirm = async () => {
     const isValid = await validateForm();
@@ -121,8 +128,11 @@ const Role = () => {
           throw error;
         });
 
-      handleDialogClose();
-      refreshData();
+        if (result) {
+          handleDialogClose();
+          showSuccessNotification('Designation Created successfully');
+          refreshData();
+      }
     } catch (error) {
       console.error('Error creating role:', error);
     } finally {
