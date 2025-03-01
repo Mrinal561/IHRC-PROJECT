@@ -676,6 +676,7 @@ import DistrictAutosuggest from '../../ESICSetup/components/DistrictAutoSuggest'
 import LocationAutosuggest from '../../Branch/components/LocationAutosuggest'
 import * as yup from 'yup'
 import OutlinedPasswordInput from '@/components/ui/OutlinedInput/OutlinedPasswordInput'
+import { createLwfSetup } from '@/store/slices/lwfSetup/lwfTrackerSlice'
 
 const validationSchema = yup.object().shape({
     state_id: yup
@@ -890,6 +891,11 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
                 endpoints.lwfSetup.create(),
                 data,
             )
+            // const response = await dispatch(createLwfSetup(data))
+            // .unwrap()
+            // .catch((error: any) => {
+            //     throw error
+            // })
             if (response) {
                 addLWFSetup(response.data)
                 onClose()
@@ -897,10 +903,11 @@ const LWFSetupPanel: React.FC<LWFSetupPanelProps> = ({
             }
         } catch (error: any) {
             console.error('Failed to create LWF Setup:', error)
-            showNotification(
-                'danger',
-                error.response?.data?.message || 'Failed to create LWF Setup',
-            )
+            // showNotification(
+            //     'danger',
+            //     error.response?.data?.message || 'Failed to create LWF Setup',
+            // )
+            throw error;
         } finally {
             setIsLoading(false)
         }

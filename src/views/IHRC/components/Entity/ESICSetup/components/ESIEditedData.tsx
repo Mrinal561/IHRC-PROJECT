@@ -210,6 +210,20 @@ const ESIEditedData: React.FC<ESIEditedDataProps> = ({
         }
     }
 
+     const openNotification = (
+            type: 'success' | 'info' | 'danger' | 'warning',
+            message: string,
+        ) => {
+            toast.push(
+                <Notification
+                    title={type.charAt(0).toUpperCase() + type.slice(1)}
+                    type={type}
+                >
+                    {message}
+                </Notification>,
+            )
+        }
+
     const handleSubmit = async () => {
         try {
             // Mark all fields as touched
@@ -248,29 +262,25 @@ const ESIEditedData: React.FC<ESIEditedDataProps> = ({
                 return
             }
 
-            const resultAction = await dispatch(
+            const resultAction = dispatch(
                 updateEsiSetup({
                     id: id,
                     esiData: updateData,
-                }),
+                })
             )
 
             if (resultAction) {
-                toast.push(
-                    <Notification title="Success" type="success">
-                        ESI Data updated successfully
-                    </Notification>,
-                )
+                // openNotification('success', 'ESI Setup edited successfully')
                 onClose()
                 if (onRefresh) {
                     onRefresh()
                 }
             }
-        } catch (err) {
+        } catch (err: any) {
             console.error('Error updating ESI data:', err)
             toast.push(
                 <Notification title="Error" closable={true} type="danger">
-                    Failed to update ESI data
+                    {err.message}
                 </Notification>,
             )
         } finally {

@@ -45,6 +45,24 @@ export const createLwfTracker = createAsyncThunk(
         }
     }
 );
+
+export const createLwfSetup = createAsyncThunk(
+    'lwfSetup/create',
+    async (lwfSetupData: LWFSetupData, { rejectWithValue }) => {
+        try {
+            const { data } = await httpClient.post(endpoints.lwfSetup.create(), lwfSetupData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            return data;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || 'Failed to create LWF Setup');
+        }
+    }
+);
+
+
 export const fetchLwfById = createAsyncThunk(
     'lwf/fetchLwfById',
     async (id: string, { rejectWithValue }) => {
@@ -101,6 +119,17 @@ const LwfTrackerSlice = createSlice({
                 state.loading = false;
             })
             .addCase(createLwfTracker.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+            })
+            .addCase(createLwfSetup.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(createLwfSetup.fulfilled, (state, action) => {
+                state.loading = false;
+            })
+            .addCase(createLwfSetup.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
             })
