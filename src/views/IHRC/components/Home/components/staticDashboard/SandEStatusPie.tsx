@@ -69,7 +69,7 @@ const [chartData, setChartData] = useState<SEStatusData>({
       type: 'pie',
       background: 'transparent'
     },
-    colors: ['#00a249', '#d20000'], // Red for Expired, Green for Valid
+    colors: ['#d20000', '#00a249'], // Red for Expired, Green for Valid
     labels: chartData.labels,
     legend: {
       show: false

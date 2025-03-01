@@ -232,7 +232,7 @@ const SEDashboardCount: React.FC<SEProps> = ({
 
         
 
-    const columns: ColumnDef<typeof seData[0]>[] = useMemo(
+    const columns = useMemo(
         () => [
             {
                 header: 'Status',
@@ -296,12 +296,12 @@ const SEDashboardCount: React.FC<SEProps> = ({
             // },
             {
                 header: 'Total',
-                enableSorting: false,
                 accessorKey: 'value',
+                enableSorting: false,
                 cell: (props) => {
                     const row = props.row.original;
                     const value = props.getValue() as string;   
-                    const textColorClass = value === 'Expired' ? 'text-red-600' : '';                 return (
+                    const textColorClass = row.name === 'Expired' ? 'text-red-600' : '';                 return (
                         <Tooltip title={value} placement="top">
                             <div  className={`inline-flex items-center py-2 rounded-full text-xs font-semibold ${textColorClass}`}>
                                 {value.length > 18
