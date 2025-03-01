@@ -1,6 +1,6 @@
 
 import React, { useMemo, useState } from 'react';
-import { Button, Dialog, Tooltip } from '@/components/ui';
+import { Button, Dialog, toast, Tooltip, Notification } from '@/components/ui';
 import { FiFile, FiTrash } from 'react-icons/fi';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 import { MdEdit } from 'react-icons/md';
@@ -62,14 +62,21 @@ const PTRCTrackerTable: React.FC<PTTrackerTableProps> = ({
   const userId = login?.user?.user?.id;
   const type = login?.user?.user?.type;
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     try{
       setLoader(true)
     if (trackerToDelete) {
-      dispatch(deletePtrcTracker(trackerToDelete)).unwrap().catch((error: any) => {
+     const res = await dispatch(deletePtrcTracker(trackerToDelete)).unwrap().catch((error: any) => {
         throw error; // Re-throw to prevent navigation
     });
+    if(res) {
       setDeleteConfirmOpen(false);
+      toast.push(
+        <Notification title="Success" type="success">
+          PT RC Tracker Data Deleted Successfully
+        </Notification>
+      );
+    }
       if (onRefresh) {
         onRefresh();
       }

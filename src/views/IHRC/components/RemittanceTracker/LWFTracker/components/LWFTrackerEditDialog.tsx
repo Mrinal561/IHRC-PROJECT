@@ -32,13 +32,13 @@ const validationSchema = Yup.object().shape({
     .min(0, 'Total paid amount must be greater than or equal to 0'),
   payment_date: Yup.string()
     .required('Payment date is required'),
-  delay_reason: Yup.string()
-  .required('Delay reason is required')
-    .when('delay_in_days', {
-      is: (delay_in_days: string) => delay_in_days && parseInt(delay_in_days) > 0,
-      then: (schema) => schema.required('Delay reason is required when there is a delay'),
-      otherwise: (schema) => schema.optional(),
-    }),
+  // delay_reason: Yup.string()
+  // .required('Delay reason is required')
+  //   .when('delay_in_days', {
+  //     is: (delay_in_days: string) => delay_in_days && parseInt(delay_in_days) > 0,
+  //     then: (schema) => schema.required('Delay reason is required when there is a delay'),
+  //     otherwise: (schema) => schema.optional(),
+  //   }),
 });
 
 interface LWFTrackerEditDialogProps {

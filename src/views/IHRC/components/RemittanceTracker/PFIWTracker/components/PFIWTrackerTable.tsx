@@ -1,6 +1,6 @@
 
 import React, { useMemo, useState } from 'react';
-import { Button, Dialog, Tooltip } from '@/components/ui';
+import { Button, Dialog, toast, Tooltip, Notification } from '@/components/ui';
 import { FiEdit, FiFile, FiTrash } from 'react-icons/fi';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 import { MdEdit } from 'react-icons/md';
@@ -99,14 +99,21 @@ const handleDeleteConfirmation = (trackerId: string) => {
   setDeleteConfirmOpen(true);
 };
 
-const confirmDelete = () => {
+const confirmDelete = async () => {
   try{
     setLoader(true)
   if (trackerToDelete) {
-    dispatch(deletePfiwTracker(trackerToDelete)).unwrap().catch((error: any) => {
+   const res = await dispatch(deletePfiwTracker(trackerToDelete)).unwrap().catch((error: any) => {
       throw error; // Re-throw to prevent navigation
   });
+  if(res) {
     setDeleteConfirmOpen(false);
+    toast.push(
+      <Notification title="Success" type="success">
+        PF IW Tracker Data deleted successfully
+      </Notification>
+    );
+  }
     if (onRefresh) {
       onRefresh();
     }

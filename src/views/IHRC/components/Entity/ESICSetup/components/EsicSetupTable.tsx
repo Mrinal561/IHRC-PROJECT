@@ -226,7 +226,7 @@ const ESISetupTable: React.FC<ESISetupTableProps> = ({
         if (res) {
           toast.push(
             <Notification title="Success" type="success">
-              ESI Setup deleted successfully
+              ESI Setup Deleted Successfully
             </Notification>
           );
           setDialogIsOpen(false);

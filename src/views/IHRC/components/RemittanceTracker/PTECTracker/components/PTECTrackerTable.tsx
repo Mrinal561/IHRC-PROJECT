@@ -2,7 +2,7 @@
 
 
 import React, { useMemo, useState } from 'react';
-import { Button, Dialog, Tooltip } from '@/components/ui';
+import { Button, Dialog, toast, Tooltip, Notification } from '@/components/ui';
 import { FiEdit, FiFile, FiTrash } from 'react-icons/fi';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 import { MdEdit } from 'react-icons/md';
@@ -65,29 +65,22 @@ const PTECTrackerTable: React.FC<PTTrackerTableProps> = ({
     setDeleteConfirmOpen(true);
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     try{
 
     setLoader(true)
     if (trackerToDelete) {
-      dispatch(deletePtecTracker(trackerToDelete)).unwrap().catch((error: any) => {
-        // Handle different error formats
-        if (error.response?.data?.message) {
-            // API error response
-            showErrorNotification(error.response.data.message);
-        } else if (error.message) {
-            // Regular error object
-            showErrorNotification(error.message);
-        } else if (Array.isArray(error)) {
-            // Array of error messages
-            showErrorNotification(error);
-        } else {
-            // Fallback error message
-            showErrorNotification(error);
-        }
+     const res = await dispatch(deletePtecTracker(trackerToDelete)).unwrap().catch((error: any) => {
         throw error; // Re-throw to prevent navigation
     });
+    if(res) {
       setDeleteConfirmOpen(false);
+      toast.push(
+        <Notification title="Success" type="success">
+          PT EC Tracker Data Deleted Successfully
+        </Notification>
+      );
+    }
       if (onRefresh) {
         onRefresh();
       }

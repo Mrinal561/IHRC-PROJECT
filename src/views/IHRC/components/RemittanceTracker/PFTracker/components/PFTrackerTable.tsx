@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Button, Dialog, toast, Tooltip } from '@/components/ui';
+import { Button, Dialog, toast, Tooltip, Notification } from '@/components/ui';
 import { FiEdit, FiFile, FiTrash } from 'react-icons/fi';
 import DataTable, { ColumnDef } from '@/components/shared/DataTable';
 import { MdAdminPanelSettings, MdEdit } from 'react-icons/md';
@@ -64,15 +64,23 @@ const PFTrackerTable: React.FC<PfTrackerTableProps> =({
     setDeleteConfirmOpen(true);
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     try{
 
       setLoader(true)
     if (trackerToDelete) {
-      dispatch(deleteTracker(trackerToDelete)).unwrap().catch((error: any) => {
+    const res = await dispatch(deleteTracker(trackerToDelete)).unwrap().catch((error: any) => {
         throw error; // Re-throw to prevent navigation
     });
+
+    if(res){
       setDeleteConfirmOpen(false);
+      toast.push(
+        <Notification title="Success" type="success">
+          PF Tracker Data Deleted Successfully
+        </Notification>
+      );
+    }
       if (onRefresh) {
         onRefresh();
       }
