@@ -191,14 +191,14 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId, stateId, distr
                 </div>
 
                 {/* Sixth Row */}
-                {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <LWF />
                     </div>
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <ComplinceStatus />
                     </div>
-                </div> */}
+                </div>
 
                 {/* Seventh Row */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -263,6 +263,16 @@ const DashboardBody: React.FC<DashboardBodyProps> = ({ companyId, stateId, distr
                     </div>
                     <div className="bg-white p-4 rounded-lg border shadow-sm">
                         <AnnualRevenueDonut {...props} />
+                    </div>
+                </div>
+
+                 {/* Sixth Row */}
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <div className="bg-white p-4 rounded-lg border shadow-sm">
+                        <LWF />
+                    </div>
+                    <div className="bg-white p-4 rounded-lg border shadow-sm">
+                        <ComplinceStatus />
                     </div>
                 </div>
 

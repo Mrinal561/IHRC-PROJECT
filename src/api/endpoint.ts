@@ -273,6 +273,8 @@ export const endpoints = {
             registerBreakup: () => api(`companyadmin/graph/registration-breakup`),
             pfremittanceBreakup: () => api(`companyadmin/graph/pf-remittance-breakdown`),
             esiremittanceBreakup: () => api(`companyadmin/graph/esi-remittance-breakdown`),
+            lwfremittanceBreakup: () => api(`companyadmin/graph/lwf-remittance-breakdown`),
+            ptremittanceBreakup: () => api(`companyadmin/graph/pt-remittance-breakdown`),
         },
         
 }

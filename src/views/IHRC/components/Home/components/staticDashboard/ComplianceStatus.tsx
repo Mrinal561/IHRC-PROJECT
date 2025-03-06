@@ -1,73 +1,35 @@
 
-// import React from 'react';
-// import Chart from 'react-apexcharts';
-// import { Card } from '@/components/ui/card';
-// import { ApexOptions } from 'apexcharts';
-
-
-
-// const ComplianceStatus = () => {
-//     return (
-//         <Chart
-//             options={{
-//                 colors: ['#00c853', '#ff3d00', '#ffc107', '#808080'],
-//                 labels: ['Complied', 'Not Complied', 'Complied with Delay', 'Not Applicable'],
-//                 legend: {
-//                     position: 'top',  // Move legend to the top
-//                 },
-//                 responsive: [
-//                     {
-//                         breakpoint: 480,
-//                         options: {
-//                             chart: {
-//                                 width: 300,  // Adjusted width for smaller screens
-//                             },
-//                             legend: {
-//                                 position: 'top',  // Ensure legend stays at the top on smaller screens
-//                             },
-//                         },
-//                     },
-//                 ],
-//                 chart: {
-//                     width: '100%',  // Makes the chart responsive
-//                 },
-//                 title: {
-//                     text: 'Compliance Status',
-//                     align: 'center',
-//                     style: {
-//                         fontSize: '20px',
-//                         fontWeight: 'bold'
-//                     },
-//                     offsetY:-5,
-//                 }
-//             }}
-//             series={[45, 20, 15, 10]}  // Complied, Not Complied, Complied with Delay, Not Applicable
-//             height={300}  // Increased height
-//             type="pie"
-//         />
-//     );
-// };
-
-
-// export default ComplianceStatus;
-
-
-
-
-
-
-
 
 import React, { useState } from 'react';
 import Chart from 'react-apexcharts';
 import { Card } from '@/components/ui';
 import { ApexOptions } from 'apexcharts';
-
 import OutlinedSelect from '@/components/ui/Outlined/Outlined';
+import httpClient from '@/api/http-client';
+import { endpoints } from '@/api/endpoint';
 
+interface ComplianceStatusProps {
+  year?: string; // Financial year (e.g., '2024-25')
+  companyId?: string | number;
+  stateId?: string | number;
+  districtId?: string | number;
+  locationId?: string | number;
+  branchId?: string | number;
+}
 
-const ComplianceStatus = () => {
+const ComplianceStatus: React.FC<ComplianceStatusProps> = ({
+  year = '2024-25',
+  companyId,
+  stateId,
+  districtId,
+  locationId,
+  branchId
+}) => {
 
+    const [mainTotal, setMainTotal] = useState(0);
+    const [interestTotal, setInterestTotal] = useState(0);
+    const [penaltyTotal, setPenaltyTotal] = useState(0);
+    const [loading, setLoading] = useState(false);
   const groupOptions = [
           { value: 'jan', label: 'January' },
           { value: 'feb', label: 'February' },
@@ -83,8 +45,8 @@ const ComplianceStatus = () => {
           { value: 'dec', label: 'December' }
         ];
       
-        // State for selected month
         const [currentGroup, setCurrentGroup] = useState(groupOptions[1].value);
+        // State for selected month
       
         // Handler for dropdown changes
         const handleChange = (setter: Function, field: string) => (option: any) => {

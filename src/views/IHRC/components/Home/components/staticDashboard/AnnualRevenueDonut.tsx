@@ -346,7 +346,7 @@ const AnnualRevenueDonut: React.FC<AnnualRevenueDonutProps> = ({
                 }
               },
               dataLabels: {
-                enabled: true,
+                enabled: false,
                 formatter: function (val) {
                   return isNaN(val) ? '0%' : val.toFixed(1) + '%';
                 }
