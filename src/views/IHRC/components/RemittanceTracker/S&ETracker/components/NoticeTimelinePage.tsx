@@ -272,6 +272,7 @@ interface NoticeDetails {
         name: string;
         url: string;
     };
+    status: string;
 }
 
 const TimelineAvatar = ({ children, ...rest }) => {
@@ -335,26 +336,24 @@ const NoticeTimelinePage = () => {
     const fetchNoticeDetails = async () => {
         try {
             const response = await httpClient.get(endpoints.noticeTracker.detail(noticeId));
-            const noticeData = response.data;
+            const noticeData = response.data;            
+            
     
             // Check if replies exist and are not empty
             if (noticeData.replies && noticeData.replies.length > 0) {
                 const replyDataId = noticeData.replies[noticeData.replies.length - 1].id;
                 setReplyId(replyDataId); // Set the replyId
-                console.log('Latest reply ID:', replyDataId); // Log the latest reply ID
             } else {
-                console.log('No replies found for this notice.');
                 setReplyId(null); // Set replyId to null if no replies exist
             }
         } catch (error) {
-            console.error('Failed to fetch notice details:', error);
+            throw error
         } finally {
             setIsLoading(false);
         }
     };
 
     useEffect(() => {
-        console.log('Updated replyId:', replyId);
         fetchNoticeDetails()
     }, [replyId]); // This will log whenever replyId changes
 
@@ -394,7 +393,8 @@ const NoticeTimelinePage = () => {
                     },
                     respondedBy: item.user.name,
                     referenceNumber: item.data.reference_number,
-                    relatedAct: item.data.related_act
+                    relatedAct: item.data.related_act,
+                    status: item.data.status,
                 };
             }
 
@@ -408,10 +408,11 @@ const NoticeTimelinePage = () => {
                 const response = await httpClient.get(endpoints.noticeTracker.timeline(noticeId));
                 const transformedData = transformTimelineData(response.data);
                 setTimelineData(transformedData);
+                
 
                 // Extract notice details from the first item
                 if (response.data.length > 0 && response.data[0].type === 'NOTICE_CREATED') {
-                    const notice = response.data[0];
+                    const notice = response.data[0];                    
                     const docPath = notice.data.notice_document || '';
                     setNoticeData({
                         noticeType: notice.data.notice_type,
@@ -423,18 +424,19 @@ const NoticeTimelinePage = () => {
                         document: {
                             name: docPath.split('/').pop() || '',
                             url: docPath ? `${baseUrl}/${docPath}` : ''
-                        }
+                        },
+                        status: notice.data.status
                     });
                     if (notice.replies && notice.replies.length > 0) {
                         const latestReply = notice.replies[notice.replies.length - 1];
+                        
                         setReplyId(latestReply.id);
                     }
-                    console.log('reply id', replyId);
-                    console.log('notice data', response.data);
+                   
                     
                 }
             } catch (error) {
-                console.error('Failed to fetch timeline data:', error);
+               throw error
             } finally {
                 setLoading(false);
             }
@@ -480,7 +482,7 @@ const NoticeTimelinePage = () => {
                     <span className="text-gray-600">
                         {formatDate(item.date)}
                     </span>
-                    {!isFollowUp && item.status && (
+                    {item.status && (
                         <>
                             <span className="mx-2">and has set notice status to</span>
                             <div className={`${getStatusColor(item.status)} px-1`}>
@@ -492,10 +494,18 @@ const NoticeTimelinePage = () => {
 
                 <Card className="mt-2">
                     <div className="space-y-4">
+                    <div>
+                            <p className="text-sm text-gray-500">Notice Type:</p>
+                            <div className="inline-flex items-center space-x-2 bg-blue-500 text-white px-2 py-1 rounded-md">
+                                {item.noticeType ? item.noticeType.split(' ')
+                                    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                                    .join(' ') : ''}
+                            </div>
+                        </div>
                         {isFollowUp && (
                             <>
                                 <div>
-                                    <p className="text-sm text-gray-500">Related Act:</p>
+                                    <p className="text-sm text-gray-500">Notice Act:</p>
                                     <p className="text-gray-900">{item.relatedAct}</p>
                                 </div>
                                 <div>
@@ -504,12 +514,7 @@ const NoticeTimelinePage = () => {
                                 </div>
                             </>
                         )}
-                        <div>
-                            <p className="text-sm text-gray-500">Notice Type:</p>
-                            <div className="inline-flex items-center space-x-2 bg-blue-500 text-white px-2 py-1 rounded-md">
-                                {item.noticeType}
-                            </div>
-                        </div>
+                       
                         
                         <div>
                             <p className="text-sm text-gray-500">
@@ -602,17 +607,19 @@ const NoticeTimelinePage = () => {
                             <div>
                                 <p className="text-sm text-gray-500">Criticality:</p>
                                 <p className="text-gray-900 dark:text-gray-100">
-                                    {noticeData.criticality}
+                                  {noticeData.criticality.charAt(0).toUpperCase() + noticeData.criticality.slice(1)}
                                 </p>
                             </div>
-                        </div>
-
+                            
                         <div>
                             <p className="text-sm text-gray-500">Notice Details:</p>
                             <p className="text-gray-600 dark:text-gray-300 preserve-newlines">
                                 {formatTextWithLineBreaks(noticeData.noticeDetails)}
                             </p>
                         </div>
+                        </div>
+                        
+
 
                         {noticeData.document && noticeData.document.name && (
                             <div>
@@ -666,19 +673,38 @@ const NoticeTimelinePage = () => {
                 )}
             </div>
 
-            {/* <div className="flex justify-end mt-6">
-                <Button 
-                    variant="solid" 
-                    onClick={() => navigate('/notice-tracker/followUpNotice', {
-                        state: { 
-                            noticeId: noticeId, // Pass noticeId
-                            replyId: replyId // Pass latest replyId
-                        }
-                    })}
-                >
-                    <span>Add Notice</span>
-                </Button>
-            </div> */}
+            {/* Conditional Rendering for Buttons */}
+            <div className="flex justify-end mt-6">
+            {noticeData && (
+    <div className="flex justify-end mt-6">
+        {noticeData.status === 'Open' ? (
+            <Button 
+                variant="solid" 
+                onClick={() => navigate('/notice-tracker/response', {
+                    state: { 
+                        noticeId: noticeId, // Pass noticeId
+                        replyId: replyId // Pass latest replyId
+                    }
+                })}
+            >
+                <span>Add Reply</span>
+            </Button>
+        ) : noticeData.status === 'Closed' ? (
+            <Button 
+                variant="solid" 
+                onClick={() => navigate('/notice-tracker/followUpNotice', {
+                    state: { 
+                        noticeId: noticeId, // Pass noticeId
+                        replyId: replyId // Pass latest replyId
+                    }
+                })}
+            >
+                <span>Add Follow-Up Notice</span>
+            </Button>
+        ) : null}
+    </div>
+)}
+            </div>
         </div>
     );
 };

@@ -624,7 +624,7 @@ const SandETracker = () => {
                     total: res.data.paginate_data.totalResults,
                 }));
             } catch (error) {
-                console.error('Error fetching Notice tracker data:', error);
+               throw error
             } finally {
                 setIsLoading(false);
             }
