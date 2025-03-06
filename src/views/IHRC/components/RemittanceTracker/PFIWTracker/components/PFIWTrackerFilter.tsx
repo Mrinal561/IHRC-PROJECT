@@ -23,7 +23,9 @@ interface PFIWTrackerFilterProps {
     companyName: string; 
     companyId: string;
     pfCode: string ;
-    search:string;
+    // search:string;
+    location_name: string;
+
   }) => void;
 }
 
@@ -44,9 +46,13 @@ const PFIWTrackerFilter: React.FC<PFIWTrackerFilterProps> = ({ onFilterChange })
   const [pfCodeOptions, setPfCodeOptions] = useState<Option[]>([]);
 
   const [searchValue, setSearchValue] = useState('');
+    const [locationValue, setLocationValue] = useState('');
+  
 
   const handleSearchChange = (value: string) => {
-    setSearchValue(value);
+    // setSearchValue(value);
+    setLocationValue(value);
+
     
     // Trigger filter change with updated search value
     onFilterChange({
@@ -55,7 +61,9 @@ const PFIWTrackerFilter: React.FC<PFIWTrackerFilterProps> = ({ onFilterChange })
       companyName: selectedCompany?.label || '',
       companyId: selectedCompany?.value || '',
       pfCode: selectedPfCode?.value || '',
-      search: value
+      // search: value
+      location_name: value
+
     });
   };
 
@@ -82,7 +90,9 @@ const PFIWTrackerFilter: React.FC<PFIWTrackerFilterProps> = ({ onFilterChange })
         companyName: '',
         companyId: '',
         pfCode: '',
-        search:''
+        // search:''
+        location_name: ''
+
       });
     };
 
@@ -229,7 +239,9 @@ const PFIWTrackerFilter: React.FC<PFIWTrackerFilterProps> = ({ onFilterChange })
         companyName: selectedCompany.label,
         companyId: selectedCompany.value,
         pfCode: '',
-        search:''
+        // search:''
+        location_name: ''
+
       });
     } else {
       setPfCodeOptions([]);
@@ -247,7 +259,9 @@ const PFIWTrackerFilter: React.FC<PFIWTrackerFilterProps> = ({ onFilterChange })
       companyName: '',
       companyId: '',
       pfCode: '',
-      search: searchValue
+      // search: searchValue
+      location_name: locationValue
+
     });
   };
 
@@ -260,7 +274,9 @@ const PFIWTrackerFilter: React.FC<PFIWTrackerFilterProps> = ({ onFilterChange })
       companyName: value?.label || '',
       companyId: value?.value || '',
       pfCode: '',
-      search: searchValue
+      // search: searchValue
+      location_name: locationValue
+
     });
   };
 
@@ -273,7 +289,9 @@ const PFIWTrackerFilter: React.FC<PFIWTrackerFilterProps> = ({ onFilterChange })
       companyName: selectedCompany?.label || '',
       companyId: selectedCompany?.value || '',
       pfCode: value?.value || '',
-      search:''
+      // search:''
+      location_name: locationValue
+
     });
   };
 
@@ -309,7 +327,7 @@ const PFIWTrackerFilter: React.FC<PFIWTrackerFilterProps> = ({ onFilterChange })
       <div className="min-w-0">
         <OutlinedInput
           label="Search By Location"
-          value={searchValue}
+          value={locationValue}
           onChange={(e) => handleSearchChange(e)}
           maxLabelWidth='90%'
         />
