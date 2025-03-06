@@ -270,8 +270,8 @@ const AnnualRevenueDonut: React.FC<AnnualRevenueDonutProps> = ({
 
         // Update state with fetched data
         setMainTotal(response.data.main || 0);
-        setInterestTotal(response.data.arrear || 0);
-        setPenaltyTotal(response.data.damage || 0);
+        setInterestTotal(response.data.interest || 0);
+        setPenaltyTotal(response.data.penalty || 0);
       } catch (error) {
         console.error('Error fetching ESI remittance data:', error);
       } finally {
