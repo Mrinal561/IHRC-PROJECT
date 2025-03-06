@@ -29,6 +29,7 @@ export interface LWFTrackerData {
   remark: string | null;
   upload_date: string;
   status: string;
+  challan_type: string;
   uploaded_by: number;
   created_at: string;
   updated_at: string;
@@ -228,6 +229,22 @@ const params: any = {
           {props.getValue() as string || '-'}
         </div>,
       },
+      {
+        header: 'Challan Type',
+        enableSorting: false,
+        accessorKey: 'challan_type',
+        cell: (props) => {
+            const value = props.getValue() as string;
+            // Capitalize the first letter
+            const capitalizedValue = value.charAt(0).toUpperCase() + value.slice(1);
+            
+            return (
+                <div className="w-40 truncate">
+                    {capitalizedValue}
+                </div>
+            );
+        },
+    },
        {
   header: 'Payment Receipt',
   enableSorting: false,
