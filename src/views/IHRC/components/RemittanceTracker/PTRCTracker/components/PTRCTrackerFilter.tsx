@@ -21,7 +21,8 @@ interface PTRCTrackerFilterProps {
     companyName: string; 
     companyId: string;
     ptCode: string 
-    search:string;
+    // search:string;
+    location_name: string;
   }) => void;
 }
 
@@ -38,9 +39,12 @@ const PTRCTrackerFilter: React.FC<PTRCTrackerFilterProps> = ({ onFilterChange })
   const [companies, setCompanies] = useState<Option[]>([]);
   const [ptCodeOptions, setPtCodeOptions] = useState<Option[]>([]);
   const [searchValue, setSearchValue] = useState('');
+    const [locationValue, setLocationValue] = useState('');
+  
 
   const handleSearchChange = (value: string) => {
-    setSearchValue(value);
+    // setSearchValue(value);
+    setLocationValue(value)
     
     // Trigger filter change with updated search value
     onFilterChange({
@@ -49,7 +53,8 @@ const PTRCTrackerFilter: React.FC<PTRCTrackerFilterProps> = ({ onFilterChange })
       companyName: selectedCompany?.label || '',
       companyId: selectedCompany?.value || '',
       ptCode: selectedPtCode?.value || '',
-      search: value
+      // search: value
+      location_name: value
     });
   };
 
@@ -76,7 +81,8 @@ const PTRCTrackerFilter: React.FC<PTRCTrackerFilterProps> = ({ onFilterChange })
         companyName: '',
         companyId: '',
         ptCode: '',
-        search:''
+        // search:''
+        location_name: ''
       });
     };
 
@@ -224,7 +230,8 @@ const PTRCTrackerFilter: React.FC<PTRCTrackerFilterProps> = ({ onFilterChange })
         companyName: selectedCompany.label,
         companyId: selectedCompany.value,
         ptCode: '',
-        search:''
+        // search:''
+        location_name: ''
       });
     } else {
       setPtCodeOptions([]);
@@ -241,7 +248,8 @@ const PTRCTrackerFilter: React.FC<PTRCTrackerFilterProps> = ({ onFilterChange })
       companyName: '',
       companyId: '',
       ptCode: '',
-      search: searchValue
+      // search: searchValue
+      location_name: locationValue
     });
   };
 
@@ -254,7 +262,8 @@ const PTRCTrackerFilter: React.FC<PTRCTrackerFilterProps> = ({ onFilterChange })
       companyName: value?.label || '',
       companyId: value?.value || '',
       ptCode: '',
-      search: searchValue
+      // search: searchValue
+       location_name: locationValue
     });
   };
 
@@ -266,7 +275,8 @@ const PTRCTrackerFilter: React.FC<PTRCTrackerFilterProps> = ({ onFilterChange })
       companyName: selectedCompany?.label || '',
       companyId: selectedCompany?.value || '',
       ptCode: value?.value || '',
-      search:''
+      // search:''
+       location_name: ''
     });
   };
 
@@ -302,7 +312,7 @@ const PTRCTrackerFilter: React.FC<PTRCTrackerFilterProps> = ({ onFilterChange })
       <div className="min-w-0">
         <OutlinedInput
           label="Search By Location"
-          value={searchValue}
+          value={locationValue}
           onChange={(e) => handleSearchChange(e)}
           maxLabelWidth='95%'
         />

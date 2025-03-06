@@ -21,7 +21,8 @@ interface ESIWTrackerFilterProps {
     companyName: string; 
     companyId: string;
     esiCode: string ;
-    search: string;
+    // search: string;
+    location_name: string;
   }) => void;
 }
 
@@ -41,9 +42,11 @@ const ESIWTrackerFilter: React.FC<ESIWTrackerFilterProps> = ({ onFilterChange })
   const [companies, setCompanies] = useState<Option[]>([]);
   const [esiCodeOptions, setEsiCodeOptions] = useState<Option[]>([]);
   const [searchValue, setSearchValue] = useState('');
+  const [locationValue, setLocationValue] = useState('');
 
   const handleSearchChange = (value: string) => {
-    setSearchValue(value);
+    // setSearchValue(value);
+    setLocationValue(value);
     
     // Trigger filter change with updated search value
     onFilterChange({
@@ -52,7 +55,8 @@ const ESIWTrackerFilter: React.FC<ESIWTrackerFilterProps> = ({ onFilterChange })
       companyName: selectedCompany?.label || '',
       companyId: selectedCompany?.value || '',
       esiCode: selectedEsiCode?.value || '',
-      search: value
+      // search: value,
+      location_name: value
     });
   };
 
@@ -80,7 +84,8 @@ const ESIWTrackerFilter: React.FC<ESIWTrackerFilterProps> = ({ onFilterChange })
         companyName: '',
         companyId: '',
         esiCode: '',
-        search:''
+        // search:'',
+        location_name: ''
       });
     };
 
@@ -229,7 +234,8 @@ const ESIWTrackerFilter: React.FC<ESIWTrackerFilterProps> = ({ onFilterChange })
         companyName: selectedCompany.label,
         companyId: selectedCompany.value,
         esiCode: '',
-        search:''
+        // search:'',
+        location_name: ''
       });
     } else {
       setEsiCodeOptions([]);
@@ -248,7 +254,8 @@ const ESIWTrackerFilter: React.FC<ESIWTrackerFilterProps> = ({ onFilterChange })
       companyName: '',
       companyId: '',
       esiCode: '',
-      search: searchValue
+      // search: searchValue,
+      location_name: locationValue
     });
   };
 
@@ -263,7 +270,9 @@ const ESIWTrackerFilter: React.FC<ESIWTrackerFilterProps> = ({ onFilterChange })
       companyName: value?.label || '',
       companyId: value?.value || '',
       esiCode: '',
-      search: searchValue
+      // search: searchValue,
+      location_name: locationValue
+
     });
   };
 
@@ -276,7 +285,9 @@ const ESIWTrackerFilter: React.FC<ESIWTrackerFilterProps> = ({ onFilterChange })
       companyName: selectedCompany?.label || '',
       companyId: selectedCompany?.value || '',
       esiCode: value?.value || '',
-      search: searchValue
+      // search: searchValue,
+      location_name: locationValue
+
     });
   };
 
@@ -313,7 +324,7 @@ return (
     <div className="min-w-0">
       <OutlinedInput
         label="Search By Location"
-        value={searchValue}
+        value={locationValue}
         onChange={(e) => handleSearchChange(e)}
         maxLabelWidth='90%'
       />

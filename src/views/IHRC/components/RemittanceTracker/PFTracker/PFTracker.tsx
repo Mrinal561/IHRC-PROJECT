@@ -46,7 +46,8 @@ const PFTracker: React.FC = () => {
         pfCode: '',
         startDate: '',
         endDate: '',
-        search:''
+        // search:''
+         location_name: ''
     })
    
     const [data, setData] = useState<PfChallanData[]>([])
@@ -201,7 +202,8 @@ const PFTracker: React.FC = () => {
                     'company_id[]': filters.companyId,
                     'from_date': filters.startDate,
                     'to_date': filters.endDate,
-                    'search': filters.search
+                    // 'search': filters.search
+                    'location_name': filters.location_name
                 }
 
                 if (filters.pfCode) {
@@ -228,14 +230,14 @@ const PFTracker: React.FC = () => {
                 setIsLoading(false)
             }
         },
-        [filters.groupId,filters.search, filters.companyId, filters.pfCode, permissions.canList,filters.startDate, filters.endDate,financialYear]
+        [filters.groupId,filters.location_name, filters.companyId, filters.pfCode, permissions.canList,filters.startDate, filters.endDate,financialYear]
     )
 
     useEffect(() => {
         if (isInitialized && permissions.canList) {
-            fetchPFTrackerData(pagination.pageIndex, pagination.pageSize,filters)
+            fetchPFTrackerData(pagination.pageIndex, pagination.pageSize)
         }
-    }, [fetchPFTrackerData, pagination.pageIndex, pagination.pageSize, filters.groupId, filters.companyId, isInitialized, permissions.canList,financialYear])
+    }, [fetchPFTrackerData, pagination.pageIndex, pagination.pageSize, filters.groupId, filters.companyId, isInitialized, permissions.canList,financialYear, filters])
 
 
     useEffect(() => {

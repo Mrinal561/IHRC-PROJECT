@@ -18,7 +18,8 @@ const LWFTrackerTool: React.FC<{
     lwfCode?: string;
     startDate?: string | null;
     endDate?: string | null;
-    search?: string;
+    // search?: string;
+    location_name: string | null;
   }) => void ;
   canCreate:boolean;
 }> = ({ onFilterChange, canCreate }) => {
@@ -31,7 +32,8 @@ const LWFTrackerTool: React.FC<{
     lwfCode: '' ,
     startDate:'',
     endDate:'',
-    string:''
+    // string:''
+    location_name: ''
   });
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);

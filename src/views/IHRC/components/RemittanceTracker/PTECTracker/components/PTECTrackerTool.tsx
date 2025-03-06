@@ -17,7 +17,8 @@ const PTECTrackerTool: React.FC<{
         ptCode: string
         startDate: string | null
         endDate: string | null
-        search: string
+        // search: string
+        location_name: string | null;
     }) => void
     canCreate: boolean
 }> = ({ onFilterChange, canCreate }) => {
@@ -30,7 +31,8 @@ const PTECTrackerTool: React.FC<{
         ptCode: '',
         startDate: '',
         endDate: '',
-        search: '',
+        // search: '',
+         location_name: ''
     })
     const [startDate, setStartDate] = useState<Date | null>(null)
     const [endDate, setEndDate] = useState<Date | null>(null)
@@ -102,7 +104,7 @@ const PTECTrackerTool: React.FC<{
                     'code[]': filters.ptCode,
                     'company_id[]': filters.companyId,
                     'to_date[]': formattedEndDate,
-                    from_date: formattedStartDate,
+                    'from_date': formattedStartDate,
                 },
             })
             if (res) {

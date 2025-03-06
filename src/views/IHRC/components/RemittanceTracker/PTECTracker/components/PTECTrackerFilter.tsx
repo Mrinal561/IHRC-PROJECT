@@ -22,7 +22,8 @@ interface PTECTrackerFilterProps {
     companyName: string; 
     companyId: string;
     ptCode: string ;
-    search:string;
+    // search:string;
+    location_name: string;
   }) => void;
 }
 
@@ -39,6 +40,8 @@ const PTECTrackerFilter: React.FC<PTECTrackerFilterProps> = ({ onFilterChange })
   const [companies, setCompanies] = useState<Option[]>([]);
   const [ptCodeOptions, setPtCodeOptions] = useState<Option[]>([]);
   const [searchValue, setSearchValue] = useState('');
+    const [locationValue, setLocationValue] = useState('');
+  
 
   const handleSearchChange = (value: string) => {
     setSearchValue(value);
@@ -50,7 +53,8 @@ const PTECTrackerFilter: React.FC<PTECTrackerFilterProps> = ({ onFilterChange })
       companyName: selectedCompany?.label || '',
       companyId: selectedCompany?.value || '',
       ptCode: selectedPtCode?.value || '',
-      search: value
+      // search: value
+      location_name: value
     });
   };
 
@@ -77,7 +81,8 @@ const PTECTrackerFilter: React.FC<PTECTrackerFilterProps> = ({ onFilterChange })
         companyName: '',
         companyId: '',
         ptCode: '',
-        search:''
+        // search:''
+         location_name: ''
       });
     };
 
@@ -224,7 +229,8 @@ const PTECTrackerFilter: React.FC<PTECTrackerFilterProps> = ({ onFilterChange })
         companyName: selectedCompany.label,
         companyId: selectedCompany.value,
         ptCode: '',
-        search:''
+        // search:''
+         location_name: ''
       });
     } else {
       setPtCodeOptions([]);
@@ -241,7 +247,8 @@ const PTECTrackerFilter: React.FC<PTECTrackerFilterProps> = ({ onFilterChange })
       companyName: '',
       companyId: '',
       ptCode: '',
-      search: searchValue
+      // search: searchValue
+       location_name: locationValue
     });
   };
 
@@ -254,7 +261,8 @@ const PTECTrackerFilter: React.FC<PTECTrackerFilterProps> = ({ onFilterChange })
       companyName: value?.label || '',
       companyId: value?.value || '',
       ptCode: '',
-      search: searchValue
+      // search: searchValue
+      location_name: locationValue
     });
   };
 
@@ -266,7 +274,8 @@ const PTECTrackerFilter: React.FC<PTECTrackerFilterProps> = ({ onFilterChange })
       companyName: selectedCompany?.label || '',
       companyId: selectedCompany?.value || '',
       ptCode: value?.value || '',
-      search:''
+      // search:''
+       location_name: ''
     });
   };
 

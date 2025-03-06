@@ -23,7 +23,8 @@ interface LWFTrackerFilterProps {
     companyName: string; 
     companyId: string;
     lwfCode: string ;
-    search: string;
+    // search: string;
+    location_name: string;
   }) => void;
 }
 
@@ -43,8 +44,11 @@ const LWFTrackerFilter: React.FC<LWFTrackerFilterProps> = ({ onFilterChange }) =
   const [companies, setCompanies] = useState<Option[]>([]);
   const [lwfCodeOptions, setLwfCodeOptions] = useState<Option[]>([]);
   const [searchValue, setSearchValue] = useState('');
+    const [locationValue, setLocationValue] = useState('');
+  
   const handleSearchChange = (value: string) => {
-    setSearchValue(value);
+    // setSearchValue(value);
+    setLocationValue(value);
     
     // Trigger filter change with updated search value
     onFilterChange({
@@ -53,7 +57,8 @@ const LWFTrackerFilter: React.FC<LWFTrackerFilterProps> = ({ onFilterChange }) =
       companyName: selectedCompany?.label || '',
       companyId: selectedCompany?.value || '',
       lwfCode: selectedLwfCode?.value || '',
-      search: value
+      // search: value
+      location_name: value
     });
   };
   useEffect(() => {
@@ -79,7 +84,8 @@ const LWFTrackerFilter: React.FC<LWFTrackerFilterProps> = ({ onFilterChange }) =
         companyName: '',
         companyId: '',
         lwfCode: '',
-        search:''
+        // search:''
+        location_name: ''
       });
     };
   
@@ -225,7 +231,8 @@ const LWFTrackerFilter: React.FC<LWFTrackerFilterProps> = ({ onFilterChange }) =
         companyName: selectedCompany.label,
         companyId: selectedCompany.value,
         lwfCode: '',
-        search:''
+        // search:''
+        location_name: ''
       });
     } else {
       setLwfCodeOptions([]);
@@ -243,7 +250,8 @@ const LWFTrackerFilter: React.FC<LWFTrackerFilterProps> = ({ onFilterChange }) =
       companyName: '',
       companyId: '',
       lwfCode: '',
-      search: searchValue
+      // search: searchValue
+      location_name: locationValue
     });
   };
 
@@ -256,7 +264,8 @@ const LWFTrackerFilter: React.FC<LWFTrackerFilterProps> = ({ onFilterChange }) =
       companyName: value?.label || '',
       companyId: value?.value || '',
       lwfCode: '',
-      search: searchValue
+      // search: searchValue
+      location_name: locationValue
     });
   };
 
@@ -269,7 +278,8 @@ const LWFTrackerFilter: React.FC<LWFTrackerFilterProps> = ({ onFilterChange }) =
       companyName: selectedCompany?.label || '',
       companyId: selectedCompany?.value || '',
       lwfCode: value?.value || '',
-      search: searchValue
+      // search: searchValue
+      location_name: locationValue
     });
   };
 
@@ -305,7 +315,7 @@ const LWFTrackerFilter: React.FC<LWFTrackerFilterProps> = ({ onFilterChange }) =
       <div className="min-w-0">
         <OutlinedInput
           label="Search By Location"
-          value={searchValue}
+          value={locationValue}
           onChange={(e) => handleSearchChange(e)}
           maxLabelWidth='90%'
         />

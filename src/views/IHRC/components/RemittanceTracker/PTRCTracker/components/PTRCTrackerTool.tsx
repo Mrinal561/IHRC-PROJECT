@@ -20,6 +20,7 @@ const PTRCTrackerTool: React.FC<{
     startDate: string;
     endDate: string;
     search:string;
+    location_name: string | null;
   }) => void ;
   canCreate: boolean;
 }> = ({ onFilterChange, canCreate }) => {
@@ -32,7 +33,8 @@ const PTRCTrackerTool: React.FC<{
     ptCode: '' ,
     startDate:'',
     endDate:'',
-    search:''
+    // search:''
+     location_name: ''
   });
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
